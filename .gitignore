@@ -10,6 +10,7 @@ dist-ssr
 .DS_Store
 composer.lock
 /.env
+/web/package-lock.json
 
 # Log files
 *.log
