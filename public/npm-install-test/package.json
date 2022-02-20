@@ -1,0 +1,12 @@
+{
+    "name": "npm-install-test",
+    "private": true,
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "vite"
+    },
+    "dependencies": {
+        "vue": "^3.2.25"
+    },
+    "devDependencies": {}
+}

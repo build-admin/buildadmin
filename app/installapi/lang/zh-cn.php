@@ -1,0 +1,25 @@
+<?php
+return [
+    'Install the controller'                                                                           => '安装控制器',
+    'need'                                                                                             => '需要',
+    'Click to see how to solve it'                                                                     => '点击查看如何解决',
+    'Please check the config directory permissions'                                                    => '请检查 config 目录权限',
+    'Please check the public directory permissions'                                                    => '请检查 public 目录权限',
+    'open'                                                                                             => '开启',
+    'close'                                                                                            => '关闭',
+    'The installation can continue, and some operations need to be completed manually'                 => '可以继续安装,部分操作需手动完成',
+    'Allow execution'                                                                                  => '允许执行',
+    'disabled'                                                                                         => '已禁用',
+    'Allow operation'                                                                                  => '允许操作',
+    'Acquisition failed'                                                                               => '获取失败',
+    'It is recommended to add cnpm. Click Install'                                                     => '建议添加cnpm,可点击安装',
+    'Click Install cnpm'                                                                               => '点击安装cnpm',
+    'Writable'                                                                                         => '可写',
+    'No write permission'                                                                              => '无写权限',
+    'already installed'                                                                                => '已安装',
+    'Not installed'                                                                                    => '未安装',
+    'Mysqli extension for PHP is required'                                                             => '需要PHP的Mysqli扩展',
+    'File has no write permission:%s'                                                                  => '文件无写入权限:%s',
+    'The system has completed installation. If you need to reinstall, please delete the %s file first' => '系统已完成安装。如果需要重新安装，请先删除 %s 文件',
+
+];

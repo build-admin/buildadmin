@@ -1,0 +1,22 @@
+// 修复 Chrome 浏览器输入框内选中字符行高异常的bug
+.el-input--large .el-input__inner {
+    line-height: 38px;
+}
+.el-input--default .el-input__inner {
+    line-height: 30px;
+}
+
+.el-divider__text.is-center {
+    transform: translateX(-50%) translateY(-62%);
+}
+
+.el-menu {
+    user-select: none;
+}
+
+.el-card {
+    border: none;
+}
+.el-card__header {
+    border-bottom: 1px solid var(--color-sub-4);
+}

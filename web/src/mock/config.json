@@ -1,0 +1,91 @@
+[
+    {
+        "name": "base",
+        "title": "基础配置",
+        "list": [
+            {
+                "name": "site_name",
+                "title": "站点名称",
+                "value": "BuildAdmin",
+                "type": "string",
+                "content": "",
+                "tip": "请输入站点名称",
+                "rule": "",
+                "weigh": 99
+            },
+            {
+                "name": "record_no",
+                "title": "备案号",
+                "value": "渝IC备xxxxxx",
+                "type": "string",
+                "content": "",
+                "tip": "请输入站点备案号",
+                "rule": "",
+                "weigh": 98
+            },
+            {
+                "name": "dxk",
+                "title": "单选框",
+                "value": 0,
+                "type": "radio",
+                "content": {
+                    "a": "aaa",
+                    "b": "bbb"
+                },
+                "tip": "单选框测试",
+                "rule": "",
+                "weigh": 97
+            },
+            {
+                "name": "checkbox",
+                "title": "复选框测试",
+                "value": "a,b",
+                "type": "checkbox",
+                "content": {
+                    "a": true,
+                    "b": true,
+                    "c": false
+                },
+                "tip": "复选框测试",
+                "rule": "",
+                "weigh": 96
+            },
+            {
+                "name": "switch",
+                "title": "开关",
+                "value": true,
+                "type": "switch",
+                "content": {},
+                "tip": "开关测试",
+                "rule": "",
+                "weigh": 95
+            },
+            {
+                "name": "switch",
+                "title": "开关",
+                "value": true,
+                "type": "switch1",
+                "content": {},
+                "tip": "开关测试",
+                "rule": "",
+                "weigh": 95
+            }
+        ]
+    },
+    {
+        "name": "email",
+        "title": "邮件配置",
+        "list": [
+            {
+                "name": "test",
+                "title": "测试",
+                "value": "测试",
+                "type": "string",
+                "content": "",
+                "tip": "测试",
+                "rule": "",
+                "weigh": 99
+            }
+        ]
+    }
+]

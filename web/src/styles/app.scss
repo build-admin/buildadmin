@@ -1,0 +1,184 @@
+/* 基本样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none !important;
+}
+
+html,
+body,
+#app {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--color-bg-1);
+    font-size: 14px;
+    overflow: hidden;
+    position: relative;
+}
+
+// 阿里 iconfont Symbol引用css
+.iconfont-icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+.w100 {
+    width: 100% !important;
+}
+.h100 {
+    height: 100% !important;
+}
+.bd-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.default-main {
+    margin: var(--main-space) var(--main-space) 0 var(--main-space);
+}
+.table-header-cell .cell {
+    color: var(--color-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 表格-s */
+.bd-table-box {
+    border-radius: var(--el-border-radius-round);
+    .table-header {
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 100%;
+        background-color: #ffffff;
+        border: 1px solid #f6f6f6;
+        border-bottom: none;
+        padding: 13px 15px;
+        font-size: 14px;
+    }
+    .table-operate {
+        padding: 4px 5px;
+        height: auto;
+    }
+    .data-table .el-button + .el-button {
+        margin-left: 6px;
+    }
+    .table-header-operate-text {
+        margin-left: 6px;
+    }
+    .table-operate .icon,
+    .table-header-operate .icon {
+        font-size: 14px !important;
+        color: #ffffff !important;
+    }
+    .table-com-search {
+        overflow: hidden;
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+        background-color: #ffffff;
+        border: 1px solid #f6f6f6;
+        border-bottom: none;
+        padding: 13px 15px;
+        font-size: 14px;
+        .com-search-col {
+            display: flex;
+            align-items: center;
+            padding-top: 8px;
+            color: var(--color-regular);
+            font-size: 13px;
+        }
+        .com-search-col-label {
+            width: 33.33%;
+            padding: 0 15px;
+            text-align: right;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .com-search-col-input {
+            padding: 0 15px;
+            width: 66.66%;
+        }
+    }
+    .table-search {
+        display: flex;
+        margin-left: auto;
+    }
+    .table-search-button-group {
+        display: flex;
+        margin-left: 12px;
+        button:focus,
+        button:active {
+            background-color: #ffffff;
+        }
+        button:hover {
+            background-color: #dcdfe6;
+        }
+    }
+    .table-pagination {
+        display: flex;
+        justify-content: flex-end;
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+        background-color: #ffffff;
+        padding: 13px 15px;
+    }
+    .el-table {
+        --el-table-border-color: #f6f6f6;
+    }
+}
+/* 表格-e */
+
+/* 全局遮罩-s */
+.bd-layout-shade {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999990;
+}
+/* 全局遮罩-e */
+
+/* 页面切换动画-s */
+.slide-right-enter-active,
+.slide-right-leave-active,
+.slide-left-enter-active,
+.slide-left-leave-active {
+    will-change: transform;
+    transition: all 0.3s ease;
+}
+// slide-right
+.slide-right-enter-from {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+.slide-right-leave-to {
+    opacity: 0;
+    transform: translateX(20px);
+}
+// slide-left
+.slide-left-enter-from {
+    @extend .slide-right-leave-to;
+}
+.slide-left-leave-to {
+    @extend .slide-right-enter-from;
+}
+/* 页面切换动画-e */
