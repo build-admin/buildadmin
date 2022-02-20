@@ -1,0 +1,5 @@
+export const envBaseCheckUrl = '/installapi/index/envbasecheck'
+export const envNpmCheckUrl = '/installapi/index/envnpmcheck'
+export const testDatabaseUrl = '/installapi/index/testDatabase'
+export const popenWindowUrl = '/installapi/CommandExec/popenwindow'
+export const baseConfigUrl = '/installapi/index/baseConfig'
