@@ -42,8 +42,8 @@ class CommandExec
         'node-v'       => 'node -v',
         'install-cnpm' => 'npm install -g cnpm --registry=https://registry.npmmirror.com',
         'test-install' => 'cd npm-install-test && cnpm install',
-        'web-install'  => 'cd ../ && cd web && cnpm install',
-        'web-build'    => 'cd ../ && cd web && cnpm run build',
+        'web-install'  => 'cd ../web && cnpm install',
+        'web-build'    => 'cd ../web && cnpm run build',
     ];
 
     /**
@@ -109,11 +109,32 @@ class CommandExec
      */
     public function output($data, $callback = true)
     {
+        $data = $this->filterColorMark($data);
         $data = str_replace(["\r\n", "\r", "\n"], "", $data);
         if ($data) {
             echo 'data: ' . mb_convert_encoding($data, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5') . "\n\n";
             if ($callback) $this->outputCallback($data);
         }
+    }
+
+    public function filterColorMark($str)
+    {
+        $preg = '/\[(.*?)m/i';
+        $str  = preg_replace($preg, '', $str);
+        return $str;
+    }
+
+    public function filterASCII($str)
+    {
+        if (!$str) return '';
+        $newStr = '';
+        for ($i = 0; isset($str[$i]); $i++) {
+            $ascCode = ord($str[$i]);
+            if ($ascCode > 31 && $ascCode != 127) {
+                $newStr .= $str[$i];
+            }
+        }
+        return $newStr;
     }
 
     /**
@@ -131,6 +152,10 @@ class CommandExec
             $preg = "/added ([0-9]*) packages in/i";
             if (preg_match($preg, $output)) {
                 $this->output('install-cnpm-success', false);
+            }
+        } else if ($this->CurrentCommandKey == 'web-build') {
+            if (strpos(strtolower($output), 'build successfully!') !== false) {
+                $this->output($this->CurrentCommandKey . '-success', false);
             }
         }
     }

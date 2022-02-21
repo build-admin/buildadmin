@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "scripts": {
         "dev": "vite --force",
-        "build": "vite build",
+        "build": "vite build && esno ./src/utils/build.ts",
         "lint-fix": "eslint --fix --ext .js --ext .jsx --ext .vue src/"
     },
     "dependencies": {
@@ -12,6 +12,7 @@
         "countup.js": "^2.0.8",
         "echarts": "^5.2.2",
         "element-plus": "^1.3.0-beta.3",
+        "esno": "^0.14.1",
         "mitt": "^3.0.0",
         "nprogress": "^0.2.0",
         "screenfull": "^6.0.1",
