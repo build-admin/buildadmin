@@ -70,6 +70,11 @@ const onMinimize = () => {
     state.completeNarrow = false
 }
 
+const execMessageScrollbarKeep = () => {
+    let execMessageEl = document.querySelector('.exec-message') as Element
+    execMessageEl.scrollTop = execMessageEl.scrollHeight
+}
+
 const startEventSource = (commandKey: string) => {
     const eventSourceurl = isProd(process.env.NODE_ENV)
         ? window.location.protocol + '//' + window.location.host
@@ -104,6 +109,7 @@ const startEventSource = (commandKey: string) => {
                 state.executionMessage = state.executionMessage.concat(e.data)
             }
         }
+        execMessageScrollbarKeep()
     }
 }
 
@@ -156,7 +162,10 @@ watch(
     cursor: pointer;
     user-select: none;
     animation: pulse 2s infinite;
+    z-index: v-bind('props.zIndex');
     img {
+        height: 30px;
+        width: 30px;
         padding-top: 4px;
     }
 }
@@ -209,7 +218,8 @@ watch(
     }
     .exec-message {
         color: #fff;
-        font-size: 13px;
+        font-size: 12px;
+        line-height: 16px;
         padding: 6px;
         height: calc(100% - 42px);
         overflow-x: hidden;

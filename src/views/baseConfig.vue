@@ -1,6 +1,7 @@
 <template>
     <Command top="230px" right="calc(50% - 230px)" :command-key="state.commandKey" @callback="commandCallback" />
     <Header />
+    <div v-if="state.commandKey" class="mask">{{ state.commandKey }}</div>
     <div class="container">
         <div class="table-title" :class="state.titleClass">{{ state.title }}</div>
         <div class="table">
@@ -259,10 +260,17 @@ const commandCallback = (data: any) => {
             state.title = '正在自动执行 WEB端的 构建命令'
             state.titleClass = 'text-primary'
             state.commandKey = 'web-build'
-        } else if (data.commandKey != 'web-install') {
-            console.log('执行失败了')
+        } else if (state.commandKey == 'web-install') {
+            console.log('web-install-执行失败了')
         }
-        data.commandKey = ''
+    } else if (data.commandKey == 'web-build') {
+        if (data.value == 'success') {
+            state.title = '安装完成,正在跳转...'
+            state.titleClass = 'text-primary'
+        } else if (state.commandKey == 'web-build') {
+            console.log('web-build-执行失败了')
+        }
+        state.commandKey = ''
     }
 }
 
@@ -374,6 +382,15 @@ onMounted(() => {
 }
 .error-prompt.grey {
     color: #606266;
+}
+.mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+    background-color: rgba($color: #000000, $alpha: 0.4);
 }
 .text-primary {
     color: #409eff !important;
