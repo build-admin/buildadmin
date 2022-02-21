@@ -1,8 +1,8 @@
 <template>
-    <Command top="50px" :command-key="state.commandKey" />
+    <Command top="230px" right="calc(50% - 230px)" :command-key="state.commandKey" @callback="commandCallback" />
     <Header />
     <div class="container">
-        <div class="table-title">站点配置</div>
+        <div class="table-title" :class="state.titleClass">{{ state.title }}</div>
         <div class="table">
             <transition name="slide-bottom">
                 <div v-show="state.showError" class="table-column table-error">{{ state.showError }}</div>
@@ -49,6 +49,8 @@ const state: {
     databaseCheck: string
     databases: any
     commandKey: string
+    title: string
+    titleClass: string
 } = reactive({
     formItem: {
         hostname: {
@@ -125,6 +127,8 @@ const state: {
     databaseCheck: 'wait',
     databases: [],
     commandKey: '',
+    title: '站点配置',
+    titleClass: '',
 })
 
 const showGlobalError = (msg: string = '') => {
@@ -240,12 +244,28 @@ const doneBaseConfig = () => {
     }
     Axios.post(baseConfigUrl, values).then((res) => {
         if (res.data.code == 1) {
-            console.log(res.data)
+            state.title = '正在自动执行 WEB端的 cnpm install 命令'
+            state.titleClass = 'text-primary'
+            state.commandKey = 'web-install'
         } else {
             showGlobalError(res.data.msg)
         }
     })
 }
+
+const commandCallback = (data: any) => {
+    if (data.commandKey == 'web-install') {
+        if (data.value == 'success') {
+            state.title = '正在自动执行 WEB端的 构建命令'
+            state.titleClass = 'text-primary'
+            state.commandKey = 'web-build'
+        } else if (data.commandKey != 'web-install') {
+            console.log('执行失败了')
+        }
+        data.commandKey = ''
+    }
+}
+
 const onFormInputChange = () => {
     let msg = validation.change()
     state.errorPrompt = msg ? msg : ''
@@ -354,5 +374,11 @@ onMounted(() => {
 }
 .error-prompt.grey {
     color: #606266;
+}
+.text-primary {
+    color: #409eff !important;
+}
+.text-danger {
+    color: #f56c6c !important;
 }
 </style>

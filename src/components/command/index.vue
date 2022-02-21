@@ -60,7 +60,7 @@ const emits = defineEmits<{
 
 const state = reactive({
     minimize: true,
-    stateMessage: { type: 'warning', value: '连接中...' },
+    stateMessage: { type: 'warning', value: props.commandKey ? '连接中...' : '无命令' },
     executionMessage: [],
     completeNarrow: props.completeNarrow,
 })
@@ -74,6 +74,8 @@ const startEventSource = (commandKey: string) => {
     const eventSourceurl = isProd(process.env.NODE_ENV)
         ? window.location.protocol + '//' + window.location.host
         : (import.meta.env.VITE_AXIOS_BASE_URL as string)
+
+    state.stateMessage = { type: 'warning', value: '连接中...' }
 
     source = new EventSource(eventSourceurl + popenWindowUrl + '?command=' + commandKey)
     source.onmessage = function (e) {
@@ -116,8 +118,9 @@ onMounted(() => {
 // 支持命令切换,最多保存一条待执行命令
 watch(
     () => props.commandKey,
-    (newVal, oldVal) => {
-        if (source && source.readyState == 2) {
+    (newVal) => {
+        if (!newVal) {
+        } else if (!source || (source && source.readyState == 2)) {
             state.minimize = true
             startEventSource(newVal)
         } else {
@@ -125,7 +128,7 @@ watch(
             oldCompleteNarrow = state.completeNarrow
             state.completeNarrow = false
             timer = setInterval(() => {
-                if (source.readyState == 2) {
+                if (!source || (source && source.readyState == 2)) {
                     state.minimize = true
                     startEventSource(newVal)
                     clearInterval(timer)
