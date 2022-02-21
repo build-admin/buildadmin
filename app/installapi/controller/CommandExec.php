@@ -42,6 +42,8 @@ class CommandExec
         'node-v'       => 'node -v',
         'install-cnpm' => 'npm install -g cnpm --registry=https://registry.npmmirror.com',
         'test-install' => 'cd npm-install-test && cnpm install',
+        'web-install'  => 'cd ../ && cd web && cnpm install',
+        'web-build'    => 'cd ../ && cd web && cnpm run build',
     ];
 
     /**
@@ -109,7 +111,7 @@ class CommandExec
     {
         $data = str_replace(["\r\n", "\r", "\n"], "", $data);
         if ($data) {
-            echo 'data: ' . $data . "\n\n";
+            echo 'data: ' . mb_convert_encoding($data, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5') . "\n\n";
             if ($callback) $this->outputCallback($data);
         }
     }
@@ -120,10 +122,10 @@ class CommandExec
      */
     public function outputCallback($output)
     {
-        if ($this->CurrentCommandKey == 'test-install') {
+        if ($this->CurrentCommandKey == 'test-install' || $this->CurrentCommandKey == 'web-install') {
             // 检测命令执行成功还是失败
             if (strpos(strtolower($output), 'all packages installed') !== false) {
-                $this->output('test-install-success', false);
+                $this->output($this->CurrentCommandKey . '-success', false);
             }
         } else if ($this->CurrentCommandKey == 'install-cnpm') {
             $preg = "/added ([0-9]*) packages in/i";

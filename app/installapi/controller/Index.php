@@ -182,7 +182,7 @@ class Index extends Api
 
         $conn->real_connect($database['hostname'] . ':' . $database['hostport'], $database['username'], $database['password']);
         if ($conn->connect_error) {
-            $this->error('数据库链接失败:' . $conn->connect_error);
+            $this->error('数据库链接失败:' . mb_convert_encoding($conn->connect_error, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'));
         } else {
             $databases        = [];
             $databasesExclude = ['information_schema', 'mysql', 'performance_schema', 'sys'];
