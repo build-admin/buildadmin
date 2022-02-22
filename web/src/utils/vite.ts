@@ -20,7 +20,7 @@ export function isProd(mode: string | undefined): boolean {
 export function loadEnv(): ViteEnv {
     const env = process.env.NODE_ENV
     const ret: any = {}
-    const envList = [`.env.${env}.local`, `.env.${env}`, '.env.local', '.env']
+    const envList = [`.env.${env}.local`, `.env.${env}`, '.env.local', '.env', '.env.online']
     envList.forEach((e) => {
         dotenv.config({ path: e })
     })

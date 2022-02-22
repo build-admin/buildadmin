@@ -43,7 +43,7 @@ class CommandExec
         'install-cnpm' => 'npm install -g cnpm --registry=https://registry.npmmirror.com',
         'test-install' => 'cd npm-install-test && cnpm install',
         'web-install'  => 'cd ../web && cnpm install',
-        'web-build'    => 'cd ../web && cnpm run build',
+        'web-build'    => 'cd ../web && cnpm run build:online',
     ];
 
     /**

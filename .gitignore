@@ -6,6 +6,8 @@ node_modules
 dist
 dist-ssr
 /public/*.lock
+/public/index.html
+/public/assets
 /public/uploads/*
 .DS_Store
 composer.lock

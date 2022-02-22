@@ -33,6 +33,38 @@ if (!function_exists('path_is_writable')) {
     }
 }
 
+if (!function_exists('deldir')) {
+
+    /**
+     * 删除文件夹
+     * @param string $dirname 目录
+     * @param bool   $delself 是否删除自身
+     * @return boolean
+     */
+    function deldir($dirname, $delself = true)
+    {
+        if (!is_dir($dirname)) {
+            return false;
+        }
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dirname, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($files as $fileinfo) {
+            if ($fileinfo->isDir()) {
+                deldir($fileinfo->getRealPath(), true);
+            } else {
+                @unlink($fileinfo->getRealPath());
+            }
+        }
+        if ($delself) {
+            @rmdir($dirname);
+        }
+        return true;
+    }
+}
+
 if (!function_exists('__')) {
     function __(string $name, array $vars = [], string $lang = '')
     {

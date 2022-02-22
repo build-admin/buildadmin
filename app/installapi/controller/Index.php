@@ -16,6 +16,9 @@ class Index extends Api
     static $lockFileName     = 'install.lock';
     static $dbConfigFileName = 'database.php';
 
+    // 自动构建的前端文件的 outDir 相对于根目录
+    static $distDir = 'dist';
+
     public function __construct(App $app)
     {
         parent::__construct($app);
@@ -227,6 +230,29 @@ class Index extends Api
         }
 
         $this->success('ok');
+    }
+
+    public function mvDist()
+    {
+        $distPath      = root_path() . self::$distDir . DIRECTORY_SEPARATOR;
+        $indexHtmlPath = $distPath . 'index.html';
+        $assetsPath    = $distPath . 'assets';
+
+        if (!file_exists($indexHtmlPath) || !file_exists($assetsPath)) {
+            $this->error('没有找到构建好的前端文件，请手动重新构建！');
+        }
+
+        $toIndexHtmlPath = root_path() . 'public' . DIRECTORY_SEPARATOR . 'index.html';
+        $toAssetsPath    = root_path() . 'public' . DIRECTORY_SEPARATOR . 'assets';
+        @unlink($toIndexHtmlPath);
+        deldir($toAssetsPath);
+
+        if (rename($indexHtmlPath, $toIndexHtmlPath) && rename($assetsPath, $toAssetsPath)) {
+            deldir($distPath);
+            $this->success('ok');
+        } else {
+            $this->error('移动构建好的前端文件失败，请手动移动！');
+        }
     }
 
     private static function writableStateDescribe($writable): string
