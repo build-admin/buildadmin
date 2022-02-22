@@ -37,86 +37,146 @@ class Index extends Api
             $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]), [], 3);
         }
 
+        $needPHPVersion    = '7.1.0';
         $phpVersion        = phpversion();
-        $phpVersionCompare = Version::compare('7.1.0', $phpVersion);
-        $dbConfigFile      = config_path() . self::$dbConfigFileName;
-        $configIsWritable  = path_is_writable(config_path()) && path_is_writable($dbConfigFile);
-        $publicIsWritable  = path_is_writable(public_path());
-        $phpSafeMode       = @ini_get('safe_mode');
-        $phpPopen          = function_exists('popen') && function_exists('pclose');
-        $phpFileOperation  = function_exists('feof') && function_exists('fgets');
-        $phpMysqli         = extension_loaded('mysqli') && extension_loaded("PDO");
+        $phpVersionCompare = Version::compare($needPHPVersion, $phpVersion);
+        if (!$phpVersionCompare) {
+            $phpVersionLink = [
+                [
+                    // 需要PHP版本
+                    'name' => __('need') . ' >= ' . $needPHPVersion,
+                    'type' => 'text'
+                ],
+                [
+                    // 如何解决
+                    'name'  => __('How to solve?'),
+                    'title' => __('Click to see how to solve it'),
+                    'type'  => 'faq',
+                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653891'
+                ]
+            ];
+        }
+
+        $dbConfigFile     = config_path() . self::$dbConfigFileName;
+        $configIsWritable = path_is_writable(config_path()) && path_is_writable($dbConfigFile);
+        if (!$configIsWritable) {
+            $configIsWritableLink = [
+                [
+                    // 查看原因
+                    'name'  => __('View reason'),
+                    'title' => __('Click to view the reason'),
+                    'type'  => 'faq',
+                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653892'
+                ]
+            ];
+        }
+
+        $publicIsWritable = path_is_writable(public_path());
+        if (!$publicIsWritable) {
+            $publicIsWritableLink = [
+                [
+                    'name'  => __('View reason'),
+                    'title' => __('Click to view the reason'),
+                    'type'  => 'faq',
+                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653893'
+                ]
+            ];
+        }
+
+        $phpMysqli = extension_loaded('mysqli') && extension_loaded("PDO");
+        if (!$phpMysqli) {
+            $phpMysqliLink = [
+                [
+                    'name' => __('Mysqli and PDO extensions need to be installed'),
+                    'type' => 'text'
+                ],
+                [
+                    'name'  => __('How to solve?'),
+                    'title' => __('Click to see how to solve it'),
+                    'type'  => 'faq',
+                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653894'
+                ]
+            ];
+        }
+
+        $phpPopen = function_exists('popen') && function_exists('pclose');
+        if (!$phpPopen) {
+            $phpPopenLink = [
+                [
+                    'name'  => __('View reason'),
+                    'title' => __('Popen and Pclose functions in PHP Ini is disabled'),
+                    'type'  => 'faq',
+                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653895'
+                ],
+                [
+                    'name'  => __('How to modify'),
+                    'title' => __('Click to view how to modify'),
+                    'type'  => 'faq',
+                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653895'
+                ],
+                [
+                    'name'  => __('Security assurance?'),
+                    'title' => __('Using the installation service correctly will not cause any potential security problems. Click to view the details'),
+                    'type'  => 'faq',
+                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653889'
+                ],
+            ];
+        }
+
+        $phpFileOperation = function_exists('feof') && function_exists('fgets');
+        if (!$phpFileOperation) {
+            $phpFileOperationLink = [
+                [
+                    'name'  => __('View reason'),
+                    'title' => __('Feof and fgets functions in PHP Ini is disabled'),
+                    'type'  => 'faq',
+                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653896'
+                ],
+                [
+                    'name'  => __('How to modify'),
+                    'title' => __('Click to view how to modify'),
+                    'type'  => 'faq',
+                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653896'
+                ],
+                [
+                    'name'  => __('Security assurance?'),
+                    'title' => __('Using the installation service correctly will not cause any potential security problems. Click to view the details'),
+                    'type'  => 'faq',
+                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653889'
+                ],
+            ];
+        }
 
         $this->success('ok', [
             'php_version'        => [
                 'describe' => $phpVersion,
                 'state'    => $phpVersionCompare ? self::$ok : self::$fail,
-                'need'     => !$phpVersionCompare ? __('need') . ' >= 7.1.0' : '',
-                'click'    => [
-                    'title' => __('Click to see how to solve it'),
-                    'type'  => 'faq',
-                    'url'   => 'https://baidu.com?wd=PHP版本不足'
-                ]
+                'link'     => $phpVersionLink ?? [],
             ],
             'config_is_writable' => [
                 'describe' => self::writableStateDescribe($configIsWritable),
                 'state'    => $configIsWritable ? self::$ok : self::$fail,
-                'need'     => !$configIsWritable ? __('Please check the config directory permissions') : '',
-                'click'    => [
-                    'title' => __('Click to see how to solve it'),
-                    'type'  => 'faq',
-                    'url'   => 'https://baidu.com?wd=config无权限'
-                ]
+                'link'     => $configIsWritableLink ?? []
             ],
             'public_is_writable' => [
                 'describe' => self::writableStateDescribe($publicIsWritable),
                 'state'    => $publicIsWritable ? self::$ok : self::$fail,
-                'need'     => !$publicIsWritable ? __('Please check the public directory permissions') : '',
-                'click'    => [
-                    'title' => __('Click to see how to solve it'),
-                    'type'  => 'faq',
-                    'url'   => 'https://baidu.com?wd=public无权限'
-                ]
+                'link'     => $publicIsWritableLink ?? []
             ],
             'php-mysqli'         => [
                 'describe' => $phpMysqli ? __('already installed') : __('Not installed'),
                 'state'    => $phpMysqli ? self::$ok : self::$fail,
-                'need'     => !$phpMysqli ? __('Mysqli extension for PHP is required') : '',
-                'click'    => [
-                    'title' => __('Click to see how to solve it'),
-                    'type'  => 'faq',
-                    'url'   => 'https://baidu.com?wd=安装mysqli扩展'
-                ]
-            ],
-            'php_safe_mode'      => [
-                'describe' => $phpSafeMode ? __('open') : __('close'),
-                'state'    => $phpSafeMode ? self::$warn : self::$ok,
-                'need'     => $phpSafeMode ? __('The installation can continue, and some operations need to be completed manually') : '',
-                'click'    => [
-                    'title' => __('Click to see how to solve it'),
-                    'type'  => 'faq',
-                    'url'   => 'https://baidu.com?wd=开启php安全模式'
-                ]
+                'link'     => $phpMysqliLink ?? []
             ],
             'php_popen'          => [
                 'describe' => $phpPopen ? __('Allow execution') : __('disabled'),
                 'state'    => $phpPopen ? self::$ok : self::$warn,
-                'need'     => !$phpPopen ? __('The installation can continue, and some operations need to be completed manually') : '',
-                'click'    => [
-                    'title' => __('Click to see how to solve it'),
-                    'type'  => 'faq',
-                    'url'   => 'https://baidu.com?wd=解除php popen 函数禁用'
-                ]
+                'link'     => $phpPopenLink ?? []
             ],
             'php_file_operation' => [
                 'describe' => $phpFileOperation ? __('Allow operation') : __('disabled'),
                 'state'    => $phpFileOperation ? self::$ok : self::$warn,
-                'need'     => !$phpFileOperation ? __('The installation can continue, and some operations need to be completed manually') : '',
-                'click'    => [
-                    'title' => __('Click to see how to solve it'),
-                    'type'  => 'faq',
-                    'url'   => 'https://baidu.com?wd=解除php fgets 函数禁用'
-                ]
+                'link'     => $phpFileOperationLink ?? []
             ],
         ]);
     }
@@ -127,43 +187,100 @@ class Index extends Api
             $this->error('', [], 2);
         }
 
-        $npmVersion           = Version::getNpmVersion();
-        $npmVersionCompare    = Version::compare('8.3.0', $npmVersion);
-        $cnpmVersion          = Version::getCnpmVersion();
-        $cnpmVersionCompare   = Version::compare('7.1.0', $cnpmVersion);
+        $needNpmVersion    = '8.3.0';
+        $npmVersion        = Version::getNpmVersion();
+        $npmVersionCompare = Version::compare($needNpmVersion, $npmVersion);
+        if (!$npmVersionCompare || !$npmVersion) {
+            $npmVersionLink = [
+                [
+                    // 需要版本
+                    'name' => __('need') . ' >= ' . $needNpmVersion,
+                    'type' => 'text'
+                ],
+                [
+                    // 如何解决
+                    'name'  => __('How to solve?'),
+                    'title' => __('Click to see how to solve it'),
+                    'type'  => 'faq',
+                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653897'
+                ]
+            ];
+        }
+
+        $needCnpmVersion    = '7.1.0';
+        $cnpmVersion        = Version::getCnpmVersion();
+        $cnpmVersionCompare = Version::compare($needCnpmVersion, $cnpmVersion);
+        if (!$cnpmVersionCompare || !$cnpmVersion) {
+            $cnpmVersionLink[] = [
+                // 需要版本
+                'name' => __('need') . ' >= ' . $needCnpmVersion,
+                'type' => 'text'
+            ];
+
+            if ($npmVersionCompare) {
+                $cnpmVersionLink[] = [
+                    // 点击安装
+                    'name'  => __('Click Install cnpm'),
+                    'title' => '',
+                    'type'  => 'install-cnpm'
+                ];
+            } else {
+                $cnpmVersionLink[] = [
+                    // 请先安装npm
+                    'name' => __('Please install NPM first'),
+                    'type' => 'text'
+                ];
+            }
+        } elseif (!$cnpmVersionCompare && $cnpmVersion) {
+            $cnpmVersionLink[] = [
+                // 需要版本
+                'name' => __('need') . ' >= ' . $needCnpmVersion,
+                'type' => 'text'
+            ];
+            $cnpmVersionLink[] = [
+                // 如何解决
+                'name'  => __('How to solve?'),
+                'title' => __('Click to see how to solve it'),
+                'type'  => 'faq',
+                'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653898'
+            ];
+        }
+
+        $needNodejsVersion    = '16.13.0';
         $nodejsVersion        = Version::getNodeJsVersion();
-        $nodejsVersionCompare = Version::compare('16.13.0', $nodejsVersion);
+        $nodejsVersionCompare = Version::compare($needNodejsVersion, $nodejsVersion);
+        if (!$nodejsVersionCompare || !$nodejsVersion) {
+            $nodejsVersionLink = [
+                [
+                    // 需要版本
+                    'name' => __('need') . ' >= ' . $needNodejsVersion,
+                    'type' => 'text'
+                ],
+                [
+                    // 如何解决
+                    'name'  => __('How to solve?'),
+                    'title' => __('Click to see how to solve it'),
+                    'type'  => 'faq',
+                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653899'
+                ]
+            ];
+        }
 
         $this->success('ok', [
             'npm_version'    => [
                 'describe' => $npmVersion ? $npmVersion : __('Acquisition failed'),
                 'state'    => $npmVersionCompare ? self::$ok : self::$warn,
-                'need'     => !$npmVersionCompare ? __('The installation can continue, and some operations need to be completed manually') : '',
-                'click'    => [
-                    'title' => __('Click to see how to solve it'),
-                    'type'  => 'faq',
-                    'url'   => 'https://baidu.com?wd=npm版本不足'
-                ]
+                'link'     => $npmVersionLink ?? [],
             ],
             'cnpm_version'   => [
                 'describe' => $cnpmVersion ? $cnpmVersion : __('Acquisition failed'),
                 'state'    => $cnpmVersionCompare ? self::$ok : self::$warn,
-                'need'     => (!$cnpmVersion && $npmVersionCompare) ? __('It is recommended to add cnpm. Click Install') : ($cnpmVersion ? '' : __('The installation can continue, and some operations need to be completed manually')),
-                'click'    => [
-                    'title' => (!$cnpmVersion && $npmVersionCompare) ? __('Click Install cnpm') : __('Click to see how to solve it'),
-                    'type'  => (!$cnpmVersion && $npmVersionCompare) ? 'install-cnpm' : 'faq',
-                    'url'   => 'https://baidu.com?wd=cnpm版本不足'
-                ]
+                'link'     => $cnpmVersionLink ?? []
             ],
             'nodejs_version' => [
                 'describe' => $nodejsVersion ? $nodejsVersion : __('Acquisition failed'),
                 'state'    => $nodejsVersionCompare ? self::$ok : self::$warn,
-                'need'     => !$nodejsVersionCompare ? __('The installation can continue, and some operations need to be completed manually') : '',
-                'click'    => [
-                    'title' => __('Click to see how to solve it'),
-                    'type'  => 'faq',
-                    'url'   => 'https://baidu.com?wd=nodejs版本不足'
-                ]
+                'link'     => $nodejsVersionLink ?? []
             ]
         ]);
     }

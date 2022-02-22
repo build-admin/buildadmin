@@ -149,8 +149,12 @@ class CommandExec
                 $this->output($this->CurrentCommandKey . '-success', false);
             }
         } else if ($this->CurrentCommandKey == 'install-cnpm') {
-            $preg = "/added ([0-9]*) packages in/i";
+            $preg  = "/added ([0-9]*) packages in/i";
+            $preg2 = "/added ([0-9]*) packages, removed/i";
             if (preg_match($preg, $output)) {
+                $this->output('install-cnpm-success', false);
+            }
+            if (preg_match($preg2, $output)) {
                 $this->output('install-cnpm-success', false);
             }
         } else if ($this->CurrentCommandKey == 'web-build') {
