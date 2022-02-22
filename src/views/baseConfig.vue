@@ -1,7 +1,7 @@
 <template>
     <Command top="230px" right="calc(50% - 230px)" :command-key="state.commandKey" @callback="commandCallback" />
     <Header />
-    <div v-if="state.commandKey" class="mask">{{ state.commandKey }}</div>
+    <div v-if="state.commandKey" class="mask"></div>
     <div class="container">
         <div class="table-title" :class="state.titleClass">{{ state.title }}</div>
         <div class="table">
@@ -36,9 +36,10 @@
 import { reactive, onMounted } from 'vue'
 import Header from '../components/header/index.vue'
 import Command from '../components/command/index.vue'
-import { testDatabaseUrl, baseConfigUrl } from '/@/api/install/index'
+import { testDatabaseUrl, baseConfigUrl, mvDistUrl } from '/@/api/install/index'
 import { Axios, errorTips } from '/@/utils/axios'
 import { useI18n } from 'vue-i18n'
+import { global } from '/@/utils/globalVar'
 const { t } = useI18n()
 
 const state: {
@@ -254,6 +255,10 @@ const doneBaseConfig = () => {
     })
 }
 
+const doneCheck = () => {
+    global.step = 'done'
+}
+
 const commandCallback = (data: any) => {
     if (data.commandKey == 'web-install') {
         if (data.value == 'success') {
@@ -265,8 +270,17 @@ const commandCallback = (data: any) => {
         }
     } else if (data.commandKey == 'web-build') {
         if (data.value == 'success') {
-            state.title = '安装完成,正在跳转...'
+            state.title = '安装完成...'
             state.titleClass = 'text-primary'
+            Axios.post(mvDistUrl)
+                .then((res) => {
+                    if (res.data.code == 1) {
+                        doneCheck()
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
         } else if (state.commandKey == 'web-build') {
             console.log('web-build-执行失败了')
         }
@@ -296,9 +310,11 @@ onMounted(() => {
     margin-top: 20px;
     .table-title {
         display: block;
+        position: relative;
         text-align: center;
         font-size: 20px;
         color: #303133;
+        z-index: 999;
     }
     .table {
         max-width: 500px;
