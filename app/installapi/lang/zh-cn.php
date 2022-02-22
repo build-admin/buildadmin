@@ -21,5 +21,8 @@ return [
     'Mysqli extension for PHP is required'                                                             => '需要PHP的Mysqli扩展',
     'File has no write permission:%s'                                                                  => '文件无写入权限:%s',
     'The system has completed installation. If you need to reinstall, please delete the %s file first' => '系统已完成安装。如果需要重新安装，请先删除 %s 文件',
-
+    'Database connection failed:%s'                                                                    => '数据库连接失败:%s',
+    'Database does not exist'                                                                          => '数据库不存在!',
+    'No built front-end file found, please rebuild manually!'                                          => '没有找到构建好的前端文件，请手动重新构建！',
+    'Failed to move the front-end file, please move it manually!'                                      => '移动前端文件失败，请手动移动！',
 ];

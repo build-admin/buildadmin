@@ -168,7 +168,7 @@ class Index extends Api
         ]);
     }
 
-    public function testDatabase()
+    private function testConnectDatabase($database)
     {
         error_reporting(0);
         mysqli_report(MYSQLI_REPORT_OFF);
@@ -176,18 +176,15 @@ class Index extends Api
         $conn = mysqli_init();
         $conn->options(MYSQLI_OPT_CONNECT_TIMEOUT, 6);
 
-        $database = [
-            'hostname' => $this->request->post('hostname'),
-            'username' => $this->request->post('username'),
-            'password' => $this->request->post('password'),
-            'hostport' => $this->request->post('hostport'),
-        ];
-
         $conn->real_connect($database['hostname'] . ':' . $database['hostport'], $database['username'], $database['password']);
         if ($conn->connect_error) {
-            $this->error('数据库链接失败:' . mb_convert_encoding($conn->connect_error, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'));
+            return [
+                'code' => 0,
+                'msg'  => __('Database connection failed:%s', [mb_convert_encoding($conn->connect_error, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')])
+            ];
         } else {
-            $databases        = [];
+            $databases = [];
+            // 不需要的数据表
             $databasesExclude = ['information_schema', 'mysql', 'performance_schema', 'sys'];
             $res              = $conn->query("SHOW DATABASES");
             while ($row = mysqli_fetch_assoc($res)) {
@@ -196,8 +193,30 @@ class Index extends Api
                 }
             }
             $conn->close();
+
+            return [
+                'code'      => 1,
+                'msg'       => '',
+                'databases' => $databases,
+            ];
+        }
+    }
+
+    public function testDatabase()
+    {
+        $database = [
+            'hostname' => $this->request->post('hostname'),
+            'username' => $this->request->post('username'),
+            'password' => $this->request->post('password'),
+            'hostport' => $this->request->post('hostport'),
+        ];
+
+        $conn = $this->testConnectDatabase($database);
+        if ($conn['code'] == 0) {
+            $this->error($conn['msg']);
+        } else {
             $this->success('ok', [
-                'databases' => $databases
+                'databases' => $conn['databases']
             ]);
         }
     }
@@ -210,6 +229,19 @@ class Index extends Api
 
         $param = $this->request->only(['hostname', 'username', 'password', 'hostport', 'database', 'prefix', 'adminname', 'adminpassword', 'sitename']);
 
+        // 检测数据库连接
+        $conn = $this->testConnectDatabase($param);
+        if ($conn['code'] == 0) {
+            $this->error($conn['msg']);
+        }
+
+        // 检测数据库是否存在
+        if (!in_array($param['database'], $conn['databases'])) {
+            $this->error(__('Database does not exist'));
+        }
+
+        // 导入安装sql
+
         // 写入数据库配置文件
         $dbConfigFile    = config_path() . self::$dbConfigFileName;
         $dbConfigContent = @file_get_contents($dbConfigFile);
@@ -220,13 +252,13 @@ class Index extends Api
         $dbConfigText    = preg_replace_callback("/'(hostname|database|username|password|hostport|prefix)'(\s+)=>(\s+)env\('database\.(.*)',\s+'(.*)'\)\,/", $callback, $dbConfigContent);
         $result          = @file_put_contents($dbConfigFile, $dbConfigText);
         if (!$result) {
-            $this->error(__('File has no write permission:%s', ['config/' . self::$dbConfigFileName]));
+            $this->error(__('File has no write permission:%s', ['config/' . self::$dbConfigFileName]), [], 101);
         }
 
         // 建立安装锁文件
         $result = @file_put_contents(public_path() . self::$lockFileName, date('Y-m-d H:i:s'));
         if (!$result) {
-            $this->error(__('File has no write permission:%s', ['public/' . self::$lockFileName]));
+            $this->error(__('File has no write permission:%s', ['public/' . self::$lockFileName]), [], 102);
         }
 
         $this->success('ok');
@@ -239,7 +271,7 @@ class Index extends Api
         $assetsPath    = $distPath . 'assets';
 
         if (!file_exists($indexHtmlPath) || !file_exists($assetsPath)) {
-            $this->error('没有找到构建好的前端文件，请手动重新构建！');
+            $this->error(__('No built front-end file found, please rebuild manually!'), [], 103);
         }
 
         $toIndexHtmlPath = root_path() . 'public' . DIRECTORY_SEPARATOR . 'index.html';
@@ -251,7 +283,7 @@ class Index extends Api
             deldir($distPath);
             $this->success('ok');
         } else {
-            $this->error('移动构建好的前端文件失败，请手动移动！');
+            $this->error(__('Failed to move the front-end file, please move it manually!'), [], 104);
         }
     }
 
