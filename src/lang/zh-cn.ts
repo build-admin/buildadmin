@@ -43,4 +43,5 @@ export default {
     'Sorry, the automatic installation of cnpm failed. Please complete the installation of cnpm manually!':
         '抱歉,自动安装cnpm失败,请手动完成cnpm的安装!',
     'Click to see how to solve it': '点击查看如何解决',
+    'How to solve': '如何解决',
 }

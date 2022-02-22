@@ -44,4 +44,5 @@ export default {
     'Sorry, the automatic installation of cnpm failed. Please complete the installation of cnpm manually!':
         'Sorry, the automatic installation of cnpm failed. Please complete the installation of cnpm manually!',
     'Click to see how to solve it': 'Click to see how to solve it',
+    'How to solve': 'How to solve',
 }

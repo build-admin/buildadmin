@@ -8,13 +8,17 @@
                 <div class="table-item" :class="idx" v-for="(item, idx) in state.envCheckData" :key="idx + item.describe + item.state">
                     <div class="table-label">
                         {{ t(idx) }}
-                        <span
-                            v-if="item.need && item.click"
-                            :title="item.click.title"
-                            @click="onLabelNeed(item.click.type, item.click.url)"
-                            class="label-need"
-                            >{{ item.need }}</span
-                        >
+                        <template v-if="item.link && item.link.length > 0">
+                            <span
+                                v-for="(link, linkidx) in item.link"
+                                :key="linkidx"
+                                :title="link.title ? link.title : ''"
+                                @click="onLabelNeed(link)"
+                                class="label-need"
+                                :class="link.type"
+                                >{{ link.name }}</span
+                            >
+                        </template>
                     </div>
                     <div class="table-value">
                         {{ item.describe }}
@@ -122,34 +126,52 @@ const getSrc = (name: string) => {
     return modules[path].default
 }
 
-const onLabelNeed = (type: string, url: string) => {
-    if (type == 'faq') {
-        window.open(url)
-    } else if (type == 'install-cnpm') {
+interface Link {
+    name: string
+    type: string
+    title?: string
+    url?: string
+}
+const onLabelNeed = (link: Link) => {
+    if (link.type == 'faq') {
+        window.open(link.url)
+    } else if (link.type == 'install-cnpm') {
+        // 改为继续检查
         state.checkDoneIndex = 'executing'
+
+        // 正在执行npm install
         state.showNmpInstall = true
         state.command = 'install-cnpm'
-    } else if (type == 'test-cnpm-install') {
+    } else if (link.type == 'test-cnpm-install') {
         axiosNpmInstall()
     }
 }
 
 const commandCallback = (data: any) => {
     if (data.commandKey == 'test-install') {
-        state.checkTypeIndex = 'done'
-        checkDoneCallBack()
+        state.checkTypeIndex = 'done' // 结束检查loading
+        checkSubmit() // 检查是否可提交
         if (data.value == 'success') {
-            let cnpmInstall = { 'cnpm-install': { describe: t('Can execute'), state: 'ok', need: '', click: { title: '', type: '', url: '' } } }
+            // test-install 执行成功
+            let cnpmInstall = { 'cnpm-install': { describe: t('Can execute'), state: 'ok', link: [] } }
             if (!state.envCheckData['cnpm-install']) {
                 state.envCheckData = Object.assign({}, state.envCheckData, cnpmInstall)
             }
         } else {
+            // test-install 执行失败
             let cnpmInstall = {
                 'cnpm-install': {
                     describe: t('Command execution test failed'),
                     state: 'warn',
-                    need: t('The installation can continue, and some operations need to be completed manually'),
-                    click: { title: t('Click to see how to solve it'), type: 'faq', url: 'https://baidu.com?wd=cnpm install执行失败' },
+                    link: [
+                        {
+                            // 如何解决
+                            name: t('How to solve'),
+                            title: t('Click to see how to solve it'),
+                            type: 'faq',
+                            url: 'https://www.kancloud.cn/buildadmin/buildadmin/2653900',
+                        },
+                    ],
                 },
             }
             if (!state.envCheckData['cnpm-install']) {
@@ -162,12 +184,13 @@ const commandCallback = (data: any) => {
                 success: {
                     describe: t('Cnpm is ready!'),
                     state: 'ok',
+                    link: [],
                 },
             })
             state.envCheckData['cnpm_version'] = {
                 describe: t('already installed'),
                 state: 'ok',
-                need: '',
+                link: [],
             }
             addCheckCnpmInstall()
         } else if (state.showNmpInstall) {
@@ -175,10 +198,11 @@ const commandCallback = (data: any) => {
             catchErr(t('Sorry, the automatic installation of cnpm failed. Please complete the installation of cnpm manually!'))
         }
         state.showNmpInstall = false
-        checkDoneCallBack()
+        checkSubmit()
     }
 }
 
+// 关闭table的某行
 const closeTableLabel = (idx: string) => {
     delete state.envCheckData[idx]
 }
@@ -188,6 +212,7 @@ const catchErr = (err: string) => {
         error: {
             describe: err,
             state: 'fail',
+            link: [],
         },
     })
 }
@@ -206,13 +231,13 @@ const axiosThen = function (data: Response, thenCallback: Function = () => {}) {
     }
 }
 
-const checkDoneCallBack = () => {
+const checkSubmit = () => {
     state.checkTypeIndex = 'done'
     if (
-        state.envCheckData['php_version'] &&
         state.envCheckData['php_version']['state'] == 'ok' &&
         state.envCheckData['config_is_writable']['state'] &&
-        state.envCheckData['public_is_writable']['state']
+        state.envCheckData['public_is_writable']['state'] &&
+        state.envCheckData['php-mysqli']['state'] == 'ok'
     ) {
         state.checkDoneIndex = 'ok'
     } else {
@@ -233,12 +258,13 @@ const addCheckCnpmInstall = () => {
         'check cnpm install': {
             describe: '',
             state: 'warn',
-            need: t('Click to test'),
-            click: {
-                title: t('Click to test') + ' cnpm install',
-                type: 'test-cnpm-install',
-                url: '',
-            },
+            link: [
+                {
+                    name: t('Click to test'),
+                    title: t('Click to test') + ' cnpm install',
+                    type: 'test-cnpm-install',
+                },
+            ],
         },
     })
 }
@@ -260,7 +286,6 @@ const getEnvNpmCheckUrl = () => {
         .then((res) => {
             axiosThen(res.data, (data: Response) => {
                 if (data.data.cnpm_version.state == 'ok') {
-                    // axiosNpmInstall()
                     state.checkTypeIndex = 'done'
                     addCheckCnpmInstall()
                 }
@@ -273,7 +298,7 @@ const getEnvNpmCheckUrl = () => {
 
 onMounted(() => {
     axios.all([getEnvBaseCheckUrl(), getEnvNpmCheckUrl()]).then(() => {
-        checkDoneCallBack()
+        checkSubmit()
     })
 })
 </script>
@@ -312,6 +337,7 @@ onMounted(() => {
             font-size: 12px;
             color: #f56c6c;
             cursor: pointer;
+            padding: 0 4px;
         }
     }
     .table-item.error {
