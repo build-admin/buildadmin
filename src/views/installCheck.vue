@@ -339,6 +339,15 @@ onMounted(() => {
             cursor: pointer;
             padding: 0 4px;
         }
+        .label-need.faq,.label-need.install-cnpm {
+            color: #3f6ad8;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        .label-need.text {
+            cursor: text;
+        }
     }
     .table-item.error {
         background-color: #f56c6c;
