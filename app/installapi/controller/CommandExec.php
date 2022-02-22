@@ -169,12 +169,15 @@ class CommandExec
      * 执行一个命令并以字符串数组的方式返回执行输出
      * 代替 exec 使用，这样就只需要解除 popen 的函数禁用了
      * @param $commandKey
-     * @return array
+     * @return array | bool
      */
     public function getOutputFromPopen($commandKey)
     {
+        if (!function_exists('popen') || !function_exists('pclose') || !function_exists('feof') || !function_exists('fgets')) {
+            return false;
+        }
         $command = $this->getCommand($commandKey, false);
-        if (!$command) return [];
+        if (!$command) return false;
 
         $res    = [];
         $handle = popen($command . ' 2>&1', 'r');
