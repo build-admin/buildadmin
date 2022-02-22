@@ -1,9 +1,28 @@
 <template>
-    <Command top="230px" right="calc(50% - 230px)" :command-key="state.commandKey" @callback="commandCallback" />
+    <Command v-if="state.commandKey" top="230px" right="calc(50% - 230px)" :command-key="state.commandKey" @callback="commandCallback" />
     <Header />
-    <div v-if="state.commandKey" class="mask"></div>
+    <div v-if="state.commandKey || state.showMask" class="mask"></div>
     <div class="container">
         <div class="table-title" :class="state.titleClass">{{ state.title }}</div>
+        <div v-if="state.showInstallTips" class="install-tips-box">
+            <div class="install-tips">
+                <img class="install-tips-close" @click="state.showInstallTips = false" src="~assets/img/install/fail.png" alt="关闭手动完成未尽事宜提示" />
+                <div class="install-tips-title">
+                    安装环境检测并没有完全通过，但安装可以继续，只是您后续需要手动进行一些操作，建议您<span
+                        class="change-route"
+                        @click="changeRoute('check')"
+                        >回到上一页</span
+                    >，在所有检测通过后再安装，以便您体验到 BuildAdmin 的核心功能之一。
+                </div>
+                <div class="install-tips-item">
+                    如果你考虑到一些安全因素而不愿开启相应权限，请查看<span class="change-route">安装服务如何保障系统安全</span>
+                </div>
+                <div class="install-tips-item">
+                    如果您确实无法将所有检测调整到通过状态，请<span class="change-route">点击向我们反馈</span
+                    >，并继续安装，安装程序后续将引导您，如何手动完成未尽事宜。
+                </div>
+            </div>
+        </div>
         <div class="table">
             <transition name="slide-bottom">
                 <div v-show="state.showError" class="table-column table-error">{{ state.showError }}</div>
@@ -36,7 +55,7 @@
 import { reactive, onMounted } from 'vue'
 import Header from '../components/header/index.vue'
 import Command from '../components/command/index.vue'
-import { testDatabaseUrl, baseConfigUrl, mvDistUrl } from '/@/api/install/index'
+import { testDatabaseUrl, baseConfigUrl, mvDistUrl, envCommandExecutionCheckUrl } from '/@/api/install/index'
 import { Axios, errorTips } from '/@/utils/axios'
 import { useI18n } from 'vue-i18n'
 import { global } from '/@/utils/globalVar'
@@ -53,6 +72,8 @@ const state: {
     commandKey: string
     title: string
     titleClass: string
+    showMask: boolean
+    showInstallTips: boolean
 } = reactive({
     formItem: {
         hostname: {
@@ -131,6 +152,8 @@ const state: {
     commandKey: '',
     title: '站点配置',
     titleClass: '',
+    showMask: false,
+    showInstallTips: true,
 })
 
 const showGlobalError = (msg: string = '') => {
@@ -143,6 +166,14 @@ const showGlobalError = (msg: string = '') => {
 
     validation.done()
 }
+
+Axios.get(envCommandExecutionCheckUrl)
+    .then((res) => {
+        console.log(res)
+    })
+    .catch((err) => {
+        console.log(err)
+    })
 
 const validation = {
     input: function () {
@@ -246,17 +277,24 @@ const doneBaseConfig = () => {
     }
     Axios.post(baseConfigUrl, values).then((res) => {
         if (res.data.code == 1) {
-            state.title = '正在自动执行 WEB端的 cnpm install 命令'
-            state.titleClass = 'text-primary'
-            state.commandKey = 'web-install'
+            if (res.data.data.execution) {
+                state.title = '正在自动执行 WEB端的 cnpm install 命令'
+                state.titleClass = 'text-primary'
+                state.commandKey = 'web-install'
+            } else {
+                state.title = '安装完成，请手动完成未尽事宜...'
+                state.titleClass = 'text-danger'
+                state.showMask = true // 显示遮罩
+                state.showInstallTips = false // 显示手动操作安装未尽事宜提示
+            }
         } else {
             showGlobalError(res.data.msg)
         }
     })
 }
 
-const doneCheck = () => {
-    global.step = 'done'
+const changeRoute = (routeName: string) => {
+    global.step = routeName
 }
 
 const commandCallback = (data: any) => {
@@ -275,7 +313,7 @@ const commandCallback = (data: any) => {
             Axios.post(mvDistUrl)
                 .then((res) => {
                     if (res.data.code == 1) {
-                        doneCheck()
+                        changeRoute('done')
                     }
                 })
                 .catch((err) => {
@@ -306,8 +344,45 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+.install-tips-box {
+    padding: 0 20px;
+    .install-tips-close {
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        top: -11px;
+        right: -11px;
+        border: 1px solid #d50600;
+        border-radius: 50%;
+    }
+    .install-tips {
+        position: relative;
+        padding: 10px;
+        background-color: #ffcdcd;
+        color: #d50600;
+        max-width: 570px;
+        margin: 20px auto 0 auto;
+        border-radius: 4px;
+        font-size: 14px;
+        .install-tips-title,
+        .install-tips-item {
+            text-indent: 1em;
+            background-color: #ffe5e5;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+        .install-tips-item:last-child {
+            margin-bottom: 0;
+        }
+    }
+    .change-route {
+        cursor: pointer;
+        color: #3f6ad8;
+    }
+}
 .container {
-    margin-top: 20px;
+    margin-top: 10px;
     .table-title {
         display: block;
         position: relative;
@@ -319,7 +394,7 @@ onMounted(() => {
     .table {
         max-width: 500px;
         padding: 20px;
-        margin: 10px auto;
+        margin: 0 auto;
         .table-item-br {
             height: 20px;
         }

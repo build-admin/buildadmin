@@ -1,5 +1,6 @@
 export const envBaseCheckUrl = '/index.php/installapi/index/envbasecheck'
 export const envNpmCheckUrl = '/index.php/installapi/index/envnpmcheck'
+export const envCommandExecutionCheckUrl = '/index.php/installapi/index/envCommandExecutionCheck'
 export const testDatabaseUrl = '/index.php/installapi/index/testdatabase'
 export const popenWindowUrl = '/index.php/installapi/commandexec/popenwindow'
 export const baseConfigUrl = '/index.php/installapi/index/baseconfig'
