@@ -19,6 +19,16 @@ class Index extends Api
     // 自动构建的前端文件的 outDir 相对于根目录
     static $distDir = 'dist';
 
+    // 需要的PHP版本
+    static $needPHPVersion = '7.1.0';
+    // 需要的Npm版本
+    static $needNpmVersion = '8.3.0';
+    // 需要的Cnpm版本
+    static $needCnpmVersion = '7.1.0';
+    // 需要的NodeJs版本
+    static $needNodejsVersion = '16.13.0';
+
+
     public function __construct(App $app)
     {
         parent::__construct($app);
@@ -37,14 +47,13 @@ class Index extends Api
             $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]), [], 3);
         }
 
-        $needPHPVersion    = '7.1.0';
         $phpVersion        = phpversion();
-        $phpVersionCompare = Version::compare($needPHPVersion, $phpVersion);
+        $phpVersionCompare = Version::compare(self::$needPHPVersion, $phpVersion);
         if (!$phpVersionCompare) {
             $phpVersionLink = [
                 [
                     // 需要PHP版本
-                    'name' => __('need') . ' >= ' . $needPHPVersion,
+                    'name' => __('need') . ' >= ' . self::$needPHPVersion,
                     'type' => 'text'
                 ],
                 [
@@ -187,14 +196,13 @@ class Index extends Api
             $this->error('', [], 2);
         }
 
-        $needNpmVersion    = '8.3.0';
         $npmVersion        = Version::getNpmVersion();
-        $npmVersionCompare = Version::compare($needNpmVersion, $npmVersion);
+        $npmVersionCompare = Version::compare(self::$needNpmVersion, $npmVersion);
         if (!$npmVersionCompare || !$npmVersion) {
             $npmVersionLink = [
                 [
                     // 需要版本
-                    'name' => __('need') . ' >= ' . $needNpmVersion,
+                    'name' => __('need') . ' >= ' . self::$needNpmVersion,
                     'type' => 'text'
                 ],
                 [
@@ -207,13 +215,12 @@ class Index extends Api
             ];
         }
 
-        $needCnpmVersion    = '7.1.0';
         $cnpmVersion        = Version::getCnpmVersion();
-        $cnpmVersionCompare = Version::compare($needCnpmVersion, $cnpmVersion);
+        $cnpmVersionCompare = Version::compare(self::$needCnpmVersion, $cnpmVersion);
         if (!$cnpmVersionCompare || !$cnpmVersion) {
             $cnpmVersionLink[] = [
                 // 需要版本
-                'name' => __('need') . ' >= ' . $needCnpmVersion,
+                'name' => __('need') . ' >= ' . self::$needCnpmVersion,
                 'type' => 'text'
             ];
 
@@ -234,7 +241,7 @@ class Index extends Api
         } elseif (!$cnpmVersionCompare && $cnpmVersion) {
             $cnpmVersionLink[] = [
                 // 需要版本
-                'name' => __('need') . ' >= ' . $needCnpmVersion,
+                'name' => __('need') . ' >= ' . self::$needCnpmVersion,
                 'type' => 'text'
             ];
             $cnpmVersionLink[] = [
@@ -246,14 +253,13 @@ class Index extends Api
             ];
         }
 
-        $needNodejsVersion    = '16.13.0';
         $nodejsVersion        = Version::getNodeJsVersion();
-        $nodejsVersionCompare = Version::compare($needNodejsVersion, $nodejsVersion);
+        $nodejsVersionCompare = Version::compare(self::$needNodejsVersion, $nodejsVersion);
         if (!$nodejsVersionCompare || !$nodejsVersion) {
             $nodejsVersionLink = [
                 [
                     // 需要版本
-                    'name' => __('need') . ' >= ' . $needNodejsVersion,
+                    'name' => __('need') . ' >= ' . self::$needNodejsVersion,
                     'type' => 'text'
                 ],
                 [
@@ -283,6 +289,11 @@ class Index extends Api
                 'link'     => $nodejsVersionLink ?? []
             ]
         ]);
+    }
+
+    public function envCommandExecutionCheck()
+    {
+        $this->success('ok', ['envOk' => $this->commandExecutionCheck()]);
     }
 
     private function testConnectDatabase($database)
@@ -378,7 +389,9 @@ class Index extends Api
             $this->error(__('File has no write permission:%s', ['public/' . self::$lockFileName]), [], 102);
         }
 
-        $this->success('ok');
+        $this->success('ok', [
+            'execution' => $this->commandExecutionCheck()
+        ]);
     }
 
     public function mvDist()
@@ -402,6 +415,24 @@ class Index extends Api
         } else {
             $this->error(__('Failed to move the front-end file, please move it manually!'), [], 104);
         }
+    }
+
+    private function commandExecutionCheck()
+    {
+        $check['phpPopen']             = function_exists('popen') && function_exists('pclose');
+        $check['phpFileOperation']     = function_exists('feof') && function_exists('fgets');
+        $check['npmVersionCompare']    = Version::compare(self::$needNpmVersion, Version::getNpmVersion());
+        $check['cnpmVersionCompare']   = Version::compare(self::$needCnpmVersion, Version::getCnpmVersion());
+        $check['nodejsVersionCompare'] = Version::compare(self::$needNodejsVersion, Version::getNodeJsVersion());
+
+        $envOk = true;
+        foreach ($check as $value) {
+            if (!$value) {
+                $envOk = false;
+                break;
+            }
+        }
+        return $envOk;
     }
 
     private static function writableStateDescribe($writable): string
