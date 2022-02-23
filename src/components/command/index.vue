@@ -72,7 +72,9 @@ const onMinimize = () => {
 
 const execMessageScrollbarKeep = () => {
     let execMessageEl = document.querySelector('.exec-message') as Element
-    execMessageEl.scrollTop = execMessageEl.scrollHeight
+    if (execMessageEl && execMessageEl.scrollHeight) {
+        execMessageEl.scrollTop = execMessageEl.scrollHeight
+    }
 }
 
 const startEventSource = (commandKey: string) => {

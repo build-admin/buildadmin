@@ -49,7 +49,7 @@
                         <span>测试连接数据服务器...</span>
                     </div>
                     <div v-show="state.errorPrompt" class="error-prompt">{{ state.errorPrompt }}</div>
-                    <div class="button" @click="doneBaseConfig" :class="state.checkDone ? 'pass' : ''">立即安装</div>
+                    <div class="button" @click="doneBaseConfig" :class="state.baseConfigSubmitState ? 'pass' : ''">立即安装</div>
                 </div>
             </transition>
         </div>
@@ -73,7 +73,7 @@ const state: {
     showFormItem: boolean
     showError: string
     errorPrompt: string
-    checkDone: boolean
+    baseConfigSubmitState: boolean
     databaseCheck: string
     databases: any
     commandKey: string
@@ -154,7 +154,7 @@ const state: {
     showFormItem: false,
     showError: '',
     errorPrompt: '',
-    checkDone: false,
+    baseConfigSubmitState: false,
     databaseCheck: 'wait',
     databases: [],
     commandKey: '',
@@ -274,9 +274,9 @@ const validation = {
             state.formItem.repeatadminpassword.value &&
             state.formItem.sitename
         ) {
-            state.checkDone = true
+            state.baseConfigSubmitState = true
         } else {
-            state.checkDone = false
+            state.baseConfigSubmitState = false
         }
     },
 }
@@ -285,6 +285,7 @@ const commandFail = () => {
     state.commandKey = ''
     state.title = '命令执行失败'
     state.titleClass = 'text-danger'
+    state.baseConfigSubmitState = false
 
     timer = setInterval(() => {
         if (state.autoJumpSeconds <= 0) {
@@ -298,6 +299,8 @@ const commandFail = () => {
 }
 
 const doneBaseConfig = () => {
+    state.errorPrompt = '正在安装...'
+    state.baseConfigSubmitState = false
     let values = {}
     for (const key in state.formItem) {
         if (state.formItem[key].value) {
@@ -306,25 +309,33 @@ const doneBaseConfig = () => {
             })
         }
     }
-    Axios.post(baseConfigUrl, values).then((res) => {
-        if (res.data.code == 1) {
-            if (res.data.data.execution) {
-                state.title = '正在自动执行 WEB端的 cnpm install 命令'
-                state.titleClass = 'text-primary'
-                state.commandKey = 'web-install'
-            } else {
-                state.title = '安装完成，请手动完成未尽事宜...'
-                state.titleClass = 'text-danger'
-                state.showMask = true // 显示遮罩
-                state.showInstallTips = false // 隐藏手动操作安装未尽事宜提示
+    Axios.post(baseConfigUrl, values)
+        .then((res) => {
+            state.errorPrompt = ''
+            state.baseConfigSubmitState = true
+            if (res.data.code == 1) {
+                if (res.data.data.execution) {
+                    state.title = '正在自动执行 WEB端的 cnpm install 命令'
+                    state.titleClass = 'text-primary'
+                    state.commandKey = 'web-install'
+                } else {
+                    state.title = '安装完成，请手动完成未尽事宜...'
+                    state.titleClass = 'text-danger'
+                    state.showMask = true // 显示遮罩
+                    state.showInstallTips = false // 隐藏手动操作安装未尽事宜提示
 
-                // 跳转到手动完成未尽事宜页面
-                changeRoute('manual-install')
+                    // 跳转到手动完成未尽事宜页面
+                    changeRoute('manual-install')
+                }
+            } else {
+                showGlobalError(res.data.msg)
             }
-        } else {
-            showGlobalError(res.data.msg)
-        }
-    })
+        })
+        .catch((err) => {
+            state.errorPrompt = ''
+            state.baseConfigSubmitState = true
+            showGlobalError(t(errorTips(err)))
+        })
 }
 
 const changeRoute = (routeName: string) => {
