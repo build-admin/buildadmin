@@ -1,14 +1,14 @@
 <template>
     <Header />
     <div class="container">
-        <div class="table-title">✨ 感谢使用 BuildAdmin ✨</div>
+        <div class="table-title">✨ {{ t('Thanks for using buildadmin') }} ✨</div>
         <div class="done-box">
-            <div>后台地址</div>
+            <div>{{ t('Background URL') }}</div>
             <div @click="goUrl(state.adminUrl)" class="admin-url">{{ state.adminUrl }}</div>
         </div>
         <div class="done-button">
-            <button @click="goUrl(state.indexUrl)" class="index">访问前台</button>
-            <button @click="goUrl(state.adminUrl)" class="admin">访问后台</button>
+            <button @click="goUrl(state.indexUrl)" class="index">{{ t('Access foreground') }}</button>
+            <button @click="goUrl(state.adminUrl)" class="admin">{{ t('Access background') }}</button>
         </div>
     </div>
 </template>
@@ -16,6 +16,9 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import Header from '../components/header/index.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const host = window.location.protocol + '//' + window.location.host
 const state = reactive({

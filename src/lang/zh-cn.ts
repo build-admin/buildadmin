@@ -69,4 +69,8 @@ export default {
     'Please move 4': '目录下',
     'During construction, all files in the output directory will be overwritten, so the system is designed to build in the root directory first, and then move to the public directory to prevent other files in the public from being overwritten':
         '构建时，会覆盖输出目录的所有文件，所以系统设计为先在根目录构建，然后移动到public目录，以免public内的其他文件被覆盖掉',
+    'Thanks for using buildadmin': '感谢使用 BuildAdmin',
+    'Background URL': '后台地址',
+    'Access foreground': '访问前台',
+    'Access background': '访问后台',
 }

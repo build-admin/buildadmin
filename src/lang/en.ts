@@ -70,4 +70,8 @@ export default {
     'Please move 4': 'directory of the root directory',
     'During construction, all files in the output directory will be overwritten, so the system is designed to build in the root directory first, and then move to the public directory to prevent other files in the public from being overwritten':
         'During construction, all files in the output directory will be overwritten, so the system is designed to build in the root directory first, and then move to the public directory to prevent other files in the public from being overwritten',
+    'Thanks for using buildadmin': 'Thanks for using BuildAdmin',
+    'Background URL': 'Background URL',
+    'Access foreground': 'Access foreground',
+    'Access background': 'Access background',
 }
