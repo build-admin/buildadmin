@@ -2,6 +2,8 @@
 
 namespace app\installapi\controller;
 
+use think\facade\Config;
+
 /**
  * 命令执行类
  */
@@ -34,17 +36,12 @@ class CommandExec
      * 对可以执行的命令进行限制
      * @var string[]
      */
-    protected $command = [
-        'ping-baidu'   => 'ping baidu.com',
-        'cnpm-install' => 'cnpm install',
-        'npm-v'        => 'npm -v',
-        'cnpm-v'       => 'cnpm -v',
-        'node-v'       => 'node -v',
-        'install-cnpm' => 'npm install -g cnpm --registry=https://registry.npmmirror.com',
-        'test-install' => 'cd npm-install-test && cnpm install',
-        'web-install'  => 'cd ../web && cnpm install',
-        'web-build'    => 'cd ../web && cnpm run build:online',
-    ];
+    protected $command = [];
+
+    public function __construct()
+    {
+        $this->command = Config::get('buildadmin.allowed_commands');
+    }
 
     /**
      * 初始化
