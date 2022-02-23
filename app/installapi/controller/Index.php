@@ -291,11 +291,6 @@ class Index extends Api
         ]);
     }
 
-    public function envCommandExecutionCheck()
-    {
-        $this->success('ok', ['envOk' => $this->commandExecutionCheck()]);
-    }
-
     private function testConnectDatabase($database)
     {
         error_reporting(0);
@@ -355,6 +350,11 @@ class Index extends Api
             $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]));
         }
 
+        $envOk = $this->commandExecutionCheck();
+        if ($this->request->isGet()) {
+            $this->success('ok', ['envOk' => $envOk]);
+        }
+
         $param = $this->request->only(['hostname', 'username', 'password', 'hostport', 'database', 'prefix', 'adminname', 'adminpassword', 'sitename']);
 
         // 检测数据库连接
@@ -390,7 +390,7 @@ class Index extends Api
         }
 
         $this->success('ok', [
-            'execution' => $this->commandExecutionCheck()
+            'execution' => $envOk
         ]);
     }
 
@@ -433,6 +433,14 @@ class Index extends Api
             }
         }
         return $envOk;
+    }
+
+    public function manualInstall()
+    {
+        // 取得 web 目录完整路径
+        $this->success('ok', [
+            'webPath' => root_path() . 'web'
+        ]);
     }
 
     private static function writableStateDescribe($writable): string
