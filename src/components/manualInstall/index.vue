@@ -21,7 +21,7 @@
             <div class="content-item">
                 <div>4、执行命令</div>
                 <div class="command">cnpm run build:online</div>
-                <div @click="goUrl('https://www.kancloud.cn/buildadmin/buildadmin/2653900')" class="block-help link">执行失败了?</div>
+                <div @click="goUrl('https://www.kancloud.cn/buildadmin/buildadmin/2655209')" class="block-help link">执行失败了?</div>
             </div>
             <div class="content-item">
                 <div>5、移动构建好的文件到系统指定位置</div>

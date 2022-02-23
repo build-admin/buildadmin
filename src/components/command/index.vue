@@ -2,15 +2,12 @@
     <div v-show="state.minimize" class="command">
         <div class="header">
             <img draggable="false" class="logo" :src="logo" alt="BuildAdmin Logo" />
-            <div class="title">终端</div>
+            <div class="title">{{ t('terminal') }}</div>
             <div v-if="state.stateMessage.value" class="state-message" :class="'text-' + state.stateMessage.type">{{ state.stateMessage.value }}</div>
             <div class="header-opt">
                 <div @click="onMinimize" class="opt-item">
-                    <img src="~assets/img/minimize.png" title="缩小" alt="缩小" />
+                    <img src="~assets/img/minimize.png" :title="t('narrow')" :alt="t('narrow')" />
                 </div>
-                <!-- <div class="opt-item">
-                    <img src="~assets/img/config.png" title="设置" alt="设置" />
-                </div> -->
             </div>
         </div>
         <div class="exec-message">
@@ -27,7 +24,9 @@ import { onMounted, onUnmounted, reactive, watch } from 'vue'
 import { isProd } from '/@/utils/vite'
 import logo from '/@/assets/img/logo.svg'
 import { popenWindowUrl } from '/@/api/install/index'
+import { useI18n } from 'vue-i18n'
 var source: EventSource, timer: NodeJS.Timer, oldCompleteNarrow: boolean
+const { t } = useI18n()
 
 interface Props {
     commandKey: string
@@ -60,7 +59,7 @@ const emits = defineEmits<{
 
 const state = reactive({
     minimize: true,
-    stateMessage: { type: 'warning', value: props.commandKey ? '连接中...' : '无命令' },
+    stateMessage: { type: 'warning', value: props.commandKey ? t('Connecting') : t('No command') },
     executionMessage: [],
     completeNarrow: props.completeNarrow,
 })
@@ -82,15 +81,15 @@ const startEventSource = (commandKey: string) => {
         ? window.location.protocol + '//' + window.location.host
         : (import.meta.env.VITE_AXIOS_BASE_URL as string)
 
-    state.stateMessage = { type: 'warning', value: '连接中...' }
+    state.stateMessage = { type: 'warning', value: t('Connecting') }
 
     source = new EventSource(eventSourceurl + popenWindowUrl + '?command=' + commandKey)
     source.onmessage = function (e) {
         if (e.data == 'link-successful') {
-            state.stateMessage = { type: 'success', value: '连接成功 正在执行 ' + commandKey }
+            state.stateMessage = { type: 'success', value: t('Connection successful, executing') + commandKey }
         } else if (e.data == 'command-execution-completed') {
             source.close()
-            state.stateMessage = { type: 'warning', value: commandKey + ' 已执行' }
+            state.stateMessage = { type: 'warning', value: commandKey + t('executed') }
             if (state.completeNarrow) {
                 state.minimize = false
             }
@@ -132,7 +131,7 @@ watch(
             state.minimize = true
             startEventSource(newVal)
         } else {
-            state.stateMessage = { type: 'warning', value: newVal + ' 等待执行' }
+            state.stateMessage = { type: 'warning', value: newVal + t('Waiting for execution') }
             oldCompleteNarrow = state.completeNarrow
             state.completeNarrow = false
             timer = setInterval(() => {

@@ -45,4 +45,11 @@ export default {
         'Sorry, the automatic installation of cnpm failed. Please complete the installation of cnpm manually!',
     'Click to see how to solve it': 'Click to see how to solve it',
     'How to solve': 'How to solve',
+    terminal: 'terminal',
+    narrow: 'narrow',
+    Connecting: 'Connecting...',
+    'No command': 'No command',
+    executed: ' executed',
+    'Waiting for execution': ' Waiting for execution',
+    'Connection successful, executing': 'Connection successful, executing ',
 }
