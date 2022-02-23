@@ -19,8 +19,8 @@ import Header from '../components/header/index.vue'
 
 const host = window.location.protocol + '//' + window.location.host
 const state = reactive({
-    indexUrl: host,
-    adminUrl: host + '/admin',
+    indexUrl: host + '/index.html/#/',
+    adminUrl: host + '/index.html/#/admin',
 })
 
 const goUrl = (url: string) => {
