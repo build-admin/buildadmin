@@ -10,21 +10,26 @@
                     class="install-tips-close"
                     @click="state.showInstallTips = false"
                     src="~assets/img/install/fail.png"
-                    alt="关闭手动完成未尽事宜提示"
+                    :alt="t('Close the prompt of completing unfinished matters manually')"
                 />
                 <div class="install-tips-title">
-                    安装环境检测并没有完全通过，但安装可以继续，只是您后续需要手动进行一些操作，建议您<span
-                        class="change-route"
-                        @click="changeRoute('check')"
-                        >回到上一页</span
-                    >，在所有检测通过后再安装，以便您体验到 BuildAdmin 的核心功能之一。
+                    {{ t('Install Tips Title 1') }}<span class="change-route" @click="changeRoute('check')">{{ t('Back to previous page') }}</span
+                    >{{ t('Install Tips Title 2') }}
                 </div>
                 <div class="install-tips-item">
-                    如果你考虑到一些安全因素而不愿开启相应权限，请查看<span class="change-route">安装服务如何保障系统安全</span>
+                    {{ t("If you don't want to open the corresponding permission due to some security factors, please check ")
+                    }}<span @click="goUrl('https://www.kancloud.cn/buildadmin/buildadmin/2653889')" class="change-route">{{
+                        t('how installation services ensure system security')
+                    }}</span>
                 </div>
                 <div class="install-tips-item">
-                    如果您确实无法将所有检测调整到通过状态，请<span class="change-route">点击向我们反馈</span
-                    >，并继续安装，安装程序后续将引导您，如何手动完成未尽事宜。
+                    {{ t("If you really can't adjust all the tests to pass, please ")
+                    }}<span class="change-route">{{ t('click to feed back to us') }}</span
+                    >{{
+                        t(
+                            ' and continue the installation. The subsequent installation program will guide you on how to manually complete the outstanding matters.'
+                        )
+                    }}
                 </div>
             </div>
         </div>
@@ -46,10 +51,10 @@
             <transition name="slide-bottom">
                 <div v-show="state.showFormItem">
                     <div v-show="state.databaseCheck == 'connecting'" class="error-prompt grey">
-                        <span>测试连接数据服务器...</span>
+                        <span>{{ t('Test connection to data server') }}</span>
                     </div>
                     <div v-show="state.errorPrompt" class="error-prompt">{{ state.errorPrompt }}</div>
-                    <div class="button" @click="doneBaseConfig" :class="state.baseConfigSubmitState ? 'pass' : ''">立即安装</div>
+                    <div class="button" @click="doneBaseConfig" :class="state.baseConfigSubmitState ? 'pass' : ''">{{ t('Install now') }}</div>
                 </div>
             </transition>
         </div>
@@ -85,37 +90,37 @@ const state: {
 } = reactive({
     formItem: {
         hostname: {
-            label: 'MySQL 数据库地址',
+            label: t('Mysql database address'),
             value: '127.0.0.1',
             name: 'hostname',
             type: 'text',
         },
         username: {
-            label: 'MySQL 连接用户名',
+            label: t('MySQL connection user name'),
             value: 'root',
             name: 'username',
             type: 'text',
         },
         password: {
-            label: 'MySQL 连接密码',
+            label: t('MySQL connection password'),
             value: '',
             name: 'password',
             type: 'password',
         },
         hostport: {
-            label: 'MySQL 连接端口号',
+            label: t('MySQL connection port number'),
             value: '3306',
             name: 'hostport',
             type: 'number',
         },
         database: {
-            label: 'MySQL 数据库名',
+            label: t('Mysql database name'),
             value: '',
             name: 'database',
             type: 'text',
         },
         prefix: {
-            label: 'MySQL 数据表前缀',
+            label: t('MySQL data table prefix'),
             value: 'bd_',
             name: 'prefix',
             type: 'text',
@@ -124,19 +129,19 @@ const state: {
             type: 'br',
         },
         adminname: {
-            label: '管理员用户名',
+            label: t('Administrator user name'),
             value: 'admin',
             name: 'adminname',
             type: 'text',
         },
         adminpassword: {
-            label: '管理员密码',
+            label: t('Administrator password'),
             value: '',
             name: 'adminpassword',
             type: 'password',
         },
         repeatadminpassword: {
-            label: '重复管理员密码',
+            label: t('Duplicate administrator password'),
             value: '',
             name: 'repeatadminpassword',
             type: 'password',
@@ -145,7 +150,7 @@ const state: {
             type: 'br',
         },
         sitename: {
-            label: '站点名称',
+            label: t('Site name'),
             value: 'BuildAdmin',
             name: 'sitename',
             type: 'text',
@@ -158,7 +163,7 @@ const state: {
     databaseCheck: 'wait',
     databases: [],
     commandKey: '',
-    title: '站点配置',
+    title: t('Site configuration'),
     titleClass: '',
     showMask: false,
     showInstallTips: false,
@@ -221,7 +226,7 @@ const validation = {
                         showGlobalError()
 
                         let msg = this.database(state.formItem.database.value)
-                        if (state.errorPrompt == '输入的数据库没有找到!') {
+                        if (state.errorPrompt == t('The entered database was not found!')) {
                             state.errorPrompt = msg ? msg : ''
                         }
                     } else {
@@ -238,7 +243,7 @@ const validation = {
     database: function (database: string) {
         if (database) {
             if (state.databases.indexOf(database) === -1) {
-                return '输入的数据库没有找到!'
+                return t('The entered database was not found!')
             }
         }
     },
@@ -246,20 +251,20 @@ const validation = {
         if (prefix) {
             var reg = new RegExp(/^[a-zA-Z][a-zA-Z0-9_]*$/i)
             if (!reg.test(prefix)) {
-                return '表前缀只能包含字母数字和下划线,并以字母开头'
+                return t('The table prefix can only contain alphanumeric characters and underscores, and starts with a letter')
             }
         }
     },
     adminpassword: function (adminpassword: string) {
         if (adminpassword) {
             if (adminpassword.length < 6 || adminpassword.length > 32) {
-                return '密码需要在6~32位之间'
+                return t('The password needs to be between 6 and 32 bits')
             }
         }
     },
     repeatadminpassword: function (adminpassword: string, repeatadminpassword: string) {
         if (adminpassword && repeatadminpassword && adminpassword != repeatadminpassword) {
-            return '重复密码不匹配'
+            return t('Duplicate passwords do not match')
         }
     },
     done: function () {
@@ -283,7 +288,7 @@ const validation = {
 
 const commandFail = () => {
     state.commandKey = ''
-    state.title = '命令执行失败'
+    state.title = t('Command execution failed')
     state.titleClass = 'text-danger'
     state.baseConfigSubmitState = false
 
@@ -293,13 +298,13 @@ const commandFail = () => {
             changeRoute('manual-install')
         } else {
             state.autoJumpSeconds--
-            showGlobalError('命令自动执行失败，请手动完成未尽事宜，' + state.autoJumpSeconds + '秒 后自动跳转到操作引导页面...')
+            showGlobalError(t('Manual Install 1') + t('Manual Install 2', { seconds: state.autoJumpSeconds }))
         }
     }, 1000)
 }
 
 const doneBaseConfig = () => {
-    state.errorPrompt = '正在安装...'
+    state.errorPrompt = t('Installing')
     state.baseConfigSubmitState = false
     let values = {}
     for (const key in state.formItem) {
@@ -315,11 +320,11 @@ const doneBaseConfig = () => {
             state.baseConfigSubmitState = true
             if (res.data.code == 1) {
                 if (res.data.data.execution) {
-                    state.title = '正在自动执行 WEB端的 cnpm install 命令'
+                    state.title = t("The 'cnpm install' command on the web side is being automatically executed")
                     state.titleClass = 'text-primary'
                     state.commandKey = 'web-install'
                 } else {
-                    state.title = '安装完成，请手动完成未尽事宜...'
+                    state.title = t('After installation, please complete the unfinished matters manually')
                     state.titleClass = 'text-danger'
                     state.showMask = true // 显示遮罩
                     state.showInstallTips = false // 隐藏手动操作安装未尽事宜提示
@@ -341,11 +346,14 @@ const doneBaseConfig = () => {
 const changeRoute = (routeName: string) => {
     global.step = routeName
 }
+const goUrl = (url: string) => {
+    window.open(url)
+}
 
 const commandCallback = (data: any) => {
     if (data.commandKey == 'web-install') {
         if (data.value == 'success') {
-            state.title = '正在自动执行 WEB端的 构建命令'
+            state.title = t('Automatically executing the build command on the web side')
             state.titleClass = 'text-primary'
             state.commandKey = 'web-build'
         } else if (state.commandKey == 'web-install') {
@@ -353,7 +361,7 @@ const commandCallback = (data: any) => {
         }
     } else if (data.commandKey == 'web-build') {
         if (data.value == 'success') {
-            state.title = '安装完成...'
+            state.title = t('Installation complete')
             state.titleClass = 'text-primary'
             Axios.post(mvDistUrl)
                 .then((res) => {
