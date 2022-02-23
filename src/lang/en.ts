@@ -52,4 +52,22 @@ export default {
     executed: ' executed',
     'Waiting for execution': ' Waiting for execution',
     'Connection successful, executing': 'Connection successful, executing ',
+    'Unfinished matters manually': 'Unfinished matters manually',
+    'Open terminal (windows PowerShell)': 'Open terminal (windows PowerShell)',
+    'Execute command': 'Execute command',
+    'Execution failed?': 'Execution failed?',
+    'Move the built file to the specified location of the system': 'Move the built file to the specified location of the system',
+    'Click to try to automatically move the build file': 'Click to try to automatically move the build file',
+    'The build output directory is: site': 'The build output directory is: site',
+    'root directory / dist': 'root directory/dist',
+    'You can delete the build output directory directly': 'You can delete the build output directory directly',
+    'Getting full path of root directory / Web': 'Getting full path of root directory/web',
+    'Moving automatically': 'Moving automatically',
+    // Avoid the warning of using HTML and assemble the language in the original way
+    'Please move 1': 'Please move the ',
+    'Please move 2': 'folder and',
+    'Please move 3': 'file in the build output directory to the',
+    'Please move 4': 'directory of the root directory',
+    'During construction, all files in the output directory will be overwritten, so the system is designed to build in the root directory first, and then move to the public directory to prevent other files in the public from being overwritten':
+        'During construction, all files in the output directory will be overwritten, so the system is designed to build in the root directory first, and then move to the public directory to prevent other files in the public from being overwritten',
 }

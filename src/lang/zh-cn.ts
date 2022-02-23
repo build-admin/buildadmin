@@ -51,4 +51,22 @@ export default {
     executed: ' 已执行',
     'Waiting for execution': ' 等待执行',
     'Connection successful, executing': '连接成功 正在执行 ',
+    'Unfinished matters manually': '手动完成未尽事宜',
+    'Open terminal (windows PowerShell)': '打开终端（Windows PowerShell）',
+    'Execute command': '执行命令',
+    'Execution failed?': '执行失败了?',
+    'Move the built file to the specified location of the system': '移动构建好的文件到系统指定位置',
+    'Click to try to automatically move the build file': '点击尝试自动移动构建文件',
+    'The build output directory is: site': '构建输出目录为：站点',
+    'root directory / dist': '根目录/dist',
+    'You can delete the build output directory directly': '您可以直接删除构建输出目录',
+    'Getting full path of root directory / Web': '正在获取 根目录/web 的完整路径',
+    'Moving automatically': '正在自动移动...',
+    // 避免掉使用html的警告，使用原始方式组装语言
+    'Please move 1': '请移动构建输出目录中的',
+    'Please move 2': '文件夹和',
+    'Please move 3': '文件到根目录的',
+    'Please move 4': '目录下',
+    'During construction, all files in the output directory will be overwritten, so the system is designed to build in the root directory first, and then move to the public directory to prevent other files in the public from being overwritten':
+        '构建时，会覆盖输出目录的所有文件，所以系统设计为先在根目录构建，然后移动到public目录，以免public内的其他文件被覆盖掉',
 }

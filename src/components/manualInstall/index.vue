@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="title">手动完成未尽事宜</div>
+        <div class="title">{{ t('Unfinished matters manually') }}</div>
         <transition name="slide-bottom">
             <div v-show="state.showError" class="error-tips">
                 <div>{{ state.showError }}</div>
@@ -8,34 +8,45 @@
             </div>
         </transition>
         <div class="content">
-            <div class="content-item">1、打开终端（Windows PowerShell）</div>
+            <div class="content-item">1、{{ t('Open terminal (windows PowerShell)') }}</div>
             <div class="content-item">
-                <div>2、执行命令</div>
+                <div>2、{{ t('Execute command') }}</div>
                 <div class="command">cd {{ state.webPath }}</div>
             </div>
             <div class="content-item">
-                <div>3、执行命令</div>
+                <div>3、{{ t('Execute command') }}</div>
                 <div class="command">cnpm install</div>
-                <div @click="goUrl('https://www.kancloud.cn/buildadmin/buildadmin/2653900')" class="block-help link">执行失败了?</div>
+                <div @click="goUrl('https://www.kancloud.cn/buildadmin/buildadmin/2653900')" class="block-help link">
+                    {{ t('Execution failed?') }}
+                </div>
             </div>
             <div class="content-item">
-                <div>4、执行命令</div>
+                <div>4、{{ t('Execute command') }}</div>
                 <div class="command">cnpm run build:online</div>
-                <div @click="goUrl('https://www.kancloud.cn/buildadmin/buildadmin/2655209')" class="block-help link">执行失败了?</div>
+                <div @click="goUrl('https://www.kancloud.cn/buildadmin/buildadmin/2655209')" class="block-help link">
+                    {{ t('Execution failed?') }}
+                </div>
             </div>
             <div class="content-item">
-                <div>5、移动构建好的文件到系统指定位置</div>
-                <div @click="mvDist" class="block-help link size-15">点击尝试自动移动构建文件</div>
+                <div>5、{{ t('Move the built file to the specified location of the system') }}</div>
+                <div @click="mvDist" class="block-help link size-15">{{ t('Click to try to automatically move the build file') }}</div>
                 <div class="step-box">
-                    <div class="step">1. 构建输出目录为：站点<span class="text-bold">根目录/dist</span></div>
                     <div class="step">
-                        2. 请移动构建输出目录中的<span class="text-bold">assets</span>文件夹和<span class="text-bold">index.html</span
-                        >文件到根目录的<span class="text-bold">public</span>目录下
+                        1. {{ t('The build output directory is: site') }}<span class="text-bold">{{ t('root directory / dist') }}</span>
                     </div>
-                    <div class="step">3. 您可以直接删除构建输出目录</div>
+                    <div class="step">
+                        2. {{ t('Please move 1') }}<span class="text-bold">assets</span>{{ t('Please move 2')
+                        }}<span class="text-bold">index.html</span>{{ t('Please move 3') }}<span class="text-bold">public</span
+                        >{{ t('Please move 4') }}
+                    </div>
+                    <div class="step">3. {{ t('You can delete the build output directory directly') }}</div>
                 </div>
                 <div class="min-help">
-                    构建时，会覆盖输出目录的所有文件，所以系统设计为先在根目录构建，然后移动到public目录，以免public内的其他文件被覆盖掉
+                    {{
+                        t(
+                            'During construction, all files in the output directory will be overwritten, so the system is designed to build in the root directory first, and then move to the public directory to prevent other files in the public from being overwritten'
+                        )
+                    }}
                 </div>
             </div>
             <div v-if="state.showLoading" class="loading">{{ state.showLoading }}</div>
@@ -55,7 +66,7 @@ const { t } = useI18n()
 const state = reactive({
     showError: '',
     showLoading: '',
-    webPath: '正在获取 根目录/web 的完整路径',
+    webPath: t('Getting full path of root directory / Web'),
 })
 
 const goUrl = (url: string) => {
@@ -79,7 +90,7 @@ Axios.get(manualInstallUrl)
     })
 
 const mvDist = () => {
-    state.showLoading = '正在自动移动...'
+    state.showLoading = t('Moving automatically')
     Axios.post(mvDistUrl)
         .then((res) => {
             if (res.data.code == 1) {
@@ -149,15 +160,15 @@ const mvDist = () => {
                     line-height: 1.5;
                 }
             }
-            .text-bold {
-                font-weight: bold;
-                padding: 0 2px;
-            }
         }
         .content-item:last-child {
             margin-bottom: 0;
         }
     }
+}
+:deep(.text-bold) {
+    font-weight: bold;
+    padding: 0 2px;
 }
 .error-tips {
     display: block;

@@ -73,9 +73,7 @@ import { envBaseCheckUrl, envNpmCheckUrl } from '/@/api/install/index'
 import { useI18n } from 'vue-i18n'
 import { global } from '/@/utils/globalVar'
 
-const { t, locale } = useI18n()
-var langValue = window.localStorage.getItem('bd-lang') || 'zh-cn'
-locale.value = langValue
+const { t } = useI18n()
 
 const modules = import.meta.globEager('../assets/img/install/*.png')
 
