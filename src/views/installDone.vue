@@ -4,17 +4,28 @@
         <div class="table-title">✨ 感谢使用 BuildAdmin ✨</div>
         <div class="done-box">
             <div>后台地址</div>
-            <div class="admin-url">http://localhost:8000</div>
+            <div @click="goUrl(state.adminUrl)" class="admin-url">{{ state.adminUrl }}</div>
         </div>
         <div class="done-button">
-            <button class="index">访问前台</button>
-            <button class="admin">访问后台</button>
+            <button @click="goUrl(state.indexUrl)" class="index">访问前台</button>
+            <button @click="goUrl(state.adminUrl)" class="admin">访问后台</button>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { reactive } from 'vue'
 import Header from '../components/header/index.vue'
+
+const host = window.location.protocol + '//' + window.location.host
+const state = reactive({
+    indexUrl: host,
+    adminUrl: host + '/admin',
+})
+
+const goUrl = (url: string) => {
+    window.open(url)
+}
 </script>
 
 <style scoped lang="scss">
@@ -30,11 +41,11 @@ import Header from '../components/header/index.vue'
         display: block;
         max-width: 300px;
         margin: 20px auto;
-        background-color: #FFCDCD;
+        background-color: #ffcdcd;
         padding: 20px;
         border-radius: 6px;
         text-align: center;
-        color: #D9534F;
+        color: #d9534f;
         font-size: 15px;
     }
     .admin-url {
@@ -70,7 +81,8 @@ import Header from '../components/header/index.vue'
             width: 110px;
             height: 40px;
             opacity: 0.8;
-            &:hover{
+            cursor: pointer;
+            &:hover {
                 opacity: 1;
             }
         }

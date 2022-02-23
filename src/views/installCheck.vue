@@ -234,6 +234,7 @@ const axiosThen = function (data: Response, thenCallback: Function = () => {}) {
 const checkSubmit = () => {
     state.checkTypeIndex = 'done'
     if (
+        state.envCheckData['php_version'] &&
         state.envCheckData['php_version']['state'] == 'ok' &&
         state.envCheckData['config_is_writable']['state'] &&
         state.envCheckData['public_is_writable']['state'] &&
@@ -339,7 +340,8 @@ onMounted(() => {
             cursor: pointer;
             padding: 0 4px;
         }
-        .label-need.faq,.label-need.install-cnpm {
+        .label-need.faq,
+        .label-need.install-cnpm {
             color: #3f6ad8;
             &:hover {
                 text-decoration: underline;

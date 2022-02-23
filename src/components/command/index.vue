@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, watch } from 'vue'
+import { onMounted, onUnmounted, reactive, watch } from 'vue'
 import { isProd } from '/@/utils/vite'
 import logo from '/@/assets/img/logo.svg'
 import { popenWindowUrl } from '/@/api/install/index'
@@ -144,6 +144,9 @@ watch(
         }
     }
 )
+onUnmounted(() => {
+    clearInterval(timer)
+})
 </script>
 
 <style scoped lang="scss">

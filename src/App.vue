@@ -2,6 +2,7 @@
     <InstallCheck v-if="global.step == 'check'" />
     <BaseConfig v-if="global.step == 'base-config'" />
     <Done v-if="global.step == 'done'" />
+    <manualInstall v-if="global.step == 'manual-install'" />
 </template>
 
 <script setup lang="ts">
@@ -9,6 +10,7 @@ import { global } from '/@/utils/globalVar'
 import InstallCheck from './views/installCheck.vue'
 import BaseConfig from './views/baseConfig.vue'
 import Done from './views/installDone.vue'
+import manualInstall from './views/manualInstall.vue'
 </script>
 
 <style>

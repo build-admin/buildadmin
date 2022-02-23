@@ -6,7 +6,12 @@
         <div class="table-title" :class="state.titleClass">{{ state.title }}</div>
         <div v-if="state.showInstallTips" class="install-tips-box">
             <div class="install-tips">
-                <img class="install-tips-close" @click="state.showInstallTips = false" src="~assets/img/install/fail.png" alt="关闭手动完成未尽事宜提示" />
+                <img
+                    class="install-tips-close"
+                    @click="state.showInstallTips = false"
+                    src="~assets/img/install/fail.png"
+                    alt="关闭手动完成未尽事宜提示"
+                />
                 <div class="install-tips-title">
                     安装环境检测并没有完全通过，但安装可以继续，只是您后续需要手动进行一些操作，建议您<span
                         class="change-route"
@@ -52,14 +57,16 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted } from 'vue'
+import { reactive, onMounted, onUnmounted } from 'vue'
 import Header from '../components/header/index.vue'
 import Command from '../components/command/index.vue'
-import { testDatabaseUrl, baseConfigUrl, mvDistUrl, envCommandExecutionCheckUrl } from '/@/api/install/index'
+import { testDatabaseUrl, baseConfigUrl, mvDistUrl } from '/@/api/install/index'
 import { Axios, errorTips } from '/@/utils/axios'
 import { useI18n } from 'vue-i18n'
 import { global } from '/@/utils/globalVar'
 const { t } = useI18n()
+
+var timer: NodeJS.Timer
 
 const state: {
     formItem: any
@@ -74,6 +81,7 @@ const state: {
     titleClass: string
     showMask: boolean
     showInstallTips: boolean
+    autoJumpSeconds: number
 } = reactive({
     formItem: {
         hostname: {
@@ -153,7 +161,8 @@ const state: {
     title: '站点配置',
     titleClass: '',
     showMask: false,
-    showInstallTips: true,
+    showInstallTips: false,
+    autoJumpSeconds: 5,
 })
 
 const showGlobalError = (msg: string = '') => {
@@ -167,12 +176,18 @@ const showGlobalError = (msg: string = '') => {
     validation.done()
 }
 
-Axios.get(envCommandExecutionCheckUrl)
+Axios.get(baseConfigUrl)
     .then((res) => {
-        console.log(res)
+        if (res.data.code == 1) {
+            state.showInstallTips = !res.data.data.envOk
+        } else if (res.data.msg) {
+            showGlobalError(res.data.msg)
+        } else {
+            state.showInstallTips = true
+        }
     })
     .catch((err) => {
-        console.log(err)
+        showGlobalError(t(errorTips(err)))
     })
 
 const validation = {
@@ -266,6 +281,22 @@ const validation = {
     },
 }
 
+const commandFail = () => {
+    state.commandKey = ''
+    state.title = '命令执行失败'
+    state.titleClass = 'text-danger'
+
+    timer = setInterval(() => {
+        if (state.autoJumpSeconds <= 0) {
+            clearInterval(timer)
+            changeRoute('manual-install')
+        } else {
+            state.autoJumpSeconds--
+            showGlobalError('命令自动执行失败，请手动完成未尽事宜，' + state.autoJumpSeconds + '秒 后自动跳转到操作引导页面...')
+        }
+    }, 1000)
+}
+
 const doneBaseConfig = () => {
     let values = {}
     for (const key in state.formItem) {
@@ -285,7 +316,10 @@ const doneBaseConfig = () => {
                 state.title = '安装完成，请手动完成未尽事宜...'
                 state.titleClass = 'text-danger'
                 state.showMask = true // 显示遮罩
-                state.showInstallTips = false // 显示手动操作安装未尽事宜提示
+                state.showInstallTips = false // 隐藏手动操作安装未尽事宜提示
+
+                // 跳转到手动完成未尽事宜页面
+                changeRoute('manual-install')
             }
         } else {
             showGlobalError(res.data.msg)
@@ -304,7 +338,7 @@ const commandCallback = (data: any) => {
             state.titleClass = 'text-primary'
             state.commandKey = 'web-build'
         } else if (state.commandKey == 'web-install') {
-            console.log('web-install-执行失败了')
+            commandFail()
         }
     } else if (data.commandKey == 'web-build') {
         if (data.value == 'success') {
@@ -320,7 +354,7 @@ const commandCallback = (data: any) => {
                     console.log(err)
                 })
         } else if (state.commandKey == 'web-build') {
-            console.log('web-build-执行失败了')
+            commandFail()
         }
         state.commandKey = ''
     }
@@ -340,6 +374,9 @@ const onFormInput = () => {
 }
 onMounted(() => {
     state.showFormItem = true
+})
+onUnmounted(() => {
+    clearInterval(timer)
 })
 </script>
 
