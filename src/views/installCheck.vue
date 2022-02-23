@@ -59,9 +59,6 @@
             </div>
             <div class="check-done" :class="state.checkDoneIndex">{{ t(state.checkDone[state.checkDoneIndex]) }}</div>
             <div class="button" @click="doneCheck" :class="state.checkDoneIndex == 'ok' ? 'pass' : ''">{{ t('Step 2 site configuration') }}</div>
-            <img :src="getSrc('ok')" width="0" height="0" alt="" />
-            <img :src="getSrc('fail')" width="0" height="0" alt="" />
-            <img :src="getSrc('warn')" width="0" height="0" alt="" />
         </div>
     </div>
 </template>
@@ -298,9 +295,12 @@ const getEnvNpmCheckUrl = () => {
 }
 
 onMounted(() => {
-    axios.all([getEnvBaseCheckUrl(), getEnvNpmCheckUrl()]).then(() => {
-        checkSubmit()
-    })
+    // 过早请求会造成图片加载延迟
+    setTimeout(() => {
+        axios.all([getEnvBaseCheckUrl(), getEnvNpmCheckUrl()]).then(() => {
+            checkSubmit()
+        })
+    }, 1000)
 })
 </script>
 
