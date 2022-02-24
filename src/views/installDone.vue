@@ -34,6 +34,7 @@ const goUrl = (url: string) => {
 <style scoped lang="scss">
 .container {
     margin-top: 20px;
+    padding: 20px;
     .table-title {
         display: block;
         text-align: center;
@@ -42,7 +43,7 @@ const goUrl = (url: string) => {
     }
     .done-box {
         display: block;
-        max-width: 300px;
+        max-width: 500px;
         margin: 20px auto;
         background-color: #ffcdcd;
         padding: 20px;
@@ -59,6 +60,9 @@ const goUrl = (url: string) => {
         border-radius: 4px;
         margin-top: 10px;
         cursor: pointer;
+        word-wrap: break-word;
+        white-space: normal;
+        word-break: break-all;
         &:hover {
             text-decoration: underline;
         }
