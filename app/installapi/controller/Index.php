@@ -22,11 +22,11 @@ class Index extends Api
     // 需要的PHP版本
     static $needPHPVersion = '7.1.0';
     // 需要的Npm版本
-    static $needNpmVersion = '8.3.0';
+    static $needNpmVersion = '7.0.0';
     // 需要的Cnpm版本
     static $needCnpmVersion = '7.1.0';
     // 需要的NodeJs版本
-    static $needNodejsVersion = '16.13.0';
+    static $needNodejsVersion = '14.13.1';
 
 
     public function __construct(App $app)
@@ -278,15 +278,15 @@ class Index extends Api
                 'state'    => $npmVersionCompare ? self::$ok : self::$warn,
                 'link'     => $npmVersionLink ?? [],
             ],
-            'cnpm_version'   => [
-                'describe' => $cnpmVersion ? $cnpmVersion : __('Acquisition failed'),
-                'state'    => $cnpmVersionCompare ? self::$ok : self::$warn,
-                'link'     => $cnpmVersionLink ?? []
-            ],
             'nodejs_version' => [
                 'describe' => $nodejsVersion ? $nodejsVersion : __('Acquisition failed'),
                 'state'    => $nodejsVersionCompare ? self::$ok : self::$warn,
                 'link'     => $nodejsVersionLink ?? []
+            ],
+            'cnpm_version'   => [
+                'describe' => $cnpmVersion ? $cnpmVersion : __('Acquisition failed'),
+                'state'    => $cnpmVersionCompare ? self::$ok : self::$warn,
+                'link'     => $cnpmVersionLink ?? []
             ]
         ]);
     }
