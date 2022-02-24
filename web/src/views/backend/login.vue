@@ -94,6 +94,7 @@ import type { ElForm } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { editDefaultLang } from '/@/lang/index'
 import { useStore } from '/@/store/index'
+import { login } from '/@/api/backend'
 
 const store = useStore()
 
@@ -177,6 +178,13 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     formEl.validate((valid) => {
         if (valid) {
             form.loading = true
+            login(form)
+                .then((res) => {
+                    console.log(res)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
             console.log(form)
         } else {
             console.log('error submit!')

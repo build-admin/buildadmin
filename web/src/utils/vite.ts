@@ -6,6 +6,11 @@ export interface ViteEnv {
     VITE_OPEN: boolean
     VITE_BASE_PATH: string
     VITE_OUT_DIR: string
+    VITE_AXIOS_BASE_URL: string
+}
+
+export function isOnline(mode: string): boolean {
+    return mode === 'online'
 }
 
 export function isDev(mode: string): boolean {
@@ -13,14 +18,13 @@ export function isDev(mode: string): boolean {
 }
 
 export function isProd(mode: string | undefined): boolean {
-    return mode === 'production'
+    return mode === 'production' || mode === 'online'
 }
 
 // Read all environment variable configuration files to process.env
-export function loadEnv(): ViteEnv {
-    const env = process.env.NODE_ENV
+export function loadEnv(mode: string): ViteEnv {
     const ret: any = {}
-    const envList = [`.env.${env}.local`, `.env.${env}`, '.env.local', '.env', '.env.online']
+    const envList = [`.env.${mode}.local`, `.env.${mode}`, '.env.local', '.env']
     envList.forEach((e) => {
         dotenv.config({ path: e })
     })
