@@ -25,6 +25,13 @@ const viteConfig: UserConfig = {
         sourcemap: false,
         outDir: '../public/install/',
         emptyOutDir: true,
+        rollupOptions: {
+            output: {
+                entryFileNames: `assets/[name].js`,
+                chunkFileNames: `assets/[name].js`,
+                assetFileNames: `assets/[name].[ext]`,
+            },
+        },
     },
     server: {
         host: '0.0.0.0',
