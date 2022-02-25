@@ -1,9 +1,12 @@
 <?php
-declare (strict_types = 1);
+declare (strict_types=1);
 
 namespace app\admin\controller;
 
+use bd\Random;
 use app\common\controller\Backend;
+use app\common\facade\Token;
+use think\facade\Db;
 
 class Index extends Backend
 {
@@ -14,16 +17,17 @@ class Index extends Backend
 
     public function login()
     {
-        $url = $this->request->get('url', '/admin');
+        $url   = $this->request->get('url', '/admin');
+        $token = Random::uuid();
+        // Db::name
 
         // 检查登录态
 
         // 检查提交
         if ($this->request->isPost()) {
-            $username = $this->request->post('username');
-            $password = $this->request->post('password');
+            $username  = $this->request->post('username');
+            $password  = $this->request->post('password');
             $keeplogin = $this->request->post('keeplogin');
-            $token = $this->request->post('__token__');
 
             print_r($username);
         }

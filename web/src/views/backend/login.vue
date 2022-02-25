@@ -151,6 +151,8 @@ const rules = reactive({
     ],
 })
 
+var token = ''
+
 onMounted(() => {
     setTimeout(() => {
         pageBubble.init()
@@ -163,6 +165,10 @@ onMounted(() => {
     } else if (form.code === '') {
         vm.ctx.$refs.code.focus()
     }
+
+    login({}, 'get').then((res) => {
+
+    })
 })
 
 onBeforeUnmount(() => {
@@ -178,7 +184,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     formEl.validate((valid) => {
         if (valid) {
             form.loading = true
-            login(form)
+            login(form, 'post')
                 .then((res) => {
                     console.log(res)
                 })
