@@ -37,7 +37,7 @@ class Auth
     /**
      * @var int 令牌默认有效期
      */
-    protected $keeptime = 2592000;
+    protected $keeptime = 86400;
     /**
      * @var string[] 允许输出的字段
      */
@@ -104,12 +104,12 @@ class Auth
 
     /**
      * 管理员登录
-     * @param     $username
-     * @param     $password
-     * @param int $keeptime
+     * @param      $username
+     * @param      $password
+     * @param bool $keeptime
      * @return bool
      */
-    public function login($username, $password, $keeptime = 0)
+    public function login($username, $password, $keeptime = false)
     {
         $this->model = Admin::where('username', $username)->find();
         if (!$this->model) {
@@ -131,6 +131,10 @@ class Auth
             return false;
         }
 
+        // 待完善 - 后续做token自动刷新
+        if ($keeptime) {
+            $this->setKeeptime(2592000);
+        }
         $this->loginSuccessful();
         return true;
     }

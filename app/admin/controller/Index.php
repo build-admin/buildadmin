@@ -58,7 +58,7 @@ class Index extends Backend
             }
 
             // 记录登录LOG-待完善
-            $res = $this->auth->login($username, $password, $keep ? 86400 : 0);
+            $res = $this->auth->login($username, $password, (bool)$keep);
             if ($res === true) {
                 $this->success(__('登录成功！'), [
                     'userinfo' => $this->auth->getInfo()

@@ -4,6 +4,8 @@ import * as elIcons from '@element-plus/icons-vue'
 import router from '/@/router/index'
 import Icon from '/@/components/icon/index.vue'
 import { store } from '/@/store'
+import { Local } from '/@/utils/storage'
+import { ADMIN_TOKEN } from '/@/store/constant/cacheKey'
 
 export function registerIcons(app: App) {
     /*
@@ -80,4 +82,12 @@ export function randomNum(min: number, max: number) {
  */
 export function randomStr() {
     return new Date().getTime().toString() + randomNum(1, 50000).toString()
+}
+
+export function setAdminToken(value: string) {
+    Local.set(ADMIN_TOKEN, value)
+}
+
+export function getAdminToken() {
+    return Local.get(ADMIN_TOKEN) || ''
 }

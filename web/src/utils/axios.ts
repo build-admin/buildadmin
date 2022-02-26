@@ -3,6 +3,7 @@ import type { AxiosRequestConfig } from 'axios'
 import { computed } from 'vue'
 import { ElMessage, ElLoading, LoadingOptions } from 'element-plus'
 import { store } from '/@/store/index'
+import { getAdminToken } from './common'
 
 const lang = computed(() => store.state.config.defaultLang)
 const pendingMap = new Map()
@@ -16,7 +17,7 @@ export const getUrl = (): string => {
     return value == 'getCurrentDomain' ? window.location.protocol + '//' + window.location.host : value
 }
 
-function createAxios(config: AxiosRequestConfig, options: Options = {}, loading: LoadingOptions = {}) {
+function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loading: LoadingOptions = {}) {
     const Axios = axios.create({
         baseURL: getUrl(),
         timeout: 1000 * 10,
@@ -50,7 +51,11 @@ function createAxios(config: AxiosRequestConfig, options: Options = {}, loading:
                 }
             }
 
-            // 自动携带token - 待完善
+            // 自动携带token
+            if (getAdminToken() && typeof window !== 'undefined') {
+                // 因为Apache不使用Authorization
+                if (config.headers) config.headers.batoken = getAdminToken()
+            }
 
             return config
         },
@@ -83,7 +88,7 @@ function createAxios(config: AxiosRequestConfig, options: Options = {}, loading:
         }
     )
 
-    return Axios(config)
+    return Axios(axiosConfig)
 }
 
 export default createAxios

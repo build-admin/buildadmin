@@ -11,6 +11,10 @@ class Backend extends Api
     protected $noNeedLogin      = [];
     protected $noNeedPermission = [];
 
+    /**
+     * 权限类实例
+     * @var Auth
+     */
     protected $auth = null;
 
     protected $model = null;
@@ -20,7 +24,7 @@ class Backend extends Api
     public function _initialize()
     {
         $this->auth = Auth::instance();
-        $token      = $this->request->server('HTTP_TOKEN', $this->request->request('token', Cookie::get('token') ?: false));
+        $token      = $this->request->server('HTTP_BATOKEN', $this->request->request('batoken', Cookie::get('batoken') ?: false));
         if (!$this->auth->needLogin($this->noNeedLogin)) {
             $this->auth->init($token);
             if (!$this->auth->isLogin()) {

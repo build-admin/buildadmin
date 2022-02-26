@@ -94,7 +94,7 @@ import { editDefaultLang } from '/@/lang/index'
 import { useStore } from '/@/store/index'
 import { login } from '/@/api/backend'
 import { captchaUrl } from '/@/api/common'
-import { randomStr } from '/@/utils/common'
+import { randomStr, setAdminToken } from '/@/utils/common'
 
 const store = useStore()
 
@@ -196,11 +196,10 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
             login('post', form)
                 .then((res) => {
                     form.loading = false
-                    console.log(res)
+                    setAdminToken(res.data.userinfo.token)
                 })
                 .catch((err) => {
                     form.loading = false
-                    console.log(err)
                 })
         } else {
             console.log('error submit!')
