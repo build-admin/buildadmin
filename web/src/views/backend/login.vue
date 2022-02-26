@@ -50,7 +50,7 @@
                                     </template>
                                 </el-input>
                             </el-form-item>
-                            <el-form-item prop="captcha">
+                            <el-form-item v-if="state.showCaptcha" prop="captcha">
                                 <el-row class="w100" :gutter="15">
                                     <el-col :span="16">
                                         <el-input
@@ -99,6 +99,7 @@ import { randomStr } from '/@/utils/common'
 const store = useStore()
 
 const state = reactive({
+    showCaptcha: false,
     captchaId: randomStr(),
 })
 
@@ -173,10 +174,8 @@ onMounted(() => {
         vm.ctx.$refs.captcha.focus()
     }
 
-    login({}, 'get').then((res) => {
-        if (res.data.code == 302) {
-            console.log('登录过了~')
-        }
+    login('get').then((res) => {
+        state.showCaptcha = res.data.captcha
     })
 })
 
@@ -194,7 +193,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
         if (valid) {
             form.loading = true
             form.captcha_id = state.captchaId
-            login(form, 'post')
+            login('post', form)
                 .then((res) => {
                     form.loading = false
                     console.log(res)
@@ -203,7 +202,6 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
                     form.loading = false
                     console.log(err)
                 })
-            console.log(form)
         } else {
             console.log('error submit!')
             return false

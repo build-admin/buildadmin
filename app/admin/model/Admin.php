@@ -17,13 +17,13 @@ class Admin extends Model
      */
     public function resetPassword($uid, $NewPassword)
     {
-        $passwd = $this->encryptPassword($NewPassword);
+        $passwd = self::encryptPassword($NewPassword);
         $ret    = $this->where(['id' => $uid])->update(['password' => $passwd]);
         return $ret;
     }
 
     // 密码加密
-    protected function encryptPassword($password, $salt = '', $encrypt = 'md5')
+    public static function encryptPassword($password, $salt = '', $encrypt = 'md5')
     {
         return $encrypt($encrypt($password) . $salt);
     }

@@ -111,21 +111,21 @@ class Auth
      */
     public function login($username, $password, $keeptime = 0)
     {
-        $this->admin = Admin::where('username', $username)->find();
-        if (!$this->admin) {
+        $this->model = Admin::where('username', $username)->find();
+        if (!$this->model) {
             $this->setError('Username is incorrect');
             return false;
         }
-        if ($this->admin['status'] == '0') {
+        if ($this->model['status'] == '0') {
             $this->setError('Administrator disabled');
             return false;
         }
         $adminLoginRetry = Config::get('buildadmin.admin_login_retry');
-        if ($adminLoginRetry && $this->admin->loginfailure >= $adminLoginRetry && time() - $this->admin->lastlogintime < 86400) {
+        if ($adminLoginRetry && $this->model->loginfailure >= $adminLoginRetry && time() - $this->model->lastlogintime < 86400) {
             $this->setError('Please try again after 1 day');
             return false;
         }
-        if ($this->admin->password != $this->admin->encryptPassword($password, $this->admin->salt)) {
+        if ($this->model->password != Admin::encryptPassword($password, $this->model->salt)) {
             $this->loginFailed();
             $this->setError('Password is incorrect');
             return false;
@@ -146,15 +146,15 @@ class Auth
         }
         Db::startTrans();
         try {
-            $this->admin->loginfailure  = 0;
-            $this->admin->lastlogintime = time();
-            $this->admin->lastloginip   = request()->ip();
-            $this->admin->save();
+            $this->model->loginfailure  = 0;
+            $this->model->lastlogintime = time();
+            $this->model->lastloginip   = request()->ip();
+            $this->model->save();
             $this->logined = true;
 
             if (!$this->token) {
                 $this->token = Random::uuid();
-                Token::set($this->_token, 'admin', $this->admin->id, $this->keeptime);
+                Token::set($this->token, 'admin', $this->model->id, $this->keeptime);
             }
             Db::commit();
         } catch (Exception $e) {
@@ -176,13 +176,13 @@ class Auth
         }
         Db::startTrans();
         try {
-            $this->admin->loginfailure++;
-            $this->admin->lastlogintime = time();
-            $this->admin->lastloginip   = request()->ip();
-            $this->admin->save();
+            $this->model->loginfailure++;
+            $this->model->lastlogintime = time();
+            $this->model->lastloginip   = request()->ip();
+            $this->model->save();
 
             $this->token   = '';
-            $this->admin   = null;
+            $this->model   = null;
             $this->logined = false;
             Db::commit();
         } catch (Exception $e) {
@@ -242,6 +242,9 @@ class Auth
      */
     public function getInfo()
     {
+        if (!$this->model) {
+            return [];
+        }
         $info          = $this->model->toArray();
         $info          = array_intersect_key($info, array_flip($this->getAllowFields()));
         $info['token'] = $this->getToken();
