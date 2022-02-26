@@ -121,7 +121,7 @@ const state: {
         },
         prefix: {
             label: t('MySQL data table prefix'),
-            value: 'bd_',
+            value: 'ba_',
             name: 'prefix',
             type: 'text',
         },
