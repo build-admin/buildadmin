@@ -50,14 +50,14 @@
                                     </template>
                                 </el-input>
                             </el-form-item>
-                            <el-form-item prop="code">
+                            <el-form-item prop="captcha">
                                 <el-row :gutter="15">
                                     <el-col :span="18">
                                         <el-input
-                                            ref="code"
+                                            ref="captcha"
                                             type="text"
                                             :placeholder="t('adminLogin.Please enter the verification code')"
-                                            v-model="form.code"
+                                            v-model="form.captcha"
                                             clearable
                                             autocomplete="off"
                                         >
@@ -102,7 +102,7 @@ const formRef = ref<InstanceType<typeof ElForm>>()
 const form = reactive({
     username: '',
     password: '',
-    code: '',
+    captcha: '',
     keep: false,
     loading: false,
 })
@@ -136,7 +136,7 @@ const rules = reactive({
             trigger: 'blur',
         },
     ],
-    code: [
+    captcha: [
         {
             required: true,
             message: t('adminLogin.Please enter the verification code'),
@@ -151,8 +151,6 @@ const rules = reactive({
     ],
 })
 
-var token = ''
-
 onMounted(() => {
     setTimeout(() => {
         pageBubble.init()
@@ -162,12 +160,14 @@ onMounted(() => {
         vm.ctx.$refs.username.focus()
     } else if (form.password === '') {
         vm.ctx.$refs.password.focus()
-    } else if (form.code === '') {
-        vm.ctx.$refs.code.focus()
+    } else if (form.captcha === '') {
+        vm.ctx.$refs.captcha.focus()
     }
 
     login({}, 'get').then((res) => {
-
+        if (res.data.code == 302) {
+            console.log('登录过了~')
+        }
     })
 })
 

@@ -7,6 +7,8 @@ return [
     // 允许跨域访问的域名
     'cors_request_domain' => 'localhost,127.0.0.1',
     'admin_login_captcha' => true,
+    // 管理员登录失败可重试次数,false则无限
+    'admin_login_retry'   => 10,
     // 允许执行的命令
     'allowed_commands'    => [
         'ping-baidu'   => 'ping baidu.com',
