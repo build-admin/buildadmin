@@ -84,7 +84,7 @@ class Auth
         }
         $userId = intval($tokenData['user_id']);
         if ($userId > 0) {
-            $this->model = Admin::get($userId);
+            $this->model = Admin::where('id', $userId)->find();
             if (!$this->model) {
                 $this->setError('Account not exist');
                 return false;
@@ -111,7 +111,7 @@ class Auth
      */
     public function login($username, $password, $keeptime = 0)
     {
-        $this->admin = Admin::get(['username' => $username]);
+        $this->admin = Admin::where('username', $username)->find();
         if (!$this->admin) {
             $this->setError('Username is incorrect');
             return false;

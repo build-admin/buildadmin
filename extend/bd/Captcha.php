@@ -8,12 +8,13 @@
 // +----------------------------------------------------------------------
 // | Author: yunwuxin <448901948@qq.com>
 // +----------------------------------------------------------------------
-// | 妙码生花在 2022-2-26 进行修订，通过Cache保存验证码而不是Session以更好的支持API访问
+// | 妙码生花在 2022-2-26 进行修订，通过Mysql保存验证码而不是Session以更好的支持API访问
+// | 使用Cache不能清理过期验证码，且一旦执行清理缓存操作，验证码将失效
 // +----------------------------------------------------------------------
 
 namespace bd;
 
-use think\facade\Cache;
+use think\facade\Db;
 
 class Captcha
 {
@@ -61,6 +62,11 @@ class Captcha
     public function __construct($config = [])
     {
         $this->config = array_merge($this->config, $config);
+
+        // 清理过期的验证码
+        Db::name('captcha')
+            ->where('expiretime', '<', time())
+            ->delete();
     }
 
     /**
@@ -110,18 +116,22 @@ class Captcha
     {
         $key = $this->authcode($this->seKey, $id);
         // 验证码不能为空
-        $secode = Cache::get($key, '');
+        $secode = Db::name('captcha')
+            ->where('key', $key)
+            ->find();
         if (empty($code) || empty($secode)) {
             return false;
         }
         // 验证码过期
         if (time() > $secode['expiretime']) {
-            Cache::delete($key);
+            Db::name('captcha')
+                ->where('key', $key)
+                ->delete();
             return false;
         }
 
         if ($this->authcode(strtoupper($code), $id) == $secode['code']) {
-            $this->reset && Cache::delete($key);
+            $this->reset && Db::name('captcha')->where('key', $key)->delete();
             return true;
         }
 
@@ -129,7 +139,7 @@ class Captcha
     }
 
     /**
-     * 输出验证码并把验证码的值保存的Cache中
+     * 输出验证码并把验证码的值保存的Mysql中
      * @access public
      * @param string $id 要生成验证码的标识
      * @return \think\Response
@@ -178,7 +188,9 @@ class Captcha
         }
 
         $key     = $this->authcode($this->seKey, $id);
-        $captcha = Cache::get($key, '');
+        $captcha = Db::name('captcha')
+            ->where('key', $key)
+            ->find();
         // 绘验证码
         if ($captcha && $nowTime <= $captcha['expiretime']) {
             $captcha = $this->writeText($captcha['captcha']);
@@ -186,12 +198,14 @@ class Captcha
             $captcha = $this->writeText();
             // 保存验证码
             $code = $this->authcode(strtoupper(implode('', $captcha)), $id);
-            Cache::set($key, [
-                'code'       => $code,
-                'captcha'    => strtoupper(implode('', $captcha)),// 兼容uniApp安卓端,它加载图片会请求两次(非预请求),此字段仅供二次请求时生成图片
-                'createtime' => $nowTime,
-                'expiretime' => $nowTime + $this->expire
-            ]);
+            Db::name('captcha')
+                ->insert([
+                    'key'        => $key,
+                    'code'       => $code,
+                    'captcha'    => strtoupper(implode('', $captcha)),// 兼容uniApp安卓端,它加载图片会请求两次(非预请求),此字段仅供二次请求时生成图片
+                    'createtime' => $nowTime,
+                    'expiretime' => $nowTime + $this->expire
+                ]);
         }
 
         ob_start();

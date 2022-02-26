@@ -51,8 +51,8 @@
                                 </el-input>
                             </el-form-item>
                             <el-form-item prop="captcha">
-                                <el-row :gutter="15">
-                                    <el-col :span="18">
+                                <el-row class="w100" :gutter="15">
+                                    <el-col :span="16">
                                         <el-input
                                             ref="captcha"
                                             type="text"
@@ -66,10 +66,8 @@
                                             </template>
                                         </el-input>
                                     </el-col>
-                                    <el-col :span="6">
-                                        <div>
-                                            <span>1234</span>
-                                        </div>
+                                    <el-col :span="8">
+                                        <img @click="onChangeCaptcha" class="captcha-img" :src="captchaUrl + '?id=' + state.captchaId" alt="" />
                                     </el-col>
                                 </el-row>
                             </el-form-item>
@@ -95,8 +93,18 @@ import { useI18n } from 'vue-i18n'
 import { editDefaultLang } from '/@/lang/index'
 import { useStore } from '/@/store/index'
 import { login } from '/@/api/backend'
+import { captchaUrl } from '/@/api/common'
+import { randomStr } from '/@/utils/common'
 
 const store = useStore()
+
+const state = reactive({
+    captchaId: randomStr(),
+})
+
+const onChangeCaptcha = () => {
+    state.captchaId = randomStr()
+}
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 const form = reactive({
@@ -105,6 +113,7 @@ const form = reactive({
     captcha: '',
     keep: false,
     loading: false,
+    captcha_id: '',
 })
 
 const { t } = useI18n()
@@ -184,11 +193,14 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     formEl.validate((valid) => {
         if (valid) {
             form.loading = true
+            form.captcha_id = state.captchaId
             login(form, 'post')
                 .then((res) => {
+                    form.loading = false
                     console.log(res)
                 })
                 .catch((err) => {
+                    form.loading = false
                     console.log(err)
                 })
             console.log(form)
@@ -281,5 +293,8 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
 .content :deep(.el-input__prefix) {
     display: flex;
     align-items: center;
+}
+.captcha-img {
+    width: 100%;
 }
 </style>

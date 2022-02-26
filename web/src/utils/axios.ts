@@ -5,7 +5,7 @@ import { Local } from '/@/utils/storage'
 import { store } from '/@/store/index'
 import { isProd } from '/@/utils/vite'
 
-const getUrl = (): string => {
+export const getUrl = (): string => {
     const value: string = import.meta.env.VITE_AXIOS_BASE_URL as string
     return value == 'getCurrentDomain' ? window.location.protocol + '//' + window.location.host : value
 }

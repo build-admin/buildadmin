@@ -60,3 +60,24 @@ export function setTitle(t: any = null) {
 export function isExternal(path: string) {
     return /^(https?|ftp|mailto|tel):/.test(path)
 }
+
+export function randomNum(min: number, max: number) {
+    switch (arguments.length) {
+        case 1:
+            return parseInt((Math.random() * min + 1).toString(), 10)
+            break
+        case 2:
+            return parseInt((Math.random() * (max - min + 1) + min).toString(), 10)
+            break
+        default:
+            return 0
+            break
+    }
+}
+
+/**
+ * 生成随机位数的随机字符串
+ */
+export function randomStr() {
+    return new Date().getTime().toString() + randomNum(1, 50000).toString()
+}

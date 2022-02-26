@@ -3,9 +3,10 @@ declare (strict_types=1);
 
 namespace app\admin\controller;
 
-use app\common\controller\Backend;
+use bd\Captcha;
 use think\facade\Config;
 use think\facade\Validate;
+use app\common\controller\Backend;
 
 class Index extends Backend
 {
@@ -23,13 +24,13 @@ class Index extends Backend
             $this->success('您已经登录过了~', [], 302);
         }
 
-        $captcha = Config::get('buildadmin.admin_login_captcha');
+        $captchaSwitch = Config::get('buildadmin.admin_login_captcha');
 
         // 检查提交
         if ($this->request->isPost()) {
-            $username  = $this->request->post('username');
-            $password  = $this->request->post('password');
-            $keeplogin = $this->request->post('keeplogin');
+            $username = $this->request->post('username');
+            $password = $this->request->post('password');
+            $keep     = $this->request->post('keep');
 
             $rule = [
                 'username|' . __('Username') => 'require|length:3,30',
@@ -39,16 +40,25 @@ class Index extends Backend
                 'username' => $username,
                 'password' => $password,
             ];
-            if ($captcha) {
-                $rule['captcha|' . __('Captcha')] = 'require|captcha';
-                $data['captcha']                  = $this->request->post('captcha');
+            if ($captchaSwitch) {
+                $rule['captcha|' . __('Captcha')]     = 'require|length:4,6';
+                $rule['captchaId|' . __('CaptchaId')] = 'require';
+
+                $data['captcha']   = $this->request->post('captcha');
+                $data['captchaId'] = $this->request->post('captcha_id');
             }
             $validate = Validate::rule($rule);
             if (!$validate->check($data)) {
                 $this->error($validate->getError());
             }
+
+            $captchaObj = new Captcha();
+            if (!$captchaObj->check($data['captcha'], $data['captchaId'])) {
+                $this->error(__('Please enter the correct verification code'));
+            }
+
             // 记录登录LOG-待完善
-            $res = $this->auth->login($username, $password, $keeplogin ? 86400 : 0);
+            $res = $this->auth->login($username, $password, $keep ? 86400 : 0);
             if ($res === true) {
                 $this->success(__('登录成功！'), [
                     'userinfo' => $this->auth->getInfo()
@@ -61,7 +71,7 @@ class Index extends Backend
         }
 
         $this->success('ok', [
-            'captcha' => $captcha
+            'captcha' => $captchaSwitch
         ]);
     }
 }
