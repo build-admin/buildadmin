@@ -10,11 +10,18 @@ use app\common\controller\Backend;
 
 class Index extends Backend
 {
-    protected $noNeedLogin = ['login'];
+    protected $noNeedLogin = ['test', 'login'];
 
     public function index()
     {
-        return '后台首页';
+        $this->success('ok', [
+            'menus' => $this->auth->getMenus()
+        ]);
+    }
+
+    public function test()
+    {
+
     }
 
     public function login()

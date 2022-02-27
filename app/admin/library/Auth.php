@@ -308,6 +308,11 @@ class Auth extends \bd\Auth
         return parent::getRuleIds($uid ?: $this->id);
     }
 
+    public function getMenus($uid = null)
+    {
+        return parent::getMenus($uid ?: $this->id);
+    }
+
     public function isSuperAdmin()
     {
         return in_array('*', $this->getRuleIds());

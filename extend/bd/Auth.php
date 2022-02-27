@@ -15,6 +15,11 @@ class Auth
     protected static $instance;
 
     /**
+     * 用户有权限的规则节点
+     */
+    protected $rules = [];
+
+    /**
      * 默认配置
      * @var array|string[]
      */
@@ -23,6 +28,8 @@ class Auth
         'auth_group_access' => 'admin_group_access', // 用户-用户组关系表
         'auth_rule'         => 'menu_rule', // 权限规则表
     ];
+
+    protected $childrens = [];
 
     /**
      * @param array $config
@@ -54,6 +61,44 @@ class Auth
         }
 
         return self::$instance;
+    }
+
+    /**
+     * 获取菜单规则列表
+     * @access public
+     * @param int $uid 用户ID
+     * @return array
+     */
+    public function getMenus($uid)
+    {
+        if (!$this->rules) {
+            $this->getRuleList($uid);
+        }
+        if (!$this->rules) {
+            return [];
+        }
+        foreach ($this->rules as $rule) {
+            $this->childrens[$rule['pid']][] = $rule;
+        }
+        if (!isset($this->childrens[0])) {
+            return [];
+        }
+
+        return $this->getChildren($this->childrens[0]);
+    }
+
+    /**
+     * 获取数组中所有菜单规则的子规则
+     * @param array $rules 菜单规则
+     */
+    public function getChildren($rules): array
+    {
+        foreach ($rules as $key => $rule) {
+            if (array_key_exists($rule['id'], $this->childrens)) {
+                $rules[$key]['children'] = $this->getChildren($this->childrens[$rule['id']]);
+            }
+        }
+        return $rules;
     }
 
     /**
@@ -136,15 +181,18 @@ class Auth
         if (!in_array('*', $ids)) {
             $where[] = ['id', 'in', $ids];
         }
-        //读取用户组所有权限规则
-        $rulesData = Db::name($this->auth_rule)->where($where)->field('id,pid,type,title,name,path,icon,menu_type,url,component')->select();
+        // 读取用户组所有权限规则
+        $this->rules = Db::name($this->config['auth_rule'])
+            ->where($where)
+            ->order('weigh', 'desc')
+            ->select();
 
         // 用户规则
         $rules = [];
         if (in_array('*', $ids)) {
             $rules[] = "*";
         }
-        foreach ($rulesData as $rule) {
+        foreach ($this->rules as $rule) {
             $rules[$rule['id']] = strtolower($rule['name']);
         }
         $ruleList[$uid] = $rules;
@@ -180,9 +228,9 @@ class Auth
             return $groups[$uid];
         }
 
-        $userGroups = Db::name($this->auth_group_access)
+        $userGroups = Db::name($this->config['auth_group_access'])
             ->alias('aga')
-            ->join($this->auth_group . ' ag', 'aga.group_id = ag.id', 'LEFT')
+            ->join($this->config['auth_group'] . ' ag', 'aga.group_id = ag.id', 'LEFT')
             ->field('aga.uid,aga.group_id,ag.id,ag.pid,ag.name,ag.rules')
             ->where("aga.uid='{$uid}' and ag.status='1'")
             ->select();

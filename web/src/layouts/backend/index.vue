@@ -10,12 +10,17 @@ import Streamline from '/@/layouts/container/streamline.vue'
 import menus from '/@/mock/router.json' // 模拟api请求数据
 import { computed, onBeforeMount, onUnmounted } from 'vue'
 import { Session } from '/@/utils/storage'
+import { index } from '/@/api/backend'
 
 const store = useStore()
 const layoutConfig = computed(() => store.state.config.layout)
 
 // 更新vuex中的路由菜单数据
 store.dispatch('navTabs/setTabsViewRoutes', menus)
+
+index().then((res) => {
+    console.log(res)
+})
 
 const onResize = () => {
     let defaultBeforeResizeLayout = {
