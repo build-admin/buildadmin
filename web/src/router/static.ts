@@ -65,6 +65,14 @@ const staticRoutes: Array<RouteRecordRaw> = [
                     title: '表格示例',
                 },
             },
+            {
+                path: 'auth/menu',
+                name: 'authMenu',
+                component: () => import('/@/views/backend/auth/menu.vue'),
+                meta: {
+                    title: '菜单管理',
+                },
+            },
         ],
     },
     {

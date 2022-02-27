@@ -12,12 +12,8 @@ use think\facade\Db;
 /**
  * 管理员权限类
  */
-class Auth
+class Auth extends \bd\Auth
 {
-    /**
-     * @var Auth 实例
-     */
-    protected static $instance = null;
     /**
      * @var bool 是否登录
      */
@@ -43,16 +39,9 @@ class Auth
      */
     protected $allowFields = ['id', 'username', 'nickname', 'avatar'];
 
-    /**
-     * @return static 实例
-     */
-    public static function instance()
+    public function __construct()
     {
-        if (is_null(self::$instance)) {
-            self::$instance = new static();
-        }
-
-        return self::$instance;
+        parent::__construct();
     }
 
     /**
@@ -265,10 +254,10 @@ class Auth
     }
 
     /**
-     * 检测一个方法是否需要登录
+     * 检测一个方法是否在传递的数组内
      * @return bool
      */
-    public function needLogin($arr = [])
+    public function actionInArr($arr = [])
     {
         $arr = is_array($arr) ? $arr : explode(',', $arr);
         if (!$arr) {
@@ -297,6 +286,31 @@ class Auth
     public function setKeeptime($keeptime = 0)
     {
         $this->keeptime = $keeptime;
+    }
+
+    public function check($name, $uid = null, $relation = 'or', $mode = 'url')
+    {
+        return parent::check($name, $uid ?: $this->id, $relation, $mode);
+    }
+
+    public function getGroups($uid = null)
+    {
+        return parent::getGroups($uid ?: $this->id);
+    }
+
+    public function getRuleList($uid = null)
+    {
+        return parent::getRuleList($uid ?: $this->id);
+    }
+
+    public function getRuleIds($uid = null)
+    {
+        return parent::getRuleIds($uid ?: $this->id);
+    }
+
+    public function isSuperAdmin()
+    {
+        return in_array('*', $this->getRuleIds());
     }
 
     /**

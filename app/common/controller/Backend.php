@@ -23,17 +23,28 @@ class Backend extends Api
 
     public function _initialize()
     {
+        $modulename     = app('http')->getName();
+        $controllername = $this->request->controller(true);
+        $actionname     = $this->request->action(true);
+
+        $path = str_replace('.', '/', $controllername) . '/' . $actionname;
+
         $this->auth = Auth::instance();
         $token      = $this->request->server('HTTP_BATOKEN', $this->request->request('batoken', Cookie::get('batoken') ?: false));
-        if (!$this->auth->needLogin($this->noNeedLogin)) {
+        if (!$this->auth->actionInArr($this->noNeedLogin)) {
             $this->auth->init($token);
             if (!$this->auth->isLogin()) {
                 $this->error(__('Please login first'), [
                     'url' => '/admin'
                 ]);
             }
-
-            // 权限检查 - 待完善
+            if (!$this->auth->actionInArr($this->noNeedPermission)) {
+                if (!$this->auth->check($path)) {
+                    $this->error(__('You have no permission'), [
+                        'url' => '/admin'
+                    ]);
+                }
+            }
         } else {
             if ($token) {
                 $this->auth->init($token);

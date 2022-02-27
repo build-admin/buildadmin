@@ -30,6 +30,13 @@
         ]
     },
     {
+        "title": "菜单管理",
+        "path": "/admin/auth/menu",
+        "type": "tab",
+        "icon": "fa fa-cogs",
+        "keepAlive": false
+    },
+    {
         "title": "表格示例",
         "path": "/admin/table",
         "type": "tab",
