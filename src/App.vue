@@ -14,7 +14,7 @@ import manualInstall from './views/manualInstall.vue'
 import { useI18n } from 'vue-i18n'
 
 const { locale } = useI18n()
-var langValue = window.localStorage.getItem('bd-lang') || 'zh-cn'
+var langValue = window.localStorage.getItem('ba-lang') || 'zh-cn'
 locale.value = langValue
 </script>
 

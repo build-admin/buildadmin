@@ -21,7 +21,7 @@ import lang from '/@/assets/img/lang.svg'
 const { t } = useI18n()
 
 const selectLang = (name: string) => {
-    window.localStorage.setItem('bd-lang', name)
+    window.localStorage.setItem('ba-lang', name)
     location.reload()
 }
 </script>

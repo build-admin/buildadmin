@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { isProd } from '/@/utils/vite'
 
-var langValue = window.localStorage.getItem('bd-lang') || 'zh-cn'
+var langValue = window.localStorage.getItem('ba-lang') || 'zh-cn'
 
 // 配置新建一个 axios 实例
 // baseUrl 在正式环境中，使用当前协议与域名
