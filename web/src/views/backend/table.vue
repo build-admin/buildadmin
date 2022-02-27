@@ -1,6 +1,6 @@
 <template>
     <div class="default-main">
-        <div class="bd-table-box">
+        <div class="ba-table-box">
             <transition name="el-fade-in">
                 <div v-if="state.showComSearch" class="table-com-search">
                     <el-row>

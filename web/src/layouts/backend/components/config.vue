@@ -142,7 +142,7 @@
                         </div>
                         <el-popconfirm @confirm="restoreDefault" title="确定要恢复全部配置到默认值吗?">
                             <template #reference>
-                                <div class="bd-center">
+                                <div class="ba-center">
                                     <el-button class="w80" type="info">恢复默认</el-button>
                                 </div>
                             </template>

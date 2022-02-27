@@ -38,7 +38,7 @@ body,
 .h100 {
     height: 100% !important;
 }
-.bd-center {
+.ba-center {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -55,7 +55,7 @@ body,
 }
 
 /* 表格-s */
-.bd-table-box {
+.ba-table-box {
     border-radius: var(--el-border-radius-round);
     .table-header {
         position: relative;
@@ -146,7 +146,7 @@ body,
 /* 表格-e */
 
 /* 全局遮罩-s */
-.bd-layout-shade {
+.ba-layout-shade {
     position: fixed;
     top: 0;
     left: 0;

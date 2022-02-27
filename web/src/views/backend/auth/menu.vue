@@ -1,6 +1,6 @@
 <template>
     <div class="default-main">
-        <div class="bd-table-box">
+        <div class="ba-table-box">
             <div class="table-header">
                 <el-tooltip content="刷新" placement="top">
                     <el-button color="#9ca8b8" class="table-header-operate" type="info">
@@ -92,8 +92,8 @@ const tableData = [
                         name: 'Tom',
                         test: '测试',
                         address: 'No. 189, Grove St, Los Angeles',
-                    }
-                ]
+                    },
+                ],
             },
             {
                 id: '23',

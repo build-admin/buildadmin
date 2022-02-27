@@ -20,7 +20,7 @@ const store = useStore()
 const layoutConfig = computed(() => store.state.config.layout)
 
 const onMenuCollapse = () => {
-    showShade('bd-aside-menu-shade', () => {
+    showShade('ba-aside-menu-shade', () => {
         store.commit('config/setAndCache', {
             name: 'layout.menuCollapse',
             value: true,
@@ -43,7 +43,7 @@ const onMenuCollapse = () => {
         display: flex;
         height: 100%;
         position: relative;
-        .bd-nav-tab {
+        .ba-nav-tab {
             display: flex;
             align-items: center;
             justify-content: center;

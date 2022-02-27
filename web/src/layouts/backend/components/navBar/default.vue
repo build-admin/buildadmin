@@ -27,7 +27,7 @@ const headerBarTabActiveBackground = computed(() => store.state.config.layout.he
         display: flex;
         height: 100%;
         position: relative;
-        .bd-nav-tab {
+        .ba-nav-tab {
             display: flex;
             align-items: center;
             justify-content: center;

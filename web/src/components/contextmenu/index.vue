@@ -1,7 +1,7 @@
 <template>
     <transition name="el-zoom-in-center">
         <div
-            class="el-popper is-pure is-light el-dropdown__popper bd-contextmenu"
+            class="el-popper is-pure is-light el-dropdown__popper ba-contextmenu"
             :style="`top: ${state.axis.y + 5}px;left: ${state.axis.x - 14}px;width:${props.width}px`"
             :key="Math.random()"
             v-show="state.show"
@@ -81,7 +81,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
-.bd-contextmenu {
+.ba-contextmenu {
     z-index: 9999;
 }
 .el-popper,

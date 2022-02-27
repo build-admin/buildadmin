@@ -4,7 +4,7 @@
             v-for="(item, idx) in tabsView"
             @click="router.push(item.path)"
             @contextmenu.prevent="onContextmenu(item, $event)"
-            class="bd-nav-tab"
+            class="ba-nav-tab"
             :class="activeIndex == idx ? 'active' : ''"
             :ref="tabsRefs.set"
             :key="idx"
@@ -187,7 +187,7 @@ onMounted(() => {
         }
     }
 }
-.bd-nav-tab {
+.ba-nav-tab {
     white-space: nowrap;
     height: 40px;
 }
