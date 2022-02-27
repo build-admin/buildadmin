@@ -1,6 +1,6 @@
 <?php
 
-namespace bd;
+namespace ba;
 
 use app\installapi\controller\CommandExec;
 

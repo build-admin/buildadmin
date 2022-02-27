@@ -1,6 +1,6 @@
 <?php
 
-namespace bd;
+namespace ba;
 
 use think\facade\Db;
 
@@ -29,6 +29,10 @@ class Auth
         'auth_rule'         => 'menu_rule', // 权限规则表
     ];
 
+    /**
+     * 子菜单规则数组
+     * @var array
+     */
     protected $childrens = [];
 
     /**
@@ -184,7 +188,7 @@ class Auth
         // 读取用户组所有权限规则
         $this->rules = Db::name($this->config['auth_rule'])
             ->where($where)
-            ->order('weigh', 'desc')
+            ->order('weigh desc,id asc')
             ->select();
 
         // 用户规则

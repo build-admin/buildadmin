@@ -3,7 +3,7 @@ declare (strict_types=1);
 
 namespace app\admin\controller;
 
-use bd\Captcha;
+use ba\Captcha;
 use think\facade\Config;
 use think\facade\Validate;
 use app\common\controller\Backend;

@@ -3,7 +3,7 @@ declare (strict_types=1);
 
 namespace app\installapi\controller;
 
-use bd\Version;
+use ba\Version;
 use app\common\controller\Api;
 use think\App;
 

@@ -2,7 +2,7 @@
 
 namespace app\api\controller;
 
-use bd\Captcha;
+use ba\Captcha;
 use app\common\controller\Api;
 
 class Common extends Api

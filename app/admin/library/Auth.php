@@ -3,7 +3,7 @@
 namespace app\admin\library;
 
 use app\admin\model\Admin;
-use bd\Random;
+use ba\Random;
 use think\Exception;
 use think\facade\Config;
 use app\common\facade\Token;
@@ -12,7 +12,7 @@ use think\facade\Db;
 /**
  * 管理员权限类
  */
-class Auth extends \bd\Auth
+class Auth extends \ba\Auth
 {
     /**
      * @var bool 是否登录
