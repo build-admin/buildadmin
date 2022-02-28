@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { ElMessage, ElLoading, LoadingOptions } from 'element-plus'
 import { store } from '/@/store/index'
 import { getAdminToken } from './common'
+import router from '/@/router/index'
 
 const lang = computed(() => store.state.config.defaultLang)
 const pendingMap = new Map()
@@ -75,6 +76,14 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                     type: 'error',
                     message: response.data.msg,
                 })
+                // 自动跳转到路由name或path，仅限server端返回302的情况
+                if (response.data.code == 302) {
+                    if (response.data.data.routeName) {
+                        router.push({ name: response.data.data.routeName })
+                    } else if (response.data.data.routePath) {
+                        router.push({ path: response.data.data.routePath })
+                    }
+                }
                 // code不等于1, 页面then内的具体逻辑就不执行了
                 return Promise.reject(response.data)
             }

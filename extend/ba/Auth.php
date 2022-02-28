@@ -187,6 +187,7 @@ class Auth
         }
         // 读取用户组所有权限规则
         $this->rules = Db::name($this->config['auth_rule'])
+            ->withoutField(['remark', 'status', 'weigh', 'updatetime', 'createtime'])
             ->where($where)
             ->order('weigh desc,id asc')
             ->select();

@@ -50,7 +50,8 @@ export function setTitle(t: any = null) {
         if (store.state.navTabs.activeRoute) {
             webTitle = store.state.navTabs.activeRoute.title
         } else {
-            webTitle = t && router.currentRoute.value.meta.title ? t(router.currentRoute.value.meta.title) : (router.currentRoute.value.meta.title as string)
+            webTitle =
+                t && router.currentRoute.value.meta.title ? t(router.currentRoute.value.meta.title) : (router.currentRoute.value.meta.title as string)
         }
         document.title = `${webTitle}`
     })
@@ -103,13 +104,38 @@ export const pageTitle = (name: string): string => {
 export const handleAdminRoute = (routes: any) => {
     const viewsComponent = import.meta.globEager('/src/views/backend/**/*.vue')
     addRouteAll(viewsComponent, routes, adminBaseRoute.name as string)
+    return handleMenuRule(routes, '/' + (adminBaseRoute.name as string) + '/')
+}
+
+const handleMenuRule = (routes: any, pathPrefix = '/') => {
+    let menuRule = []
+    for (const key in routes) {
+        if (routes[key].type == 'menu' || routes[key].type == 'menu_dir') {
+            routes[key].type = routes[key].menu_type
+            routes[key].keepAlive = routes[key].name
+            if (routes[key].type == 'tab') {
+                routes[key].path = pathPrefix + routes[key].path
+            } else {
+                routes[key].path = routes[key].url
+            }
+            delete routes[key].url
+            delete routes[key].menu_type
+            if (routes[key].children && routes[key].children.length > 0) {
+                routes[key].children = handleMenuRule(routes[key].children, pathPrefix)
+            }
+            menuRule.push(routes[key])
+        }
+    }
+    return menuRule
 }
 
 export const addRouteAll = (viewsComponent: Record<string, { [key: string]: any }>, routes: any, parentName: string) => {
     for (const idx in routes) {
-        if (routes[idx].type == 'menu' && viewsComponent[routes[idx].component].default) {
+        if (routes[idx].type == 'menu' && routes[idx].menu_type == 'tab' && viewsComponent[routes[idx].component].default) {
             addRouteItem(viewsComponent, routes[idx], parentName)
-        } else if (routes[idx].type == 'menu_dir' && routes[idx].children) {
+        }
+
+        if (routes[idx].children && routes[idx].children.length > 0) {
             addRouteAll(viewsComponent, routes[idx].children, parentName)
         }
     }

@@ -20,7 +20,9 @@ const route = useRoute()
 
 index().then((res) => {
     if (res.data.menus) {
-        handleAdminRoute(res.data.menus)
+        let menuRule = handleAdminRoute(res.data.menus)
+        // 更新vuex中的路由菜单数据
+        store.dispatch('navTabs/setTabsViewRoutes', menuRule)
         let routers = router.getRoutes()
 
         // 预跳转到上次路径
@@ -53,9 +55,6 @@ index().then((res) => {
 
 const store = useStore()
 const layoutConfig = computed(() => store.state.config.layout)
-
-// 更新vuex中的路由菜单数据
-store.dispatch('navTabs/setTabsViewRoutes', menus)
 
 const onResize = () => {
     let defaultBeforeResizeLayout = {

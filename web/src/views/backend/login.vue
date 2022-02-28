@@ -67,7 +67,7 @@
                                         </el-input>
                                     </el-col>
                                     <el-col :span="8">
-                                        <img @click="onChangeCaptcha" class="captcha-img" :src="captchaUrl + '?id=' + state.captchaId" alt="" />
+                                        <img @click="onChangeCaptcha" class="captcha-img" :src="state.captchaUrl + '?id=' + state.captchaId" alt="" />
                                     </el-col>
                                 </el-row>
                             </el-form-item>
@@ -93,14 +93,18 @@ import { useI18n } from 'vue-i18n'
 import { editDefaultLang } from '/@/lang/index'
 import { useStore } from '/@/store/index'
 import { login } from '/@/api/backend'
+import { getUrl } from '/@/utils/axios'
 import { captchaUrl } from '/@/api/common'
 import { randomStr, setAdminToken } from '/@/utils/common'
+import router from '/@/router'
+var timer: NodeJS.Timer
 
 const store = useStore()
 
 const state = reactive({
     showCaptcha: false,
     captchaId: randomStr(),
+    captchaUrl: getUrl() + captchaUrl,
 })
 
 const onChangeCaptcha = () => {
@@ -162,7 +166,7 @@ const rules = reactive({
 })
 
 onMounted(() => {
-    setTimeout(() => {
+    timer = setTimeout(() => {
         pageBubble.init()
     }, 1000)
     const vm: any = getCurrentInstance()
@@ -174,12 +178,17 @@ onMounted(() => {
         vm.ctx.$refs.captcha.focus()
     }
 
-    login('get').then((res) => {
-        state.showCaptcha = res.data.captcha
-    })
+    login('get')
+        .then((res) => {
+            state.showCaptcha = res.data.captcha
+        })
+        .catch((err) => {
+            console.log(err)
+        })
 })
 
 onBeforeUnmount(() => {
+    clearTimeout(timer)
     pageBubble.removeListeners()
 })
 
@@ -197,6 +206,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
                 .then((res) => {
                     form.loading = false
                     setAdminToken(res.data.userinfo.token)
+                    router.push({ name: res.data.routeName })
                 })
                 .catch((err) => {
                     form.loading = false

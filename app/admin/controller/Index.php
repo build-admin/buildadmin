@@ -28,7 +28,9 @@ class Index extends Backend
     {
         // 检查登录态
         if ($this->auth->isLogin()) {
-            $this->success('您已经登录过了~', [], 302);
+            $this->success('您已经登录过了，无需重复登录~', [
+                'routeName' => 'admin'
+            ], 302);
         }
 
         $captchaSwitch = Config::get('buildadmin.admin_login_captcha');
@@ -68,7 +70,8 @@ class Index extends Backend
             $res = $this->auth->login($username, $password, (bool)$keep);
             if ($res === true) {
                 $this->success(__('登录成功！'), [
-                    'userinfo' => $this->auth->getInfo()
+                    'userinfo'  => $this->auth->getInfo(),
+                    'routeName' => 'admin'
                 ]);
             } else {
                 $msg = $this->auth->getError();
