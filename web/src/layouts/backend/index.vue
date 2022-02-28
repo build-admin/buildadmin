@@ -8,7 +8,6 @@ import { useRoute } from 'vue-router'
 import Default from '/@/layouts/container/default.vue'
 import Classic from '/@/layouts/container/classic.vue'
 import Streamline from '/@/layouts/container/streamline.vue'
-import menus from '/@/mock/router.json' // 模拟api请求数据
 import { computed, onBeforeMount, onUnmounted } from 'vue'
 import { Session } from '/@/utils/storage'
 import { index } from '/@/api/backend'

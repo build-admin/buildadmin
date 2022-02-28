@@ -110,6 +110,9 @@ export const handleAdminRoute = (routes: any) => {
 const handleMenuRule = (routes: any, pathPrefix = '/') => {
     let menuRule = []
     for (const key in routes) {
+        if (routes[key].extend == 'add_rules_only') {
+            continue
+        }
         if (routes[key].type == 'menu' || routes[key].type == 'menu_dir') {
             routes[key].type = routes[key].menu_type
             routes[key].keepAlive = routes[key].name
@@ -131,6 +134,9 @@ const handleMenuRule = (routes: any, pathPrefix = '/') => {
 
 export const addRouteAll = (viewsComponent: Record<string, { [key: string]: any }>, routes: any, parentName: string) => {
     for (const idx in routes) {
+        if (routes[idx].extend == 'add_menu_only') {
+            continue
+        }
         if (routes[idx].type == 'menu' && routes[idx].menu_type == 'tab' && viewsComponent[routes[idx].component].default) {
             addRouteItem(viewsComponent, routes[idx], parentName)
         }
