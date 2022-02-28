@@ -6,6 +6,7 @@ import Icon from '/@/components/icon/index.vue'
 import { store } from '/@/store'
 import { Local } from '/@/utils/storage'
 import { ADMIN_TOKEN } from '/@/store/constant/cacheKey'
+import { adminBaseRoute } from '/@/router/static'
 
 export function registerIcons(app: App) {
     /*
@@ -49,7 +50,7 @@ export function setTitle(t: any = null) {
         if (store.state.navTabs.activeRoute) {
             webTitle = store.state.navTabs.activeRoute.title
         } else {
-            webTitle = t ? t(router.currentRoute.value.meta.title) : (router.currentRoute.value.meta.title as string)
+            webTitle = t && router.currentRoute.value.meta.title ? t(router.currentRoute.value.meta.title) : (router.currentRoute.value.meta.title as string)
         }
         document.title = `${webTitle}`
     })
@@ -90,4 +91,48 @@ export function setAdminToken(value: string) {
 
 export function getAdminToken() {
     return Local.get(ADMIN_TOKEN) || ''
+}
+
+export const pageTitle = (name: string): string => {
+    return `pagesTitle.${name}`
+}
+
+/*
+ * 处理后台的路由
+ */
+export const handleAdminRoute = (routes: any) => {
+    const viewsComponent = import.meta.globEager('/src/views/backend/**/*.vue')
+    addRouteAll(viewsComponent, routes, adminBaseRoute.name as string)
+}
+
+export const addRouteAll = (viewsComponent: Record<string, { [key: string]: any }>, routes: any, parentName: string) => {
+    for (const idx in routes) {
+        if (routes[idx].type == 'menu' && viewsComponent[routes[idx].component].default) {
+            addRouteItem(viewsComponent, routes[idx], parentName)
+        } else if (routes[idx].type == 'menu_dir' && routes[idx].children) {
+            addRouteAll(viewsComponent, routes[idx].children, parentName)
+        }
+    }
+}
+
+export const addRouteItem = (viewsComponent: Record<string, { [key: string]: any }>, route: any, parentName: string) => {
+    if (parentName) {
+        router.addRoute(parentName, {
+            path: route.path,
+            name: route.name,
+            component: viewsComponent[route.component].default,
+            meta: {
+                title: route.title,
+            },
+        })
+    } else {
+        router.addRoute({
+            path: '/' + route.path,
+            name: route.name,
+            component: viewsComponent[route.component].default,
+            meta: {
+                title: route.title,
+            },
+        })
+    }
 }

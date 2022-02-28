@@ -5,4 +5,6 @@ export default {
     notFound: 'Page not found',
     noPower: 'No access',
     noTitle: 'no title',
+    'Embedded iframe': 'Embedded iframe',
+    adminMainLoading: 'Loading...',
 }

@@ -4,6 +4,7 @@
 
 <script setup lang="ts">
 import { useStore } from '/@/store'
+import { useRoute } from 'vue-router'
 import Default from '/@/layouts/container/default.vue'
 import Classic from '/@/layouts/container/classic.vue'
 import Streamline from '/@/layouts/container/streamline.vue'
@@ -11,16 +12,50 @@ import menus from '/@/mock/router.json' // 模拟api请求数据
 import { computed, onBeforeMount, onUnmounted } from 'vue'
 import { Session } from '/@/utils/storage'
 import { index } from '/@/api/backend'
+import { handleAdminRoute } from '/@/utils/common'
+import router from '/@/router/index'
+import { adminBaseRoute } from '/@/router/static'
+
+const route = useRoute()
+
+index().then((res) => {
+    if (res.data.menus) {
+        handleAdminRoute(res.data.menus)
+        let routers = router.getRoutes()
+
+        // 预跳转到上次路径
+        if (route.query && route.query.url && route.query.url != adminBaseRoute.path) {
+            // 检查路径是否有权限
+            let routerPaths = []
+            for (const key in routers) {
+                if (routers[key].path) routerPaths.push(routers[key].path)
+            }
+            if (routerPaths.indexOf(route.query.url as string) !== -1) {
+                let query = JSON.parse(route.query.query as string)
+                router.push({ path: route.query.url as string, query: Object.keys(query).length ? query : {} })
+                return
+            }
+        }
+
+        // 跳转到第一个菜单
+        let routerNames = []
+        for (const key in routers) {
+            if (routers[key].name) routerNames.push(routers[key].name)
+        }
+        for (const key in res.data.menus) {
+            if (res.data.menus[key].type != 'menu_dir' && routerNames.indexOf(res.data.menus[key].name) !== -1) {
+                router.push({ name: res.data.menus[key].name })
+                break
+            }
+        }
+    }
+})
 
 const store = useStore()
 const layoutConfig = computed(() => store.state.config.layout)
 
 // 更新vuex中的路由菜单数据
 store.dispatch('navTabs/setTabsViewRoutes', menus)
-
-index().then((res) => {
-    console.log(res)
-})
 
 const onResize = () => {
     let defaultBeforeResizeLayout = {

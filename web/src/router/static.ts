@@ -3,7 +3,7 @@
  */
 import { RouteRecordRaw } from 'vue-router'
 
-const title = (name: string): string => {
+const pageTitle = (name: string): string => {
     return `pagesTitle.${name}`
 }
 
@@ -13,74 +13,15 @@ const staticRoutes: Array<RouteRecordRaw> = [
         name: '/',
         component: () => import('/@/views/frontend/index.vue'),
         meta: {
-            title: title('home'),
+            title: pageTitle('home'), // 首页
         },
-    },
-    {
-        path: '/admin',
-        name: 'admin',
-        component: () => import('/@/layouts/backend/index.vue'),
-        redirect: '/admin/dashboard',
-        meta: {
-            title: title('admin'),
-        },
-        children: [
-            {
-                path: 'iframe/:url',
-                name: 'layoutIframe',
-                component: () => import('/@/layouts/router-view/iframe.vue'),
-                meta: {
-                    title: '内嵌iframe',
-                },
-            },
-            {
-                path: 'dashboard',
-                name: 'dashboard',
-                component: () => import('/@/views/backend/dashboard.vue'),
-                meta: {
-                    title: '控制台',
-                },
-            },
-            {
-                path: 'routine/adminInfo',
-                name: 'routine/adminInfo',
-                component: () => import('/@/views/backend/routine/adminInfo.vue'),
-                meta: {
-                    title: '我的资料',
-                },
-            },
-            {
-                path: 'routine/config/:id?',
-                name: 'routine/config',
-                component: () => import('/@/views/backend/routine/config.vue'),
-                meta: {
-                    title: '系统设置',
-                },
-            },
-            {
-                path: 'table',
-                name: 'table',
-                component: () => import('/@/views/backend/table.vue'),
-                meta: {
-                    title: '表格示例',
-                },
-            },
-            {
-                path: 'auth/menu',
-                name: 'authMenu',
-                component: () => import('/@/views/backend/auth/menu.vue'),
-                meta: {
-                    title: '菜单管理',
-                },
-            },
-        ],
     },
     {
         path: '/admin/login',
         name: 'adminLogin',
         component: () => import('/@/views/backend/login.vue'),
         meta: {
-            title: title('adminLogin'),
+            title: pageTitle('adminLogin'), // 管理员登录页
         },
     },
     {
@@ -92,7 +33,14 @@ const staticRoutes: Array<RouteRecordRaw> = [
         name: 'notFound',
         component: () => import('/@/views/common/error/404.vue'),
         meta: {
-            title: title('notFound'),
+            title: pageTitle('notFound'), // 页面不存在
+        },
+    },
+    {
+        // 后台找不到页面了-可能是路由未加载上
+        path: '/admin:path(.*)*',
+        redirect: (to) => {
+            return { name: 'adminMainLoading', query: { url: to.path, query: JSON.stringify(to.query) } }
         },
     },
     {
@@ -100,9 +48,40 @@ const staticRoutes: Array<RouteRecordRaw> = [
         name: 'noPower',
         component: () => import('/@/views/common/error/401.vue'),
         meta: {
-            title: title('noPower'),
+            title: pageTitle('noPower'), // 无权限访问
         },
     },
 ]
 
-export default staticRoutes
+// 后台基础路由和静态路由
+const adminBaseRoute: RouteRecordRaw = {
+    path: '/admin',
+    name: 'admin',
+    component: () => import('/@/layouts/backend/index.vue'),
+    redirect: '/admin/loading',
+    meta: {
+        title: pageTitle('admin'),
+    },
+    children: [
+        {
+            path: 'loading',
+            name: 'adminMainLoading',
+            component: () => import('/@/views/backend/loading.vue'),
+            meta: {
+                title: pageTitle('adminMainLoading'),
+            },
+        },
+        {
+            path: 'iframe/:url',
+            name: 'layoutIframe',
+            component: () => import('/@/layouts/router-view/iframe.vue'),
+            meta: {
+                title: pageTitle('Embedded iframe'),
+            },
+        },
+    ],
+}
+
+staticRoutes.push(adminBaseRoute)
+
+export { staticRoutes, adminBaseRoute }

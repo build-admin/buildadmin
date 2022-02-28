@@ -76,6 +76,9 @@ const onContextmenu = (menu: viewMenu, el: MouseEvent) => {
 
 // tab 激活状态切换
 const selectNavTab = function (dom: HTMLDivElement) {
+    if(!dom) {
+        return false;
+    }
     activeBoxStyle.width = dom.clientWidth + 'px'
     activeBoxStyle.transform = `translateX(${dom.offsetLeft}px)`
 

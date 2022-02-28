@@ -40,6 +40,11 @@ const geted = (icon: string) => {
     console.log(icon)
 }
 
+const router = useRouter()
+/* setTimeout(() => {
+    router.push({name: 'admin'})
+}, 2000) */
+
 /* setTimeout(() => {
     getLocalIconfontNames().then((res) => {
         console.log(res)
