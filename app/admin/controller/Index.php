@@ -15,8 +15,11 @@ class Index extends Backend
 
     public function index()
     {
+        $adminInfo = $this->auth->getInfo();
+        unset($adminInfo['token']);
         $this->success('ok', [
-            'menus' => $this->auth->getMenus()
+            'adminInfo' => $adminInfo,
+            'menus'     => $this->auth->getMenus()
         ]);
     }
 

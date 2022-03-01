@@ -6,10 +6,8 @@
                     <div class="welcome suspension">
                         <img class="welcome-img" :src="headerSvg" alt="" />
                         <div class="welcome-text">
-                            <div class="welcome-title">晚上好，Admin，欢迎回来。</div>
-                            <div class="welcome-note">
-                                开源等于互助；开源需要大家一起来支持，支持的方式有很多种，比如使用、推荐、写教程、保护生态、贡献代码、回答问题、分享经验、打赏赞助等；欢迎您加入我们！
-                            </div>
+                            <div class="welcome-title">{{ state.adminName }}，{{ state.greetings }}</div>
+                            <div class="welcome-note">{{ state.remark }}</div>
                         </div>
                     </div>
                 </el-col>
@@ -213,6 +211,10 @@
         transition: all 0.3s ease;
         cursor: pointer;
         opacity: 0;
+        z-index: 999;
+        &:active {
+            background-color: rgba($color: #000000, $alpha: 0.6);
+        }
     }
     &:hover {
         .working-opt {
@@ -348,14 +350,28 @@ import { CountUp } from 'countup.js'
 import * as echarts from 'echarts'
 import { store } from '/@/store'
 import { useTemplateRefsList } from '@vueuse/core'
+import { dashboard } from '/@/api/backend/dashboard'
+import { useI18n } from 'vue-i18n'
 import 'element-plus/theme-chalk/display.css'
 
+const { t } = useI18n()
 const chartRefs = useTemplateRefsList<HTMLDivElement>()
 
 const state: {
     charts: any[]
+    adminName: string
+    greetings: string
+    remark: string
 } = reactive({
     charts: [],
+    adminName: '加载中...',
+    greetings: '您好',
+    remark: '加载中...',
+})
+
+dashboard().then((res) => {
+    state.remark = res.data.remark
+    state.adminName = res.data.adminName
 })
 
 const countUpFun = (id: string) => {
@@ -641,12 +657,36 @@ const echartsResize = () => {
     })
 }
 
+const greetingsFun = () => {
+    const now = new Date()
+    const hour = now.getHours()
+    let greetings = ''
+    if (hour < 5) {
+        greetings = '夜深了，注意身体哦！'
+    } else if (hour < 9) {
+        greetings = '早上好！' + t('welcome back')
+    } else if (hour < 12) {
+        greetings = '上午好！' + t('welcome back')
+    } else if (hour < 14) {
+        greetings = '中午好！' + t('welcome back')
+    } else if (hour < 18) {
+        greetings = '下午好！' + t('welcome back')
+    } else if (hour < 24) {
+        greetings = '晚上好！' + t('welcome back')
+    } else {
+        greetings = '您好！' + t('welcome back')
+    }
+
+    state.greetings = greetings
+}
+
 onActivated(() => {
     echartsResize()
 })
 
 onMounted(() => {
     initCountUp()
+    greetingsFun()
     initUserGrowthChart()
     initFileGrowthChart()
     initUserSourceChart()

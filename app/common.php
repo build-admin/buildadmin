@@ -74,3 +74,13 @@ if (!function_exists('__')) {
         return \think\facade\Lang::get($name, $vars, $lang);
     }
 }
+
+if (!function_exists('get_route_remark')) {
+    function get_route_remark()
+    {
+        $controllername = request()->controller(true);
+        $actionname     = request()->action(true);
+        $path           = str_replace('.', '/', $controllername) . '/' . $actionname;
+        return \think\facade\Db::name('menu_rule')->where('name', $path)->value('remark');
+    }
+}
