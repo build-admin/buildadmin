@@ -107,6 +107,20 @@ export const handleAdminRoute = (routes: any) => {
     return handleMenuRule(routes, '/' + (adminBaseRoute.name as string) + '/')
 }
 
+export const getMenuPaths = (menus: any): any[] => {
+    let menuPaths = []
+    for (const key in menus) {
+        if (menus[key].extend == 'add_rules_only') {
+            continue
+        }
+        menuPaths.push(menus[key].path)
+        if (menus[key].children && menus[key].children.length > 0) {
+            menuPaths = menuPaths.concat(getMenuPaths(menus[key].children))
+        }
+    }
+    return menuPaths
+}
+
 const handleMenuRule = (routes: any, pathPrefix = '/') => {
     let menuRule = []
     for (const key in routes) {

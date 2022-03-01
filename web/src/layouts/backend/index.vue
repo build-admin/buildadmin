@@ -11,7 +11,7 @@ import Streamline from '/@/layouts/container/streamline.vue'
 import { computed, onBeforeMount, onUnmounted } from 'vue'
 import { Session } from '/@/utils/storage'
 import { index } from '/@/api/backend'
-import { handleAdminRoute } from '/@/utils/common'
+import { handleAdminRoute, getMenuPaths } from '/@/utils/common'
 import router from '/@/router/index'
 import { adminBaseRoute } from '/@/router/static'
 
@@ -22,16 +22,12 @@ index().then((res) => {
         let menuRule = handleAdminRoute(res.data.menus)
         // 更新vuex中的路由菜单数据
         store.dispatch('navTabs/setTabsViewRoutes', menuRule)
-        let routers = router.getRoutes()
 
         // 预跳转到上次路径
         if (route.query && route.query.url && route.query.url != adminBaseRoute.path) {
             // 检查路径是否有权限
-            let routerPaths = []
-            for (const key in routers) {
-                if (routers[key].path) routerPaths.push(routers[key].path)
-            }
-            if (routerPaths.indexOf(route.query.url as string) !== -1) {
+            let menuPaths = getMenuPaths(menuRule)
+            if (menuPaths.indexOf(route.query.url as string) !== -1) {
                 let query = JSON.parse(route.query.query as string)
                 router.push({ path: route.query.url as string, query: Object.keys(query).length ? query : {} })
                 return
@@ -40,6 +36,7 @@ index().then((res) => {
 
         // 跳转到第一个菜单
         let routerNames = []
+        let routers = router.getRoutes()
         for (const key in routers) {
             if (routers[key].name) routerNames.push(routers[key].name)
         }

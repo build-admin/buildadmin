@@ -10,7 +10,8 @@ use app\common\controller\Backend;
 
 class Index extends Backend
 {
-    protected $noNeedLogin = ['test', 'login'];
+    protected $noNeedLogin      = ['test', 'login'];
+    protected $noNeedPermission = ['index'];
 
     public function index()
     {

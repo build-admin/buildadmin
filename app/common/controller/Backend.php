@@ -41,7 +41,7 @@ class Backend extends Api
             if (!$this->auth->actionInArr($this->noNeedPermission)) {
                 if (!$this->auth->check($path)) {
                     $this->error(__('You have no permission'), [
-                        'routeName' => 'adminLogin'
+                        'routeName' => 'admin'
                     ], 302);
                 }
             }
