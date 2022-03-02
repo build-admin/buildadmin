@@ -2,11 +2,10 @@ import axios from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 import { computed } from 'vue'
 import { ElMessage, ElLoading, LoadingOptions } from 'element-plus'
-import { store } from '/@/store/index'
+import { useConfig } from '/@/stores/config'
 import { getAdminToken } from './common'
 import router from '/@/router/index'
 
-const lang = computed(() => store.state.config.defaultLang)
 const pendingMap = new Map()
 const loadingInstance: LoadingInstance = {
     target: null,
@@ -19,6 +18,9 @@ export const getUrl = (): string => {
 }
 
 function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loading: LoadingOptions = {}) {
+    const config = useConfig()
+    const lang = computed(() => config.lang.defaultLang)
+
     const Axios = axios.create({
         baseURL: getUrl(),
         timeout: 1000 * 10,

@@ -1,7 +1,6 @@
 <template>
     <div>
         <div>index/index.vue</div>
-        <div>{{ defaultLang }}</div>
         <div>{{ $t(`layout.seting`) }}</div>
         <el-date-picker type="date"></el-date-picker>
         <br />
@@ -16,6 +15,8 @@
         <div :style="{ width: '400px', marginLeft: '100px' }">
             <selector @change="geted" />
         </div>
+
+        <div>menuWidth:{{ width }},{{ Config.layout.shrink }}</div>
     </div>
 </template>
 
@@ -25,10 +26,14 @@ import { useI18n } from 'vue-i18n'
 import en from '/@/lang/frame/en'
 import { useRouter } from 'vue-router'
 // import messages from '/@/lang/pages/zh-cn/home'
-import { store } from '/@/store/index'
 import { editDefaultLang } from '/@/lang/index'
 import { getLocalIconfontNames } from '/@/utils/iconfont'
 import selector from '/@/components/icon/selector.vue'
+import { useConfig } from '/@/stores/config'
+
+const Config = useConfig()
+
+const width = computed(() => Config.menuWidth())
 
 var test = ref('el-icon-Aim')
 
@@ -57,21 +62,4 @@ const router = useRouter()
         'zh-cn': messages,
     },
 }) */
-
-const defaultLang = computed(() => store.state.config.defaultLang)
-
-/* setTimeout(() => {
-    store.commit('config/setAndCache', {
-        name: 'defaultLang',
-        value: 'en',
-    })
-    console.log('设置了')
-}, 2000) */
-
-/* setTimeout(() => {
-    store.commit('config/setMulti', {
-        defaultLang: 'test1',
-        fallbackLang: 'test2',
-    })
-}, 2000) */
 </script>

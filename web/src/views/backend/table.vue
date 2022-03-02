@@ -115,14 +115,14 @@
 
 <script lang="ts" setup>
 import { computed, reactive } from 'vue'
-import { useStore } from '/@/store/index'
+import { useConfig } from '/@/stores/config'
+const config = useConfig()
 
-const store = useStore()
 const state = reactive({
     showComSearch: false,
     searchKeyWord: '',
 })
-const shrink = computed(() => store.state.config.layout.shrink)
+const shrink = computed(() => config.layout.shrink)
 const tableData = [
     {
         date: '2016-05-03',

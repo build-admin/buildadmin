@@ -9,13 +9,14 @@ import { useI18n } from 'vue-i18n'
 import iconfontInit from '/@/utils/iconfont'
 import { useRoute } from 'vue-router'
 import { setTitle } from '/@/utils/common'
-import { store } from '/@/store/index'
+import { useConfig } from '/@/stores/config'
 
+const config = useConfig()
 const route = useRoute()
 
 // 初始化 element 的语言包
 const { t, getLocaleMessage } = useI18n()
-const lang = getLocaleMessage(store.state.config.defaultLang) as any
+const lang = getLocaleMessage(config.lang.defaultLang) as any
 onMounted(() => {
     iconfontInit()
 })

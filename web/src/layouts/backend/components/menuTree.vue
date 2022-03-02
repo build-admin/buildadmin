@@ -27,10 +27,10 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useStore } from '/@/store'
-import type { viewMenu } from '/@/store/interface'
+import { useConfig } from '/@/stores/config';
+import type { viewMenu } from '/@/stores/interface'
 
-const store = useStore()
+const config = useConfig()
 
 interface Props {
     menus: viewMenu[]
@@ -39,9 +39,9 @@ const props = withDefaults(defineProps<Props>(), {
     menus: () => [],
 })
 
-const defaultIcon = computed(() => store.state.config.layout.menuDefaultIcon)
-const menuColor = computed(() => store.state.config.layout.menuColor)
-const menuActiveBackground = computed(() => store.state.config.layout.menuActiveBackground)
+const defaultIcon = computed(() => config.layout.menuDefaultIcon)
+const menuColor = computed(() => config.layout.menuColor)
+const menuActiveBackground = computed(() => config.layout.menuActiveBackground)
 
 const onLink = (url: string) => {
     window.open(url, '_blank')

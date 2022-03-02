@@ -5,18 +5,15 @@
             <Main />
         </el-container>
     </el-container>
-    <CloseFullScreen v-if="tabFullScreen" />
+    <CloseFullScreen v-if="navTabs.state.tabFullScreen" />
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import Header from '../backend/components/header.vue'
 import Main from '/@/layouts/router-view/main.vue'
 import CloseFullScreen from '../backend/components/closeFullScreen.vue'
-import { useStore } from '/@/store/index'
-
-const store = useStore()
-const tabFullScreen = computed(() => store.state.navTabs.tabFullScreen)
+import { useNavTabs } from '/@/stores/navTabs'
+const navTabs = useNavTabs()
 </script>
 
 <style scoped>

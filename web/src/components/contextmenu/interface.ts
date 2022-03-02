@@ -1,4 +1,4 @@
-import { viewMenu } from '/@/store/interface'
+import { viewMenu } from '/@/stores/interface'
 
 export interface Axis {
     x: number

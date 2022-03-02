@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive, toRaw } from 'vue'
 import type { ContextMenuItem, Axis, ContextmenuItemClickEmitArg } from './interface'
-import { viewMenu } from '/@/store/interface'
+import { viewMenu } from '/@/stores/interface'
 
 // 不能使用导出的 interface vue的issue已存在，尚未解决
 interface Props {

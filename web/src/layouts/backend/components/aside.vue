@@ -1,6 +1,6 @@
 <template>
-    <el-aside v-if="!tabFullScreen" :class="'layout-aside-' + layoutMode + ' ' + (shrink ? 'shrink' : '')">
-        <Logo v-if="menuShowTopBar" />
+    <el-aside v-if="!tabFullScreen" :class="'layout-aside-' + layout.layoutMode + ' ' + (layout.shrink ? 'shrink' : '')">
+        <Logo v-if="layout.menuShowTopBar" />
         <MenuVertical />
     </el-aside>
 </template>
@@ -9,15 +9,15 @@
 import { computed } from 'vue'
 import Logo from './logo.vue'
 import MenuVertical from './menuVertical.vue'
-import { useStore } from '/@/store/index'
+import { useConfig } from '/@/stores/config'
+import { useNavTabs } from '/@/stores/navTabs'
 
-const store = useStore()
+const config = useConfig()
+const navTabs = useNavTabs()
 
-const tabFullScreen = computed(() => store.state.navTabs.tabFullScreen)
-const menuWidth = computed(() => store.getters['config/menuWidth'])
-const layoutMode = computed(() => store.state.config.layout.layoutMode)
-const menuShowTopBar = computed(() => store.state.config.layout.menuShowTopBar)
-const shrink = computed(() => store.state.config.layout.shrink)
+const tabFullScreen = computed(() => navTabs.state.tabFullScreen)
+const menuWidth = computed(() => config.menuWidth())
+const layout = computed(() => config.layout)
 </script>
 
 <style scoped lang="scss">

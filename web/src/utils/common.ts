@@ -3,9 +3,9 @@ import type { App } from 'vue'
 import * as elIcons from '@element-plus/icons-vue'
 import router from '/@/router/index'
 import Icon from '/@/components/icon/index.vue'
-import { store } from '/@/store'
+import { useNavTabs } from '/@/stores/navTabs'
 import { Local } from '/@/utils/storage'
-import { ADMIN_TOKEN } from '/@/store/constant/cacheKey'
+import { ADMIN_TOKEN } from '/@/stores/constant/cacheKey'
 import { adminBaseRoute } from '/@/router/static'
 
 export function registerIcons(app: App) {
@@ -41,14 +41,31 @@ export function loadJs(url: string): void {
     document.body.appendChild(link)
 }
 
+export const pushFirstRoute = () => {
+    const navTabs = useNavTabs()
+    let routerNames = []
+    let routers = router.getRoutes()
+    for (const key in routers) {
+        if (routers[key].name) routerNames.push(routers[key].name)
+    }
+    for (const key in navTabs.state.tabsViewRoutes) {
+        if (navTabs.state.tabsViewRoutes[key].type != 'menu_dir' && routerNames.indexOf(navTabs.state.tabsViewRoutes[key].name) !== -1) {
+            router.push({ name: navTabs.state.tabsViewRoutes[key].name })
+            return true
+        }
+    }
+    router.go(0)
+}
+
 /**
  * 设置浏览器标题
  */
 export function setTitle(t: any = null) {
+    const navTabs = useNavTabs()
     nextTick(() => {
         var webTitle: string = ''
-        if (store.state.navTabs.activeRoute) {
-            webTitle = store.state.navTabs.activeRoute.title
+        if (navTabs.state.activeRoute) {
+            webTitle = navTabs.state.activeRoute.title
         } else {
             webTitle =
                 t && router.currentRoute.value.meta.title ? t(router.currentRoute.value.meta.title) : (router.currentRoute.value.meta.title as string)

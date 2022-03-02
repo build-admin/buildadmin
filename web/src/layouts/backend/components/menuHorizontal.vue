@@ -50,21 +50,23 @@ import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import Logo from './logo.vue'
 import MenuTree from './menuTree.vue'
 import { useRoute, onBeforeRouteUpdate, RouteLocationNormalizedLoaded } from 'vue-router'
-import { useStore } from '/@/store/index'
+import { useConfig } from '/@/stores/config'
+import { useNavTabs } from '/@/stores/navTabs'
 import type { ElScrollbar } from 'element-plus'
 import NavMenus from '/@/layouts/backend/components/navMenus.vue'
 
 const horizontalMenusRef = ref<InstanceType<typeof ElScrollbar>>()
 
-const store = useStore()
+const config = useConfig()
+const navTabs = useNavTabs()
 const route = useRoute()
 
 const state = reactive({
     defaultActive: '',
 })
 
-const menus = computed(() => store.state.navTabs.tabsViewRoutes)
-const layoutConfig = computed(() => store.state.config.layout)
+const menus = computed(() => navTabs.state.tabsViewRoutes)
+const layoutConfig = computed(() => config.layout)
 
 // 激活当前路由的菜单
 const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {

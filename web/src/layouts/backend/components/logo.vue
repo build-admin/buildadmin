@@ -16,21 +16,18 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useStore } from '/@/store'
+import { useConfig } from '/@/stores/config'
 import { closeShade } from '/@/utils/pageShade'
 
-const store = useStore()
-const layoutConfig = computed(() => store.state.config.layout)
+const config = useConfig()
+const layoutConfig = computed(() => config.layout)
 
 const onMenuCollapse = function () {
     if (layoutConfig.value.shrink && !layoutConfig.value.menuCollapse) {
         closeShade()
     }
 
-    store.commit('config/setAndCache', {
-        name: 'layout.menuCollapse',
-        value: !layoutConfig.value.menuCollapse,
-    })
+    config.setLayout('menuCollapse', !layoutConfig.value.menuCollapse)
 }
 </script>
 

@@ -10,26 +10,19 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useStore } from '/@/store'
+import { useConfig } from '/@/stores/config'
 import NavTabs from '/@/layouts/backend/components/navBar/tabs.vue'
 import NavMenus from '../navMenus.vue'
 import { showShade } from '/@/utils/pageShade'
 
-const store = useStore()
-
-const layoutConfig = computed(() => store.state.config.layout)
+const config = useConfig()
+const layoutConfig = computed(() => config.layout)
 
 const onMenuCollapse = () => {
     showShade('ba-aside-menu-shade', () => {
-        store.commit('config/setAndCache', {
-            name: 'layout.menuCollapse',
-            value: true,
-        })
+        config.setLayout('menuCollapse', true)
     })
-    store.commit('config/setAndCache', {
-        name: 'layout.menuCollapse',
-        value: false,
-    })
+    config.setLayout('menuCollapse', false)
 }
 </script>
 

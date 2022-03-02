@@ -14,16 +14,18 @@
 
 <script setup lang="ts">
 import { reactive, onMounted, watch, computed, onBeforeMount, onUnmounted, nextTick } from 'vue'
-import { useStore } from '/@/store/index'
 import { useRoute } from 'vue-router'
 import { mainHeight as layoutMainScrollbarStyle } from '/@/utils/layout'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
-import { viewMenu } from '/@/store/interface'
+import { viewMenu } from '/@/stores/interface'
+import { useConfig } from '/@/stores/config'
+import { useNavTabs } from '/@/stores/navTabs'
 
 const { proxy } = useCurrentInstance()
 
 const route = useRoute()
-const store = useStore()
+const config = useConfig()
+const navTabs = useNavTabs()
 
 const state: {
     componentKey: string
@@ -33,7 +35,7 @@ const state: {
     keepAliveComponentNameList: [],
 })
 
-const layoutMainAnimation = computed(() => store.state.config.layout.mainAnimation)
+const layoutMainAnimation = computed(() => config.layout.mainAnimation)
 
 const addKeepAliveComponentName = function (keepAliveName: string | undefined) {
     if (keepAliveName) {
@@ -66,14 +68,14 @@ onUnmounted(() => {
 
 onMounted(() => {
     // 确保刷新页面时也能正确取得当前路由 keepAlive 参数
-    addKeepAliveComponentName(store.state.navTabs.activeRoute?.keepAlive)
+    addKeepAliveComponentName(navTabs.state.activeRoute?.keepAlive)
 })
 
 watch(
     () => route.path,
     () => {
         state.componentKey = route.path
-        addKeepAliveComponentName(store.state.navTabs.activeRoute?.keepAlive)
+        addKeepAliveComponentName(navTabs.state.activeRoute?.keepAlive)
     }
 )
 </script>

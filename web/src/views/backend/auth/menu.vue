@@ -57,10 +57,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from 'vue'
-import { useStore } from '/@/store/index'
-
-const store = useStore()
+import { reactive } from 'vue'
 const state = reactive({
     searchKeyWord: '',
 })

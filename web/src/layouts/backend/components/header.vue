@@ -5,14 +5,16 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useStore } from '/@/store'
+import { useConfig } from '/@/stores/config'
+import { useNavTabs } from '/@/stores/navTabs'
 import DefaultNavBar from './navBar/default.vue'
 import ClassicNavBar from './navBar/classic.vue'
 import StreamlineNavBar from './menuHorizontal.vue'
 
-const store = useStore()
-const tabFullScreen = computed(() => store.state.navTabs.tabFullScreen)
-const layoutMode = computed(() => store.state.config.layout.layoutMode)
+const config = useConfig()
+const navTabs = useNavTabs()
+const tabFullScreen = computed(() => navTabs.state.tabFullScreen)
+const layoutMode = computed(() => config.layout.layoutMode)
 </script>
 <script lang="ts">
 export default {

@@ -91,7 +91,7 @@ import * as pageBubble from '/@/utils/pageBubble'
 import type { ElForm } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { editDefaultLang } from '/@/lang/index'
-import { useStore } from '/@/store/index'
+import { useConfig } from '/@/stores/config'
 import { login } from '/@/api/backend'
 import { getUrl } from '/@/utils/axios'
 import { captchaUrl } from '/@/api/common'
@@ -99,7 +99,7 @@ import { randomStr, setAdminToken } from '/@/utils/common'
 import router from '/@/router'
 var timer: NodeJS.Timer
 
-const store = useStore()
+const config = useConfig()
 
 const state = reactive({
     showCaptcha: false,
@@ -192,9 +192,7 @@ onBeforeUnmount(() => {
     pageBubble.removeListeners()
 })
 
-const langArray = computed(() => {
-    return store.state.config.langArray
-})
+const langArray = computed(() => config.lang.langArray)
 
 const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     if (!formEl) return

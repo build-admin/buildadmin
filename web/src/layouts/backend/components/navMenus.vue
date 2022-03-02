@@ -62,7 +62,7 @@
                 </div>
             </div>
         </el-popover>
-        <div @click="onSetState('showDrawer', true)" class="nav-menu-item">
+        <div @click="configStore.setLayout('showDrawer', true)" class="nav-menu-item">
             <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" name="fa fa-cogs" size="18" />
         </div>
         <Config />
@@ -73,12 +73,14 @@
 import { computed, reactive } from 'vue'
 import { editDefaultLang } from '/@/lang'
 import screenfull from 'screenfull'
-import { store } from '/@/store/index'
+import { useConfig } from '/@/stores/config'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import Config from './config.vue'
 
 const { t } = useI18n()
+
+const configStore = useConfig()
 
 const state = reactive({
     isFullScreen: false,
@@ -86,8 +88,8 @@ const state = reactive({
     showLayoutDrawer: false,
 })
 
-const langArray = computed(() => store.state.config.langArray)
-const layoutConfig = computed(() => store.state.config.layout)
+const langArray = computed(() => configStore.lang.langArray)
+const layoutConfig = computed(() => configStore.layout)
 
 const onCurrentNavMenu = (status: boolean, name: string) => {
     state.currentNavMenu = status ? name : ''
@@ -101,13 +103,6 @@ const onFullScreen = () => {
     screenfull.toggle()
     screenfull.onchange(() => {
         state.isFullScreen = screenfull.isFullscreen
-    })
-}
-
-const onSetState = (name: string, value: any) => {
-    store.commit('config/set', {
-        name: 'layout.' + name,
-        value: value,
     })
 }
 </script>

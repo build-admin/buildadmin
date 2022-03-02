@@ -9,9 +9,9 @@
 
 <script setup lang="ts">
 import { reactive, onMounted } from 'vue'
-import { useStore } from '/@/store'
+import { useNavTabs } from '/@/stores/navTabs'
 
-const store = useStore()
+const navTabs = useNavTabs()
 
 const state = reactive({
     closeBoxTop: 20,
@@ -32,7 +32,7 @@ const onMouseout = () => {
     state.closeBoxTop = -30
 }
 const onCloseFullScreen = () => {
-    store.commit('navTabs/setFullScreen', false)
+    navTabs.setFullScreen(false)
 }
 </script>
 

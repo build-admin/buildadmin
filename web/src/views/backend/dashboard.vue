@@ -348,13 +348,14 @@ import headerSvg from '/@/assets/dashboard/header-1.svg'
 import coffeeSvg from '/@/assets/dashboard/coffee.svg'
 import { CountUp } from 'countup.js'
 import * as echarts from 'echarts'
-import { store } from '/@/store'
+import { useNavTabs } from '/@/stores/navTabs'
 import { useTemplateRefsList } from '@vueuse/core'
 import { dashboard } from '/@/api/backend/dashboard'
 import { useI18n } from 'vue-i18n'
 import 'element-plus/theme-chalk/display.css'
 
 const { t } = useI18n()
+const navTabs = useNavTabs()
 const chartRefs = useTemplateRefsList<HTMLDivElement>()
 
 const state: {
@@ -664,17 +665,17 @@ const greetingsFun = () => {
     if (hour < 5) {
         greetings = '夜深了，注意身体哦！'
     } else if (hour < 9) {
-        greetings = '早上好！' + t('welcome back')
+        greetings = '早上好！' + t('dashboard.welcome back')
     } else if (hour < 12) {
-        greetings = '上午好！' + t('welcome back')
+        greetings = '上午好！' + t('dashboard.welcome back')
     } else if (hour < 14) {
-        greetings = '中午好！' + t('welcome back')
+        greetings = '中午好！' + t('dashboard.welcome back')
     } else if (hour < 18) {
-        greetings = '下午好！' + t('welcome back')
+        greetings = '下午好！' + t('dashboard.welcome back')
     } else if (hour < 24) {
-        greetings = '晚上好！' + t('welcome back')
+        greetings = '晚上好！' + t('dashboard.welcome back')
     } else {
-        greetings = '您好！' + t('welcome back')
+        greetings = '您好！' + t('dashboard.welcome back')
     }
 
     state.greetings = greetings
@@ -702,7 +703,7 @@ onBeforeMount(() => {
 })
 
 watch(
-    () => store.state.navTabs.tabFullScreen,
+    () => navTabs.state.tabFullScreen,
     () => {
         echartsResize()
     }

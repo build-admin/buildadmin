@@ -1,6 +1,6 @@
 import type { App } from 'vue'
 import { createI18n } from 'vue-i18n'
-import { store } from '/@/store/index'
+import { useConfig } from '/@/stores/config'
 
 /*
  * 默认只引入 element-plus 的中英文语言包
@@ -21,7 +21,8 @@ const assignLocale: assignLocale = {
 }
 
 export async function loadLang(app: App) {
-    const locale = store.state.config.defaultLang
+    const config = useConfig()
+    const locale = config.lang.defaultLang
 
     // 加载框架语言包
     const lang = await import(`./frame/${locale}.ts`)
@@ -51,7 +52,7 @@ export async function loadLang(app: App) {
         locale: locale,
         legacy: false, // 组合式api
         globalInjection: true, // 挂载$t,$d等到全局
-        fallbackLocale: store.state.config.fallbackLang,
+        fallbackLocale: config.lang.fallbackLang,
         messages,
     })
 
@@ -75,10 +76,8 @@ function getLangFileMessage(mList: any) {
 }
 
 export function editDefaultLang(lang: string): void {
-    store.commit('config/setAndCache', {
-        name: 'defaultLang',
-        value: lang,
-    })
+    const config = useConfig()
+    config.setLang(lang)
 
     /*
      * 语言包是按需加载的,比如默认语言为中文,则只在app实例内加载了中文语言包

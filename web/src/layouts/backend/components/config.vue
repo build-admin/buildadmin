@@ -9,7 +9,7 @@
                             <el-row class="layout-mode-box-style-row" :gutter="10">
                                 <el-col :span="12">
                                     <div
-                                        @click="store.dispatch('config/setLayoutMode', 'Default')"
+                                        @click="configStore.setLayoutMode('Default')"
                                         class="layout-mode-style default"
                                         :class="config.layoutMode == 'Default' ? 'active' : ''"
                                     >
@@ -25,7 +25,7 @@
                                 </el-col>
                                 <el-col :span="12">
                                     <div
-                                        @click="store.dispatch('config/setLayoutMode', 'Classic')"
+                                        @click="configStore.setLayoutMode('Classic')"
                                         class="layout-mode-style classic"
                                         :class="config.layoutMode == 'Classic' ? 'active' : ''"
                                     >
@@ -43,7 +43,7 @@
                             <el-row :gutter="10">
                                 <el-col :span="12">
                                     <div
-                                        @click="store.dispatch('config/setLayoutMode', 'Streamline')"
+                                        @click="configStore.setLayoutMode('Streamline')"
                                         class="layout-mode-style streamline"
                                         :class="config.layoutMode == 'Streamline' ? 'active' : ''"
                                     >
@@ -156,49 +156,40 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useStore } from '/@/store/index'
-import { Local } from '/@/utils/storage'
-import { CONFIG } from '/@/store/constant/cacheKey'
+import { useConfig } from '/@/stores/config'
+import { useNavTabs } from '/@/stores/navTabs'
 import { useRouter } from 'vue-router'
 import selector from '/@/components/icon/selector.vue'
+import { STORE_CONFIG } from '/@/stores/constant/cacheKey'
+import { Local } from '/@/utils/storage'
 
-const store = useStore()
+const configStore = useConfig()
+const navTabs = useNavTabs()
 const router = useRouter()
 
-const config = computed(() => store.state.config.layout)
+const config = computed(() => configStore.layout)
 
-const onCommitState = (value: any, name: string) => {
-    store.commit('config/setAndCache', {
-        name: 'layout.' + name,
-        value: value,
-    })
+const onCommitState = (value: any, name: any) => {
+    configStore.setLayout(name, value)
 }
 
 // 修改默认菜单图标
-const onCommitMenuDefaultIcon = (value: any, name: string) => {
-    store.commit('config/setAndCache', {
-        name: 'layout.' + name,
-        value: value,
-    })
+const onCommitMenuDefaultIcon = (value: any, name: any) => {
+    configStore.setLayout(name, value)
 
-    const menus = store.state.navTabs.tabsViewRoutes
-    store.dispatch('navTabs/setTabsViewRoutes', [])
+    const menus = navTabs.state.tabsViewRoutes
+    navTabs.setTabsViewRoutes([])
     setTimeout(() => {
-        store.dispatch('navTabs/setTabsViewRoutes', menus)
+        navTabs.setTabsViewRoutes(menus)
     }, 200)
 }
 
 const onCloseDrawer = () => {
-    store.commit('config/set', {
-        name: 'layout.showDrawer',
-        value: false,
-    })
+    configStore.setLayout('showDrawer', false)
 }
 
 const restoreDefault = (): boolean => {
-    let baConfig = Local.get(CONFIG) || {}
-    delete baConfig.layout
-    Local.set(CONFIG, baConfig)
+    Local.remove(STORE_CONFIG)
     router.go(0)
     return true
 }
