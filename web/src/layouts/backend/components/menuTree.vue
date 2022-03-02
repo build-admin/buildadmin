@@ -27,7 +27,7 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useConfig } from '/@/stores/config';
+import { useConfig } from '/@/stores/config'
 import type { viewMenu } from '/@/stores/interface'
 
 const config = useConfig()
