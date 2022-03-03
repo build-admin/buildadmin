@@ -6,8 +6,8 @@
                     <div class="welcome suspension">
                         <img class="welcome-img" :src="headerSvg" alt="" />
                         <div class="welcome-text">
-                            <div class="welcome-title">{{ state.adminName }}，{{ state.greetings }}</div>
-                            <div class="welcome-note">{{ state.remark }}</div>
+                            <div class="welcome-title">{{ state.adminName }}{{ t('dashboard.comma') + state.greetings }}</div>
+                            <div class="welcome-note">{{ t('dashboard.' + state.remark) }}</div>
                         </div>
                     </div>
                 </el-col>
@@ -15,10 +15,11 @@
                     <div class="working">
                         <img class="working-coffee" :src="coffeeSvg" alt="" />
                         <div class="working-text">
-                            您今天已工作了 <span class="time">01时<span id="working_i">59</span>分</span>
+                            {{ t('dashboard.You have worked today') }}<span class="time">{{ state.workingTimeFormat }}</span>
                         </div>
-                        <div class="working-opt working-rest">休息片刻</div>
-                        <div class="working-opt working-done">工作结束</div>
+                        <div @click="onChangeWorkState()" class="working-opt working-rest">
+                            {{ state.pauseWork ? t('dashboard.Continue to work') : t('dashboard.have a bit of rest') }}
+                        </div>
                     </div>
                 </el-col>
             </el-row>
@@ -27,7 +28,7 @@
             <el-row :gutter="20">
                 <el-col :sm="12" :lg="6">
                     <div class="small-panel user-reg suspension">
-                        <div class="small-panel-title">会员注册量</div>
+                        <div class="small-panel-title">{{ t('dashboard.Member registration') }}</div>
                         <div class="small-panel-content">
                             <div class="content-left">
                                 <Icon color="#8595F4" size="20" name="fa fa-line-chart" />
@@ -39,7 +40,7 @@
                 </el-col>
                 <el-col :sm="12" :lg="6">
                     <div class="small-panel file suspension">
-                        <div class="small-panel-title">附件上传量</div>
+                        <div class="small-panel-title">{{ t('dashboard.Number of attachments Uploaded') }}</div>
                         <div class="small-panel-content">
                             <div class="content-left">
                                 <Icon color="#AD85F4" size="20" name="fa fa-file-text" />
@@ -51,7 +52,7 @@
                 </el-col>
                 <el-col :sm="12" :lg="6">
                     <div class="small-panel users suspension">
-                        <div class="small-panel-title">会员总数</div>
+                        <div class="small-panel-title">{{ t('dashboard.Total number of members') }}</div>
                         <div class="small-panel-content">
                             <div class="content-left">
                                 <Icon color="#74A8B5" size="20" name="fa fa-users" />
@@ -63,7 +64,7 @@
                 </el-col>
                 <el-col :sm="12" :lg="6">
                     <div class="small-panel addons suspension">
-                        <div class="small-panel-title">已装插件数</div>
+                        <div class="small-panel-title">{{ t('dashboard.Number of installed plug-ins') }}</div>
                         <div class="small-panel-content">
                             <div class="content-left">
                                 <Icon color="#F48595" size="20" name="fa fa-object-group" />
@@ -78,24 +79,24 @@
         <div class="growth-chart">
             <el-row :gutter="20">
                 <el-col class="lg-mb-20" :xs="24" :sm="24" :md="12" :lg="9">
-                    <el-card shadow="hover" :header="'会员增长情况'">
+                    <el-card shadow="hover" :header="t('dashboard.Membership growth')">
                         <div class="user-growth-chart" :ref="chartRefs.set"></div>
                     </el-card>
                 </el-col>
                 <el-col class="lg-mb-20" :xs="24" :sm="24" :md="12" :lg="9">
-                    <el-card shadow="hover" :header="'附件增长情况'">
+                    <el-card shadow="hover" :header="t('dashboard.Annex growth')">
                         <div class="file-growth-chart" :ref="chartRefs.set"></div>
                     </el-card>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="24" :lg="6">
-                    <el-card class="new-user-card" shadow="hover" :header="'刚刚加入的会员'">
+                    <el-card class="new-user-card" shadow="hover" :header="t('dashboard.New member')">
                         <div class="new-user-growth">
                             <el-scrollbar>
                                 <div class="new-user-item">
                                     <img class="new-user-avatar" src="~assets/login-header.png" alt="" />
                                     <div class="new-user-base">
                                         <div class="new-user-name">妙码生花</div>
-                                        <div class="new-user-time">12分钟前加入了我们</div>
+                                        <div class="new-user-time">12分钟前{{ t('dashboard.Joined us') }}</div>
                                     </div>
                                     <Icon class="new-user-arrow" color="#8595F4" name="fa fa-angle-right" />
                                 </div>
@@ -103,7 +104,7 @@
                                     <img class="new-user-avatar" src="~assets/login-header.png" alt="" />
                                     <div class="new-user-base">
                                         <div class="new-user-name">码上生花</div>
-                                        <div class="new-user-time">12分钟前加入了我们</div>
+                                        <div class="new-user-time">12分钟前{{ t('dashboard.Joined us') }}</div>
                                     </div>
                                     <Icon class="new-user-arrow" color="#8595F4" name="fa fa-angle-right" />
                                 </div>
@@ -111,7 +112,7 @@
                                     <img class="new-user-avatar" src="~assets/login-header.png" alt="" />
                                     <div class="new-user-base">
                                         <div class="new-user-name">Admin</div>
-                                        <div class="new-user-time">12分钟前加入了我们</div>
+                                        <div class="new-user-time">12分钟前{{ t('dashboard.Joined us') }}</div>
                                     </div>
                                     <Icon class="new-user-arrow" color="#8595F4" name="fa fa-angle-right" />
                                 </div>
@@ -119,7 +120,7 @@
                                     <img class="new-user-avatar" src="~assets/avatar.png" alt="" />
                                     <div class="new-user-base">
                                         <div class="new-user-name">纯属虚构</div>
-                                        <div class="new-user-time">12分钟前加入了我们</div>
+                                        <div class="new-user-time">12分钟前{{ t('dashboard.Joined us') }}</div>
                                     </div>
                                     <Icon class="new-user-arrow" color="#8595F4" name="fa fa-angle-right" />
                                 </div>
@@ -133,12 +134,12 @@
         <div class="growth-chart">
             <el-row :gutter="20">
                 <el-col class="lg-mb-20" :xs="24" :sm="24" :md="24" :lg="12">
-                    <el-card shadow="hover" :header="'会员来源'">
+                    <el-card shadow="hover" :header="t('dashboard.Member source')">
                         <div class="user-source-chart" :ref="chartRefs.set"></div>
                     </el-card>
                 </el-col>
                 <el-col class="lg-mb-20" :xs="24" :sm="24" :md="24" :lg="12">
-                    <el-card shadow="hover" :header="'会员姓氏'">
+                    <el-card shadow="hover" :header="t('dashboard.Member last name')">
                         <div class="user-surname-chart" :ref="chartRefs.set"></div>
                     </el-card>
                 </el-col>
@@ -343,7 +344,7 @@
 </style>
 
 <script setup lang="ts">
-import { onMounted, reactive, nextTick, onActivated, watch, onBeforeMount } from 'vue'
+import { onMounted, onUnmounted, reactive, nextTick, onActivated, watch, onBeforeMount } from 'vue'
 import headerSvg from '/@/assets/dashboard/header-1.svg'
 import coffeeSvg from '/@/assets/dashboard/coffee.svg'
 import { CountUp } from 'countup.js'
@@ -352,8 +353,12 @@ import { useNavTabs } from '/@/stores/navTabs'
 import { useTemplateRefsList } from '@vueuse/core'
 import { dashboard } from '/@/api/backend/dashboard'
 import { useI18n } from 'vue-i18n'
+import { Local } from '/@/utils/storage'
+import { WORKING_TIME } from '/@/stores/constant/cacheKey'
 import 'element-plus/theme-chalk/display.css'
+var workTimer: NodeJS.Timer
 
+const d = new Date()
 const { t } = useI18n()
 const navTabs = useNavTabs()
 const chartRefs = useTemplateRefsList<HTMLDivElement>()
@@ -363,11 +368,15 @@ const state: {
     adminName: string
     greetings: string
     remark: string
+    workingTimeFormat: string
+    pauseWork: boolean
 } = reactive({
     charts: [],
-    adminName: '加载中...',
-    greetings: '您好',
-    remark: '加载中...',
+    adminName: t('dashboard.Loading'),
+    greetings: t('dashboard.Hello'),
+    remark: t('dashboard.Loading'),
+    workingTimeFormat: '',
+    pauseWork: false,
 })
 
 dashboard().then((res) => {
@@ -392,7 +401,6 @@ const initCountUp = () => {
     countUpFun('file_number')
     countUpFun('users_number')
     countUpFun('addons_number')
-    countUpFun('working_i')
 }
 
 const initUserGrowthChart = () => {
@@ -405,15 +413,23 @@ const initUserGrowthChart = () => {
             left: 0,
         },
         xAxis: {
-            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+            data: [
+                t('dashboard.Monday'),
+                t('dashboard.Tuesday'),
+                t('dashboard.Wednesday'),
+                t('dashboard.Thursday'),
+                t('dashboard.Friday'),
+                t('dashboard.Saturday'),
+                t('dashboard.Sunday'),
+            ],
         },
         yAxis: {},
         legend: {
-            data: ['访问量', '注册量'],
+            data: [t('dashboard.Visits'), t('dashboard.Registration volume')],
         },
         series: [
             {
-                name: '访问量',
+                name: t('dashboard.Visits'),
                 data: [100, 160, 280, 230, 190, 200, 480],
                 type: 'line',
                 smooth: true,
@@ -422,7 +438,7 @@ const initUserGrowthChart = () => {
                 },
             },
             {
-                name: '注册量',
+                name: t('dashboard.Registration volume'),
                 data: [45, 180, 146, 99, 210, 127, 288],
                 type: 'line',
                 smooth: true,
@@ -455,7 +471,7 @@ const initFileGrowthChart = () => {
             data: (function () {
                 var list = []
                 for (var i = 1; i <= 12; i++) {
-                    list.push(i + '月')
+                    list.push(i + t('dashboard.month'))
                 }
                 return list
             })(),
@@ -467,7 +483,12 @@ const initFileGrowthChart = () => {
             calculable: true,
         },
         radar: {
-            indicator: [{ name: '图片' }, { name: '文档' }, { name: '表格' }, { name: '压缩包' }],
+            indicator: [
+                { name: t('dashboard.picture') },
+                { name: t('dashboard.file') },
+                { name: t('dashboard.form') },
+                { name: t('dashboard.Compressed package') },
+            ],
         },
         series: (function () {
             var series = []
@@ -486,7 +507,7 @@ const initFileGrowthChart = () => {
                     data: [
                         {
                             value: [(40 - i) * 10, (38 - i) * 4 + 60, i * 5 + 10, i * 20],
-                            name: i + '月',
+                            name: i + t('dashboard.month'),
                         },
                     ],
                 })
@@ -518,7 +539,7 @@ const initUserSourceChart = () => {
             },
         },
         xAxis: {
-            data: ['百度', '直接访问', '坐飞机', '坐高铁'],
+            data: [t('dashboard.Baidu'), t('dashboard.Direct access'), t('dashboard.take a plane'), t('dashboard.Take the high-speed railway')],
             axisTick: { show: false },
             axisLine: { show: false },
             axisLabel: {
@@ -603,7 +624,7 @@ const initUserSurnameChart = () => {
         },
         series: [
             {
-                name: '姓名',
+                name: t('dashboard.full name'),
                 type: 'pie',
                 radius: '55%',
                 center: ['40%', '50%'],
@@ -663,22 +684,113 @@ const greetingsFun = () => {
     const hour = now.getHours()
     let greetings = ''
     if (hour < 5) {
-        greetings = '夜深了，注意身体哦！'
+        greetings = t('dashboard.Late at night, pay attention to your body!')
     } else if (hour < 9) {
-        greetings = '早上好！' + t('dashboard.welcome back')
+        greetings = t('dashboard.good morning!') + t('dashboard.welcome back')
     } else if (hour < 12) {
-        greetings = '上午好！' + t('dashboard.welcome back')
+        greetings = t('dashboard.Good morning!') + t('dashboard.welcome back')
     } else if (hour < 14) {
-        greetings = '中午好！' + t('dashboard.welcome back')
+        greetings = t('dashboard.Good noon!') + t('dashboard.welcome back')
     } else if (hour < 18) {
-        greetings = '下午好！' + t('dashboard.welcome back')
+        greetings = t('dashboard.good afternoon.') + t('dashboard.welcome back')
     } else if (hour < 24) {
-        greetings = '晚上好！' + t('dashboard.welcome back')
+        greetings = t('dashboard.Good evening') + t('dashboard.welcome back')
     } else {
-        greetings = '您好！' + t('dashboard.welcome back')
+        greetings = t('dashboard.Hello!') + t('dashboard.welcome back')
     }
 
     state.greetings = greetings
+}
+
+const onChangeWorkState = () => {
+    const time = parseInt((new Date().getTime() / 1000).toString())
+    const workingTime = Local.get(WORKING_TIME)
+    if (state.pauseWork) {
+        // 继续工作
+        workingTime.pauseTime += time - workingTime.startPauseTime
+        workingTime.startPauseTime = 0
+        Local.set(WORKING_TIME, workingTime)
+        state.pauseWork = false
+        startWork()
+    } else {
+        // 暂停工作
+        workingTime.startPauseTime = time
+        Local.set(WORKING_TIME, workingTime)
+        clearInterval(workTimer)
+        state.pauseWork = true
+    }
+}
+
+const startWork = () => {
+    const workingTime = Local.get(WORKING_TIME) || { date: '', startTime: 0, pauseTime: 0, startPauseTime: 0 }
+    const currentDate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+    const time = parseInt((new Date().getTime() / 1000).toString())
+
+    if (workingTime.date != currentDate) {
+        workingTime.date = currentDate
+        workingTime.startTime = time
+        workingTime.pauseTime = workingTime.startPauseTime = 0
+        Local.set(WORKING_TIME, workingTime)
+    }
+
+    let startPauseTime = 0
+    if (workingTime.startPauseTime <= 0) {
+        state.pauseWork = false
+        startPauseTime = 0
+    } else {
+        state.pauseWork = true
+        startPauseTime = time - workingTime.startPauseTime // 已暂停时间
+    }
+
+    let workingSeconds = time - workingTime.startTime - workingTime.pauseTime - startPauseTime
+
+    state.workingTimeFormat = formatSeconds(workingSeconds)
+    if (!state.pauseWork) {
+        workTimer = setInterval(() => {
+            workingSeconds++
+            state.workingTimeFormat = formatSeconds(workingSeconds)
+        }, 1000)
+    }
+}
+
+const formatSeconds = (seconds: number) => {
+    var secondTime = 0 // 秒
+    var minuteTime = 0 // 分
+    var hourTime = 0 // 小时
+    var dayTime = 0 // 天
+    var result = ''
+
+    if (seconds < 60) {
+        secondTime = seconds
+    } else {
+        // 获取分钟，除以60取整数，得到整数分钟
+        minuteTime = Math.floor(seconds / 60)
+        // 获取秒数，秒数取佘，得到整数秒数
+        secondTime = Math.floor(seconds % 60)
+        // 如果分钟大于60，将分钟转换成小时
+        if (minuteTime >= 60) {
+            // 获取小时，获取分钟除以60，得到整数小时
+            hourTime = Math.floor(minuteTime / 60)
+            // 获取小时后取佘的分，获取分钟除以60取佘的分
+            minuteTime = Math.floor(minuteTime % 60)
+            if (hourTime >= 24) {
+                // 获取天数， 获取小时除以24，得到整数天
+                dayTime = Math.floor(hourTime / 24)
+                // 获取小时后取余小时，获取分钟除以24取余的分；
+                hourTime = Math.floor(hourTime % 24)
+            }
+        }
+    }
+
+    result =
+        hourTime +
+        t('dashboard.hour') +
+        ((minuteTime >= 10 ? minuteTime : '0' + minuteTime) + t('dashboard.minute')) +
+        ((secondTime >= 10 ? secondTime : '0' + secondTime) + t('dashboard.second'))
+    if (dayTime > 0) {
+        result = dayTime + t('dashboard.day') + result
+    }
+    return result
 }
 
 onActivated(() => {
@@ -686,6 +798,7 @@ onActivated(() => {
 })
 
 onMounted(() => {
+    startWork()
     initCountUp()
     greetingsFun()
     initUserGrowthChart()
@@ -700,6 +813,10 @@ onBeforeMount(() => {
         state.charts[key].dispose()
     }
     window.removeEventListener('resize', echartsResize)
+})
+
+onUnmounted(() => {
+    clearInterval(workTimer)
 })
 
 watch(
