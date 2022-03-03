@@ -7,7 +7,7 @@
                         <img class="welcome-img" :src="headerSvg" alt="" />
                         <div class="welcome-text">
                             <div class="welcome-title">{{ state.adminName }}{{ t('dashboard.comma') + state.greetings }}</div>
-                            <div class="welcome-note">{{ t('dashboard.' + state.remark) }}</div>
+                            <div class="welcome-note">{{ t(state.remark) }}</div>
                         </div>
                     </div>
                 </el-col>
@@ -374,7 +374,7 @@ const state: {
     charts: [],
     adminName: t('dashboard.Loading'),
     greetings: t('dashboard.Hello'),
-    remark: t('dashboard.Loading'),
+    remark: 'dashboard.Loading',
     workingTimeFormat: '',
     pauseWork: false,
 })

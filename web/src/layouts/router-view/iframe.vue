@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="state.loading">
+    <div class="default-main" v-loading="state.loading">
         <iframe
             :src="state.iframeSrc"
             :style="iframeStyle(3)"

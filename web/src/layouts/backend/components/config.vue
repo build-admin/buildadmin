@@ -9,7 +9,7 @@
                             <el-row class="layout-mode-box-style-row" :gutter="10">
                                 <el-col :span="12">
                                     <div
-                                        @click="configStore.setLayoutMode('Default')"
+                                        @click="setLayoutMode('Default')"
                                         class="layout-mode-style default"
                                         :class="config.layoutMode == 'Default' ? 'active' : ''"
                                     >
@@ -25,7 +25,7 @@
                                 </el-col>
                                 <el-col :span="12">
                                     <div
-                                        @click="configStore.setLayoutMode('Classic')"
+                                        @click="setLayoutMode('Classic')"
                                         class="layout-mode-style classic"
                                         :class="config.layoutMode == 'Classic' ? 'active' : ''"
                                     >
@@ -43,7 +43,7 @@
                             <el-row :gutter="10">
                                 <el-col :span="12">
                                     <div
-                                        @click="configStore.setLayoutMode('Streamline')"
+                                        @click="setLayoutMode('Streamline')"
                                         class="layout-mode-style streamline"
                                         :class="config.layoutMode == 'Streamline' ? 'active' : ''"
                                     >
@@ -160,8 +160,8 @@ import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 import { useRouter } from 'vue-router'
 import selector from '/@/components/icon/selector.vue'
-import { STORE_CONFIG } from '/@/stores/constant/cacheKey'
-import { Local } from '/@/utils/storage'
+import { STORE_CONFIG, BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
+import { Local, Session } from '/@/utils/storage'
 
 const configStore = useConfig()
 const navTabs = useNavTabs()
@@ -171,6 +171,14 @@ const config = computed(() => configStore.layout)
 
 const onCommitState = (value: any, name: any) => {
     configStore.setLayout(name, value)
+}
+
+const setLayoutMode = (mode: string) => {
+    Session.set(BEFORE_RESIZE_LAYOUT, {
+        layoutMode: mode,
+        menuCollapse: config.value.menuCollapse,
+    })
+    configStore.setLayoutMode(mode)
 }
 
 // 修改默认菜单图标

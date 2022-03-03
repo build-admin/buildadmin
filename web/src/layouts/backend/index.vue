@@ -9,12 +9,13 @@ import { useRoute } from 'vue-router'
 import Default from '/@/layouts/container/default.vue'
 import Classic from '/@/layouts/container/classic.vue'
 import Streamline from '/@/layouts/container/streamline.vue'
-import { computed, onBeforeMount, onUnmounted } from 'vue'
+import { computed, onMounted, onBeforeMount, onUnmounted } from 'vue'
 import { Session } from '/@/utils/storage'
 import { index } from '/@/api/backend'
 import { handleAdminRoute, getMenuPaths, pushFirstRoute } from '/@/utils/common'
 import router from '/@/router/index'
 import { adminBaseRoute } from '/@/router/static'
+import { BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
 
 const navTabs = useNavTabs()
 const config = useConfig()
@@ -44,33 +45,51 @@ index().then((res) => {
 
 const layoutConfig = computed(() => config.layout)
 
-const onResize = () => {
+const onAdaptiveLayout = () => {
     let defaultBeforeResizeLayout = {
         layoutMode: layoutConfig.value.layoutMode,
         menuCollapse: layoutConfig.value.menuCollapse,
     }
+    let beforeResizeLayout = Session.get(BEFORE_RESIZE_LAYOUT)
+    if (!beforeResizeLayout) Session.set(BEFORE_RESIZE_LAYOUT, defaultBeforeResizeLayout)
 
-    if (!Session.get('beforeResizeLayout')) Session.set('beforeResizeLayout', defaultBeforeResizeLayout)
     const clientWidth = document.body.clientWidth
     if (clientWidth < 1024) {
         config.setLayout('menuCollapse', true)
         config.setLayout('shrink', true)
         config.setLayoutMode('Classic')
     } else {
-        let beforeResizeLayout = Session.get('beforeResizeLayout') ? Session.get('beforeResizeLayout') : defaultBeforeResizeLayout
+        let beforeResizeLayoutTemp = beforeResizeLayout || defaultBeforeResizeLayout
 
-        config.setLayout('menuCollapse', beforeResizeLayout.menuCollapse)
+        config.setLayout('menuCollapse', beforeResizeLayoutTemp.menuCollapse)
         config.setLayout('shrink', false)
-        config.setLayoutMode(beforeResizeLayout.layoutMode)
+        config.setLayoutMode(beforeResizeLayoutTemp.layoutMode)
     }
 }
 
+// 在实例挂载后为navTabs设置一个min-width，防止宽度改变时闪现滚动条
+const onSetNavTabsMinWidth = () => {
+    const navTabs = document.querySelector('.nav-tabs') as HTMLElement
+    if (!navTabs) {
+        return
+    }
+    const navBar = document.querySelector('.nav-bar') as HTMLElement
+    const navMenus = document.querySelector('.nav-menus') as HTMLElement
+    const minWidth = navBar.offsetWidth - (navMenus.offsetWidth + 20)
+    navTabs.style.minWidth = minWidth.toString() + 'px'
+}
+
+onMounted(() => {
+    onSetNavTabsMinWidth()
+    window.addEventListener('resize', onSetNavTabsMinWidth)
+})
 onBeforeMount(() => {
-    onResize()
-    window.addEventListener('resize', onResize)
+    onAdaptiveLayout()
+    window.addEventListener('resize', onAdaptiveLayout)
 })
 onUnmounted(() => {
-    window.removeEventListener('resize', onResize)
+    window.removeEventListener('resize', onAdaptiveLayout)
+    window.removeEventListener('resize', onSetNavTabsMinWidth)
 })
 </script>
 
