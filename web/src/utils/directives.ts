@@ -1,8 +1,52 @@
-import type { App } from 'vue'
+import { App, nextTick } from 'vue'
 
 export function directives(app: App) {
     // 拖动指令
     dragDirective(app)
+    // 缩放指令
+    zoomDirective(app)
+}
+
+/**
+ * 缩放指令
+ * @description v-zoom="[domEl]"`
+ * @description domEl=要开启缩放的元素
+ */
+function zoomDirective(app: App) {
+    app.directive('zoom', {
+        mounted(el, binding) {
+            if (!binding.value) return false
+
+            nextTick(() => {
+                const zoomDom = document.querySelector(binding.value) as HTMLElement
+                var zoomhandleEl = document.createElement('div')
+                zoomhandleEl.className = 'zoom-handle'
+                zoomhandleEl.onmouseenter = () => {
+                    zoomhandleEl.onmousedown = (e: MouseEvent) => {
+                        let x = e.clientX
+                        let y = e.clientY
+                        let zoomDomWidth = zoomDom.offsetWidth
+                        let zoomDomHeight = zoomDom.offsetHeight
+                        document.onmousemove = (e: MouseEvent) => {
+                            e.preventDefault() // 移动时禁用默认事件
+                            let w = zoomDomWidth + (e.clientX - x) * 2
+                            let h = zoomDomHeight + (e.clientY - y)
+
+                            zoomDom.style.width = `${w}px`
+                            zoomDom.style.height = `${h}px`
+                        }
+
+                        document.onmouseup = function () {
+                            document.onmousemove = null
+                            document.onmouseup = null
+                        }
+                    }
+                }
+
+                zoomDom.appendChild(zoomhandleEl)
+            })
+        },
+    })
 }
 
 /**
@@ -19,16 +63,16 @@ function dragDirective(app: App) {
             if (!binding.value) return false
 
             const dragDom = document.querySelector(binding.value[0]) as HTMLElement
-            const dragHeader = document.querySelector(binding.value[1]) as HTMLElement
+            const dragHandle = document.querySelector(binding.value[1]) as HTMLElement
 
-            dragHeader.onmouseover = () => (dragHeader.style.cursor = `move`)
+            dragHandle.onmouseover = () => (dragHandle.style.cursor = `move`)
 
             function down(e: MouseEvent | TouchEvent, type: string): downReturn {
                 // 鼠标按下，计算当前元素距离可视区的距离
                 const disX =
-                    type === 'pc' ? (e as MouseEvent).clientX - dragHeader.offsetLeft : (e as TouchEvent).touches[0].clientX - dragHeader.offsetLeft
+                    type === 'pc' ? (e as MouseEvent).clientX - dragHandle.offsetLeft : (e as TouchEvent).touches[0].clientX - dragHandle.offsetLeft
                 const disY =
-                    type === 'pc' ? (e as MouseEvent).clientY - dragHeader.offsetTop : (e as TouchEvent).touches[0].clientY - dragHeader.offsetTop
+                    type === 'pc' ? (e as MouseEvent).clientY - dragHandle.offsetTop : (e as TouchEvent).touches[0].clientY - dragHandle.offsetTop
 
                 // body宽度
                 const screenWidth = document.body.clientWidth
@@ -94,7 +138,7 @@ function dragDirective(app: App) {
                 dragDom.style.cssText += `;left:${left + styL}px;top:${top + styT}px;`
             }
 
-            dragHeader.onmousedown = (e) => {
+            dragHandle.onmousedown = (e) => {
                 const obj = down(e, 'pc')
                 document.onmousemove = (e) => {
                     move(e, 'pc', obj)
@@ -104,7 +148,7 @@ function dragDirective(app: App) {
                     document.onmouseup = null
                 }
             }
-            dragHeader.ontouchstart = (e) => {
+            dragHandle.ontouchstart = (e) => {
                 const obj = down(e, 'app')
                 document.ontouchmove = (e) => {
                     move(e, 'app', obj)

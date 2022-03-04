@@ -68,7 +68,7 @@
             title="编辑"
         >
             <template #title>
-                <div v-drag="['.operate-dialog', '.el-dialog__header']">使用帮助</div>
+                <div v-drag="['.operate-dialog', '.el-dialog__header']" v-zoom="'.operate-dialog'">使用帮助</div>
             </template>
             <div>测试</div>
         </el-dialog>

@@ -53,6 +53,14 @@ body,
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.zoom-handle {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    bottom: -10px;
+    right: -10px;
+    cursor: se-resize;
+}
 
 /* 表格-s */
 .ba-table-box {
