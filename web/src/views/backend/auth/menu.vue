@@ -3,18 +3,18 @@
         <div class="ba-table-box">
             <div class="table-header">
                 <el-tooltip content="刷新" placement="top">
-                    <el-button color="#9ca8b8" class="table-header-operate" type="info">
+                    <el-button color="#40485b" class="table-header-operate" type="info">
                         <Icon name="fa fa-refresh" />
                     </el-button>
                 </el-tooltip>
                 <el-tooltip content="编辑选中行" placement="top">
-                    <el-button class="table-header-operate" type="primary">
+                    <el-button :disabled="state.tableSelection.length > 0 ? false : true" class="table-header-operate" type="primary">
                         <Icon name="fa fa-pencil" />
                         <span class="table-header-operate-text">编辑</span>
                     </el-button>
                 </el-tooltip>
                 <el-tooltip content="删除选中行" placement="top">
-                    <el-button class="table-header-operate" type="danger">
+                    <el-button :disabled="state.tableSelection.length > 0 ? false : true" class="table-header-operate" type="danger">
                         <Icon name="fa fa-trash" />
                         <span class="table-header-operate-text">删除</span>
                     </el-button>
@@ -23,7 +23,9 @@
                     <el-input class="xs-hidden" v-model="state.searchKeyWord" placeholder="搜索" />
                 </div>
             </div>
+
             <el-table
+                ref="tableRef"
                 class="data-table w100"
                 header-cell-class-name="table-header-cell"
                 :data="tableData"
@@ -31,6 +33,10 @@
                 :border="true"
                 stripe
                 default-expand-all
+                @select-all="onSelectAll"
+                @select="onSelect"
+                @selection-change="onSelectionChange"
+                @row-dblclick="onDblclick"
             >
                 <el-table-column align="center" type="selection" />
                 <el-table-column align="left" prop="title" label="标题" />
@@ -53,14 +59,102 @@
                 </el-table-column>
             </el-table>
         </div>
+        <!-- 新增和编辑表单 -->
+        <el-dialog
+            custom-class="operate-dialog"
+            :close-on-click-modal="false"
+            :model-value="state.operateType == 'edit' ? true : false"
+            @close="onCloseOperateDialog"
+            title="编辑"
+        >
+            <template #title>
+                <div v-drag="['.operate-dialog', '.el-dialog__header']">使用帮助</div>
+            </template>
+            <div>测试</div>
+        </el-dialog>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { nextTick, reactive, ref } from 'vue'
+import type { ElTable } from 'element-plus'
+
+const tableRef = ref<InstanceType<typeof ElTable>>()
+
 const state = reactive({
     searchKeyWord: '',
+    tableSelection: [],
+    operateType: '',
 })
+
+const onDblclick = (row: any) => {
+    state.operateType = 'edit'
+}
+
+const onCloseOperateDialog = () => {
+    state.operateType = ''
+}
+
+const selectChildren = (children: any, type: boolean) => {
+    children.map((j: any) => {
+        toggleSelection(j, type)
+        if (j.children) {
+            selectChildren(j.children, type)
+        }
+    })
+}
+
+const toggleSelection = (row: any, type: boolean) => {
+    if (row) {
+        nextTick(() => {
+            tableRef.value?.toggleRowSelection(row, type)
+        })
+    }
+}
+
+const isSelectAll = (selectIds: string[]) => {
+    /*
+     * 只检查第一个元素是否被选择
+     * 全选时：selectIds为所有元素的id
+     * 取消全选时：selectIds为所有子元素的id
+     */
+    for (const key in tableData) {
+        return selectIds.includes(tableData[key].id)
+    }
+    return false
+}
+
+const onSelectAll = (selection: any) => {
+    if (isSelectAll(selection.map((row: any) => row.id))) {
+        selection.map((row: any) => {
+            if (row.children) {
+                selectChildren(row.children, true)
+            }
+        })
+    } else {
+        tableRef.value?.clearSelection()
+    }
+}
+
+const onSelect = (selection: any, row: any) => {
+    if (
+        selection.some((item: any) => {
+            return row.id === item.id
+        })
+    ) {
+        if (row.children) {
+            selectChildren(row.children, true)
+        }
+    } else {
+        if (row.children) {
+            selectChildren(row.children, false)
+        }
+    }
+}
+
+const onSelectionChange = (selection: any) => {
+    state.tableSelection = selection
+}
 const tableData = [
     {
         id: '1',

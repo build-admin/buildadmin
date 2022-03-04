@@ -8,12 +8,12 @@
         "lint-fix": "eslint --fix --ext .js --ext .jsx --ext .vue src/"
     },
     "dependencies": {
-        "@element-plus/icons-vue": "^0.2.4",
+        "@element-plus/icons-vue": "^0.2.7",
         "@vueuse/core": "^7.5.3",
         "axios": "^0.26.0",
         "countup.js": "^2.0.8",
         "echarts": "^5.2.2",
-        "element-plus": "^1.3.0-beta.3",
+        "element-plus": "^2.0.2",
         "esno": "^0.14.1",
         "mitt": "^3.0.0",
         "nprogress": "^0.2.0",
