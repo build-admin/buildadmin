@@ -1,0 +1,127 @@
+<template>
+    <el-table
+        ref="tableRef"
+        class="data-table w100"
+        header-cell-class-name="table-header-cell"
+        :data="data"
+        :row-key="rowKey"
+        :border="true"
+        stripe
+        default-expand-all
+        @select-all="onSelectAll"
+        @select="onSelect"
+        @selection-change="onSelectionChange"
+    >
+        <template v-for="(item, key) in field" :key="key">
+            <Column :attr="item">
+                <template v-if="item.render" #default="scope">
+                    <FieldRender :field="item" :row="scope.row" :property="scope.column.property" />
+                </template>
+            </Column>
+        </template>
+    </el-table>
+</template>
+
+<script setup lang="ts">
+import { ref, nextTick } from 'vue'
+import type { ElTable } from 'element-plus'
+import Column from '/@/components/table/column/index.vue'
+import FieldRender from '/@/components/table/fieldRender/index.vue'
+
+const tableRef = ref<InstanceType<typeof ElTable>>()
+
+interface Props {
+    data: TableRow[]
+    field?: TableColumn[]
+    rowKey?: string
+}
+const props = withDefaults(defineProps<Props>(), {
+    data: () => [],
+    field: () => [],
+    rowKey: 'id',
+})
+
+const emits = defineEmits<{
+    (e: 'selectionChange', selection: TableRow[]): void
+}>()
+
+/*
+ * 全选和取消全选
+ * 实现子级同时选择和取消选中
+ */
+const onSelectAll = (selection: TableRow[]) => {
+    if (isSelectAll(selection.map((row: TableRow) => row.id.toString()))) {
+        selection.map((row: TableRow) => {
+            if (row.children) {
+                selectChildren(row.children, true)
+            }
+        })
+    } else {
+        tableRef.value?.clearSelection()
+    }
+}
+
+/*
+ * 是否是全选操作
+ * 只检查第一个元素是否被选择
+ * 全选时：selectIds为所有元素的id
+ * 取消全选时：selectIds为所有子元素的id
+ */
+const isSelectAll = (selectIds: string[]) => {
+    for (const key in props.data) {
+        return selectIds.includes(props.data[key].id.toString())
+    }
+    return false
+}
+
+/*
+ * 选择子项
+ */
+const selectChildren = (children: TableRow[], type: boolean) => {
+    children.map((j: TableRow) => {
+        toggleSelection(j, type)
+        if (j.children) {
+            selectChildren(j.children, type)
+        }
+    })
+}
+
+/*
+ * 执行选择操作
+ */
+const toggleSelection = (row: TableRow, type: boolean) => {
+    if (row) {
+        nextTick(() => {
+            tableRef.value?.toggleRowSelection(row, type)
+        })
+    }
+}
+
+/*
+ * 手动选择时，同时选择子级
+ */
+const onSelect = (selection: TableRow[], row: TableRow) => {
+    if (
+        selection.some((item: TableRow) => {
+            return row.id === item.id
+        })
+    ) {
+        if (row.children) {
+            selectChildren(row.children, true)
+        }
+    } else {
+        if (row.children) {
+            selectChildren(row.children, false)
+        }
+    }
+}
+
+/*
+ * 记录选择的项
+ */
+const onSelectionChange = (selection: TableRow[]) => {
+    emits('selectionChange', selection)
+}
+</script>
+
+<style scoped lang="scss"></style>

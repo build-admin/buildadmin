@@ -190,3 +190,11 @@ body,
     @extend .slide-right-enter-from;
 }
 /* 页面切换动画-e */
+
+/* 自适应-s */
+@media screen and (max-width: 768px) {
+    .xs-hidden {
+        display: none;
+    }
+}
+/* 自适应-e */

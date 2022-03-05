@@ -9,4 +9,9 @@ export default {
         'Exit full screen': '退出全屏',
         'Full screen is not supported': '您的浏览器不支持全屏，请更换浏览器再试~',
     },
+    edit: '编辑',
+    add: '添加',
+    delete: '删除',
+    refresh: '刷新',
+    operate: '操作',
 }

@@ -9,4 +9,9 @@ export default {
         'Exit full screen': 'Exit full screen',
         'Full screen is not supported': 'Your browser does not support full screen. Please change your browser and try again~',
     },
+    edit: 'Edit',
+    add: 'Add',
+    delete: 'Delete',
+    refresh: 'Refresh',
+    operate: 'Operate',
 }

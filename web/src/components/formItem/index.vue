@@ -37,17 +37,8 @@
 </template>
 
 <script lang="ts" setup>
-interface formItem {
-    name: string
-    title: string
-    value: any
-    type: string
-    content: any
-    tip: string
-    rule: any
-}
 interface Props {
-    items: formItem[]
+    items: FormItemProps[]
 }
 const props = withDefaults(defineProps<Props>(), {
     items: () => [],
