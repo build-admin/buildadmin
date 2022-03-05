@@ -5,6 +5,22 @@ export function directives(app: App) {
     dragDirective(app)
     // 缩放指令
     zoomDirective(app)
+    // 点击后自动失焦指令
+    blurDirective(app)
+}
+
+/**
+ * 点击后自动失焦指令
+ * @description v-blur
+ */
+function blurDirective(app: App) {
+    app.directive('blur', {
+        mounted(el) {
+            el.addEventListener('click', () => {
+                el.blur()
+            })
+        },
+    })
 }
 
 /**

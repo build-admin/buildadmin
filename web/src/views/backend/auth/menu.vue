@@ -5,20 +5,30 @@
             <TableHeader
                 :buttons="['refresh', 'add', 'edit', 'delete', 'unfold']"
                 :enable-batch-opt="state.tableSelection.length > 0 ? true : false"
+                :unfold="state.tableExpandAll"
+                @on-unfold="onUnfold"
             />
             <!-- 表格 -->
-            <Table @selection-change="onSelectionChange" :data="state.tableData" :field="state.tableColumn" />
+            <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
+            <Table
+                ref="tableRef"
+                :default-expand-all="state.tableExpandAll"
+                @selection-change="onSelectionChange"
+                :data="state.tableData"
+                :field="state.tableColumn"
+            />
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { index } from '/@/api/backend/auth/Menu'
 import { defaultOptButtons } from '/@/components/table'
 import TableHeader from '/@/components/table/header/index.vue'
 import Table from '/@/components/table/index.vue'
 
+const tableRef = ref()
 const state: {
     // 表格列数据
     tableColumn: TableColumn[]
@@ -26,6 +36,8 @@ const state: {
     tableData: TableRow[]
     // 表格选中项
     tableSelection: TableRow[]
+    // 表格是否展开所有子项
+    tableExpandAll: boolean
 } = reactive({
     tableColumn: [
         { type: 'selection', align: 'center' },
@@ -46,12 +58,17 @@ const state: {
     ],
     tableData: [],
     tableSelection: [],
+    tableExpandAll: true,
 })
 
 index().then((res) => {
     state.tableData = res.data.menu
 })
 
+const onUnfold = (unfold: boolean) => {
+    state.tableExpandAll = unfold
+    tableRef.value.unFoldAll(unfold)
+}
 /*
  * 接受表格中选中的数据
  */

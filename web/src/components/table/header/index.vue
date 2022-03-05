@@ -24,8 +24,8 @@
             </el-button>
         </el-tooltip>
         <el-tooltip v-if="props.buttons.includes('unfold')" :content="(unfold ? '收缩' : '展开') + '所有子菜单'" placement="top">
-            <el-button type="danger">
-                <span class="table-header-operate-text">{{ unfold ? '收缩' : '展开' }}</span>
+            <el-button v-blur @click="changeUnfold" :type="unfold ? 'danger' : 'warning'">
+                <span class="table-header-operate-text">{{ unfold ? '收缩所有' : '展开所有' }}</span>
             </el-button>
         </el-tooltip>
         <div class="table-search">
@@ -47,6 +47,14 @@ const props = withDefaults(defineProps<Props>(), {
     enableBatchOpt: false,
     unfold: false,
 })
+
+const emits = defineEmits<{
+    (e: 'onUnfold', unfold: boolean): void
+}>()
+
+const changeUnfold = () => {
+    emits('onUnfold', !props.unfold)
+}
 </script>
 
 <style scoped lang="scss"></style>

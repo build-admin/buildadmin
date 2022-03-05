@@ -75,7 +75,7 @@ const isSelectAll = (selectIds: string[]) => {
 }
 
 /*
- * 选择子项
+ * 选择子项-递归
  */
 const selectChildren = (children: TableRow[], type: boolean) => {
     children.map((j: TableRow) => {
@@ -122,6 +122,29 @@ const onSelect = (selection: TableRow[], row: TableRow) => {
 const onSelectionChange = (selection: TableRow[]) => {
     emits('selectionChange', selection)
 }
+
+/*
+ * 设置折叠所有-递归
+ */
+const setUnFoldAll = (children: TableRow[], unfold: boolean) => {
+    for (const key in children) {
+        tableRef.value?.toggleRowExpansion(children[key], unfold)
+        if (children[key].children) {
+            setUnFoldAll(children[key].children!, unfold)
+        }
+    }
+}
+
+/*
+ * 折叠所有
+ */
+const unFoldAll = (unfold: boolean) => {
+    setUnFoldAll(props.data, unfold)
+}
+
+defineExpose({
+    unFoldAll,
+})
 </script>
 
 <style scoped lang="scss"></style>
