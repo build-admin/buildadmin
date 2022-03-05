@@ -30,7 +30,15 @@
     </div>
 
     <!-- url -->
-    <div v-if="field.render == 'url'">url渲染</div>
+    <div v-if="field.render == 'url'">
+        <el-input :model-value="row[property]" placeholder="链接地址">
+            <template #append>
+                <el-button @click="typeof field.click == 'function' ? field.click(row[property], field) : openUrl(row[property], field)">
+                    <Icon :color="'#606266'" name="el-icon-Position" />
+                </el-button>
+            </template>
+        </el-input>
+    </div>
 
     <!-- datetime -->
     <div v-if="field.render == 'datetime'">datetime渲染</div>
@@ -50,6 +58,7 @@
 
 <script setup lang="ts">
 import type { TagProps } from 'element-plus'
+import { openUrl } from '/@/components/table'
 interface Props {
     row: TableRow
     field: TableColumn
