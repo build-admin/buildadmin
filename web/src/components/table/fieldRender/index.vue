@@ -1,12 +1,12 @@
 <template>
     <!-- Icon -->
-    <Icon v-if="field.render == 'icon'" :name="row.icon" />
+    <Icon v-if="field.render == 'icon'" :name="row[property]" />
 
     <!-- switch -->
     <el-switch
         v-if="field.render == 'switch'"
         @change="changeField($event, field.render!, property)"
-        :model-value="row.status"
+        :model-value="row[property]"
         active-value="1"
         inactive-value="0"
     />
@@ -18,12 +18,16 @@
 
     <!-- images -->
     <div v-if="field.render == 'images'" class="ba-render-image">
-        <img class="image-item" src="~assets/bg.jpg" />
-        <img class="image-item" src="~assets/bg.jpg" />
+        <img class="images-item" src="~assets/bg.jpg" />
+        <img class="images-item" src="~assets/bg.jpg" />
     </div>
 
     <!-- tag -->
-    <div v-if="field.render == 'tag'">tag渲染</div>
+    <div v-if="field.render == 'tag'">
+        <el-tag :type="getTagType(row[property], field.custom)" :effect="field.effect ?? 'light'" :size="field.size ?? 'default'">{{
+            row[property]
+        }}</el-tag>
+    </div>
 
     <!-- url -->
     <div v-if="field.render == 'url'">url渲染</div>
@@ -45,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+import type { TagProps } from 'element-plus'
 interface Props {
     row: TableRow
     field: TableColumn
@@ -65,14 +70,19 @@ const changeField = (value: any, type: string, field: keyof TableRow) => {
         props.row[field] = value
     }
 }
+
+const getTagType = (value: string, custom: any): TagProps['type'] => {
+    return custom && custom[value] ? custom[value] : ''
+}
 </script>
 
 <style scoped lang="scss">
 .ba-render-image {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .image-item {
+    text-align: center;
+    .images {
+        display: block;
+    }
+    .images-item {
         margin: 0 5px;
     }
     img {

@@ -1,7 +1,7 @@
 <template>
     <div class="table-header">
         <el-tooltip v-if="props.buttons.includes('refresh')" content="刷新" placement="top">
-            <el-button color="#40485b" class="table-header-operate" type="info">
+            <el-button v-blur color="#40485b" class="table-header-operate" type="info">
                 <Icon name="fa fa-refresh" />
             </el-button>
         </el-tooltip>

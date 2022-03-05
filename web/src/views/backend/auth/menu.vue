@@ -42,10 +42,17 @@ const state: {
     tableColumn: [
         { type: 'selection', align: 'center' },
         { label: '标题', prop: 'title', align: 'left' },
-        { label: '图片测试', prop: 'title', align: 'left', render: 'images' },
+        { label: '图片', prop: 'title', align: 'left', render: 'image', width: '60' },
+        { label: '图片测试', prop: 'title', align: 'left', render: 'images', width: '164' },
         { label: '图标', prop: 'icon', align: 'center', width: '60', render: 'icon' },
         { label: '名称', prop: 'name', align: 'center', 'show-overflow-tooltip': true },
-        { label: '类型', prop: 'type', align: 'center' },
+        {
+            label: '类型',
+            prop: 'type',
+            align: 'center',
+            render: 'tag',
+            custom: { menu: 'danger', menu_dir: 'success', button: 'info' },
+        },
         { label: '组件路径', prop: 'component', align: 'center', 'show-overflow-tooltip': true },
         { label: '状态', prop: 'status', align: 'center', width: '80', render: 'switch' },
         {

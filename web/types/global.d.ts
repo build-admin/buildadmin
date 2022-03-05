@@ -11,3 +11,7 @@ interface FormItemProps {
     tip: string
     rule: any
 }
+
+interface anyObj {
+    [key: string]: any
+}
