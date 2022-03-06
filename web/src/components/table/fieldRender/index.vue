@@ -41,7 +41,9 @@
     </div>
 
     <!-- datetime -->
-    <div v-if="field.render == 'datetime'">datetime渲染</div>
+    <div v-if="field.render == 'datetime'">
+        {{ timeFormat(row[property], field.timeFormat ?? undefined) }}
+    </div>
 
     <!-- 按钮组 -->
     <div v-if="field.render == 'buttons' && field.buttons">
@@ -58,7 +60,7 @@
 
 <script setup lang="ts">
 import type { TagProps } from 'element-plus'
-import { openUrl } from '/@/components/table'
+import { timeFormat, openUrl } from '/@/components/table'
 interface Props {
     row: TableRow
     field: TableColumn
