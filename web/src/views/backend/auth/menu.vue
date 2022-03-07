@@ -4,18 +4,18 @@
             <!-- 表格顶部菜单 -->
             <TableHeader
                 :buttons="['refresh', 'add', 'edit', 'delete', 'unfold']"
-                :enable-batch-opt="state.tableSelection.length > 0 ? true : false"
-                :unfold="state.tableExpandAll"
-                @on-unfold="onUnfold"
+                :enable-batch-opt="table.selection.length > 0 ? true : false"
+                :unfold="table.expandAll"
+                @on-unfold="onTableUnfold"
             />
             <!-- 表格 -->
             <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
             <Table
                 ref="tableRef"
-                :default-expand-all="state.tableExpandAll"
-                @selection-change="onSelectionChange"
-                :data="state.tableData"
-                :field="state.tableColumn"
+                :default-expand-all="table.expandAll"
+                @selection-change="onTableSelection"
+                :data="table.data"
+                :field="table.column"
             />
         </div>
     </div>
@@ -29,17 +29,17 @@ import TableHeader from '/@/components/table/header/index.vue'
 import Table from '/@/components/table/index.vue'
 
 const tableRef = ref()
-const state: {
+const table: {
     // 表格列数据
-    tableColumn: TableColumn[]
+    column: TableColumn[]
     // 表格数据
-    tableData: TableRow[]
+    data: TableRow[]
     // 表格选中项
-    tableSelection: TableRow[]
+    selection: TableRow[]
     // 表格是否展开所有子项
-    tableExpandAll: boolean
+    expandAll: boolean
 } = reactive({
-    tableColumn: [
+    column: [
         { type: 'selection', align: 'center' },
         { label: '标题', prop: 'title', align: 'left' },
         { label: '图片', prop: 'title', align: 'left', render: 'image', width: '60' },
@@ -63,24 +63,27 @@ const state: {
             buttons: defaultOptButtons(),
         },
     ],
-    tableData: [],
-    tableSelection: [],
-    tableExpandAll: true,
+    data: [],
+    selection: [],
+    expandAll: true,
 })
 
 index().then((res) => {
-    state.tableData = res.data.menu
+    table.data = res.data.menu
 })
 
-const onUnfold = (unfold: boolean) => {
-    state.tableExpandAll = unfold
+/*
+ * 表格折叠展开子级
+ */
+const onTableUnfold = (unfold: boolean) => {
+    table.expandAll = unfold
     tableRef.value.unFoldAll(unfold)
 }
 /*
  * 接受表格中选中的数据
  */
-const onSelectionChange = (selection: TableRow[]) => {
-    state.tableSelection = selection
+const onTableSelection = (selection: TableRow[]) => {
+    table.selection = selection
 }
 </script>
 
