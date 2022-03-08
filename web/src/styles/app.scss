@@ -61,6 +61,13 @@ body,
     right: -10px;
     cursor: se-resize;
 }
+.block-help {
+    display: block;
+    color: #909399;
+    font-size: 13px;
+    line-height: 16px;
+    padding-top: 5px;
+}
 
 /* 表格-s */
 .ba-table-box {
@@ -152,6 +159,26 @@ body,
     }
 }
 /* 表格-e */
+
+/* dialog滚动条-s */
+.el-overlay-dialog {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #eaeaea;
+        border-radius: var(--el-border-radius-base);
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+    &:hover {
+        &::-webkit-scrollbar-thumb:hover {
+            background: #c8c9cc;
+        }
+    }
+}
+/* dialog滚动条-e */
 
 /* 全局遮罩-s */
 .ba-layout-shade {

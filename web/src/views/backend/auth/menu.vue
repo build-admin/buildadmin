@@ -19,7 +19,13 @@
                 @row-dblclick="onTableDblclick"
             />
             <!-- 对话框表单 -->
-            <el-dialog custom-class="ba-operate-dialog" :close-on-click-modal="false" :model-value="form.operate ? true : false" @close="toggleForm">
+            <el-dialog
+                custom-class="ba-operate-dialog"
+                top="5vh"
+                :close-on-click-modal="false"
+                :model-value="form.operate ? true : false"
+                @close="toggleForm"
+            >
                 <template #title>
                     <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">
                         {{ form.operate ? t(form.operate) : '' }}
@@ -27,14 +33,76 @@
                 </template>
                 <div class="ba-operate-form" :class="'ba-' + form.operate + '-form'" :style="'width: calc(100% - ' + form.labelWidth / 2 + 'px)'">
                     <el-form v-model="form.items" label-position="right" :label-width="form.labelWidth + 'px'">
-                        <el-form-item label="上级菜单">
+                        <el-form-item label="上级菜单规则">
                             <remoteSelect
                                 :params="{ isTree: true }"
                                 field="title"
                                 :remote-url="indexUrl"
                                 v-model="form.items.pid"
-                                placeholder="请输入上级菜单"
+                                placeholder="请选择上级菜单规则"
                             />
+                        </el-form-item>
+                        <el-form-item label="规则类型">
+                            <el-radio v-model="form.items.type" label="menu_dir" :border="true">菜单目录</el-radio>
+                            <el-radio v-model="form.items.type" label="menu" :border="true">菜单项</el-radio>
+                            <el-radio v-model="form.items.type" label="button" :border="true">页面按钮</el-radio>
+                        </el-form-item>
+                        <el-form-item label="规则标题">
+                            <el-input v-model="form.items.title" type="string" placeholder="请输入菜单规则标题"></el-input>
+                        </el-form-item>
+                        <el-form-item label="规则名称">
+                            <el-input v-model="form.items.name" type="string" placeholder="英文名称,无需以`/admin`开头,如:auth/menu"></el-input>
+                            <div class="block-help">将注册为web端路由名称，同时作为server端API验权使用</div>
+                        </el-form-item>
+                        <el-form-item label="路由路径">
+                            <el-input
+                                v-model="form.items.path"
+                                type="string"
+                                placeholder="web端路由路径(path),无需以`/admin`开头,如:auth/menu"
+                            ></el-input>
+                        </el-form-item>
+                        <el-form-item label="规则图标">
+                            <IconSelector v-model="form.items.icon" />
+                        </el-form-item>
+                        <el-form-item label="菜单类型">
+                            <el-radio v-model="form.items.menu_type" label="tab" :border="true">选项卡</el-radio>
+                            <el-radio v-model="form.items.menu_type" label="link" :border="true">链接(站外)</el-radio>
+                            <el-radio v-model="form.items.menu_type" label="iframe" :border="true">Iframe</el-radio>
+                        </el-form-item>
+                        <el-form-item label="链接地址">
+                            <el-input v-model="form.items.url" type="string" placeholder="请输入链接或Iframe的URL地址"></el-input>
+                        </el-form-item>
+                        <el-form-item label="组件路径">
+                            <el-input
+                                v-model="form.items.component"
+                                type="string"
+                                placeholder="web端组件路径,请以/src开头,如:/src/views/backend/dashboard.vue"
+                            ></el-input>
+                        </el-form-item>
+                        <el-form-item label="扩展属性">
+                            <el-select class="w100" v-model="form.items.extend" placeholder="请选择扩展属性">
+                                <el-option label="无" value=""></el-option>
+                                <el-option label="只添加为路由" value="add_rules_only"></el-option>
+                                <el-option label="只添加为菜单" value="add_menu_only"></el-option>
+                            </el-select>
+                            <div class="block-help">
+                                比如将`auth/menu`只添加为路由,那么可以另外将`auth/menu`、`auth/menu/:a`、`auth/menu/:b/:c`只添加为菜单
+                            </div>
+                        </el-form-item>
+                        <el-form-item label="规则备注">
+                            <el-input
+                                v-model="form.items.remark"
+                                type="textarea"
+                                :autosize="{ minRows: 2, maxRows: 5 }"
+                                placeholder="在控制器中使用`get_route_remark()`函数,可以获得此字段值自用,比如控制台的banner文案"
+                            ></el-input>
+                        </el-form-item>
+                        <el-form-item label="规则权重">
+                            <el-input v-model="form.items.weigh" type="number" placeholder="请输入菜单规则权重(排序依据)"></el-input>
+                        </el-form-item>
+                        <el-form-item label="状态">
+                            <el-radio v-model="form.items.status" label="0" :border="true">禁用</el-radio>
+                            <el-radio v-model="form.items.status" label="1" :border="true">启用</el-radio>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -55,6 +123,7 @@ import { indexUrl, index } from '/@/api/backend/auth/Menu'
 import { defaultOptButtons } from '/@/components/table'
 import TableHeader from '/@/components/table/header/index.vue'
 import Table from '/@/components/table/index.vue'
+import IconSelector from '/@/components/icon/selector.vue'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
 import { useI18n } from 'vue-i18n'
 

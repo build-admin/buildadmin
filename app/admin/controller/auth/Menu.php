@@ -42,7 +42,7 @@ class Menu extends Backend
     {
         $isTree        = $this->request->param('isTree');
         $this->keyword = $this->request->request("keyword");
-        $data          = $this->getMenus(true);
+        $data          = $this->getMenus(false);
 
         if ($isTree) {
             $data = Tree::assembleTree(Tree::getTreeArray($data, 'title'));

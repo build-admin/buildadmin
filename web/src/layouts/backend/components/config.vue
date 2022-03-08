@@ -196,10 +196,9 @@ const onCloseDrawer = () => {
     configStore.setLayout('showDrawer', false)
 }
 
-const restoreDefault = (): boolean => {
+const restoreDefault = () => {
     Local.remove(STORE_CONFIG)
     router.go(0)
-    return true
 }
 </script>
 
