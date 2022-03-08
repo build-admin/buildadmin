@@ -692,7 +692,7 @@ const greetingsFun = () => {
     } else if (hour < 14) {
         greetings = t('dashboard.Good noon!') + t('dashboard.welcome back')
     } else if (hour < 18) {
-        greetings = t('dashboard.good afternoon.') + t('dashboard.welcome back')
+        greetings = t('dashboard.good afternoon') + t('dashboard.welcome back')
     } else if (hour < 24) {
         greetings = t('dashboard.Good evening') + t('dashboard.welcome back')
     } else {

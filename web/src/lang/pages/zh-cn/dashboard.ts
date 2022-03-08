@@ -37,7 +37,7 @@ export default {
     'good morning!': '早上好！',
     'Good morning!': '上午好！',
     'Good noon!': '中午好！',
-    'good afternoon.': '下午好！',
+    'good afternoon': '下午好！',
     'Good evening': '晚上好！',
     'Hello!': '您好！',
     hour: '小时',

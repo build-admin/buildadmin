@@ -37,7 +37,7 @@ export default {
     'good morning!': 'good morning!',
     'Good morning!': 'Good morning!',
     'Good noon!': 'Good noon!',
-    'good afternoon.': 'good afternoon.',
+    'good afternoon': 'good afternoon.',
     'Good evening': 'Good evening',
     'Hello!': 'Hello!',
     hour: 'hour',

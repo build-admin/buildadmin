@@ -2,6 +2,7 @@
 
 namespace app\admin\controller\auth;
 
+use ba\Tree;
 use app\admin\model\MenuRule;
 use app\common\controller\Backend;
 
@@ -15,6 +16,8 @@ class Menu extends Backend
     protected $noNeedPermission = ['index'];
     protected $childrens        = [];
 
+    protected $keyword = false;
+
     public function _initialize()
     {
         parent::_initialize();
@@ -23,14 +26,35 @@ class Menu extends Backend
 
     public function index()
     {
+        if ($this->request->param('select')) {
+            $this->select();
+        }
+
         $this->success('ok', [
             'menu' => $this->getMenus()
         ]);
     }
 
-    protected function getMenus()
+    /**
+     * 重写select方法
+     */
+    public function select()
     {
-        $rules = $this->getRuleList();
+        $isTree        = $this->request->param('isTree');
+        $this->keyword = $this->request->request("keyword");
+        $data          = $this->getMenus(true);
+
+        if ($isTree) {
+            $data = Tree::assembleTree(Tree::getTreeArray($data, 'title'));
+        }
+        $this->success('select', [
+            'options' => $data
+        ]);
+    }
+
+    protected function getMenus($getButton = true)
+    {
+        $rules = $this->getRuleList($getButton);
         if (!$rules) {
             return [];
         }
@@ -54,7 +78,7 @@ class Menu extends Backend
         return $rules;
     }
 
-    protected function getRuleList()
+    protected function getRuleList($getButton = true)
     {
         $ids = $this->auth->getRuleIds();
 
@@ -62,6 +86,16 @@ class Menu extends Backend
         // 如果没有 * 则只获取用户拥有的规则
         if (!in_array('*', $ids)) {
             $where[] = ['id', 'in', $ids];
+        }
+        if (!$getButton) {
+            $where[] = ['type', 'in', ['menu_dir', 'menu']];
+        }
+
+        if ($this->keyword) {
+            $keyword = explode(' ', $this->keyword);
+            foreach ($keyword as $item) {
+                $where[] = ['title', 'like', '%' . $item . '%'];
+            }
         }
 
         // 读取用户组所有权限规则
