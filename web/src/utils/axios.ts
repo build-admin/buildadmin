@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { Method } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 import { computed } from 'vue'
 import { ElMessage, ElLoading, LoadingOptions } from 'element-plus'
@@ -211,6 +211,18 @@ function getPendingKey(config: AxiosRequestConfig) {
     let { url, method, params, data } = config
     if (typeof data === 'string') data = JSON.parse(data) // response里面返回的config.data是个字符串对象
     return [url, method, JSON.stringify(params), JSON.stringify(data)].join('&')
+}
+
+export function requestPayload(method: Method, data: anyObj) {
+    if (method == 'GET') {
+        return {
+            params: data,
+        }
+    } else if (method == 'POST') {
+        return {
+            data: data,
+        }
+    }
 }
 
 interface LoadingInstance {

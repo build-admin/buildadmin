@@ -35,6 +35,22 @@ class Menu extends Backend
         ]);
     }
 
+    public function edit($id = null)
+    {
+        $row = $this->model->find($id);
+        if (!$row) {
+            $this->error(__('No Results were found'));
+        }
+
+
+        if ($row->pid) {
+            $row->pid = $this->model->where('id', $row->pid)->value('title');
+        }
+        $this->success('edit', [
+            'row' => $row
+        ]);
+    }
+
     /**
      * 重写select方法
      */

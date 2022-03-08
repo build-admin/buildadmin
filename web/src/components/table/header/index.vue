@@ -1,24 +1,24 @@
 <template>
     <div class="table-header">
         <el-tooltip v-if="props.buttons.includes('refresh')" content="刷新" placement="top">
-            <el-button v-blur color="#40485b" class="table-header-operate" type="info">
+            <el-button v-blur @click="onAction('refresh')" color="#40485b" class="table-header-operate" type="info">
                 <Icon name="fa fa-refresh" />
             </el-button>
         </el-tooltip>
         <el-tooltip v-if="props.buttons.includes('add')" content="添加记录" placement="top">
-            <el-button class="table-header-operate" type="primary">
+            <el-button v-blur @click="onAction('add')" class="table-header-operate" type="primary">
                 <Icon name="fa fa-plus" />
                 <span class="table-header-operate-text">添加</span>
             </el-button>
         </el-tooltip>
         <el-tooltip v-if="props.buttons.includes('edit')" content="编辑选中行" placement="top">
-            <el-button :disabled="!props.enableBatchOpt" class="table-header-operate" type="primary">
+            <el-button v-blur @click="onAction('edit')" :disabled="!props.enableBatchOpt" class="table-header-operate" type="primary">
                 <Icon name="fa fa-pencil" />
                 <span class="table-header-operate-text">编辑</span>
             </el-button>
         </el-tooltip>
         <el-tooltip v-if="props.buttons.includes('delete')" content="删除选中行" placement="top">
-            <el-button :disabled="!props.enableBatchOpt" class="table-header-operate" type="danger">
+            <el-button v-blur @click="onAction('delete')" :disabled="!props.enableBatchOpt" class="table-header-operate" type="danger">
                 <Icon name="fa fa-trash" />
                 <span class="table-header-operate-text">删除</span>
             </el-button>
@@ -49,11 +49,15 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emits = defineEmits<{
-    (e: 'onUnfold', unfold: boolean): void
+    (e: 'action', type: string, data: anyObj): void
 }>()
 
+const onAction = (type: string, data: anyObj = {}) => {
+    emits('action', type, data)
+}
+
 const changeUnfold = () => {
-    emits('onUnfold', !props.unfold)
+    emits('action', 'unfold', { unfold: !props.unfold })
 }
 </script>
 

@@ -180,6 +180,22 @@ body,
 }
 /* dialog滚动条-e */
 
+/* 新增/编辑表单-s */
+.ba-operate-dialog .el-dialog__header {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-bg-1);
+}
+.ba-operate-dialog .el-dialog__body {
+    padding-bottom: 60px;
+}
+.ba-operate-dialog .el-dialog__footer {
+    padding-top: 0;
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+}
+/* 新增/编辑表单-e */
+
 /* 全局遮罩-s */
 .ba-layout-shade {
     position: fixed;

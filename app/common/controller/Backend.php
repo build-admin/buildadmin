@@ -10,6 +10,7 @@ class Backend extends Api
 {
     protected $noNeedLogin      = [];
     protected $noNeedPermission = [];
+    protected $preExcludeFields = [];
 
     /**
      * 权限类实例
@@ -20,6 +21,12 @@ class Backend extends Api
     protected $model = null;
 
     protected $quickSearchField = 'id';
+
+    /**
+     * 引入traits
+     * traits内实现了index、add、edit等方法
+     */
+    use \app\admin\library\traits\Backend;
 
     public function _initialize()
     {

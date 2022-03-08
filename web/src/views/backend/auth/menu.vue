@@ -6,7 +6,7 @@
                 :buttons="['refresh', 'add', 'edit', 'delete', 'unfold']"
                 :enable-batch-opt="table.selection.length > 0 ? true : false"
                 :unfold="table.expandAll"
-                @on-unfold="onTableUnfold"
+                @action="onAction"
             />
             <!-- 表格 -->
             <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
@@ -51,14 +51,14 @@
                             <el-input v-model="form.items.title" type="string" placeholder="请输入菜单规则标题"></el-input>
                         </el-form-item>
                         <el-form-item label="规则名称">
-                            <el-input v-model="form.items.name" type="string" placeholder="英文名称,无需以`/admin`开头,如:auth/menu"></el-input>
+                            <el-input v-model="form.items.name" type="string" placeholder="英文名称，无需以`/admin`开头，如:auth/menu"></el-input>
                             <div class="block-help">将注册为web端路由名称，同时作为server端API验权使用</div>
                         </el-form-item>
                         <el-form-item label="路由路径">
                             <el-input
                                 v-model="form.items.path"
                                 type="string"
-                                placeholder="web端路由路径(path),无需以`/admin`开头,如:auth/menu"
+                                placeholder="web端路由路径(path)，无需以`/admin`开头，如:auth/menu"
                             ></el-input>
                         </el-form-item>
                         <el-form-item label="规则图标">
@@ -76,7 +76,7 @@
                             <el-input
                                 v-model="form.items.component"
                                 type="string"
-                                placeholder="web端组件路径,请以/src开头,如:/src/views/backend/dashboard.vue"
+                                placeholder="web端组件路径，请以/src开头，如:/src/views/backend/dashboard.vue"
                             ></el-input>
                         </el-form-item>
                         <el-form-item label="扩展属性">
@@ -86,7 +86,7 @@
                                 <el-option label="只添加为菜单" value="add_menu_only"></el-option>
                             </el-select>
                             <div class="block-help">
-                                比如将`auth/menu`只添加为路由,那么可以另外将`auth/menu`、`auth/menu/:a`、`auth/menu/:b/:c`只添加为菜单
+                                比如将`auth/menu`只添加为路由，那么可以另外将`auth/menu`、`auth/menu/:a`、`auth/menu/:b/:c`只添加为菜单
                             </div>
                         </el-form-item>
                         <el-form-item label="规则备注">
@@ -94,7 +94,7 @@
                                 v-model="form.items.remark"
                                 type="textarea"
                                 :autosize="{ minRows: 2, maxRows: 5 }"
-                                placeholder="在控制器中使用`get_route_remark()`函数,可以获得此字段值自用,比如控制台的banner文案"
+                                placeholder="在控制器中使用`get_route_remark()`函数，可以获得此字段值自用，比如控制台的banner文案"
                             ></el-input>
                         </el-form-item>
                         <el-form-item label="规则权重">
@@ -119,7 +119,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import { indexUrl, index } from '/@/api/backend/auth/Menu'
+import { indexUrl, index, edit, postEdit } from '/@/api/backend/auth/Menu'
 import { defaultOptButtons } from '/@/components/table'
 import TableHeader from '/@/components/table/header/index.vue'
 import Table from '/@/components/table/index.vue'
@@ -196,17 +196,20 @@ const form: {
     items: {},
 })
 
-index().then((res) => {
-    table.data = res.data.menu
-})
-
-/*
- * 表格折叠展开子级
- */
-const onTableUnfold = (unfold: boolean) => {
-    table.expandAll = unfold
-    tableRef.value.unFoldAll(unfold)
+const getIndex = (loading: boolean = false) => {
+    index(loading).then((res) => {
+        table.data = res.data.menu
+    })
 }
+
+const requestEdit = (id: string) => {
+    edit({
+        id: id,
+    }).then((res) => {
+        form.items = res.data.row
+    })
+}
+
 /*
  * 接受表格中选中的数据
  */
@@ -221,13 +224,76 @@ const onTableDblclick = (row: TableRow, column: any) => {
 }
 
 const toggleForm = (operate: string = '', operateIds: string[] = []) => {
+    if (operate == 'edit') {
+        if (!operateIds.length) {
+            return false
+        }
+        requestEdit(operateIds[0])
+    } else if (operate == 'add') {
+        form.items = {}
+    }
     form.operate = operate
     form.operateIds = operateIds
 }
 
 const onSubmit = () => {
+    // 待完善
+    // 保存时去除当前编辑的记录
+    // 加载下一个记录
+    // 若无记录，关闭dialog
     console.log(form.items)
 }
+
+const onAction = (type: string, data: anyObj) => {
+    const actionFun = new Map([
+        [
+            'refresh',
+            () => {
+                getIndex(true)
+            },
+        ],
+        [
+            'add',
+            () => {
+                toggleForm('add')
+            },
+        ],
+        [
+            'edit',
+            () => {
+                let ids: string[] = []
+                for (const key in table.selection) {
+                    ids.push(table.selection[key][table.pk])
+                }
+                toggleForm('edit', ids)
+            },
+        ],
+        [
+            'delete',
+            () => {
+                console.log('执行删除')
+            },
+        ],
+        [
+            'unfold',
+            () => {
+                table.expandAll = data.unfold
+                tableRef.value.unFoldAll(data.unfold)
+            },
+        ],
+        [
+            'default',
+            () => {
+                console.log('未定义操作')
+            },
+        ],
+    ])
+
+    let action = actionFun.get(type) || actionFun.get('default')
+    return action!.call(this)
+}
+
+getIndex()
 </script>
 
 <style lang="scss" scoped></style>
