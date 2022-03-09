@@ -172,7 +172,7 @@ export const addRouteAll = (viewsComponent: Record<string, { [key: string]: any 
         if (routes[idx].extend == 'add_menu_only') {
             continue
         }
-        if (routes[idx].type == 'menu' && routes[idx].menu_type == 'tab' && viewsComponent[routes[idx].component].default) {
+        if (routes[idx].type == 'menu' && routes[idx].menu_type == 'tab' && viewsComponent[routes[idx].component]) {
             addRouteItem(viewsComponent, routes[idx], parentName)
         }
 

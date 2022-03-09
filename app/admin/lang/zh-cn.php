@@ -13,4 +13,5 @@ return [
     'Update successful'                          => '更新成功!',
     'Added successfully'                         => '添加成功!',
     'Deleted successfully'                       => '删除成功!',
+    'Parameter error'                            => '参数错误!',
 ];

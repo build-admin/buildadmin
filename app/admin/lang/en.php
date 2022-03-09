@@ -13,4 +13,5 @@ return [
     'Update successful'                          => 'Update successful!',
     'Added successfully'                         => 'Added successfully!',
     'Deleted successfully'                       => 'Deleted successfully!',
+    'Parameter error'                            => 'Parameter error!',
 ];

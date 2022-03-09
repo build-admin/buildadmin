@@ -37,7 +37,7 @@
                             <remoteSelect
                                 :params="{ isTree: true }"
                                 field="title"
-                                :remote-url="indexUrl"
+                                :remote-url="actionUrl.get('index')"
                                 v-model="form.items.pid"
                                 placeholder="点击选择"
                             />
@@ -122,7 +122,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import { indexUrl, index, edit, postEdit } from '/@/api/backend/auth/Menu'
+import { actionUrl, index, edit, del, postData } from '/@/api/backend/auth/Menu'
 import { defaultOptButtons } from '/@/components/table'
 import TableHeader from '/@/components/table/header/index.vue'
 import Table from '/@/components/table/index.vue'
@@ -168,10 +168,8 @@ const table: {
             custom: { menu: 'danger', menu_dir: 'success', button: 'info' },
             replaceValue: { menu: t('auth/menu.type menu'), menu_dir: t('auth/menu.type menu_dir'), button: t('auth/menu.type button') },
         },
-        { label: '组件路径', prop: 'component', align: 'center', 'show-overflow-tooltip': true },
         { label: '状态', prop: 'status', align: 'center', width: '80', render: 'switch' },
         { label: '更新时间', prop: 'updatetime', align: 'center', width: '160' },
-        { label: '创建时间', prop: 'createtime', align: 'center', width: '160' },
         {
             label: '操作',
             align: 'center',
@@ -205,6 +203,12 @@ const form: {
 const getIndex = (loading: boolean = false) => {
     index(loading).then((res) => {
         table.data = res.data.menu
+    })
+}
+
+const postDel = (ids: string[]) => {
+    del(ids).then((res) => {
+        onAction('refresh', {})
     })
 }
 
@@ -251,7 +255,7 @@ const onSubmit = () => {
     if (!form.items.extend) {
         delete form.items.extend
     }
-    postEdit(form.items)
+    postData(form.operate, form.items)
         .then((res) => {
             onAction('refresh', {})
             form.submitLoading = false
@@ -265,6 +269,14 @@ const onSubmit = () => {
         .catch((err) => {
             form.submitLoading = false
         })
+}
+
+const getSelectionIds = () => {
+    let ids: string[] = []
+    for (const key in table.selection) {
+        ids.push(table.selection[key][table.pk])
+    }
+    return ids
 }
 
 const onAction = (type: string, data: anyObj) => {
@@ -284,17 +296,13 @@ const onAction = (type: string, data: anyObj) => {
         [
             'edit',
             () => {
-                let ids: string[] = []
-                for (const key in table.selection) {
-                    ids.push(table.selection[key][table.pk])
-                }
-                toggleForm('edit', ids)
+                toggleForm('edit', getSelectionIds())
             },
         ],
         [
             'delete',
             () => {
-                console.log('执行删除')
+                postDel(getSelectionIds())
             },
         ],
         [

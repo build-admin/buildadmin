@@ -17,12 +17,21 @@
                 <span class="table-header-operate-text">编辑</span>
             </el-button>
         </el-tooltip>
-        <el-tooltip v-if="props.buttons.includes('delete')" content="删除选中行" placement="top">
-            <el-button v-blur @click="onAction('delete')" :disabled="!props.enableBatchOpt" class="table-header-operate" type="danger">
-                <Icon name="fa fa-trash" />
-                <span class="table-header-operate-text">删除</span>
-            </el-button>
-        </el-tooltip>
+        <el-popconfirm
+            v-if="props.buttons.includes('delete')"
+            @confirm="onAction('delete')"
+            confirm-button-text="删除"
+            cancel-button-text="取消"
+            confirmButtonType="danger"
+            title="确定删除选中记录？"
+        >
+            <template #reference>
+                <el-button v-blur :disabled="!props.enableBatchOpt" class="table-header-operate" type="danger">
+                    <Icon name="fa fa-trash" />
+                    <span class="table-header-operate-text">删除</span>
+                </el-button>
+            </template>
+        </el-popconfirm>
         <el-tooltip v-if="props.buttons.includes('unfold')" :content="(unfold ? '收缩' : '展开') + '所有子菜单'" placement="top">
             <el-button v-blur @click="changeUnfold" :type="unfold ? 'danger' : 'warning'">
                 <span class="table-header-operate-text">{{ unfold ? '收缩所有' : '展开所有' }}</span>
