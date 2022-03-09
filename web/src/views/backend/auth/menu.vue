@@ -21,7 +21,7 @@
             <!-- 对话框表单 -->
             <el-dialog
                 custom-class="ba-operate-dialog"
-                top="5vh"
+                top="10vh"
                 :close-on-click-modal="false"
                 :model-value="form.operate ? true : false"
                 @close="toggleForm"
@@ -39,7 +39,7 @@
                                 field="title"
                                 :remote-url="indexUrl"
                                 v-model="form.items.pid"
-                                placeholder="请选择上级菜单规则"
+                                placeholder="点击选择"
                             />
                         </el-form-item>
                         <el-form-item label="规则类型">
@@ -54,34 +54,33 @@
                             <el-input v-model="form.items.name" type="string" placeholder="英文名称，无需以`/admin`开头，如:auth/menu"></el-input>
                             <div class="block-help">将注册为web端路由名称，同时作为server端API验权使用</div>
                         </el-form-item>
-                        <el-form-item label="路由路径">
+                        <el-form-item v-if="form.items.type != 'button'" label="路由路径">
                             <el-input
                                 v-model="form.items.path"
                                 type="string"
                                 placeholder="web端路由路径(path)，无需以`/admin`开头，如:auth/menu"
                             ></el-input>
                         </el-form-item>
-                        <el-form-item label="规则图标">
+                        <el-form-item v-if="form.items.type != 'button'" label="规则图标">
                             <IconSelector v-model="form.items.icon" />
                         </el-form-item>
-                        <el-form-item label="菜单类型">
+                        <el-form-item v-if="form.items.type == 'menu'" label="菜单类型">
                             <el-radio v-model="form.items.menu_type" label="tab" :border="true">选项卡</el-radio>
                             <el-radio v-model="form.items.menu_type" label="link" :border="true">链接(站外)</el-radio>
                             <el-radio v-model="form.items.menu_type" label="iframe" :border="true">Iframe</el-radio>
                         </el-form-item>
-                        <el-form-item label="链接地址">
+                        <el-form-item v-if="form.items.menu_type != 'tab'" label="链接地址">
                             <el-input v-model="form.items.url" type="string" placeholder="请输入链接或Iframe的URL地址"></el-input>
                         </el-form-item>
-                        <el-form-item label="组件路径">
+                        <el-form-item v-if="form.items.type == 'menu'" label="组件路径">
                             <el-input
                                 v-model="form.items.component"
                                 type="string"
                                 placeholder="web端组件路径，请以/src开头，如:/src/views/backend/dashboard.vue"
                             ></el-input>
                         </el-form-item>
-                        <el-form-item label="扩展属性">
-                            <el-select class="w100" v-model="form.items.extend" placeholder="请选择扩展属性">
-                                <el-option label="无" value=""></el-option>
+                        <el-form-item v-if="form.items.type == 'menu'" label="扩展属性">
+                            <el-select class="w100" v-model="form.items.extend" clearable placeholder="请选择扩展属性">
                                 <el-option label="只添加为路由" value="add_rules_only"></el-option>
                                 <el-option label="只添加为菜单" value="add_menu_only"></el-option>
                             </el-select>

@@ -43,9 +43,7 @@ class Menu extends Backend
         }
 
 
-        if ($row->pid) {
-            $row->pid = $this->model->where('id', $row->pid)->value('title');
-        }
+        $row->pid = $row->pid ? $this->model->where('id', $row->pid)->value('title') : '';
         $this->success('edit', [
             'row' => $row
         ]);
