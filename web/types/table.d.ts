@@ -31,6 +31,8 @@ declare global {
         click?: Function
         // 渲染为 datetime 时的格式化方式,字母可以自由组合:y=年,m=月,d=日,h=时,M=分,s=秒
         timeFormat?: 'yyyy-mm-dd hh:MM:ss'
+        // 默认值
+        default?: any
         // 最小宽度 el-table
         'min-width'?: string | number
         // 将列中过长的内容 hover 时以 tooltip 的形式显示出来 el-table

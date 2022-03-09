@@ -24,9 +24,14 @@ export function edit(params: anyObj) {
 }
 
 export function postEdit(data: anyObj) {
-    return createAxios({
-        url: editUrl,
-        method: 'post',
-        data: data,
-    })
+    return createAxios(
+        {
+            url: editUrl,
+            method: 'post',
+            data: data,
+        },
+        {
+            showSuccessMessage: true,
+        }
+    )
 }

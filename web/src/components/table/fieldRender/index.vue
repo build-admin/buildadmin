@@ -1,6 +1,6 @@
 <template>
     <!-- Icon -->
-    <Icon v-if="field.render == 'icon'" :name="row[property]" />
+    <Icon v-if="field.render == 'icon'" :name="row[property] ? row[property] : field.default ?? ''" />
 
     <!-- switch -->
     <el-switch

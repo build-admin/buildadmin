@@ -16,7 +16,7 @@ export function directives(app: App) {
 function blurDirective(app: App) {
     app.directive('blur', {
         mounted(el) {
-            el.addEventListener('click', () => {
+            el.addEventListener('focus', () => {
                 el.blur()
             })
         },

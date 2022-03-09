@@ -13,9 +13,6 @@ export function login(method: 'get' | 'post', params: object = {}) {
             url: '/index.php/admin/index/login',
             data: params,
             method: method,
-        },
-        {
-            showCodeMessage: true,
         }
     )
 }

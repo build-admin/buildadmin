@@ -1,7 +1,7 @@
 import axios, { Method } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 import { computed } from 'vue'
-import { ElMessage, ElLoading, LoadingOptions } from 'element-plus'
+import { ElMessage, ElLoading, LoadingOptions, ElNotification } from 'element-plus'
 import { useConfig } from '/@/stores/config'
 import { getAdminToken } from './common'
 import router from '/@/router/index'
@@ -36,7 +36,8 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             loading: false, // 是否开启loading层效果, 默认为false
             reductDataFormat: true, // 是否开启简洁的数据结构响应, 默认为true
             showErrorMessage: true, // 是否开启接口错误信息展示,默认为true
-            showCodeMessage: true, // 是否开启code不为1时的信息提示, 默认为false
+            showCodeMessage: true, // 是否开启code不为1时的信息提示, 默认为true
+            showSuccessMessage: false, // 是否开启code为1时的信息提示, 默认为false
         },
         options
     )
@@ -88,6 +89,11 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                 }
                 // code不等于1, 页面then内的具体逻辑就不执行了
                 return Promise.reject(response.data)
+            } else if (options.showSuccessMessage && response.data && response.data.code == 1) {
+                ElNotification({
+                    title: response.data.msg ? response.data.msg : '操作成功',
+                    type: 'success',
+                })
             }
             return options.reductDataFormat ? response.data : response
         },
@@ -240,6 +246,8 @@ interface Options {
     showErrorMessage?: boolean
     // 是否开启code不为0时的信息提示, 默认为true
     showCodeMessage?: boolean
+    // 是否开启code为0时的信息提示, 默认为false
+    showSuccessMessage?: boolean
 }
 
 /*

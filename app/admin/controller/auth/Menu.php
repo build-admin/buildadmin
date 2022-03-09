@@ -16,6 +16,8 @@ class Menu extends Backend
     protected $noNeedPermission = ['index'];
     protected $childrens        = [];
 
+    protected $preExcludeFields = ['createtime', 'updatetime'];
+
     protected $keyword = false;
 
     public function _initialize()
@@ -42,9 +44,12 @@ class Menu extends Backend
             $this->error(__('No Results were found'));
         }
 
+        if ($this->request->isPost()) {
+            parent::edit($id);
+        }
 
         $row->pid = $row->pid ? $this->model->where('id', $row->pid)->value('title') : '';
-        $this->success('edit', [
+        $this->success('', [
             'row' => $row
         ]);
     }

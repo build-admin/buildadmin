@@ -72,14 +72,14 @@
                         <el-form-item v-if="form.items.menu_type != 'tab'" label="链接地址">
                             <el-input v-model="form.items.url" type="string" placeholder="请输入链接或Iframe的URL地址"></el-input>
                         </el-form-item>
-                        <el-form-item v-if="form.items.type == 'menu'" label="组件路径">
+                        <el-form-item v-if="form.items.type == 'menu' && form.items.menu_type == 'tab'" label="组件路径">
                             <el-input
                                 v-model="form.items.component"
                                 type="string"
                                 placeholder="web端组件路径，请以/src开头，如:/src/views/backend/dashboard.vue"
                             ></el-input>
                         </el-form-item>
-                        <el-form-item v-if="form.items.type == 'menu'" label="扩展属性">
+                        <el-form-item v-if="form.items.type == 'menu' && form.items.menu_type == 'tab'" label="扩展属性">
                             <el-select class="w100" v-model="form.items.extend" clearable placeholder="请选择扩展属性">
                                 <el-option label="只添加为路由" value="add_rules_only"></el-option>
                                 <el-option label="只添加为菜单" value="add_menu_only"></el-option>
@@ -108,7 +108,9 @@
                 <template #footer>
                     <div :style="'width: calc(100% - ' + form.labelWidth / 1.8 + 'px)'">
                         <el-button @click="toggleForm('')">取消</el-button>
-                        <el-button v-blur @click="onSubmit" type="primary">提交</el-button>
+                        <el-button v-blur :loading="form.submitLoading" @click="onSubmit" type="primary">
+                            {{ form.operateIds.length > 1 ? '保存并编辑下一项' : '保存' }}
+                        </el-button>
                     </div>
                 </template>
             </el-dialog>
@@ -154,9 +156,7 @@ const table: {
     column: [
         { type: 'selection', align: 'center' },
         { label: '标题', prop: 'title', align: 'left' },
-        { label: '图片', prop: 'title', align: 'left', render: 'image', width: '60' },
-        { label: '图片测试', prop: 'title', align: 'left', render: 'images', width: '164' },
-        { label: '图标', prop: 'icon', align: 'center', width: '60', render: 'icon' },
+        { label: '图标', prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
         { label: '名称', prop: 'name', align: 'center', 'show-overflow-tooltip': true },
         {
             label: '类型',
@@ -185,6 +185,7 @@ const form: {
     operate: string
     operateIds: string[]
     items: anyObj
+    submitLoading: boolean
 } = reactive({
     // 表单label宽度
     labelWidth: 160,
@@ -193,6 +194,7 @@ const form: {
     // 被操作数据ID,支持批量编辑:add=[0],edit=[1,2,n]
     operateIds: [],
     items: {},
+    submitLoading: false,
 })
 
 const getIndex = (loading: boolean = false) => {
@@ -206,6 +208,7 @@ const requestEdit = (id: string) => {
         id: id,
     }).then((res) => {
         form.items = res.data.row
+        form.items['pidebak'] = form.items.pid
     })
 }
 
@@ -236,11 +239,23 @@ const toggleForm = (operate: string = '', operateIds: string[] = []) => {
 }
 
 const onSubmit = () => {
-    // 待完善
-    // 保存时去除当前编辑的记录
-    // 加载下一个记录
-    // 若无记录，关闭dialog
-    console.log(form.items)
+    form.submitLoading = true
+    if (form.items.pid == form.items.pidebak) {
+        delete form.items.pid
+    }
+    postEdit(form.items)
+        .then((res) => {
+            form.submitLoading = false
+            form.operateIds.shift()
+            if (form.operateIds.length > 0) {
+                toggleForm('edit', form.operateIds)
+            } else {
+                toggleForm()
+            }
+        })
+        .catch((err) => {
+            form.submitLoading = false
+        })
 }
 
 const onAction = (type: string, data: anyObj) => {
@@ -295,4 +310,8 @@ const onAction = (type: string, data: anyObj) => {
 getIndex()
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.default-main {
+    margin-bottom: 60px;
+}
+</style>
