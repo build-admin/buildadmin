@@ -121,16 +121,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onBeforeMount, onUnmounted } from 'vue'
 import { actionUrl, index, edit, del, postData } from '/@/api/backend/auth/Menu'
 import { defaultOptButtons } from '/@/components/table'
 import TableHeader from '/@/components/table/header/index.vue'
 import Table from '/@/components/table/index.vue'
 import IconSelector from '/@/components/icon/selector.vue'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
+import useCurrentInstance from '/@/utils/useCurrentInstance'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
+const { proxy } = useCurrentInstance()
 
 /*
  * 表格
@@ -324,7 +326,18 @@ const onAction = (type: string, data: anyObj) => {
     return action!.call(this)
 }
 
-getIndex()
+onBeforeMount(() => {
+    getIndex()
+    proxy.eventBus.on('onTableFieldChange', (data: { value: any; row: TableRow; field: keyof TableRow }) => {
+        postData('edit', {
+            [table.pk]: data.row[table.pk],
+            [data.field]: data.value,
+        })
+    })
+})
+onUnmounted(() => {
+    proxy.eventBus.off('onTableFieldChange')
+})
 </script>
 
 <style lang="scss" scoped>

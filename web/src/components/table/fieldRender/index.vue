@@ -5,7 +5,7 @@
     <!-- switch -->
     <el-switch
         v-if="field.render == 'switch'"
-        @change="changeField($event, field.render!, property)"
+        @change="changeField($event, property)"
         :model-value="row[property]"
         active-value="1"
         inactive-value="0"
@@ -61,6 +61,10 @@
 <script setup lang="ts">
 import type { TagProps } from 'element-plus'
 import { timeFormat, openUrl } from '/@/components/table'
+import useCurrentInstance from '/@/utils/useCurrentInstance'
+
+const { proxy } = useCurrentInstance()
+
 interface Props {
     row: TableRow
     field: TableColumn
@@ -76,9 +80,15 @@ const props = withDefaults(defineProps<Props>(), {
     property: '',
 })
 
-const changeField = (value: any, type: string, field: keyof TableRow) => {
-    if (type == 'switch') {
-        props.row[field] = value
+const changeField = (value: any, fieldName: keyof TableRow) => {
+    if (props.field.render == 'switch') {
+        props.row[fieldName] = value
+        proxy.eventBus.emit('onTableFieldChange', {
+            value: value,
+            row: props.row,
+            field: fieldName,
+            render: props.field.render,
+        })
     }
 }
 
