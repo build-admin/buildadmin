@@ -25,7 +25,7 @@
     <!-- tag -->
     <div v-if="field.render == 'tag'">
         <el-tag :type="getTagType(row[property], field.custom)" :effect="field.effect ?? 'light'" :size="field.size ?? 'default'">{{
-            row[property]
+            field.replaceValue ? field.replaceValue[row[property]] : row[property]
         }}</el-tag>
     </div>
 

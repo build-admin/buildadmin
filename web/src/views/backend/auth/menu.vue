@@ -166,9 +166,12 @@ const table: {
             align: 'center',
             render: 'tag',
             custom: { menu: 'danger', menu_dir: 'success', button: 'info' },
+            replaceValue: { menu: t('auth/menu.type menu'), menu_dir: t('auth/menu.type menu_dir'), button: t('auth/menu.type button') },
         },
         { label: '组件路径', prop: 'component', align: 'center', 'show-overflow-tooltip': true },
         { label: '状态', prop: 'status', align: 'center', width: '80', render: 'switch' },
+        { label: '更新时间', prop: 'updatetime', align: 'center', width: '160' },
+        { label: '创建时间', prop: 'createtime', align: 'center', width: '160' },
         {
             label: '操作',
             align: 'center',

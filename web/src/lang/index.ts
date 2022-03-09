@@ -34,9 +34,9 @@ export async function loadLang(app: App) {
      * 2、直接载入所有 /@/lang/pages/语言/*.ts 文件，若某页面有特别大量的语言配置，可在其他位置单独建立语言包文件，并在对应页面赖加载语言包
      */
     if (locale == 'zh-cn') {
-        assignLocale[locale].push(getLangFileMessage(import.meta.globEager('./pages/zh-cn/*.ts')))
+        assignLocale[locale].push(getLangFileMessage(import.meta.globEager('./pages/zh-cn/**/*.ts'), locale))
     } else if (locale == 'en') {
-        assignLocale[locale].push(getLangFileMessage(import.meta.globEager('./pages/en/*.ts')))
+        assignLocale[locale].push(getLangFileMessage(import.meta.globEager('./pages/en/**/*.ts'), locale))
     }
 
     const messages = {
@@ -60,7 +60,7 @@ export async function loadLang(app: App) {
     return i18n
 }
 
-function getLangFileMessage(mList: any) {
+function getLangFileMessage(mList: any, locale: string) {
     interface msg {
         [key: string]: any
     }
@@ -68,7 +68,7 @@ function getLangFileMessage(mList: any) {
     for (let path in mList) {
         if (mList[path].default) {
             //  获取文件名
-            let pathName = path.slice(path.lastIndexOf('/') + 1, path.lastIndexOf('.'))
+            let pathName = path.slice(path.lastIndexOf(locale) + (locale.length + 1), path.lastIndexOf('.'))
             msg[pathName] = mList[path].default
         }
     }

@@ -33,6 +33,8 @@ declare global {
         timeFormat?: 'yyyy-mm-dd hh:MM:ss'
         // 默认值
         default?: any
+        // 值替换数据,如{open: '开'}
+        replaceValue?: any
         // 最小宽度 el-table
         'min-width'?: string | number
         // 将列中过长的内容 hover 时以 tooltip 的形式显示出来 el-table
