@@ -17,7 +17,7 @@ class Index extends Backend
     {
         $adminInfo = $this->auth->getInfo();
         unset($adminInfo['token']);
-        $this->success('ok', [
+        $this->success('', [
             'adminInfo' => $adminInfo,
             'menus'     => $this->auth->getMenus()
         ]);
@@ -84,7 +84,7 @@ class Index extends Backend
             }
         }
 
-        $this->success('ok', [
+        $this->success('', [
             'captcha' => $captchaSwitch
         ]);
     }

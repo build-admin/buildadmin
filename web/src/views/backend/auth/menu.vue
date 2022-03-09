@@ -32,7 +32,7 @@
                     </div>
                 </template>
                 <div class="ba-operate-form" :class="'ba-' + form.operate + '-form'" :style="'width: calc(100% - ' + form.labelWidth / 2 + 'px)'">
-                    <el-form v-model="form.items" label-position="right" :label-width="form.labelWidth + 'px'">
+                    <el-form @keyup.enter="onSubmit" v-model="form.items" label-position="right" :label-width="form.labelWidth + 'px'">
                         <el-form-item label="上级菜单规则">
                             <remoteSelect
                                 :params="{ isTree: true }"
@@ -90,6 +90,8 @@
                         </el-form-item>
                         <el-form-item label="规则备注">
                             <el-input
+                                @keyup.enter.stop=""
+                                @keyup.ctrl.enter="onSubmit"
                                 v-model="form.items.remark"
                                 type="textarea"
                                 :autosize="{ minRows: 2, maxRows: 5 }"
@@ -243,8 +245,12 @@ const onSubmit = () => {
     if (form.items.pid == form.items.pidebak) {
         delete form.items.pid
     }
+    if (!form.items.extend) {
+        delete form.items.extend
+    }
     postEdit(form.items)
         .then((res) => {
+            onAction('refresh', {})
             form.submitLoading = false
             form.operateIds.shift()
             if (form.operateIds.length > 0) {

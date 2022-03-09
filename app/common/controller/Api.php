@@ -19,28 +19,40 @@ class Api extends BaseController
      */
     protected $responseType = 'json';
 
+    /**
+     * 控制器目录路径
+     */
+    protected $controllerPath;
+
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $this->_initialize();
     }
 
     /**
      * 控制器初始化方法
      */
-    protected function _initialize()
+    protected function initialize()
     {
+        parent::initialize();
         $this->request->filter('trim,strip_tags,htmlspecialchars');
+
+        // 加载控制器语言包
+        $langset              = $this->app->lang->getLangSet();
+        $this->controllerPath = str_replace('.', DIRECTORY_SEPARATOR, $this->request->controller(true));
+        $this->app->lang->load([
+            app_path() . 'lang' . DIRECTORY_SEPARATOR . $langset . DIRECTORY_SEPARATOR . $this->controllerPath . '.php'
+        ]);
     }
 
     /**
      * 操作成功
-     * @param string $msg 提示消息
-     * @param null $data 返回数据
-     * @param int $code 错误码
-     * @param null $type 输出类型
-     * @param array $header 发送的 header 信息
-     * @param array $options Response 输出参数
+     * @param string $msg     提示消息
+     * @param null   $data    返回数据
+     * @param int    $code    错误码
+     * @param null   $type    输出类型
+     * @param array  $header  发送的 header 信息
+     * @param array  $options Response 输出参数
      */
     protected function success($msg = '', $data = null, $code = 1, $type = null, $header = [], $options = [])
     {
@@ -49,12 +61,12 @@ class Api extends BaseController
 
     /**
      * 操作失败
-     * @param string $msg 提示消息
-     * @param null $data 返回数据
-     * @param int $code 错误码
-     * @param null $type 输出类型
-     * @param array $header 发送的 header 信息
-     * @param array $options Response 输出参数
+     * @param string $msg     提示消息
+     * @param null   $data    返回数据
+     * @param int    $code    错误码
+     * @param null   $type    输出类型
+     * @param array  $header  发送的 header 信息
+     * @param array  $options Response 输出参数
      */
     protected function error($msg = '', $data = null, $code = 0, $type = null, array $header = [], $options = [])
     {
@@ -63,12 +75,12 @@ class Api extends BaseController
 
     /**
      * 返回 API 数据
-     * @param string $msg 提示消息
-     * @param null $data 返回数据
-     * @param int $code 错误码
-     * @param null $type 输出类型
-     * @param array $header 发送的 header 信息
-     * @param array $options Response 输出参数
+     * @param string $msg     提示消息
+     * @param null   $data    返回数据
+     * @param int    $code    错误码
+     * @param null   $type    输出类型
+     * @param array  $header  发送的 header 信息
+     * @param array  $options Response 输出参数
      */
     public function result($msg, $data = null, $code = 0, $type = null, $header = [], $options = [])
     {

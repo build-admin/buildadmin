@@ -2,7 +2,6 @@
 
 namespace app\common\controller;
 
-use app\common\controller\Api;
 use app\admin\library\Auth;
 use think\facade\Cookie;
 
@@ -20,6 +19,9 @@ class Backend extends Api
 
     protected $model = null;
 
+    /**
+     * 快速搜索字段
+     */
     protected $quickSearchField = 'id';
 
     /**
@@ -28,15 +30,11 @@ class Backend extends Api
      */
     use \app\admin\library\traits\Backend;
 
-    public function _initialize()
+    public function initialize()
     {
-        $modulename     = app('http')->getName();
-        $controllername = $this->request->controller(true);
-        $actionname     = $this->request->action(true);
-
-        $path = str_replace('.', '/', $controllername) . '/' . $actionname;
-
+        parent::initialize();
         $this->auth = Auth::instance();
+        $routePath  = $this->controllerPath . '/' . $this->request->action(true);
         $token      = $this->request->server('HTTP_BATOKEN', $this->request->request('batoken', Cookie::get('batoken') ?: false));
         if (!$this->auth->actionInArr($this->noNeedLogin)) {
             $this->auth->init($token);
@@ -46,7 +44,7 @@ class Backend extends Api
                 ], 302);
             }
             if (!$this->auth->actionInArr($this->noNeedPermission)) {
-                if (!$this->auth->check($path)) {
+                if (!$this->auth->check($routePath)) {
                     $this->error(__('You have no permission'), [
                         'routeName' => 'admin'
                     ], 302);
@@ -57,10 +55,6 @@ class Backend extends Api
                 $this->auth->init($token);
             }
         }
-
-        // 语言检测
-        // 加载语言包？
-        // 初始化需要用到的配置
     }
 
     public function select()

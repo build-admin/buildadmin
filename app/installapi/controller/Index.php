@@ -156,7 +156,7 @@ class Index extends Api
             ];
         }
 
-        $this->success('ok', [
+        $this->success('', [
             'php_version'        => [
                 'describe' => $phpVersion,
                 'state'    => $phpVersionCompare ? self::$ok : self::$fail,
@@ -272,7 +272,7 @@ class Index extends Api
             ];
         }
 
-        $this->success('ok', [
+        $this->success('', [
             'npm_version'    => [
                 'describe' => $npmVersion ? $npmVersion : __('Acquisition failed'),
                 'state'    => $npmVersionCompare ? self::$ok : self::$warn,
@@ -338,7 +338,7 @@ class Index extends Api
         if ($conn['code'] == 0) {
             $this->error($conn['msg']);
         } else {
-            $this->success('ok', [
+            $this->success('', [
                 'databases' => $conn['databases']
             ]);
         }
@@ -352,7 +352,7 @@ class Index extends Api
 
         $envOk = $this->commandExecutionCheck();
         if ($this->request->isGet()) {
-            $this->success('ok', ['envOk' => $envOk]);
+            $this->success('', ['envOk' => $envOk]);
         }
 
         $param = $this->request->only(['hostname', 'username', 'password', 'hostport', 'database', 'prefix', 'adminname', 'adminpassword', 'sitename']);
@@ -389,7 +389,7 @@ class Index extends Api
             $this->error(__('File has no write permission:%s', ['public/' . self::$lockFileName]), [], 102);
         }
 
-        $this->success('ok', [
+        $this->success('', [
             'execution' => $envOk
         ]);
     }
@@ -411,7 +411,7 @@ class Index extends Api
 
         if (rename($indexHtmlPath, $toIndexHtmlPath) && rename($assetsPath, $toAssetsPath)) {
             deldir($distPath);
-            $this->success('ok');
+            $this->success('');
         } else {
             $this->error(__('Failed to move the front-end file, please move it manually!'), [], 104);
         }
@@ -438,7 +438,7 @@ class Index extends Api
     public function manualInstall()
     {
         // 取得 web 目录完整路径
-        $this->success('ok', [
+        $this->success('', [
             'webPath' => root_path() . 'web'
         ]);
     }

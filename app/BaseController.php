@@ -58,10 +58,10 @@ abstract class BaseController
     /**
      * 验证数据
      * @access protected
-     * @param array $data 数据
+     * @param array        $data     数据
      * @param string|array $validate 验证器名或者验证规则数组
-     * @param array $message 提示信息
-     * @param bool $batch 是否批量验证
+     * @param array        $message  提示信息
+     * @param bool         $batch    是否批量验证
      * @return array|string|true
      * @throws ValidateException
      */

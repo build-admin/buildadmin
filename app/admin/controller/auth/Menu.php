@@ -20,9 +20,9 @@ class Menu extends Backend
 
     protected $keyword = false;
 
-    public function _initialize()
+    public function initialize()
     {
-        parent::_initialize();
+        parent::initialize();
         $this->model = new MenuRule();
     }
 
@@ -32,7 +32,7 @@ class Menu extends Backend
             $this->select();
         }
 
-        $this->success('ok', [
+        $this->success('', [
             'menu' => $this->getMenus()
         ]);
     }
@@ -41,7 +41,7 @@ class Menu extends Backend
     {
         $row = $this->model->find($id);
         if (!$row) {
-            $this->error(__('No Results were found'));
+            $this->error(__('Record not found'));
         }
 
         if ($this->request->isPost()) {
@@ -66,7 +66,7 @@ class Menu extends Backend
         if ($isTree) {
             $data = Tree::assembleTree(Tree::getTreeArray($data, 'title'));
         }
-        $this->success('select', [
+        $this->success('', [
             'options' => $data
         ]);
     }

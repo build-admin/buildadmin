@@ -32,7 +32,7 @@ trait Backend
     {
         $row = $this->model->find($id);
         if (!$row) {
-            $this->error(__('No Results were found'));
+            $this->error(__('Record not found'));
         }
 
         if ($this->request->isPost()) {
@@ -65,7 +65,7 @@ trait Backend
 
         }
 
-        $this->success('edit', [
+        $this->success('', [
             'row' => $row
         ]);
     }

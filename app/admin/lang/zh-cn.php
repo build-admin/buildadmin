@@ -6,6 +6,7 @@ return [
     'CaptchaId'                                  => '验证码ID',
     'Please enter the correct verification code' => '请输入正确的验证码！',
     'Parameter %s can not be empty'              => '参数%s不能为空',
+    'Record not found'                           => '记录未找到',
     'No rows were added'                         => '未添加任何行',
     'No rows were deleted'                       => '未删除任何行',
     'No rows updated'                            => '未更新任何行',
