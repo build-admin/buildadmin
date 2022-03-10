@@ -82,7 +82,8 @@
                             ></el-input>
                         </el-form-item>
                         <el-form-item v-if="form.items.type == 'menu' && form.items.menu_type == 'tab'" label="扩展属性">
-                            <el-select class="w100" v-model="form.items.extend" clearable placeholder="请选择扩展属性">
+                            <el-select class="w100" v-model="form.items.extend" placeholder="请选择扩展属性">
+                                <el-option label="无" value="none"></el-option>
                                 <el-option label="只添加为路由" value="add_rules_only"></el-option>
                                 <el-option label="只添加为菜单" value="add_menu_only"></el-option>
                             </el-select>
@@ -211,6 +212,7 @@ const form: {
     defaultItems: {
         type: 'menu',
         menu_type: 'tab',
+        extend: 'none',
         status: '1',
     },
 })
@@ -279,9 +281,6 @@ const onSubmit = () => {
     form.submitLoading = true
     if (form.items.pid == form.items.pidebak) {
         delete form.items.pid
-    }
-    if (!form.items.extend) {
-        delete form.items.extend
     }
     postData(form.operate, form.items)
         .then((res) => {
