@@ -26,10 +26,14 @@
             title="确定删除选中记录？"
         >
             <template #reference>
-                <el-button v-blur :disabled="!props.enableBatchOpt" class="table-header-operate" type="danger">
-                    <Icon name="fa fa-trash" />
-                    <span class="table-header-operate-text">删除</span>
-                </el-button>
+                <div class="mlr-12">
+                    <el-tooltip content="删除选中行" placement="top">
+                        <el-button v-blur :disabled="!props.enableBatchOpt" class="table-header-operate" type="danger">
+                            <Icon name="fa fa-trash" />
+                            <span class="table-header-operate-text">删除</span>
+                        </el-button>
+                    </el-tooltip>
+                </div>
             </template>
         </el-popconfirm>
         <el-tooltip v-if="props.buttons.includes('unfold')" :content="(unfold ? '收缩' : '展开') + '所有子菜单'" placement="top">
@@ -82,4 +86,11 @@ const onSearchInput = () => {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.mlr-12 {
+    margin-left: 12px;
+}
+.mlr-12 + .el-button {
+    margin-left: 12px;
+}
+</style>

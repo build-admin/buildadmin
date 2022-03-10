@@ -11,6 +11,7 @@ export default {
     },
     edit: '编辑',
     add: '添加',
+    'weigh-sort': '拖动以排序',
     delete: '删除',
     refresh: '刷新',
     operate: '操作',

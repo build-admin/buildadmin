@@ -11,6 +11,7 @@ export default {
     },
     edit: 'Edit',
     add: 'Add',
+    'weigh-sort': 'Drag sort',
     delete: 'Delete',
     refresh: 'Refresh',
     operate: 'Operate',

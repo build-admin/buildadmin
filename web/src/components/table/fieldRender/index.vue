@@ -49,20 +49,35 @@
     <!-- 按钮组 -->
     <div v-if="field.render == 'buttons' && field.buttons">
         <template v-for="(btn, idx) in field.buttons">
-            <el-tooltip v-if="!btn.popconfirm" :disabled="btn.title ? false : true" :content="btn.title ?? ''" placement="top">
+            <el-tooltip v-if="btn.render == 'tipButton'" :disabled="btn.title ? false : true" :content="btn.title ?? ''" placement="top">
                 <el-button v-blur @click="onButtonClick(btn.name)" :class="btn.class" class="table-operate" :type="btn.type">
                     <Icon :name="btn.icon" />
                     <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
                 </el-button>
             </el-tooltip>
-            <el-popconfirm v-if="btn.popconfirm" v-bind="btn.popconfirm" @confirm="onButtonClick(btn.name)">
+            <el-popconfirm v-if="btn.render == 'confirmButton'" v-bind="btn.popconfirm" @confirm="onButtonClick(btn.name)">
                 <template #reference>
-                    <el-button v-blur :class="btn.class" class="table-operate" :type="btn.type">
-                        <Icon :name="btn.icon" />
-                        <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
-                    </el-button>
+                    <div class="ml-6">
+                        <el-tooltip :disabled="btn.title ? false : true" :content="btn.title ?? ''" placement="top">
+                            <el-button v-blur :class="btn.class" class="table-operate" :type="btn.type">
+                                <Icon :name="btn.icon" />
+                                <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                            </el-button>
+                        </el-tooltip>
+                    </div>
                 </template>
             </el-popconfirm>
+            <el-tooltip
+                v-if="btn.render == 'moveButton'"
+                :disabled="btn.title && !btn.disabledTip ? false : true"
+                :content="btn.title ?? ''"
+                placement="top"
+            >
+                <el-button :class="btn.class" class="table-operate move-button" :type="btn.type">
+                    <Icon :name="btn.icon" />
+                    <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                </el-button>
+            </el-tooltip>
         </template>
     </div>
 </template>
@@ -128,5 +143,16 @@ const getTagType = (value: string, custom: any): TagProps['type'] => {
 }
 .table-operate-text {
     padding-left: 5px;
+}
+.move-button {
+    cursor: move;
+}
+.ml-6 {
+    display: inline-flex;
+    vertical-align: middle;
+    margin-left: 6px;
+}
+.ml-6 + .el-button {
+    margin-left: 6px;
 }
 </style>

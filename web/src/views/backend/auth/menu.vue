@@ -16,6 +16,7 @@
                 :default-expand-all="table.expandAll"
                 :data="table.data"
                 :field="table.column"
+                :row-key="table.pk"
                 @selection-change="onTableSelection"
                 @row-dblclick="onTableDblclick"
             />
@@ -130,6 +131,8 @@ import Table from '/@/components/table/index.vue'
 import IconSelector from '/@/components/icon/selector.vue'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
+import Sortable from 'sortablejs'
+import { getArrayKey } from '/@/utils/common'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -174,7 +177,7 @@ const table: {
         {
             label: '操作',
             align: 'center',
-            width: '100',
+            width: '130',
             render: 'buttons',
             buttons: defaultOptButtons(),
         },
@@ -357,8 +360,33 @@ const onAction = (type: string, data: anyObj) => {
     return action!.call(this)
 }
 
+/**
+ * 表格拖动排序
+ */
+const dragSort = () => {
+    let buttonsKey = getArrayKey(table.column, 'render', 'buttons')
+    let el = tableRef.value.getRef().$el.querySelector('.el-table__body-wrapper .el-table__body tbody')
+    var sortable = Sortable.create(el, {
+        animation: 200,
+        handle: '.table-row-weigh-sort',
+        ghostClass: 'ba-table-row',
+        onStart: function () {
+            for (const key in table.column[buttonsKey].buttons) {
+                table.column[buttonsKey].buttons![key as any].disabledTip = true
+            }
+        },
+        onEnd: function (evt: Sortable.SortableEvent) {
+            for (const key in table.column[buttonsKey].buttons) {
+                table.column[buttonsKey].buttons![key as any].disabledTip = false
+            }
+            console.log(evt)
+        },
+    })
+}
+
 onMounted(() => {
     getIndex()
+    dragSort()
 
     /**
      * 表格内的字段操作响应

@@ -85,7 +85,7 @@
                     </el-button-group>
                 </div>
             </div>
-            <el-table header-cell-class-name="table-header-cell" :border="true" :data="tableData" stripe style="width: 100%" class="data-table">
+            <el-table header-cell-class-name="table-header-cell" :border="true" :data="tableData" stripe class="ba-data-table w100">
                 <el-table-column align="center" type="selection" />
                 <el-table-column align="center" prop="date" label="Date" />
                 <el-table-column align="center" prop="test" label="托尔斯泰" />

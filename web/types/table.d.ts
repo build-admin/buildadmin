@@ -44,6 +44,8 @@ declare global {
     }
 
     interface OptButton {
+        // 渲染方式:tipButton=带tip的按钮,confirmButton=带确认框的按钮,moveButton=移动按钮
+        render: string
         name: string
         title?: string
         text?: string
@@ -51,6 +53,7 @@ declare global {
         type: ButtonType
         icon: string
         popconfirm?: any
+        disabledTip?: boolean
     }
 
     interface TableRow extends anyObj {

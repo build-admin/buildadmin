@@ -1,10 +1,9 @@
 <template>
     <el-table
         ref="tableRef"
-        class="data-table w100"
+        class="ba-data-table w100"
         header-cell-class-name="table-header-cell"
         :data="data"
-        :row-key="rowKey"
         :border="true"
         stripe
         default-expand-all
@@ -33,12 +32,10 @@ const tableRef = ref<InstanceType<typeof ElTable>>()
 interface Props {
     data: TableRow[]
     field?: TableColumn[]
-    rowKey?: string
 }
 const props = withDefaults(defineProps<Props>(), {
     data: () => [],
     field: () => [],
-    rowKey: 'id',
 })
 
 const emits = defineEmits<{
@@ -142,8 +139,13 @@ const unFoldAll = (unfold: boolean) => {
     setUnFoldAll(props.data, unfold)
 }
 
+const getRef = () => {
+    return tableRef.value
+}
+
 defineExpose({
     unFoldAll,
+    getRef,
 })
 </script>
 

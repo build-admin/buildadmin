@@ -18,14 +18,27 @@ export const defaultOptButtons = (): OptButton[] => {
     const { t } = useI18n()
     return [
         {
+            render: 'moveButton',
+            name: 'weigh-sort',
+            title: t('weigh-sort'),
+            text: '',
+            type: 'info',
+            icon: 'fa fa-arrows',
+            class: 'table-row-weigh-sort',
+            disabledTip: false,
+        },
+        {
+            render: 'tipButton',
             name: 'edit',
             title: t('edit'),
             text: '',
             type: 'primary',
             icon: 'fa fa-pencil',
             class: 'table-row-edit',
+            disabledTip: false,
         },
         {
+            render: 'confirmButton',
             name: 'delete',
             title: t('delete'),
             text: '',
@@ -38,6 +51,7 @@ export const defaultOptButtons = (): OptButton[] => {
                 confirmButtonType: 'danger',
                 title: '确认要删除记录吗？',
             },
+            disabledTip: false,
         },
     ]
 }
