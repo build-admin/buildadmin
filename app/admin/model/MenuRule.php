@@ -10,4 +10,10 @@ class MenuRule extends Model
 
     protected $createTime = 'createtime';
     protected $updateTime = 'updatetime';
+
+    protected static function onAfterInsert($row)
+    {
+        $pk = $row->getPk();
+        $row->where($pk, $row[$pk])->update(['weigh' => $row[$pk]]);
+    }
 }

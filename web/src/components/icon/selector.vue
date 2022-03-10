@@ -20,7 +20,13 @@
                     <div class="selector-body">
                         <el-scrollbar ref="selectorScrollbarRef">
                             <div v-if="renderFontIconNames.length > 0">
-                                <div class="icon-selector-item" @click="onIcon(item)" v-for="(item, key) in renderFontIconNames" :key="key">
+                                <div
+                                    class="icon-selector-item"
+                                    :title="item"
+                                    @click="onIcon(item)"
+                                    v-for="(item, key) in renderFontIconNames"
+                                    :key="key"
+                                >
                                     <Icon :name="item" />
                                 </div>
                             </div>
@@ -40,7 +46,10 @@
                 @blur="onInputBlur"
             >
                 <template #prepend>
-                    <Icon :key="'icon' + state.iconKey" :name="state.prependIcon ? state.prependIcon : state.defaultModelValue" />
+                    <div class="icon-prepend">
+                        <Icon :key="'icon' + state.iconKey" :name="state.prependIcon ? state.prependIcon : state.defaultModelValue" />
+                        <div v-if="showIconName" class="name">{{ state.prependIcon ? state.prependIcon : state.defaultModelValue }}</div>
+                    </div>
                 </template>
                 <template #append>
                     <Icon @click="onInputRefresh" name="el-icon-RefreshRight" />
@@ -63,6 +72,7 @@ interface Props {
     type?: IconType
     placement?: string
     modelValue?: string
+    showIconName?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
     size: 'default',
@@ -71,6 +81,7 @@ const props = withDefaults(defineProps<Props>(), {
     type: 'ele',
     placement: 'bottom',
     modelValue: '',
+    showIconName: false,
 })
 
 const emits = defineEmits<{
@@ -190,6 +201,14 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
+.icon-prepend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .name {
+        padding-left: 5px;
+    }
+}
 .selector-header {
     display: flex;
     align-items: center;

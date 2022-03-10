@@ -64,7 +64,7 @@
                             ></el-input>
                         </el-form-item>
                         <el-form-item v-if="form.items.type != 'button'" label="规则图标">
-                            <IconSelector v-model="form.items.icon" />
+                            <IconSelector :show-icon-name="true" v-model="form.items.icon" />
                         </el-form-item>
                         <el-form-item v-if="form.items.type == 'menu'" label="菜单类型">
                             <el-radio v-model="form.items.menu_type" label="tab" :border="true">选项卡</el-radio>
@@ -234,6 +234,7 @@ const requestEdit = (id: string) => {
         id: id,
     }).then((res) => {
         form.items = res.data.row
+        if (!form.items.icon) form.items.icon = 'el-icon-Minus'
         form.items['pidebak'] = form.items.pid
     })
 }
