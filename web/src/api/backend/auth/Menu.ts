@@ -7,11 +7,12 @@ export const actionUrl = new Map([
     ['del', controllerUrl + 'del'],
 ])
 
-export function index(loading: boolean) {
+export function index(loading: boolean, keyword: string = '') {
     return createAxios(
         {
             url: actionUrl.get('index'),
             method: 'get',
+            params: keyword ? { keyword: keyword } : {},
         },
         {
             loading: loading,

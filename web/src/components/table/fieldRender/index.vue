@@ -49,14 +49,14 @@
     <div v-if="field.render == 'buttons' && field.buttons">
         <template v-for="(btn, idx) in field.buttons">
             <el-tooltip v-if="!btn.popconfirm" :disabled="btn.title ? false : true" :content="btn.title ?? ''" placement="top">
-                <el-button @click="onButtonClick(btn.name)" :class="btn.class" class="table-operate" :type="btn.type">
+                <el-button v-blur @click="onButtonClick(btn.name)" :class="btn.class" class="table-operate" :type="btn.type">
                     <Icon :name="btn.icon" />
                     <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
                 </el-button>
             </el-tooltip>
             <el-popconfirm v-if="btn.popconfirm" v-bind="btn.popconfirm" @confirm="onButtonClick(btn.name)">
                 <template #reference>
-                    <el-button :class="btn.class" class="table-operate" :type="btn.type">
+                    <el-button v-blur :class="btn.class" class="table-operate" :type="btn.type">
                         <Icon :name="btn.icon" />
                         <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
                     </el-button>

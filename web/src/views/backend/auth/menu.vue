@@ -6,6 +6,7 @@
                 :buttons="['refresh', 'add', 'edit', 'delete', 'unfold']"
                 :enable-batch-opt="table.selection.length > 0 ? true : false"
                 :unfold="table.expandAll"
+                :quick-search-placeholder="'通过标题搜索'"
                 @action="onAction"
             />
             <!-- 表格 -->
@@ -121,7 +122,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount, onUnmounted } from 'vue'
+import { ref, reactive, onUnmounted, onMounted } from 'vue'
 import { actionUrl, index, edit, del, postData } from '/@/api/backend/auth/Menu'
 import { defaultOptButtons } from '/@/components/table'
 import TableHeader from '/@/components/table/header/index.vue'
@@ -169,7 +170,7 @@ const table: {
             replaceValue: { menu: t('auth/menu.type menu'), menu_dir: t('auth/menu.type menu_dir'), button: t('auth/menu.type button') },
         },
         { label: '状态', prop: 'status', align: 'center', width: '80', render: 'switch' },
-        { label: '更新时间', prop: 'updatetime', align: 'center', width: '160' },
+        { label: '更新时间', prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
         {
             label: '操作',
             align: 'center',
@@ -201,8 +202,8 @@ const form: {
 /* 表单状态-e */
 
 /* API请求方法-s */
-const getIndex = (loading: boolean = false) => {
-    index(loading).then((res) => {
+const getIndex = (loading: boolean = false, keyword: string = '') => {
+    index(loading, keyword).then((res) => {
         table.data = res.data.menu
     })
 }
@@ -331,6 +332,12 @@ const onAction = (type: string, data: anyObj) => {
             },
         ],
         [
+            'quick-search',
+            () => {
+                getIndex(true, data.keyword)
+            },
+        ],
+        [
             'default',
             () => {
                 console.log('未定义操作')
@@ -342,7 +349,7 @@ const onAction = (type: string, data: anyObj) => {
     return action!.call(this)
 }
 
-onBeforeMount(() => {
+onMounted(() => {
     getIndex()
 
     /**
@@ -373,6 +380,7 @@ onBeforeMount(() => {
 })
 onUnmounted(() => {
     proxy.eventBus.off('onTableFieldChange')
+    proxy.eventBus.off('onTableButtonClick')
 })
 </script>
 

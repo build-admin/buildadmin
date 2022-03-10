@@ -45,7 +45,7 @@ export const defaultOptButtons = (): OptButton[] => {
 /*
  * 格式化时间戳
  */
-export const timeFormat = (dateTime: string | number | null = null, fmt = 'yyyy-mm-dd') => {
+export const timeFormat = (dateTime: string | number | null = null, fmt = 'yyyy-mm-dd hh:MM:ss') => {
     if (!dateTime) dateTime = Number(new Date())
     if (dateTime.toString().length === 10) {
         dateTime = +dateTime * 1000

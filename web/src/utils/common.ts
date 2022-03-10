@@ -203,3 +203,17 @@ export const addRouteItem = (viewsComponent: Record<string, { [key: string]: any
         })
     }
 }
+
+/**
+ * 防抖
+ */
+export const debounce = (fn: Function, ms: number) => {
+    return (...args: any[]) => {
+        if (window.lazy) {
+            clearTimeout(window.lazy)
+        }
+        window.lazy = setTimeout(() => {
+            fn(...args)
+        }, ms)
+    }
+}

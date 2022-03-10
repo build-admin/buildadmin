@@ -18,6 +18,8 @@ class Menu extends Backend
 
     protected $preExcludeFields = ['createtime', 'updatetime'];
 
+    protected $quickSearchField = 'title';
+
     protected $keyword = false;
 
     public function initialize()
@@ -32,6 +34,7 @@ class Menu extends Backend
             $this->select();
         }
 
+        $this->keyword = $this->request->request("keyword");
         $this->success('', [
             'menu' => $this->getMenus()
         ]);
@@ -63,7 +66,7 @@ class Menu extends Backend
         $this->keyword = $this->request->request("keyword");
         $data          = $this->getMenus(false);
 
-        if ($isTree) {
+        if ($isTree && !$this->keyword) {
             $data = Tree::assembleTree(Tree::getTreeArray($data, 'title'));
         }
         $this->success('', [
@@ -80,11 +83,11 @@ class Menu extends Backend
         foreach ($rules as $rule) {
             $this->childrens[$rule['pid']][] = $rule;
         }
-        if (!isset($this->childrens[0])) {
-            return [];
+        if (isset($this->childrens[0])) {
+            return $this->getChildren($this->childrens[0]);
+        } else {
+            return $rules;
         }
-
-        return $this->getChildren($this->childrens[0]);
     }
 
     protected function getChildren($rules): array
@@ -113,7 +116,7 @@ class Menu extends Backend
         if ($this->keyword) {
             $keyword = explode(' ', $this->keyword);
             foreach ($keyword as $item) {
-                $where[] = ['title', 'like', '%' . $item . '%'];
+                $where[] = [$this->quickSearchField, 'like', '%' . $item . '%'];
             }
         }
 

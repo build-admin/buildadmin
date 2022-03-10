@@ -38,16 +38,19 @@
             </el-button>
         </el-tooltip>
         <div class="table-search">
-            <el-input class="xs-hidden" placeholder="搜索" />
+            <el-input v-model="state.quickSearch" class="xs-hidden" @input="debounce(onSearchInput, 500)()" :placeholder="quickSearchPlaceholder" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { reactive } from 'vue'
+import { debounce } from '/@/utils/common'
 interface Props {
     buttons: HeaderOptButton[]
     enableBatchOpt: boolean
     unfold?: boolean
+    quickSearchPlaceholder?: string
 }
 const props = withDefaults(defineProps<Props>(), {
     buttons: () => {
@@ -55,6 +58,11 @@ const props = withDefaults(defineProps<Props>(), {
     },
     enableBatchOpt: false,
     unfold: false,
+    quickSearchPlaceholder: '搜索',
+})
+
+const state = reactive({
+    quickSearch: '',
 })
 
 const emits = defineEmits<{
@@ -67,6 +75,10 @@ const onAction = (type: string, data: anyObj = {}) => {
 
 const changeUnfold = () => {
     emits('action', 'unfold', { unfold: !props.unfold })
+}
+
+const onSearchInput = () => {
+    emits('action', 'quick-search', { keyword: state.quickSearch })
 }
 </script>
 
