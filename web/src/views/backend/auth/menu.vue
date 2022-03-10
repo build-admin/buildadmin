@@ -130,7 +130,6 @@ import Table from '/@/components/table/index.vue'
 import IconSelector from '/@/components/icon/selector.vue'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
-import { getArrayKey } from '/@/utils/common'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -368,24 +367,15 @@ onMounted(() => {
      * @param field 被操作字段名
      */
     proxy.eventBus.on('onTableFieldChange', (data: { value: any; row: TableRow; field: keyof TableRow; render: string }) => {
-        // 开关-多维数据修改时无loading状态
         if (data.render == 'switch') {
-            const editObj = { [table.pk]: data.row[table.pk], [data.field]: data.value }
-            const tableDataKey = getArrayKey(table.data, table.pk, data.row[table.pk])
-            if (!tableDataKey) {
-                postData('edit', editObj).then(() => {
+            data.row.loading = true
+            postData('edit', { [table.pk]: data.row[table.pk], [data.field]: data.value })
+                .then(() => {
+                    data.row.loading = false
                     data.row[data.field] = data.value
                 })
-                return
-            }
-            table.data[tableDataKey].loading = true
-            postData('edit', editObj)
-                .then(() => {
-                    table.data[tableDataKey].loading = false
-                    table.data[tableDataKey][data.field] = data.value
-                })
                 .catch(() => {
-                    table.data[tableDataKey].loading = false
+                    data.row.loading = false
                 })
         }
     })
