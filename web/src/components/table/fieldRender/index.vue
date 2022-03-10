@@ -7,6 +7,7 @@
         v-if="field.render == 'switch'"
         @change="changeField($event, property)"
         :model-value="row[property]"
+        :loading="row.loading"
         active-value="1"
         inactive-value="0"
     />
@@ -90,7 +91,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const changeField = (value: any, fieldName: keyof TableRow) => {
     if (props.field.render == 'switch') {
-        props.row[fieldName] = value
         proxy.eventBus.emit('onTableFieldChange', {
             value: value,
             row: props.row,

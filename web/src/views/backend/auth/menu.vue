@@ -130,6 +130,7 @@ import Table from '/@/components/table/index.vue'
 import IconSelector from '/@/components/icon/selector.vue'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
+import { getArrayKey } from '/@/utils/common'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -189,6 +190,7 @@ const form: {
     operateIds: string[]
     items: anyObj
     submitLoading: boolean
+    defaultItems: anyObj
 } = reactive({
     // 表单label宽度
     labelWidth: 160,
@@ -196,8 +198,15 @@ const form: {
     operate: '',
     // 被操作数据ID,支持批量编辑:add=[0],edit=[1,2,n]
     operateIds: [],
+    // 表单数据
     items: {},
     submitLoading: false,
+    // 默认表单数据(添加)
+    defaultItems: {
+        type: 'menu',
+        menu_type: 'tab',
+        status: '1',
+    },
 })
 /* 表单状态-e */
 
@@ -251,7 +260,7 @@ const toggleForm = (operate: string = '', operateIds: string[] = []) => {
         }
         requestEdit(operateIds[0])
     } else if (operate == 'add') {
-        form.items = {}
+        form.items = form.defaultItems
     }
     form.operate = operate
     form.operateIds = operateIds
@@ -358,11 +367,27 @@ onMounted(() => {
      * @param row 被操作行数据
      * @param field 被操作字段名
      */
-    proxy.eventBus.on('onTableFieldChange', (data: { value: any; row: TableRow; field: keyof TableRow }) => {
-        postData('edit', {
-            [table.pk]: data.row[table.pk],
-            [data.field]: data.value,
-        })
+    proxy.eventBus.on('onTableFieldChange', (data: { value: any; row: TableRow; field: keyof TableRow; render: string }) => {
+        // 开关-多维数据修改时无loading状态
+        if (data.render == 'switch') {
+            const editObj = { [table.pk]: data.row[table.pk], [data.field]: data.value }
+            const tableDataKey = getArrayKey(table.data, table.pk, data.row[table.pk])
+            if (!tableDataKey) {
+                postData('edit', editObj).then(() => {
+                    data.row[data.field] = data.value
+                })
+                return
+            }
+            table.data[tableDataKey].loading = true
+            postData('edit', editObj)
+                .then(() => {
+                    table.data[tableDataKey].loading = false
+                    table.data[tableDataKey][data.field] = data.value
+                })
+                .catch(() => {
+                    table.data[tableDataKey].loading = false
+                })
+        }
     })
 
     /**
