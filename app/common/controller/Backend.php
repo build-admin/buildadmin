@@ -20,6 +20,18 @@ class Backend extends Api
     protected $model = null;
 
     /**
+     * 权重(排序)字段
+     */
+    protected $weighField = 'weigh';
+
+    /**
+     * 表格拖拽排序时,两个权重相等则自动重新整理
+     * config/buildadmin.php文件中的auto_sort_eq_weight为默认值
+     * null=取默认值,false=关,true=开
+     */
+    protected $autoSortEqWeight = null;
+
+    /**
      * 快速搜索字段
      */
     protected $quickSearchField = 'id';

@@ -5,6 +5,7 @@ export const actionUrl = new Map([
     ['add', controllerUrl + 'add'],
     ['edit', controllerUrl + 'edit'],
     ['del', controllerUrl + 'del'],
+    ['sortable', controllerUrl + 'sortable'],
 ])
 
 export function index(loading: boolean, keyword: string = '') {
@@ -52,6 +53,22 @@ export function postData(action: string, data: anyObj) {
             url: actionUrl.get(action),
             method: 'post',
             data: data,
+        },
+        {
+            showSuccessMessage: true,
+        }
+    )
+}
+
+export function sortableApi(id: number, targetId: number) {
+    return createAxios(
+        {
+            url: actionUrl.get('sortable'),
+            method: 'post',
+            data: {
+                id: id,
+                targetId: targetId,
+            },
         },
         {
             showSuccessMessage: true,

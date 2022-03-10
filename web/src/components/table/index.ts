@@ -100,3 +100,27 @@ const padStart = (str: string, maxLength: number, fillString: string = ' ') => {
     }
     return fillString.slice(0, fillLength) + str
 }
+
+/**
+ * 将带children的数组降维，然后寻找index所在的行
+ */
+export const findIndexRow = (data: TableRow[], findIdx: number, keyIndex: number | TableRow = -1): number | TableRow => {
+    for (const key in data) {
+        if (typeof keyIndex == 'number') {
+            keyIndex++
+        }
+
+        if (keyIndex == findIdx) {
+            return data[key]
+        }
+
+        if (data[key].children) {
+            keyIndex = findIndexRow(data[key].children!, findIdx, keyIndex)
+            if (typeof keyIndex != 'number') {
+                return keyIndex
+            }
+        }
+    }
+
+    return keyIndex
+}

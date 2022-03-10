@@ -91,7 +91,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                 return Promise.reject(response.data)
             } else if (options.showSuccessMessage && response.data && response.data.code == 1) {
                 ElNotification({
-                    title: response.data.msg ? response.data.msg : '操作成功',
+                    message: response.data.msg ? response.data.msg : '操作成功',
                     type: 'success',
                 })
             }

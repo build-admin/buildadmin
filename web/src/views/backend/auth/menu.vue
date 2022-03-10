@@ -124,8 +124,8 @@
 
 <script lang="ts" setup>
 import { ref, reactive, onUnmounted, onMounted } from 'vue'
-import { actionUrl, index, edit, del, postData } from '/@/api/backend/auth/Menu'
-import { defaultOptButtons } from '/@/components/table'
+import { actionUrl, index, edit, del, postData, sortableApi } from '/@/api/backend/auth/Menu'
+import { defaultOptButtons, findIndexRow } from '/@/components/table'
 import TableHeader from '/@/components/table/header/index.vue'
 import Table from '/@/components/table/index.vue'
 import IconSelector from '/@/components/icon/selector.vue'
@@ -134,6 +134,7 @@ import useCurrentInstance from '/@/utils/useCurrentInstance'
 import Sortable from 'sortablejs'
 import { getArrayKey } from '/@/utils/common'
 import { useI18n } from 'vue-i18n'
+import { ElNotification } from 'element-plus'
 
 const { t } = useI18n()
 const { proxy } = useCurrentInstance()
@@ -153,6 +154,8 @@ const table: {
     dblClickNotEditColumn: (string | undefined)[]
     // 列数据
     column: TableColumn[]
+    // 拖动排序限位字段:例如拖动行pid=1,那么拖动目的行pid也需要为1
+    dragSortLimitField: string
 } = reactive({
     pk: 'id',
     data: [],
@@ -182,6 +185,7 @@ const table: {
             buttons: defaultOptButtons(),
         },
     ],
+    dragSortLimitField: 'pid',
 })
 /* 表格状态-e */
 
@@ -314,7 +318,8 @@ const onAction = (type: string, data: anyObj) => {
         [
             'refresh',
             () => {
-                getIndex(true)
+                table.data = []
+                getIndex(data.loading ? true : false)
             },
         ],
         [
@@ -379,7 +384,21 @@ const dragSort = () => {
             for (const key in table.column[buttonsKey].buttons) {
                 table.column[buttonsKey].buttons![key as any].disabledTip = false
             }
-            console.log(evt)
+            // 找到对应行id
+            let moveRow = findIndexRow(table.data, evt.oldIndex!) as TableRow
+            let replaceRow = findIndexRow(table.data, evt.newIndex!) as TableRow
+            if (moveRow[table.dragSortLimitField] != replaceRow[table.dragSortLimitField]) {
+                onAction('refresh', {})
+                ElNotification({
+                    type: 'error',
+                    message: '移动位置超出了可移动范围!',
+                })
+                return
+            }
+
+            sortableApi(moveRow.id, replaceRow.id).then((res) => {
+                onAction('refresh', {})
+            })
         },
     })
 }

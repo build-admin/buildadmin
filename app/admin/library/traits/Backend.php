@@ -3,6 +3,7 @@
 namespace app\admin\library\traits;
 
 use Exception;
+use think\facade\Config;
 use think\facade\Db;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
@@ -12,7 +13,7 @@ trait Backend
     protected function excludeFields($params)
     {
         if (!is_array($this->preExcludeFields)) {
-            $this->preExcludeFields = explode(',', $this->preExcludeFields);
+            $this->preExcludeFields = explode(',', (string)$this->preExcludeFields);
         }
 
         foreach ($this->preExcludeFields as $field) {
@@ -131,5 +132,40 @@ trait Backend
         } else {
             $this->error(__('No rows were deleted'));
         }
+    }
+
+    public function sortable($id, $targetId)
+    {
+        $row    = $this->model->find($id);
+        $target = $this->model->find($targetId);
+
+        if (!$row || !$target) {
+            $this->error(__('Record not found'));
+        }
+        if ($row[$this->weighField] == $target[$this->weighField]) {
+            $autoSortEqWeight = is_null($this->autoSortEqWeight) ? Config::get('buildadmin.auto_sort_eq_weight') : $this->autoSortEqWeight;
+            if (!$autoSortEqWeight) {
+                $this->error(__('Invalid collation because the weights of the two targets are equal'));
+            }
+
+            // 自动重新整理排序
+            $all = $this->model->select();
+            foreach ($all as $item) {
+                $item[$this->weighField] = $item[$this->model->getPk()];
+                $item->save();
+            }
+            unset($all);
+            // 重新获取
+            $row    = $this->model->find($id);
+            $target = $this->model->find($targetId);
+        }
+
+        $ebak                      = $target[$this->weighField];
+        $target[$this->weighField] = $row[$this->weighField];
+        $row[$this->weighField]    = $ebak;
+        $row->save();
+        $target->save();
+
+        $this->success('');
     }
 }
