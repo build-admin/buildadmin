@@ -48,12 +48,20 @@
     <!-- 按钮组 -->
     <div v-if="field.render == 'buttons' && field.buttons">
         <template v-for="(btn, idx) in field.buttons">
-            <el-tooltip :disabled="btn.title ? false : true" :content="btn.title ?? ''" placement="top">
-                <el-button @click="btn.click(btn.name, row, field)" :class="btn.class" class="table-operate" :type="btn.type">
+            <el-tooltip v-if="!btn.popconfirm" :disabled="btn.title ? false : true" :content="btn.title ?? ''" placement="top">
+                <el-button @click="onButtonClick(btn.name)" :class="btn.class" class="table-operate" :type="btn.type">
                     <Icon :name="btn.icon" />
                     <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
                 </el-button>
             </el-tooltip>
+            <el-popconfirm v-if="btn.popconfirm" v-bind="btn.popconfirm" @confirm="onButtonClick(btn.name)">
+                <template #reference>
+                    <el-button :class="btn.class" class="table-operate" :type="btn.type">
+                        <Icon :name="btn.icon" />
+                        <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                    </el-button>
+                </template>
+            </el-popconfirm>
         </template>
     </div>
 </template>
@@ -90,6 +98,13 @@ const changeField = (value: any, fieldName: keyof TableRow) => {
             render: props.field.render,
         })
     }
+}
+
+const onButtonClick = (name: string) => {
+    proxy.eventBus.emit('onTableButtonClick', {
+        name: name,
+        row: props.row,
+    })
 }
 
 const getTagType = (value: string, custom: any): TagProps['type'] => {

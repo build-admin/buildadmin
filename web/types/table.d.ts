@@ -48,9 +48,9 @@ declare global {
         title?: string
         text?: string
         class?: string
-        click: Function
         type: ButtonType
         icon: string
+        popconfirm?: any
     }
 
     interface TableRow extends anyObj {

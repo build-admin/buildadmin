@@ -12,13 +12,6 @@ export const openUrl = (url: string, field: TableColumn) => {
 }
 
 /*
- * 默认按钮点击事件处理
- */
-export const defaultOptButtonsClick = (name: string, row: TableRow, field: TableColumn) => {
-    console.log(name, row, field)
-}
-
-/*
  * 默认按钮组
  */
 export const defaultOptButtons = (): OptButton[] => {
@@ -31,7 +24,6 @@ export const defaultOptButtons = (): OptButton[] => {
             type: 'primary',
             icon: 'fa fa-pencil',
             class: 'table-row-edit',
-            click: defaultOptButtonsClick,
         },
         {
             name: 'delete',
@@ -40,7 +32,12 @@ export const defaultOptButtons = (): OptButton[] => {
             type: 'danger',
             icon: 'fa fa-trash',
             class: 'table-row-delete',
-            click: defaultOptButtonsClick,
+            popconfirm: {
+                confirmButtonText: '删除',
+                cancelButtonText: '取消',
+                confirmButtonType: 'danger',
+                title: '确认要删除记录吗？',
+            },
         },
     ]
 }

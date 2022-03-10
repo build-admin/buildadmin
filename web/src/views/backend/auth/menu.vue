@@ -134,9 +134,7 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const { proxy } = useCurrentInstance()
 
-/*
- * 表格
- */
+/* 表格状态-s */
 const tableRef = ref()
 const table: {
     // 主键字段
@@ -181,10 +179,9 @@ const table: {
         },
     ],
 })
+/* 表格状态-e */
 
-/*
- * 表单
- */
+/* 表单状态-s */
 const form: {
     labelWidth: number
     operate: string
@@ -201,19 +198,19 @@ const form: {
     items: {},
     submitLoading: false,
 })
+/* 表单状态-e */
 
+/* API请求方法-s */
 const getIndex = (loading: boolean = false) => {
     index(loading).then((res) => {
         table.data = res.data.menu
     })
 }
-
 const postDel = (ids: string[]) => {
     del(ids).then((res) => {
         onAction('refresh', {})
     })
 }
-
 const requestEdit = (id: string) => {
     edit({
         id: id,
@@ -222,20 +219,30 @@ const requestEdit = (id: string) => {
         form.items['pidebak'] = form.items.pid
     })
 }
+/* API请求方法-e */
 
-/*
- * 接受表格中选中的数据
+/**
+ * 接受并记录用户选择的表格项
+ * @param selection 被选择项
  */
 const onTableSelection = (selection: TableRow[]) => {
     table.selection = selection
 }
 
+/**
+ * 双击表格
+ */
 const onTableDblclick = (row: TableRow, column: any) => {
     if (table.dblClickNotEditColumn.indexOf(column.property) === -1) {
         toggleForm('edit', [row[table.pk]])
     }
 }
 
+/**
+ * 打开表单
+ * @param operate 操作:add=添加,edit=编辑
+ * @param operateIds 被操作项的数组:add=[],edit=[1,2,...]
+ */
 const toggleForm = (operate: string = '', operateIds: string[] = []) => {
     if (operate == 'edit') {
         if (!operateIds.length) {
@@ -249,6 +256,9 @@ const toggleForm = (operate: string = '', operateIds: string[] = []) => {
     form.operateIds = operateIds
 }
 
+/**
+ * 提交表单
+ */
 const onSubmit = () => {
     form.submitLoading = true
     if (form.items.pid == form.items.pidebak) {
@@ -273,6 +283,7 @@ const onSubmit = () => {
         })
 }
 
+/* 获取表格选择项的id数组 */
 const getSelectionIds = () => {
     let ids: string[] = []
     for (const key in table.selection) {
@@ -281,6 +292,11 @@ const getSelectionIds = () => {
     return ids
 }
 
+/**
+ * 表格顶栏按钮响应
+ * @param type 点击的按钮
+ * @param data 携带数据
+ */
 const onAction = (type: string, data: anyObj) => {
     const actionFun = new Map([
         [
@@ -328,11 +344,31 @@ const onAction = (type: string, data: anyObj) => {
 
 onBeforeMount(() => {
     getIndex()
+
+    /**
+     * 表格内的字段操作响应
+     * @param value 修改后的值
+     * @param row 被操作行数据
+     * @param field 被操作字段名
+     */
     proxy.eventBus.on('onTableFieldChange', (data: { value: any; row: TableRow; field: keyof TableRow }) => {
         postData('edit', {
             [table.pk]: data.row[table.pk],
             [data.field]: data.value,
         })
+    })
+
+    /**
+     * 表格内的按钮响应
+     * @param name 按钮name
+     * @param row 被操作行数据
+     */
+    proxy.eventBus.on('onTableButtonClick', (data: { name: string; row: TableRow }) => {
+        if (data.name == 'edit') {
+            toggleForm('edit', [data.row[table.pk]])
+        } else if (data.name == 'delete') {
+            postDel([data.row[table.pk]])
+        }
     })
 })
 onUnmounted(() => {
