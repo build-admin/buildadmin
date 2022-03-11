@@ -2,7 +2,6 @@
     <el-scrollbar ref="verticalMenusRef" class="vertical-menus-scrollbar">
         <el-menu
             class="layouts-menu-vertical"
-            router
             :collapse-transition="false"
             :unique-opened="layoutConfig.menuUniqueOpened"
             :default-active="state.defaultActive"

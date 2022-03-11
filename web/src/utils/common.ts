@@ -7,6 +7,53 @@ import { useNavTabs } from '/@/stores/navTabs'
 import { Local } from '/@/utils/storage'
 import { ADMIN_TOKEN } from '/@/stores/constant/cacheKey'
 import { adminBaseRoute } from '/@/router/static'
+import { ElNotification } from 'element-plus'
+import type { viewMenu } from '/@/stores/interface'
+import { NavigationFailureType, isNavigationFailure, RouteRecordRaw } from 'vue-router'
+
+export const clickMenu = (menu: viewMenu) => {
+    switch (menu.type) {
+        case 'tab':
+            routePush(menu)
+            break
+        case 'link':
+            window.open(menu.path, '_blank')
+            break
+        case 'iframe':
+            routePush({ path: menu.path } as viewMenu)
+            break
+
+        default:
+            ElNotification({
+                message: '导航失败，菜单类型无法识别！',
+                type: 'error',
+            })
+            break
+    }
+}
+
+export const routePush = async (route: RouteRecordRaw | viewMenu) => {
+    try {
+        const failure = await router.push(route.name ? { name: route.name } : { path: route.path })
+        if (isNavigationFailure(failure, NavigationFailureType.aborted)) {
+            ElNotification({
+                message: '导航失败，导航守卫拦截！',
+                type: 'error',
+            })
+        } else if (isNavigationFailure(failure, NavigationFailureType.duplicated)) {
+            ElNotification({
+                message: '导航失败，已在导航目标位置！',
+                type: 'warning',
+            })
+        }
+    } catch (error) {
+        ElNotification({
+            message: '导航失败，路由无效！',
+            type: 'error',
+        })
+        console.error(error)
+    }
+}
 
 export function registerIcons(app: App) {
     /*

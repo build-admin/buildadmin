@@ -7,13 +7,13 @@
             <el-menu
                 class="menu-horizontal"
                 mode="horizontal"
-                router
                 :default-active="state.defaultActive"
                 :background-color="layoutConfig.menuBackground"
                 :text-color="layoutConfig.menuColor"
                 :active-text-color="layoutConfig.menuActiveColor"
+                :key="state.menuKey"
             >
-                <!-- 横向菜单使用 <MenuTree :menus="menus" /> 会报警告 -->
+                <!-- 横向菜单直接使用 <MenuTree :menus="menus" /> 会报警告 -->
                 <template v-for="menu in menus">
                     <template v-if="menu.children && menu.children.length > 0">
                         <el-sub-menu :index="menu.path" :key="menu.path">
@@ -25,15 +25,7 @@
                         </el-sub-menu>
                     </template>
                     <template v-else>
-                        <el-menu-item v-if="menu.type == 'tab'" :index="menu.path" :key="menu.path">
-                            <Icon :color="layoutConfig.menuColor" :name="menu.icon ? menu.icon : layoutConfig.menuDefaultIcon" />
-                            <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
-                        </el-menu-item>
-                        <el-menu-item v-if="menu.type == 'link'" index="" :key="menu.path" @click="window.open(menu.path, '_blank')">
-                            <Icon :color="layoutConfig.menuColor" :name="menu.icon ? menu.icon : layoutConfig.menuDefaultIcon" />
-                            <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
-                        </el-menu-item>
-                        <el-menu-item v-if="menu.type == 'iframe'" :index="menu.path" :key="menu.path">
+                        <el-menu-item :index="menu.path" :key="menu.path" @click="clickMenu(menu)">
                             <Icon :color="layoutConfig.menuColor" :name="menu.icon ? menu.icon : layoutConfig.menuDefaultIcon" />
                             <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
                         </el-menu-item>
@@ -54,6 +46,7 @@ import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 import type { ElScrollbar } from 'element-plus'
 import NavMenus from '/@/layouts/backend/components/navMenus.vue'
+import { clickMenu } from '/@/utils/common'
 
 const horizontalMenusRef = ref<InstanceType<typeof ElScrollbar>>()
 
@@ -62,10 +55,14 @@ const navTabs = useNavTabs()
 const route = useRoute()
 
 const state = reactive({
+    menuKey: new Date().getTime(),
     defaultActive: '',
 })
 
-const menus = computed(() => navTabs.state.tabsViewRoutes)
+const menus = computed(() => {
+    state.menuKey = new Date().getTime()
+    return navTabs.state.tabsViewRoutes
+})
 const layoutConfig = computed(() => config.layout)
 
 // 激活当前路由的菜单

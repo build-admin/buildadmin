@@ -10,15 +10,7 @@
             </el-sub-menu>
         </template>
         <template v-else>
-            <el-menu-item v-if="menu.type == 'tab'" :index="menu.path" :key="menu.path">
-                <Icon :color="menuColor" :name="menu.icon ? menu.icon : defaultIcon" />
-                <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
-            </el-menu-item>
-            <el-menu-item v-if="menu.type == 'link'" index="" :key="menu.path" @click="onLink(menu.path)">
-                <Icon :color="menuColor" :name="menu.icon ? menu.icon : defaultIcon" />
-                <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
-            </el-menu-item>
-            <el-menu-item v-if="menu.type == 'iframe'" :index="menu.path" :key="menu.path">
+            <el-menu-item :index="menu.path" :key="menu.path" @click="clickMenu(menu)">
                 <Icon :color="menuColor" :name="menu.icon ? menu.icon : defaultIcon" />
                 <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
             </el-menu-item>
@@ -29,6 +21,7 @@
 import { computed } from 'vue'
 import { useConfig } from '/@/stores/config'
 import type { viewMenu } from '/@/stores/interface'
+import { clickMenu } from '/@/utils/common'
 
 const config = useConfig()
 
@@ -42,10 +35,6 @@ const props = withDefaults(defineProps<Props>(), {
 const defaultIcon = computed(() => config.layout.menuDefaultIcon)
 const menuColor = computed(() => config.layout.menuColor)
 const menuActiveBackground = computed(() => config.layout.menuActiveBackground)
-
-const onLink = (url: string) => {
-    window.open(url, '_blank')
-}
 </script>
 
 <style scoped lang="scss">
