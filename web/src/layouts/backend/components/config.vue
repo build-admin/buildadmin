@@ -198,6 +198,7 @@ const onCloseDrawer = () => {
 
 const restoreDefault = () => {
     Local.remove(STORE_CONFIG)
+    Session.remove(BEFORE_RESIZE_LAYOUT)
     router.go(0)
 }
 </script>
