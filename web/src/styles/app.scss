@@ -160,26 +160,6 @@ body,
 }
 /* 表格-e */
 
-/* dialog滚动条-s */
-.el-overlay-dialog {
-    scrollbar-width: none;
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: #eaeaea;
-        border-radius: var(--el-border-radius-base);
-        box-shadow: none;
-        -webkit-box-shadow: none;
-    }
-    &:hover {
-        &::-webkit-scrollbar-thumb:hover {
-            background: #c8c9cc;
-        }
-    }
-}
-/* dialog滚动条-e */
-
 /* 新增/编辑表单-s */
 .ba-operate-dialog .el-dialog__header {
     padding-bottom: 16px;

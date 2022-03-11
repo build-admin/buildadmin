@@ -1,10 +1,11 @@
-// 修复 Chrome 浏览器输入框内选中字符行高异常的bug
+/* 修复 Chrome 浏览器输入框内选中字符行高异常的bug-s */
 .el-input--large .el-input__inner {
     line-height: 38px;
 }
 .el-input--default .el-input__inner {
     line-height: 30px;
 }
+/* 修复 Chrome 浏览器输入框内选中字符行高异常的bug-e */
 
 .el-divider__text.is-center {
     transform: translateX(-50%) translateY(-62%);
@@ -20,3 +21,26 @@
 .el-card__header {
     border-bottom: 1px solid var(--color-sub-4);
 }
+.el-textarea__inner {
+    padding: 5px 11px;
+}
+
+/* dialog滚动条-s */
+.el-overlay-dialog {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #eaeaea;
+        border-radius: var(--el-border-radius-base);
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+    &:hover {
+        &::-webkit-scrollbar-thumb:hover {
+            background: #c8c9cc;
+        }
+    }
+}
+/* dialog滚动条-e */

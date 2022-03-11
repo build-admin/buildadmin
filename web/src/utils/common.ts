@@ -7,7 +7,7 @@ import { useNavTabs } from '/@/stores/navTabs'
 import { Local } from '/@/utils/storage'
 import { ADMIN_TOKEN } from '/@/stores/constant/cacheKey'
 import { adminBaseRoute } from '/@/router/static'
-import { ElNotification } from 'element-plus'
+import { ElForm, ElNotification } from 'element-plus'
 import type { viewMenu } from '/@/stores/interface'
 import { NavigationFailureType, isNavigationFailure, RouteRecordRaw } from 'vue-router'
 
@@ -275,4 +275,9 @@ export const getArrayKey = (arr: any, pk: string, value: string): any => {
         }
     }
     return false
+}
+
+export const onResetForm = (formEl: InstanceType<typeof ElForm> | undefined) => {
+    if (!formEl) return
+    formEl.resetFields()
 }

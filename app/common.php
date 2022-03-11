@@ -84,3 +84,24 @@ if (!function_exists('get_route_remark')) {
         return \think\facade\Db::name('menu_rule')->where('name', $path)->value('remark');
     }
 }
+
+if (!function_exists('full_url')) {
+    /**
+     * 获取资源完整url地址
+     * @param string  $relativeUrl 资源相对地址 不传入则获取域名
+     * @param boolean $domain      是否携带域名 或者直接传入域名
+     * @return string
+     */
+    function full_url($relativeUrl = false, $domain = true, $default = '')
+    {
+        $relativeUrl = $relativeUrl ? $relativeUrl : $default;
+        if (!$relativeUrl) {
+            return $domain === true ? request()->domain() : $domain;
+        }
+        $regex = "/^((?:[a-z]+:)?\/\/|data:image\/)(.*)/i";
+        if (preg_match('/^http(s)?:\/\//', $relativeUrl) || preg_match($regex, $relativeUrl) || $domain === false) {
+            return $relativeUrl;
+        }
+        return $domain === true ? request()->domain() . $relativeUrl : $domain . $relativeUrl;
+    }
+}

@@ -3,17 +3,17 @@
         <el-row :gutter="20">
             <el-col class="lg-mb-20" :xs="24" :sm="24" :md="24" :lg="10">
                 <div class="admin-info">
-                    <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false">
-                        <img src="~assets/avatar.png" class="avatar" />
+                    <el-upload class="avatar-uploader" action="" :show-file-list="false">
+                        <img :src="state.adminInfo.avatar" class="avatar" />
                     </el-upload>
                     <div class="admin-info-base">
-                        <div class="admin-nickname">Admin</div>
+                        <div class="admin-nickname">{{ state.adminInfo.nickname }}</div>
                         <div class="admin-other">
-                            <div>上次登录于 2022-01-23 25:21</div>
+                            <div>上次登录于 {{ state.adminInfo.lastlogintime }}</div>
                         </div>
                     </div>
                     <div class="admin-info-form">
-                        <el-form label-position="top" :rules="rules" ref="formRef" :model="state.adminInfo">
+                        <el-form :key="state.formKey" label-position="top" :rules="rules" ref="formRef" :model="state.adminInfo">
                             <el-form-item label="用户名">
                                 <el-input disabled v-model="state.adminInfo.username"></el-input>
                             </el-form-item>
@@ -33,8 +33,8 @@
                                 <el-input type="password" placeholder="不修改请留空" v-model="state.adminInfo.password"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" @click="onSubmit">保存修改</el-button>
-                                <el-button @click="onResetForm">重置</el-button>
+                                <el-button type="primary" :loading="state.buttonLoading" @click="onSubmit(formRef)">保存修改</el-button>
+                                <el-button @click="onResetForm(formRef)">重置</el-button>
                             </el-form-item>
                         </el-form>
                     </div>
@@ -56,22 +56,29 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { index, postData } from '/@/api/backend/routine/AdminInfo'
+import type { ElForm } from 'element-plus'
+import { onResetForm } from '/@/utils/common'
+import { uuid } from '/@/utils/uuid'
+import { validatorMobile, validatorPassword } from '/@/utils/validate'
 
 const { t } = useI18n()
-const formRef = ref()
+const formRef = ref<InstanceType<typeof ElForm>>()
 
 const state: {
-    adminInfo: any
+    adminInfo: anyObj
+    formKey: string
+    buttonLoading: boolean
 } = reactive({
-    adminInfo: {
-        avatar: '',
-        username: '',
-        nickname: '',
-        email: '',
-        mobile: '',
-        motto: '',
-        password: '',
-    },
+    adminInfo: {},
+    formKey: uuid(),
+    buttonLoading: false,
+})
+
+index().then((res) => {
+    state.adminInfo = res.data.info
+    // 重新渲染表单以记录初始值
+    state.formKey = uuid()
 })
 
 const rules: any = reactive({
@@ -96,29 +103,37 @@ const rules: any = reactive({
     ],
     mobile: [
         {
-            type: 'email',
+            validator: validatorMobile,
             message: '请输入正确的手机号码',
             trigger: 'blur',
         },
     ],
     password: [
         {
-            required: true,
-            message: t('adminLogin.Please input a password'),
-            trigger: 'blur',
-        },
-        {
-            min: 6,
-            max: 32,
-            message: t('adminLogin.Password length must be between 6 and 32 bits'),
+            validator: validatorPassword,
             trigger: 'blur',
         },
     ],
 })
 
-const onSubmit = () => {}
-
-const onResetForm = () => {}
+const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
+    if (!formEl) return
+    formEl.validate((valid) => {
+        if (valid) {
+            let data = { ...state.adminInfo }
+            delete data.lastlogintime
+            delete data.username
+            state.buttonLoading = true
+            postData(data)
+                .then(() => {
+                    state.buttonLoading = false
+                })
+                .catch(() => {
+                    state.buttonLoading = false
+                })
+        }
+    })
+}
 </script>
 
 <style scoped lang="scss">

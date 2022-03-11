@@ -37,6 +37,16 @@ class Backend extends Api
     protected $quickSearchField = 'id';
 
     /**
+     * 是否开启模型验证
+     */
+    protected $modelValidate = false;
+
+    /**
+     * 是否开启模型场景验证
+     */
+    protected $modelSceneValidate = false;
+
+    /**
      * 引入traits
      * traits内实现了index、add、edit等方法
      */

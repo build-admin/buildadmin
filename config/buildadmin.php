@@ -54,5 +54,6 @@ return [
                 'tokenprefix' => 'tp:',
             ]
         ]
-    ]
+    ],
+    'default_avatar'      => '/static/images/avatar.png',
 ];
