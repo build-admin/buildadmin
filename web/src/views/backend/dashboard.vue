@@ -722,7 +722,6 @@ const onChangeWorkState = () => {
 }
 
 const startWork = () => {
-    console.log('startWork')
     const workingTime = Local.get(WORKING_TIME) || { date: '', startTime: 0, pauseTime: 0, startPauseTime: 0 }
     const currentDate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
     const time = parseInt((new Date().getTime() / 1000).toString())
@@ -748,7 +747,6 @@ const startWork = () => {
     state.workingTimeFormat = formatSeconds(workingSeconds)
     if (!state.pauseWork) {
         workTimer = setInterval(() => {
-            console.log('执行中', workingSeconds)
             workingSeconds++
             state.workingTimeFormat = formatSeconds(workingSeconds)
         }, 1000)
@@ -796,7 +794,6 @@ const formatSeconds = (seconds: number) => {
 }
 
 onActivated(() => {
-    console.log('onActivated')
     echartsResize()
 })
 

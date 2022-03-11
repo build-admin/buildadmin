@@ -1,6 +1,7 @@
 interface Window {
     existLoading: boolean
     lazy: NodeJS.Timer
+    unique: number
 }
 
 interface FormItemProps {

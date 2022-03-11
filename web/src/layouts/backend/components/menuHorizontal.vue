@@ -47,6 +47,7 @@ import { useNavTabs } from '/@/stores/navTabs'
 import type { ElScrollbar } from 'element-plus'
 import NavMenus from '/@/layouts/backend/components/navMenus.vue'
 import { clickMenu } from '/@/utils/common'
+import { uuid } from '/@/utils/uuid'
 
 const horizontalMenusRef = ref<InstanceType<typeof ElScrollbar>>()
 
@@ -55,12 +56,12 @@ const navTabs = useNavTabs()
 const route = useRoute()
 
 const state = reactive({
-    menuKey: new Date().getTime(),
+    menuKey: uuid(),
     defaultActive: '',
 })
 
 const menus = computed(() => {
-    state.menuKey = new Date().getTime()
+    state.menuKey = uuid()
     return navTabs.state.tabsViewRoutes
 })
 const layoutConfig = computed(() => config.layout)
