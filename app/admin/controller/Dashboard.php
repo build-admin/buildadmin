@@ -10,8 +10,7 @@ class Dashboard extends Backend
     public function dashboard()
     {
         $this->success('', [
-            'adminName' => $this->auth->nickname,
-            'remark'    => get_route_remark()
+            'remark' => get_route_remark()
         ]);
     }
 }

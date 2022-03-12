@@ -37,7 +37,7 @@ class Auth extends \ba\Auth
     /**
      * @var string[] 允许输出的字段
      */
-    protected $allowFields = ['id', 'username', 'nickname', 'avatar'];
+    protected $allowFields = ['id', 'username', 'nickname', 'avatar', 'lastlogintime'];
 
     public function __construct()
     {

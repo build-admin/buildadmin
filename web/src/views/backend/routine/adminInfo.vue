@@ -64,14 +64,17 @@
 import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { index, postData } from '/@/api/backend/routine/AdminInfo'
-import { ElForm, ElNotification } from 'element-plus'
+import { ElForm } from 'element-plus'
 import { onResetForm } from '/@/utils/common'
 import { uuid } from '/@/utils/uuid'
 import { validatorMobile, validatorPassword } from '/@/utils/validate'
 import { adminFileUpload } from '/@/api/common'
+import { useAdminInfo } from '/@/stores/adminInfo'
 
 const { t } = useI18n()
 const formRef = ref<InstanceType<typeof ElForm>>()
+
+const adminInfoStore = useAdminInfo()
 
 const state: {
     adminInfo: anyObj
@@ -132,6 +135,7 @@ const onAvatarBeforeUpload = (file: any) => {
                 id: state.adminInfo.id,
                 avatar: res.data.file.url,
             }).then(() => {
+                adminInfoStore.avatar = res.data.file.fullurl
                 state.adminInfo.avatar = res.data.file.fullurl
             })
         }
@@ -149,6 +153,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
             state.buttonLoading = true
             postData(data)
                 .then(() => {
+                    adminInfoStore.nickname = state.adminInfo.nickname
                     state.buttonLoading = false
                 })
                 .catch(() => {

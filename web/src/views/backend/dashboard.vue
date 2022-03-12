@@ -6,7 +6,7 @@
                     <div class="welcome suspension">
                         <img class="welcome-img" :src="headerSvg" alt="" />
                         <div class="welcome-text">
-                            <div class="welcome-title">{{ state.adminName }}{{ t('dashboard.comma') + state.greetings }}</div>
+                            <div class="welcome-title">{{ adminInfo.nickname }}{{ t('dashboard.comma') + state.greetings }}</div>
                             <div class="welcome-note">{{ t(state.remark) }}</div>
                         </div>
                     </div>
@@ -354,6 +354,7 @@ import { useTemplateRefsList } from '@vueuse/core'
 import { dashboard } from '/@/api/backend/dashboard'
 import { useI18n } from 'vue-i18n'
 import { Local } from '/@/utils/storage'
+import { useAdminInfo } from '/@/stores/adminInfo'
 import { WORKING_TIME } from '/@/stores/constant/cacheKey'
 import 'element-plus/theme-chalk/display.css'
 var workTimer: NodeJS.Timer
@@ -361,18 +362,17 @@ var workTimer: NodeJS.Timer
 const d = new Date()
 const { t } = useI18n()
 const navTabs = useNavTabs()
+const adminInfo = useAdminInfo()
 const chartRefs = useTemplateRefsList<HTMLDivElement>()
 
 const state: {
     charts: any[]
-    adminName: string
     greetings: string
     remark: string
     workingTimeFormat: string
     pauseWork: boolean
 } = reactive({
     charts: [],
-    adminName: t('dashboard.Loading'),
     greetings: t('dashboard.Hello'),
     remark: 'dashboard.Loading',
     workingTimeFormat: '',
@@ -381,7 +381,6 @@ const state: {
 
 dashboard().then((res) => {
     state.remark = res.data.remark
-    state.adminName = res.data.adminName
 })
 
 const countUpFun = (id: string) => {

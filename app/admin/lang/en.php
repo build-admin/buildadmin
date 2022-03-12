@@ -1,5 +1,7 @@
 <?php
 return [
+    'Please login first'                                                                  => 'Please login first',
+    'You have no permission'                                                              => 'You have no permission',
     'Username'                                                                            => 'User Name',
     'Password'                                                                            => 'Password',
     'Nickname'                                                                            => 'Nickname',

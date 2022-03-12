@@ -4,11 +4,10 @@ import * as elIcons from '@element-plus/icons-vue'
 import router from '/@/router/index'
 import Icon from '/@/components/icon/index.vue'
 import { useNavTabs } from '/@/stores/navTabs'
-import { Local } from '/@/utils/storage'
-import { ADMIN_TOKEN } from '/@/stores/constant/cacheKey'
 import { adminBaseRoute } from '/@/router/static'
 import { ElForm, ElNotification } from 'element-plus'
 import type { viewMenu } from '/@/stores/interface'
+import { useAdminInfo } from '/@/stores/adminInfo'
 import { NavigationFailureType, isNavigationFailure, RouteRecordRaw } from 'vue-router'
 
 export const clickMenu = (menu: viewMenu) => {
@@ -143,19 +142,9 @@ export function randomNum(min: number, max: number) {
     }
 }
 
-/**
- * 生成随机位数的随机字符串
- */
-export function randomStr() {
-    return new Date().getTime().toString() + randomNum(1, 50000).toString()
-}
-
-export function setAdminToken(value: string) {
-    Local.set(ADMIN_TOKEN, value)
-}
-
 export function getAdminToken() {
-    return Local.get(ADMIN_TOKEN) || ''
+    const adminInfo = useAdminInfo()
+    return adminInfo.token
 }
 
 export const pageTitle = (name: string): string => {

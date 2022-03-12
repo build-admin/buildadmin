@@ -41,3 +41,12 @@ export interface NavTabs {
     tabFullScreen: Boolean
     tabsViewRoutes: Array<viewMenu>
 }
+
+export interface AdminInfo {
+    id: number
+    username: string
+    nickname: string
+    avatar: string
+    lastlogintime: string
+    token: string
+}

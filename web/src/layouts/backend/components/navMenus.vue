@@ -41,24 +41,24 @@
             <template #reference>
                 <div class="admin-info" :class="state.currentNavMenu == 'adminInfo' ? 'hover' : ''">
                     <el-avatar :size="25" fit="fill">
-                        <img src="~assets/avatar.png" alt="" />
+                        <img :src="adminInfo.avatar" alt="" />
                     </el-avatar>
-                    <div class="admin-name">Admin</div>
+                    <div class="admin-name">{{ adminInfo.nickname }}</div>
                 </div>
             </template>
             <div>
                 <div class="admin-info-base">
                     <el-avatar :size="70" fit="fill">
-                        <img src="~assets/avatar.png" alt="" />
+                        <img :src="adminInfo.avatar" alt="" />
                     </el-avatar>
                     <div class="admin-info-other">
-                        <div class="admin-info-name">Admin</div>
-                        <div class="admin-info-lasttime">2022-01-23 18:52</div>
+                        <div class="admin-info-name">{{ adminInfo.nickname }}</div>
+                        <div class="admin-info-lasttime">{{ adminInfo.lastlogintime }}</div>
                     </div>
                 </div>
                 <div class="admin-info-footer">
-                    <el-button type="primary" plain>个人资料</el-button>
-                    <el-button type="danger" plain>注销</el-button>
+                    <el-button @click="onAdminInfo" type="primary" plain>个人资料</el-button>
+                    <el-button @click="onLogout" type="danger" plain>注销</el-button>
                 </div>
             </div>
         </el-popover>
@@ -77,9 +77,16 @@ import { useConfig } from '/@/stores/config'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import Config from './config.vue'
+import { useAdminInfo } from '/@/stores/adminInfo'
+import { Local } from '/@/utils/storage'
+import { ADMIN_INFO } from '/@/stores/constant/cacheKey'
+import router from '/@/router'
+import { routePush } from '/@/utils/common'
+import { RouteRecordRaw } from 'vue-router'
 
 const { t } = useI18n()
 
+const adminInfo = useAdminInfo()
 const configStore = useConfig()
 
 const state = reactive({
@@ -104,6 +111,15 @@ const onFullScreen = () => {
     screenfull.onchange(() => {
         state.isFullScreen = screenfull.isFullscreen
     })
+}
+
+const onAdminInfo = () => {
+    routePush({ name: 'routine/adminInfo' } as RouteRecordRaw)
+}
+
+const onLogout = () => {
+    Local.remove(ADMIN_INFO)
+    router.go(0)
 }
 </script>
 

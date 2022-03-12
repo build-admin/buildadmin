@@ -23,7 +23,7 @@
                 <div class="form">
                     <img class="profile-avatar" src="~assets/avatar.png" alt="" />
                     <div class="content">
-                        <el-form ref="formRef" :rules="rules" size="large" :model="form">
+                        <el-form @keyup.enter="onSubmit(formRef)" ref="formRef" :rules="rules" size="large" :model="form">
                             <el-form-item prop="username">
                                 <el-input
                                     ref="username"
@@ -92,24 +92,27 @@ import type { ElForm } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { editDefaultLang } from '/@/lang/index'
 import { useConfig } from '/@/stores/config'
+import { useAdminInfo } from '/@/stores/adminInfo'
 import { login } from '/@/api/backend'
 import { getUrl } from '/@/utils/axios'
 import { captchaUrl } from '/@/api/common'
-import { randomStr, setAdminToken } from '/@/utils/common'
+import { uuid } from '/@/utils/uuid'
 import { validatorPassword, validatorAccount } from '/@/utils/validate'
 import router from '/@/router'
 var timer: NodeJS.Timer
 
 const config = useConfig()
+const adminInfo = useAdminInfo()
 
 const state = reactive({
     showCaptcha: false,
-    captchaId: randomStr(),
+    captchaId: uuid(),
     captchaUrl: getUrl() + captchaUrl,
 })
 
 const onChangeCaptcha = () => {
-    state.captchaId = randomStr()
+    form.captcha = ''
+    state.captchaId = uuid()
 }
 
 const formRef = ref<InstanceType<typeof ElForm>>()
@@ -200,9 +203,8 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
             form.captcha_id = state.captchaId
             login('post', form)
                 .then((res) => {
-                    onChangeCaptcha()
                     form.loading = false
-                    setAdminToken(res.data.userinfo.token)
+                    adminInfo.$state = res.data.userinfo
                     router.push({ name: res.data.routeName })
                 })
                 .catch((err) => {
