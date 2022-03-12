@@ -11,7 +11,13 @@
                         :auto-upload="false"
                         accept="image/gif, image/jpg, image/jpeg, image/bmp, image/png, image/webp"
                     >
-                        <img :src="state.adminInfo.avatar" class="avatar" />
+                        <el-image :src="state.adminInfo.avatar" class="avatar">
+                            <template #error>
+                                <div class="image-slot">
+                                    <Icon size="30" color="#c0c4cc" name="el-icon-Picture" />
+                                </div>
+                            </template>
+                        </el-image>
                     </el-upload>
                     <div class="admin-info-base">
                         <div class="admin-nickname">{{ state.adminInfo.nickname }}</div>
@@ -190,6 +196,12 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
         width: 110px;
         height: 110px;
         display: block;
+    }
+    .image-slot {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
     }
     .admin-info-base {
         .admin-nickname {

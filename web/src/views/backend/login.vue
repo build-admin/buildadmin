@@ -12,7 +12,7 @@
                 </template>
             </el-dropdown>
         </div>
-        <div id="bubble" class="bubble">
+        <div @contextmenu.stop="" id="bubble" class="bubble">
             <canvas id="bubble-canvas" class="bubble-canvas"></canvas>
         </div>
         <div class="login">
