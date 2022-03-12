@@ -81,8 +81,7 @@ import { useAdminInfo } from '/@/stores/adminInfo'
 import { Local } from '/@/utils/storage'
 import { ADMIN_INFO } from '/@/stores/constant/cacheKey'
 import router from '/@/router'
-import { routePush } from '/@/utils/common'
-import { RouteRecordRaw } from 'vue-router'
+import { routePush } from '/@/utils/router'
 
 const { t } = useI18n()
 
@@ -114,7 +113,7 @@ const onFullScreen = () => {
 }
 
 const onAdminInfo = () => {
-    routePush({ name: 'routine/adminInfo' } as RouteRecordRaw)
+    routePush('routine/adminInfo')
 }
 
 const onLogout = () => {

@@ -4,55 +4,8 @@ import * as elIcons from '@element-plus/icons-vue'
 import router from '/@/router/index'
 import Icon from '/@/components/icon/index.vue'
 import { useNavTabs } from '/@/stores/navTabs'
-import { adminBaseRoute } from '/@/router/static'
-import { ElForm, ElNotification } from 'element-plus'
-import type { viewMenu } from '/@/stores/interface'
+import { ElForm } from 'element-plus'
 import { useAdminInfo } from '/@/stores/adminInfo'
-import { NavigationFailureType, isNavigationFailure, RouteRecordRaw } from 'vue-router'
-
-export const clickMenu = (menu: viewMenu) => {
-    switch (menu.type) {
-        case 'tab':
-            routePush(menu)
-            break
-        case 'link':
-            window.open(menu.path, '_blank')
-            break
-        case 'iframe':
-            routePush({ path: menu.path } as viewMenu)
-            break
-
-        default:
-            ElNotification({
-                message: '导航失败，菜单类型无法识别！',
-                type: 'error',
-            })
-            break
-    }
-}
-
-export const routePush = async (route: RouteRecordRaw | viewMenu) => {
-    try {
-        const failure = await router.push(route.name ? { name: route.name } : { path: route.path })
-        if (isNavigationFailure(failure, NavigationFailureType.aborted)) {
-            ElNotification({
-                message: '导航失败，导航守卫拦截！',
-                type: 'error',
-            })
-        } else if (isNavigationFailure(failure, NavigationFailureType.duplicated)) {
-            ElNotification({
-                message: '导航失败，已在导航目标位置！',
-                type: 'warning',
-            })
-        }
-    } catch (error) {
-        ElNotification({
-            message: '导航失败，路由无效！',
-            type: 'error',
-        })
-        console.error(error)
-    }
-}
 
 export function registerIcons(app: App) {
     /*
@@ -87,22 +40,6 @@ export function loadJs(url: string): void {
     document.body.appendChild(link)
 }
 
-export const pushFirstRoute = () => {
-    const navTabs = useNavTabs()
-    let routerNames = []
-    let routers = router.getRoutes()
-    for (const key in routers) {
-        if (routers[key].name) routerNames.push(routers[key].name)
-    }
-    for (const key in navTabs.state.tabsViewRoutes) {
-        if (navTabs.state.tabsViewRoutes[key].type != 'menu_dir' && routerNames.indexOf(navTabs.state.tabsViewRoutes[key].name) !== -1) {
-            router.push({ name: navTabs.state.tabsViewRoutes[key].name })
-            return true
-        }
-    }
-    router.go(0)
-}
-
 /**
  * 设置浏览器标题
  */
@@ -121,6 +58,7 @@ export function setTitle(t: any = null) {
 }
 
 /**
+ * 是否是外部链接
  * @param {string} path
  * @return {Boolean}
  */
@@ -147,101 +85,10 @@ export function getAdminToken() {
     return adminInfo.token
 }
 
-export const pageTitle = (name: string): string => {
-    return `pagesTitle.${name}`
-}
-
-/*
- * 处理后台的路由
- */
-export const handleAdminRoute = (routes: any) => {
-    const viewsComponent = import.meta.globEager('/src/views/backend/**/*.vue')
-    addRouteAll(viewsComponent, routes, adminBaseRoute.name as string)
-    return handleMenuRule(routes, '/' + (adminBaseRoute.name as string) + '/')
-}
-
-export const getMenuPaths = (menus: any): any[] => {
-    let menuPaths = []
-    for (const key in menus) {
-        if (menus[key].extend == 'add_rules_only') {
-            continue
-        }
-        menuPaths.push(menus[key].path)
-        if (menus[key].children && menus[key].children.length > 0) {
-            menuPaths = menuPaths.concat(getMenuPaths(menus[key].children))
-        }
-    }
-    return menuPaths
-}
-
-const handleMenuRule = (routes: any, pathPrefix = '/') => {
-    let menuRule = []
-    for (const key in routes) {
-        if (routes[key].extend == 'add_rules_only') {
-            continue
-        }
-        if (routes[key].type == 'menu' || routes[key].type == 'menu_dir') {
-            if (routes[key].type == 'menu_dir' && !routes[key].children) {
-                continue
-            }
-
-            routes[key].type = routes[key].menu_type
-            routes[key].keepAlive = routes[key].name
-            if (routes[key].type == 'tab') {
-                routes[key].path = pathPrefix + routes[key].path
-            } else {
-                routes[key].path = routes[key].url
-            }
-            delete routes[key].url
-            delete routes[key].menu_type
-            if (routes[key].children && routes[key].children.length > 0) {
-                routes[key].children = handleMenuRule(routes[key].children, pathPrefix)
-            }
-            menuRule.push(routes[key])
-        }
-    }
-    return menuRule
-}
-
-export const addRouteAll = (viewsComponent: Record<string, { [key: string]: any }>, routes: any, parentName: string) => {
-    for (const idx in routes) {
-        if (routes[idx].extend == 'add_menu_only') {
-            continue
-        }
-        if (routes[idx].type == 'menu' && routes[idx].menu_type == 'tab' && viewsComponent[routes[idx].component]) {
-            addRouteItem(viewsComponent, routes[idx], parentName)
-        }
-
-        if (routes[idx].children && routes[idx].children.length > 0) {
-            addRouteAll(viewsComponent, routes[idx].children, parentName)
-        }
-    }
-}
-
-export const addRouteItem = (viewsComponent: Record<string, { [key: string]: any }>, route: any, parentName: string) => {
-    if (parentName) {
-        router.addRoute(parentName, {
-            path: route.path,
-            name: route.name,
-            component: viewsComponent[route.component].default,
-            meta: {
-                title: route.title,
-            },
-        })
-    } else {
-        router.addRoute({
-            path: '/' + route.path,
-            name: route.name,
-            component: viewsComponent[route.component].default,
-            meta: {
-                title: route.title,
-            },
-        })
-    }
-}
-
 /**
  * 防抖
+ * @param fn 执行函数
+ * @param ms 间隔毫秒数
  */
 export const debounce = (fn: Function, ms: number) => {
     return (...args: any[]) => {
@@ -256,6 +103,9 @@ export const debounce = (fn: Function, ms: number) => {
 
 /**
  * 根据pk字段的值从数组中获取key
+ * @param arr
+ * @param pk
+ * @param value
  */
 export const getArrayKey = (arr: any, pk: string, value: string): any => {
     for (const key in arr) {
@@ -266,6 +116,10 @@ export const getArrayKey = (arr: any, pk: string, value: string): any => {
     return false
 }
 
+/**
+ * 表单重置
+ * @param formEl
+ */
 export const onResetForm = (formEl: InstanceType<typeof ElForm> | undefined) => {
     if (!formEl) return
     formEl.resetFields()

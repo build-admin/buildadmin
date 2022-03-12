@@ -30,7 +30,7 @@ import type { ContextMenuItem, ContextmenuItemClickEmitArg } from '/@/components
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import Contextmenu from '/@/components/contextmenu/index.vue'
 import horizontalScroll from '/@/utils/horizontalScroll'
-import { pushFirstRoute } from '/@/utils/common'
+import { pushFirstRoute } from '/@/utils/router'
 
 const route = useRoute()
 const router = useRouter()

@@ -21,7 +21,7 @@
 import { computed } from 'vue'
 import { useConfig } from '/@/stores/config'
 import type { viewMenu } from '/@/stores/interface'
-import { clickMenu } from '/@/utils/common'
+import { clickMenu } from '/@/utils/router'
 
 const config = useConfig()
 
