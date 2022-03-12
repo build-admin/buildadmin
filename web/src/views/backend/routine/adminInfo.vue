@@ -104,7 +104,6 @@ const rules: any = reactive({
     mobile: [
         {
             validator: validatorMobile,
-            message: '请输入正确的手机号码',
             trigger: 'blur',
         },
     ],
@@ -123,6 +122,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
             let data = { ...state.adminInfo }
             delete data.lastlogintime
             delete data.username
+            delete data.avatar
             state.buttonLoading = true
             postData(data)
                 .then(() => {

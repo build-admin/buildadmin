@@ -96,6 +96,7 @@ import { login } from '/@/api/backend'
 import { getUrl } from '/@/utils/axios'
 import { captchaUrl } from '/@/api/common'
 import { randomStr, setAdminToken } from '/@/utils/common'
+import { validatorPassword, validatorAccount } from '/@/utils/validate'
 import router from '/@/router'
 var timer: NodeJS.Timer
 
@@ -132,8 +133,7 @@ const rules = reactive({
             trigger: 'blur',
         },
         {
-            min: 3,
-            message: t('adminLogin.Account length must be greater than 3 digits'),
+            validator: validatorAccount,
             trigger: 'blur',
         },
     ],
@@ -144,9 +144,7 @@ const rules = reactive({
             trigger: 'blur',
         },
         {
-            min: 6,
-            max: 32,
-            message: t('adminLogin.Password length must be between 6 and 32 bits'),
+            validator: validatorPassword,
             trigger: 'blur',
         },
     ],
@@ -202,15 +200,17 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
             form.captcha_id = state.captchaId
             login('post', form)
                 .then((res) => {
+                    onChangeCaptcha()
                     form.loading = false
                     setAdminToken(res.data.userinfo.token)
                     router.push({ name: res.data.routeName })
                 })
                 .catch((err) => {
+                    onChangeCaptcha()
                     form.loading = false
                 })
         } else {
-            console.log('error submit!')
+            onChangeCaptcha()
             return false
         }
     })
