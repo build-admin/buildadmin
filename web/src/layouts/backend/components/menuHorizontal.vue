@@ -47,7 +47,7 @@ import { useNavTabs } from '/@/stores/navTabs'
 import type { ElScrollbar } from 'element-plus'
 import NavMenus from '/@/layouts/backend/components/navMenus.vue'
 import { clickMenu } from '/@/utils/router'
-import { uuid } from '/@/utils/uuid'
+import { uuid } from '../../../utils/random'
 
 const horizontalMenusRef = ref<InstanceType<typeof ElScrollbar>>()
 

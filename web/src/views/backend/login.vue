@@ -96,7 +96,7 @@ import { useAdminInfo } from '/@/stores/adminInfo'
 import { login } from '/@/api/backend'
 import { getUrl } from '/@/utils/axios'
 import { captchaUrl } from '/@/api/common'
-import { uuid } from '/@/utils/uuid'
+import { uuid } from '../../utils/random'
 import { validatorPassword, validatorAccount } from '/@/utils/validate'
 import router from '/@/router'
 var timer: NodeJS.Timer
