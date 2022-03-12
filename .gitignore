@@ -8,7 +8,7 @@ dist-ssr
 /public/*.lock
 /public/index.html
 /public/assets
-/public/uploads/*
+/public/storage/*
 .DS_Store
 composer.lock
 /.env

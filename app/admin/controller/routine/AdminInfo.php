@@ -47,6 +47,13 @@ class AdminInfo extends Backend
                 $this->error(__('Parameter %s can not be empty', ['']));
             }
 
+            if (isset($data['avatar']) && $data['avatar']) {
+                $row->avatar = $data['avatar'];
+                if ($row->save()) {
+                    $this->success('头像修改成功！');
+                }
+            }
+
             // 数据验证
             if ($this->modelValidate) {
                 $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));

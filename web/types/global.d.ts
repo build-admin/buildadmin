@@ -17,3 +17,12 @@ interface FormItemProps {
 interface anyObj {
     [key: string]: any
 }
+
+interface ApiResponse<T = any> {
+    code: number
+    data: T
+    msg: string
+    time: number
+}
+
+interface ApiPromise<T = any> extends Promise<ApiResponse<T>> {}

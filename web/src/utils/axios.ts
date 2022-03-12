@@ -1,4 +1,4 @@
-import axios, { Method } from 'axios'
+import axios, { AxiosPromise, Method } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 import { computed } from 'vue'
 import { ElMessage, ElLoading, LoadingOptions, ElNotification } from 'element-plus'
@@ -17,7 +17,12 @@ export const getUrl = (): string => {
     return value == 'getCurrentDomain' ? window.location.protocol + '//' + window.location.host : value
 }
 
-function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loading: LoadingOptions = {}) {
+/*
+ * 创建Axios
+ * 默认开启`reductDataFormat(简洁响应)`,返回类型为`ApiPromise`
+ * 关闭`reductDataFormat`,返回类型则为`AxiosPromise`
+ */
+function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loading: LoadingOptions = {}): ApiPromise | AxiosPromise {
     const config = useConfig()
     const lang = computed(() => config.lang.defaultLang)
 

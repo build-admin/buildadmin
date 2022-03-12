@@ -3,7 +3,14 @@
         <el-row :gutter="20">
             <el-col class="lg-mb-20" :xs="24" :sm="24" :md="24" :lg="10">
                 <div class="admin-info">
-                    <el-upload class="avatar-uploader" action="" :show-file-list="false">
+                    <el-upload
+                        class="avatar-uploader"
+                        action=""
+                        :show-file-list="false"
+                        @change="onAvatarBeforeUpload"
+                        :auto-upload="false"
+                        accept="image/gif, image/jpg, image/jpeg, image/bmp, image/png, image/webp"
+                    >
                         <img :src="state.adminInfo.avatar" class="avatar" />
                     </el-upload>
                     <div class="admin-info-base">
@@ -57,10 +64,11 @@
 import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { index, postData } from '/@/api/backend/routine/AdminInfo'
-import type { ElForm } from 'element-plus'
+import { ElForm, ElNotification } from 'element-plus'
 import { onResetForm } from '/@/utils/common'
 import { uuid } from '/@/utils/uuid'
 import { validatorMobile, validatorPassword } from '/@/utils/validate'
+import { adminFileUpload } from '/@/api/common'
 
 const { t } = useI18n()
 const formRef = ref<InstanceType<typeof ElForm>>()
@@ -114,6 +122,21 @@ const rules: any = reactive({
         },
     ],
 })
+
+const onAvatarBeforeUpload = (file: any) => {
+    let fd = new FormData()
+    fd.append('file', file.raw)
+    adminFileUpload(fd).then((res) => {
+        if (res.code == 1) {
+            postData({
+                id: state.adminInfo.id,
+                avatar: res.data.file.url,
+            }).then(() => {
+                state.adminInfo.avatar = res.data.file.fullurl
+            })
+        }
+    })
+}
 
 const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     if (!formEl) return
