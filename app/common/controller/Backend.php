@@ -3,7 +3,9 @@
 namespace app\common\controller;
 
 use app\admin\library\Auth;
+use think\db\exception\PDOException;
 use think\facade\Cookie;
+use think\facade\Db;
 
 class Backend extends Api
 {
@@ -55,6 +57,14 @@ class Backend extends Api
     public function initialize()
     {
         parent::initialize();
+
+        // 检测数据库连接
+        try {
+            Db::execute("SELECT 1");
+        } catch (PDOException $e) {
+            $this->error(mb_convert_encoding($e->getMessage(), 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'));
+        }
+
         $this->auth = Auth::instance();
         $routePath  = $this->controllerPath . '/' . $this->request->action(true);
         $token      = $this->request->server('HTTP_BATOKEN', $this->request->request('batoken', Cookie::get('batoken') ?: false));
