@@ -6,7 +6,7 @@
                 :buttons="['refresh', 'edit', 'delete']"
                 :enable-batch-opt="table.selection.length > 0 ? true : false"
                 :quick-search-placeholder="'通过原始名称搜索'"
-                @action="onAction"
+                @action="onTableHeaderAction"
             />
             <!-- 表格 -->
             <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
@@ -15,7 +15,8 @@
                 :data="table.data"
                 :field="table.column"
                 :row-key="table.pk"
-                @selection-change="onTableSelection"
+                :total="table.total"
+                @action="onTableAction"
                 @row-dblclick="onTableDblclick"
             />
             <!-- 对话框表单 -->
@@ -103,6 +104,8 @@ const table: {
     dblClickNotEditColumn: (string | undefined)[]
     // 列数据
     column: TableColumn[]
+    // 数据总量
+    total: number
 } = reactive({
     pk: 'id',
     data: [],
@@ -149,6 +152,7 @@ const table: {
             buttons: opButtons,
         },
     ],
+    total: 0,
 })
 /* 表格状态-e */
 
@@ -179,12 +183,13 @@ const form: {
 const getIndex = (loading: boolean = false, filter: anyObj = {}) => {
     index(loading, filter).then((res) => {
         table.data = res.data.list
+        table.total = res.data.total
     })
 }
 // 发送删除请求
 const postDel = (ids: string[]) => {
     del(ids).then((res) => {
-        onAction('refresh', {})
+        onTableHeaderAction('refresh', {})
     })
 }
 // 请求编辑数据
@@ -197,14 +202,6 @@ const requestEdit = (id: string) => {
     })
 }
 /* API请求方法-e */
-
-/**
- * 接受并记录用户选择的表格项
- * @param selection 被选择项
- */
-const onTableSelection = (selection: TableRow[]) => {
-    table.selection = selection
-}
 
 /**
  * 双击表格
@@ -240,7 +237,7 @@ const onSubmit = () => {
     form.submitLoading = true
     postData(form.operate, form.items)
         .then((res) => {
-            onAction('refresh', {})
+            onTableHeaderAction('refresh', {})
             form.submitLoading = false
             form.operateIds.shift()
             if (form.operateIds.length > 0) {
@@ -264,11 +261,11 @@ const getSelectionIds = () => {
 }
 
 /**
- * 表格顶栏按钮响应
- * @param type 点击的按钮
+ * 表格顶栏按钮事件响应
+ * @param event 事件:refresh=刷新,edit=编辑,delete=删除,quick-search=快速查询
  * @param data 携带数据
  */
-const onAction = (type: string, data: anyObj) => {
+const onTableHeaderAction = (event: string, data: anyObj) => {
     const actionFun = new Map([
         [
             'refresh',
@@ -299,7 +296,26 @@ const onAction = (type: string, data: anyObj) => {
         ],
     ])
 
-    let action = actionFun.get(type) || actionFun.get('default')
+    let action = actionFun.get(event) || actionFun.get('default')
+    return action!.call(this)
+}
+
+/**
+ * 表格内的事件响应
+ * @param event 事件:selection-change=选中项改变
+ * @param data 携带数据
+ */
+const onTableAction = (event: string, data: anyObj) => {
+    const actionFun = new Map([
+        [
+            'selection-change',
+            () => {
+                table.selection = data as TableRow[]
+            },
+        ],
+    ])
+
+    let action = actionFun.get(event) || actionFun.get('default')
     return action!.call(this)
 }
 

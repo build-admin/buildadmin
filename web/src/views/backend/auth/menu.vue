@@ -7,7 +7,7 @@
                 :enable-batch-opt="table.selection.length > 0 ? true : false"
                 :unfold="table.expandAll"
                 :quick-search-placeholder="'通过标题搜索'"
-                @action="onAction"
+                @action="onTableHeaderAction"
             />
             <!-- 表格 -->
             <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
@@ -17,7 +17,7 @@
                 :data="table.data"
                 :field="table.column"
                 :row-key="table.pk"
-                @selection-change="onTableSelection"
+                @action="onTableAction"
                 @row-dblclick="onTableDblclick"
             />
             <!-- 对话框表单 -->
@@ -214,6 +214,7 @@ const form: {
         menu_type: 'tab',
         extend: 'none',
         status: '1',
+        icon: 'el-icon-Minus',
     },
 })
 /* 表单状态-e */
@@ -226,7 +227,7 @@ const getIndex = (loading: boolean = false, keyword: string = '') => {
 }
 const postDel = (ids: string[]) => {
     del(ids).then((res) => {
-        onAction('refresh', {})
+        onTableHeaderAction('refresh', {})
     })
 }
 const requestEdit = (id: string) => {
@@ -240,14 +241,6 @@ const requestEdit = (id: string) => {
     })
 }
 /* API请求方法-e */
-
-/**
- * 接受并记录用户选择的表格项
- * @param selection 被选择项
- */
-const onTableSelection = (selection: TableRow[]) => {
-    table.selection = selection
-}
 
 /**
  * 双击表格
@@ -270,7 +263,7 @@ const toggleForm = (operate: string = '', operateIds: string[] = []) => {
         }
         requestEdit(operateIds[0])
     } else if (operate == 'add') {
-        form.items = form.defaultItems
+        form.items = Object.assign({}, form.defaultItems)
     }
     form.operate = operate
     form.operateIds = operateIds
@@ -286,7 +279,7 @@ const onSubmit = () => {
     }
     postData(form.operate, form.items)
         .then((res) => {
-            onAction('refresh', {})
+            onTableHeaderAction('refresh', {})
             form.submitLoading = false
             form.operateIds.shift()
             if (form.operateIds.length > 0) {
@@ -314,7 +307,7 @@ const getSelectionIds = () => {
  * @param type 点击的按钮
  * @param data 携带数据
  */
-const onAction = (type: string, data: anyObj) => {
+const onTableHeaderAction = (type: string, data: anyObj) => {
     const actionFun = new Map([
         [
             'refresh',
@@ -367,6 +360,25 @@ const onAction = (type: string, data: anyObj) => {
 }
 
 /**
+ * 表格内的事件响应
+ * @param event 事件:selection-change=选中项改变
+ * @param data 携带数据
+ */
+const onTableAction = (event: string, data: anyObj) => {
+    const actionFun = new Map([
+        [
+            'selection-change',
+            () => {
+                table.selection = data as TableRow[]
+            },
+        ],
+    ])
+
+    let action = actionFun.get(event) || actionFun.get('default')
+    return action!.call(this)
+}
+
+/**
  * 表格拖动排序
  */
 const dragSort = () => {
@@ -389,7 +401,7 @@ const dragSort = () => {
             let moveRow = findIndexRow(table.data, evt.oldIndex!) as TableRow
             let replaceRow = findIndexRow(table.data, evt.newIndex!) as TableRow
             if (moveRow[table.dragSortLimitField] != replaceRow[table.dragSortLimitField]) {
-                onAction('refresh', {})
+                onTableHeaderAction('refresh', {})
                 ElNotification({
                     type: 'error',
                     message: '移动位置超出了可移动范围!',
@@ -398,7 +410,7 @@ const dragSort = () => {
             }
 
             sortableApi(moveRow.id, replaceRow.id).then((res) => {
-                onAction('refresh', {})
+                onTableHeaderAction('refresh', {})
             })
         },
     })
@@ -447,8 +459,4 @@ onUnmounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
-.default-main {
-    margin-bottom: 60px;
-}
-</style>
+<style lang="scss" scoped></style>

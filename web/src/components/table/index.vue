@@ -10,6 +10,7 @@
         @select-all="onSelectAll"
         @select="onSelect"
         @selection-change="onSelectionChange"
+        v-bind="$attrs"
     >
         <template v-for="(item, key) in field" :key="key">
             <Column :attr="item">
@@ -19,28 +20,58 @@
             </Column>
         </template>
     </el-table>
+    <div class="table-pagination">
+        <el-pagination
+            :currentPage="state.currentPage"
+            :page-size="state.pageSize"
+            :page-sizes="[10, 20, 50, 100]"
+            background
+            :layout="shrink ? 'prev, next, jumper' : 'sizes, ->, prev, pager, next, jumper'"
+            :total="total"
+            @size-change="onTableSizeChange"
+            @current-change="onTableCurrentChange"
+        ></el-pagination>
+    </div>
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed, reactive } from 'vue'
 import type { ElTable } from 'element-plus'
 import Column from '/@/components/table/column/index.vue'
 import FieldRender from '/@/components/table/fieldRender/index.vue'
+import { useConfig } from '/@/stores/config'
 
+const config = useConfig()
 const tableRef = ref<InstanceType<typeof ElTable>>()
+const shrink = computed(() => config.layout.shrink)
 
 interface Props {
     data: TableRow[]
     field?: TableColumn[]
+    total?: number
 }
 const props = withDefaults(defineProps<Props>(), {
     data: () => [],
     field: () => [],
+    total: 0,
+})
+
+const state = reactive({
+    currentPage: 1,
+    pageSize: 10,
 })
 
 const emits = defineEmits<{
-    (e: 'selectionChange', selection: TableRow[]): void
+    (e: 'action', event: string, data: anyObj): void
 }>()
+
+const onTableSizeChange = (val: number) => {
+    state.pageSize = val
+}
+
+const onTableCurrentChange = (val: number) => {
+    state.currentPage = val
+}
 
 /*
  * 全选和取消全选
@@ -117,7 +148,7 @@ const onSelect = (selection: TableRow[], row: TableRow) => {
  * 记录选择的项
  */
 const onSelectionChange = (selection: TableRow[]) => {
-    emits('selectionChange', selection)
+    emits('action', 'selection-change', selection)
 }
 
 /*
@@ -149,4 +180,12 @@ defineExpose({
 })
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.table-pagination {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    background-color: #ffffff;
+    padding: 13px 15px;
+}
+</style>

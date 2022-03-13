@@ -45,7 +45,7 @@ body,
 }
 
 .default-main {
-    margin: var(--main-space) var(--main-space) 0 var(--main-space);
+    margin: var(--main-space) var(--main-space) 60px var(--main-space);
 }
 .table-header-cell .cell {
     color: var(--color-text-primary);
@@ -144,15 +144,6 @@ body,
         button:hover {
             background-color: #dcdfe6;
         }
-    }
-    .table-pagination {
-        display: flex;
-        justify-content: flex-end;
-        box-sizing: border-box;
-        width: 100%;
-        max-width: 100%;
-        background-color: #ffffff;
-        padding: 13px 15px;
     }
     .el-table {
         --el-table-border-color: #f6f6f6;

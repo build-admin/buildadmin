@@ -31,8 +31,11 @@ trait Backend
         }
 
         $this->queryBuilder();
+        $res = $this->model->paginate(10);
+
         $this->success('', [
-            'list' => $this->model->select()
+            'list'  => $res->items(),
+            'total' => $res->total()
         ]);
     }
 

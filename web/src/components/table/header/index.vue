@@ -70,11 +70,11 @@ const state = reactive({
 })
 
 const emits = defineEmits<{
-    (e: 'action', type: string, data: anyObj): void
+    (e: 'action', event: string, data: anyObj): void
 }>()
 
-const onAction = (type: string, data: anyObj = {}) => {
-    emits('action', type, data)
+const onAction = (event: string, data: anyObj = {}) => {
+    emits('action', event, data)
 }
 
 const changeUnfold = () => {
