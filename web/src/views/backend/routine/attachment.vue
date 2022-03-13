@@ -106,6 +106,8 @@ const table: {
     column: TableColumn[]
     // 数据总量
     total: number
+    // 字段搜索,快速搜索,分页等数据
+    filter: anyObj
 } = reactive({
     pk: 'id',
     data: [],
@@ -153,6 +155,7 @@ const table: {
         },
     ],
     total: 0,
+    filter: {},
 })
 /* 表格状态-e */
 
@@ -180,8 +183,8 @@ const form: {
 /* 表单状态-e */
 
 /* API请求方法-s */
-const getIndex = (loading: boolean = false, filter: anyObj = {}) => {
-    index(loading, filter).then((res) => {
+const getIndex = (loading: boolean = false) => {
+    index(loading, table.filter).then((res) => {
         table.data = res.data.list
         table.total = res.data.total
     })
@@ -289,9 +292,8 @@ const onTableHeaderAction = (event: string, data: anyObj) => {
         [
             'quick-search',
             () => {
-                getIndex(true, {
-                    keyword: data.keyword,
-                })
+                table.filter.quick_search = data.keyword
+                getIndex(true)
             },
         ],
     ])
@@ -313,6 +315,8 @@ const onTableAction = (event: string, data: anyObj) => {
                 table.selection = data as TableRow[]
             },
         ],
+        ['page-size-change', () => {}],
+        ['current-page-change', () => {}],
     ])
 
     let action = actionFun.get(event) || actionFun.get('default')
@@ -320,7 +324,7 @@ const onTableAction = (event: string, data: anyObj) => {
 }
 
 onMounted(() => {
-    getIndex(false, {})
+    getIndex(false)
 
     /**
      * 表格内的按钮响应

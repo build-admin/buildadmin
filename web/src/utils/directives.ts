@@ -1,4 +1,5 @@
 import { App, nextTick } from 'vue'
+import horizontalScroll from '/@/utils/horizontalScroll'
 
 export function directives(app: App) {
     // 拖动指令
@@ -7,6 +8,16 @@ export function directives(app: App) {
     zoomDirective(app)
     // 点击后自动失焦指令
     blurDirective(app)
+    // 表格横向拖动指令
+    tableLateralDragDirective(app)
+}
+
+function tableLateralDragDirective(app: App) {
+    app.directive('tableLateralDrag', {
+        created(el) {
+            new horizontalScroll(el.querySelector('.el-table__body-wrapper .el-scrollbar .el-scrollbar__wrap'))
+        },
+    })
 }
 
 /**

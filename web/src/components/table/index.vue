@@ -11,6 +11,7 @@
         @select="onSelect"
         @selection-change="onSelectionChange"
         v-bind="$attrs"
+        v-tableLateralDrag
     >
         <template v-for="(item, key) in field" :key="key">
             <Column :attr="item">
@@ -67,10 +68,16 @@ const emits = defineEmits<{
 
 const onTableSizeChange = (val: number) => {
     state.pageSize = val
+    emits('action', 'page-size-change', {
+        size: val,
+    })
 }
 
 const onTableCurrentChange = (val: number) => {
     state.currentPage = val
+    emits('action', 'current-page-change', {
+        page: val,
+    })
 }
 
 /*

@@ -1,12 +1,12 @@
 <template>
     <!-- Icon -->
-    <Icon v-if="field.render == 'icon'" :name="row[property] ? row[property] : field.default ?? ''" />
+    <Icon v-if="field.render == 'icon'" :name="fieldValue ? fieldValue : field.default ?? ''" />
 
     <!-- switch -->
     <el-switch
         v-if="field.render == 'switch'"
         @change="changeField($event, property)"
-        :model-value="row[property]"
+        :model-value="fieldValue"
         :loading="row.loading"
         active-value="1"
         inactive-value="0"
@@ -14,7 +14,7 @@
 
     <!-- image -->
     <div v-if="field.render == 'image'" class="ba-render-image">
-        <img :src="row[property]" />
+        <el-image :src="fieldValue"></el-image>
     </div>
 
     <!-- images -->
@@ -25,16 +25,16 @@
 
     <!-- tag -->
     <div v-if="field.render == 'tag'">
-        <el-tag :type="getTagType(row[property], field.custom)" :effect="field.effect ?? 'light'" :size="field.size ?? 'default'">{{
-            field.replaceValue ? field.replaceValue[row[property]] : row[property]
+        <el-tag :type="getTagType(fieldValue, field.custom)" :effect="field.effect ?? 'light'" :size="field.size ?? 'default'">{{
+            field.replaceValue ? field.replaceValue[fieldValue] : fieldValue
         }}</el-tag>
     </div>
 
     <!-- url -->
     <div v-if="field.render == 'url'">
-        <el-input :model-value="row[property]" placeholder="链接地址">
+        <el-input :model-value="fieldValue" placeholder="链接地址">
             <template #append>
-                <el-button @click="typeof field.click == 'function' ? field.click(row[property], field) : openUrl(row[property], field)">
+                <el-button @click="typeof field.click == 'function' ? field.click(fieldValue, field) : openUrl(fieldValue, field)">
                     <Icon :color="'#606266'" name="el-icon-Position" />
                 </el-button>
             </template>
@@ -43,7 +43,7 @@
 
     <!-- datetime -->
     <div v-if="field.render == 'datetime'">
-        {{ timeFormat(row[property], field.timeFormat ?? undefined) }}
+        {{ timeFormat(fieldValue, field.timeFormat ?? undefined) }}
     </div>
 
     <!-- 按钮组 -->
@@ -83,6 +83,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { TagProps } from 'element-plus'
 import { timeFormat, openUrl } from '/@/components/table'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
@@ -104,8 +105,11 @@ const props = withDefaults(defineProps<Props>(), {
     property: '',
 })
 
-if (typeof props.field.renderFormatter == 'function') {
-    props.row[props.property] = props.field.renderFormatter(props.row, props.field, props.row[props.property])
+// 字段值(单元格值)
+const fieldValue = ref(props.row[props.property])
+
+if (props.field.renderFormatter && typeof props.field.renderFormatter == 'function') {
+    fieldValue.value = props.field.renderFormatter(props.row, props.field, props.row[props.property])
 }
 
 const changeField = (value: any, fieldName: keyof TableRow) => {
@@ -134,16 +138,13 @@ const getTagType = (value: string, custom: any): TagProps['type'] => {
 <style scoped lang="scss">
 .ba-render-image {
     text-align: center;
-    .images {
-        display: block;
-    }
-    .images-item {
-        margin: 0 5px;
-    }
-    img {
-        height: 36px;
-        width: 36px;
-    }
+}
+.images-item {
+    margin: 0 5px;
+}
+.el-image {
+    height: 36px;
+    width: 36px;
 }
 .table-operate-text {
     padding-left: 5px;
