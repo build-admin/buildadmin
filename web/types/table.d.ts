@@ -35,6 +35,8 @@ declare global {
         default?: any
         // 值替换数据,如{open: '开'}
         replaceValue?: any
+        // 自定义渲染方式时,渲染时对值的预处理方法
+        renderFormatter?: Function
         // 最小宽度 el-table
         'min-width'?: string | number
         // 将列中过长的内容 hover 时以 tooltip 的形式显示出来 el-table

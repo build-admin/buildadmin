@@ -89,7 +89,7 @@ class Backend extends Api
         }
     }
 
-    public function select()
+    public function queryBuilder()
     {
 
     }

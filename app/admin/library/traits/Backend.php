@@ -26,7 +26,14 @@ trait Backend
 
     public function index()
     {
+        if ($this->request->param('select')) {
+            $this->select();
+        }
 
+        $this->queryBuilder();
+        $this->success('', [
+            'list' => $this->model->select()
+        ]);
     }
 
     public function add()
@@ -167,5 +174,10 @@ trait Backend
         $target->save();
 
         $this->success('');
+    }
+
+    public function select()
+    {
+
     }
 }

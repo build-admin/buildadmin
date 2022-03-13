@@ -5,7 +5,6 @@ namespace app\admin\controller\routine;
 use Exception;
 use app\common\controller\Backend;
 use think\db\exception\PDOException;
-use think\exception\ValidateException;
 use think\facade\Db;
 
 class AdminInfo extends Backend

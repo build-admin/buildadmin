@@ -11,6 +11,25 @@ class Attachment extends Model
     protected $createTime = 'createtime';
     protected $updateTime = null;
 
+    protected $append = [
+        'suffix',
+        'full_url'
+    ];
+
+    public function getSuffixAttr($value, $row)
+    {
+        if ($row['name']) {
+            $suffix = strtolower(pathinfo($row['name'], PATHINFO_EXTENSION));
+            return $suffix && preg_match("/^[a-zA-Z0-9]+$/", $suffix) ? $suffix : 'file';
+        }
+        return 'file';
+    }
+
+    public function getFullUrlAttr($value, $row)
+    {
+        return full_url($row['url'], true);
+    }
+
     protected static function onBeforeInsert($model)
     {
         $repeat = $model->where([

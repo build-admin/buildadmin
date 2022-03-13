@@ -67,7 +67,7 @@
                                         </el-input>
                                     </el-col>
                                     <el-col :span="8">
-                                        <img @click="onChangeCaptcha" class="captcha-img" :src="state.captchaUrl + '?id=' + state.captchaId" alt="" />
+                                        <img @click="onChangeCaptcha" class="captcha-img" :src="buildCaptchaUrl() + '?id=' + state.captchaId" alt="" />
                                     </el-col>
                                 </el-row>
                             </el-form-item>
@@ -94,8 +94,7 @@ import { editDefaultLang } from '/@/lang/index'
 import { useConfig } from '/@/stores/config'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { login } from '/@/api/backend'
-import { getUrl } from '/@/utils/axios'
-import { captchaUrl } from '/@/api/common'
+import { buildCaptchaUrl } from '/@/api/common'
 import { uuid } from '../../utils/random'
 import { validatorPassword, validatorAccount } from '/@/utils/validate'
 import router from '/@/router'
@@ -107,7 +106,6 @@ const adminInfo = useAdminInfo()
 const state = reactive({
     showCaptcha: false,
     captchaId: uuid(),
-    captchaUrl: getUrl() + captchaUrl,
 })
 
 const onChangeCaptcha = () => {

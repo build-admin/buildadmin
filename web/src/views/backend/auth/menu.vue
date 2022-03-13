@@ -230,6 +230,7 @@ const postDel = (ids: string[]) => {
     })
 }
 const requestEdit = (id: string) => {
+    form.items = {}
     edit({
         id: id,
     }).then((res) => {

@@ -14,7 +14,7 @@
 
     <!-- image -->
     <div v-if="field.render == 'image'" class="ba-render-image">
-        <img src="~assets/bg.jpg" />
+        <img :src="row[property]" />
     </div>
 
     <!-- images -->
@@ -103,6 +103,10 @@ const props = withDefaults(defineProps<Props>(), {
     },
     property: '',
 })
+
+if (typeof props.field.renderFormatter == 'function') {
+    props.row[props.property] = props.field.renderFormatter(props.row, props.field, props.row[props.property])
+}
 
 const changeField = (value: any, fieldName: keyof TableRow) => {
     if (props.field.render == 'switch') {
