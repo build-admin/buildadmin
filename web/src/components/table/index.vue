@@ -11,7 +11,6 @@
         @select="onSelect"
         @selection-change="onSelectionChange"
         v-bind="$attrs"
-        v-tableLateralDrag
     >
         <template v-for="(item, key) in field" :key="key">
             <Column :attr="item">

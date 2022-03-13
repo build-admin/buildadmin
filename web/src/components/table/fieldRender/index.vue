@@ -14,7 +14,7 @@
 
     <!-- image -->
     <div v-if="field.render == 'image'" class="ba-render-image">
-        <el-image :src="fieldValue"></el-image>
+        <el-image :preview-teleported="true" :preview-src-list="[fieldValue]" :src="fieldValue"></el-image>
     </div>
 
     <!-- images -->
