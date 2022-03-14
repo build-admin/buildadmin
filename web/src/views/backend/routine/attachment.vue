@@ -29,6 +29,13 @@
                 </template>
                 <div class="ba-operate-form" :class="'ba-' + form.operate + '-form'" :style="'width: calc(100% - ' + form.labelWidth / 2 + 'px)'">
                     <el-form @keyup.enter="onSubmit" v-model="form.items" label-position="right" :label-width="form.labelWidth + 'px'">
+                        <el-form-item label="预览">
+                            <el-image
+                                class="preview-img"
+                                :preview-src-list="[form.items.full_url]"
+                                :src="previewRenderFormatter(form.items, {}, form.items.suffix)"
+                            ></el-image>
+                        </el-form-item>
                         <el-form-item label="细目">
                             <el-input v-model="form.items.topic" type="string" placeholder="文件保存目录，修改记录不会自动转移文件"></el-input>
                         </el-form-item>
@@ -89,6 +96,17 @@ import { getArrayKey } from '/@/utils/common'
 const { t } = useI18n()
 const { proxy } = useCurrentInstance()
 
+/**
+ * 表格和表单中文件预览图的生成
+ */
+const previewRenderFormatter = (row: TableRow, column: TableColumn, cellValue: string) => {
+    let imgSuffix = ['gif', 'jpg', 'jpeg', 'bmp', 'png', 'webp']
+    if (imgSuffix.includes(cellValue)) {
+        return row.full_url
+    }
+    return adminBuildSuffixSvgUrl(cellValue)
+}
+
 /* 表格状态-s */
 const tableRef = ref()
 const opButtons = defaultOptButtons()
@@ -137,13 +155,7 @@ const table: {
             label: '预览',
             prop: 'suffix',
             align: 'center',
-            renderFormatter: (row: TableRow, column: TableColumn, cellValue: string) => {
-                let imgSuffix = ['gif', 'jpg', 'jpeg', 'bmp', 'png', 'webp']
-                if (imgSuffix.includes(cellValue)) {
-                    return row.full_url
-                }
-                return adminBuildSuffixSvgUrl(cellValue)
-            },
+            renderFormatter: previewRenderFormatter,
             render: 'image',
         },
         { label: '上传(引用)次数', prop: 'quote', align: 'center', width: 150, operator: 'RANGE', sortable: 'custom' },
@@ -404,4 +416,9 @@ onUnmounted(() => {
 })
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.preview-img {
+    width: 60px;
+    height: 60px;
+}
+</style>
