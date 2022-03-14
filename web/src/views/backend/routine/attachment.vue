@@ -109,6 +109,8 @@ const table: {
     total: number
     // 字段搜索,快速搜索,分页等数据
     filter: anyObj
+    // 默认排序字段和排序方式:asc=顺序,desc=倒序
+    defaultOrder: { prop: string; order: string }
 } = reactive({
     pk: 'id',
     data: [],
@@ -144,7 +146,7 @@ const table: {
             },
             render: 'image',
         },
-        { label: '上传(引用)次数', prop: 'quote', align: 'center', width: 120, operator: 'RANGE', sortable: 'custom' },
+        { label: '上传(引用)次数', prop: 'quote', align: 'center', width: 150, operator: 'RANGE', sortable: 'custom' },
         { label: '原始名称', prop: 'name', align: 'center', 'show-overflow-tooltip': true },
         { label: '存储方式', prop: 'storage', align: 'center', width: 100 },
         { label: '物理路径', prop: 'url', align: 'center', 'show-overflow-tooltip': true, width: 160 },
@@ -160,6 +162,7 @@ const table: {
     ],
     total: 0,
     filter: {},
+    defaultOrder: { prop: 'lastuploadtime', order: 'desc' },
 })
 /* 表格状态-e */
 
@@ -188,7 +191,7 @@ const form: {
 
 /* API请求方法-s */
 const getIndex = (loading: boolean = false) => {
-    index(loading, table.filter).then((res) => {
+    return index(loading, table.filter).then((res) => {
         table.data = res.data.list
         table.total = res.data.total
     })
@@ -209,6 +212,21 @@ const requestEdit = (id: string) => {
     })
 }
 /* API请求方法-e */
+
+/**
+ * 初始化默认排序
+ * 表格的`default-sort`在自定义排序时无效
+ * 此方法只有在表格数据请求结束后执行有效
+ */
+const initSort = () => {
+    if (table.defaultOrder.prop) {
+        let defaultOrder = table.defaultOrder.prop + ',' + table.defaultOrder.order
+        if (table.filter.order != defaultOrder) {
+            table.filter.order = defaultOrder
+            tableRef.value.getRef().sort(table.defaultOrder.prop, table.defaultOrder.order == 'desc' ? 'descending' : 'ascending')
+        }
+    }
+}
 
 /**
  * 双击表格
@@ -336,12 +354,16 @@ const onTableAction = (event: string, data: anyObj) => {
         [
             'sort-change',
             () => {
+                let newOrder = ''
                 if (!data.prop) {
-                    table.filter.order = ''
+                    newOrder = ''
                 } else if (data.prop) {
-                    table.filter.order = data.prop + ',' + data.order
+                    newOrder = data.prop + ',' + data.order
                 }
-                getIndex(true)
+                if (newOrder != table.filter.order) {
+                    table.filter.order = newOrder
+                    getIndex(true)
+                }
             },
         ],
     ])
@@ -351,7 +373,9 @@ const onTableAction = (event: string, data: anyObj) => {
 }
 
 onMounted(() => {
-    getIndex(false)
+    getIndex(false).then(() => {
+        initSort()
+    })
 
     /**
      * 表格内的按钮响应
