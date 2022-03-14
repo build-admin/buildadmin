@@ -149,6 +149,14 @@ const getTagType = (value: string, custom: any): TagProps['type'] => {
 .table-operate-text {
     padding-left: 5px;
 }
+.table-operate {
+    padding: 4px 5px;
+    height: auto;
+}
+.table-operate .icon {
+    font-size: 14px !important;
+    color: #ffffff !important;
+}
 .move-button {
     cursor: move;
 }

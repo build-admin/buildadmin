@@ -48,7 +48,7 @@
         <div class="table-search">
             <el-input v-model="state.quickSearch" class="xs-hidden" @input="debounce(onSearchInput, 500)()" :placeholder="quickSearchPlaceholder" />
             <el-button-group class="table-search-button-group">
-                <el-tooltip :disabled="state.showComSearch" content="展开通用搜索" placement="top">
+                <el-tooltip v-if="buttons.includes('comSearch')" :disabled="state.showComSearch" content="展开通用搜索" placement="top">
                     <el-button @click="state.showComSearch = !state.showComSearch" color="#dcdfe6" plain>
                         <Icon size="14" color="#303133" name="el-icon-Search" />
                     </el-button>
@@ -103,6 +103,27 @@ const onSearchInput = () => {
 </script>
 
 <style scoped lang="scss">
+.table-header {
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #f6f6f6;
+    border-bottom: none;
+    padding: 13px 15px;
+    font-size: 14px;
+    .table-header-operate-text {
+        margin-left: 6px;
+    }
+    .table-header-operate .icon {
+        font-size: 14px !important;
+        color: #ffffff !important;
+    }
+}
 .mlr-12 {
     margin-left: 12px;
 }

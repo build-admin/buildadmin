@@ -47,12 +47,6 @@ body,
 .default-main {
     margin: var(--main-space) var(--main-space) 60px var(--main-space);
 }
-.table-header-cell .cell {
-    color: var(--color-text-primary);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
 .zoom-handle {
     position: absolute;
     width: 20px;
@@ -72,39 +66,14 @@ body,
 /* 表格-s */
 .ba-table-box {
     border-radius: var(--el-border-radius-round);
-    .table-header {
-        position: relative;
-        overflow: hidden;
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        width: 100%;
-        max-width: 100%;
-        background-color: #ffffff;
-        border: 1px solid #f6f6f6;
-        border-bottom: none;
-        padding: 13px 15px;
-        font-size: 14px;
-    }
-    .table-operate {
-        padding: 4px 5px;
-        height: auto;
-    }
-    .ba-data-table .el-button + .el-button {
-        margin-left: 6px;
-    }
-    .table-header-operate-text {
-        margin-left: 6px;
-    }
-    .table-operate .icon,
-    .table-header-operate .icon {
-        font-size: 14px !important;
-        color: #ffffff !important;
-    }
 }
 /* 表格-e */
 
 /* 新增/编辑表单-s */
+.ba-operate-dialog {
+    min-width: 400px;
+    max-width: 700px;
+}
 .ba-operate-dialog .el-dialog__header {
     padding-bottom: 16px;
     border-bottom: 1px solid var(--color-bg-1);
@@ -162,6 +131,12 @@ body,
 @media screen and (max-width: 768px) {
     .xs-hidden {
         display: none;
+    }
+}
+@media screen and (max-width: 1000px) {
+    .ba-operate-dialog .el-dialog__body {
+        padding-left: 0;
+        padding-right: 0;
     }
 }
 /* 自适应-e */
