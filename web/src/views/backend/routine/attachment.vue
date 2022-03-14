@@ -128,6 +128,7 @@ const table: {
                 return parseInt((size / Math.pow(1024, i)).toFixed(i < 2 ? 0 : 2)) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i]
             },
             operator: 'RANGE',
+            sortable: 'custom',
         },
         { label: '类型', prop: 'mimetype', align: 'center' },
         {
@@ -143,11 +144,11 @@ const table: {
             },
             render: 'image',
         },
-        { label: '上传(引用)次数', prop: 'quote', align: 'center', width: 120, operator: 'RANGE' },
+        { label: '上传(引用)次数', prop: 'quote', align: 'center', width: 120, operator: 'RANGE', sortable: 'custom' },
         { label: '原始名称', prop: 'name', align: 'center', 'show-overflow-tooltip': true },
         { label: '存储方式', prop: 'storage', align: 'center', width: 100 },
         { label: '物理路径', prop: 'url', align: 'center', 'show-overflow-tooltip': true, width: 160 },
-        { label: '最后上传时间', prop: 'lastuploadtime', align: 'center', render: 'datetime', width: 160 },
+        { label: '最后上传时间', prop: 'lastuploadtime', align: 'center', render: 'datetime', width: 160, sortable: 'custom' },
         {
             label: '操作',
             align: 'center',
@@ -329,6 +330,17 @@ const onTableAction = (event: string, data: anyObj) => {
             'current-page-change',
             () => {
                 table.filter.page = data.page
+                getIndex(true)
+            },
+        ],
+        [
+            'sort-change',
+            () => {
+                if (!data.prop) {
+                    table.filter.order = ''
+                } else if (data.prop) {
+                    table.filter.order = data.prop + ',' + data.order
+                }
                 getIndex(true)
             },
         ],

@@ -10,6 +10,7 @@
         @select-all="onSelectAll"
         @select="onSelect"
         @selection-change="onSelectionChange"
+        @sort-change="onSortChange"
         v-bind="$attrs"
     >
         <template v-for="(item, key) in field" :key="key">
@@ -76,6 +77,13 @@ const onTableCurrentChange = (val: number) => {
     state.currentPage = val
     emits('action', 'current-page-change', {
         page: val,
+    })
+}
+
+const onSortChange = ({ order, prop }: { order: string; prop: string }) => {
+    emits('action', 'sort-change', {
+        prop: prop,
+        order: order ? (order == 'ascending' ? 'asc' : 'desc') : '',
     })
 }
 
