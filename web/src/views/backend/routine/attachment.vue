@@ -3,7 +3,8 @@
         <div class="ba-table-box">
             <!-- 表格顶部菜单 -->
             <TableHeader
-                :buttons="['refresh', 'edit', 'delete']"
+                :field="table.column"
+                :buttons="['refresh', 'edit', 'delete', 'comSearch']"
                 :enable-batch-opt="table.selection.length > 0 ? true : false"
                 :quick-search-placeholder="'通过原始名称搜索'"
                 @action="onTableHeaderAction"
@@ -114,9 +115,9 @@ const table: {
     selection: [],
     dblClickNotEditColumn: [undefined],
     column: [
-        { type: 'selection', align: 'center' },
+        { type: 'selection', align: 'center', operator: false },
         { label: '细目', prop: 'topic', align: 'center' },
-        { label: '上传用户', prop: 'admin_id', align: 'center' },
+        { label: '上传管理员', prop: 'admin.nickname', align: 'center' },
         {
             label: '大小',
             prop: 'size',
@@ -126,6 +127,7 @@ const table: {
                 var i = Math.floor(Math.log(size) / Math.log(1024))
                 return parseInt((size / Math.pow(1024, i)).toFixed(i < 2 ? 0 : 2)) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i]
             },
+            operator: 'RANGE',
         },
         { label: '类型', prop: 'mimetype', align: 'center' },
         {
@@ -141,7 +143,7 @@ const table: {
             },
             render: 'image',
         },
-        { label: '上传(引用)次数', prop: 'quote', align: 'center', width: 120 },
+        { label: '上传(引用)次数', prop: 'quote', align: 'center', width: 120, operator: 'RANGE' },
         { label: '原始名称', prop: 'name', align: 'center', 'show-overflow-tooltip': true },
         { label: '存储方式', prop: 'storage', align: 'center', width: 100 },
         { label: '物理路径', prop: 'url', align: 'center', 'show-overflow-tooltip': true, width: 160 },
@@ -152,6 +154,7 @@ const table: {
             width: '100',
             render: 'buttons',
             buttons: opButtons,
+            operator: false,
         },
     ],
     total: 0,
@@ -315,8 +318,20 @@ const onTableAction = (event: string, data: anyObj) => {
                 table.selection = data as TableRow[]
             },
         ],
-        ['page-size-change', () => {}],
-        ['current-page-change', () => {}],
+        [
+            'page-size-change',
+            () => {
+                table.filter.limit = data.size
+                getIndex(true)
+            },
+        ],
+        [
+            'current-page-change',
+            () => {
+                table.filter.page = data.page
+                getIndex(true)
+            },
+        ],
     ])
 
     let action = actionFun.get(event) || actionFun.get('default')
@@ -337,6 +352,15 @@ onMounted(() => {
         } else if (data.name == 'delete') {
             postDel([data.row[table.pk]])
         }
+    })
+
+    /**
+     * 通用搜索响应
+     * @param comSearchData 通用搜索数据
+     */
+    proxy.eventBus.on('onTableComSearch', (data: comSearchData) => {
+        table.filter.search = data
+        getIndex(true)
     })
 })
 onUnmounted(() => {

@@ -91,6 +91,19 @@ class Backend extends Api
 
     public function queryBuilder()
     {
+        $quickSearch = $this->request->get("quick_search/s", '');
+        $page        = $this->request->get("page/d", 1);
+        $limit       = $this->request->get("limit/d", 10);
 
+        $where = [];
+        $alias = [];
+        if (!empty($this->model)) {
+            $tableName         = $this->model->getTable();
+            $alias[$tableName] = $tableName;
+        }
+
+        // print_r($alias);
+
+        // 构建好where等返回
     }
 }

@@ -37,6 +37,8 @@ declare global {
         replaceValue?: any
         // 自定义渲染方式时,渲染时对值的预处理方法
         renderFormatter?: Function
+        // 通用搜索操作符,默认值为=,false禁用此字段通用搜索,支持的操作符见下定义
+        operator?: boolean | OperatorStr
         // 最小宽度 el-table
         'min-width'?: string | number
         // 将列中过长的内容 hover 时以 tooltip 的形式显示出来 el-table
@@ -62,7 +64,32 @@ declare global {
         children?: TableRow[]
     }
 
-    type HeaderOptButton = 'refresh' | 'add' | 'edit' | 'delete' | 'unfold' | 'recycle bin'
+    type HeaderOptButton = 'refresh' | 'add' | 'edit' | 'delete' | 'unfold' | 'recycle bin' | 'comSearch'
+
+    type OperatorStr =
+        | '=' // 等于，默认值
+        | '<>'
+        | '>'
+        | '>='
+        | '<'
+        | '<='
+        | 'LIKE'
+        | 'NOT LIKE'
+        | 'IN'
+        | 'NOT IN'
+        | 'BETWEEN'
+        | 'NOT BETWEEN'
+        | 'RANGE' // 范围，将生成两个输入框 以输入最小值和最大值
+        | 'NOT RANGE'
+        | 'NULL' // 是否为NULL，将生成单个复选框
+        | 'NOT NULL'
+        | 'FIND_IN_SET'
 
     type aTarget = '_blank' | '_self'
+
+    interface comSearchData {
+        field: string
+        val: string
+        operator: string
+    }
 }

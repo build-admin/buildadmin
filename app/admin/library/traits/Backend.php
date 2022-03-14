@@ -31,7 +31,9 @@ trait Backend
         }
 
         $this->queryBuilder();
-        $res = $this->model->paginate(10);
+        $res = $this->model
+            ->with(['admin'])
+            ->paginate(10);
 
         $this->success('', [
             'list'  => $res->items(),

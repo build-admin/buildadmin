@@ -101,53 +101,6 @@ body,
         font-size: 14px !important;
         color: #ffffff !important;
     }
-    .table-com-search {
-        overflow: hidden;
-        box-sizing: border-box;
-        width: 100%;
-        max-width: 100%;
-        background-color: #ffffff;
-        border: 1px solid #f6f6f6;
-        border-bottom: none;
-        padding: 13px 15px;
-        font-size: 14px;
-        .com-search-col {
-            display: flex;
-            align-items: center;
-            padding-top: 8px;
-            color: var(--color-regular);
-            font-size: 13px;
-        }
-        .com-search-col-label {
-            width: 33.33%;
-            padding: 0 15px;
-            text-align: right;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .com-search-col-input {
-            padding: 0 15px;
-            width: 66.66%;
-        }
-    }
-    .table-search {
-        display: flex;
-        margin-left: auto;
-    }
-    .table-search-button-group {
-        display: flex;
-        margin-left: 12px;
-        button:focus,
-        button:active {
-            background-color: #ffffff;
-        }
-        button:hover {
-            background-color: #dcdfe6;
-        }
-    }
-    .el-table {
-        --el-table-border-color: #f6f6f6;
-    }
 }
 /* 表格-e */
 

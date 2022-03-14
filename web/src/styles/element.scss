@@ -15,6 +15,10 @@
     user-select: none;
 }
 
+.el-table {
+    --el-table-border-color: #f6f6f6;
+}
+
 .el-card {
     border: none;
 }

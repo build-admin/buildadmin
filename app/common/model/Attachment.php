@@ -3,6 +3,7 @@
 namespace app\common\model;
 
 use think\Model;
+use app\admin\model\Admin;
 
 class Attachment extends Model
 {
@@ -52,5 +53,10 @@ class Attachment extends Model
             $row->lastuploadtime = time();
             $row->save();
         }
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class);
     }
 }
