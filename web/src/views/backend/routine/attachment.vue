@@ -164,7 +164,7 @@ const table: {
         { label: '上传(引用)次数', prop: 'quote', align: 'center', width: 150, operator: 'RANGE', sortable: 'custom' },
         { label: '原始名称', prop: 'name', align: 'center', 'show-overflow-tooltip': true, operator: 'LIKE', operatorPlaceholder: '模糊查询' },
         { label: '存储方式', prop: 'storage', align: 'center', width: 100, operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-        { label: '最后上传时间', prop: 'lastuploadtime', align: 'center', render: 'datetime', width: 160, sortable: 'custom' },
+        { label: '最后上传时间', prop: 'lastuploadtime', align: 'center', render: 'datetime', operator: 'RANGE', width: 160, sortable: 'custom' },
         {
             label: '操作',
             align: 'center',

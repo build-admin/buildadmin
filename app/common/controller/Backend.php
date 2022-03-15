@@ -149,7 +149,13 @@ class Backend extends Api
 
             // 日期时间
             if (isset($field['render']) && $field['render'] == 'datetime') {
+                if ($field['operator'] == 'RANGE' && is_array($field['val'])) {
+                    $datetimeArr = array_filter(array_map("strtotime", $field['val']));
+                    $where[]     = [$fieldName, str_replace('RANGE', 'BETWEEN', $field['operator']), $datetimeArr];
+                    continue;
+                }
                 $where[] = [$fieldName, '=', strtotime($field['val'])];
+                continue;
             }
 
             // 范围查询
@@ -166,9 +172,10 @@ class Backend extends Api
                     $operator = $field['operator'] == 'RANGE' ? '>=' : '<';
                     $arr      = $arr[0];
                 } else {
-                    $operator = 'BETWEEN';
+                    $operator = str_replace('RANGE', 'BETWEEN', $field['operator']);
                 }
                 $where[] = [$fieldName, $operator, $arr];
+                continue;
             }
 
             switch ($field['operator']) {

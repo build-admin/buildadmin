@@ -4,38 +4,68 @@
             <el-form @keyup.enter="onComSearch" label-position="top" :model="state.form">
                 <el-row>
                     <template v-for="(item, idx) in field">
-                        <el-col v-if="item.operator !== false" :span="6">
-                            <div class="com-search-col">
-                                <div class="com-search-col-label">{{ item.label }}</div>
-                                <div v-if="item.operator == 'RANGE' || item.operator == 'NOT RANGE'" class="com-search-col-input-range">
-                                    <el-input :placeholder="item.operatorPlaceholder" type="string" v-model="state.form[item.prop! + '-start']"></el-input>
-                                    <div class="range-separator">至</div>
-                                    <el-input :placeholder="item.operatorPlaceholder" type="string" v-model="state.form[item.prop! + '-end']"></el-input>
+                        <template v-if="item.operator !== false">
+                            <el-col v-if="item.render == 'datetime' && (item.operator == 'RANGE' || item.operator == 'NOT RANGE')" :span="12">
+                                <div class="com-search-col">
+                                    <div class="com-search-col-label w16">{{ item.label }}</div>
+                                    <div class="com-search-col-input-range w83">
+                                        <el-date-picker
+                                            class="datetime-picker"
+                                            v-model="state.form[item.prop!]"
+                                            type="datetimerange"
+                                            range-separator="To"
+                                            start-placeholder="Start date"
+                                            end-placeholder="End date"
+                                            value-format="YYYY-MM-DD HH:mm:ss"
+                                        />
+                                    </div>
                                 </div>
-                                <div v-else-if="item.operator == 'NULL' || item.operator == 'NOT NULL'" class="com-search-col-input">
-                                    <el-checkbox v-model="state.form[item.prop!]" :label="item.operator" size="large"></el-checkbox>
+                            </el-col>
+                            <el-col v-else :span="6">
+                                <div class="com-search-col">
+                                    <div class="com-search-col-label">{{ item.label }}</div>
+                                    <div v-if="item.operator == 'RANGE' || item.operator == 'NOT RANGE'" class="com-search-col-input-range">
+                                        <el-input
+                                            :placeholder="item.operatorPlaceholder"
+                                            type="string"
+                                            v-model="state.form[item.prop! + '-start']"
+                                        ></el-input>
+                                        <div class="range-separator">至</div>
+                                        <el-input
+                                            :placeholder="item.operatorPlaceholder"
+                                            type="string"
+                                            v-model="state.form[item.prop! + '-end']"
+                                        ></el-input>
+                                    </div>
+                                    <div v-else-if="item.operator == 'NULL' || item.operator == 'NOT NULL'" class="com-search-col-input">
+                                        <el-checkbox v-model="state.form[item.prop!]" :label="item.operator" size="large"></el-checkbox>
+                                    </div>
+                                    <div v-else-if="item.operator" class="com-search-col-input">
+                                        <el-date-picker
+                                            class="datetime-picker"
+                                            v-if="item.render == 'datetime'"
+                                            v-model="state.form[item.prop!]"
+                                            type="datetime"
+                                            value-format="YYYY-MM-DD HH:mm:ss"
+                                            :placeholder="item.operatorPlaceholder"
+                                        ></el-date-picker>
+                                        <el-select
+                                            :placeholder="item.operatorPlaceholder"
+                                            v-else-if="item.render == 'tag'"
+                                            v-model="state.form[item.prop!]"
+                                        >
+                                            <el-option v-for="(opt, okey) in item.replaceValue" :key="item.prop! + okey" :label="opt" :value="okey" />
+                                        </el-select>
+                                        <el-input
+                                            :placeholder="item.operatorPlaceholder"
+                                            v-else
+                                            type="string"
+                                            v-model="state.form[item.prop!]"
+                                        ></el-input>
+                                    </div>
                                 </div>
-                                <div v-else-if="item.operator" class="com-search-col-input">
-                                    <el-date-picker
-                                        class="datetime-picker"
-                                        v-if="item.render == 'datetime'"
-                                        v-model="state.form[item.prop!]"
-                                        type="datetime"
-                                        value-format="YYYY-MM-DD HH:mm:ss"
-                                        :placeholder="item.operatorPlaceholder"
-                                    ></el-date-picker>
-                                    <el-select :placeholder="item.operatorPlaceholder" v-else-if="item.render == 'tag'" v-model="state.form[item.prop!]">
-                                        <el-option v-for="(opt, okey) in item.replaceValue" :key="item.prop! + okey" :label="opt" :value="okey" />
-                                    </el-select>
-                                    <el-input
-                                        :placeholder="item.operatorPlaceholder"
-                                        v-else
-                                        type="string"
-                                        v-model="state.form[item.prop!]"
-                                    ></el-input>
-                                </div>
-                            </div>
-                        </el-col>
+                            </el-col>
+                        </template>
                     </template>
                     <el-col :span="6">
                         <div class="com-search-col pl-20">
@@ -105,7 +135,11 @@ const onComSearch = () => {
 
         let val = ''
         let fieldDataTemp = fieldData.get(key)
-        if (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE') {
+        if (fieldDataTemp.render == 'datetime' && (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE')) {
+            if (state.form[key].length >= 2) {
+                val = state.form[key]
+            }
+        } else if (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE') {
             if (!state.form[key + '-start'] && !state.form[key + '-end']) {
                 continue
             }
@@ -179,5 +213,11 @@ const onResetForm = () => {
 }
 .pl-20 {
     padding-left: 20px;
+}
+.w16 {
+    width: 16.5% !important;
+}
+.w83 {
+    width: 83.5% !important;
 }
 </style>
