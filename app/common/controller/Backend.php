@@ -139,10 +139,12 @@ class Backend extends Api
                 continue;
             }
 
-            $fieldName = $field['field'];
             if (stripos($field['field'], '.') !== false) {
                 $fieldArr            = explode('.', $field['field']);
                 $alias[$fieldArr[0]] = $fieldArr[0];
+                $fieldName           = $field['field'];
+            } else {
+                $fieldName = $tableAlias . $field['field'];
             }
 
             // 日期时间

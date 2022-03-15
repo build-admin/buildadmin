@@ -136,6 +136,7 @@ const table: {
     dblClickNotEditColumn: [undefined],
     column: [
         { type: 'selection', align: 'center', operator: false },
+        { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
         { label: '细目', prop: 'topic', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
         { label: '上传管理员', prop: 'admin.nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
         {
