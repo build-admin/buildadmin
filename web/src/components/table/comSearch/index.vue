@@ -8,9 +8,9 @@
                             <div class="com-search-col">
                                 <div class="com-search-col-label">{{ item.label }}</div>
                                 <div v-if="item.operator == 'RANGE' || item.operator == 'NOT RANGE'" class="com-search-col-input-range">
-                                    <el-input type="string" v-model="state.form[item.prop! + '-start']"></el-input>
+                                    <el-input :placeholder="item.operatorPlaceholder" type="string" v-model="state.form[item.prop! + '-start']"></el-input>
                                     <div class="range-separator">至</div>
-                                    <el-input type="string" v-model="state.form[item.prop! + '-end']"></el-input>
+                                    <el-input :placeholder="item.operatorPlaceholder" type="string" v-model="state.form[item.prop! + '-end']"></el-input>
                                 </div>
                                 <div v-else-if="item.operator == 'NULL' || item.operator == 'NOT NULL'" class="com-search-col-input">
                                     <el-checkbox v-model="state.form[item.prop!]" :label="item.operator" size="large"></el-checkbox>
@@ -22,11 +22,17 @@
                                         v-model="state.form[item.prop!]"
                                         type="datetime"
                                         value-format="YYYY-MM-DD HH:mm:ss"
+                                        :placeholder="item.operatorPlaceholder"
                                     ></el-date-picker>
-                                    <el-select v-else-if="item.render == 'tag'" v-model="state.form[item.prop!]">
+                                    <el-select :placeholder="item.operatorPlaceholder" v-else-if="item.render == 'tag'" v-model="state.form[item.prop!]">
                                         <el-option v-for="(opt, okey) in item.replaceValue" :key="item.prop! + okey" :label="opt" :value="okey" />
                                     </el-select>
-                                    <el-input v-else type="string" v-model="state.form[item.prop!]"></el-input>
+                                    <el-input
+                                        :placeholder="item.operatorPlaceholder"
+                                        v-else
+                                        type="string"
+                                        v-model="state.form[item.prop!]"
+                                    ></el-input>
                                 </div>
                             </div>
                         </el-col>
@@ -49,8 +55,8 @@ import useCurrentInstance from '/@/utils/useCurrentInstance'
 
 const { proxy } = useCurrentInstance()
 
-// 各个字段的 operator
-const operator = new Map()
+// 各个字段要同时发送到后台的数据
+const fieldData = new Map()
 
 interface Props {
     field: TableColumn[]
@@ -82,7 +88,10 @@ if (props.field.length > 0) {
             } else {
                 state.form[prop] = ''
             }
-            operator.set(prop, props.field[key].operator)
+            fieldData.set(prop, {
+                operator: props.field[key].operator,
+                render: props.field[key].render,
+            })
         }
     }
 }
@@ -90,12 +99,13 @@ if (props.field.length > 0) {
 const onComSearch = () => {
     let comSearchData: comSearchData[] = []
     for (const key in state.form) {
-        if (!operator.has(key)) {
+        if (!fieldData.has(key)) {
             continue
         }
 
         let val = ''
-        if (operator.get(key) == 'RANGE' || operator.get(key) == 'NOT RANGE') {
+        let fieldDataTemp = fieldData.get(key)
+        if (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE') {
             if (!state.form[key + '-start'] && !state.form[key + '-end']) {
                 continue
             }
@@ -108,7 +118,8 @@ const onComSearch = () => {
             comSearchData.push({
                 field: key,
                 val: val,
-                operator: operator.get(key),
+                operator: fieldDataTemp.operator,
+                render: fieldDataTemp.render,
             })
         }
     }

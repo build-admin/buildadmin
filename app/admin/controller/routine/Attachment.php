@@ -9,6 +9,10 @@ class Attachment extends Backend
 {
     protected $model = null;
 
+    protected $quickSearchField = 'name';
+
+    protected $withJoinTable = ['admin'];
+
     public function initialize()
     {
         parent::initialize();

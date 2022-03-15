@@ -49,6 +49,16 @@ class Backend extends Api
     protected $modelSceneValidate = false;
 
     /**
+     * 关联查询方法名
+     */
+    protected $withJoinTable = [];
+
+    /**
+     * 关联查询JOIN方式
+     */
+    protected $withJoinType = 'LEFT';
+
+    /**
      * 引入traits
      * traits内实现了index、add、edit等方法
      */
@@ -91,19 +101,103 @@ class Backend extends Api
 
     public function queryBuilder()
     {
+        if (empty($this->model)) {
+            return [];
+        }
         $quickSearch = $this->request->get("quick_search/s", '');
-        $page        = $this->request->get("page/d", 1);
         $limit       = $this->request->get("limit/d", 10);
+        $order       = $this->request->get("order/s", '');
+        $search      = $this->request->get("search/a", []);
 
-        $where = [];
-        $alias = [];
-        if (!empty($this->model)) {
-            $tableName         = $this->model->getTable();
-            $alias[$tableName] = $tableName;
+        $where              = [];
+        $modelName          = strtolower($this->model->getName());
+        $modelTable         = strtolower($this->model->getTable());
+        $alias[$modelTable] = $modelName;
+        $tableAlias         = $modelName . '.';
+
+        // 快速搜索
+        if ($quickSearch) {
+            $quickSearchArr = is_array($this->quickSearchField) ? $this->quickSearchField : explode(',', $this->quickSearchField);
+            foreach ($quickSearchArr as $k => $v) {
+                $quickSearchArr[$k] = stripos($v, ".") === false ? $tableAlias . $v : $v;
+            }
+            $where[] = [implode("|", $quickSearchArr), "LIKE", "%{$quickSearch}%"];
         }
 
-        // print_r($alias);
+        // 排序
+        if ($order) {
+            $order = explode(',', $order);
+            if (isset($order[0]) && isset($order[1]) && ($order[1] == 'asc' || $order[1] == 'desc')) {
+                $order = [(string)$order[0] => $order[1]];
+            }
+        }
 
-        // 构建好where等返回
+        // 通用搜索组装
+        foreach ($search as $key => $item) {
+            $field = json_decode($item, true);
+            if (!is_array($field) || !isset($field['operator']) || !isset($field['field'])) {
+                continue;
+            }
+
+            $fieldName = $field['field'];
+            if (stripos($field['field'], '.') !== false) {
+                $fieldArr            = explode('.', $field['field']);
+                $alias[$fieldArr[0]] = $fieldArr[0];
+            }
+
+            // 日期时间
+            if (isset($field['render']) && $field['render'] == 'datetime') {
+                $where[] = [$fieldName, '=', strtotime($field['val'])];
+            }
+
+            // 范围查询
+            if ($field['operator'] == 'RANGE' || $field['operator'] == 'NOT RANGE') {
+                if (stripos($field['val'], ',') === false) {
+                    continue;
+                }
+                $arr = explode(',', $field['val']);
+                // 重新确定操作符
+                if (!isset($arr[0]) || $arr[0] === '') {
+                    $operator = $field['operator'] == 'RANGE' ? '<=' : '>';
+                    $arr      = $arr[1];
+                } elseif (!isset($arr[1]) || $arr[1] === '') {
+                    $operator = $field['operator'] == 'RANGE' ? '>=' : '<';
+                    $arr      = $arr[0];
+                } else {
+                    $operator = 'BETWEEN';
+                }
+                $where[] = [$fieldName, $operator, $arr];
+            }
+
+            switch ($field['operator']) {
+                case '=':
+                case '<>':
+                    $where[] = [$fieldName, $field['operator'], (string)$field['val']];
+                    break;
+                case 'LIKE':
+                case 'NOT LIKE':
+                    $where[] = [$fieldName, $field['operator'], "%{$field['val']}%"];
+                    break;
+                case '>':
+                case '>=':
+                case '<':
+                case '<=':
+                    $where[] = [$fieldName, $field['operator'], intval($field['val'])];
+                    break;
+                case 'FIND_IN_SET':
+                    $where[] = [$fieldName, 'find in set', $field['val']];
+                    break;
+                case 'IN':
+                case 'NOT IN':
+                    $where[] = [$fieldName, $field['operator'], is_array($field['val']) ? $field['val'] : explode(',', $field['val'])];
+                    break;
+                case 'NULL':
+                case 'NOT NULL':
+                    $where[] = [$fieldName, strtolower($field['operator'])];
+                    break;
+            }
+        }
+
+        return [$where, $alias, $limit, $order];
     }
 }

@@ -26,14 +26,18 @@ trait Backend
 
     public function index()
     {
+        $this->request->filter(['strip_tags', 'trim']);
         if ($this->request->param('select')) {
             $this->select();
         }
 
-        $this->queryBuilder();
+        list($where, $alias, $limit, $order) = $this->queryBuilder();
         $res = $this->model
-            ->with(['admin'])
-            ->paginate(10);
+            ->withJoin($this->withJoinTable, $this->withJoinType)
+            ->alias($alias)
+            ->where($where)
+            ->order($order)
+            ->paginate($limit);
 
         $this->success('', [
             'list'  => $res->items(),
