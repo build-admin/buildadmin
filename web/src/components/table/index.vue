@@ -14,9 +14,14 @@
         v-bind="$attrs"
     >
         <template v-for="(item, key) in field" :key="key">
-            <Column v-if="item.show !== false" :key="'column-' + key" :attr="item">
+            <Column v-if="item.show !== false" :attr="item">
                 <template v-if="item.render" #default="scope">
-                    <FieldRender :field="item" :key="'column-render-' + key" :row="scope.row" :property="scope.column.property" />
+                    <FieldRender
+                        :field="item"
+                        :key="'column-render-' + key + scope.row[scope.column.property]"
+                        :row="scope.row"
+                        :property="scope.column.property"
+                    />
                 </template>
             </Column>
         </template>
