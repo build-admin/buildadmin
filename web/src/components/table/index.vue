@@ -14,7 +14,7 @@
         v-bind="$attrs"
     >
         <template v-for="(item, key) in field" :key="key">
-            <Column :attr="item">
+            <Column v-if="item.show !== false" :key="'column-' + key" :attr="item">
                 <template v-if="item.render" #default="scope">
                     <FieldRender :field="item" :row="scope.row" :property="scope.column.property" />
                 </template>

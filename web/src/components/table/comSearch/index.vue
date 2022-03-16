@@ -69,7 +69,7 @@
                     </template>
                     <el-col :span="6">
                         <div class="com-search-col pl-20">
-                            <el-button @click="onComSearch" type="primary">搜索</el-button>
+                            <el-button v-blur @click="onComSearch" type="primary">搜索</el-button>
                             <el-button @click="onResetForm()">重置</el-button>
                         </div>
                     </el-col>
@@ -136,7 +136,7 @@ const onComSearch = () => {
         let val = ''
         let fieldDataTemp = fieldData.get(key)
         if (fieldDataTemp.render == 'datetime' && (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE')) {
-            if (state.form[key].length >= 2) {
+            if (state.form[key] && state.form[key].length >= 2) {
                 val = state.form[key]
             }
         } else if (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE') {

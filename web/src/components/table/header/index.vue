@@ -48,6 +48,25 @@
         <div class="table-search">
             <el-input v-model="state.quickSearch" class="xs-hidden" @input="debounce(onSearchInput, 500)()" :placeholder="quickSearchPlaceholder" />
             <el-button-group class="table-search-button-group">
+                <el-dropdown :hide-on-click="false">
+                    <el-button color="#dcdfe6" plain>
+                        <Icon size="14" color="#303133" name="el-icon-Grid" />
+                    </el-button>
+                    <template #dropdown>
+                        <el-dropdown-menu>
+                            <el-dropdown-item v-for="item in field">
+                                <el-checkbox
+                                    v-if="item.prop"
+                                    @change="onChangeShowColumn($event, item.prop!)"
+                                    :checked="!item.show"
+                                    :model-value="item.show"
+                                    size="small"
+                                    :label="item.label"
+                                />
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
                 <el-tooltip v-if="buttons.includes('comSearch')" :disabled="state.showComSearch" content="展开通用搜索" placement="top">
                     <el-button @click="state.showComSearch = !state.showComSearch" color="#dcdfe6" plain>
                         <Icon size="14" color="#303133" name="el-icon-Search" />
@@ -99,6 +118,10 @@ const changeUnfold = () => {
 
 const onSearchInput = () => {
     emits('action', 'quick-search', { keyword: state.quickSearch })
+}
+
+const onChangeShowColumn = (value: boolean, field: string) => {
+    emits('action', 'change-show-column', { field: field, value: value })
 }
 </script>
 

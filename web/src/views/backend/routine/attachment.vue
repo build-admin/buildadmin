@@ -332,6 +332,13 @@ const onTableHeaderAction = (event: string, data: anyObj) => {
                 getIndex(true)
             },
         ],
+        [
+            'change-show-column',
+            () => {
+                let columnKey = getArrayKey(table.column, 'prop', data.field)
+                table.column[columnKey].show = data.value
+            },
+        ],
     ])
 
     let action = actionFun.get(event) || actionFun.get('default')

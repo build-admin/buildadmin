@@ -1,6 +1,8 @@
 import type { TagProps, ButtonType } from 'element-plus'
 declare global {
     interface TableColumn {
+        // 是否显示
+        show?: boolean
         // 渲染为:icon|switch|image|images|tag|url|datetime|buttons
         render?: string
         // 字段 el-table
