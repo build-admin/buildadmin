@@ -17,9 +17,14 @@ class Index extends Backend
     {
         $adminInfo = $this->auth->getInfo();
         unset($adminInfo['token']);
+
+        $menus = $this->auth->getMenus();
+        if (!$menus) {
+            $this->error('无后台菜单，请联系超级管理员！');
+        }
         $this->success('', [
             'adminInfo' => $adminInfo,
-            'menus'     => $this->auth->getMenus()
+            'menus'     => $menus
         ]);
     }
 

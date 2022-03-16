@@ -339,6 +339,12 @@ const onTableHeaderAction = (event: string, data: anyObj) => {
                 table.column[columnKey].show = data.value
             },
         ],
+        [
+            'default',
+            () => {
+                console.log('未定义操作')
+            },
+        ],
     ])
 
     let action = actionFun.get(event) || actionFun.get('default')

@@ -3,6 +3,7 @@
         <div class="ba-table-box">
             <!-- 表格顶部菜单 -->
             <TableHeader
+                :field="table.column"
                 :buttons="['refresh', 'add', 'edit', 'delete', 'unfold']"
                 :enable-batch-opt="table.selection.length > 0 ? true : false"
                 :unfold="table.expandAll"
@@ -345,6 +346,13 @@ const onTableHeaderAction = (type: string, data: anyObj) => {
             'quick-search',
             () => {
                 getIndex(true, data.keyword)
+            },
+        ],
+        [
+            'change-show-column',
+            () => {
+                let columnKey = getArrayKey(table.column, 'prop', data.field)
+                table.column[columnKey].show = data.value
             },
         ],
         [
