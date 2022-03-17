@@ -18,6 +18,12 @@ interface anyObj {
     [key: string]: any
 }
 
+interface TableDefaultData<T = any> {
+    list: T
+    remark: string
+    total: number
+}
+
 interface ApiResponse<T = any> {
     code: number
     data: T

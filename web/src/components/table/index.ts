@@ -1,5 +1,3 @@
-import { useI18n } from 'vue-i18n'
-
 /*
  * 默认Url点击事件处理
  */
@@ -15,12 +13,11 @@ export const openUrl = (url: string, field: TableColumn) => {
  * 默认按钮组
  */
 export const defaultOptButtons = (): OptButton[] => {
-    const { t } = useI18n()
     return [
         {
             render: 'moveButton',
             name: 'weigh-sort',
-            title: t('weigh-sort'),
+            title: 'weigh-sort',
             text: '',
             type: 'info',
             icon: 'fa fa-arrows',
@@ -30,7 +27,7 @@ export const defaultOptButtons = (): OptButton[] => {
         {
             render: 'tipButton',
             name: 'edit',
-            title: t('edit'),
+            title: 'edit',
             text: '',
             type: 'primary',
             icon: 'fa fa-pencil',
@@ -40,7 +37,7 @@ export const defaultOptButtons = (): OptButton[] => {
         {
             render: 'confirmButton',
             name: 'delete',
-            title: t('delete'),
+            title: 'delete',
             text: '',
             type: 'danger',
             icon: 'fa fa-trash',

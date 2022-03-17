@@ -7,12 +7,12 @@ export const actionUrl = new Map([
     ['del', controllerUrl + 'del'],
 ])
 
-export function index(filter: anyObj = {}) {
+export function index(filter: anyObj = {}): ApiPromise<TableDefaultData> {
     return createAxios({
         url: actionUrl.get('index'),
         method: 'get',
         params: filter,
-    })
+    }) as ApiPromise
 }
 
 export function edit(params: anyObj) {

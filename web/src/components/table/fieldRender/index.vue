@@ -49,7 +49,12 @@
     <!-- 按钮组 -->
     <div v-if="field.render == 'buttons' && field.buttons">
         <template v-for="(btn, idx) in field.buttons">
-            <el-tooltip v-if="btn.render == 'tipButton'" :disabled="btn.title ? false : true" :content="btn.title ?? ''" placement="top">
+            <el-tooltip
+                v-if="btn.render == 'tipButton'"
+                :disabled="btn.title ? false : true"
+                :content="btn.title ? t(btn.title) : ''"
+                placement="top"
+            >
                 <el-button v-blur @click="onButtonClick(btn.name)" :class="btn.class" class="table-operate" :type="btn.type">
                     <Icon :name="btn.icon" />
                     <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
@@ -58,7 +63,7 @@
             <el-popconfirm v-if="btn.render == 'confirmButton'" v-bind="btn.popconfirm" @confirm="onButtonClick(btn.name)">
                 <template #reference>
                     <div class="ml-6">
-                        <el-tooltip :disabled="btn.title ? false : true" :content="btn.title ?? ''" placement="top">
+                        <el-tooltip :disabled="btn.title ? false : true" :content="btn.title ? t(btn.title) : ''" placement="top">
                             <el-button v-blur :class="btn.class" class="table-operate" :type="btn.type">
                                 <Icon :name="btn.icon" />
                                 <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
@@ -70,7 +75,7 @@
             <el-tooltip
                 v-if="btn.render == 'moveButton'"
                 :disabled="btn.title && !btn.disabledTip ? false : true"
-                :content="btn.title ?? ''"
+                :content="btn.title ? t(btn.title) : ''"
                 placement="top"
             >
                 <el-button :class="btn.class" class="table-operate move-button" :type="btn.type">
@@ -87,7 +92,9 @@ import { ref } from 'vue'
 import type { TagProps } from 'element-plus'
 import { timeFormat, openUrl } from '/@/components/table'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const { proxy } = useCurrentInstance()
 
 interface Props {
