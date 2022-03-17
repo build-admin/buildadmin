@@ -46,5 +46,4 @@ export default {
     day: '天',
     'Number of attachments Uploaded': '附件上传量',
     'Late at night, pay attention to your body!': '夜深了，注意身体哦！',
-    remark: '开源等于互助；开源需要大家一起来支持，支持的方式有很多种，比如使用、推荐、写教程、保护生态、贡献代码、回答问题、分享经验、打赏赞助等；欢迎您加入我们！',
 }

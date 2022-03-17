@@ -7,7 +7,7 @@
                         <img class="welcome-img" :src="headerSvg" alt="" />
                         <div class="welcome-text">
                             <div class="welcome-title">{{ adminInfo.nickname }}{{ t('dashboard.comma') + state.greetings }}</div>
-                            <div class="welcome-note">{{ t(state.remark) }}</div>
+                            <div class="welcome-note">{{ state.remark }}</div>
                         </div>
                     </div>
                 </el-col>
