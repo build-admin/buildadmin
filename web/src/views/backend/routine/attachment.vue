@@ -17,6 +17,7 @@
                 :field="table.column"
                 :row-key="table.pk"
                 :total="table.total"
+                :loading="table.loading"
                 @action="onTableAction"
                 @row-dblclick="onTableDblclick"
             />
@@ -117,6 +118,8 @@ const table: {
     pk: string
     // 数据源
     data: TableRow[]
+    // 表格加载状态
+    loading: boolean
     // 选中项
     selection: TableRow[]
     // 不需要'双击编辑'的字段
@@ -132,6 +135,7 @@ const table: {
 } = reactive({
     pk: 'id',
     data: [],
+    loading: false,
     selection: [],
     dblClickNotEditColumn: [undefined],
     column: [
@@ -204,11 +208,17 @@ const form: {
 /* 表单状态-e */
 
 /* API请求方法-s */
-const getIndex = (loading: boolean = false) => {
-    return index(loading, table.filter).then((res) => {
-        table.data = res.data.list
-        table.total = res.data.total
-    })
+const getIndex = () => {
+    table.loading = true
+    return index(table.filter)
+        .then((res) => {
+            table.data = res.data.list
+            table.total = res.data.total
+            table.loading = false
+        })
+        .catch(() => {
+            table.loading = false
+        })
 }
 // 发送删除请求
 const postDel = (ids: string[]) => {
@@ -310,7 +320,7 @@ const onTableHeaderAction = (event: string, data: anyObj) => {
             'refresh',
             () => {
                 table.data = []
-                getIndex(data.loading ? true : false)
+                getIndex()
             },
         ],
         [
@@ -329,7 +339,7 @@ const onTableHeaderAction = (event: string, data: anyObj) => {
             'quick-search',
             () => {
                 table.filter.quick_search = data.keyword
-                getIndex(true)
+                getIndex()
             },
         ],
         [
@@ -368,14 +378,14 @@ const onTableAction = (event: string, data: anyObj) => {
             'page-size-change',
             () => {
                 table.filter.limit = data.size
-                getIndex(true)
+                getIndex()
             },
         ],
         [
             'current-page-change',
             () => {
                 table.filter.page = data.page
-                getIndex(true)
+                getIndex()
             },
         ],
         [
@@ -389,7 +399,7 @@ const onTableAction = (event: string, data: anyObj) => {
                 }
                 if (newOrder != table.filter.order) {
                     table.filter.order = newOrder
-                    getIndex(true)
+                    getIndex()
                 }
             },
         ],
@@ -400,7 +410,7 @@ const onTableAction = (event: string, data: anyObj) => {
 }
 
 onMounted(() => {
-    getIndex(false).then(() => {
+    getIndex().then(() => {
         initSort()
     })
 
@@ -423,7 +433,7 @@ onMounted(() => {
      */
     proxy.eventBus.on('onTableComSearch', (data: comSearchData) => {
         table.filter.search = data
-        getIndex(true)
+        getIndex()
     })
 })
 onUnmounted(() => {

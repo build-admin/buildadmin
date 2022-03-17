@@ -7,17 +7,12 @@ export const actionUrl = new Map([
     ['del', controllerUrl + 'del'],
 ])
 
-export function index(loading: boolean, filter: anyObj = {}) {
-    return createAxios(
-        {
-            url: actionUrl.get('index'),
-            method: 'get',
-            params: filter,
-        },
-        {
-            loading: loading,
-        }
-    )
+export function index(filter: anyObj = {}) {
+    return createAxios({
+        url: actionUrl.get('index'),
+        method: 'get',
+        params: filter,
+    })
 }
 
 export function edit(params: anyObj) {

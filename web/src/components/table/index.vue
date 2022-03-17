@@ -5,6 +5,7 @@
         header-cell-class-name="table-header-cell"
         :data="data"
         :border="true"
+        v-loading="loading"
         stripe
         default-expand-all
         @select-all="onSelectAll"
@@ -55,11 +56,13 @@ interface Props {
     data: TableRow[]
     field?: TableColumn[]
     total?: number
+    loading?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
     data: () => [],
     field: () => [],
     total: 0,
+    loading: false,
 })
 
 const state = reactive({
