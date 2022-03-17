@@ -91,8 +91,13 @@ if (!function_exists('get_route_remark')) {
     {
         $controllername = request()->controller(true);
         $actionname     = request()->action(true);
-        $path           = str_replace('.', '/', $controllername) . '/' . $actionname;
-        return \think\facade\Db::name('menu_rule')->where('name', $path)->value('remark');
+        $path           = str_replace('.', '/', $controllername);
+
+        $remark = \think\facade\Db::name('menu_rule')
+            ->where('name', $path)
+            ->whereOr('name', $path . '/' . $actionname)
+            ->value('remark');
+        return __($remark);
     }
 }
 

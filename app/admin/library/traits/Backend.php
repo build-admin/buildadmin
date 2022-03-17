@@ -40,8 +40,9 @@ trait Backend
             ->paginate($limit);
 
         $this->success('', [
-            'list'  => $res->items(),
-            'total' => $res->total()
+            'list'   => $res->items(),
+            'total'  => $res->total(),
+            'remark' => get_route_remark(),
         ]);
     }
 

@@ -67,6 +67,13 @@ body,
 .ba-table-box {
     border-radius: var(--el-border-radius-round);
 }
+.ba-table-alert {
+    background-color: #e8edf0 !important;
+    border: 1px solid #f6f6f6;
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
 /* 表格-e */
 
 /* 新增/编辑表单-s */

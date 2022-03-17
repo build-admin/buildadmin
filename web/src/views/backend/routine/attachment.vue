@@ -1,6 +1,7 @@
 <template>
     <div class="default-main">
         <div class="ba-table-box">
+            <el-alert class="ba-table-alert" v-if="table.remark" :title="table.remark" type="info" show-icon />
             <!-- 表格顶部菜单 -->
             <TableHeader
                 :field="table.column"
@@ -118,6 +119,8 @@ const table: {
     pk: string
     // 数据源
     data: TableRow[]
+    // 路由remark
+    remark: string | null
     // 表格加载状态
     loading: boolean
     // 选中项
@@ -135,6 +138,7 @@ const table: {
 } = reactive({
     pk: 'id',
     data: [],
+    remark: null,
     loading: false,
     selection: [],
     dblClickNotEditColumn: [undefined],
@@ -214,6 +218,7 @@ const getIndex = () => {
         .then((res) => {
             table.data = res.data.list
             table.total = res.data.total
+            table.remark = res.data.remark
             table.loading = false
         })
         .catch(() => {
