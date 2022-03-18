@@ -1,5 +1,31 @@
 import type { TagProps, ButtonType } from 'element-plus'
 declare global {
+    /* baTable */
+    interface BaTable {
+        pk?: string
+        data?: TableRow[]
+        remark?: string | null
+        loading?: boolean
+        expandAll?: boolean
+        selection?: TableRow[]
+        dblClickNotEditColumn?: (string | undefined)[]
+        column: TableColumn[]
+        total?: number
+        filter?: anyObj
+        defaultOrder?: { prop: string; order: string }
+        dragSortLimitField?: string
+    }
+
+    /* baTableForm */
+    interface BaTableForm {
+        labelWidth?: number
+        operate?: string
+        operateIds?: string[]
+        items?: anyObj
+        submitLoading?: boolean
+        defaultItems?: anyObj
+    }
+
     /* 表格列 */
     interface TableColumn extends ElTableColumn {
         // 是否显示

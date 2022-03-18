@@ -1,14 +1,13 @@
 import { reactive, onMounted, onUnmounted } from 'vue'
 import { getArrayKey } from '/@/utils/common'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
-import { baTableApi } from '/@/api/common'
+import type { baTableApi } from '/@/api/common'
 
 export default class baTable {
     public api
-    public controllerUrl
 
     /* 表格状态-s */
-    public table: Table = reactive({
+    public table: BaTable = reactive({
         // 主键字段
         pk: 'id',
         // 数据源
@@ -17,6 +16,8 @@ export default class baTable {
         remark: null,
         // 表格加载状态
         loading: false,
+        // 是否展开所有子项
+        expandAll: false,
         // 选中项
         selection: [],
         // 不需要'双击编辑'的字段
@@ -27,11 +28,13 @@ export default class baTable {
         total: 0,
         // 字段搜索,快速搜索,分页等数据
         filter: {},
+        // 拖动排序限位字段:例如拖动行pid=1,那么拖动目的行pid也需要为1
+        dragSortLimitField: 'pid',
     })
     /* 表格状态-e */
 
     /* 表单状态-s */
-    public form: Form = reactive({
+    public form: BaTableForm = reactive({
         // 表单label宽度
         labelWidth: 160,
         // 当前操作:add=添加,edit=编辑
@@ -47,12 +50,10 @@ export default class baTable {
     })
     /* 表单状态-e */
 
-    constructor(controllerUrl: string, table: Table, form: Form = {}) {
-        this.controllerUrl = controllerUrl
+    constructor(api: baTableApi, table: BaTable, form: BaTableForm = {}) {
+        this.api = api
         this.form = Object.assign(this.form, form)
         this.table = Object.assign(this.table, table)
-
-        this.api = new baTableApi(controllerUrl)
     }
 
     /* API请求方法-s */
@@ -269,33 +270,33 @@ export default class baTable {
                 this.table.filter!.search = data
                 this.getIndex()
             })
+
+            /**
+             * 表格内的字段操作响应
+             * @param value 修改后的值
+             * @param row 被操作行数据
+             * @param field 被操作字段名
+             */
+            proxy.eventBus.on('onTableFieldChange', (data: { value: any; row: TableRow; field: keyof TableRow; render: string }) => {
+                if (data.render == 'switch') {
+                    data.row.loading = true
+                    this.api
+                        .postData('edit', { [this.table.pk!]: data.row[this.table.pk!], [data.field]: data.value })
+                        .then(() => {
+                            data.row.loading = false
+                            data.row[data.field] = data.value
+                        })
+                        .catch(() => {
+                            data.row.loading = false
+                        })
+                }
+            })
         })
 
         onUnmounted(() => {
             proxy.eventBus.off('onTableComSearch')
             proxy.eventBus.off('onTableButtonClick')
+            proxy.eventBus.off('onTableFieldChange')
         })
     }
-}
-
-interface Table {
-    pk?: string
-    data?: TableRow[]
-    remark?: string | null
-    loading?: boolean
-    selection?: TableRow[]
-    dblClickNotEditColumn?: (string | undefined)[]
-    column: TableColumn[]
-    total?: number
-    filter?: anyObj
-    defaultOrder?: { prop: string; order: string }
-}
-
-interface Form {
-    labelWidth?: number
-    operate?: string
-    operateIds?: string[]
-    items?: anyObj
-    submitLoading?: boolean
-    defaultItems?: anyObj
 }

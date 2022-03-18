@@ -34,9 +34,10 @@ class Menu extends Backend
             $this->select();
         }
 
-        $this->keyword = $this->request->request("keyword");
+        $this->keyword = $this->request->request("quick_search");
         $this->success('', [
-            'menu' => $this->getMenus()
+            'list'   => $this->getMenus(),
+            'remark' => get_route_remark(),
         ]);
     }
 
@@ -63,7 +64,7 @@ class Menu extends Backend
     public function select()
     {
         $isTree        = $this->request->param('isTree');
-        $this->keyword = $this->request->request("keyword");
+        $this->keyword = $this->request->request("quick_search");
         $data          = $this->getMenus(false);
 
         if ($isTree && !$this->keyword) {

@@ -55,7 +55,7 @@ export function adminBuildSuffixSvgUrl(suffix: string, background: string = '') 
 
 export class baTableApi {
     private controllerUrl
-    private actionUrl
+    public actionUrl
 
     constructor(controllerUrl: string) {
         this.controllerUrl = controllerUrl
@@ -64,6 +64,7 @@ export class baTableApi {
             ['add', controllerUrl + 'add'],
             ['edit', controllerUrl + 'edit'],
             ['del', controllerUrl + 'del'],
+            ['sortable', controllerUrl + 'sortable'],
         ])
     }
 
@@ -112,5 +113,16 @@ export class baTableApi {
                 showSuccessMessage: true,
             }
         )
+    }
+
+    sortableApi(id: number, targetId: number) {
+        return createAxios({
+            url: this.actionUrl.get('sortable'),
+            method: 'post',
+            data: {
+                id: id,
+                targetId: targetId,
+            },
+        })
     }
 }

@@ -37,10 +37,11 @@ import baTableClass from '/@/utils/baTable'
 import { routineAttachment } from '/@/api/controllerUrls'
 import { defaultOptButtons } from '/@/components/table'
 import { previewRenderFormatter } from './index'
+import { baTableApi } from '/@/api/common'
 
 const tableRef = ref()
 
-const baTable = new baTableClass(routineAttachment, {
+const baTable = new baTableClass(new baTableApi(routineAttachment), {
     column: [
         { type: 'selection', align: 'center', operator: false },
         { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },

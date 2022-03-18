@@ -34,9 +34,10 @@ import Form from './form.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
+import { baTableApi } from '/@/api/common'
 
 const tableRef = ref()
-const baTable = new baTableClass(authAdmin, {
+const baTable = new baTableClass(new baTableApi(authAdmin), {
     column: [
         { type: 'selection', align: 'center', operator: false },
         { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },

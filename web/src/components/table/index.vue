@@ -27,7 +27,7 @@
             </Column>
         </template>
     </el-table>
-    <div class="table-pagination">
+    <div v-if="pagination" class="table-pagination">
         <el-pagination
             :currentPage="state.currentPage"
             :page-size="state.pageSize"
@@ -57,12 +57,14 @@ interface Props {
     field?: TableColumn[]
     total?: number
     loading?: boolean
+    pagination?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
     data: () => [],
     field: () => [],
     total: 0,
     loading: false,
+    pagination: true,
 })
 
 const state = reactive({

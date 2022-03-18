@@ -14,7 +14,7 @@ class Admin extends Backend
 
     protected $preExcludeFields = ['createtime', 'updatetime', 'password', 'salt', 'loginfailure', 'lastlogintime', 'lastloginip'];
 
-    protected $quickSearchField = 'nickname';
+    protected $quickSearchField = ['username', 'nickname'];
 
     public function initialize()
     {
