@@ -12,45 +12,62 @@ export const openUrl = (url: string, field: TableColumn) => {
 /*
  * 默认按钮组
  */
-export const defaultOptButtons = (): OptButton[] => {
-    return [
-        {
-            render: 'moveButton',
-            name: 'weigh-sort',
-            title: 'weigh-sort',
-            text: '',
-            type: 'info',
-            icon: 'fa fa-arrows',
-            class: 'table-row-weigh-sort',
-            disabledTip: false,
-        },
-        {
-            render: 'tipButton',
-            name: 'edit',
-            title: 'edit',
-            text: '',
-            type: 'primary',
-            icon: 'fa fa-pencil',
-            class: 'table-row-edit',
-            disabledTip: false,
-        },
-        {
-            render: 'confirmButton',
-            name: 'delete',
-            title: 'delete',
-            text: '',
-            type: 'danger',
-            icon: 'fa fa-trash',
-            class: 'table-row-delete',
-            popconfirm: {
-                confirmButtonText: '删除',
-                cancelButtonText: '取消',
-                confirmButtonType: 'danger',
-                title: '确认要删除记录吗？',
+export const defaultOptButtons = (optButType: DefaultOptButType[] = ['weigh-sort', 'edit', 'delete']): OptButton[] => {
+    const optButtonsPre: Map<string, OptButton> = new Map([
+        [
+            'weigh-sort',
+            {
+                render: 'moveButton',
+                name: 'weigh-sort',
+                title: 'weigh-sort',
+                text: '',
+                type: 'info',
+                icon: 'fa fa-arrows',
+                class: 'table-row-weigh-sort',
+                disabledTip: false,
             },
-            disabledTip: false,
-        },
-    ]
+        ],
+        [
+            'edit',
+            {
+                render: 'tipButton',
+                name: 'edit',
+                title: 'edit',
+                text: '',
+                type: 'primary',
+                icon: 'fa fa-pencil',
+                class: 'table-row-edit',
+                disabledTip: false,
+            },
+        ],
+        [
+            'delete',
+            {
+                render: 'confirmButton',
+                name: 'delete',
+                title: 'delete',
+                text: '',
+                type: 'danger',
+                icon: 'fa fa-trash',
+                class: 'table-row-delete',
+                popconfirm: {
+                    confirmButtonText: '删除',
+                    cancelButtonText: '取消',
+                    confirmButtonType: 'danger',
+                    title: '确认要删除记录吗？',
+                },
+                disabledTip: false,
+            },
+        ],
+    ])
+
+    let optButtons: OptButton[] = []
+    for (const key in optButType) {
+        if (optButtonsPre.has(optButType[key])) {
+            optButtons.push(optButtonsPre.get(optButType[key])!)
+        }
+    }
+    return optButtons
 }
 
 /*
@@ -121,3 +138,5 @@ export const findIndexRow = (data: TableRow[], findIdx: number, keyIndex: number
 
     return keyIndex
 }
+
+type DefaultOptButType = 'weigh-sort' | 'edit' | 'delete'

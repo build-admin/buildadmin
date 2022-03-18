@@ -53,6 +53,7 @@
                                             :placeholder="item.operatorPlaceholder"
                                             v-else-if="item.render == 'tag'"
                                             v-model="state.form[item.prop!]"
+                                            :clearable="true"
                                         >
                                             <el-option v-for="(opt, okey) in item.replaceValue" :key="item.prop! + okey" :label="opt" :value="okey" />
                                         </el-select>

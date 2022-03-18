@@ -1,24 +1,11 @@
 import type { TagProps, ButtonType } from 'element-plus'
 declare global {
-    interface TableColumn {
+    /* 表格列 */
+    interface TableColumn extends ElTableColumn {
         // 是否显示
         show?: boolean
         // 渲染为:icon|switch|image|images|tag|url|datetime|buttons
         render?: string
-        // 字段 el-table
-        prop?: string
-        // el-table
-        type?: string
-        // 字段名 el-table
-        label?: string
-        // 字段宽度 el-table
-        width?: string | number
-        // 是否固定 el-table
-        fixed?: true | 'left' | 'right'
-        // 渲染格式化方法 el-table
-        formatter?: Function
-        // 对齐方式 el-table
-        align?: 'left' | 'center' | 'right'
         // 操作按钮组
         buttons?: OptButton[]
         // 渲染为Tag时:el-tag 组件的主题
@@ -43,14 +30,9 @@ declare global {
         operator?: boolean | OperatorStr
         // 通用搜索框的placeholder
         operatorPlaceholder?: string
-        // 最小宽度 el-table
-        'min-width'?: string | number
-        // 将列中过长的内容 hover 时以 tooltip 的形式显示出来 el-table
-        'show-overflow-tooltip'?: boolean
-        // header对齐方式 el-table
-        'header-align'?: 'left' | 'center' | 'right'
     }
 
+    /* 表格右侧操作按钮 */
     interface OptButton {
         // 渲染方式:tipButton=带tip的按钮,confirmButton=带确认框的按钮,moveButton=移动按钮
         render: string
@@ -64,12 +46,15 @@ declare global {
         disabledTip?: boolean
     }
 
+    /* 表格行 */
     interface TableRow extends anyObj {
         children?: TableRow[]
     }
 
+    /* 表头支持的按钮 */
     type HeaderOptButton = 'refresh' | 'add' | 'edit' | 'delete' | 'unfold' | 'recycle bin' | 'comSearch'
 
+    /* 通用搜索操作符支持的值 */
     type OperatorStr =
         | '=' // 等于，默认值
         | '<>'
@@ -87,12 +72,49 @@ declare global {
         | 'NOT NULL'
         | 'FIND_IN_SET'
 
+    /* 链接打开方式 */
     type aTarget = '_blank' | '_self'
 
+    /* 通用搜索事件返回的Data */
     interface comSearchData {
         field: string
         val: string
         operator: string
         render: string
     }
+}
+
+/*
+ * ElTableColumn可用属性
+ * 未找到方法直接导出tableColumn的props类型定义
+ * https://element-plus.org/zh-CN/component/table.html#table-column-attributes
+ */
+interface ElTableColumn {
+    type?: 'selection' | 'index' | 'expand'
+    index?: number | Function
+    label?: string
+    'column-key'?: string
+    prop?: string
+    width?: string | number
+    'min-width'?: string | number
+    fixed?: string | boolean
+    'render-header'?: Function
+    sortable?: string | boolean
+    'sort-method'?: Function
+    'sort-by'?: Function
+    'sort-orders'?: string[] | null[]
+    resizable?: boolean
+    formatter?: Function
+    'show-overflow-tooltip'?: boolean
+    align?: 'left' | 'center' | 'right'
+    'header-align'?: 'left' | 'center' | 'right'
+    'class-name'?: string
+    'label-class-name'?: string
+    selectable?: Function
+    'reserve-selection'?: boolean
+    filters?: { key: string; value: string }[]
+    'filter-placement'?: string
+    'filter-multiple'?: boolean
+    'filter-method'?: Function
+    'filtered-value'?: any[]
 }
