@@ -61,8 +61,10 @@ trait Backend
                 // 模型验证
                 if ($this->modelValidate) {
                     $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
-                    $validate = new $validate;
-                    $validate->scene('add')->check($data);
+                    if (class_exists($validate)) {
+                        $validate = new $validate;
+                        $validate->scene('add')->check($data);
+                    }
                 }
                 $result = $this->model->save($data);
                 Db::commit();
@@ -106,8 +108,10 @@ trait Backend
                 // 模型验证
                 if ($this->modelValidate) {
                     $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
-                    $validate = new $validate;
-                    $validate->scene('edit')->check($data);
+                    if (class_exists($validate)) {
+                        $validate = new $validate;
+                        $validate->scene('edit')->check($data);
+                    }
                 }
                 $result = $row->save($data);
                 Db::commit();
