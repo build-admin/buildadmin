@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Form from './form.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
@@ -85,25 +85,13 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
     defaultOrder: { prop: 'lastuploadtime', order: 'desc' },
 })
 
-baTable.mount()
-baTable.getIndex().then(() => {
-    initSort()
+onMounted(() => {
+    baTable.table.ref = tableRef.value
+    baTable.mount()
+    baTable.getIndex().then(() => {
+        baTable.initSort()
+    })
 })
-
-/**
- * 初始化默认排序
- * el表格的`default-sort`在自定义排序时无效
- * 此方法只有在表格数据请求结束后执行有效
- */
-const initSort = () => {
-    if (baTable.table.defaultOrder && baTable.table.defaultOrder.prop) {
-        let defaultOrder = baTable.table.defaultOrder.prop + ',' + baTable.table.defaultOrder.order
-        if (baTable.table.filter && baTable.table.filter.order != defaultOrder) {
-            baTable.table.filter.order = defaultOrder
-            tableRef.value.getRef().sort(baTable.table.defaultOrder.prop, baTable.table.defaultOrder.order == 'desc' ? 'descending' : 'ascending')
-        }
-    }
-}
 </script>
 
 <style scoped lang="scss"></style>

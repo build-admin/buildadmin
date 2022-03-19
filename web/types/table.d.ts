@@ -1,7 +1,9 @@
 import type { TagProps, ButtonType } from 'element-plus'
+import Table from '/@/components/table/index.vue'
 declare global {
     /* baTable */
     interface BaTable {
+        ref?: typeof Table
         pk?: string
         data?: TableRow[]
         remark?: string | null

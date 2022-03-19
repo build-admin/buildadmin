@@ -1,13 +1,17 @@
-import { reactive, onMounted, onUnmounted } from 'vue'
+import { reactive, onUnmounted } from 'vue'
 import { getArrayKey } from '/@/utils/common'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import type { baTableApi } from '/@/api/common'
+import Sortable from 'sortablejs'
+import { findIndexRow } from '/@/components/table'
+import { ElNotification } from 'element-plus'
 
 export default class baTable {
     public api
 
     /* 表格状态-s */
     public table: BaTable = reactive({
+        ref: undefined,
         // 主键字段
         pk: 'id',
         // 数据源
@@ -209,6 +213,12 @@ export default class baTable {
                 },
             ],
             [
+                'add',
+                () => {
+                    this.toggleForm('add')
+                },
+            ],
+            [
                 'edit',
                 () => {
                     this.toggleForm('edit', this.getSelectionIds())
@@ -218,6 +228,17 @@ export default class baTable {
                 'delete',
                 () => {
                     this.postDel(this.getSelectionIds())
+                },
+            ],
+            [
+                'unfold',
+                () => {
+                    if (!this.table.ref) {
+                        console.warn('折叠/展开失败，因为tableRef未定义，请在onMounted时赋值tableRef')
+                        return
+                    }
+                    this.table.expandAll = data.unfold
+                    this.table.ref.unFoldAll(data.unfold)
                 },
             ],
             [
@@ -246,51 +267,116 @@ export default class baTable {
         return action!.call(this)
     }
 
+    /**
+     * 初始化默认排序
+     * el表格的`default-sort`在自定义排序时无效
+     * 此方法只有在表格数据请求结束后执行有效
+     */
+    initSort = () => {
+        if (this.table.defaultOrder && this.table.defaultOrder.prop) {
+            if (!this.table.ref) {
+                console.warn('初始化默认排序失败，因为tableRef未定义，请在onMounted时赋值tableRef')
+                return
+            }
+
+            let defaultOrder = this.table.defaultOrder.prop + ',' + this.table.defaultOrder.order
+            if (this.table.filter && this.table.filter.order != defaultOrder) {
+                this.table.filter.order = defaultOrder
+                this.table.ref.getRef().sort(this.table.defaultOrder.prop, this.table.defaultOrder.order == 'desc' ? 'descending' : 'ascending')
+            }
+        }
+    }
+
+    /**
+     * 表格拖动排序
+     */
+    dragSort = () => {
+        let buttonsKey = getArrayKey(this.table.column, 'render', 'buttons')
+        let moveButton = getArrayKey(this.table.column[buttonsKey].buttons, 'render', 'moveButton')
+        if (moveButton === false) {
+            return
+        }
+        if (!this.table.ref) {
+            console.warn('初始化拖拽排序失败，因为tableRef未定义，请在onMounted时赋值tableRef')
+            return
+        }
+
+        let el = this.table.ref.getRef().$el.querySelector('.el-table__body-wrapper .el-table__body tbody')
+        var sortable = Sortable.create(el, {
+            animation: 200,
+            handle: '.table-row-weigh-sort',
+            ghostClass: 'ba-table-row',
+            onStart: () => {
+                for (const key in this.table.column[buttonsKey].buttons) {
+                    this.table.column[buttonsKey].buttons![key as any].disabledTip = true
+                }
+            },
+            onEnd: (evt: Sortable.SortableEvent) => {
+                for (const key in this.table.column[buttonsKey].buttons) {
+                    this.table.column[buttonsKey].buttons![key as any].disabledTip = false
+                }
+                // 找到对应行id
+                let moveRow = findIndexRow(this.table.data!, evt.oldIndex!) as TableRow
+                let replaceRow = findIndexRow(this.table.data!, evt.newIndex!) as TableRow
+                if (this.table.dragSortLimitField && moveRow[this.table.dragSortLimitField] != replaceRow[this.table.dragSortLimitField]) {
+                    this.onTableHeaderAction('refresh', {})
+                    ElNotification({
+                        type: 'error',
+                        message: '移动位置超出了可移动范围!',
+                    })
+                    return
+                }
+
+                this.api.sortableApi(moveRow.id, replaceRow.id).then((res) => {
+                    this.onTableHeaderAction('refresh', {})
+                })
+            },
+        })
+    }
+
     mount() {
         const { proxy } = useCurrentInstance()
-        onMounted(() => {
-            /**
-             * 表格内的按钮响应
-             * @param name 按钮name
-             * @param row 被操作行数据
-             */
-            proxy.eventBus.on('onTableButtonClick', (data: { name: string; row: TableRow }) => {
-                if (data.name == 'edit') {
-                    this.toggleForm('edit', [data.row[this.table.pk!]])
-                } else if (data.name == 'delete') {
-                    this.postDel([data.row[this.table.pk!]])
-                }
-            })
+        /**
+         * 表格内的按钮响应
+         * @param name 按钮name
+         * @param row 被操作行数据
+         */
+        proxy.eventBus.on('onTableButtonClick', (data: { name: string; row: TableRow }) => {
+            if (data.name == 'edit') {
+                this.toggleForm('edit', [data.row[this.table.pk!]])
+            } else if (data.name == 'delete') {
+                this.postDel([data.row[this.table.pk!]])
+            }
+        })
 
-            /**
-             * 通用搜索响应
-             * @param comSearchData 通用搜索数据
-             */
-            proxy.eventBus.on('onTableComSearch', (data: comSearchData) => {
-                this.table.filter!.search = data
-                this.getIndex()
-            })
+        /**
+         * 通用搜索响应
+         * @param comSearchData 通用搜索数据
+         */
+        proxy.eventBus.on('onTableComSearch', (data: comSearchData) => {
+            this.table.filter!.search = data
+            this.getIndex()
+        })
 
-            /**
-             * 表格内的字段操作响应
-             * @param value 修改后的值
-             * @param row 被操作行数据
-             * @param field 被操作字段名
-             */
-            proxy.eventBus.on('onTableFieldChange', (data: { value: any; row: TableRow; field: keyof TableRow; render: string }) => {
-                if (data.render == 'switch') {
-                    data.row.loading = true
-                    this.api
-                        .postData('edit', { [this.table.pk!]: data.row[this.table.pk!], [data.field]: data.value })
-                        .then(() => {
-                            data.row.loading = false
-                            data.row[data.field] = data.value
-                        })
-                        .catch(() => {
-                            data.row.loading = false
-                        })
-                }
-            })
+        /**
+         * 表格内的字段操作响应
+         * @param value 修改后的值
+         * @param row 被操作行数据
+         * @param field 被操作字段名
+         */
+        proxy.eventBus.on('onTableFieldChange', (data: { value: any; row: TableRow; field: keyof TableRow; render: string }) => {
+            if (data.render == 'switch') {
+                data.row.loading = true
+                this.api
+                    .postData('edit', { [this.table.pk!]: data.row[this.table.pk!], [data.field]: data.value })
+                    .then(() => {
+                        data.row.loading = false
+                        data.row[data.field] = data.value
+                    })
+                    .catch(() => {
+                        data.row.loading = false
+                    })
+            }
         })
 
         onUnmounted(() => {
