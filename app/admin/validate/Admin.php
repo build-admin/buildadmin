@@ -6,6 +6,8 @@ use think\Validate;
 
 class Admin extends Validate
 {
+    protected $failException = true;
+
     protected $rule = [
         'username' => 'require|regex:^[a-zA-Z][a-zA-Z0-9_]{2,15}$|unique:admin',
         'nickname' => 'require',
@@ -30,8 +32,7 @@ class Admin extends Validate
      * 验证场景
      */
     protected $scene = [
-        'add'  => ['username', 'nickname', 'password', 'email', 'mobile'],
-        'edit' => ['username', 'nickname', 'password', 'email', 'mobile'],
+        'add' => ['username', 'nickname', 'password', 'email', 'mobile'],
     ];
 
     /**
@@ -40,6 +41,15 @@ class Admin extends Validate
     public function sceneInfo()
     {
         return $this->only(['nickname', 'password', 'email', 'mobile'])
+            ->remove('password', 'require');
+    }
+
+    /**
+     * 验证场景-编辑资料
+     */
+    public function sceneEdit()
+    {
+        return $this->only(['username', 'nickname', 'password', 'email', 'mobile'])
             ->remove('password', 'require');
     }
 

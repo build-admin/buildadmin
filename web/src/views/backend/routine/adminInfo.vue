@@ -76,6 +76,7 @@ import { uuid } from '../../../utils/random'
 import { validatorMobile, validatorPassword } from '/@/utils/validate'
 import { adminFileUpload } from '/@/api/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
+import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
 
 const { t } = useI18n()
 const formRef = ref<InstanceType<typeof ElForm>>()
@@ -98,7 +99,7 @@ index().then((res) => {
     state.formKey = uuid()
 })
 
-const rules: any = reactive({
+const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     nickname: [
         {
             required: true,

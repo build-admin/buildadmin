@@ -20,7 +20,7 @@ class Admin extends Model
 
     public function getLastlogintimeAttr($value)
     {
-        return $value ? date('Y-m-d H:i:s', $value) : '无';
+        return $value ? date('Y-m-d H:i:s', $value) : 'none';
     }
 
     /**

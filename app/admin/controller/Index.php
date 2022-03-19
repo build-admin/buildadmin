@@ -20,7 +20,7 @@ class Index extends Backend
 
         $menus = $this->auth->getMenus();
         if (!$menus) {
-            $this->error('无后台菜单，请联系超级管理员！');
+            $this->error(__('No background menu, please contact super administrator!'));
         }
         $this->success('', [
             'adminInfo' => $adminInfo,
@@ -37,7 +37,7 @@ class Index extends Backend
     {
         // 检查登录态
         if ($this->auth->isLogin()) {
-            $this->success('您已经登录过了，无需重复登录~', [
+            $this->success(__('You have already logged in. There is no need to log in again~'), [
                 'routeName' => 'admin'
             ], 302);
         }
@@ -78,13 +78,13 @@ class Index extends Backend
             // 记录登录LOG-待完善
             $res = $this->auth->login($username, $password, (bool)$keep);
             if ($res === true) {
-                $this->success(__('登录成功！'), [
+                $this->success(__('Login succeeded!'), [
                     'userinfo'  => $this->auth->getInfo(),
                     'routeName' => 'admin'
                 ]);
             } else {
                 $msg = $this->auth->getError();
-                $msg = $msg ? $msg : __('用户名或密码不正确！');
+                $msg = $msg ? $msg : __('Incorrect user name or password!');
                 $this->error($msg);
             }
         }

@@ -6,7 +6,7 @@ export class menuTableClass extends baTableClass {
         super(api, table, form)
     }
 
-    getIndex() {
+    getIndex = () => {
         this.table.loading = true
         return this.api
             .index(this.table.filter)
@@ -20,7 +20,7 @@ export class menuTableClass extends baTableClass {
             })
     }
 
-    requestEdit(id: string) {
+    requestEdit = (id: string) => {
         this.form.items = {}
         return this.api
             .edit({

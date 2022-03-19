@@ -1,4 +1,4 @@
-import type { TagProps, ButtonType } from 'element-plus'
+import type { TagProps, ButtonType, ElForm } from 'element-plus'
 import Table from '/@/components/table/index.vue'
 declare global {
     /* baTable */
@@ -20,12 +20,39 @@ declare global {
 
     /* baTableForm */
     interface BaTableForm {
+        ref?: InstanceType<typeof ElForm> | undefined
         labelWidth?: number
         operate?: string
         operateIds?: string[]
         items?: anyObj
         submitLoading?: boolean
         defaultItems?: anyObj
+    }
+
+    /* BaTable前置处理函数(前置埋点) */
+    interface BaTableBefore {
+        getIndex?: Function
+        postDel?: Function
+        requestEdit?: Function
+        toggleForm?: Function
+        onSubmit?: Function
+        onTableAction?: Function
+        onTableHeaderAction?: Function
+        mount?: Function
+        [key: string]: Function | undefined
+    }
+
+    /* BaTable后置处理函数(后置埋点) */
+    interface BaTableAfter {
+        getIndex?: Function
+        postDel?: Function
+        requestEdit?: Function
+        toggleForm?: Function
+        onSubmit?: Function
+        onTableAction?: Function
+        onTableHeaderAction?: Function
+        mount?: Function
+        [key: string]: Function | undefined
     }
 
     /* 表格列 */

@@ -5,6 +5,7 @@ namespace app\admin\controller\routine;
 use Exception;
 use app\common\controller\Backend;
 use think\db\exception\PDOException;
+use think\exception\ValidateException;
 use think\facade\Db;
 
 class AdminInfo extends Backend
@@ -15,8 +16,6 @@ class AdminInfo extends Backend
     protected $preExcludeFields = ['username', 'lastlogintime', 'password', 'salt', 'status'];
     // 输出字段
     protected $authAllowFields = ['id', 'username', 'nickname', 'avatar', 'email', 'mobile', 'motto', 'lastlogintime'];
-    // 模型验证
-    protected $modelValidate = true;
 
     public function initialize()
     {
@@ -55,11 +54,13 @@ class AdminInfo extends Backend
 
             // 数据验证
             if ($this->modelValidate) {
-                $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
-                $validate = new $validate;
-                $result   = $validate->scene('info')->check($data);
-                if (!$result) {
-                    $this->error($validate->getError());
+                try {
+                    $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
+                    $validate = new $validate;
+                    $validate->scene('info')->check($data);
+                } catch (ValidateException $e) {
+                    Db::rollback();
+                    $this->error($e->getMessage());
                 }
             }
 

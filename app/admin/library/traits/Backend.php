@@ -58,6 +58,12 @@ trait Backend
             $result = false;
             Db::startTrans();
             try {
+                // 模型验证
+                if ($this->modelValidate) {
+                    $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
+                    $validate = new $validate;
+                    $validate->scene('add')->check($data);
+                }
                 $result = $this->model->save($data);
                 Db::commit();
             } catch (ValidateException $e) {
@@ -97,6 +103,12 @@ trait Backend
             $result = false;
             Db::startTrans();
             try {
+                // 模型验证
+                if ($this->modelValidate) {
+                    $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
+                    $validate = new $validate;
+                    $validate->scene('edit')->check($data);
+                }
                 $result = $row->save($data);
                 Db::commit();
             } catch (ValidateException $e) {

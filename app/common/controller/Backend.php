@@ -41,7 +41,7 @@ class Backend extends Api
     /**
      * 是否开启模型验证
      */
-    protected $modelValidate = false;
+    protected $modelValidate = true;
 
     /**
      * 是否开启模型场景验证

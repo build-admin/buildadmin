@@ -4,7 +4,7 @@ import useCurrentInstance from '/@/utils/useCurrentInstance'
 import type { baTableApi } from '/@/api/common'
 import Sortable from 'sortablejs'
 import { findIndexRow } from '/@/components/table'
-import { ElNotification } from 'element-plus'
+import { ElNotification, ElForm } from 'element-plus'
 
 export default class baTable {
     public api
@@ -39,6 +39,8 @@ export default class baTable {
 
     /* 表单状态-s */
     public form: BaTableForm = reactive({
+        // 表单ref，new时无需传递
+        ref: undefined,
         // 表单label宽度
         labelWidth: 160,
         // 当前操作:add=添加,edit=编辑
@@ -54,15 +56,35 @@ export default class baTable {
     })
     /* 表单状态-e */
 
-    constructor(api: baTableApi, table: BaTable, form: BaTableForm = {}) {
+    // BaTable前置处理函数列表(前置埋点)
+    public before
+    // BaTable后置处理函数列表(后置埋点)
+    public after
+
+    constructor(api: baTableApi, table: BaTable, form: BaTableForm = {}, before: BaTableBefore = {}, after: BaTableAfter = {}) {
         this.api = api
         this.form = Object.assign(this.form, form)
         this.table = Object.assign(this.table, table)
+        this.before = before
+        this.after = after
+    }
+
+    runBefore(funName: string, args: any = {}) {
+        if (this.before && this.before[funName] && typeof this.before[funName] == 'function') {
+            this.before[funName]!({ ...args })
+        }
+    }
+
+    runAfter(funName: string, args: any = {}) {
+        if (this.after && this.after[funName] && typeof this.after[funName] == 'function') {
+            this.after[funName]!({ ...args })
+        }
     }
 
     /* API请求方法-s */
     // 查看
-    getIndex() {
+    getIndex = () => {
+        this.runBefore('getIndex')
         this.table.loading = true
         return this.api
             .index(this.table.filter)
@@ -71,19 +93,23 @@ export default class baTable {
                 this.table.total = res.data.total
                 this.table.remark = res.data.remark
                 this.table.loading = false
+                this.runAfter('getIndex', { res })
             })
             .catch(() => {
                 this.table.loading = false
             })
     }
     // 删除
-    postDel(ids: string[]) {
+    postDel = (ids: string[]) => {
+        this.runBefore('postDel', { ids })
         this.api.del(ids).then((res) => {
             this.onTableHeaderAction('refresh', {})
+            this.runAfter('postDel', { res })
         })
     }
     // 编辑
-    requestEdit(id: string) {
+    requestEdit = (id: string) => {
+        this.runBefore('requestEdit', { id })
         this.form.items = {}
         return this.api
             .edit({
@@ -91,6 +117,7 @@ export default class baTable {
             })
             .then((res) => {
                 this.form.items = res.data.row
+                this.runAfter('requestEdit', { res })
             })
     }
     /* API请求方法-e */
@@ -110,6 +137,10 @@ export default class baTable {
      * @param operateIds 被操作项的数组:add=[],edit=[1,2,...]
      */
     toggleForm = (operate: string = '', operateIds: string[] = []) => {
+        this.runBefore('toggleForm', { operate, operateIds })
+        if (this.form.ref) {
+            this.form.ref.resetFields()
+        }
         if (operate == 'edit') {
             if (!operateIds.length) {
                 return false
@@ -120,25 +151,43 @@ export default class baTable {
         }
         this.form.operate = operate
         this.form.operateIds = operateIds
+        this.runAfter('toggleForm', { operate, operateIds })
     }
 
-    onSubmit = () => {
-        this.form.submitLoading = true
-        this.api
-            .postData(this.form.operate!, this.form.items!)
-            .then((res) => {
-                this.onTableHeaderAction('refresh', {})
-                this.form.submitLoading = false
-                this.form.operateIds?.shift()
-                if (this.form.operateIds?.length! > 0) {
-                    this.toggleForm('edit', this.form.operateIds)
-                } else {
-                    this.toggleForm()
+    onSubmit = (formEl: InstanceType<typeof ElForm> | undefined = undefined) => {
+        this.runBefore('onSubmit', { operate: this.form.operate!, items: this.form.items! })
+
+        // 表单验证通过后执行的api请求操作
+        let submitCallback = () => {
+            this.form.submitLoading = true
+            this.api
+                .postData(this.form.operate!, this.form.items!)
+                .then((res) => {
+                    this.onTableHeaderAction('refresh', {})
+                    this.form.submitLoading = false
+                    this.form.operateIds?.shift()
+                    if (this.form.operateIds?.length! > 0) {
+                        this.toggleForm('edit', this.form.operateIds)
+                    } else {
+                        this.toggleForm()
+                    }
+                    this.runAfter('onSubmit', { res })
+                })
+                .catch((err) => {
+                    this.form.submitLoading = false
+                })
+        }
+
+        if (formEl) {
+            this.form.ref = formEl
+            formEl.validate((valid) => {
+                if (valid) {
+                    submitCallback()
                 }
             })
-            .catch((err) => {
-                this.form.submitLoading = false
-            })
+        } else {
+            submitCallback()
+        }
     }
 
     /* 获取表格选择项的id数组 */
@@ -156,6 +205,7 @@ export default class baTable {
      * @param data 携带数据
      */
     onTableAction = (event: string, data: anyObj) => {
+        this.runBefore('onTableAction', { event, data })
         const actionFun = new Map([
             [
                 'selection-change',
@@ -192,10 +242,17 @@ export default class baTable {
                     }
                 },
             ],
+            [
+                'default',
+                () => {
+                    console.warn('未定义操作')
+                },
+            ],
         ])
 
         let action = actionFun.get(event) || actionFun.get('default')
-        return action!.call(this)
+        action!.call(this)
+        return this.runAfter('onTableAction', { event, data })
     }
 
     /**
@@ -204,6 +261,7 @@ export default class baTable {
      * @param data 携带数据
      */
     onTableHeaderAction = (event: string, data: anyObj) => {
+        this.runBefore('onTableHeaderAction', { event, data })
         const actionFun = new Map([
             [
                 'refresh',
@@ -258,13 +316,14 @@ export default class baTable {
             [
                 'default',
                 () => {
-                    console.log('未定义操作')
+                    console.warn('未定义操作')
                 },
             ],
         ])
 
         let action = actionFun.get(event) || actionFun.get('default')
-        return action!.call(this)
+        action!.call(this)
+        return this.runAfter('onTableHeaderAction', { event, data })
     }
 
     /**
@@ -334,7 +393,8 @@ export default class baTable {
         })
     }
 
-    mount() {
+    mount = () => {
+        this.runBefore('mount')
         const { proxy } = useCurrentInstance()
         /**
          * 表格内的按钮响应
@@ -383,6 +443,7 @@ export default class baTable {
             proxy.eventBus.off('onTableComSearch')
             proxy.eventBus.off('onTableButtonClick')
             proxy.eventBus.off('onTableFieldChange')
+            this.runAfter('mount')
         })
     }
 }

@@ -18,7 +18,7 @@
             :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
         >
             <el-form
-                @keyup.enter="baTable.onSubmit"
+                @keyup.enter="baTable.onSubmit()"
                 v-model="baTable.form.items"
                 label-position="right"
                 :label-width="baTable.form.labelWidth + 'px'"
@@ -82,7 +82,7 @@
                 <el-form-item label="规则备注">
                     <el-input
                         @keyup.enter.stop=""
-                        @keyup.ctrl.enter="baTable.onSubmit"
+                        @keyup.ctrl.enter="baTable.onSubmit()"
                         v-model="baTable.form.items!.remark"
                         type="textarea"
                         :autosize="{ minRows: 2, maxRows: 5 }"
@@ -101,7 +101,7 @@
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
                 <el-button @click="baTable.toggleForm('')">取消</el-button>
-                <el-button v-blur :loading="baTable.form.submitLoading" @click="baTable.onSubmit" type="primary">
+                <el-button v-blur :loading="baTable.form.submitLoading" @click="baTable.onSubmit()" type="primary">
                     {{ baTable.form.operateIds && baTable.form.operateIds.length > 1 ? '保存并编辑下一项' : '保存' }}
                 </el-button>
             </div>

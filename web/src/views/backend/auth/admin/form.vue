@@ -17,15 +17,17 @@
             :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
         >
             <el-form
-                @keyup.enter="baTable.onSubmit"
-                v-model="baTable.form.items"
+                ref="formRef"
+                @keyup.enter="baTable.onSubmit(formRef)"
+                :model="baTable.form.items"
                 label-position="right"
                 :label-width="baTable.form.labelWidth + 'px'"
+                :rules="rules"
             >
-                <el-form-item label="用户名">
+                <el-form-item prop="username" label="用户名">
                     <el-input v-model="baTable.form.items!.username" type="string" placeholder="管理员登录名"></el-input>
                 </el-form-item>
-                <el-form-item label="昵称">
+                <el-form-item prop="nickname" label="昵称">
                     <el-input v-model="baTable.form.items!.nickname" type="string" placeholder="请输入昵称"></el-input>
                 </el-form-item>
                 <el-form-item label="头像">
@@ -46,16 +48,20 @@
                         </el-image>
                     </el-upload>
                 </el-form-item>
-                <el-form-item label="邮箱">
+                <el-form-item prop="email" label="邮箱">
                     <el-input v-model="baTable.form.items!.email" type="string" placeholder="请输入邮箱"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号">
+                <el-form-item prop="mobile" label="手机号">
                     <el-input v-model="baTable.form.items!.mobile" type="string" placeholder="请输入手机号码"></el-input>
                 </el-form-item>
-                <el-form-item label="密码">
-                    <el-input v-model="baTable.form.items!.password" type="password" placeholder="不修改请留空"></el-input>
+                <el-form-item prop="password" label="密码">
+                    <el-input
+                        v-model="baTable.form.items!.password"
+                        type="password"
+                        :placeholder="baTable.form.operate == 'add' ? '请输入密码' : '不修改请留空'"
+                    ></el-input>
                 </el-form-item>
-                <el-form-item label="个性签名">
+                <el-form-item prop="motto" label="个性签名">
                     <el-input v-model="baTable.form.items!.motto" type="textarea" placeholder="请输入个性签名"></el-input>
                 </el-form-item>
                 <el-form-item label="状态">
@@ -67,7 +73,7 @@
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
                 <el-button @click="baTable.toggleForm('')">取消</el-button>
-                <el-button v-blur :loading="baTable.form.submitLoading" @click="baTable.onSubmit" type="primary">
+                <el-button v-blur :loading="baTable.form.submitLoading" @click="baTable.onSubmit(formRef)" type="primary">
                     {{ baTable.form.operateIds && baTable.form.operateIds.length > 1 ? '保存并编辑下一项' : '保存' }}
                 </el-button>
             </div>
@@ -76,15 +82,75 @@
 </template>
 
 <script setup lang="ts">
+import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { adminFileUpload } from '/@/api/common'
 import type baTableClass from '/@/utils/baTable'
+import { regularPassword, validatorAccount, validatorMobile } from '/@/utils/validate'
+import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
+import type { ElForm } from 'element-plus'
+
+const formRef = ref<InstanceType<typeof ElForm>>()
 
 const props = defineProps<{
     baTable: baTableClass
 }>()
 
 const { t } = useI18n()
+
+const rules: Partial<Record<string, FormItemRule[]>> = reactive({
+    username: [
+        {
+            required: true,
+            message: '请输入用户名',
+            trigger: 'blur',
+        },
+        {
+            validator: validatorAccount,
+            trigger: 'blur',
+        },
+    ],
+    nickname: [
+        {
+            required: true,
+            message: '请输入昵称',
+            trigger: 'blur',
+        },
+    ],
+    email: [
+        {
+            type: 'email',
+            message: '请输入正确的邮箱',
+            trigger: 'blur',
+        },
+    ],
+    mobile: [
+        {
+            validator: validatorMobile,
+            trigger: 'blur',
+        },
+    ],
+    password: [
+        {
+            validator: (rule: any, val: string, callback: Function) => {
+                if (props.baTable.form.operate == 'add') {
+                    if (!val) {
+                        return callback(new Error('请输入密码'))
+                    }
+                } else {
+                    if (!val) {
+                        return callback()
+                    }
+                }
+                if (!regularPassword(val)) {
+                    return callback(new Error('请输入正确的密码'))
+                }
+                return callback()
+            },
+            trigger: 'blur',
+        },
+    ],
+})
 
 const onAvatarBeforeUpload = (file: any) => {
     let fd = new FormData()
