@@ -36,11 +36,11 @@ import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { useI18n } from 'vue-i18n'
 import { baTableApi } from '/@/api/common'
-import { menuTableClass } from './index'
+import baTableClass from '/@/utils/baTable'
 
 const { t } = useI18n()
 const tableRef = ref()
-const baTable = new menuTableClass(
+const baTable = new baTableClass(
     new baTableApi(authMenu),
     {
         expandAll: true,
@@ -77,6 +77,21 @@ const baTable = new menuTableClass(
             extend: 'none',
             status: '1',
             icon: 'el-icon-Minus',
+        },
+    },
+    {
+        // 提交前
+        onSubmit: () => {
+            if (baTable.form.items?.pid == baTable.form.items?.pidebak) {
+                delete baTable.form.items?.pid
+            }
+        },
+    },
+    {
+        // 获得编辑数据后
+        requestEdit: () => {
+            if (baTable.form.items && !baTable.form.items.icon) baTable.form.items.icon = 'el-icon-Minus'
+            baTable.form.items!['pidebak'] = baTable.form.items!.pid
         },
     }
 )

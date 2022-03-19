@@ -24,7 +24,7 @@ export function getSelectData(remoteUrl: string, q: string, params: {}) {
         method: 'get',
         params: Object.assign(params, {
             select: true,
-            keyword: q,
+            quick_search: q,
         }),
     })
 }

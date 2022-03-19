@@ -22,6 +22,8 @@ class Menu extends Backend
 
     protected $keyword = false;
 
+    protected $modelValidate = false;
+
     public function initialize()
     {
         parent::initialize();

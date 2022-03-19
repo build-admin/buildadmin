@@ -18,10 +18,12 @@
             :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
         >
             <el-form
-                @keyup.enter="baTable.onSubmit()"
-                v-model="baTable.form.items"
+                ref="formRef"
+                @keyup.enter="baTable.onSubmit(formRef)"
+                :model="baTable.form.items"
                 label-position="right"
                 :label-width="baTable.form.labelWidth + 'px'"
+                :rules="rules"
             >
                 <el-form-item label="上级菜单规则">
                     <remoteSelect
@@ -37,10 +39,10 @@
                     <el-radio v-model="baTable.form.items!.type" label="menu" :border="true">菜单项</el-radio>
                     <el-radio v-model="baTable.form.items!.type" label="button" :border="true">页面按钮</el-radio>
                 </el-form-item>
-                <el-form-item label="规则标题">
+                <el-form-item prop="title" label="规则标题">
                     <el-input v-model="baTable.form.items!.title" type="string" placeholder="请输入菜单规则标题"></el-input>
                 </el-form-item>
-                <el-form-item label="规则名称">
+                <el-form-item prop="name" label="规则名称">
                     <el-input v-model="baTable.form.items!.name" type="string" placeholder="英文名称，无需以`/admin`开头，如:auth/menu"></el-input>
                     <div class="block-help">将注册为web端路由名称，同时作为server端API验权使用</div>
                 </el-form-item>
@@ -59,7 +61,7 @@
                     <el-radio v-model="baTable.form.items!.menu_type" label="link" :border="true">链接(站外)</el-radio>
                     <el-radio v-model="baTable.form.items!.menu_type" label="iframe" :border="true">Iframe</el-radio>
                 </el-form-item>
-                <el-form-item v-if="baTable.form.items!.menu_type != 'tab'" label="链接地址">
+                <el-form-item prop="url" v-if="baTable.form.items!.menu_type != 'tab'" label="链接地址">
                     <el-input v-model="baTable.form.items!.url" type="string" placeholder="请输入链接或Iframe的URL地址"></el-input>
                 </el-form-item>
                 <el-form-item v-if="baTable.form.items!.type == 'menu' && baTable.form.items!.menu_type == 'tab'" label="组件路径">
@@ -82,7 +84,7 @@
                 <el-form-item label="规则备注">
                     <el-input
                         @keyup.enter.stop=""
-                        @keyup.ctrl.enter="baTable.onSubmit()"
+                        @keyup.ctrl.enter="baTable.onSubmit(formRef)"
                         v-model="baTable.form.items!.remark"
                         type="textarea"
                         :autosize="{ minRows: 2, maxRows: 5 }"
@@ -101,7 +103,7 @@
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
                 <el-button @click="baTable.toggleForm('')">取消</el-button>
-                <el-button v-blur :loading="baTable.form.submitLoading" @click="baTable.onSubmit()" type="primary">
+                <el-button v-blur :loading="baTable.form.submitLoading" @click="baTable.onSubmit(formRef)" type="primary">
                     {{ baTable.form.operateIds && baTable.form.operateIds.length > 1 ? '保存并编辑下一项' : '保存' }}
                 </el-button>
             </div>
@@ -110,16 +112,45 @@
 </template>
 
 <script setup lang="ts">
+import { reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
 import IconSelector from '/@/components/icon/selector.vue'
+import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
+import type { ElForm } from 'element-plus'
+
+const formRef = ref<InstanceType<typeof ElForm>>()
 
 const props = defineProps<{
     baTable: baTableClass
 }>()
 
 const { t } = useI18n()
+
+const rules: Partial<Record<string, FormItemRule[]>> = reactive({
+    title: [
+        {
+            required: true,
+            message: '请输入规则标题',
+            trigger: 'blur',
+        },
+    ],
+    name: [
+        {
+            required: true,
+            message: '请输入规则名称',
+            trigger: 'blur',
+        },
+    ],
+    url: [
+        {
+            type: 'url',
+            message: '请输入正确的Url',
+            trigger: 'blur',
+        },
+    ],
+})
 </script>
 
 <style scoped lang="scss"></style>
