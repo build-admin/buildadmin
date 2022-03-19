@@ -116,7 +116,7 @@ export default class baTable {
             }
             this.requestEdit(operateIds[0])
         } else if (operate == 'add') {
-            this.form.items = this.form.defaultItems!
+            this.form.items = Object.assign({}, this.form.defaultItems)
         }
         this.form.operate = operate
         this.form.operateIds = operateIds
