@@ -62,7 +62,13 @@
                     ></el-input>
                 </el-form-item>
                 <el-form-item prop="motto" label="个性签名">
-                    <el-input v-model="baTable.form.items!.motto" type="textarea" placeholder="请输入个性签名"></el-input>
+                    <el-input
+                        @keyup.enter.stop=""
+                        @keyup.ctrl.enter="baTable.onSubmit(formRef)"
+                        v-model="baTable.form.items!.motto"
+                        type="textarea"
+                        placeholder="请输入个性签名"
+                    ></el-input>
                 </el-form-item>
                 <el-form-item label="状态">
                     <el-radio v-model="baTable.form.items!.status" label="0" :border="true">禁用</el-radio>

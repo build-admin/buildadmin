@@ -2,6 +2,7 @@
 
 namespace app\admin\controller\auth;
 
+use ba\Random;
 use Exception;
 use app\common\controller\Backend;
 use app\admin\model\Admin as AdminModel;
@@ -49,15 +50,16 @@ class Admin extends Backend
                 }
             }
 
-            if ($data['password']) {
-                $this->model->resetPassword($this->auth->id, $data['password']);
-            }
+            $salt   = Random::build('alnum', 16);
+            $passwd = $this->model->encryptPassword($data['password'], $salt);
 
             $data   = $this->excludeFields($data);
             $result = false;
             Db::startTrans();
             try {
-                $result = $this->model->save($data);
+                $data['salt']     = $salt;
+                $data['password'] = $passwd;
+                $result           = $this->model->save($data);
                 Db::commit();
             } catch (ValidateException $e) {
                 Db::rollback();
@@ -107,8 +109,12 @@ class Admin extends Backend
                 }
             }
 
+            if ($this->auth->id == $data['id'] && $data['status'] == '0') {
+                $this->error(__('Please use another administrator account to disable the current account!'));
+            }
+
             if (isset($data['password']) && $data['password']) {
-                $this->model->resetPassword($this->auth->id, $data['password']);
+                $this->model->resetPassword($data['id'], $data['password']);
             }
 
             $data   = $this->excludeFields($data);
