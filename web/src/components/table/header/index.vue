@@ -49,7 +49,7 @@
             <el-input v-model="state.quickSearch" class="xs-hidden" @input="debounce(onSearchInput, 500)()" :placeholder="quickSearchPlaceholder" />
             <el-button-group class="table-search-button-group">
                 <el-dropdown :hide-on-click="false">
-                    <el-button color="#dcdfe6" plain>
+                    <el-button class="table-search-button-item" color="#dcdfe6" plain>
                         <Icon size="14" color="#303133" name="el-icon-Grid" />
                     </el-button>
                     <template #dropdown>
@@ -68,7 +68,7 @@
                     </template>
                 </el-dropdown>
                 <el-tooltip v-if="buttons.includes('comSearch')" :disabled="state.showComSearch" content="展开通用搜索" placement="top">
-                    <el-button @click="state.showComSearch = !state.showComSearch" color="#dcdfe6" plain>
+                    <el-button class="table-search-button-item" @click="state.showComSearch = !state.showComSearch" color="#dcdfe6" plain>
                         <Icon size="14" color="#303133" name="el-icon-Search" />
                     </el-button>
                 </el-tooltip>
@@ -166,6 +166,13 @@ const onChangeShowColumn = (value: boolean, field: string) => {
     }
     button:hover {
         background-color: #dcdfe6;
+    }
+    .table-search-button-item {
+        margin-right: -1px;
+    }
+    .table-search-button-item:first-child {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
     }
 }
 </style>
