@@ -36,7 +36,7 @@ class Tree
     }
 
     /**
-     * 将数组渲染为树状,需自备children
+     * 将数组渲染为树状,需自备children children可通过$this->assembleChild()方法组装
      * @param array  $arr         要改为树状的数组
      * @param string $field       '树枝'字段
      * @param int    $level       递归数组层次,无需手动维护
@@ -87,10 +87,10 @@ class Tree
     }
 
     /**
-     * 根据指定字段组装childrens数组
-     * @param array  $data 数据源
+     * 递归的根据指定字段组装children数组
+     * @param array  $data 数据源 例如：[['id' => 1, 'pid' => 0, title => '标题1'], ['id' => 2, 'pid' => 1, title => '标题1-1']]
      * @param string $pid  存储上级id的字段
-     * @return array
+     * @return array ['id' => 1, 'pid' => 0, 'title' => '标题1', 'children' => ['id' => 2, 'pid' => 1, 'title' => '标题1-1']]
      */
     public function assembleChild($data, $pid = 'pid')
     {

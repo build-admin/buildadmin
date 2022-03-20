@@ -59,9 +59,8 @@ class Group extends Backend
 
             $data = $this->excludeFields($data);
             if (is_array($data['rules']) && $data['rules']) {
-                $menuRuleModel = new MenuRule();
-                $rules         = $menuRuleModel->select();
-                $superAdmin    = true;
+                $rules      = MenuRule::select();
+                $superAdmin = true;
                 foreach ($rules as $rule) {
                     if (!in_array($rule['id'], $data['rules'])) {
                         $superAdmin = false;
@@ -125,9 +124,8 @@ class Group extends Backend
 
             $data = $this->excludeFields($data);
             if (is_array($data['rules']) && $data['rules']) {
-                $menuRuleModel = new MenuRule();
-                $rules         = $menuRuleModel->select();
-                $superAdmin    = true;
+                $rules      = MenuRule::select();
+                $superAdmin = true;
                 foreach ($rules as $rule) {
                     if (!in_array($rule['id'], $data['rules'])) {
                         $superAdmin = false;
@@ -214,7 +212,7 @@ class Group extends Backend
                     $rules = explode(',', $datum->rules);
                     if ($rules) {
                         $rulesFirstTitle = MenuRule::where('id', $rules[0])->value('title');
-                        $datum->rules    = count($rules) == 1 ? $rulesFirstTitle : $rulesFirstTitle . '等 ' . count($rules) . ' 项权限';
+                        $datum->rules    = count($rules) == 1 ? $rulesFirstTitle : $rulesFirstTitle . '等 ' . count($rules) . ' 项';
                     }
                 }
             } else {

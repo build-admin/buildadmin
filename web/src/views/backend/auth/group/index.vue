@@ -51,7 +51,14 @@ const baTable = new baTableClass(
             { type: 'selection', align: 'center' },
             { label: '组别名称', prop: 'name', align: 'left' },
             { label: '权限', prop: 'rules', align: 'center' },
-            { label: '状态', prop: 'status', align: 'center', width: '80', render: 'switch' },
+            {
+                label: '状态',
+                prop: 'status',
+                align: 'center',
+                render: 'tag',
+                custom: { '0': 'danger', '1': 'success' },
+                replaceValue: { '0': '禁用', '1': '启用' },
+            },
             { label: '更新时间', prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
             { label: '创建时间', prop: 'createtime', align: 'center', width: '160', render: 'datetime' },
             {

@@ -13,8 +13,12 @@ class Menu extends Backend
      */
     protected $model = null;
 
+    /**
+     * @var Tree
+     */
+    protected $tree = null;
+
     protected $noNeedPermission = ['index'];
-    protected $childrens        = [];
 
     protected $preExcludeFields = ['createtime', 'updatetime'];
 
@@ -28,6 +32,7 @@ class Menu extends Backend
     {
         parent::initialize();
         $this->model = new MenuRule();
+        $this->tree  = Tree::instance();
     }
 
     public function index()
@@ -70,7 +75,7 @@ class Menu extends Backend
         $data          = $this->getMenus(false);
 
         if ($isTree && !$this->keyword) {
-            $data = Tree::assembleTree(Tree::getTreeArray($data, 'title'));
+            $data = $this->tree->assembleTree($this->tree->getTreeArray($data, 'title'));
         }
         $this->success('', [
             'options' => $data
@@ -80,27 +85,7 @@ class Menu extends Backend
     protected function getMenus($getButton = true)
     {
         $rules = $this->getRuleList($getButton);
-        if (!$rules) {
-            return [];
-        }
-        foreach ($rules as $rule) {
-            $this->childrens[$rule['pid']][] = $rule;
-        }
-        if (isset($this->childrens[0])) {
-            return $this->getChildren($this->childrens[0]);
-        } else {
-            return $rules;
-        }
-    }
-
-    protected function getChildren($rules): array
-    {
-        foreach ($rules as $key => $rule) {
-            if (array_key_exists($rule['id'], $this->childrens)) {
-                $rules[$key]['children'] = $this->getChildren($this->childrens[$rule['id']]);
-            }
-        }
-        return $rules;
+        return $this->tree->assembleChild($rules);
     }
 
     protected function getRuleList($getButton = true)
