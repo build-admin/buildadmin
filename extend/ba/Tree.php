@@ -18,6 +18,8 @@ class Tree
      */
     public static $icon = array('│', '├', '└');
 
+    protected $childrens = [];
+
 
     /**
      * 初始化
@@ -82,5 +84,38 @@ class Tree
             }
         }
         return $arr;
+    }
+
+    /**
+     * 根据指定字段组装childrens数组
+     * @param array  $data 数据源
+     * @param string $pid  存储上级id的字段
+     * @return array
+     */
+    public function assembleChild($data, $pid = 'pid')
+    {
+        if (!$data) {
+            return [];
+        }
+
+        // 以pid组成数组
+        foreach ($data as $item) {
+            $this->childrens[$item[$pid]][] = $item;
+        }
+        if (isset($this->childrens[0])) {
+            return $this->getChildren($this->childrens[0]);
+        } else {
+            return $data;
+        }
+    }
+
+    protected function getChildren($data): array
+    {
+        foreach ($data as $key => $item) {
+            if (array_key_exists($item['id'], $this->childrens)) {
+                $data[$key]['children'] = $this->getChildren($this->childrens[$item['id']]);
+            }
+        }
+        return $data;
     }
 }
