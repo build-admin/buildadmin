@@ -8,11 +8,9 @@ export function index() {
 }
 
 export function login(method: 'get' | 'post', params: object = {}) {
-    return createAxios(
-        {
-            url: '/index.php/admin/index/login',
-            data: params,
-            method: method,
-        }
-    )
+    return createAxios({
+        url: '/index.php/admin/index/login',
+        data: params,
+        method: method,
+    })
 }

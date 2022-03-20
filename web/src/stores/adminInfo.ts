@@ -10,7 +10,7 @@ export const useAdminInfo = defineStore('adminInfo', {
             nickname: '',
             avatar: '',
             lastlogintime: '',
-            token: ''
+            token: '',
         }
     },
     persist: {

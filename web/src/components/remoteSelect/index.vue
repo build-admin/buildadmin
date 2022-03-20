@@ -1,5 +1,13 @@
 <template>
-    <el-select @focus="getData('')" class="remote-select" :loading="state.loading" :filterable="true" :remote="true" clearable :remote-method="getData">
+    <el-select
+        @focus="getData('')"
+        class="remote-select"
+        :loading="state.loading"
+        :filterable="true"
+        :remote="true"
+        clearable
+        :remote-method="getData"
+    >
         <el-option class="remote-select-option" v-for="item in state.options" :label="item[field]" :value="item[pk]"></el-option>
     </el-select>
 </template>

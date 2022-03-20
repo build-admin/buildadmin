@@ -67,7 +67,12 @@
                                         </el-input>
                                     </el-col>
                                     <el-col :span="8">
-                                        <img @click="onChangeCaptcha" class="captcha-img" :src="buildCaptchaUrl() + '?id=' + state.captchaId" alt="" />
+                                        <img
+                                            @click="onChangeCaptcha"
+                                            class="captcha-img"
+                                            :src="buildCaptchaUrl() + '?id=' + state.captchaId"
+                                            alt=""
+                                        />
                                     </el-col>
                                 </el-row>
                             </el-form-item>
