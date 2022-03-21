@@ -197,8 +197,8 @@ class Auth extends \ba\Auth
             return false;
         }
         $this->logined = false;
-        $this->token   = '';
         Token::delete($this->token);
+        $this->token = '';
         return true;
     }
 

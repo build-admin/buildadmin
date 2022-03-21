@@ -82,6 +82,7 @@ import { Local } from '/@/utils/storage'
 import { ADMIN_INFO } from '/@/stores/constant/cacheKey'
 import router from '/@/router'
 import { routePush } from '/@/utils/router'
+import { logout } from '/@/api/backend/index'
 
 const { t } = useI18n()
 
@@ -117,8 +118,10 @@ const onAdminInfo = () => {
 }
 
 const onLogout = () => {
-    Local.remove(ADMIN_INFO)
-    router.go(0)
+    logout().then(() => {
+        Local.remove(ADMIN_INFO)
+        router.go(0)
+    })
 }
 </script>
 

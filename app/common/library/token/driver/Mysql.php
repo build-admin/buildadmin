@@ -42,6 +42,7 @@ class Mysql extends Driver
         $expiretime = $expire !== 0 ? time() + $expire : 0;
         $token      = $this->getEncryptedToken($token);
         $this->handler->insert(['token' => $token, 'type' => $type, 'user_id' => $user_id, 'createtime' => time(), 'expiretime' => $expiretime]);
+        $this->handler->where('expiretime', '<', time())->delete();
         return true;
     }
 

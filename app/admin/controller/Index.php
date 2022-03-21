@@ -93,4 +93,12 @@ class Index extends Backend
             'captcha' => $captchaSwitch
         ]);
     }
+
+    public function logout()
+    {
+        if ($this->request->isPost()) {
+            $this->auth->logout();
+            $this->success();
+        }
+    }
 }
