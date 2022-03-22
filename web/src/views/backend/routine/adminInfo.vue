@@ -1,7 +1,7 @@
 <template>
     <div class="default-main">
         <el-row :gutter="20">
-            <el-col class="lg-mb-20" :xs="24" :sm="24" :md="24" :lg="10">
+            <el-col class="lg-mb-20" :xs="24" :sm="24" :md="24" :lg="8">
                 <div class="admin-info">
                     <el-upload
                         class="avatar-uploader"
@@ -26,7 +26,14 @@
                         </div>
                     </div>
                     <div class="admin-info-form">
-                        <el-form :key="state.formKey" label-position="top" :rules="rules" ref="formRef" :model="state.adminInfo">
+                        <el-form
+                            @keyup.enter="onSubmit(formRef)"
+                            :key="state.formKey"
+                            label-position="top"
+                            :rules="rules"
+                            ref="formRef"
+                            :model="state.adminInfo"
+                        >
                             <el-form-item label="用户名">
                                 <el-input disabled v-model="state.adminInfo.username"></el-input>
                             </el-form-item>
@@ -40,7 +47,13 @@
                                 <el-input placeholder="请输入手机号码" v-model="state.adminInfo.mobile"></el-input>
                             </el-form-item>
                             <el-form-item label="签名">
-                                <el-input placeholder="这家伙很懒，什么也没写" type="textarea" v-model="state.adminInfo.motto"></el-input>
+                                <el-input
+                                    @keyup.enter.stop=""
+                                    @keyup.ctrl.enter="onSubmit(formRef)"
+                                    placeholder="这家伙很懒，什么也没写"
+                                    type="textarea"
+                                    v-model="state.adminInfo.motto"
+                                ></el-input>
                             </el-form-item>
                             <el-form-item label="新密码" prop="password">
                                 <el-input type="password" placeholder="不修改请留空" v-model="state.adminInfo.password"></el-input>
@@ -53,13 +66,26 @@
                     </div>
                 </div>
             </el-col>
-            <el-col :xs="24" :sm="24" :md="24" :lg="14">
+            <el-col :xs="24" :sm="24" :md="24" :lg="14" :offset="1">
                 <el-card header="操作日志" shadow="never">
                     <el-timeline>
-                        <el-timeline-item type="primary" icon="el-icon-Plus" size="large" timestamp="2018-04-12 20:46">这里是内容</el-timeline-item>
-                        <el-timeline-item type="primary" icon="el-icon-Delete" size="large" timestamp="2018-04-12 20:46">这里是内容</el-timeline-item>
-                        <el-timeline-item type="warning" icon="el-icon-Edit" size="large" timestamp="2018-04-12 20:46">这里是内容</el-timeline-item>
+                        <el-timeline-item v-for="item in state.log" placement="top" size="large" :timestamp="timeFormat(item.createtime)">
+                            <el-card>
+                                <h5 class="log-h5">{{ item.title }}</h5>
+                                - {{ item.url }}
+                            </el-card>
+                        </el-timeline-item>
                     </el-timeline>
+                    <el-pagination
+                        :currentPage="state.logCurrentPage"
+                        :page-size="state.logPageSize"
+                        :page-sizes="[10, 20, 50, 100]"
+                        background
+                        :layout="shrink ? 'prev, next, jumper' : 'sizes, ->, prev, pager, next, jumper'"
+                        :total="state.logTotal"
+                        @size-change="onLogSizeChange"
+                        @current-change="onLogCurrentChange"
+                    ></el-pagination>
                 </el-card>
             </el-col>
         </el-row>
@@ -67,9 +93,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { index, postData } from '/@/api/backend/routine/AdminInfo'
+import { index, log, postData } from '/@/api/backend/routine/AdminInfo'
 import { ElForm } from 'element-plus'
 import { onResetForm } from '/@/utils/common'
 import { uuid } from '../../../utils/random'
@@ -77,9 +103,13 @@ import { validatorMobile, validatorPassword } from '/@/utils/validate'
 import { adminFileUpload } from '/@/api/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
+import { timeFormat } from '/@/components/table'
+import { useConfig } from '/@/stores/config'
 
 const { t } = useI18n()
 const formRef = ref<InstanceType<typeof ElForm>>()
+const config = useConfig()
+const shrink = computed(() => config.layout.shrink)
 
 const adminInfoStore = useAdminInfo()
 
@@ -87,10 +117,24 @@ const state: {
     adminInfo: anyObj
     formKey: string
     buttonLoading: boolean
+    log: {
+        title: string
+        createtime: string
+        url: string
+    }[]
+    logFilter: anyObj
+    logCurrentPage: number
+    logPageSize: number
+    logTotal: number
 } = reactive({
     adminInfo: {},
     formKey: uuid(),
     buttonLoading: false,
+    log: [],
+    logFilter: {},
+    logCurrentPage: 1,
+    logPageSize: 10,
+    logTotal: 100,
 })
 
 index().then((res) => {
@@ -98,6 +142,25 @@ index().then((res) => {
     // 重新渲染表单以记录初始值
     state.formKey = uuid()
 })
+
+const getLog = () => {
+    log(state.logFilter).then((res) => {
+        state.log = res.data.list
+        state.logTotal = res.data.total
+    })
+}
+
+const onLogSizeChange = (limit: number) => {
+    state.logPageSize = limit
+    state.logFilter.limit = limit
+    getLog()
+}
+
+const onLogCurrentChange = (page: number) => {
+    state.logCurrentPage = page
+    state.logFilter.page = page
+    getLog()
+}
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     nickname: [
@@ -169,6 +232,10 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
         }
     })
 }
+
+onMounted(() => {
+    getLog()
+})
 </script>
 
 <style scoped lang="scss">
@@ -229,5 +296,11 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     .lg-mb-20 {
         margin-bottom: 20px;
     }
+}
+.mt10 {
+    margin-top: 6px;
+}
+.log-h5 {
+    display: inline;
 }
 </style>
