@@ -5,7 +5,11 @@ import { ElMessage, ElLoading, LoadingOptions, ElNotification } from 'element-pl
 import { useConfig } from '/@/stores/config'
 import { getAdminToken } from './common'
 import router from '/@/router/index'
+import { refreshToken } from '/@/api/common'
+import { useAdminInfo } from '/@/stores/adminInfo'
 
+window.requests = []
+window.tokenRefreshing = false
 const pendingMap = new Map()
 const loadingInstance: LoadingInstance = {
     target: null,
@@ -61,9 +65,10 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             }
 
             // 自动携带token
-            if (getAdminToken() && typeof window !== 'undefined') {
+            let token = getAdminToken('auth')
+            if (token) {
                 // 因为Apache不使用Authorization
-                if (config.headers) config.headers.batoken = getAdminToken()
+                if (config.headers) config.headers.batoken = token
             }
 
             return config
@@ -80,6 +85,37 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             options.loading && closeLoading(options) // 关闭loading
 
             if (options.showCodeMessage && response.data && response.data.code !== 1) {
+                if (response.data.code == 409) {
+                    if (!window.tokenRefreshing) {
+                        window.tokenRefreshing = true
+                        return refreshToken()
+                            .then((res) => {
+                                const adminInfo = useAdminInfo()
+                                if (res.data.type == 'admin-refresh') {
+                                    adminInfo.token = res.data.token
+                                    response.headers.batoken = `${res.data.token}`
+                                    window.requests.forEach((cb) => cb(res.data.token))
+                                    window.requests = []
+                                    return Axios(response.config)
+                                }
+                            })
+                            .catch((err) => {
+                                router.push({ name: 'adminLogin' })
+                                return Promise.reject(err)
+                            })
+                            .finally(() => {
+                                window.tokenRefreshing = false
+                            })
+                    } else {
+                        return new Promise((resolve) => {
+                            // 用函数形式将 resolve 存入，等待刷新后再执行
+                            window.requests.push((token: string) => {
+                                response.headers.batoken = `${token}`
+                                resolve(Axios(response.config))
+                            })
+                        })
+                    }
+                }
                 ElMessage({
                     type: 'error',
                     message: response.data.msg,
@@ -219,9 +255,9 @@ function removePending(config: AxiosRequestConfig) {
  * 生成每个请求的唯一key
  */
 function getPendingKey(config: AxiosRequestConfig) {
-    let { url, method, params, data } = config
+    let { url, method, params, data, headers } = config
     if (typeof data === 'string') data = JSON.parse(data) // response里面返回的config.data是个字符串对象
-    return [url, method, JSON.stringify(params), JSON.stringify(data)].join('&')
+    return [url, method, headers && headers.batoken ? headers.batoken : '', JSON.stringify(params), JSON.stringify(data)].join('&')
 }
 
 export function requestPayload(method: Method, data: anyObj) {

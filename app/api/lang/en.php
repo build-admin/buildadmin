@@ -1,2 +1,4 @@
 <?php
-return [];
+return [
+    'Invalid token' => 'Invalid token!',
+];

@@ -14,6 +14,7 @@ import { getUrl } from '/@/utils/axios'
 export const adminUploadUrl = '/index.php/admin/ajax/upload'
 export const buildSuffixSvgUrl = '/index.php/admin/ajax/buildsuffixsvg'
 export const captchaUrl = '/index.php/api/common/captcha'
+export const refreshTokenUrl = '/index.php/api/common/refreshToken'
 
 /**
  * 远程下拉框数据获取
@@ -51,6 +52,16 @@ export function buildCaptchaUrl() {
  */
 export function adminBuildSuffixSvgUrl(suffix: string, background: string = '') {
     return getUrl() + buildSuffixSvgUrl + '?batoken=' + getAdminToken() + '&suffix=' + suffix + (background ? '&background=' + background : '')
+}
+
+export function refreshToken(): ApiPromise {
+    return createAxios({
+        url: refreshTokenUrl,
+        method: 'POST',
+        data: {
+            refresh_token: getAdminToken('refresh'),
+        },
+    }) as ApiPromise
 }
 
 /**

@@ -11,6 +11,7 @@ export const useAdminInfo = defineStore('adminInfo', {
             avatar: '',
             lastlogintime: '',
             token: '',
+            refreshToken: '',
         }
     },
     persist: {

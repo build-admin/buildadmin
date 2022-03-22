@@ -3,6 +3,8 @@
 namespace app\api\controller;
 
 use ba\Captcha;
+use ba\Random;
+use app\common\facade\Token;
 use app\common\controller\Api;
 
 class Common extends Api
@@ -21,5 +23,33 @@ class Common extends Api
 
         $captcha = new Captcha($config);
         return $captcha->entry($captchaId);
+    }
+
+    public function refreshToken()
+    {
+        $refreshToken = $this->request->post('refresh_token');
+        $refreshToken = Token::get($refreshToken);
+
+        if (!$refreshToken || $refreshToken['expiretime'] < time()) {
+            $this->error(__('Invalid token'));
+        }
+
+        $newToken = Random::uuid();
+
+        if ($refreshToken['type'] == 'admin-refresh') {
+            $baToken = $this->request->server('HTTP_BATOKEN', $this->request->request('batoken', ''));
+            if (!$baToken) {
+                $this->error(__('Invalid token'));
+            }
+            Token::delete($baToken);
+            Token::set($newToken, 'admin', $refreshToken['user_id'], 86400);
+        } elseif ($refreshToken['type'] == 'user-refresh') {
+            Token::set($newToken, 'user', $refreshToken['user_id'], 86400);
+        }
+
+        $this->success('', [
+            'type'  => $refreshToken['type'],
+            'token' => $newToken
+        ]);
     }
 }

@@ -66,9 +66,9 @@ export function isExternal(path: string) {
     return /^(https?|ftp|mailto|tel):/.test(path)
 }
 
-export function getAdminToken() {
+export function getAdminToken(type: 'auth' | 'refresh' = 'auth') {
     const adminInfo = useAdminInfo()
-    return adminInfo.token
+    return type == 'auth' ? adminInfo.token : adminInfo.refreshToken
 }
 
 /**

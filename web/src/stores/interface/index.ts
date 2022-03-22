@@ -49,4 +49,5 @@ export interface AdminInfo {
     avatar: string
     lastlogintime: string
     token: string
+    refreshToken: string
 }
