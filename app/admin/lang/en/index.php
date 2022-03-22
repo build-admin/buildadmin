@@ -11,4 +11,6 @@ return [
     'Username is incorrect'                                         => 'Username is incorrect',
     'Please try again after 1 day'                                  => 'Please try again after 1 day',
     'You are not logged in'                                         => 'You are not logged in',
+    'Login'                                                         => 'Login',
+    'Logout'                                                        => 'Logout',
 ];

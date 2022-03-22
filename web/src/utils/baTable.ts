@@ -127,7 +127,15 @@ export default class baTable {
      */
     onTableDblclick = (row: TableRow, column: any) => {
         if (this.table.dblClickNotEditColumn!.indexOf(column.property) === -1) {
+            this.runBefore('onTableDblclick', {
+                row,
+                column,
+            })
             this.toggleForm('edit', [row[this.table.pk!]])
+            this.runAfter('onTableDblclick', {
+                row,
+                column,
+            })
         }
     }
 

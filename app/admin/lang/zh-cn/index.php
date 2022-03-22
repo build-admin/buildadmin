@@ -11,4 +11,6 @@ return [
     'Username is incorrect'                                         => '用户名不正确',
     'Please try again after 1 day'                                  => '登录失败次数超限，请在1天后再试',
     'You are not logged in'                                         => '你没有登录',
+    'Login'                                                         => '登录',
+    'Logout'                                                        => '注销登录',
 ];

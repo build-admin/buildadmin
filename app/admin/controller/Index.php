@@ -8,6 +8,7 @@ use ba\Captcha;
 use think\facade\Config;
 use think\facade\Validate;
 use app\common\controller\Backend;
+use app\admin\model\AdminLog;
 
 class Index extends Backend
 {
@@ -76,7 +77,8 @@ class Index extends Backend
                 $this->error(__('Please enter the correct verification code'));
             }
 
-            // 记录登录LOG-待完善
+            AdminLog::setTitle(__('Login'));
+
             $res = $this->auth->login($username, $password, (bool)$keep);
             if ($res === true) {
                 $this->success(__('Login succeeded!'), [

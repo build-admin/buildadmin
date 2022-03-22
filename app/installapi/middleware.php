@@ -1,5 +1,5 @@
 <?php
 return [
-    \app\common\library\AllowCrossDomain::class,
+    \app\common\middleware\AllowCrossDomain::class,
     \think\middleware\LoadLangPack::class,
 ];

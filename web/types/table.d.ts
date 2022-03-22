@@ -34,6 +34,7 @@ declare global {
         getIndex?: Function
         postDel?: Function
         requestEdit?: Function
+        onTableDblclick?: Function
         toggleForm?: Function
         onSubmit?: Function
         onTableAction?: Function
@@ -47,6 +48,7 @@ declare global {
         getIndex?: Function
         postDel?: Function
         requestEdit?: Function
+        onTableDblclick?: Function
         toggleForm?: Function
         onSubmit?: Function
         onTableAction?: Function
