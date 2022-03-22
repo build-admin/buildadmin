@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 declare (strict_types=1);
 
-namespace app\common\library;
+namespace app\common\middleware;
 
 use Closure;
 use think\Request;

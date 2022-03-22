@@ -39,9 +39,9 @@ class Api extends BaseController
 
         // 加载控制器语言包
         $langset              = $this->app->lang->getLangSet();
-        $this->controllerPath = str_replace('.', DIRECTORY_SEPARATOR, $this->request->controller(true));
+        $this->controllerPath = str_replace('.', '/', $this->request->controller(true));
         $this->app->lang->load([
-            app_path() . 'lang' . DIRECTORY_SEPARATOR . $langset . DIRECTORY_SEPARATOR . $this->controllerPath . '.php'
+            app_path() . 'lang' . DIRECTORY_SEPARATOR . $langset . DIRECTORY_SEPARATOR . (str_replace('/', DIRECTORY_SEPARATOR, $this->controllerPath)) . '.php'
         ]);
     }
 

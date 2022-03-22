@@ -5,14 +5,15 @@
 
 return [
     // 允许跨域访问的域名
-    'cors_request_domain' => 'localhost,127.0.0.1',
-    'admin_login_captcha' => true,
+    'cors_request_domain'  => 'localhost,127.0.0.1',
+    // 是否开启管理员登录验证码
+    'admin_login_captcha'  => true,
     // 管理员登录失败可重试次数,false则无限
-    'admin_login_retry'   => 10,
+    'admin_login_retry'    => 10,
     // 表格拖拽排序时,两个权重相等则自动重新整理;控制器类中也有此项（作为单控制器自定义配置）
-    'auto_sort_eq_weight' => false,
+    'auto_sort_eq_weight'  => false,
     // 允许执行的命令
-    'allowed_commands'    => [
+    'allowed_commands'     => [
         'ping-baidu'   => 'ping baidu.com',
         'cnpm-install' => 'cnpm install',
         'npm-v'        => 'npm -v',
@@ -23,7 +24,7 @@ return [
         'web-install'  => 'cd ../web && cnpm install',
         'web-build'    => 'cd ../web && cnpm run build:online',
     ],
-    'token'               => [
+    'token'                => [
         // 默认驱动方式
         'default' => 'mysql',
         // 加密key
@@ -55,5 +56,8 @@ return [
             ]
         ]
     ],
-    'default_avatar'      => '/static/images/avatar.png',
+    // 自动写入管理员操作日志
+    'auto_write_admin_log' => true,
+    // 缺省头像图片路径
+    'default_avatar'       => '/static/images/avatar.png',
 ];

@@ -26,4 +26,5 @@ return [
     'The uploaded image file is not a valid image'                                        => 'The uploaded image file is not a valid image',
     'The uploaded file is too large (%sMiB), Maximum file size:%sMiB'                     => 'The uploaded file is too large (%sMiB), Maximum file size:%sMiB',
     'No files have been uploaded or the file size exceeds the upload limit of the server' => 'No files have been uploaded or the file size exceeds the upload limit of the server',
+    'Unknown'                                                                             => 'Unknown',
 ];
