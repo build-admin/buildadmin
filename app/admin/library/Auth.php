@@ -31,6 +31,10 @@ class Auth extends \ba\Auth
      */
     protected $token = '';
     /**
+     * @var string 刷新令牌
+     */
+    protected $refreshToken = '';
+    /**
      * @var int 令牌默认有效期
      */
     protected $keeptime = 86400;
@@ -120,12 +124,21 @@ class Auth extends \ba\Auth
             return false;
         }
 
-        // 待完善 - 后续做token自动刷新
         if ($keeptime) {
-            $this->setKeeptime(2592000);
+            $this->setRefreshToken(2592000);
         }
         $this->loginSuccessful();
         return true;
+    }
+
+    /**
+     * 设置刷新Token
+     * @param int $keeptime
+     */
+    public function setRefreshToken($keeptime = 0)
+    {
+        $this->refreshToken = Random::uuid();
+        Token::set($this->refreshToken, 'admin-refresh', $this->model->id, $this->keeptime);
     }
 
     /**
@@ -230,6 +243,15 @@ class Auth extends \ba\Auth
     }
 
     /**
+     * 获取管理员刷新Token
+     * @return string
+     */
+    public function getRefreshToken()
+    {
+        return $this->refreshToken;
+    }
+
+    /**
      * 获取管理员信息 - 只输出允许输出的字段
      * @return array
      */
@@ -238,9 +260,10 @@ class Auth extends \ba\Auth
         if (!$this->model) {
             return [];
         }
-        $info          = $this->model->toArray();
-        $info          = array_intersect_key($info, array_flip($this->getAllowFields()));
-        $info['token'] = $this->getToken();
+        $info                 = $this->model->toArray();
+        $info                 = array_intersect_key($info, array_flip($this->getAllowFields()));
+        $info['token']        = $this->getToken();
+        $info['refreshToken'] = $this->getRefreshToken();
         return $info;
     }
 
