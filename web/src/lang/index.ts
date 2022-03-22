@@ -25,13 +25,13 @@ export async function loadLang(app: App) {
     const locale = config.lang.defaultLang
 
     // 加载框架语言包
-    const lang = await import(`./frame/${locale}.ts`)
+    const lang = await import(`./globs-${locale}.ts`)
     const message = lang.default ?? {}
 
     /*
      * 0、加载页面语言包 import.meta.globEager 的路径不能使用变量
      * 1、vue3 setup 内只能使用 useI18n({messages:{}}) 来动态载入当前页面单独的语言包，不方便使用
-     * 2、直接载入所有 /@/lang/pages/语言/*.ts 文件，若某页面有特别大量的语言配置，可在其他位置单独建立语言包文件，并在对应页面赖加载语言包
+     * 2、直接载入所有 /@/lang/pages/语言/*.ts 文件，若某页面有特别大量的语言配置，可在其他位置单独建立语言包文件，并在对应页面加载语言包
      */
     if (locale == 'zh-cn') {
         assignLocale[locale].push(getLangFileMessage(import.meta.globEager('./pages/zh-cn/**/*.ts'), locale))

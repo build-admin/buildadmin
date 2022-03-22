@@ -341,7 +341,7 @@ export default class baTable {
             let defaultOrder = this.table.defaultOrder.prop + ',' + this.table.defaultOrder.order
             if (this.table.filter && this.table.filter.order != defaultOrder) {
                 this.table.filter.order = defaultOrder
-                this.table.ref.getRef().sort(this.table.defaultOrder.prop, this.table.defaultOrder.order == 'desc' ? 'descending' : 'ascending')
+                this.table.ref.getRef()?.sort(this.table.defaultOrder.prop, this.table.defaultOrder.order == 'desc' ? 'descending' : 'ascending')
             }
         }
     }
