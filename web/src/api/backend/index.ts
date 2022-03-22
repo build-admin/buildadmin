@@ -10,12 +10,12 @@ export function index() {
     })
 }
 
-export function login(method: 'get' | 'post', params: object = {}) {
+export function login(method: 'get' | 'post', params: object = {}):ApiPromise {
     return createAxios({
         url: controllerUrl + 'login',
         data: params,
         method: method,
-    })
+    }) as ApiPromise
 }
 
 export function logout() {

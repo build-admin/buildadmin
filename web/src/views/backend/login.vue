@@ -94,6 +94,7 @@
 import { getCurrentInstance, onMounted, onBeforeUnmount, reactive, ref, computed } from 'vue'
 import * as pageBubble from '/@/utils/pageBubble'
 import type { ElForm } from 'element-plus'
+import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { editDefaultLang } from '/@/lang/index'
 import { useConfig } from '/@/stores/config'
@@ -208,6 +209,10 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
                 .then((res) => {
                     form.loading = false
                     adminInfo.$state = res.data.userinfo
+                    ElNotification({
+                        message: res.msg,
+                        type: 'success',
+                    })
                     router.push({ name: res.data.routeName })
                 })
                 .catch((err) => {

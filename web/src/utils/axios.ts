@@ -1,7 +1,7 @@
 import axios, { AxiosPromise, Method } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 import { computed } from 'vue'
-import { ElMessage, ElLoading, LoadingOptions, ElNotification } from 'element-plus'
+import { ElLoading, LoadingOptions, ElNotification } from 'element-plus'
 import { useConfig } from '/@/stores/config'
 import { getAdminToken } from './common'
 import router from '/@/router/index'
@@ -116,7 +116,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                         })
                     }
                 }
-                ElMessage({
+                ElNotification({
                     type: 'error',
                     message: response.data.msg,
                 })
@@ -208,7 +208,7 @@ function httpErrorStatusHandle(error: any) {
     if (error.message.includes('timeout')) message = '网络请求超时！'
     if (error.message.includes('Network')) message = window.navigator.onLine ? '服务端异常！' : '您断网了！'
 
-    ElMessage({
+    ElNotification({
         type: 'error',
         message,
     })
