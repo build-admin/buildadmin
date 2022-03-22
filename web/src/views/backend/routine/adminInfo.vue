@@ -69,17 +69,14 @@
             <el-col :xs="24" :sm="24" :md="24" :lg="14" :offset="1">
                 <el-card header="操作日志" shadow="never">
                     <el-timeline>
-                        <el-timeline-item v-for="item in state.log" placement="top" size="large" :timestamp="timeFormat(item.createtime)">
-                            <el-card>
-                                <h5 class="log-h5">{{ item.title }}</h5>
-                                - {{ item.url }}
-                            </el-card>
+                        <el-timeline-item v-for="item in state.log" size="large" :timestamp="timeFormat(item.createtime)">
+                            {{ item.title }}
                         </el-timeline-item>
                     </el-timeline>
                     <el-pagination
                         :currentPage="state.logCurrentPage"
                         :page-size="state.logPageSize"
-                        :page-sizes="[10, 20, 50, 100]"
+                        :page-sizes="[12, 22, 52, 100]"
                         background
                         :layout="shrink ? 'prev, next, jumper' : 'sizes, ->, prev, pager, next, jumper'"
                         :total="state.logTotal"
@@ -131,9 +128,11 @@ const state: {
     formKey: uuid(),
     buttonLoading: false,
     log: [],
-    logFilter: {},
+    logFilter: {
+        limit: 12,
+    },
     logCurrentPage: 1,
-    logPageSize: 10,
+    logPageSize: 12,
     logTotal: 100,
 })
 
@@ -296,11 +295,5 @@ onMounted(() => {
     .lg-mb-20 {
         margin-bottom: 20px;
     }
-}
-.mt10 {
-    margin-top: 6px;
-}
-.log-h5 {
-    display: inline;
 }
 </style>

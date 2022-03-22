@@ -104,7 +104,14 @@ const baTable = new baTableClass(
                 operatorPlaceholder: '模糊查询',
                 'show-overflow-tooltip': true,
             },
-            { label: t('auth/adminLog.url'), prop: 'url', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            {
+                label: t('auth/adminLog.url'),
+                prop: 'url',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: '模糊查询',
+                'show-overflow-tooltip': true,
+            },
             { label: t('auth/adminLog.ip'), prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
             {
                 label: t('auth/adminLog.useragent'),
