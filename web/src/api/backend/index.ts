@@ -1,4 +1,5 @@
 import createAxios from '/@/utils/axios'
+import { getAdminToken } from '/@/utils/common'
 
 const controllerUrl = '/index.php/admin/index/'
 
@@ -21,5 +22,8 @@ export function logout() {
     return createAxios({
         url: controllerUrl + 'logout',
         method: 'POST',
+        data: {
+            refresh_token: getAdminToken('refresh'),
+        }
     })
 }

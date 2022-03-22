@@ -3,6 +3,7 @@ declare (strict_types=1);
 
 namespace app\admin\controller;
 
+use app\common\facade\Token;
 use ba\Captcha;
 use think\facade\Config;
 use think\facade\Validate;
@@ -97,6 +98,8 @@ class Index extends Backend
     public function logout()
     {
         if ($this->request->isPost()) {
+            $refreshToken = $this->request->post('refresh_token', '');
+            if ($refreshToken) Token::delete((string)$refreshToken);
             $this->auth->logout();
             $this->success();
         }
