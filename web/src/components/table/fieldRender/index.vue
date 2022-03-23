@@ -32,7 +32,10 @@
 
     <!-- tags -->
     <div v-if="field.render == 'tags'">
-        <el-tag class="m-10" v-for="tag in fieldValue" size="small" effect="light">{{ tag }}</el-tag>
+        <template v-if="Array.isArray(fieldValue)">
+            <el-tag class="m-10" v-for="tag in fieldValue" size="small" effect="light">{{ tag }}</el-tag>
+        </template>
+        <el-tag class="m-10" v-else size="small" effect="light">{{ fieldValue }}</el-tag>
     </div>
 
     <!-- url -->

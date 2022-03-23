@@ -111,8 +111,9 @@ const baTable = new baTableClass(
                 operator: 'LIKE',
                 operatorPlaceholder: '模糊查询',
                 'show-overflow-tooltip': true,
+                render: 'url'
             },
-            { label: t('auth/adminLog.ip'), prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            { label: t('auth/adminLog.ip'), prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tags' },
             {
                 label: t('auth/adminLog.useragent'),
                 prop: 'useragent',
