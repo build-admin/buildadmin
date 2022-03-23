@@ -14,6 +14,12 @@ export const useAdminInfo = defineStore('adminInfo', {
             refreshToken: '',
         }
     },
+    actions: {
+        removeToken() {
+            this.token = ''
+            this.refreshToken = ''
+        },
+    },
     persist: {
         key: ADMIN_INFO,
     },

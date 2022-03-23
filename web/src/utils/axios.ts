@@ -3,7 +3,7 @@ import type { AxiosRequestConfig } from 'axios'
 import { computed } from 'vue'
 import { ElLoading, LoadingOptions, ElNotification } from 'element-plus'
 import { useConfig } from '/@/stores/config'
-import { getAdminToken } from './common'
+import { getAdminToken, removeAdminToken } from './common'
 import router from '/@/router/index'
 import { refreshToken } from '/@/api/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
@@ -100,8 +100,16 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                                 }
                             })
                             .catch((err) => {
-                                router.push({ name: 'adminLogin' })
-                                return Promise.reject(err)
+                                removeAdminToken()
+                                if (router.currentRoute.value.name != 'adminLogin') {
+                                    router.push({ name: 'adminLogin' })
+                                    return Promise.reject(err)
+                                } else {
+                                    response.headers.batoken = ''
+                                    window.requests.forEach((cb) => cb(''))
+                                    window.requests = []
+                                    return Axios(response.config)
+                                }
                             })
                             .finally(() => {
                                 window.tokenRefreshing = false

@@ -71,6 +71,11 @@ export function getAdminToken(type: 'auth' | 'refresh' = 'auth') {
     return type == 'auth' ? adminInfo.token : adminInfo.refreshToken
 }
 
+export function removeAdminToken() {
+    const adminInfo = useAdminInfo()
+    adminInfo.removeToken()
+}
+
 /**
  * 防抖
  * @param fn 执行函数

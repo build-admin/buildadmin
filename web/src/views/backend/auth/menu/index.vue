@@ -43,7 +43,7 @@ const tableRef = ref()
 const baTable = new baTableClass(
     new baTableApi(authMenu),
     {
-        expandAll: true,
+        expandAll: false,
         dblClickNotEditColumn: [undefined, 'status'],
         column: [
             { type: 'selection', align: 'center' },

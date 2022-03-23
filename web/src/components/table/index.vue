@@ -7,7 +7,6 @@
         :border="true"
         v-loading="loading"
         stripe
-        default-expand-all
         @select-all="onSelectAll"
         @select="onSelect"
         @selection-change="onSelectionChange"
