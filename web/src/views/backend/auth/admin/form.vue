@@ -30,6 +30,16 @@
                 <el-form-item prop="nickname" label="昵称">
                     <el-input v-model="baTable.form.items!.nickname" type="string" placeholder="请输入昵称"></el-input>
                 </el-form-item>
+                <el-form-item label="管理员分组">
+                    <remoteSelect
+                        multiple
+                        :params="{ isTree: true }"
+                        field="name"
+                        :remote-url="authGroup + 'index'"
+                        v-model="baTable.form.items!.group_name_arr"
+                        placeholder="点击选择"
+                    />
+                </el-form-item>
                 <el-form-item label="头像">
                     <el-upload
                         class="avatar-uploader"
@@ -95,6 +105,8 @@ import type baTableClass from '/@/utils/baTable'
 import { regularPassword, validatorAccount, validatorMobile } from '/@/utils/validate'
 import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
 import type { ElForm } from 'element-plus'
+import remoteSelect from '/@/components/remoteSelect/index.vue'
+import { authGroup } from '/@/api/controllerUrls'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 

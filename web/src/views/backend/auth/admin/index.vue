@@ -45,6 +45,7 @@ const baTable = new baTableClass(
             { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
             { label: '用户名', prop: 'username', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
             { label: '昵称', prop: 'nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            { label: '分组', prop: 'group_name_arr', align: 'center', operator: false, render: 'tags' },
             { label: '头像', prop: 'avatar', align: 'center', render: 'image', operator: false },
             { label: '邮箱', prop: 'email', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
             { label: '手机号', prop: 'mobile', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },

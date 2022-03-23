@@ -9,6 +9,7 @@ use app\admin\model\Admin as AdminModel;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
 use think\facade\Db;
+use app\admin\model\AdminGroup;
 
 class Admin extends Backend
 {
@@ -60,6 +61,18 @@ class Admin extends Backend
                 $data['salt']     = $salt;
                 $data['password'] = $passwd;
                 $result           = $this->model->save($data);
+                if ($data['group_name_arr']) {
+                    $groupAccess = [];
+                    foreach ($data['group_name_arr'] as $datum) {
+                        if (is_numeric($datum) && AdminGroup::where('id', $datum)->value('id')) {
+                            $groupAccess[] = [
+                                'uid'      => $this->model->id,
+                                'group_id' => $datum,
+                            ];
+                        }
+                    }
+                    Db::name('admin_group_access')->insertAll($groupAccess);
+                }
                 Db::commit();
             } catch (ValidateException $e) {
                 Db::rollback();
@@ -115,6 +128,23 @@ class Admin extends Backend
 
             if (isset($data['password']) && $data['password']) {
                 $this->model->resetPassword($data['id'], $data['password']);
+            }
+
+            Db::name('admin_group_access')
+                ->where('uid', $id)
+                ->delete();
+            if ($data['group_name_arr']) {
+                $groupAccess = [];
+                foreach ($data['group_name_arr'] as $datum) {
+                    $group_id = AdminGroup::where('id|name', $datum)->value('id');
+                    if ($group_id) {
+                        $groupAccess[] = [
+                            'uid'      => $id,
+                            'group_id' => $group_id,
+                        ];
+                    }
+                }
+                Db::name('admin_group_access')->insertAll($groupAccess);
             }
 
             $data   = $this->excludeFields($data);

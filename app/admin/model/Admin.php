@@ -3,8 +3,10 @@
 namespace app\admin\model;
 
 use think\facade\Config;
+use think\facade\Db;
 use think\Model;
 use ba\Random;
+use app\admin\model\AdminGroup;
 
 class Admin extends Model
 {
@@ -12,6 +14,20 @@ class Admin extends Model
 
     protected $createTime = 'createtime';
     protected $updateTime = 'updatetime';
+
+    // 追加属性
+    protected $append = [
+        'group_name_arr',
+    ];
+
+    public function getGroupNameArrAttr($value, $row)
+    {
+        $groupAccess = Db::name('admin_group_access')
+            ->where('uid', $row['id'])
+            ->column('group_id');
+        $groupNames  = AdminGroup::whereIn('id', $groupAccess)->column('name');
+        return $groupNames;
+    }
 
     public function getAvatarAttr($value)
     {

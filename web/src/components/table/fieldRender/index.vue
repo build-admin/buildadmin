@@ -30,6 +30,11 @@
         }}</el-tag>
     </div>
 
+    <!-- tags -->
+    <div v-if="field.render == 'tags'">
+        <el-tag class="m-10" v-for="tag in fieldValue" size="small" effect="light">{{ tag }}</el-tag>
+    </div>
+
     <!-- url -->
     <div v-if="field.render == 'url'">
         <el-input :model-value="fieldValue" placeholder="链接地址">
@@ -143,6 +148,9 @@ const getTagType = (value: string, custom: any): TagProps['type'] => {
 </script>
 
 <style scoped lang="scss">
+.m-10 {
+    margin: 4px;
+}
 .ba-render-image {
     text-align: center;
 }
