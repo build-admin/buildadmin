@@ -190,15 +190,19 @@ class Auth
             ->withoutField(['remark', 'status', 'weigh', 'updatetime', 'createtime'])
             ->where($where)
             ->order('weigh desc,id asc')
-            ->select();
+            ->select()->toArray();
 
         // 用户规则
         $rules = [];
         if (in_array('*', $ids)) {
             $rules[] = "*";
         }
-        foreach ($this->rules as $rule) {
+        foreach ($this->rules as $key => $rule) {
             $rules[$rule['id']] = strtolower($rule['name']);
+            if ($rule['keepalive']) {
+                $this->rules[$key]['keepAlive'] = $rule['name'];
+            }
+            unset($this->rules[$key]['keepalive']);
         }
         $ruleList[$uid] = $rules;
         return array_unique($rules);

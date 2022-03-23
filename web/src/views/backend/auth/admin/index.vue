@@ -81,4 +81,11 @@ baTable.mount()
 baTable.getIndex()
 </script>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
+    name: 'auth/admin',
+})
+</script>
+
 <style scoped lang="scss"></style>

@@ -112,7 +112,6 @@ const handleMenuRule = (routes: any, pathPrefix = '/') => {
             }
 
             routes[key].type = routes[key].menu_type
-            routes[key].keepAlive = routes[key].name
             if (routes[key].type == 'tab') {
                 routes[key].path = pathPrefix + routes[key].path
             } else {

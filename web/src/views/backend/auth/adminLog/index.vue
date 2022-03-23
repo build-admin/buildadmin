@@ -206,6 +206,13 @@ onMounted(() => {
 })
 </script>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
+    name: 'auth/adminLog',
+})
+</script>
+
 <style scoped lang="scss">
 :deep(.ba-operate-dialog) .el-dialog__body {
     padding: 0 10px;
