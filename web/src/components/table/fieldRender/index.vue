@@ -6,7 +6,7 @@
     <el-switch
         v-if="field.render == 'switch'"
         @change="changeField($event, property)"
-        :model-value="fieldValue"
+        :model-value="fieldValue.toString()"
         :loading="row.loading"
         active-value="1"
         inactive-value="0"

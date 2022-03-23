@@ -13,12 +13,12 @@
         @sort-change="onSortChange"
         v-bind="$attrs"
     >
-        <template v-for="(item, key) in field" :key="key">
+        <template v-for="(item, key) in field">
             <Column v-if="item.show !== false" :attr="item">
                 <template v-if="item.render" #default="scope">
                     <FieldRender
                         :field="item"
-                        :key="'column-render-' + key + scope.row[scope.column.property]"
+                        :key="item.render == 'switch' ? 'column-' + scope.column.property + '-' + key + '-' + scope.row[scope.column.property] : 0"
                         :row="scope.row"
                         :property="scope.column.property"
                     />

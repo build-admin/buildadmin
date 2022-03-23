@@ -44,7 +44,7 @@ const baTable = new baTableClass(
     new baTableApi(authMenu),
     {
         expandAll: false,
-        dblClickNotEditColumn: [undefined, 'status'],
+        dblClickNotEditColumn: [undefined, 'keepalive', 'status'],
         column: [
             { type: 'selection', align: 'center' },
             { label: '标题', prop: 'title', align: 'left' },
@@ -58,6 +58,7 @@ const baTable = new baTableClass(
                 custom: { menu: 'danger', menu_dir: 'success', button: 'info' },
                 replaceValue: { menu: t('auth/menu.type menu'), menu_dir: t('auth/menu.type menu_dir'), button: t('auth/menu.type button') },
             },
+            { label: '缓存', prop: 'keepalive', align: 'center', width: '80', render: 'switch' },
             { label: '状态', prop: 'status', align: 'center', width: '80', render: 'switch' },
             { label: '更新时间', prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
             {
@@ -75,6 +76,7 @@ const baTable = new baTableClass(
             type: 'menu',
             menu_type: 'tab',
             extend: 'none',
+            keepalive: 0,
             status: '1',
             icon: 'el-icon-Minus',
         },

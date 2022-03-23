@@ -2,7 +2,7 @@
     <!-- 对话框表单 -->
     <el-dialog
         custom-class="ba-operate-dialog"
-        top="10vh"
+        top="5vh"
         :close-on-click-modal="false"
         :model-value="baTable.form.operate ? true : false"
         @close="baTable.toggleForm"
@@ -93,6 +93,10 @@
                 </el-form-item>
                 <el-form-item label="规则权重">
                     <el-input v-model="baTable.form.items!.weigh" type="number" placeholder="请输入菜单规则权重(排序依据)"></el-input>
+                </el-form-item>
+                <el-form-item label="缓存">
+                    <el-radio v-model="baTable.form.items!.keepalive" :label="0" :border="true">禁用</el-radio>
+                    <el-radio v-model="baTable.form.items!.keepalive" :label="1" :border="true">启用</el-radio>
                 </el-form-item>
                 <el-form-item label="状态">
                     <el-radio v-model="baTable.form.items!.status" label="0" :border="true">禁用</el-radio>
