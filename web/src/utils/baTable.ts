@@ -406,6 +406,7 @@ export default class baTable {
 
     mount = () => {
         this.runBefore('mount')
+        this.activate = true
         const { proxy } = useCurrentInstance()
         /**
          * 表格内的按钮响应
@@ -454,9 +455,9 @@ export default class baTable {
         })
 
         onUnmounted(() => {
-            proxy.eventBus.off('onTableComSearch')
-            proxy.eventBus.off('onTableButtonClick')
-            proxy.eventBus.off('onTableFieldChange')
+            // 考虑到 keepalive 在 onMounted、onActivated 时注册事件；onUnmounted、onDeactivated 时注销事件，但并不是最方便的方案，且注销后在全局事件管理中本来就有留存
+            // 干脆，不off掉事件，改用 this.activate 来决定事件是否执行
+            this.activate = false
             this.runAfter('mount')
         })
 

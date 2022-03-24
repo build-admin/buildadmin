@@ -35,23 +35,19 @@
                     />
                 </el-form-item>
                 <el-form-item label="规则类型">
-                    <el-radio v-model="baTable.form.items!.type" label="menu_dir" :border="true">菜单目录</el-radio>
-                    <el-radio v-model="baTable.form.items!.type" label="menu" :border="true">菜单项</el-radio>
-                    <el-radio v-model="baTable.form.items!.type" label="button" :border="true">页面按钮</el-radio>
+                    <el-radio class="ba-el-radio" v-model="baTable.form.items!.type" label="route" :border="true">普通路由</el-radio>
+                    <el-radio class="ba-el-radio" v-model="baTable.form.items!.type" label="menu_dir" :border="true">会员中心菜单目录</el-radio>
+                    <el-radio class="ba-el-radio" v-model="baTable.form.items!.type" label="menu" :border="true">会员中心菜单项</el-radio>
                 </el-form-item>
                 <el-form-item prop="title" label="规则标题">
                     <el-input v-model="baTable.form.items!.title" type="string" placeholder="请输入菜单规则标题"></el-input>
                 </el-form-item>
                 <el-form-item prop="name" label="规则名称">
-                    <el-input v-model="baTable.form.items!.name" type="string" placeholder="英文名称，无需以`/admin`开头，如:auth/menu"></el-input>
+                    <el-input v-model="baTable.form.items!.name" type="string" placeholder="英文名称"></el-input>
                     <div class="block-help">将注册为web端路由名称，同时作为server端API验权使用</div>
                 </el-form-item>
                 <el-form-item v-if="baTable.form.items!.type != 'button'" label="路由路径">
-                    <el-input
-                        v-model="baTable.form.items!.path"
-                        type="string"
-                        placeholder="web端路由路径(path)，无需以`/admin`开头，如:auth/menu"
-                    ></el-input>
+                    <el-input v-model="baTable.form.items!.path" type="string" placeholder="web端路由路径(path)"></el-input>
                 </el-form-item>
                 <el-form-item v-if="baTable.form.items!.type != 'button'" label="规则图标">
                     <IconSelector :show-icon-name="true" v-model="baTable.form.items!.icon" />
@@ -88,7 +84,7 @@
                         v-model="baTable.form.items!.remark"
                         type="textarea"
                         :autosize="{ minRows: 2, maxRows: 5 }"
-                        placeholder="在控制器中使用`get_route_remark()`函数，可以获得此字段值自用，比如控制台的banner文案"
+                        placeholder="请输入规则备注"
                     ></el-input>
                 </el-form-item>
                 <el-form-item label="规则权重">
@@ -140,20 +136,6 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
             trigger: 'blur',
         },
     ],
-    name: [
-        {
-            required: true,
-            message: '请输入规则名称',
-            trigger: 'blur',
-        },
-    ],
-    url: [
-        {
-            type: 'url',
-            message: '请输入正确的Url',
-            trigger: 'blur',
-        },
-    ],
     pid: [
         {
             validator: (rule: any, val: string, callback: Function) => {
@@ -168,7 +150,25 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
             trigger: 'blur',
         },
     ],
+    name: [
+        {
+            required: true,
+            message: '请输入规则名称',
+            trigger: 'blur',
+        },
+    ],
+    url: [
+        {
+            type: 'url',
+            message: '请输入正确的Url',
+            trigger: 'blur',
+        },
+    ],
 })
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.ba-el-radio {
+    margin-bottom: 10px;
+}
+</style>

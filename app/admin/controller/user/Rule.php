@@ -1,15 +1,15 @@
 <?php
 
-namespace app\admin\controller\auth;
+namespace app\admin\controller\user;
 
 use ba\Tree;
-use app\admin\model\MenuRule;
+use app\admin\model\UserRule;
 use app\common\controller\Backend;
 
-class Menu extends Backend
+class Rule extends Backend
 {
     /**
-     * @var MenuRule
+     * @var UserRule
      */
     protected $model = null;
 
@@ -18,19 +18,21 @@ class Menu extends Backend
      */
     protected $tree = null;
 
+    protected $noNeedLogin = ['index'];
+
     protected $preExcludeFields = ['createtime', 'updatetime'];
 
     protected $quickSearchField = 'title';
 
     protected $keyword = false;
 
-    protected $modelValidate = false;
-
     public function initialize()
     {
         parent::initialize();
-        $this->model = new MenuRule();
+        $this->model = new UserRule();
         $this->tree  = Tree::instance();
+
+        $this->keyword = $this->request->request("quick_search");
     }
 
     public function index()
@@ -39,9 +41,8 @@ class Menu extends Backend
             $this->select();
         }
 
-        $this->keyword = $this->request->request("quick_search");
         $this->success('', [
-            'list'   => $this->getMenus(),
+            'list'   => $this->getRule(),
             'remark' => get_route_remark(),
         ]);
     }
@@ -63,14 +64,10 @@ class Menu extends Backend
         ]);
     }
 
-    /**
-     * 重写select方法
-     */
     public function select()
     {
-        $isTree        = $this->request->param('isTree');
-        $this->keyword = $this->request->request("quick_search");
-        $data          = $this->getMenus(false);
+        $isTree = $this->request->param('isTree');
+        $data   = $this->getRule();
 
         if ($isTree && !$this->keyword) {
             $data = $this->tree->assembleTree($this->tree->getTreeArray($data, 'title'));
@@ -80,25 +77,9 @@ class Menu extends Backend
         ]);
     }
 
-    protected function getMenus($getButton = true)
+    public function getRule()
     {
-        $rules = $this->getRuleList($getButton);
-        return $this->tree->assembleChild($rules);
-    }
-
-    protected function getRuleList($getButton = true)
-    {
-        $ids = $this->auth->getRuleIds();
-
         $where = [];
-        // 如果没有 * 则只获取用户拥有的规则
-        if (!in_array('*', $ids)) {
-            $where[] = ['id', 'in', $ids];
-        }
-        if (!$getButton) {
-            $where[] = ['type', 'in', ['menu_dir', 'menu']];
-        }
-
         if ($this->keyword) {
             $keyword = explode(' ', $this->keyword);
             foreach ($keyword as $item) {
@@ -106,12 +87,8 @@ class Menu extends Backend
             }
         }
 
-        // 读取用户组所有权限规则
-        $rules = $this->model
-            ->where($where)
-            ->order('weigh desc,id asc')
-            ->select();
-
-        return $rules;
+        $data = $this->model->where($where)->order('weigh desc,id asc')->select()->toArray();
+        return $this->tree->assembleChild($data);
     }
+
 }

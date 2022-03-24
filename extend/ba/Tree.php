@@ -59,7 +59,7 @@ class Tree
                 $arr[$key][$field] = str_pad('', 4, ' ') . ($superiorEnd ? '' : self::$icon[0]) . str_pad('', ($level - 2) * 4, ' ') . $prefix . $item[$field];
             }
 
-            if ($item['children']) {
+            if (isset($item['children']) && $item['children']) {
                 $arr[$key]['children'] = self::getTreeArray($item['children'], $field, $level, $number == $total);
             }
             $number++;
