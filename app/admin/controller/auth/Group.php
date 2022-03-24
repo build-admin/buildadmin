@@ -34,6 +34,8 @@ class Group extends Backend
         parent::initialize();
         $this->model = new AdminGroup();
         $this->tree  = Tree::instance();
+
+        $this->keyword = $this->request->request("quick_search");
     }
 
     public function index()
@@ -42,7 +44,6 @@ class Group extends Backend
             $this->select();
         }
 
-        $this->keyword = $this->request->request("quick_search");
         $this->success('', [
             'list'   => $this->getGroups(),
             'remark' => get_route_remark(),
@@ -180,9 +181,8 @@ class Group extends Backend
 
     public function select()
     {
-        $isTree        = $this->request->param('isTree');
-        $this->keyword = $this->request->request("quick_search");
-        $data          = $this->getGroups();
+        $isTree = $this->request->param('isTree');
+        $data   = $this->getGroups();
 
         if ($isTree && !$this->keyword) {
             $data = $this->tree->assembleTree($this->tree->getTreeArray($data, 'name'));

@@ -31,6 +31,8 @@ class Menu extends Backend
         parent::initialize();
         $this->model = new MenuRule();
         $this->tree  = Tree::instance();
+
+        $this->keyword = $this->request->request("quick_search");
     }
 
     public function index()
@@ -39,7 +41,6 @@ class Menu extends Backend
             $this->select();
         }
 
-        $this->keyword = $this->request->request("quick_search");
         $this->success('', [
             'list'   => $this->getMenus(),
             'remark' => get_route_remark(),
@@ -68,9 +69,8 @@ class Menu extends Backend
      */
     public function select()
     {
-        $isTree        = $this->request->param('isTree');
-        $this->keyword = $this->request->request("quick_search");
-        $data          = $this->getMenus(false);
+        $isTree = $this->request->param('isTree');
+        $data   = $this->getMenus(false);
 
         if ($isTree && !$this->keyword) {
             $data = $this->tree->assembleTree($this->tree->getTreeArray($data, 'title'));
