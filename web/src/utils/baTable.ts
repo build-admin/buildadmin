@@ -1,4 +1,4 @@
-import { reactive, onUnmounted } from 'vue'
+import { reactive, onUnmounted, onActivated, onDeactivated } from 'vue'
 import { getArrayKey } from '/@/utils/common'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import type { baTableApi } from '/@/api/common'
@@ -8,6 +8,8 @@ import { ElNotification, ElForm } from 'element-plus'
 
 export default class baTable {
     public api
+
+    public activate
 
     /* 表格状态-s */
     public table: BaTable = reactive({
@@ -67,6 +69,7 @@ export default class baTable {
         this.table = Object.assign(this.table, table)
         this.before = before
         this.after = after
+        this.activate = true
     }
 
     runBefore(funName: string, args: any = {}) {
@@ -410,6 +413,7 @@ export default class baTable {
          * @param row 被操作行数据
          */
         proxy.eventBus.on('onTableButtonClick', (data: { name: string; row: TableRow }) => {
+            if (!this.activate) return
             if (data.name == 'edit') {
                 this.toggleForm('edit', [data.row[this.table.pk!]])
             } else if (data.name == 'delete') {
@@ -422,6 +426,7 @@ export default class baTable {
          * @param comSearchData 通用搜索数据
          */
         proxy.eventBus.on('onTableComSearch', (data: comSearchData) => {
+            if (!this.activate) return
             this.table.filter!.search = data
             this.getIndex()
         })
@@ -433,6 +438,7 @@ export default class baTable {
          * @param field 被操作字段名
          */
         proxy.eventBus.on('onTableFieldChange', (data: { value: any; row: TableRow; field: keyof TableRow; render: string }) => {
+            if (!this.activate) return
             if (data.render == 'switch') {
                 data.row.loading = true
                 this.api
@@ -452,6 +458,14 @@ export default class baTable {
             proxy.eventBus.off('onTableButtonClick')
             proxy.eventBus.off('onTableFieldChange')
             this.runAfter('mount')
+        })
+
+        onActivated(() => {
+            this.activate = true
+        })
+
+        onDeactivated(() => {
+            this.activate = false
         })
     }
 }

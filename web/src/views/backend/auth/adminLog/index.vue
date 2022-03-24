@@ -199,6 +199,7 @@ onMounted(() => {
      * @param row 被操作行数据
      */
     proxy.eventBus.on('onTableButtonClick', (data: { name: string; row: TableRow }) => {
+        if (!baTable.activate) return
         if (data.name == 'info') {
             infoButtonClick(data.row)
         }
