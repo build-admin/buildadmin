@@ -6,7 +6,7 @@
             :field="baTable.table.column"
             :buttons="['refresh', 'add', 'edit', 'delete', 'comSearch']"
             :enable-batch-opt="baTable.table.selection!.length > 0 ? true : false"
-            :quick-search-placeholder="'通过用户名和昵称模糊搜索'"
+            :quick-search-placeholder="'通过组名模糊搜索'"
             @action="baTable.onTableHeaderAction"
         />
         <!-- 表格 -->
@@ -21,11 +21,12 @@
             @action="baTable.onTableAction"
             @row-dblclick="baTable.onTableDblclick"
         />
+        <Form ref="formRef" :ba-table="baTable" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { userGroup } from '/@/api/controllerUrls'
 import Form from './form.vue'
@@ -35,13 +36,14 @@ import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
 
 const tableRef = ref()
+const formRef = ref()
 const baTable = new baTableClass(
     new baTableApi(userGroup),
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
             { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-            { label: '组名', prop: 'name', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            { label: '组别名称', prop: 'name', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
             {
                 label: '状态',
                 prop: 'status',
@@ -50,27 +52,44 @@ const baTable = new baTableClass(
                 custom: { '0': 'danger', '1': 'success' },
                 replaceValue: { '0': '禁用', '1': '启用' },
             },
+            { label: '更新时间', prop: 'updatetime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
             { label: '创建时间', prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
             {
                 label: '操作',
                 align: 'center',
-                width: '100',
+                width: '130',
                 render: 'buttons',
                 buttons: defaultOptButtons(['edit', 'delete']),
                 operator: false,
             },
         ],
-        dblClickNotEditColumn: [undefined, 'status'],
+        dblClickNotEditColumn: [undefined],
     },
     {
         defaultItems: {
             status: '1',
         },
+    },
+    {
+        // 提交前
+        onSubmit: () => {
+            baTable.form.items!.rules = formRef.value.getCheckeds()
+        },
     }
 )
 
-baTable.mount()
-baTable.getIndex()
+onMounted(() => {
+    baTable.table.ref = tableRef.value
+    baTable.mount()
+    baTable.getIndex()
+})
+</script>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
+    name: 'user/group',
+})
 </script>
 
 <style scoped lang="scss"></style>

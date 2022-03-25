@@ -202,7 +202,7 @@ class Group extends Backend
             }
         }
 
-        $data = $this->model->where('status', '1')->where($where)->select();
+        $data = $this->model->where($where)->select();
         // 获取第一个权限的名称
         foreach ($data as $datum) {
             if ($datum->rules) {
