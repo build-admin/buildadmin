@@ -8,8 +8,18 @@ use think\facade\Db;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
 
+/**
+ * 后台控制器trait类
+ * 已组合到 @var \app\common\controller\Backend 中
+ * 若需修改此类方法：请复制方法至对应控制器后进行重写
+ */
 trait Backend
 {
+    /**
+     * 排除入库字段
+     * @param $params
+     * @return mixed
+     */
     protected function excludeFields($params)
     {
         if (!is_array($this->preExcludeFields)) {
@@ -24,6 +34,9 @@ trait Backend
         return $params;
     }
 
+    /**
+     * 查看
+     */
     public function index()
     {
         $this->request->filter(['strip_tags', 'trim']);
@@ -46,6 +59,9 @@ trait Backend
         ]);
     }
 
+    /**
+     * 添加
+     */
     public function add()
     {
         if ($this->request->isPost()) {
@@ -89,6 +105,10 @@ trait Backend
         $this->error(__('Parameter error'));
     }
 
+    /**
+     * 编辑
+     * @param null $id
+     */
     public function edit($id = null)
     {
         $row = $this->model->find($id);
@@ -140,6 +160,10 @@ trait Backend
         ]);
     }
 
+    /**
+     * 删除
+     * @param null $ids
+     */
     public function del($ids = null)
     {
         if (!$this->request->isDelete() || !$ids) {
@@ -169,6 +193,11 @@ trait Backend
         }
     }
 
+    /**
+     * 排序
+     * @param int $id       排序主键值
+     * @param int $targetId 排序位置主键值
+     */
     public function sortable($id, $targetId)
     {
         $row    = $this->model->find($id);
@@ -204,6 +233,10 @@ trait Backend
         $this->success('');
     }
 
+    /**
+     * 加载为select(远程下拉选择框)数据，默认还是走$this->index()方法
+     * 必要时请在对应控制器类中重写
+     */
     public function select()
     {
 
