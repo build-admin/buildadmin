@@ -33,9 +33,13 @@
     <!-- tags -->
     <div v-if="field.render == 'tags'">
         <template v-if="Array.isArray(fieldValue)">
-            <el-tag class="m-10" v-for="tag in fieldValue" size="small" effect="light">{{ tag }}</el-tag>
+            <template v-for="tag in fieldValue">
+                <el-tag v-if="tag" class="m-10" size="small" effect="light">{{ tag }}</el-tag>
+            </template>
         </template>
-        <el-tag class="m-10" v-else size="small" effect="light">{{ fieldValue }}</el-tag>
+        <template v-else>
+            <el-tag class="m-10" v-if="fieldValue" size="small" effect="light">{{ fieldValue }}</el-tag>
+        </template>
     </div>
 
     <!-- url -->
@@ -122,9 +126,17 @@ const props = withDefaults(defineProps<Props>(), {
 
 // 字段值(单元格值)
 const fieldValue = ref(props.row[props.property])
+if (props.property.indexOf('.') > -1) {
+    let fieldNameArr = props.property.split('.')
+    let val: any = props.row[fieldNameArr[0]]
+    for (let index = 1; index < fieldNameArr.length; index++) {
+        val = val[fieldNameArr[index]]
+    }
+    fieldValue.value = val
+}
 
 if (props.field.renderFormatter && typeof props.field.renderFormatter == 'function') {
-    fieldValue.value = props.field.renderFormatter(props.row, props.field, props.row[props.property])
+    fieldValue.value = props.field.renderFormatter(props.row, props.field, fieldValue.value)
 }
 
 const changeField = (value: any, fieldName: keyof TableRow) => {

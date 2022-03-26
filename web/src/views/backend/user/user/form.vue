@@ -1,6 +1,7 @@
 <template>
     <!-- 对话框表单 -->
     <el-dialog
+        top="5vh"
         custom-class="ba-operate-dialog"
         :close-on-click-modal="false"
         :model-value="baTable.form.operate ? true : false"
@@ -30,13 +31,12 @@
                 <el-form-item prop="nickname" label="昵称">
                     <el-input v-model="baTable.form.items!.nickname" type="string" placeholder="请输入昵称"></el-input>
                 </el-form-item>
-                <el-form-item label="管理员分组">
+                <el-form-item label="会员分组">
                     <remoteSelect
-                        multiple
                         :params="{ isTree: true }"
                         field="name"
-                        :remote-url="userUser + 'index'"
-                        v-model="baTable.form.items!.group_name_arr"
+                        :remote-url="userGroup + 'index'"
+                        v-model="baTable.form.items!.group_id"
                         placeholder="点击选择"
                     />
                 </el-form-item>
@@ -64,6 +64,34 @@
                 <el-form-item prop="mobile" label="手机号">
                     <el-input v-model="baTable.form.items!.mobile" type="string" placeholder="请输入手机号码"></el-input>
                 </el-form-item>
+                <el-form-item label="性别">
+                    <el-radio v-model="baTable.form.items!.gender" :label="0" :border="true">未知</el-radio>
+                    <el-radio v-model="baTable.form.items!.gender" :label="1" :border="true">男</el-radio>
+                    <el-radio v-model="baTable.form.items!.gender" :label="2" :border="true">女</el-radio>
+                </el-form-item>
+                <el-form-item label="生日">
+                    <el-date-picker
+                        class="w100"
+                        value-format="YYYY-MM-DD"
+                        v-model="baTable.form.items!.birthday"
+                        type="date"
+                        placeholder="请选择生日"
+                    />
+                </el-form-item>
+                <el-form-item v-if="baTable.form.operate == 'edit'" label="余额">
+                    <el-input v-model="baTable.form.items!.money" readonly>
+                        <template #append>
+                            <el-button>调整余额</el-button>
+                        </template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item v-if="baTable.form.operate == 'edit'" label="积分">
+                    <el-input v-model="baTable.form.items!.score" readonly>
+                        <template #append>
+                            <el-button>调整积分</el-button>
+                        </template>
+                    </el-input>
+                </el-form-item>
                 <el-form-item prop="password" label="密码">
                     <el-input
                         v-model="baTable.form.items!.password"
@@ -81,8 +109,8 @@
                     ></el-input>
                 </el-form-item>
                 <el-form-item label="状态">
-                    <el-radio v-model="baTable.form.items!.status" label="0" :border="true">禁用</el-radio>
-                    <el-radio v-model="baTable.form.items!.status" label="1" :border="true">启用</el-radio>
+                    <el-radio v-model="baTable.form.items!.status" label="disable" :border="true">禁用</el-radio>
+                    <el-radio v-model="baTable.form.items!.status" label="enable" :border="true">启用</el-radio>
                 </el-form-item>
             </el-form>
         </div>
@@ -106,7 +134,7 @@ import { regularPassword, validatorAccount, validatorMobile } from '/@/utils/val
 import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
 import type { ElForm } from 'element-plus'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
-import { userUser } from '/@/api/controllerUrls'
+import { userGroup } from '/@/api/controllerUrls'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 

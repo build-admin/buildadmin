@@ -1,14 +1,23 @@
 <template>
     <el-select
-        @focus="getData('')"
+        @focus="getData"
         class="remote-select"
         :loading="state.loading"
         :filterable="true"
         :remote="true"
         clearable
-        :remote-method="getData"
+        :remote-method="onLogKeyword"
     >
         <el-option class="remote-select-option" v-for="item in state.options" :label="item[field]" :value="item[pk]"></el-option>
+        <el-pagination
+            v-if="state.total"
+            :currentPage="state.currentPage"
+            :page-size="state.pageSize"
+            class="select-pagination"
+            layout="->, prev, next"
+            :total="state.total"
+            @current-change="onSelectCurrentPageChange"
+        />
     </el-select>
 </template>
 
@@ -34,21 +43,48 @@ const props = withDefaults(defineProps<Props>(), {
 const state: {
     options: anyObj[]
     loading: boolean
+    total: number
+    currentPage: number
+    pageSize: number
+    params: anyObj
+    keyword: string
 } = reactive({
     options: [],
     loading: false,
+    total: 0,
+    currentPage: 1,
+    pageSize: 10,
+    params: props.params,
+    keyword: '',
 })
 
-const getData = (q: string) => {
+const onLogKeyword = (q: string) => {
+    state.keyword = q
+    getData()
+}
+
+const getData = () => {
     state.loading = true
-    getSelectData(props.remoteUrl, q, props.params)
+    state.params.page = state.currentPage
+    getSelectData(props.remoteUrl, state.keyword, state.params)
         .then((res) => {
             state.loading = false
-            state.options = res.data.options
+            if (res.data.options) {
+                state.options = res.data.options
+                state.total = res.data.total ?? 0
+            } else {
+                state.options = res.data.list
+                state.total = res.data.total
+            }
         })
         .catch((err) => {
             state.loading = false
         })
+}
+
+const onSelectCurrentPageChange = (val: number) => {
+    state.currentPage = val
+    getData()
 }
 </script>
 
