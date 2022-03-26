@@ -4,6 +4,7 @@ namespace app\common\controller;
 
 use app\admin\library\Auth;
 use think\db\exception\PDOException;
+use think\facade\Config;
 use think\facade\Cookie;
 use think\facade\Db;
 
@@ -110,8 +111,8 @@ class Backend extends Api
         $search      = $this->request->get("search/a", []);
 
         $where              = [];
-        $modelName          = strtolower($this->model->getName());
         $modelTable         = strtolower($this->model->getTable());
+        $modelName          = strtolower(str_replace(Config::get('database.connections.mysql.prefix'), '', $modelTable));
         $alias[$modelTable] = $modelName;
         $tableAlias         = $modelName . '.';
 

@@ -105,4 +105,11 @@ baTable.mount()
 baTable.getIndex()
 </script>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
+    name: 'user/user',
+})
+</script>
+
 <style scoped lang="scss"></style>

@@ -20,6 +20,8 @@ class User extends Backend
     // 排除字段
     protected $preExcludeFields = ['lastlogintime', 'loginfailure', 'password', 'salt'];
 
+    protected $quickSearchField = ['username', 'nickname', 'id'];
+
     public function initialize()
     {
         parent::initialize();
@@ -94,6 +96,32 @@ class User extends Backend
         $row->group_id = $row->group_id ? UserGroup::where('id', $row->group_id)->value('name') : '';
         $this->success('', [
             'row' => $row
+        ]);
+    }
+
+    /**
+     * 重写select
+     */
+    public function select()
+    {
+        $this->request->filter(['strip_tags', 'trim']);
+
+        list($where, $alias, $limit, $order) = $this->queryBuilder();
+        $res = $this->model
+            ->withJoin($this->withJoinTable, $this->withJoinType)
+            ->alias($alias)
+            ->where($where)
+            ->order($order)
+            ->paginate($limit);
+
+        foreach ($res as $re) {
+            $re->nickname_text = $re->username . '(ID:' . $re->id . ')';
+        }
+
+        $this->success('', [
+            'list'   => $res->items(),
+            'total'  => $res->total(),
+            'remark' => get_route_remark(),
         ]);
     }
 }

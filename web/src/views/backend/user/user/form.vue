@@ -81,14 +81,14 @@
                 <el-form-item v-if="baTable.form.operate == 'edit'" label="余额">
                     <el-input v-model="baTable.form.items!.money" readonly>
                         <template #append>
-                            <el-button>调整余额</el-button>
+                            <el-button @click="changeAccount('money')">调整余额</el-button>
                         </template>
                     </el-input>
                 </el-form-item>
                 <el-form-item v-if="baTable.form.operate == 'edit'" label="积分">
                     <el-input v-model="baTable.form.items!.score" readonly>
                         <template #append>
-                            <el-button>调整积分</el-button>
+                            <el-button @click="changeAccount('score')">调整积分</el-button>
                         </template>
                     </el-input>
                 </el-form-item>
@@ -135,6 +135,7 @@ import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
 import type { ElForm } from 'element-plus'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
 import { userGroup } from '/@/api/controllerUrls'
+import router from '/@/router/index'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 
@@ -205,6 +206,15 @@ const onAvatarBeforeUpload = (file: any) => {
         if (res.code == 1) {
             props.baTable.form.items!.avatar = res.data.file.full_url
         }
+    })
+}
+
+const changeAccount = (type: string) => {
+    router.push({
+        name: type == 'money' ? 'user/moneyLog' : 'user/scoreLog',
+        query: {
+            user_id: props.baTable.form.items!.id,
+        },
     })
 }
 </script>

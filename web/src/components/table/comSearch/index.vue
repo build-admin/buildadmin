@@ -83,8 +83,13 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
+const query = route.query
 const { proxy } = useCurrentInstance()
+
+// 回撤定位
 
 // 各个字段要同时发送到后台的数据
 const fieldData = new Map()
@@ -97,8 +102,10 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const state: {
+    query: boolean
     form: anyObj
 } = reactive({
+    query: true,
     form: {},
 })
 
@@ -119,6 +126,11 @@ if (props.field.length > 0) {
             } else {
                 state.form[prop] = ''
             }
+
+            if (state.query && query[prop]) {
+                state.form[prop] = query[prop]
+            }
+
             fieldData.set(prop, {
                 operator: props.field[key].operator,
                 render: props.field[key].render,

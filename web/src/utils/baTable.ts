@@ -5,6 +5,7 @@ import type { baTableApi } from '/@/api/common'
 import Sortable from 'sortablejs'
 import { findIndexRow } from '/@/components/table'
 import { ElNotification, ElForm } from 'element-plus'
+import { useRoute } from 'vue-router'
 
 export default class baTable {
     public api
@@ -70,6 +71,7 @@ export default class baTable {
         this.before = before
         this.after = after
         this.activate = true
+        const route = useRoute()
     }
 
     runBefore(funName: string, args: any = {}) {
