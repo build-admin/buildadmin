@@ -3,19 +3,20 @@
         ref="tableRef"
         class="ba-data-table w100"
         header-cell-class-name="table-header-cell"
-        :data="baTable?.table.data"
-        :row-key="baTable?.table.pk"
+        :default-expand-all="baTable.table.expandAll"
+        :data="baTable.table.data"
+        :row-key="baTable.table.pk"
         :border="true"
-        v-loading="baTable?.table.loading"
+        v-loading="baTable.table.loading"
         stripe
         @select-all="onSelectAll"
         @select="onSelect"
         @selection-change="onSelectionChange"
         @sort-change="onSortChange"
-        @row-dblclick="baTable!.onTableDblclick"
+        @row-dblclick="baTable.onTableDblclick"
         v-bind="$attrs"
     >
-        <template v-for="(item, key) in baTable?.table.column">
+        <template v-for="(item, key) in baTable.table.column">
             <Column v-if="item.show !== false" :attr="item">
                 <template v-if="item.render" #default="scope">
                     <FieldRender
@@ -35,7 +36,7 @@
             :page-sizes="[10, 20, 50, 100]"
             background
             :layout="shrink ? 'prev, next, jumper' : 'sizes, ->, prev, pager, next, jumper'"
-            :total="baTable?.table.total"
+            :total="baTable.table.total"
             @size-change="onTableSizeChange"
             @current-change="onTableCurrentChange"
         ></el-pagination>
@@ -43,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, computed, reactive } from 'vue'
+import { ref, nextTick, computed, reactive, inject } from 'vue'
 import type { ElTable } from 'element-plus'
 import Column from '/@/components/table/column/index.vue'
 import FieldRender from '/@/components/table/fieldRender/index.vue'
@@ -53,14 +54,13 @@ import type baTableClass from '/@/utils/baTable'
 const config = useConfig()
 const tableRef = ref<InstanceType<typeof ElTable>>()
 const shrink = computed(() => config.layout.shrink)
+const baTable = inject('baTable') as baTableClass
 
 interface Props {
     pagination?: boolean
-    baTable: baTableClass | null
 }
 const props = withDefaults(defineProps<Props>(), {
     pagination: true,
-    baTable: null,
 })
 
 const state = reactive({
@@ -116,7 +116,7 @@ const onSelectAll = (selection: TableRow[]) => {
  * 取消全选时：selectIds为所有子元素的id
  */
 const isSelectAll = (selectIds: string[]) => {
-    let data = props.baTable?.table.data as TableRow[]
+    let data = baTable.table.data as TableRow[]
     for (const key in data) {
         return selectIds.includes(data[key].id.toString())
     }
@@ -188,7 +188,7 @@ const setUnFoldAll = (children: TableRow[], unfold: boolean) => {
  * 折叠所有
  */
 const unFoldAll = (unfold: boolean) => {
-    setUnFoldAll(props.baTable?.table.data!, unfold)
+    setUnFoldAll(baTable.table.data!, unfold)
 }
 
 const getRef = () => {

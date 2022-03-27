@@ -1,34 +1,25 @@
 <template>
     <div class="default-main ba-table-box">
         <el-alert class="ba-table-alert" v-if="baTable.table.remark" :title="baTable.table.remark" type="info" show-icon />
+
         <!-- 表格顶部菜单 -->
         <TableHeader
-            :field="baTable.table.column"
             :buttons="['refresh', 'add', 'edit', 'delete', 'unfold']"
-            :enable-batch-opt="baTable.table.selection!.length > 0 ? true : false"
-            :unfold="baTable.table.expandAll"
             :quick-search-placeholder="'通过组名模糊搜索'"
             @action="baTable.onTableHeaderAction"
         />
+
         <!-- 表格 -->
         <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
-        <Table
-            ref="tableRef"
-            :default-expand-all="baTable.table.expandAll"
-            :data="baTable.table.data"
-            :field="baTable.table.column"
-            :row-key="baTable.table.pk"
-            :loading="baTable.table.loading"
-            :pagination="false"
-            @action="baTable.onTableAction"
-            @row-dblclick="baTable.onTableDblclick"
-        />
-        <Form ref="formRef" :ba-table="baTable" />
+        <Table ref="tableRef" :pagination="false" @action="baTable.onTableAction" />
+
+        <!-- 表单 -->
+        <Form ref="formRef" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { baTableApi } from '/@/api/common'
 import { authGroup } from '/@/api/controllerUrls'
@@ -91,6 +82,8 @@ const baTable = new baTableClass(
         },
     }
 )
+
+provide('baTable', baTable)
 
 onMounted(() => {
     baTable.table.ref = tableRef.value

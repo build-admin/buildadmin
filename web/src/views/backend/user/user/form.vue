@@ -126,7 +126,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { adminFileUpload } from '/@/api/common'
 import type baTableClass from '/@/utils/baTable'
@@ -138,10 +138,7 @@ import { userGroup } from '/@/api/controllerUrls'
 import router from '/@/router/index'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
-
-const props = defineProps<{
-    baTable: baTableClass
-}>()
+const baTable = inject('baTable') as baTableClass
 
 const { t } = useI18n()
 
@@ -180,7 +177,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     password: [
         {
             validator: (rule: any, val: string, callback: Function) => {
-                if (props.baTable.form.operate == 'add') {
+                if (baTable.form.operate == 'add') {
                     if (!val) {
                         return callback(new Error('请输入密码'))
                     }
@@ -204,7 +201,7 @@ const onAvatarBeforeUpload = (file: any) => {
     fd.append('file', file.raw)
     adminFileUpload(fd).then((res) => {
         if (res.code == 1) {
-            props.baTable.form.items!.avatar = res.data.file.full_url
+            baTable.form.items!.avatar = res.data.file.full_url
         }
     })
 }
@@ -213,7 +210,7 @@ const changeAccount = (type: string) => {
     router.push({
         name: type == 'money' ? 'user/moneyLog' : 'user/scoreLog',
         query: {
-            user_id: props.baTable.form.items!.id,
+            user_id: baTable.form.items!.id,
         },
     })
 }

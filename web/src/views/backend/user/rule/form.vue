@@ -112,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
@@ -121,10 +121,7 @@ import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
 import type { ElForm } from 'element-plus'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
-
-const props = defineProps<{
-    baTable: baTableClass
-}>()
+const baTable = inject('baTable') as baTableClass
 
 const { t } = useI18n()
 
@@ -142,7 +139,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
                 if (!val) {
                     return callback()
                 }
-                if (parseInt(val) == parseInt(props.baTable.form.items!.id)) {
+                if (parseInt(val) == parseInt(baTable.form.items!.id)) {
                     return callback(new Error('上级菜单规则不能是规则本身'))
                 }
                 return callback()

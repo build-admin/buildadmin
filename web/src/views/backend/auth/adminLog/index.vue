@@ -1,27 +1,16 @@
-import useCurrentInstance from '/@/utils/useCurrentInstance'
 <template>
     <div class="default-main ba-table-box">
         <el-alert class="ba-table-alert" v-if="baTable.table.remark" :title="baTable.table.remark" type="info" show-icon />
+
         <!-- 表格顶部菜单 -->
         <TableHeader
-            :field="baTable.table.column"
             :buttons="['refresh', 'delete', 'comSearch']"
-            :enable-batch-opt="baTable.table.selection!.length > 0 ? true : false"
             :quick-search-placeholder="'通过标题模糊搜索'"
             @action="baTable.onTableHeaderAction"
         />
         <!-- 表格 -->
         <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
-        <Table
-            ref="tableRef"
-            :data="baTable.table.data"
-            :field="baTable.table.column"
-            :row-key="baTable.table.pk"
-            :total="baTable.table.total"
-            :loading="baTable.table.loading"
-            @action="baTable.onTableAction"
-            @row-dblclick="baTable.onTableDblclick"
-        />
+        <Table @action="baTable.onTableAction" />
 
         <!-- 查看详情 -->
         <el-dialog
@@ -43,7 +32,7 @@ import useCurrentInstance from '/@/utils/useCurrentInstance'
 
 <script setup lang="ts">
 import _ from 'lodash'
-import { ref, reactive, onMounted } from 'vue'
+import { reactive, onMounted, provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { authAdminLog } from '/@/api/controllerUrls'
 import Table from '/@/components/table/index.vue'
@@ -85,7 +74,6 @@ let optButtons: OptButton[] = [
 
 optButtons = _.concat(optButtons, defaultOptButtons(['delete']))
 
-const tableRef = ref()
 const baTable = new baTableClass(
     new baTableApi(authAdminLog),
     {
@@ -111,7 +99,7 @@ const baTable = new baTableClass(
                 operator: 'LIKE',
                 operatorPlaceholder: '模糊查询',
                 'show-overflow-tooltip': true,
-                render: 'url'
+                render: 'url',
             },
             { label: t('auth/adminLog.ip'), prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tags' },
             {
@@ -153,6 +141,8 @@ const baTable = new baTableClass(
 
 baTable.mount()
 baTable.getIndex()
+
+provide('baTable', baTable)
 
 const buildChildrens = (data: any): Info[] => {
     if (typeof data == 'object') {

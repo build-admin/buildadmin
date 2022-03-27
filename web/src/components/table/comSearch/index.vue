@@ -3,7 +3,7 @@
         <div class="table-com-search">
             <el-form @keyup.enter="onComSearch" label-position="top" :model="state.form">
                 <el-row>
-                    <template v-for="(item, idx) in baTable?.table.column">
+                    <template v-for="(item, idx) in baTable.table.column">
                         <template v-if="item.operator !== false">
                             <el-col v-if="item.render == 'datetime' && (item.operator == 'RANGE' || item.operator == 'NOT RANGE')" :span="12">
                                 <div class="com-search-col">
@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, inject } from 'vue'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import { useRoute } from 'vue-router'
 import type baTableClass from '/@/utils/baTable'
@@ -92,13 +92,7 @@ const { proxy } = useCurrentInstance()
 
 // 各个字段要同时发送到后台的数据
 const fieldData = new Map()
-
-interface Props {
-    baTable: baTableClass | null
-}
-const props = withDefaults(defineProps<Props>(), {
-    baTable: null,
-})
+const baTable = inject('baTable') as baTableClass
 
 const state: {
     query: boolean
@@ -109,8 +103,8 @@ const state: {
 })
 
 // 公共搜索字段数据预处理
-if (props.baTable?.table.column && props.baTable?.table.column.length > 0) {
-    let field = props.baTable?.table.column
+if (baTable.table.column && baTable.table.column.length > 0) {
+    let field = baTable.table.column
     for (const key in field) {
         let prop = field[key].prop
         if (typeof field[key].operator == 'undefined') {

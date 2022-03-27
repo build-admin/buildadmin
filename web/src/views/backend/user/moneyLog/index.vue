@@ -1,33 +1,25 @@
 <template>
     <div class="default-main ba-table-box">
         <el-alert class="ba-table-alert" v-if="baTable.table.remark" :title="baTable.table.remark" type="info" show-icon />
+
         <!-- 表格顶部菜单 -->
         <TableHeader
-            :field="baTable.table.column"
             :buttons="['refresh', 'add', 'comSearch']"
-            :enable-batch-opt="baTable.table.selection!.length > 0 ? true : false"
             :quick-search-placeholder="'通过用户名/用户昵称模糊搜索'"
             @action="baTable.onTableHeaderAction"
         />
+
         <!-- 表格 -->
         <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
-        <Table
-            ref="tableRef"
-            :data="baTable.table.data"
-            :field="baTable.table.column"
-            :row-key="baTable.table.pk"
-            :total="baTable.table.total"
-            :loading="baTable.table.loading"
-            @action="baTable.onTableAction"
-            @row-dblclick="baTable.onTableDblclick"
-        />
+        <Table ref="tableRef" @action="baTable.onTableAction" />
+
         <!-- 表单 -->
-        <Form :ba-table="baTable" />
+        <Form />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { userMoneyLog } from '/@/api/controllerUrls'
 import Form from './form.vue'
@@ -70,6 +62,8 @@ const baTable = new baTableClass(
 
 baTable.mount()
 baTable.getIndex()
+
+provide('baTable', baTable)
 </script>
 
 <script lang="ts">

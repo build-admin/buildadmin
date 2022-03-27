@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import type { ElForm } from 'element-plus'
@@ -80,10 +80,7 @@ import { userUser } from '/@/api/controllerUrls'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
 import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
 
-const props = defineProps<{
-    baTable: baTableClass
-}>()
-
+const baTable = inject('baTable') as baTableClass
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     user_id: [
         {
@@ -138,10 +135,10 @@ const state: {
 })
 
 const getAdd = () => {
-    if (!props.baTable.form.items!.user_id || parseInt(props.baTable.form.items!.user_id) <= 0) {
+    if (!baTable.form.items!.user_id || parseInt(baTable.form.items!.user_id) <= 0) {
         return
     }
-    add(props.baTable.form.items!.user_id).then((res) => {
+    add(baTable.form.items!.user_id).then((res) => {
         state.userInfo = res.data.user
         state.after = res.data.user.money
     })

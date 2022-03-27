@@ -74,13 +74,12 @@
 </template>
 
 <script setup lang="ts">
+import { inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import { previewRenderFormatter } from './index'
 
-const props = defineProps<{
-    baTable: baTableClass
-}>()
+const baTable = inject('baTable') as baTableClass
 
 const { t } = useI18n()
 </script>

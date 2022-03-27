@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import { getUserRules } from '/@/api/backend/user/group'
@@ -74,10 +74,7 @@ interface MenuRules {
 
 const treeRef = ref<InstanceType<typeof ElTree>>()
 const formRef = ref<InstanceType<typeof ElForm>>()
-
-const props = defineProps<{
-    baTable: baTableClass
-}>()
+const baTable = inject('baTable') as baTableClass
 
 const { t } = useI18n()
 
@@ -125,17 +122,17 @@ defineExpose({
 })
 
 watch(
-    () => props.baTable.form.items!.rules,
+    () => baTable.form.items!.rules,
     () => {
-        if (props.baTable.form.items!.rules && props.baTable.form.items!.rules.length) {
-            if (props.baTable.form.items!.rules.includes('*')) {
+        if (baTable.form.items!.rules && baTable.form.items!.rules.length) {
+            if (baTable.form.items!.rules.includes('*')) {
                 let arr: number[] = []
                 for (const key in state.menuRules) {
                     arr.push(state.menuRules[key].id)
                 }
                 state.defaultCheckedKeys = arr
             } else {
-                state.defaultCheckedKeys = props.baTable.form.items!.rules
+                state.defaultCheckedKeys = baTable.form.items!.rules
             }
         } else {
             state.defaultCheckedKeys = []

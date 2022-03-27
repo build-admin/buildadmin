@@ -1,6 +1,6 @@
 <template>
     <!-- 通用搜索 -->
-    <ComSearch v-show="buttons.includes('comSearch') && state.showComSearch" :ba-table="baTable" />
+    <ComSearch v-show="buttons.includes('comSearch') && state.showComSearch" />
 
     <!-- 操作按钮组 -->
     <div v-bind="$attrs" class="table-header">
@@ -40,9 +40,9 @@
                 </div>
             </template>
         </el-popconfirm>
-        <el-tooltip v-if="buttons.includes('unfold')" :content="(baTable?.table.expandAll ? '收缩' : '展开') + '所有子菜单'" placement="top">
-            <el-button v-blur @click="changeUnfold" :type="baTable?.table.expandAll ? 'danger' : 'warning'">
-                <span class="table-header-operate-text">{{ baTable?.table.expandAll ? '收缩所有' : '展开所有' }}</span>
+        <el-tooltip v-if="buttons.includes('unfold')" :content="(baTable.table.expandAll ? '收缩' : '展开') + '所有子菜单'" placement="top">
+            <el-button v-blur @click="changeUnfold" :type="baTable.table.expandAll ? 'danger' : 'warning'">
+                <span class="table-header-operate-text">{{ baTable.table.expandAll ? '收缩所有' : '展开所有' }}</span>
             </el-button>
         </el-tooltip>
         <div class="table-search">
@@ -54,7 +54,7 @@
                     </el-button>
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item v-for="item in baTable?.table.column">
+                            <el-dropdown-item v-for="item in baTable.table.column">
                                 <el-checkbox
                                     v-if="item.prop"
                                     @change="onChangeShowColumn($event, item.prop!)"
@@ -78,22 +78,22 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
+import { reactive, computed, inject } from 'vue'
 import { debounce } from '/@/utils/common'
 import type baTableClass from '/@/utils/baTable'
 import ComSearch from '/@/components/table/comSearch/index.vue'
 
+const baTable = inject('baTable') as baTableClass
+
 interface Props {
     buttons: HeaderOptButton[]
     quickSearchPlaceholder?: string
-    baTable: baTableClass | null
 }
 const props = withDefaults(defineProps<Props>(), {
     buttons: () => {
         return ['refresh', 'add', 'edit', 'delete']
     },
     quickSearchPlaceholder: '搜索',
-    baTable: null,
 })
 
 const state = reactive({
@@ -101,7 +101,7 @@ const state = reactive({
     showComSearch: false,
 })
 
-const enableBatchOpt = computed(() => (props.baTable!.table.selection!.length > 0 ? true : false))
+const enableBatchOpt = computed(() => (baTable.table.selection!.length > 0 ? true : false))
 
 const emits = defineEmits<{
     (e: 'action', event: string, data: anyObj): void
@@ -112,7 +112,7 @@ const onAction = (event: string, data: anyObj = {}) => {
 }
 
 const changeUnfold = () => {
-    emits('action', 'unfold', { unfold: !props.baTable?.table.expandAll })
+    emits('action', 'unfold', { unfold: !baTable.table.expandAll })
 }
 
 const onSearchInput = () => {
