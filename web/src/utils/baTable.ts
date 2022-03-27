@@ -37,6 +37,8 @@ export default class baTable {
         filter: {},
         // 拖动排序限位字段:例如拖动行pid=1,那么拖动目的行pid也需要为1
         dragSortLimitField: 'pid',
+        // 接受url的query参数并自动触发通用搜索
+        acceptQuery: true,
     })
     /* 表格状态-e */
 
@@ -64,6 +66,8 @@ export default class baTable {
     // BaTable后置处理函数列表(后置埋点)
     public after
 
+    public comSearch
+
     constructor(api: baTableApi, table: BaTable, form: BaTableForm = {}, before: BaTableBefore = {}, after: BaTableAfter = {}) {
         this.api = api
         this.form = Object.assign(this.form, form)
@@ -71,8 +75,7 @@ export default class baTable {
         this.before = before
         this.after = after
         this.activate = true
-        const route = useRoute()
-        console.log(route.query)
+        this.comSearch = this.initComSearch()
     }
 
     runBefore(funName: string, args: any = {}) {
@@ -471,5 +474,91 @@ export default class baTable {
         onDeactivated(() => {
             this.activate = false
         })
+    }
+
+    /**
+     * 通用搜索初始化
+     */
+    initComSearch = (): ComSearch => {
+        let fieldData: Map<string, any> = new Map()
+        let form: anyObj = {}
+
+        if (this.table.column.length <= 0) {
+            return {
+                form: form,
+                fieldData: fieldData,
+            }
+        }
+        const route = useRoute()
+        const query = route.query
+        const field = this.table.column
+
+        for (const key in field) {
+            if (field[key].operator === false) {
+                continue
+            }
+            let prop = field[key].prop
+            if (typeof field[key].operator == 'undefined') {
+                field[key].operator = '='
+            }
+            if (prop) {
+                if (field[key].operator == 'RANGE' || field[key].operator == 'NOT RANGE') {
+                    form[prop] = ''
+                    form[prop + '-start'] = ''
+                    form[prop + '-end'] = ''
+                } else if (field[key].operator == 'NULL' || field[key].operator == 'NOT NULL') {
+                    form[prop] = false
+                } else {
+                    form[prop] = ''
+                }
+
+                // 初始化来自query中的默认值
+                if (this.table.acceptQuery && typeof query[prop] != 'undefined') {
+                    let queryProp = (query[prop] as string) ?? ''
+                    if (field[key].operator == 'RANGE' || field[key].operator == 'NOT RANGE') {
+                        let range = queryProp.split(',')
+                        if (field[key].render == 'datetime') {
+                            if (range && range.length >= 2) {
+                                form[prop + '-default'] = [new Date(range[0]), new Date(range[1])]
+                            }
+                        } else {
+                            form[prop + '-start'] = range[0] ?? ''
+                            form[prop + '-end'] = range[1] ?? ''
+                        }
+                    } else if (field[key].operator == 'NULL' || field[key].operator == 'NOT NULL') {
+                        form[prop] = queryProp ? true : false
+                    } else if (field[key].render == 'datetime') {
+                        form[prop + '-default'] = new Date(queryProp)
+                    } else {
+                        form[prop] = queryProp
+                    }
+                }
+
+                fieldData.set(prop, {
+                    operator: field[key].operator,
+                    render: field[key].render,
+                })
+            }
+        }
+
+        // 接受query再搜索
+        if (this.table.acceptQuery) {
+            let comSearchData: comSearchData[] = []
+            for (const key in query) {
+                let fieldDataTemp = fieldData.get(key)
+                comSearchData.push({
+                    field: key,
+                    val: query[key] as string,
+                    operator: fieldDataTemp.operator,
+                    render: fieldDataTemp.render,
+                })
+            }
+            this.table.filter!.search = comSearchData
+        }
+
+        return {
+            form: form,
+            fieldData: fieldData,
+        }
     }
 }

@@ -12,6 +12,7 @@
                                         <el-date-picker
                                             class="datetime-picker"
                                             v-model="state.form[item.prop!]"
+                                            :default-value="state.form[item.prop! + '-default'] ? state.form[item.prop! + '-default']:[new Date(), new Date()]"
                                             type="datetimerange"
                                             range-separator="To"
                                             start-placeholder="Start date"
@@ -48,6 +49,7 @@
                                             type="datetime"
                                             value-format="YYYY-MM-DD HH:mm:ss"
                                             :placeholder="item.operatorPlaceholder"
+                                            :default-value="state.form[item.prop! + '-default'] ? state.form[item.prop! + '-default']:new Date()"
                                         ></el-date-picker>
                                         <el-select
                                             :placeholder="item.operatorPlaceholder"
@@ -83,55 +85,20 @@
 <script setup lang="ts">
 import { reactive, inject } from 'vue'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
-import { useRoute } from 'vue-router'
 import type baTableClass from '/@/utils/baTable'
 
-const route = useRoute()
-const query = route.query
 const { proxy } = useCurrentInstance()
 
-// 各个字段要同时发送到后台的数据
-const fieldData = new Map()
 const baTable = inject('baTable') as baTableClass
 
+// 各个字段要同时发送到后台的数据
+const fieldData = baTable.comSearch.fieldData
+
 const state: {
-    query: boolean
     form: anyObj
 } = reactive({
-    query: true,
-    form: {},
+    form: baTable.comSearch.form,
 })
-
-// 公共搜索字段数据预处理
-if (baTable.table.column && baTable.table.column.length > 0) {
-    let field = baTable.table.column
-    for (const key in field) {
-        let prop = field[key].prop
-        if (typeof field[key].operator == 'undefined') {
-            field[key].operator = '='
-        }
-        if (prop) {
-            if (field[key].operator == 'RANGE' || field[key].operator == 'NOT RANGE') {
-                state.form[prop] = ''
-                state.form[prop + '-start'] = ''
-                state.form[prop + '-end'] = ''
-            } else if (field[key].operator == 'NULL' || field[key].operator == 'NOT NULL') {
-                state.form[prop] = false
-            } else {
-                state.form[prop] = ''
-            }
-
-            if (state.query && query[prop]) {
-                state.form[prop] = query[prop]
-            }
-
-            fieldData.set(prop, {
-                operator: field[key].operator,
-                render: field[key].render,
-            })
-        }
-    }
-}
 
 const onComSearch = () => {
     let comSearchData: comSearchData[] = []
@@ -143,10 +110,13 @@ const onComSearch = () => {
         let val = ''
         let fieldDataTemp = fieldData.get(key)
         if (fieldDataTemp.render == 'datetime' && (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE')) {
+            // 时间范围组件返回的是时间数组
             if (state.form[key] && state.form[key].length >= 2) {
-                val = state.form[key]
+                // 数组转字符串，以实现通过url参数传递预设搜索值
+                val = state.form[key][0] + ',' + state.form[key][1]
             }
         } else if (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE') {
+            // 普通的范围筛选，baTable在初始化时已准备好start和end字段
             if (!state.form[key + '-start'] && !state.form[key + '-end']) {
                 continue
             }

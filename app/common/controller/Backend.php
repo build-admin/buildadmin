@@ -150,8 +150,12 @@ class Backend extends Api
 
             // 日期时间
             if (isset($field['render']) && $field['render'] == 'datetime') {
-                if ($field['operator'] == 'RANGE' && is_array($field['val'])) {
-                    $datetimeArr = array_filter(array_map("strtotime", $field['val']));
+                if ($field['operator'] == 'RANGE') {
+                    $datetimeArr = explode(',', $field['val']);
+                    if (!isset($datetimeArr[1])) {
+                        continue;
+                    }
+                    $datetimeArr = array_filter(array_map("strtotime", $datetimeArr));
                     $where[]     = [$fieldName, str_replace('RANGE', 'BETWEEN', $field['operator']), $datetimeArr];
                     continue;
                 }

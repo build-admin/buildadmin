@@ -16,6 +16,7 @@ declare global {
         filter?: anyObj
         defaultOrder?: { prop: string; order: string }
         dragSortLimitField?: string
+        acceptQuery?: boolean
     }
 
     /* baTableForm */
@@ -55,6 +56,11 @@ declare global {
         onTableHeaderAction?: Function
         mount?: Function
         [key: string]: Function | undefined
+    }
+
+    interface ComSearch {
+        form: anyObj
+        fieldData: Map<string, any>
     }
 
     /* 表格列 */
