@@ -72,6 +72,7 @@ export default class baTable {
         this.after = after
         this.activate = true
         const route = useRoute()
+        console.log(route.query)
     }
 
     runBefore(funName: string, args: any = {}) {

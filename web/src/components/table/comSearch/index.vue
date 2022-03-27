@@ -3,7 +3,7 @@
         <div class="table-com-search">
             <el-form @keyup.enter="onComSearch" label-position="top" :model="state.form">
                 <el-row>
-                    <template v-for="(item, idx) in field">
+                    <template v-for="(item, idx) in baTable?.table.column">
                         <template v-if="item.operator !== false">
                             <el-col v-if="item.render == 'datetime' && (item.operator == 'RANGE' || item.operator == 'NOT RANGE')" :span="12">
                                 <div class="com-search-col">
@@ -84,21 +84,20 @@
 import { reactive } from 'vue'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import { useRoute } from 'vue-router'
+import type baTableClass from '/@/utils/baTable'
 
 const route = useRoute()
 const query = route.query
 const { proxy } = useCurrentInstance()
 
-// 回撤定位
-
 // 各个字段要同时发送到后台的数据
 const fieldData = new Map()
 
 interface Props {
-    field: TableColumn[]
+    baTable: baTableClass | null
 }
 const props = withDefaults(defineProps<Props>(), {
-    field: () => [],
+    baTable: null,
 })
 
 const state: {
@@ -110,18 +109,19 @@ const state: {
 })
 
 // 公共搜索字段数据预处理
-if (props.field.length > 0) {
-    for (const key in props.field) {
-        let prop = props.field[key].prop
-        if (typeof props.field[key].operator == 'undefined') {
-            props.field[key].operator = '='
+if (props.baTable?.table.column && props.baTable?.table.column.length > 0) {
+    let field = props.baTable?.table.column
+    for (const key in field) {
+        let prop = field[key].prop
+        if (typeof field[key].operator == 'undefined') {
+            field[key].operator = '='
         }
         if (prop) {
-            if (props.field[key].operator == 'RANGE' || props.field[key].operator == 'NOT RANGE') {
+            if (field[key].operator == 'RANGE' || field[key].operator == 'NOT RANGE') {
                 state.form[prop] = ''
                 state.form[prop + '-start'] = ''
                 state.form[prop + '-end'] = ''
-            } else if (props.field[key].operator == 'NULL' || props.field[key].operator == 'NOT NULL') {
+            } else if (field[key].operator == 'NULL' || field[key].operator == 'NOT NULL') {
                 state.form[prop] = false
             } else {
                 state.form[prop] = ''
@@ -132,8 +132,8 @@ if (props.field.length > 0) {
             }
 
             fieldData.set(prop, {
-                operator: props.field[key].operator,
-                render: props.field[key].render,
+                operator: field[key].operator,
+                render: field[key].render,
             })
         }
     }
