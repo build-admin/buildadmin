@@ -205,7 +205,7 @@ defineExpose({
 .ba-data-table :deep(.el-button + .el-button) {
     margin-left: 6px;
 }
-:deep(.table-header-cell) .cell {
+:deep(.ba-data-table) .table-header-cell .cell {
     color: var(--color-text-primary);
     overflow: hidden;
     text-overflow: ellipsis;

@@ -66,11 +66,4 @@ baTable.getIndex()
 provide('baTable', baTable)
 </script>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'user/moneyLog',
-})
-</script>
-
 <style scoped lang="scss"></style>

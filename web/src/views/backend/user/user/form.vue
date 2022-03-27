@@ -207,6 +207,7 @@ const onAvatarBeforeUpload = (file: any) => {
 }
 
 const changeAccount = (type: string) => {
+    baTable.toggleForm()
     router.push({
         name: type == 'money' ? 'user/moneyLog' : 'user/scoreLog',
         query: {

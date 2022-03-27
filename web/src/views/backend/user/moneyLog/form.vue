@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, inject } from 'vue'
+import { reactive, ref, inject, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import type { ElForm } from 'element-plus'
@@ -145,7 +145,7 @@ const getAdd = () => {
 }
 
 const changeMoney = (value: string) => {
-    if (!state.userInfo.money) {
+    if (!state.userInfo || typeof state.userInfo == 'undefined') {
         state.after = 0
         return
     }
@@ -153,7 +153,14 @@ const changeMoney = (value: string) => {
     state.after = parseFloat(state.userInfo.money) + newValue
 }
 
-getAdd()
+watch(
+    () => baTable.form.operate,
+    (newValue) => {
+        if (newValue) {
+            getAdd()
+        }
+    }
+)
 </script>
 
 <style scoped lang="scss">

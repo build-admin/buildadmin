@@ -19,7 +19,7 @@ class MoneyLog extends Backend
     // 排除字段
     protected $preExcludeFields = ['createtime'];
 
-    protected $quickSearchField = ['username', 'nickname'];
+    protected $quickSearchField = ['user.username', 'user.nickname'];
 
     public function initialize()
     {
