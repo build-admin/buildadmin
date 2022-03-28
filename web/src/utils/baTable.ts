@@ -493,7 +493,6 @@ export default class baTable {
      * 通用搜索初始化
      */
     initComSearch = (query: anyObj = {}) => {
-        let fieldData: Map<string, any> = new Map()
         let form: anyObj = {}
 
         if (this.table.column.length <= 0) {
@@ -542,7 +541,7 @@ export default class baTable {
                     }
                 }
 
-                fieldData.set(prop, {
+                this.comSearch.fieldData.set(prop, {
                     operator: field[key].operator,
                     render: field[key].render,
                 })
@@ -553,7 +552,7 @@ export default class baTable {
         if (this.table.acceptQuery) {
             let comSearchData: comSearchData[] = []
             for (const key in query) {
-                let fieldDataTemp = fieldData.get(key)
+                let fieldDataTemp = this.comSearch.fieldData.get(key)
                 comSearchData.push({
                     field: key,
                     val: query[key] as string,
@@ -565,6 +564,5 @@ export default class baTable {
         }
 
         this.comSearch.form = Object.assign(this.comSearch.form, form)
-        this.comSearch.fieldData = Object.assign(this.comSearch.fieldData, fieldData)
     }
 }

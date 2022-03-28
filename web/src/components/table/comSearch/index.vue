@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, inject } from 'vue'
+import { inject } from 'vue'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import type baTableClass from '/@/utils/baTable'
 
@@ -91,18 +91,15 @@ const { proxy } = useCurrentInstance()
 
 const baTable = inject('baTable') as baTableClass
 
-// 各个字段要同时发送到后台的数据
-const fieldData = baTable.comSearch.fieldData
-
 const onComSearch = () => {
     let comSearchData: comSearchData[] = []
     for (const key in baTable.comSearch.form) {
-        if (!fieldData.has(key)) {
+        if (!baTable.comSearch.fieldData.has(key)) {
             continue
         }
 
         let val = ''
-        let fieldDataTemp = fieldData.get(key)
+        let fieldDataTemp = baTable.comSearch.fieldData.get(key)
         if (fieldDataTemp.render == 'datetime' && (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE')) {
             // 时间范围组件返回的是时间数组
             if (baTable.comSearch.form[key] && baTable.comSearch.form[key].length >= 2) {
