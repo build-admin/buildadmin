@@ -1,7 +1,7 @@
 <template>
     <transition name="el-fade-in">
         <div class="table-com-search">
-            <el-form @keyup.enter="onComSearch" label-position="top" :model="state.form">
+            <el-form @keyup.enter="onComSearch" label-position="top" :model="baTable.comSearch.form">
                 <el-row>
                     <template v-for="(item, idx) in baTable.table.column">
                         <template v-if="item.operator !== false">
@@ -11,8 +11,8 @@
                                     <div class="com-search-col-input-range w83">
                                         <el-date-picker
                                             class="datetime-picker"
-                                            v-model="state.form[item.prop!]"
-                                            :default-value="state.form[item.prop! + '-default'] ? state.form[item.prop! + '-default']:[new Date(), new Date()]"
+                                            v-model="baTable.comSearch.form[item.prop!]"
+                                            :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:[new Date(), new Date()]"
                                             type="datetimerange"
                                             range-separator="To"
                                             start-placeholder="Start date"
@@ -29,32 +29,32 @@
                                         <el-input
                                             :placeholder="item.operatorPlaceholder"
                                             type="string"
-                                            v-model="state.form[item.prop! + '-start']"
+                                            v-model="baTable.comSearch.form[item.prop! + '-start']"
                                         ></el-input>
                                         <div class="range-separator">至</div>
                                         <el-input
                                             :placeholder="item.operatorPlaceholder"
                                             type="string"
-                                            v-model="state.form[item.prop! + '-end']"
+                                            v-model="baTable.comSearch.form[item.prop! + '-end']"
                                         ></el-input>
                                     </div>
                                     <div v-else-if="item.operator == 'NULL' || item.operator == 'NOT NULL'" class="com-search-col-input">
-                                        <el-checkbox v-model="state.form[item.prop!]" :label="item.operator" size="large"></el-checkbox>
+                                        <el-checkbox v-model="baTable.comSearch.form[item.prop!]" :label="item.operator" size="large"></el-checkbox>
                                     </div>
                                     <div v-else-if="item.operator" class="com-search-col-input">
                                         <el-date-picker
                                             class="datetime-picker"
                                             v-if="item.render == 'datetime'"
-                                            v-model="state.form[item.prop!]"
+                                            v-model="baTable.comSearch.form[item.prop!]"
                                             type="datetime"
                                             value-format="YYYY-MM-DD HH:mm:ss"
                                             :placeholder="item.operatorPlaceholder"
-                                            :default-value="state.form[item.prop! + '-default'] ? state.form[item.prop! + '-default']:new Date()"
+                                            :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:new Date()"
                                         ></el-date-picker>
                                         <el-select
                                             :placeholder="item.operatorPlaceholder"
                                             v-else-if="item.render == 'tag'"
-                                            v-model="state.form[item.prop!]"
+                                            v-model="baTable.comSearch.form[item.prop!]"
                                             :clearable="true"
                                         >
                                             <el-option v-for="(opt, okey) in item.replaceValue" :key="item.prop! + okey" :label="opt" :value="okey" />
@@ -63,7 +63,7 @@
                                             :placeholder="item.operatorPlaceholder"
                                             v-else
                                             type="string"
-                                            v-model="state.form[item.prop!]"
+                                            v-model="baTable.comSearch.form[item.prop!]"
                                         ></el-input>
                                     </div>
                                 </div>
@@ -94,15 +94,9 @@ const baTable = inject('baTable') as baTableClass
 // 各个字段要同时发送到后台的数据
 const fieldData = baTable.comSearch.fieldData
 
-const state: {
-    form: anyObj
-} = reactive({
-    form: baTable.comSearch.form,
-})
-
 const onComSearch = () => {
     let comSearchData: comSearchData[] = []
-    for (const key in state.form) {
+    for (const key in baTable.comSearch.form) {
         if (!fieldData.has(key)) {
             continue
         }
@@ -111,18 +105,18 @@ const onComSearch = () => {
         let fieldDataTemp = fieldData.get(key)
         if (fieldDataTemp.render == 'datetime' && (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE')) {
             // 时间范围组件返回的是时间数组
-            if (state.form[key] && state.form[key].length >= 2) {
+            if (baTable.comSearch.form[key] && baTable.comSearch.form[key].length >= 2) {
                 // 数组转字符串，以实现通过url参数传递预设搜索值
-                val = state.form[key][0] + ',' + state.form[key][1]
+                val = baTable.comSearch.form[key][0] + ',' + baTable.comSearch.form[key][1]
             }
         } else if (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE') {
             // 普通的范围筛选，baTable在初始化时已准备好start和end字段
-            if (!state.form[key + '-start'] && !state.form[key + '-end']) {
+            if (!baTable.comSearch.form[key + '-start'] && !baTable.comSearch.form[key + '-end']) {
                 continue
             }
-            val = state.form[key + '-start'] + ',' + state.form[key + '-end']
-        } else if (state.form[key]) {
-            val = state.form[key]
+            val = baTable.comSearch.form[key + '-start'] + ',' + baTable.comSearch.form[key + '-end']
+        } else if (baTable.comSearch.form[key]) {
+            val = baTable.comSearch.form[key]
         }
 
         if (val) {
@@ -140,8 +134,8 @@ const onComSearch = () => {
 
 const onResetForm = () => {
     // 封装好的onResetForm在此处不能使用
-    for (const key in state.form) {
-        state.form[key] = ''
+    for (const key in baTable.comSearch.form) {
+        baTable.comSearch.form[key] = ''
     }
 }
 </script>

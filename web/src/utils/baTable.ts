@@ -5,7 +5,8 @@ import type { baTableApi } from '/@/api/common'
 import Sortable from 'sortablejs'
 import { findIndexRow } from '/@/components/table'
 import { ElNotification, ElForm } from 'element-plus'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import _ from 'lodash'
 
 export default class baTable {
     public api
@@ -66,7 +67,11 @@ export default class baTable {
     // BaTable后置处理函数列表(后置埋点)
     public after
 
-    public comSearch
+    // 通用搜索数据-需要响应性
+    public comSearch: ComSearch = reactive({
+        form: {},
+        fieldData: new Map(),
+    })
 
     constructor(api: baTableApi, table: BaTable, form: BaTableForm = {}, before: BaTableBefore = {}, after: BaTableAfter = {}) {
         this.api = api
@@ -75,7 +80,9 @@ export default class baTable {
         this.before = before
         this.after = after
         this.activate = true
-        this.comSearch = this.initComSearch()
+
+        const route = useRoute()
+        this.initComSearch(!_.isUndefined(route) ? route.query : {})
     }
 
     runBefore(funName: string, args: any = {}) {
@@ -474,23 +481,24 @@ export default class baTable {
         onDeactivated(() => {
             this.activate = false
         })
+
+        // 监听路由变化,响应通用搜索更新
+        onBeforeRouteUpdate((to) => {
+            this.initComSearch(to.query)
+            this.getIndex()
+        })
     }
 
     /**
      * 通用搜索初始化
      */
-    initComSearch = (): ComSearch => {
+    initComSearch = (query: anyObj = {}) => {
         let fieldData: Map<string, any> = new Map()
         let form: anyObj = {}
 
         if (this.table.column.length <= 0) {
-            return {
-                form: form,
-                fieldData: fieldData,
-            }
+            return
         }
-        const route = useRoute()
-        const query = route.query
         const field = this.table.column
 
         for (const key in field) {
@@ -556,9 +564,7 @@ export default class baTable {
             this.table.filter!.search = comSearchData
         }
 
-        return {
-            form: form,
-            fieldData: fieldData,
-        }
+        this.comSearch.form = Object.assign(this.comSearch.form, form)
+        this.comSearch.fieldData = Object.assign(this.comSearch.fieldData, fieldData)
     }
 }
