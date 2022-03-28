@@ -2,6 +2,7 @@ import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { STORE_TAB_VIEW_CONFIG } from '/@/stores/constant/cacheKey'
 import { viewMenu, NavTabs } from '/@/stores/interface/index'
+import { RouteLocationNormalized } from 'vue-router'
 
 export const useNavTabs = defineStore(
     'navTabs',
@@ -19,10 +20,19 @@ export const useNavTabs = defineStore(
             tabsViewRoutes: [],
         })
 
-        function addTab(path: string) {
-            if (state.tabsView.some((v) => v.path === path)) return
-            const currentRoute = findMenu(state.tabsViewRoutes, path)
+        function addTab(route: RouteLocationNormalized | viewMenu) {
+            for (const key in state.tabsView) {
+                if (state.tabsView[key].path === route.path) {
+                    state.tabsView[key].params = route.params ?? {}
+                    state.tabsView[key].query = route.query ?? {}
+                    return
+                }
+            }
+
+            const currentRoute = findMenu(state.tabsViewRoutes, route.path)
             if (!currentRoute) return
+            currentRoute!.params = route.params ?? {}
+            currentRoute!.query = route.query ?? {}
             state.tabsView.push(
                 Object.assign({}, currentRoute, {
                     title: currentRoute.title || 'pagesTitle.noTitle',
@@ -47,13 +57,13 @@ export const useNavTabs = defineStore(
             }
         }
 
-        const setActiveRoute = (path: string): void => {
-            const currentRoute = findMenu(state.tabsViewRoutes, path)
+        const setActiveRoute = (route: RouteLocationNormalized | viewMenu): void => {
+            const currentRoute = findMenu(state.tabsViewRoutes, route.path)
             if (!currentRoute) return
-            const currentRouteIndex: number = state.tabsView.findIndex((route: viewMenu) => {
-                return route.path === path
+            const currentRouteIndex: number = state.tabsView.findIndex((item: viewMenu) => {
+                return item.path === route.path
             })
-            if (!currentRoute) return
+            if (currentRouteIndex === -1) return
             state.activeRoute = currentRoute
             state.activeIndex = currentRouteIndex
         }

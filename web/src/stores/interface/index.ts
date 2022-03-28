@@ -30,6 +30,8 @@ export interface viewMenu {
     type?: string
     icon?: string
     keepAlive?: string
+    query?: anyObj
+    params?: anyObj
     children?: viewMenu[]
     component?: Component
 }

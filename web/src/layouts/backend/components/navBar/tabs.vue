@@ -2,7 +2,7 @@
     <div class="nav-tabs" ref="tabScrollbarRef">
         <div
             v-for="(item, idx) in navTabs.state.tabsView"
-            @click="router.push(item.path)"
+            @click="onTab(item)"
             @contextmenu.prevent="onContextmenu(item, $event)"
             class="ba-nav-tab"
             :class="navTabs.state.activeIndex == idx ? 'active' : ''"
@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, reactive, ref } from 'vue'
+import { nextTick, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate, RouteLocationNormalized } from 'vue-router'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
@@ -59,6 +59,10 @@ const activeBoxStyle = reactive({
     width: '0',
     transform: 'translateX(0px)',
 })
+
+const onTab = (menu: viewMenu) => {
+    router.push({ path: menu.path, query: menu.query, params: menu.params })
+}
 
 const onContextmenu = (menu: viewMenu, el: MouseEvent) => {
     // 禁用刷新
@@ -104,7 +108,7 @@ const closeTab = (route: viewMenu) => {
     if (navTabs.state.activeRoute?.path === route.path) {
         toLastTab()
     } else {
-        navTabs.setActiveRoute(navTabs.state.activeRoute!.path)
+        navTabs.setActiveRoute(navTabs.state.activeRoute as viewMenu)
         nextTick(() => {
             selectNavTab(tabsRefs.value[navTabs.state.activeIndex])
         })
@@ -124,7 +128,7 @@ const onContextmenuItem = async (item: ContextmenuItemClickEmitArg) => {
             break
         case 'closeOther':
             navTabs.closeTabs(menu as viewMenu)
-            navTabs.setActiveRoute(menu!.path)
+            navTabs.setActiveRoute(menu as viewMenu)
             if (navTabs.state.activeRoute?.path !== route.path) {
                 router.push(menu!.path)
             }
@@ -144,9 +148,9 @@ const onContextmenuItem = async (item: ContextmenuItemClickEmitArg) => {
 
 const updateTab = function (newRoute: RouteLocationNormalized | viewMenu) {
     // 添加tab
-    navTabs.addTab(newRoute.path)
+    navTabs.addTab(newRoute)
     // 激活当前tab
-    navTabs.setActiveRoute(newRoute.path)
+    navTabs.setActiveRoute(newRoute)
 
     nextTick(() => {
         selectNavTab(tabsRefs.value[navTabs.state.activeIndex])
