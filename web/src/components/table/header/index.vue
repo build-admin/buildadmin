@@ -45,6 +45,11 @@
                 <span class="table-header-operate-text">{{ baTable.table.expandAll ? '收缩所有' : '展开所有' }}</span>
             </el-button>
         </el-tooltip>
+
+        <!-- slot -->
+        <slot></slot>
+
+        <!-- 右侧搜索框和工具按钮 -->
         <div class="table-search">
             <el-input v-model="state.quickSearch" class="xs-hidden" @input="debounce(onSearchInput, 500)()" :placeholder="quickSearchPlaceholder" />
             <el-button-group class="table-search-button-group">

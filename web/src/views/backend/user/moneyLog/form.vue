@@ -153,6 +153,7 @@ const changeMoney = (value: string) => {
     state.after = parseFloat(state.userInfo.money) + newValue
 }
 
+// 打开表单时刷新用户数据
 watch(
     () => baTable.form.operate,
     (newValue) => {

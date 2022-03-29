@@ -7,7 +7,13 @@
             :buttons="['refresh', 'add', 'comSearch']"
             :quick-search-placeholder="'通过用户名/用户昵称模糊搜索'"
             @action="baTable.onTableHeaderAction"
-        />
+        >
+            <el-button v-if="!_.isEmpty(state.userInfo)" v-blur class="table-header-operate">
+                <span class="table-header-operate-text">{{
+                    state.userInfo.username + '(ID:' + state.userInfo.id + ') 余额:' + state.userInfo.money
+                }}</span>
+            </el-button>
+        </TableHeader>
 
         <!-- 表格 -->
         <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
@@ -19,7 +25,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, provide } from 'vue'
+import _ from 'lodash'
+import { ref, provide, reactive, watch } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { userMoneyLog } from '/@/api/controllerUrls'
 import Form from './form.vue'
@@ -27,10 +34,16 @@ import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { baTableApi } from '/@/api/common'
 import { useRoute } from 'vue-router'
+import { add } from '/@/api/backend/user/moneyLog'
 
 const tableRef = ref()
 const route = useRoute()
-const defalutUser = route.query.user_id ?? ''
+const defalutUser = (route.query.user_id ?? '') as string
+const state: {
+    userInfo: anyObj
+} = reactive({
+    userInfo: {},
+})
 
 const baTable = new baTableClass(
     new baTableApi(userMoneyLog),
@@ -50,9 +63,6 @@ const baTable = new baTableClass(
         dblClickNotEditColumn: [undefined],
     },
     {
-        items: {
-            user_id: defalutUser,
-        },
         defaultItems: {
             user_id: defalutUser,
             memo: '',
@@ -64,6 +74,26 @@ baTable.mount()
 baTable.getIndex()
 
 provide('baTable', baTable)
+
+const getUserInfo = (userId: string) => {
+    if (userId && _.parseInt(userId) > 0) {
+        add(userId).then((res) => {
+            state.userInfo = res.data.user
+        })
+    } else {
+        state.userInfo = {}
+    }
+}
+
+getUserInfo(baTable.comSearch.form.user_id)
+
+watch(
+    () => baTable.comSearch.form.user_id,
+    (newVal) => {
+        baTable.form.defaultItems!.user_id = newVal
+        getUserInfo(newVal)
+    }
+)
 </script>
 
 <style scoped lang="scss"></style>
