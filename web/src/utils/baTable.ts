@@ -142,7 +142,7 @@ export default class baTable {
      * 双击表格
      */
     onTableDblclick = (row: TableRow, column: any) => {
-        if (this.table.dblClickNotEditColumn!.indexOf(column.property) === -1) {
+        if (this.table.dblClickNotEditColumn!.indexOf('all') === -1 && this.table.dblClickNotEditColumn!.indexOf(column.property) === -1) {
             this.runBefore('onTableDblclick', {
                 row,
                 column,

@@ -60,7 +60,7 @@ const baTable = new baTableClass(
             { label: '备注', prop: 'memo', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', 'show-overflow-tooltip': true },
             { label: '创建时间', prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
         ],
-        dblClickNotEditColumn: [undefined],
+        dblClickNotEditColumn: ['all'],
     },
     {
         defaultItems: {
