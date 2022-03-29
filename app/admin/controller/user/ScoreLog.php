@@ -4,6 +4,7 @@ namespace app\admin\controller\user;
 
 use app\common\controller\Backend;
 use app\admin\model\UserScoreLog;
+use app\admin\model\User;
 
 class ScoreLog extends Backend
 {
@@ -14,11 +15,29 @@ class ScoreLog extends Backend
     // 排除字段
     protected $preExcludeFields = ['createtime'];
 
-    protected $quickSearchField = ['username', 'nickname'];
+    protected $quickSearchField = ['user.username', 'user.nickname'];
 
     public function initialize()
     {
         parent::initialize();
         $this->model = new UserScoreLog();
+    }
+
+    /**
+     * 添加
+     */
+    public function add($userId = 0)
+    {
+        if ($this->request->isPost()) {
+            parent::add();
+        }
+
+        $user = User::where('id', (int)$userId)->find();
+        if (!$user) {
+            $this->error('用户找不到啦~');
+        }
+        $this->success('', [
+            'user' => $user
+        ]);
     }
 }
