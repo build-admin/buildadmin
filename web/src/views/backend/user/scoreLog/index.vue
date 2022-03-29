@@ -10,7 +10,7 @@
         >
             <el-button v-if="!_.isEmpty(state.userInfo)" v-blur class="table-header-operate">
                 <span class="table-header-operate-text">{{
-                    state.userInfo.username + '(ID:' + state.userInfo.id + ') 余额:' + state.userInfo.money
+                    state.userInfo.username + '(ID:' + state.userInfo.id + ') 积分:' + state.userInfo.score
                 }}</span>
             </el-button>
         </TableHeader>
@@ -28,13 +28,13 @@
 import _ from 'lodash'
 import { ref, provide, reactive, watch } from 'vue'
 import baTableClass from '/@/utils/baTable'
-import { userMoneyLog } from '/@/api/controllerUrls'
+import { userScoreLog } from '/@/api/controllerUrls'
 import Form from './form.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { baTableApi } from '/@/api/common'
 import { useRoute } from 'vue-router'
-import { add } from '/@/api/backend/user/moneyLog'
+import { add } from '/@/api/backend/user/scoreLog'
 
 const tableRef = ref()
 const route = useRoute()
@@ -46,7 +46,7 @@ const state: {
 })
 
 const baTable = new baTableClass(
-    new baTableApi(userMoneyLog),
+    new baTableApi(userScoreLog),
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
@@ -54,7 +54,7 @@ const baTable = new baTableClass(
             { label: '用户ID', prop: 'user_id', align: 'center', operator: '=', width: 70 },
             { label: '用户名', prop: 'user.username', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
             { label: '用户昵称', prop: 'user.nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '变更余额', prop: 'money', align: 'center', operator: 'RANGE', sortable: 'custom' },
+            { label: '变更积分', prop: 'score', align: 'center', operator: 'RANGE', sortable: 'custom' },
             { label: '变更前', prop: 'before', align: 'center', operator: 'RANGE', sortable: 'custom' },
             { label: '变更后', prop: 'after', align: 'center', operator: 'RANGE', sortable: 'custom' },
             { label: '备注', prop: 'memo', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', 'show-overflow-tooltip': true },
