@@ -1,61 +1,133 @@
-<template>
-    <template v-for="(item, idx) in props.items" :key="idx">
-        <el-form-item v-if="item.type == 'string' || item.type == 'number'" :label="item.title">
-            <el-input :type="item.type" :placeholder="item.tip" v-model="item.value"></el-input>
-        </el-form-item>
-        <el-form-item v-else-if="item.type == 'radio'">
-            <template #label>
-                <div class="label-box">
-                    <div>{{ item.title }}</div>
-                    <div class="label-tip">{{ item.tip }}</div>
-                </div>
-            </template>
-            <el-radio v-for="(r, rk) in item.content" v-model="item.value" :label="rk" size="large">{{ r }}</el-radio>
-        </el-form-item>
-        <el-form-item v-else-if="item.type == 'checkbox'">
-            <template #label>
-                <div class="label-box">
-                    <div>{{ item.title }}</div>
-                    <div class="label-tip">{{ item.tip }}</div>
-                </div>
-            </template>
-            <el-checkbox v-for="(c, ck) in item.content" v-model="item.content[ck]" :label="ck" size="large"></el-checkbox>
-        </el-form-item>
-        <el-form-item v-else-if="item.type == 'switch'">
-            <template #label>
-                <div class="label-box">
-                    <div>{{ item.title }}</div>
-                    <div class="label-tip">{{ item.tip }}</div>
-                </div>
-            </template>
-            <el-switch v-model="item.value" />
-        </el-form-item>
-        <el-form-item v-else>
-            <div class="label-not-support">暂不支持 {{ item.type }} 类型的表单组件，可自行于 `/@/src/components/formItem` 中增加逻辑</div>
-        </el-form-item>
-    </template>
-</template>
+<script lang="ts">
+import { createVNode, defineComponent, resolveComponent, PropType } from 'vue'
+import { inputTypes, modelValuePropsTypes, modelValueTypes } from '/@/components/baInput'
+import BaInput from '/@/components/baInput/index.vue'
 
-<script lang="ts" setup>
-interface Props {
-    items: FormItemProps[]
-}
-const props = withDefaults(defineProps<Props>(), {
-    items: () => [],
+export default defineComponent({
+    name: 'formItem',
+    props: {
+        // el-form-item的label
+        label: {
+            type: String,
+        },
+        // 输入框类型,支持的输入框见 inputTypes
+        type: {
+            type: String,
+            required: true,
+            validator: (value: string) => {
+                return inputTypes.includes(value)
+            },
+        },
+        // 双向绑定值
+        modelValue: {
+            type: modelValuePropsTypes,
+            required: true,
+        },
+        // 输入框的附加属性
+        inputAttr: {
+            type: Object as PropType<InputAttr>,
+            default: () => {},
+        },
+        // el-form-item的附加属性
+        attr: {
+            type: Object as PropType<FormItemAttr>,
+            default: () => {},
+        },
+        // 额外数据,radio、checkbox的选项等数据
+        data: {
+            type: Object as PropType<InputData>,
+            default: () => {},
+        },
+    },
+    setup(props, { emit }) {
+        const onValueUpdate = (value: modelValueTypes) => {
+            emit('update:modelValue', value)
+        }
+
+        // el-form-item 的默认插槽,生成一个baInput
+        const defaultSlot = () => {
+            return createVNode(BaInput, {
+                type: props.type,
+                attr: props.inputAttr,
+                data: props.data,
+                modelValue: props.modelValue,
+                'onUpdate:modelValue': onValueUpdate,
+            })
+        }
+
+        // 文本和数字输入框
+        let noNeedLabelSlot = ['string', 'number', 'textarea', 'datetime', 'select', 'selects']
+        if (noNeedLabelSlot.includes(props.type)) {
+            return () =>
+                createVNode(
+                    resolveComponent('el-form-item'),
+                    {
+                        ...props.attr,
+                        label: props.label,
+                    },
+                    {
+                        default: defaultSlot,
+                    }
+                )
+        } else if (props.type == 'radio' || props.type == 'checkbox' || props.type == 'switch' || props.type == 'array') {
+            // 带label的输入框
+            let title = props.data && props.data.title ? props.data.title : props.label
+            const labelSlot = () => {
+                return [
+                    createVNode(
+                        'div',
+                        {
+                            class: 'ba-form-item-label',
+                        },
+                        [
+                            createVNode('div', null, title),
+                            createVNode(
+                                'div',
+                                {
+                                    class: 'ba-form-item-label-tip',
+                                },
+                                props.data && props.data.tip ? props.data.tip : ''
+                            ),
+                        ]
+                    ),
+                ]
+            }
+
+            return () =>
+                createVNode(
+                    resolveComponent('el-form-item'),
+                    {
+                        ...props.attr,
+                        class: 'ba-input-item-' + props.type,
+                        label: props.label,
+                    },
+                    {
+                        label: labelSlot,
+                        default: defaultSlot,
+                    }
+                )
+        } else {
+            console.warn('暂不支持' + props.type + '的输入框类型，你可以自行在 formItem 组件内添加逻辑')
+        }
+    },
 })
 </script>
 
-<style lang="scss" scoped>
-.label-box {
+<style scoped lang="scss">
+.ba-form-item-label {
     display: flex;
-    align-items: flex-end;
-    .label-tip {
+    align-items: center;
+    height: 100%;
+    .ba-form-item-label-tip {
         padding-left: 6px;
         font-size: 12px;
         color: var(--color-secondary);
     }
 }
-.label-not-support {
+.ba-form-item-not-support {
     line-height: 15px;
+}
+.ba-input-item-array :deep(.el-form-item__content) {
+    display: block;
 }
 </style>

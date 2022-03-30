@@ -2,11 +2,11 @@
     <div class="default-main">
         <el-row :gutter="20">
             <el-col class="xs-mb-20" :xs="24" :sm="12">
-                <el-form v-model="form.config" label-position="top">
+                <el-form ref="formRef" v-model="state.config" label-position="top">
                     <el-tabs type="border-card">
-                        <el-tab-pane v-for="(group, key) in form.config" :key="key" :label="group.title">
-                            <FormItem :items="group.list" />
-                            <el-button @click="test">提交</el-button>
+                        <el-tab-pane v-for="(group, key) in state.config" :key="key" :label="group.title">
+                            <!-- <FormItem :items="group.list" /> -->
+                            <el-button @click="onSubmit(formRef)">提交</el-button>
                         </el-tab-pane>
                     </el-tabs>
                 </el-form>
@@ -19,22 +19,39 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
-import FormItem from '/@/components/formItem/index.vue'
-import config from '/@/mock/config.json'
-const form = reactive({
-    config,
+import { ref, reactive, onMounted } from 'vue'
+// import FormItem from '/@/components/formItem/index.vue'
+import { index, postData } from '/@/api/backend/routine/config'
+import type { ElForm } from 'element-plus'
+
+const formRef = ref<InstanceType<typeof ElForm>>()
+
+const state: {
+    config: anyObj
+    remark: string
+} = reactive({
+    config: [],
+    remark: '',
 })
 
-const test = () => {
-    console.log(form)
+const getIndex = () => {
+    index().then((res) => {
+        state.config = res.data.list
+        state.remark = res.data.remark
+    })
 }
+
+const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {}
+
+onMounted(() => {
+    getIndex()
+})
 </script>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 export default defineComponent({
-    name: 'routineConfig',
+    name: 'routine/config',
 })
 </script>
 

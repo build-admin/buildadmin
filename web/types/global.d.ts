@@ -6,14 +6,15 @@ interface Window {
     requests: Function[]
 }
 
-interface FormItemProps {
-    name: string
-    title: string
-    value: any
-    type: string
-    content: any
-    tip: string
-    rule: any
+interface InputData {
+    // 标题
+    title?: string
+    // 内容,比如radio的选项列表数据 content: { a: '选项1', b: '选项2' }
+    content?: any
+    // 提示信息
+    tip?: string
+    // 需要生成子级元素时,子级元素属性(比如radio)
+    childrenAttr?: anyObj
 }
 
 interface anyObj {

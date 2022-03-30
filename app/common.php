@@ -82,6 +82,20 @@ if (!function_exists('__')) {
     }
 }
 
+if (!function_exists('get_sys_config')) {
+    function get_sys_config($name = '')
+    {
+        if ($name) {
+            $config = \app\admin\model\Config::where('name', $name)->find();
+            if ($config) {
+                return $config['value'];
+            }
+        } else {
+            return \app\admin\model\Config::order('weigh desc')->select()->toArray();
+        }
+    }
+}
+
 if (!function_exists('get_route_remark')) {
     /**
      * 获取当前路由后台菜单规则的备注信息
