@@ -14,7 +14,7 @@ class Config extends Model
 
     public function getValueAttr($value, $row)
     {
-        if (in_array($row['type'], $this->jsonDecodeType) && $value) {
+        if ($value && in_array($row['type'], $this->jsonDecodeType)) {
             return json_decode($value, true);
         }
 

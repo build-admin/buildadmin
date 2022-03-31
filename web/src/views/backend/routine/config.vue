@@ -1,18 +1,26 @@
 <template>
     <div class="default-main">
         <el-row :gutter="20">
-            <el-col class="xs-mb-20" :xs="24" :sm="12">
-                <el-form ref="formRef" v-model="state.config" label-position="top">
+            <el-col class="xs-mb-20" :xs="24" :sm="10">
+                <el-form ref="formRef" v-model="state.config" :label-position="'top'" :label-width="200">
                     <el-tabs type="border-card">
-                        <el-tab-pane v-for="(group, key) in state.config" :key="key" :label="group.title">
-                            <!-- <FormItem :items="group.list" /> -->
-                            <el-button @click="onSubmit(formRef)">提交</el-button>
+                        <el-tab-pane class="config-tab-pane" v-for="(group, key) in state.config" :key="key" :label="group.title">
+                            <template v-for="(item, idx) in group.list">
+                                <FormItem
+                                    :label="item.title"
+                                    :type="item.type"
+                                    v-model="item.value"
+                                    :inputAttr="{ placeholder: item.tip, rows: 3 }"
+                                    :data="{ tip: item.tip, content: item.content ? item.content : {} }"
+                                />
+                            </template>
+                            <el-button type="primary" @click="onSubmit(formRef)">提交</el-button>
                         </el-tab-pane>
                     </el-tabs>
                 </el-form>
             </el-col>
-            <el-col :xs="24" :sm="10">
-                <el-card header="模块的配置入口将会显示在这里"> 模块配置 </el-card>
+            <el-col :xs="24" :sm="14">
+                <el-card header="快捷配置入口"> 快捷配置入口 </el-card>
             </el-col>
         </el-row>
     </div>
@@ -20,7 +28,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-// import FormItem from '/@/components/formItem/index.vue'
+import FormItem from '/@/components/formItem/index.vue'
 import { index, postData } from '/@/api/backend/routine/config'
 import type { ElForm } from 'element-plus'
 
@@ -81,6 +89,9 @@ export default defineComponent({
     border: none;
     padding-left: 20px;
     background-color: #f5f5f5;
+}
+.config-tab-pane {
+    padding: 5px;
 }
 @media screen and (max-width: 768px) {
     .xs-mb-20 {

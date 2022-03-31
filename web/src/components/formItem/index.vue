@@ -129,5 +129,6 @@ export default defineComponent({
 }
 .ba-input-item-array :deep(.el-form-item__content) {
     display: block;
+    padding-bottom: 32px;
 }
 </style>

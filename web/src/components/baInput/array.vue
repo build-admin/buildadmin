@@ -1,7 +1,7 @@
 <template>
     <el-row :gutter="10">
-        <el-col :span="12" class="ba-array-key">键</el-col>
-        <el-col :span="12" class="ba-array-value">值</el-col>
+        <el-col :span="12" class="ba-array-key">键名</el-col>
+        <el-col :span="12" class="ba-array-value">键值</el-col>
     </el-row>
     <el-row class="ba-array-item" v-for="item in state.value" :gutter="10">
         <el-col :span="12">
@@ -11,7 +11,7 @@
             <el-input v-model="item.value"></el-input>
         </el-col>
     </el-row>
-    <el-button v-blur class="ba-add-array-item" type="primary" @click="addArrayItem" icon="el-icon-Plus">添加</el-button>
+    <el-button v-blur class="ba-add-array-item" @click="addArrayItem" icon="el-icon-Plus">添加</el-button>
 </template>
 
 <script setup lang="ts">
@@ -53,6 +53,7 @@ const addArrayItem = () => {
     align-items: center;
     justify-content: center;
     padding: 5px 0;
+    color: var(--color-secondary);
 }
 .ba-array-item {
     margin-bottom: 6px;

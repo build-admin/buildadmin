@@ -20,14 +20,16 @@ class Config extends Backend
     public function index()
     {
         $configGroup = get_sys_config('config_group');
-        $config      = $this->model->select();
+        $config      = $this->model->order('weigh desc')->select()->toArray();
         $list        = [];
         foreach ($config as $item) {
+            $item['title']                  = __($item['title']);
+            $item['value']                  = $item['value'] ? $item['value'] : '';
             $list[$item['group']]['list'][] = $item;
         }
         foreach ($configGroup as $key => $item) {
-            $list[$key]['name']  = $key;
-            $list[$key]['title'] = __($item);
+            $list[$item['key']]['name']  = $item['key'];
+            $list[$item['key']]['title'] = __($item['value']);
         }
 
         $this->success('', [

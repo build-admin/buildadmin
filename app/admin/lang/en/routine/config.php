@@ -1,6 +1,7 @@
 <?php
 return [
-    'Config group' => 'Config group',
+    'Basics'       => 'Basics',
     'Mail'         => 'Mail',
+    'Config group' => 'Config group',
     'Site Name'    => 'Site Name',
 ];
