@@ -5,10 +5,10 @@
     </el-row>
     <el-row class="ba-array-item" v-for="item in state.value" :gutter="10">
         <el-col :span="12">
-            <el-input @input="onInput" v-model="item.key"></el-input>
+            <el-input v-model="item.key"></el-input>
         </el-col>
         <el-col :span="12">
-            <el-input @input="onInput" v-model="item.value"></el-input>
+            <el-input v-model="item.value"></el-input>
         </el-col>
     </el-row>
     <el-button v-blur class="ba-add-array-item" type="primary" @click="addArrayItem" icon="el-icon-Plus">添加</el-button>
@@ -30,20 +30,19 @@ const state = reactive({
     value: props.modelValue,
 })
 
-const emits = defineEmits<{
+/* const emits = defineEmits<{
     (e: 'update:modelValue', value: baInputArray[]): void
 }>()
+const onInput = () => {
+    emits('update:modelValue', state.value)
+} */
 
 const addArrayItem = () => {
     state.value.push({
         key: '',
         value: '',
     })
-    emits('update:modelValue', state.value)
-}
-
-const onInput = () => {
-    emits('update:modelValue', state.value)
+    // emits('update:modelValue', state.value)
 }
 </script>
 
