@@ -1,3 +1,6 @@
+import type { RuleType } from 'async-validator'
+import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
+
 /**
  * 手机号码验证
  * 用于表单验证
@@ -41,4 +44,58 @@ export function validatorPassword(rule: any, val: string, callback: Function) {
         return callback(new Error('请输入正确的密码'))
     }
     return callback()
+}
+
+/**
+ * 构建表单验证规则
+ * @var ruleName 规则名:required=必填,mobile=手机号,account=账户,password=密码,number、integer、float、date、url、email
+ * @var title 验证项的标题
+ * @var trigger 自定义验证触发方式
+ * @var message 自定义验证错误消息
+ */
+export const validatorType = {
+    required: '必填',
+    mobile: '手机号',
+    account: '账户名',
+    password: '密码',
+    url: 'URL',
+    email: '邮箱地址',
+    date: '日期',
+    number: '数字',
+    integer: '整数',
+    float: '浮点数',
+}
+export function buildValidatorData(ruleName: string, title: string, trigger: string = 'blur', message: string = ''): FormItemRule {
+    // 必填
+    if (ruleName == 'required') {
+        return {
+            required: true,
+            message: message ? message : '请输入' + title,
+            trigger: trigger,
+        }
+    }
+
+    // 常见类型
+    let validatorType = ['number', 'integer', 'float', 'date', 'url', 'email']
+    if (validatorType.includes(ruleName)) {
+        return {
+            type: ruleName as RuleType,
+            message: message ? message : '请输入正确的' + title,
+            trigger: trigger,
+        }
+    }
+
+    // 自定义验证方法
+    let validatorCustomFun: anyObj = {
+        mobile: validatorMobile,
+        account: validatorAccount,
+        password: validatorPassword,
+    }
+    if (validatorCustomFun[ruleName]) {
+        return {
+            validator: validatorCustomFun[ruleName],
+            trigger: trigger,
+        }
+    }
+    return {}
 }

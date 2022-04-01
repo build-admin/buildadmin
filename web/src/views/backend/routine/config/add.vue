@@ -4,7 +4,7 @@
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">增加配置项</div>
         </template>
         <div class="ba-operate-form ba-add-form" :style="'width: calc(100% - ' + state.labelWidth / 2 + 'px)'">
-            <el-form ref="formRef" :rules="rules" v-model="state.addConfig" :label-position="'left'" :label-width="120">
+            <el-form ref="formRef" :rules="rules" :model="state.addConfig" :label-position="'left'" :label-width="120">
                 <FormItem label="变量名" type="string" v-model="state.addConfig.name" :attr="{ prop: 'name' }" />
                 <FormItem label="变量分组" type="select" v-model="state.addConfig.group" :attr="{ prop: 'group' }" :data="{ content: configGroup }" />
                 <FormItem label="变量标题" type="string" v-model="state.addConfig.title" :attr="{ prop: 'title' }" />
@@ -24,7 +24,7 @@
                     v-model="state.addConfig.content"
                     :input-attr="{ rows: 3, placeholder: '一行一个，无需引号，比如：key1=value1' }"
                 />
-                <FormItem label="验证规则" type="string" v-model="state.addConfig.rule" />
+                <FormItem label="验证规则" type="selects" v-model="state.addConfig.rule" :data="{ content: validatorType }" />
                 <FormItem
                     label="扩展属性"
                     type="textarea"
@@ -48,6 +48,7 @@ import { ElForm } from 'element-plus'
 import { ref, reactive } from 'vue'
 import FormItem from '/@/components/formItem/index.vue'
 import { inputTypes } from '/@/components/baInput'
+import { validatorType } from '/@/utils/validate'
 import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
 
 interface Props {

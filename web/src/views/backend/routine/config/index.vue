@@ -2,17 +2,17 @@
     <div class="default-main">
         <el-row v-loading="state.loading" :gutter="20">
             <el-col class="xs-mb-20" :xs="24" :sm="12">
-                <el-form v-if="!state.loading" ref="formRef" v-model="state.config" :label-position="'top'">
+                <el-form v-if="!state.loading" ref="formRef" :model="state.form" :rules="state.rules" :label-position="'top'">
                     <el-tabs v-model="state.activeTab" type="border-card" :before-leave="onBeforeLeave">
                         <el-tab-pane class="config-tab-pane" v-for="(group, key) in state.config" :key="key" :name="key" :label="group.title">
                             <div class="config-form-item" v-for="(item, idx) in group.list">
                                 <FormItem
                                     :label="item.title"
                                     :type="item.type"
-                                    v-model="item.value"
+                                    v-model="state.form[item.name]"
                                     :inputAttr="{ placeholder: item.tip, rows: 3 }"
                                     :data="{ tip: item.tip, content: item.content ? item.content : {} }"
-                                    :attr="item.extend"
+                                    :attr="Object.assign({ prop: item.name }, item.extend)"
                                 />
                                 <div class="config-form-item-name">${{ item.name }}</div>
                                 <div class="del-config-form-item">
@@ -50,6 +50,7 @@ import { index, postData } from '/@/api/backend/routine/config'
 import type { ElForm } from 'element-plus'
 import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
 import AddFrom from './add.vue'
+import { buildValidatorData } from '/@/utils/validate'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 
@@ -60,6 +61,8 @@ const state: {
     configGroup: anyObj
     activeTab: string
     showAddForm: boolean
+    rules: Partial<Record<string, FormItemRule[]>>
+    form: anyObj
 } = reactive({
     loading: true,
     config: [],
@@ -67,6 +70,8 @@ const state: {
     configGroup: {},
     activeTab: '',
     showAddForm: false,
+    rules: {},
+    form: {},
 })
 
 const getIndex = () => {
@@ -79,6 +84,26 @@ const getIndex = () => {
             state.activeTab = key
             break
         }
+        let formNames: anyObj = {}
+        let rules: Partial<Record<string, FormItemRule[]>> = {}
+        for (const key in state.config) {
+            for (const lKey in state.config[key].list) {
+                if (state.config[key].list[lKey].rule) {
+                    let ruleStr = state.config[key].list[lKey].rule.split(',')
+                    let ruleArr: anyObj = []
+                    ruleStr.forEach((item: string) => {
+                        ruleArr.push(buildValidatorData(item, state.config[key].list[lKey].title))
+                    })
+                    rules = Object.assign(rules, {
+                        [state.config[key].list[lKey].name]: ruleArr,
+                    })
+                }
+                formNames[state.config[key].list[lKey].name] = state.config[key].list[lKey].value
+            }
+        }
+
+        state.form = formNames
+        state.rules = rules
     })
 }
 
@@ -89,7 +114,9 @@ const onBeforeLeave = (newTabName: string | number) => {
     }
 }
 
-const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {}
+const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
+    console.log('state.form', state.form)
+}
 
 const onDelConfig = (config: anyObj) => {
     console.log(config)
