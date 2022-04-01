@@ -12,6 +12,7 @@
                                     v-model="item.value"
                                     :inputAttr="{ placeholder: item.tip, rows: 3 }"
                                     :data="{ tip: item.tip, content: item.content ? item.content : {} }"
+                                    :attr="item.extend"
                                 />
                                 <div class="config-form-item-name">${{ item.name }}</div>
                                 <div class="del-config-form-item">

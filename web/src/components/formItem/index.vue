@@ -97,8 +97,8 @@ export default defineComponent({
                 createVNode(
                     resolveComponent('el-form-item'),
                     {
-                        ...props.attr,
                         class: 'ba-input-item-' + props.type,
+                        ...props.attr,
                         label: props.label,
                     },
                     {

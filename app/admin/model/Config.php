@@ -8,6 +8,7 @@ class Config extends Model
 {
     protected $append = [
         'value',
+        'extend',
     ];
 
     protected $jsonDecodeType = ['checkbox', 'array'];
@@ -20,5 +21,15 @@ class Config extends Model
         } else {
             return $value ? $value : '';
         }
+    }
+
+    public function getExtendAttr($value, $row)
+    {
+        if ($value) {
+            $arr = json_decode($value, true);
+            return $arr ? $arr : [];
+        }
+
+        return [];
     }
 }

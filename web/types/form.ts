@@ -71,9 +71,19 @@ declare global {
         'automatic-dropdown'?: boolean
         'fit-input-width'?: boolean
         'tag-type'?: 'success' | 'info' | 'warning' | 'danger'
+        onChange?: Function
+        onInput?: Function
+        onVisibleChange?: Function
+        onRemoveTag?: Function
+        onClear?: Function
+        onBlur?: Function
+        onFocus?: Function
+        onCalendarChange?: Function
+        onPanelChange?: Function
     }
 
     interface FormItemAttr {
+        id?: string
         class?: string
         prop?: string | string[]
         'label-width'?: string | number

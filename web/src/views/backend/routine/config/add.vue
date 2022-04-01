@@ -15,10 +15,22 @@
                     v-model="state.addConfig.type"
                     :attr="{ prop: 'type' }"
                     :data="{ content: state.inputTypes }"
+                    :input-attr="{ onChange: onTypeChange }"
                 />
-                <FormItem label="字典数据" type="textarea" v-model="state.addConfig.content" :input-attr="{ rows: 3 }" />
+                <FormItem
+                    class="add-item-content"
+                    label="字典数据"
+                    type="textarea"
+                    v-model="state.addConfig.content"
+                    :input-attr="{ rows: 3, placeholder: '一行一个，无需引号，比如：key1=value1' }"
+                />
                 <FormItem label="验证规则" type="string" v-model="state.addConfig.rule" />
-                <FormItem label="扩展属性" type="textarea" v-model="state.addConfig.extend" />
+                <FormItem
+                    label="扩展属性"
+                    type="textarea"
+                    v-model="state.addConfig.extend"
+                    :input-attr="{ placeholder: '一行一个属性，无需引号，比如：class=config-item' }"
+                />
                 <FormItem label="权重" type="number" v-model="state.addConfig.weigh" :attr="{ prop: 'weigh' }" />
             </el-form>
         </div>
@@ -84,7 +96,8 @@ const state: {
         title: '',
         tip: '',
         type: '',
-        content: '',
+        content: `key1=value1
+key2=value2`,
         rule: '',
         extend: '',
         weigh: 0,
@@ -136,6 +149,19 @@ const inputTypesHandle = () => {
     state.inputTypes = inputTypesKey
 }
 
+let needContent = ['radio', 'checkbox', 'array', 'select', 'selects']
+const onTypeChange = (value: string) => {
+    let contentEl = document.querySelector('.add-item-content') as HTMLElement
+    if (!contentEl) {
+        return
+    }
+    if (needContent.includes(value)) {
+        contentEl.style.display = 'flex'
+    } else {
+        contentEl.style.display = 'none'
+    }
+}
+
 const onAddSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     console.log(state.addConfig)
 }
@@ -143,4 +169,8 @@ const onAddSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
 inputTypesHandle()
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.add-item-content {
+    display: none;
+}
+</style>

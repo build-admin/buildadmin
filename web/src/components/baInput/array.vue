@@ -11,7 +11,7 @@
             <el-input v-model="item.value"></el-input>
         </el-col>
         <el-col :span="4">
-            <el-button @click="onDelArrayItem(idx)" type="danger" size="small" icon="el-icon-Delete" circle />
+            <el-button @click="onDelArrayItem(idx)" size="small" icon="el-icon-Delete" circle />
         </el-col>
     </el-row>
     <el-button v-blur class="ba-add-array-item" @click="onAddArrayItem" icon="el-icon-Plus">添加</el-button>
