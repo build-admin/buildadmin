@@ -1,17 +1,20 @@
 <template>
     <el-row :gutter="10">
-        <el-col :span="12" class="ba-array-key">键名</el-col>
-        <el-col :span="12" class="ba-array-value">键值</el-col>
+        <el-col :span="10" class="ba-array-key">键名</el-col>
+        <el-col :span="10" class="ba-array-value">键值</el-col>
     </el-row>
-    <el-row class="ba-array-item" v-for="item in state.value" :gutter="10">
-        <el-col :span="12">
+    <el-row class="ba-array-item" v-for="(item, idx) in state.value" :gutter="10">
+        <el-col :span="10">
             <el-input v-model="item.key"></el-input>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="10">
             <el-input v-model="item.value"></el-input>
         </el-col>
+        <el-col :span="4">
+            <el-button @click="onDelArrayItem(idx)" type="danger" size="small" icon="el-icon-Delete" circle />
+        </el-col>
     </el-row>
-    <el-button v-blur class="ba-add-array-item" @click="addArrayItem" icon="el-icon-Plus">添加</el-button>
+    <el-button v-blur class="ba-add-array-item" @click="onAddArrayItem" icon="el-icon-Plus">添加</el-button>
 </template>
 
 <script setup lang="ts">
@@ -37,12 +40,16 @@ const onInput = () => {
     emits('update:modelValue', state.value)
 } */
 
-const addArrayItem = () => {
+const onAddArrayItem = () => {
     state.value.push({
         key: '',
         value: '',
     })
     // emits('update:modelValue', state.value)
+}
+
+const onDelArrayItem = (idx: number) => {
+    state.value.splice(idx, 1)
 }
 </script>
 
