@@ -94,8 +94,8 @@ export default defineComponent({
                 vNode.push(
                     createVNode(resolveComponent('el-option'), {
                         key: key,
-                        label: key,
-                        value: props.data.content[key],
+                        label: props.data.content[key],
+                        value: key,
                         ...childrenAttr,
                     })
                 )
@@ -104,6 +104,7 @@ export default defineComponent({
                 createVNode(
                     resolveComponent('el-select'),
                     {
+                        class: 'ba-input-select',
                         multiple: props.type == 'select' ? false : true,
                         ...props.attr,
                         modelValue: props.modelValue,
@@ -123,3 +124,9 @@ export default defineComponent({
     },
 })
 </script>
+
+<style scoped lang="scss">
+.ba-input-select {
+    width: 100%;
+}
+</style>

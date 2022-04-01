@@ -24,17 +24,19 @@ class Config extends Backend
         $list        = [];
         foreach ($config as $item) {
             $item['title']                  = __($item['title']);
-            $item['value']                  = $item['value'] ? $item['value'] : '';
             $list[$item['group']]['list'][] = $item;
         }
         foreach ($configGroup as $key => $item) {
             $list[$item['key']]['name']  = $item['key'];
             $list[$item['key']]['title'] = __($item['value']);
+
+            $newConfigGroup[$item['key']] = $item['value'];
         }
 
         $this->success('', [
-            'list'   => $list,
-            'remark' => get_route_remark(),
+            'list'        => $list,
+            'remark'      => get_route_remark(),
+            'configGroup' => $newConfigGroup
         ]);
     }
 }

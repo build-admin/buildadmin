@@ -14,10 +14,11 @@ class Config extends Model
 
     public function getValueAttr($value, $row)
     {
-        if ($value && in_array($row['type'], $this->jsonDecodeType)) {
-            return json_decode($value, true);
+        if (in_array($row['type'], $this->jsonDecodeType)) {
+            $arr = json_decode($value, true);
+            return $arr ? $arr : [];
+        } else {
+            return $value ? $value : '';
         }
-
-        return $value;
     }
 }
