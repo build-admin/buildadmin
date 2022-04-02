@@ -38,9 +38,10 @@ class Config extends Backend
         }
 
         $this->success('', [
-            'list'        => $list,
-            'remark'      => get_route_remark(),
-            'configGroup' => $newConfigGroup
+            'list'          => $list,
+            'remark'        => get_route_remark(),
+            'configGroup'   => $newConfigGroup,
+            'quickEntrance' => get_sys_config('config_quick_entrance'),
         ]);
     }
 
@@ -64,7 +65,7 @@ class Config extends Backend
                 if (array_key_exists($item->name, $data)) {
                     $configValue[] = [
                         'id'    => $item->id,
-                        'type' => $item->getData('type'),
+                        'type'  => $item->getData('type'),
                         'value' => $data[$item->name]
                     ];
                 }

@@ -12,7 +12,7 @@ class Config extends Model
         'extend',
     ];
 
-    protected $jsonDecodeType = ['checkbox', 'array'];
+    protected $jsonDecodeType = ['checkbox', 'array', 'selects'];
     protected $needContent    = ['radio', 'checkbox', 'select', 'selects'];
 
     public static function onBeforeInsert($model)

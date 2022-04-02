@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </el-col>
-            <el-col :xs="24" :sm="24" :md="24" :lg="14" :offset="1">
+            <el-col v-loading="state.logLoading" :xs="24" :sm="24" :md="24" :lg="14" :offset="1">
                 <el-card header="操作日志" shadow="never">
                     <el-timeline>
                         <el-timeline-item v-for="item in state.log" size="large" :timestamp="timeFormat(item.createtime)">
@@ -123,6 +123,7 @@ const state: {
     logCurrentPage: number
     logPageSize: number
     logTotal: number
+    logLoading: boolean
 } = reactive({
     adminInfo: {},
     formKey: uuid(),
@@ -134,6 +135,7 @@ const state: {
     logCurrentPage: 1,
     logPageSize: 12,
     logTotal: 100,
+    logLoading: true,
 })
 
 index().then((res) => {
@@ -146,6 +148,9 @@ const getLog = () => {
     log(state.logFilter).then((res) => {
         state.log = res.data.list
         state.logTotal = res.data.total
+        state.logLoading = false
+    }).catch(() => {
+        state.logLoading = false
     })
 }
 

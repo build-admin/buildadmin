@@ -45,7 +45,11 @@
                 </el-form>
             </el-col>
             <el-col :xs="24" :sm="12">
-                <el-card header="快捷配置入口"> 快捷配置入口 </el-card>
+                <el-card header="快捷配置入口">
+                    <el-button v-for="item in state.quickEntrance" class="config_quick_entrance">
+                        <div @click="routePush('', {}, item['value'])">{{ item['key'] }}</div>
+                    </el-button>
+                </el-card>
             </el-col>
         </el-row>
 
@@ -60,6 +64,7 @@ import { index, postData, del } from '/@/api/backend/routine/config'
 import type { ElForm } from 'element-plus'
 import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
 import AddFrom from './add.vue'
+import { routePush } from '/@/utils/router'
 import { buildValidatorData } from '/@/utils/validate'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
@@ -73,6 +78,7 @@ const state: {
     showAddForm: boolean
     rules: Partial<Record<string, FormItemRule[]>>
     form: anyObj
+    quickEntrance: anyObj
 } = reactive({
     loading: true,
     config: [],
@@ -82,39 +88,45 @@ const state: {
     showAddForm: false,
     rules: {},
     form: {},
+    quickEntrance: {},
 })
 
 const getIndex = () => {
-    index().then((res) => {
-        state.config = res.data.list
-        state.remark = res.data.remark
-        state.configGroup = res.data.configGroup
-        state.loading = false
-        for (const key in state.configGroup) {
-            state.activeTab = key
-            break
-        }
-        let formNames: anyObj = {}
-        let rules: Partial<Record<string, FormItemRule[]>> = {}
-        for (const key in state.config) {
-            for (const lKey in state.config[key].list) {
-                if (state.config[key].list[lKey].rule) {
-                    let ruleStr = state.config[key].list[lKey].rule.split(',')
-                    let ruleArr: anyObj = []
-                    ruleStr.forEach((item: string) => {
-                        ruleArr.push(buildValidatorData(item, state.config[key].list[lKey].title))
-                    })
-                    rules = Object.assign(rules, {
-                        [state.config[key].list[lKey].name]: ruleArr,
-                    })
-                }
-                formNames[state.config[key].list[lKey].name] = state.config[key].list[lKey].value
+    index()
+        .then((res) => {
+            state.config = res.data.list
+            state.remark = res.data.remark
+            state.configGroup = res.data.configGroup
+            state.quickEntrance = res.data.quickEntrance
+            state.loading = false
+            for (const key in state.configGroup) {
+                state.activeTab = key
+                break
             }
-        }
+            let formNames: anyObj = {}
+            let rules: Partial<Record<string, FormItemRule[]>> = {}
+            for (const key in state.config) {
+                for (const lKey in state.config[key].list) {
+                    if (state.config[key].list[lKey].rule) {
+                        let ruleStr = state.config[key].list[lKey].rule.split(',')
+                        let ruleArr: anyObj = []
+                        ruleStr.forEach((item: string) => {
+                            ruleArr.push(buildValidatorData(item, state.config[key].list[lKey].title))
+                        })
+                        rules = Object.assign(rules, {
+                            [state.config[key].list[lKey].name]: ruleArr,
+                        })
+                    }
+                    formNames[state.config[key].list[lKey].name] = state.config[key].list[lKey].value
+                }
+            }
 
-        state.form = formNames
-        state.rules = rules
-    })
+            state.form = formNames
+            state.rules = rules
+        })
+        .catch(() => {
+            state.loading = false
+        })
 }
 
 const onBeforeLeave = (newTabName: string | number) => {
@@ -214,6 +226,10 @@ export default defineComponent({
             color: var(--color-placeholder) !important;
         }
     }
+}
+.config_quick_entrance {
+    margin-left: 10px;
+    margin-bottom: 10px;
 }
 @media screen and (max-width: 768px) {
     .xs-mb-20 {
