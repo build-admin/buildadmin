@@ -7,6 +7,16 @@
                         <el-tab-pane class="config-tab-pane" v-for="(group, key) in state.config" :key="key" :name="key" :label="group.title">
                             <div class="config-form-item" v-for="(item, idx) in group.list">
                                 <FormItem
+                                    v-if="item.type == 'number'"
+                                    :label="item.title"
+                                    :type="item.type"
+                                    v-model.number="state.form[item.name]"
+                                    :inputAttr="{ placeholder: item.tip, rows: 3 }"
+                                    :data="{ tip: item.tip, content: item.content ? item.content : {} }"
+                                    :attr="Object.assign({ prop: item.name }, item.extend)"
+                                />
+                                <FormItem
+                                    v-else
                                     :label="item.title"
                                     :type="item.type"
                                     v-model="state.form[item.name]"
@@ -46,7 +56,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import FormItem from '/@/components/formItem/index.vue'
-import { index, postData } from '/@/api/backend/routine/config'
+import { index, postData, del } from '/@/api/backend/routine/config'
 import type { ElForm } from 'element-plus'
 import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
 import AddFrom from './add.vue'
@@ -115,11 +125,18 @@ const onBeforeLeave = (newTabName: string | number) => {
 }
 
 const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
-    console.log('state.form', state.form)
+    if (!formEl) return
+    formEl.validate((valid) => {
+        if (valid) {
+            postData('edit', state.form)
+        }
+    })
 }
 
 const onDelConfig = (config: anyObj) => {
-    console.log(config)
+    del(config.id).then((res) => {
+        getIndex()
+    })
 }
 
 onMounted(() => {

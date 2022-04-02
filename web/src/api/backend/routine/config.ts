@@ -2,7 +2,9 @@ import createAxios from '/@/utils/axios'
 const controllerUrl = '/index.php/admin/routine.config/'
 export const actionUrl = new Map([
     ['index', controllerUrl + 'index'],
+    ['add', controllerUrl + 'add'],
     ['edit', controllerUrl + 'edit'],
+    ['del', controllerUrl + 'del'],
 ])
 
 export function index() {
@@ -12,12 +14,27 @@ export function index() {
     })
 }
 
-export function postData(data: anyObj) {
+export function postData(action: string, data: anyObj) {
     return createAxios(
         {
-            url: actionUrl.get('edit'),
+            url: actionUrl.get(action),
             method: 'post',
             data: data,
+        },
+        {
+            showSuccessMessage: true,
+        }
+    )
+}
+
+export function del(ids: string[]) {
+    return createAxios(
+        {
+            url: actionUrl.get('del'),
+            method: 'DELETE',
+            data: {
+                ids: ids,
+            },
         },
         {
             showSuccessMessage: true,

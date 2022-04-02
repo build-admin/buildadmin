@@ -31,7 +31,7 @@
                     v-model="state.addConfig.extend"
                     :input-attr="{ placeholder: '一行一个属性，无需引号，比如：class=config-item' }"
                 />
-                <FormItem label="权重" type="number" v-model="state.addConfig.weigh" :attr="{ prop: 'weigh' }" />
+                <FormItem label="权重" type="number" v-model.number="state.addConfig.weigh" :attr="{ prop: 'weigh' }" />
             </el-form>
         </div>
         <template #footer>
@@ -50,6 +50,8 @@ import FormItem from '/@/components/formItem/index.vue'
 import { inputTypes } from '/@/components/baInput'
 import { validatorType } from '/@/utils/validate'
 import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
+import { buildValidatorData } from '/@/utils/validate'
+import { postData } from '/@/api/backend/routine/config'
 
 interface Props {
     modelValue: boolean
@@ -106,40 +108,11 @@ key2=value2`,
 })
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    name: [
-        {
-            required: true,
-            message: '请输入变量名',
-            trigger: 'blur',
-        },
-    ],
-    group: [
-        {
-            required: true,
-            message: '请选择分组',
-            trigger: 'blur',
-        },
-    ],
-    title: [
-        {
-            required: true,
-            message: '请输入标题',
-            trigger: 'blur',
-        },
-    ],
-    type: [
-        {
-            required: true,
-            message: '请选择类型',
-            trigger: 'blur',
-        },
-    ],
-    weigh: [
-        {
-            type: 'number',
-            message: '请输入数字',
-        },
-    ],
+    name: [buildValidatorData('required', '变量名'), buildValidatorData('varName', '')],
+    group: [buildValidatorData('required', '', 'blur', '请选择分组')],
+    title: [buildValidatorData('required', '标题')],
+    type: [buildValidatorData('required', '', 'blur', '请选择类型')],
+    weigh: [buildValidatorData('integer', '数字')],
 })
 
 const inputTypesHandle = () => {
@@ -150,7 +123,7 @@ const inputTypesHandle = () => {
     state.inputTypes = inputTypesKey
 }
 
-let needContent = ['radio', 'checkbox', 'array', 'select', 'selects']
+let needContent = ['radio', 'checkbox', 'select', 'selects']
 const onTypeChange = (value: string) => {
     let contentEl = document.querySelector('.add-item-content') as HTMLElement
     if (!contentEl) {
@@ -164,7 +137,14 @@ const onTypeChange = (value: string) => {
 }
 
 const onAddSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
-    console.log(state.addConfig)
+    if (!formEl) return
+    formEl.validate((valid) => {
+        if (valid) {
+            postData('add', state.addConfig).then((res) => {
+                emits('update:modelValue', false)
+            })
+        }
+    })
 }
 
 inputTypesHandle()

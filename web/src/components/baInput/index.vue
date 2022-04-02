@@ -82,6 +82,7 @@ export default defineComponent({
         } else if (props.type == 'datetime') {
             return () =>
                 createVNode(resolveComponent('el-date-picker'), {
+                    class: 'w100',
                     type: 'datetime',
                     'value-format': 'YYYY-MM-DD HH:mm:ss',
                     ...props.attr,
@@ -104,7 +105,7 @@ export default defineComponent({
                 createVNode(
                     resolveComponent('el-select'),
                     {
-                        class: 'ba-input-select',
+                        class: 'w100',
                         multiple: props.type == 'select' ? false : true,
                         ...props.attr,
                         modelValue: props.modelValue,
@@ -125,8 +126,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
-.ba-input-select {
-    width: 100%;
-}
-</style>
+<style scoped lang="scss"></style>

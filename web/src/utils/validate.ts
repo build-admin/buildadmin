@@ -47,8 +47,21 @@ export function validatorPassword(rule: any, val: string, callback: Function) {
 }
 
 /**
+ * 变量名验证
+ */
+export function validatorVarName(rule: any, val: string, callback: Function) {
+    if (!val) {
+        return callback()
+    }
+    if (!/^([^\x00-\xff]|[a-zA-Z_$])([^\x00-\xff]|[a-zA-Z0-9_$])*$/.test(val)) {
+        return callback(new Error('请输入正确的名称'))
+    }
+    return callback()
+}
+
+/**
  * 构建表单验证规则
- * @var ruleName 规则名:required=必填,mobile=手机号,account=账户,password=密码,number、integer、float、date、url、email
+ * @var ruleName 规则名:required=必填,mobile=手机号,account=账户,password=密码,varName=变量名,number、integer、float、date、url、email
  * @var title 验证项的标题
  * @var trigger 自定义验证触发方式
  * @var message 自定义验证错误消息
@@ -58,6 +71,7 @@ export const validatorType = {
     mobile: '手机号',
     account: '账户名',
     password: '密码',
+    varName: '变量名',
     url: 'URL',
     email: '邮箱地址',
     date: '日期',
@@ -90,6 +104,7 @@ export function buildValidatorData(ruleName: string, title: string, trigger: str
         mobile: validatorMobile,
         account: validatorAccount,
         password: validatorPassword,
+        varName: validatorVarName,
     }
     if (validatorCustomFun[ruleName]) {
         return {

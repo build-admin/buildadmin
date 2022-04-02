@@ -114,6 +114,9 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.el-form--label-top .el-form-item :deep(.el-form-item__label) {
+    display: flex;
+}
 .ba-form-item-label {
     display: flex;
     align-items: center;
