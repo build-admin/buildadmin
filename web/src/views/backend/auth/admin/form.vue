@@ -12,6 +12,7 @@
             </div>
         </template>
         <div
+            v-loading="baTable.form.loading"
             class="ba-operate-form"
             :class="'ba-' + baTable.form.operate + '-form'"
             :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"

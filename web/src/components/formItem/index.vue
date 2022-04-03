@@ -1,6 +1,6 @@
 <script lang="ts">
 import { createVNode, defineComponent, resolveComponent, PropType } from 'vue'
-import { inputTypes, modelValuePropsTypes, modelValueTypes } from '/@/components/baInput'
+import { inputTypes, modelValueTypes } from '/@/components/baInput'
 import BaInput from '/@/components/baInput/index.vue'
 
 export default defineComponent({
@@ -20,7 +20,6 @@ export default defineComponent({
         },
         // 双向绑定值
         modelValue: {
-            type: modelValuePropsTypes,
             required: true,
         },
         // 输入框的附加属性
@@ -118,9 +117,7 @@ export default defineComponent({
     display: flex;
 }
 .ba-form-item-label {
-    display: flex;
-    align-items: center;
-    height: 100%;
+    display: inline-block;
     .ba-form-item-label-tip {
         padding-left: 6px;
         font-size: 12px;

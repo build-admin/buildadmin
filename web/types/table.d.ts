@@ -28,6 +28,7 @@ declare global {
         items?: anyObj
         submitLoading?: boolean
         defaultItems?: anyObj
+        loading?: boolean
     }
 
     /* BaTable前置处理函数(前置埋点) */

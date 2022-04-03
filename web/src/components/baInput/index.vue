@@ -1,6 +1,6 @@
 <script lang="ts">
 import { createVNode, resolveComponent, defineComponent, PropType, VNode } from 'vue'
-import { inputTypes, modelValuePropsTypes, modelValueTypes } from '/@/components/baInput'
+import { inputTypes, modelValueTypes } from '/@/components/baInput'
 import Array from '/@/components/baInput/array.vue'
 
 export default defineComponent({
@@ -16,7 +16,6 @@ export default defineComponent({
         },
         // 双向绑定值
         modelValue: {
-            type: modelValuePropsTypes,
             required: true,
         },
         // 输入框的附加属性

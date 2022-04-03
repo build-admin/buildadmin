@@ -59,6 +59,8 @@ export default class baTable {
         submitLoading: false,
         // 默认表单数据(添加)
         defaultItems: {},
+        // 表单字段加载状态
+        loading: false,
     })
     /* 表单状态-e */
 
@@ -126,12 +128,14 @@ export default class baTable {
     // 编辑
     requestEdit = (id: string) => {
         this.runBefore('requestEdit', { id })
+        this.form.loading = true
         this.form.items = {}
         return this.api
             .edit({
                 id: id,
             })
             .then((res) => {
+                this.form.loading = false
                 this.form.items = res.data.row
                 this.runAfter('requestEdit', { res })
             })

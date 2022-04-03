@@ -36,6 +36,11 @@ class UserMoneyLog extends model
         $user->save();
     }
 
+    public static function onBeforeDelete()
+    {
+        return false;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
