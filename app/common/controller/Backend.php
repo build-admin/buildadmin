@@ -7,6 +7,7 @@ use think\db\exception\PDOException;
 use think\facade\Config;
 use think\facade\Cookie;
 use think\facade\Db;
+use think\facade\Event;
 
 class Backend extends Api
 {
@@ -77,7 +78,7 @@ class Backend extends Api
         }
 
         $this->auth = Auth::instance();
-        $routePath  = $this->controllerPath . '/' . $this->request->action(true);
+        $routePath  = $this->app->request->controllerPath . '/' . $this->request->action(true);
         $token      = $this->request->server('HTTP_BATOKEN', $this->request->request('batoken', Cookie::get('batoken') ?: false));
         if (!$this->auth->actionInArr($this->noNeedLogin)) {
             $this->auth->init($token);
@@ -98,6 +99,9 @@ class Backend extends Api
                 $this->auth->init($token);
             }
         }
+
+        // 管理员验权和登录标签位
+        Event::trigger('backendInit');
     }
 
     public function queryBuilder()

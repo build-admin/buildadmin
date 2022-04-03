@@ -43,8 +43,9 @@ abstract class BaseController
      */
     public function __construct(App $app)
     {
-        $this->app     = $app;
-        $this->request = $this->app->request;
+        $this->app                     = $app;
+        $this->request                 = $this->app->request;
+        $this->request->controllerPath = str_replace('.', '/', $this->request->controller(true));
 
         // 控制器初始化
         $this->initialize();

@@ -19,11 +19,6 @@ class Api extends BaseController
      */
     protected $responseType = 'json';
 
-    /**
-     * 控制器目录路径
-     */
-    protected $controllerPath;
-
     public function __construct(App $app)
     {
         parent::__construct($app);
@@ -38,10 +33,9 @@ class Api extends BaseController
         $this->request->filter('trim,strip_tags,htmlspecialchars');
 
         // 加载控制器语言包
-        $langset              = $this->app->lang->getLangSet();
-        $this->controllerPath = str_replace('.', '/', $this->request->controller(true));
+        $langset = $this->app->lang->getLangSet();
         $this->app->lang->load([
-            app_path() . 'lang' . DIRECTORY_SEPARATOR . $langset . DIRECTORY_SEPARATOR . (str_replace('/', DIRECTORY_SEPARATOR, $this->controllerPath)) . '.php'
+            app_path() . 'lang' . DIRECTORY_SEPARATOR . $langset . DIRECTORY_SEPARATOR . (str_replace('/', DIRECTORY_SEPARATOR, $this->app->request->controllerPath)) . '.php'
         ]);
     }
 
