@@ -8,12 +8,29 @@
             :quick-search-placeholder="'通过规则名称模糊搜索'"
             @action="baTable.onTableHeaderAction"
         >
-            <el-tooltip content="将记录还原到原数据表" placement="top">
-                <el-button type="success" :disabled="baTable.table.selection!.length > 0 ? false:true" v-blur class="table-header-operate">
-                    <Icon color="#ffffff" name="el-icon-RefreshRight" />
-                    <span class="table-header-operate-text">还原</span>
-                </el-button>
-            </el-tooltip>
+            <el-popconfirm
+                @confirm="onRestoreAction"
+                confirm-button-text="还原"
+                cancel-button-text="取消"
+                confirmButtonType="success"
+                title="确定还原选中记录？"
+            >
+                <template #reference>
+                    <div class="mlr-12">
+                        <el-tooltip content="还原选中记录到原数据表" placement="top">
+                            <el-button
+                                v-blur
+                                :disabled="baTable.table.selection!.length > 0 ? false:true"
+                                class="table-header-operate"
+                                type="success"
+                            >
+                                <Icon color="#ffffff" name="el-icon-RefreshRight" />
+                                <span class="table-header-operate-text">还原</span>
+                            </el-button>
+                        </el-tooltip>
+                    </div>
+                </template>
+            </el-popconfirm>
         </TableHeader>
 
         <!-- 表格 -->
@@ -26,24 +43,32 @@
 </template>
 
 <script setup lang="ts">
-import { provide } from 'vue'
+import { provide, onMounted } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { securityDataRecycleLog } from '/@/api/controllerUrls'
+import { restore } from '/@/api/backend/security/dataRecycleLog'
 import Info from './info.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
+import useCurrentInstance from '/@/utils/useCurrentInstance'
 
 let optButtons: OptButton[] = [
     {
-        render: 'tipButton',
+        render: 'confirmButton',
         name: 'restore',
-        title: 'restore',
+        title: 'security/dataRecycleLog.restore',
         text: '',
         type: 'success',
         icon: 'el-icon-RefreshRight',
         class: 'table-row-edit',
+        popconfirm: {
+            confirmButtonText: '还原',
+            cancelButtonText: '取消',
+            confirmButtonType: 'success',
+            title: '确认要还原记录吗？',
+        },
         disabledTip: false,
     },
 ]
@@ -63,14 +88,6 @@ const baTable = new baTableClass(new baTableApi(securityDataRecycleLog), {
             operator: 'LIKE',
             operatorPlaceholder: '任意片段模糊查询',
             'show-overflow-tooltip': true,
-        },
-        {
-            label: '是否已还原',
-            prop: 'is_restore',
-            align: 'center',
-            render: 'tag',
-            custom: { '0': 'success', '1': 'danger' },
-            replaceValue: { '0': '否', '1': '是' },
         },
         { label: 'IP', prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
         {
@@ -95,10 +112,35 @@ const baTable = new baTableClass(new baTableApi(securityDataRecycleLog), {
     dblClickNotEditColumn: [undefined],
 })
 
+const onRestore = (ids: string[]) => {
+    restore(ids).then((res) => {
+        baTable.onTableHeaderAction('refresh', {})
+    })
+}
+
+const onRestoreAction = () => {
+    onRestore(baTable.getSelectionIds())
+}
+
 provide('baTable', baTable)
 
-baTable.mount()
-baTable.getIndex()
+onMounted(() => {
+    const { proxy } = useCurrentInstance()
+    baTable.mount()
+    baTable.getIndex()
+
+    /**
+     * 表格内的按钮响应
+     * @param name 按钮name
+     * @param row 被操作行数据
+     */
+    proxy.eventBus.on('onTableButtonClick', (data: { name: string; row: TableRow }) => {
+        if (!baTable.activate) return
+        if (data.name == 'restore') {
+            onRestore([data.row[baTable.table.pk!]])
+        }
+    })
+})
 </script>
 
 <script lang="ts">
