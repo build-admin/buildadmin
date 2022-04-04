@@ -38,11 +38,13 @@ class Security
                 $adminId        = $auth->isLogin() ? $auth->id : 0;
                 foreach ($recycleData as $recycleDatum) {
                     $recycleDataArr[] = [
-                        'admin_id'   => $adminId,
-                        'recycle_id' => $recycle['id'],
-                        'data'       => json_encode($recycleDatum, JSON_UNESCAPED_UNICODE),
-                        'ip'         => $request->ip(),
-                        'useragent'  => substr($request->server('HTTP_USER_AGENT'), 0, 255),
+                        'admin_id'    => $adminId,
+                        'recycle_id'  => $recycle['id'],
+                        'data'        => json_encode($recycleDatum, JSON_UNESCAPED_UNICODE),
+                        'data_table'  => $recycle['data_table'],
+                        'primary_key' => $recycle['primary_key'],
+                        'ip'          => $request->ip(),
+                        'useragent'   => substr($request->server('HTTP_USER_AGENT'), 0, 255),
                     ];
                 }
                 if (!$recycleDataArr) {
@@ -96,6 +98,7 @@ class Security
 
                     $sensitiveDataLog[] = [
                         'admin_id'     => $adminId,
+                        'sensitive_id' => $sensitiveData['id'],
                         'controller'   => $request->controllerPath,
                         'data_table'   => $sensitiveData['data_table'],
                         'primary_key'  => $sensitiveData['primary_key'],
