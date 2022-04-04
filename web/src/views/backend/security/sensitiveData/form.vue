@@ -27,6 +27,13 @@
                 :rules="rules"
             >
                 <FormItem
+                    label="规则名称"
+                    type="string"
+                    v-model="baTable.form.items!.name"
+                    :attr="{ prop: 'name' }"
+                    :input-attr="{ placeholder: '规则名称有助于后续识别被删数据' }"
+                />
+                <FormItem
                     label="控制器"
                     type="select"
                     v-model="baTable.form.items!.controller"
@@ -106,6 +113,7 @@ const state: {
 })
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
+    name: [buildValidatorData('required', '规则名称')],
     controller: [buildValidatorData('required', '', 'change', '请选择控制器')],
     data_table: [buildValidatorData('required', '', 'change', '请选择数据表')],
     primary_key: [buildValidatorData('required', '数据表主键', 'change')],

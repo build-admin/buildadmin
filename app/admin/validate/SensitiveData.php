@@ -9,6 +9,7 @@ class SensitiveData extends Validate
     protected $failException = true;
 
     protected $rule = [
+        'name'        => 'require',
         'controller'  => 'require|unique:security_sensitive_data',
         'data_table'  => 'require',
         'primary_key' => 'require',
@@ -31,13 +32,14 @@ class SensitiveData extends Validate
      * 验证场景
      */
     protected $scene = [
-        'add'  => ['data_fields', 'controller', 'data_table', 'primary_key'],
-        'edit' => ['data_fields', 'controller', 'data_table', 'primary_key'],
+        'add'  => ['name', 'data_fields', 'controller', 'data_table', 'primary_key'],
+        'edit' => ['name', 'data_fields', 'controller', 'data_table', 'primary_key'],
     ];
 
     public function __construct()
     {
         $this->field = [
+            'name'        => __('Name'),
             'data_fields' => __('Data Fields'),
             'controller'  => __('Controller'),
             'data_table'  => __('Data Table'),

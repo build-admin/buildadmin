@@ -40,7 +40,7 @@ const baTable = new baTableClass(
             { label: '规则名称', prop: 'name', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
             { label: '控制器', prop: 'controller', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
             { label: '数据表', prop: 'data_table', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '数据表主键', prop: 'primary_key', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            { label: '数据表主键', prop: 'primary_key', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 100 },
             {
                 label: '状态',
                 prop: 'status',
