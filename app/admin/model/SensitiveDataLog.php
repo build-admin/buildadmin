@@ -11,4 +11,14 @@ class SensitiveDataLog extends Model
     protected $autoWriteTimestamp = 'int';
     protected $createTime         = 'createtime';
     protected $updateTime         = false;
+
+    public function sensitive()
+    {
+        return $this->belongsTo(SensitiveData::class, 'sensitive_id');
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'admin_id');
+    }
 }

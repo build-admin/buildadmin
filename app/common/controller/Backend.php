@@ -116,9 +116,8 @@ class Backend extends Api
 
         $where              = [];
         $modelTable         = strtolower($this->model->getTable());
-        $modelName          = strtolower(str_replace(Config::get('database.connections.mysql.prefix'), '', $modelTable));
-        $alias[$modelTable] = $modelName;
-        $tableAlias         = $modelName . '.';
+        $alias[$modelTable] = parse_name(basename(str_replace('\\', '/', get_class($this->model))));
+        $tableAlias         = $alias[$modelTable] . '.';
 
         // 快速搜索
         if ($quickSearch) {
