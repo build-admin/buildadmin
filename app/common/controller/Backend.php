@@ -135,6 +135,8 @@ class Backend extends Api
             if (isset($order[0]) && isset($order[1]) && ($order[1] == 'asc' || $order[1] == 'desc')) {
                 $order = [(string)$order[0] => $order[1]];
             }
+        } else {
+            $order = [(string)$this->model->getPk() => 'desc'];
         }
 
         // 通用搜索组装

@@ -13,6 +13,7 @@ import { getUrl } from '/@/utils/axios'
  */
 export const adminUploadUrl = '/index.php/admin/ajax/upload'
 export const buildSuffixSvgUrl = '/index.php/admin/ajax/buildsuffixsvg'
+export const getTablePkUrl = '/index.php/admin/ajax/getTablePk'
 export const captchaUrl = '/index.php/api/common/captcha'
 export const refreshTokenUrl = '/index.php/api/common/refreshToken'
 
@@ -43,6 +44,16 @@ export function adminFileUpload(fd: FormData): ApiPromise {
 
 export function buildCaptchaUrl() {
     return getUrl() + captchaUrl
+}
+
+export function getTablePk(table: string) {
+    return createAxios({
+        url: getTablePkUrl,
+        method: 'get',
+        params: {
+            table: table,
+        },
+    })
 }
 
 /**

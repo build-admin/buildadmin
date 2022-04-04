@@ -17,6 +17,7 @@ declare global {
         defaultOrder?: { prop: string; order: string }
         dragSortLimitField?: string
         acceptQuery?: boolean
+        extend?: anyObj
     }
 
     /* baTableForm */
@@ -29,6 +30,7 @@ declare global {
         submitLoading?: boolean
         defaultItems?: anyObj
         loading?: boolean
+        extend?: anyObj
     }
 
     /* BaTable前置处理函数(前置埋点) */

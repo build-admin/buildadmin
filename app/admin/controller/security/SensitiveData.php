@@ -3,29 +3,64 @@
 namespace app\admin\controller\security;
 
 use app\common\controller\Backend;
-use app\admin\model\DataRecycle as DataRecycleModel;
+use app\admin\model\SensitiveData as SensitiveDataModel;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
 use think\facade\Db;
 use Exception;
 
-class DataRecycle extends Backend
+class SensitiveData extends Backend
 {
     protected $model = null;
 
     // 排除字段
     protected $preExcludeFields = ['updatetime', 'createtime'];
 
-    protected $quickSearchField = 'name';
+    protected $quickSearchField = 'controller';
 
     public function initialize()
     {
         parent::initialize();
-        $this->model = new DataRecycleModel();
+        $this->model = new SensitiveDataModel();
     }
 
     /**
-     * 添加
+     * 查看
+     */
+    public function index()
+    {
+        $this->request->filter(['strip_tags', 'trim']);
+        if ($this->request->param('select')) {
+            $this->select();
+        }
+
+        list($where, $alias, $limit, $order) = $this->queryBuilder();
+        $res = $this->model
+            ->withJoin($this->withJoinTable, $this->withJoinType)
+            ->alias($alias)
+            ->where($where)
+            ->order($order)
+            ->paginate($limit);
+
+        foreach ($res->items() as $item) {
+            if ($item->data_fields) {
+                $fields = [];
+                foreach ($item->data_fields as $key => $field) {
+                    $fields[] = $field ? $field : $key;
+                }
+            }
+            $item->data_fields = $fields;
+        }
+
+        $this->success('', [
+            'list'   => $res->items(),
+            'total'  => $res->total(),
+            'remark' => get_route_remark(),
+        ]);
+    }
+
+    /**
+     * 添加重写
      */
     public function add()
     {
@@ -51,6 +86,14 @@ class DataRecycle extends Backend
                         $validate->check($data);
                     }
                 }
+
+                if (is_array($data['fields'])) {
+                    $data['data_fields'] = [];
+                    foreach ($data['fields'] as $field) {
+                        $data['data_fields'][$field['name']] = $field['value'];
+                    }
+                }
+
                 $result = $this->model->save($data);
                 Db::commit();
             } catch (ValidateException $e) {
@@ -78,7 +121,7 @@ class DataRecycle extends Backend
     }
 
     /**
-     * 编辑
+     * 编辑重写
      * @param null $id
      */
     public function edit($id = null)
@@ -110,6 +153,14 @@ class DataRecycle extends Backend
                         $validate->check($data);
                     }
                 }
+
+                if (is_array($data['fields'])) {
+                    $data['data_fields'] = [];
+                    foreach ($data['fields'] as $field) {
+                        $data['data_fields'][$field['name']] = $field['value'];
+                    }
+                }
+
                 $result = $row->save($data);
                 Db::commit();
             } catch (ValidateException $e) {
@@ -130,7 +181,22 @@ class DataRecycle extends Backend
         }
 
         $this->success('', [
-            'row' => $row
+            'row'         => $row,
+            'tables'      => $this->getTableList(),
+            'controllers' => $this->getControllerList(),
+        ]);
+    }
+
+    public function getFieldList($table = null)
+    {
+        if (!$table) {
+            $this->error(__('Parameter error'));
+        }
+
+        $tablePk = Db::table($table)->getPk();
+        $this->success('', [
+            'pk'        => $tablePk,
+            'fieldlist' => get_table_fields($table, true),
         ]);
     }
 
@@ -141,7 +207,9 @@ class DataRecycle extends Backend
             'Ajax.php',
             'Dashboard.php',
             'Index.php',
+            'auth/AdminLog.php',
             'routine/AdminInfo.php',
+            'routine/Config.php',
             'user/MoneyLog.php',
             'user/ScoreLog.php',
         ];
@@ -163,7 +231,9 @@ class DataRecycle extends Backend
             $tablePrefix . 'token',
             $tablePrefix . 'captcha',
             $tablePrefix . 'admin_group_access',
-            // 无删除功能
+            $tablePrefix . 'config',
+            // 无编辑功能
+            $tablePrefix . 'admin_log',
             $tablePrefix . 'user_money_log',
             $tablePrefix . 'user_score_log',
         ];

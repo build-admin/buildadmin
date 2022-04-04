@@ -40,6 +40,8 @@ export default class baTable {
         dragSortLimitField: 'pid',
         // 接受url的query参数并自动触发通用搜索
         acceptQuery: true,
+        // 扩展数据
+        extend: {},
     })
     /* 表格状态-e */
 
@@ -61,6 +63,8 @@ export default class baTable {
         defaultItems: {},
         // 表单字段加载状态
         loading: false,
+        // 扩展数据
+        extend: {},
     })
     /* 表单状态-e */
 

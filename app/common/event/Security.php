@@ -40,7 +40,7 @@ class Security
                     $recycleDataArr[] = [
                         'admin_id'   => $adminId,
                         'recycle_id' => $recycle['id'],
-                        'data'       => json_encode($recycleDatum),
+                        'data'       => json_encode($recycleDatum, JSON_UNESCAPED_UNICODE),
                         'ip'         => $request->ip(),
                         'useragent'  => substr($request->server('HTTP_USER_AGENT'), 0, 255),
                     ];
