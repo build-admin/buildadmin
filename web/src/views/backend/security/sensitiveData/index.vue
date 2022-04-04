@@ -60,7 +60,7 @@ const baTable = new sensitiveDataClass(
                 operator: false,
             },
         ],
-        dblClickNotEditColumn: [undefined, 'status'],
+        dblClickNotEditColumn: [undefined],
     },
     {
         defaultItems: {

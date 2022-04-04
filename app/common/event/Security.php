@@ -35,7 +35,7 @@ class Security
                     ->select()->toArray();
                 $recycleDataArr = [];
                 $auth           = Auth::instance();
-                $adminId        = $auth->isLogin() ? $auth->id : 123;
+                $adminId        = $auth->isLogin() ? $auth->id : 0;
                 foreach ($recycleData as $recycleDatum) {
                     $recycleDataArr[] = [
                         'admin_id'   => $adminId,
@@ -60,6 +60,69 @@ class Security
                 Log::record('[ DataSecurity ] Failed to recycle data:' . var_export($recycleDataArr, true), 'warning');
             }
             return true;
+        }
+
+        try {
+            $sensitiveData = \app\admin\model\SensitiveData::where('status', '1')
+                ->where('controller_as', $request->controllerPath)
+                ->find();
+            if (!$sensitiveData) {
+                return true;
+            }
+
+            $sensitiveData = $sensitiveData->toArray();
+            $dataId        = $request->param('id');
+            $editData      = Db::table($sensitiveData['data_table'])
+                ->field(array_keys($sensitiveData['data_fields']))
+                ->where($sensitiveData['primary_key'], $dataId)
+                ->find();
+            if (!$editData) {
+                return true;
+            }
+
+            $auth    = Auth::instance();
+            $adminId = $auth->isLogin() ? $auth->id : 0;
+            $newData = $request->post();
+            foreach ($sensitiveData['data_fields'] as $field => $title) {
+                if (isset($editData[$field]) && isset($newData[$field]) && $editData[$field] != $newData[$field]) {
+
+                    /*
+                     * 其他跳过规则可添加至此处
+                     * 1. 如果字段名中包含 password 且修改值为空，则忽略
+                     */
+                    if (stripos('password', $field) !== false && $newData[$field] == '') {
+                        continue;
+                    }
+
+                    $sensitiveDataLog[] = [
+                        'admin_id'     => $adminId,
+                        'controller'   => $request->controllerPath,
+                        'data_table'   => $sensitiveData['data_table'],
+                        'primary_key'  => $sensitiveData['primary_key'],
+                        'data_field'   => $field,
+                        'data_comment' => $title,
+                        'id_value'     => $dataId,
+                        'before'       => $editData[$field],
+                        'after'        => $newData[$field],
+                        'ip'           => $request->ip(),
+                        'useragent'    => substr($request->server('HTTP_USER_AGENT'), 0, 255),
+                    ];
+                }
+            }
+
+        } catch (PDOException $e) {
+            Log::record('[ DataSecurity ]' . var_export($e, true), 'warning');
+        } catch (Exception $e) {
+            Log::record('[ DataSecurity ]' . var_export($e, true), 'warning');
+        }
+
+        if (!isset($sensitiveDataLog) || !$sensitiveDataLog) {
+            return true;
+        }
+
+        $sensitiveDataLogModel = new \app\admin\model\SensitiveDataLog;
+        if ($sensitiveDataLogModel->saveAll($sensitiveDataLog) === false) {
+            Log::record('[ DataSecurity ] Sensitive data recording failed:' . var_export($sensitiveDataLog, true), 'warning');
         }
 
         return true;
