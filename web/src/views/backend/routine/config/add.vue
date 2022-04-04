@@ -4,7 +4,7 @@
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">增加配置项</div>
         </template>
         <div class="ba-operate-form ba-add-form" :style="'width: calc(100% - ' + state.labelWidth / 2 + 'px)'">
-            <el-form ref="formRef" :rules="rules" :model="state.addConfig" :label-position="'left'" :label-width="120">
+            <el-form ref="formRef" @keyup.enter="onAddSubmit(formRef)" :rules="rules" :model="state.addConfig" :label-position="'left'" :label-width="120">
                 <FormItem label="变量名" type="string" v-model="state.addConfig.name" :attr="{ prop: 'name' }" />
                 <FormItem label="变量分组" type="select" v-model="state.addConfig.group" :attr="{ prop: 'group' }" :data="{ content: configGroup }" />
                 <FormItem label="变量标题" type="string" v-model="state.addConfig.title" :attr="{ prop: 'title' }" />
@@ -109,9 +109,9 @@ key2=value2`,
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     name: [buildValidatorData('required', '变量名'), buildValidatorData('varName', '')],
-    group: [buildValidatorData('required', '', 'blur', '请选择分组')],
+    group: [buildValidatorData('required', '', 'change', '请选择分组')],
     title: [buildValidatorData('required', '标题')],
-    type: [buildValidatorData('required', '', 'blur', '请选择类型')],
+    type: [buildValidatorData('required', '', 'change', '请选择类型')],
     weigh: [buildValidatorData('integer', '数字')],
 })
 

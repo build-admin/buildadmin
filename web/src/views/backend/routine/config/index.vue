@@ -2,7 +2,7 @@
     <div class="default-main">
         <el-row v-loading="state.loading" :gutter="20">
             <el-col class="xs-mb-20" :xs="24" :sm="12">
-                <el-form v-if="!state.loading" ref="formRef" :model="state.form" :rules="state.rules" :label-position="'top'">
+                <el-form v-if="!state.loading" ref="formRef" @keyup.enter="onSubmit(formRef)" :model="state.form" :rules="state.rules" :label-position="'top'">
                     <el-tabs v-model="state.activeTab" type="border-card" :before-leave="onBeforeLeave">
                         <el-tab-pane class="config-tab-pane" v-for="(group, key) in state.config" :key="key" :name="key" :label="group.title">
                             <div class="config-form-item" v-for="(item, idx) in group.list">
