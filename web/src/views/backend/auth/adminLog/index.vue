@@ -104,10 +104,10 @@ const baTable = new baTableClass(
         dblClickNotEditColumn: [undefined],
     },
     {},
-    {},
     {
         onTableDblclick: ({ row }: { row: TableRow }) => {
             infoButtonClick(row)
+            return false
         },
     }
 )

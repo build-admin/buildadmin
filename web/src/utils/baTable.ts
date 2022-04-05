@@ -93,20 +93,22 @@ export default class baTable {
 
     runBefore(funName: string, args: any = {}) {
         if (this.before && this.before[funName] && typeof this.before[funName] == 'function') {
-            this.before[funName]!({ ...args })
+            return this.before[funName]!({ ...args }) === false ? false : true
         }
+        return true
     }
 
     runAfter(funName: string, args: any = {}) {
         if (this.after && this.after[funName] && typeof this.after[funName] == 'function') {
-            this.after[funName]!({ ...args })
+            return this.after[funName]!({ ...args }) === false ? false : true
         }
+        return true
     }
 
     /* API请求方法-s */
     // 查看
     getIndex = () => {
-        this.runBefore('getIndex')
+        if (this.runBefore('getIndex') === false) return
         this.table.loading = true
         return this.api
             .index(this.table.filter)
@@ -123,7 +125,7 @@ export default class baTable {
     }
     // 删除
     postDel = (ids: string[]) => {
-        this.runBefore('postDel', { ids })
+        if (this.runBefore('postDel', { ids }) === false) return
         this.api.del(ids).then((res) => {
             this.onTableHeaderAction('refresh', {})
             this.runAfter('postDel', { res })
@@ -131,7 +133,7 @@ export default class baTable {
     }
     // 编辑
     requestEdit = (id: string) => {
-        this.runBefore('requestEdit', { id })
+        if (this.runBefore('requestEdit', { id }) === false) return
         this.form.loading = true
         this.form.items = {}
         return this.api
@@ -151,10 +153,7 @@ export default class baTable {
      */
     onTableDblclick = (row: TableRow, column: any) => {
         if (this.table.dblClickNotEditColumn!.indexOf('all') === -1 && this.table.dblClickNotEditColumn!.indexOf(column.property) === -1) {
-            this.runBefore('onTableDblclick', {
-                row,
-                column,
-            })
+            if (this.runBefore('onTableDblclick', { row, column }) === false) return
             this.toggleForm('edit', [row[this.table.pk!]])
             this.runAfter('onTableDblclick', {
                 row,
@@ -169,7 +168,7 @@ export default class baTable {
      * @param operateIds 被操作项的数组:add=[],edit=[1,2,...]
      */
     toggleForm = (operate: string = '', operateIds: string[] = []) => {
-        this.runBefore('toggleForm', { operate, operateIds })
+        if (this.runBefore('toggleForm', { operate, operateIds }) === false) return
         if (this.form.ref) {
             this.form.ref.resetFields()
         }
@@ -187,7 +186,7 @@ export default class baTable {
     }
 
     onSubmit = (formEl: InstanceType<typeof ElForm> | undefined = undefined) => {
-        this.runBefore('onSubmit', { operate: this.form.operate!, items: this.form.items! })
+        if (this.runBefore('onSubmit', { operate: this.form.operate!, items: this.form.items! }) === false) return
 
         // 表单验证通过后执行的api请求操作
         let submitCallback = () => {
@@ -237,7 +236,7 @@ export default class baTable {
      * @param data 携带数据
      */
     onTableAction = (event: string, data: anyObj) => {
-        this.runBefore('onTableAction', { event, data })
+        if (this.runBefore('onTableAction', { event, data }) === false) return
         const actionFun = new Map([
             [
                 'selection-change',
@@ -293,7 +292,7 @@ export default class baTable {
      * @param data 携带数据
      */
     onTableHeaderAction = (event: string, data: anyObj) => {
-        this.runBefore('onTableHeaderAction', { event, data })
+        if (this.runBefore('onTableHeaderAction', { event, data }) === false) return
         const actionFun = new Map([
             [
                 'refresh',
@@ -426,7 +425,7 @@ export default class baTable {
     }
 
     mount = () => {
-        this.runBefore('mount')
+        if (this.runBefore('mount') === false) return
         this.activate = true
         const { proxy } = useCurrentInstance()
         /**
