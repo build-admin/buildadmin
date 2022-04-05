@@ -38,16 +38,16 @@
         <Table @action="baTable.onTableAction" />
 
         <!-- 表单 -->
-        <!-- <Info /> -->
+        <InfoDialog />
     </div>
 </template>
 
 <script setup lang="ts">
-import { provide, onMounted } from 'vue'
+import { provide, reactive, onMounted } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { securityDataRecycleLog } from '/@/api/controllerUrls'
-import { restore } from '/@/api/backend/security/dataRecycleLog'
-import Info from './info.vue'
+import { info, restore } from '/@/api/backend/security/dataRecycleLog'
+import InfoDialog from './info.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
@@ -55,6 +55,16 @@ import { baTableApi } from '/@/api/common'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 
 let optButtons: OptButton[] = [
+    {
+        render: 'tipButton',
+        name: 'info',
+        title: 'info',
+        text: '',
+        type: 'primary',
+        icon: 'fa fa-search-plus',
+        class: 'table-row-info',
+        disabledTip: false,
+    },
     {
         render: 'confirmButton',
         name: 'restore',
@@ -73,44 +83,54 @@ let optButtons: OptButton[] = [
     },
 ]
 optButtons = optButtons.concat(defaultOptButtons(['delete']))
-const baTable = new baTableClass(new baTableApi(securityDataRecycleLog), {
-    column: [
-        { type: 'selection', align: 'center', operator: false },
-        { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-        { label: '操作管理员', prop: 'admin.nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-        { label: '回收规则名称', prop: 'recycle.name', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-        { label: '控制器', prop: 'recycle.controller_as', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-        { label: '数据表', prop: 'data_table', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-        {
-            label: '被删数据',
-            prop: 'data',
-            align: 'center',
-            operator: 'LIKE',
-            operatorPlaceholder: '任意片段模糊查询',
-            'show-overflow-tooltip': true,
+const baTable = new baTableClass(
+    new baTableApi(securityDataRecycleLog),
+    {
+        column: [
+            { type: 'selection', align: 'center', operator: false },
+            { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
+            { label: '操作管理员', prop: 'admin.nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            { label: '回收规则名称', prop: 'recycle.name', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            { label: '控制器', prop: 'recycle.controller_as', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            { label: '数据表', prop: 'data_table', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            {
+                label: '被删数据',
+                prop: 'data',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: '任意片段模糊查询',
+                'show-overflow-tooltip': true,
+            },
+            { label: 'IP', prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            {
+                show: false,
+                label: 'User Agent',
+                prop: 'useragent',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: '模糊查询',
+                'show-overflow-tooltip': true,
+            },
+            { label: '删除时间', prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            {
+                label: '操作',
+                align: 'center',
+                width: 120,
+                render: 'buttons',
+                buttons: optButtons,
+                operator: false,
+            },
+        ],
+        dblClickNotEditColumn: [undefined],
+    },
+    {},
+    {},
+    {
+        onTableDblclick: ({ row }: { row: TableRow }) => {
+            infoButtonClick(row[baTable.table.pk!])
         },
-        { label: 'IP', prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-        {
-            show: false,
-            label: 'User Agent',
-            prop: 'useragent',
-            align: 'center',
-            operator: 'LIKE',
-            operatorPlaceholder: '模糊查询',
-            'show-overflow-tooltip': true,
-        },
-        { label: '删除时间', prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
-        {
-            label: '操作',
-            align: 'center',
-            width: '100',
-            render: 'buttons',
-            buttons: optButtons,
-            operator: false,
-        },
-    ],
-    dblClickNotEditColumn: [undefined],
-})
+    }
+)
 
 const onRestore = (ids: string[]) => {
     restore(ids).then((res) => {
@@ -120,6 +140,13 @@ const onRestore = (ids: string[]) => {
 
 const onRestoreAction = () => {
     onRestore(baTable.getSelectionIds())
+}
+
+const infoButtonClick = (id: string) => {
+    info(id).then((res) => {
+        baTable.form.operate = 'info'
+        baTable.form.extend!['info'] = res.data.row
+    })
 }
 
 provide('baTable', baTable)
@@ -138,6 +165,8 @@ onMounted(() => {
         if (!baTable.activate) return
         if (data.name == 'restore') {
             onRestore([data.row[baTable.table.pk!]])
+        } else if (data.name == 'info') {
+            infoButtonClick(data.row[baTable.table.pk!])
         }
     })
 })

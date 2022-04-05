@@ -57,4 +57,19 @@ class DataRecycleLog extends Backend
             $this->error(__('No rows were restore'));
         }
     }
+
+    public function info($id = null)
+    {
+        $row = $this->model
+            ->withJoin($this->withJoinTable, $this->withJoinType)
+            ->where('data_recycle_log.id', $id)
+            ->find();
+        if (!$row) {
+            $this->error(__('Record not found'));
+        }
+
+        $this->success('', [
+            'row' => $row
+        ]);
+    }
 }

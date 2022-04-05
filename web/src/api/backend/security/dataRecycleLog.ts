@@ -15,3 +15,13 @@ export function restore(ids: string[]) {
         }
     )
 }
+
+export function info(id: string) {
+    return createAxios({
+        url: securityDataRecycleLog + 'info',
+        method: 'get',
+        params: {
+            id: id,
+        },
+    })
+}
