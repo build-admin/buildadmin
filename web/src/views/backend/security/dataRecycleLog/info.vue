@@ -8,24 +8,19 @@
         <template #title>
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">查看详情</div>
         </template>
-        <div
-            v-loading="baTable.form.loading"
-            class="ba-operate-form"
-            :class="'ba-' + baTable.form.operate + '-form'"
-            :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
-        >
-            <el-descriptions :column="2" border>
+        <div v-loading="baTable.form.loading" class="ba-operate-form" :class="'ba-' + baTable.form.operate + '-form'">
+            <el-descriptions v-if="!_.isEmpty(baTable.form.extend!.info)" :column="2" border>
                 <el-descriptions-item label="ID">
                     {{baTable.form.extend!.info.id}}
                 </el-descriptions-item>
                 <el-descriptions-item label="操作管理员">
-                    {{baTable.form.extend!.info.admin.nickname + '('+baTable.form.extend!.info.admin.username+')'}}
+                    {{baTable.form.extend!.info.admin?.nickname + '('+baTable.form.extend!.info.admin?.username+')'}}
                 </el-descriptions-item>
                 <el-descriptions-item label="回收规则">
-                    {{baTable.form.extend!.info.recycle.name}}
+                    {{baTable.form.extend!.info.recycle?.name}}
                 </el-descriptions-item>
                 <el-descriptions-item label="回收规则">
-                    {{baTable.form.extend!.info.recycle.name}}
+                    {{baTable.form.extend!.info.recycle?.name}}
                 </el-descriptions-item>
                 <el-descriptions-item label="数据表">
                     {{baTable.form.extend!.info.data_table}}
@@ -55,6 +50,7 @@ import { inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type BaTable from '/@/utils/baTable'
 import { timeFormat } from '/@/components/table'
+import _ from 'lodash'
 
 const baTable = inject('baTable') as BaTable
 

@@ -9,12 +9,7 @@
         <template #title>
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">查看详情</div>
         </template>
-        <div
-            v-loading="baTable.form.loading"
-            class="ba-operate-form"
-            :class="'ba-' + baTable.form.operate + '-form'"
-            :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
-        >
+        <div v-loading="baTable.form.loading" class="ba-operate-form" :class="'ba-' + baTable.form.operate + '-form'">
             <el-descriptions :column="2" border>
                 <el-descriptions-item label="ID">
                     {{baTable.form.extend!.info.id}}
@@ -58,13 +53,13 @@ const { t } = useI18n()
 
 <style scoped lang="scss">
 .table-el-tree {
-   :deep(.el-tree-node) {
-       white-space: unset;
-   }
-   :deep(.el-tree-node__content) {
-       display: block;
-       align-items: unset;
-       height: unset;
-   }
+    :deep(.el-tree-node) {
+        white-space: unset;
+    }
+    :deep(.el-tree-node__content) {
+        display: block;
+        align-items: unset;
+        height: unset;
+    }
 }
 </style>

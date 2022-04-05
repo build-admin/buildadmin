@@ -144,10 +144,13 @@ const onRestoreAction = () => {
 }
 
 const infoButtonClick = (id: string) => {
+    baTable.form.extend!['info'] = {}
+    baTable.form.operate = 'info'
+    baTable.form.loading = true
     info(id).then((res) => {
         res.data.row.data = res.data.row.data ? [{ label: '点击展开', children: buildJsonToElTreeData(res.data.row.data) }] : []
         baTable.form.extend!['info'] = res.data.row
-        baTable.form.operate = 'info'
+        baTable.form.loading = false
     })
 }
 
