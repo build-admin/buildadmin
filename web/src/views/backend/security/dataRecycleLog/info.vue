@@ -42,6 +42,12 @@
                 </el-descriptions-item>
             </el-descriptions>
         </div>
+        <template #footer>
+            <el-button v-blur @click="onRestore(baTable.form.extend!.info.id)" type="success">
+                <Icon color="#ffffff" name="el-icon-RefreshRight" />
+                <span class="table-header-operate-text">还原</span>
+            </el-button>
+        </template>
     </el-dialog>
 </template>
 
@@ -51,10 +57,25 @@ import { useI18n } from 'vue-i18n'
 import type BaTable from '/@/utils/baTable'
 import { timeFormat } from '/@/components/table'
 import _ from 'lodash'
+import { ElMessageBox } from 'element-plus'
+import { restore } from '/@/api/backend/security/dataRecycleLog'
 
 const baTable = inject('baTable') as BaTable
 
 const { t } = useI18n()
+
+const onRestore = (id: string) => {
+    ElMessageBox.confirm('确定要还原吗？', '', {
+        confirmButtonText: '还原',
+    })
+        .then(() => {
+            restore([id]).then((res) => {
+                baTable.toggleForm()
+                baTable.onTableHeaderAction('refresh', {})
+            })
+        })
+        .catch(() => {})
+}
 </script>
 
 <style scoped lang="scss">
@@ -70,5 +91,9 @@ const { t } = useI18n()
         align-items: unset;
         height: unset;
     }
+}
+.restore-button {
+    display: block;
+    margin: 20px auto;
 }
 </style>
