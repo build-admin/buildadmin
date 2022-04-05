@@ -42,8 +42,8 @@
                 <el-descriptions-item :width="120" :span="2" label="User Agent">
                     {{baTable.form.extend!.info.useragent}}
                 </el-descriptions-item>
-                <el-descriptions-item label-class-name="color-red" :width="120" :span="2" label="回收的数据">
-                    {{baTable.form.extend!.info.data}}
+                <el-descriptions-item label-class-name="color-red" :width="120" :span="2" label="被删除的数据">
+                    <el-tree class="table-el-tree" :data="baTable.form.extend!.info.data" :props="{ label: 'label', children: 'children' }" />
                 </el-descriptions-item>
             </el-descriptions>
         </div>
@@ -64,5 +64,15 @@ const { t } = useI18n()
 <style scoped lang="scss">
 :deep(.color-red) {
     color: var(--color-danger) !important;
+}
+.table-el-tree {
+    :deep(.el-tree-node) {
+        white-space: unset;
+    }
+    :deep(.el-tree-node__content) {
+        display: block;
+        align-items: unset;
+        height: unset;
+    }
 }
 </style>

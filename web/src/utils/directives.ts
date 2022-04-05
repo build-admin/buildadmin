@@ -92,6 +92,10 @@ function dragDirective(app: App) {
             const dragDom = document.querySelector(binding.value[0]) as HTMLElement
             const dragHandle = document.querySelector(binding.value[1]) as HTMLElement
 
+            if (!dragHandle || !dragDom) {
+                return false
+            }
+
             dragHandle.onmouseover = () => (dragHandle.style.cursor = `move`)
 
             function down(e: MouseEvent | TouchEvent, type: string): downReturn {

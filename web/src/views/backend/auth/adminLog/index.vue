@@ -122,7 +122,7 @@ const infoButtonClick = (row: TableRow) => {
     if (!row) return
     // 数据来自表格数据,未重新请求api,深克隆,不然可能会影响表格
     let rowClone = _.cloneDeep(row)
-    rowClone.data = rowClone.data ? buildJsonToElTreeData(JSON.parse(rowClone.data)) : []
+    rowClone.data = rowClone.data ? [{ label: '点击展开', children: buildJsonToElTreeData(JSON.parse(rowClone.data)) }] : []
     baTable.form.extend!['info'] = rowClone
     baTable.form.operate = 'info'
 }

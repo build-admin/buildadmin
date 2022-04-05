@@ -38,7 +38,7 @@
                     {{ timeFormat(baTable.form.extend!.info.createtime) }}
                 </el-descriptions-item>
                 <el-descriptions-item :width="120" :span="2" label="请求数据">
-                    <el-tree :data="baTable.form.extend!.info.data" :props="{ label: 'label', children: 'children' }" />
+                    <el-tree class="table-el-tree" :data="baTable.form.extend!.info.data" :props="{ label: 'label', children: 'children' }" />
                 </el-descriptions-item>
             </el-descriptions>
         </div>
@@ -56,4 +56,15 @@ const baTable = inject('baTable') as BaTable
 const { t } = useI18n()
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.table-el-tree {
+   :deep(.el-tree-node) {
+       white-space: unset;
+   }
+   :deep(.el-tree-node__content) {
+       display: block;
+       align-items: unset;
+       height: unset;
+   }
+}
+</style>

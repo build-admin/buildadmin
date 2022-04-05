@@ -67,9 +67,28 @@ class DataRecycleLog extends Backend
         if (!$row) {
             $this->error(__('Record not found'));
         }
+        $data = $this->jsonToArray($row->data);
+        if (is_array($data)) {
+            foreach ($data as $key => $item) {
+                $data[$key] = $this->jsonToArray($item);
+            }
+        }
+        $row->data = $data;
 
         $this->success('', [
             'row' => $row
         ]);
+    }
+
+    protected function jsonToArray($value = '')
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+        $data = json_decode($value, true);
+        if (($data && is_object($data)) || (is_array($data) && !empty($data))) {
+            return $data;
+        }
+        return $value;
     }
 }

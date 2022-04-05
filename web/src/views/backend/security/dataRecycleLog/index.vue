@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { provide, reactive, onMounted } from 'vue'
+import { provide, onMounted } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { securityDataRecycleLog } from '/@/api/controllerUrls'
 import { info, restore } from '/@/api/backend/security/dataRecycleLog'
@@ -53,6 +53,7 @@ import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
+import { buildJsonToElTreeData } from '/@/utils/common'
 
 let optButtons: OptButton[] = [
     {
@@ -144,8 +145,9 @@ const onRestoreAction = () => {
 
 const infoButtonClick = (id: string) => {
     info(id).then((res) => {
-        baTable.form.operate = 'info'
+        res.data.row.data = res.data.row.data ? [{ label: '点击展开', children: buildJsonToElTreeData(res.data.row.data) }] : []
         baTable.form.extend!['info'] = res.data.row
+        baTable.form.operate = 'info'
     })
 }
 
