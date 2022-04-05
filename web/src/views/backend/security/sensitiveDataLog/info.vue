@@ -16,33 +16,39 @@
                 <el-descriptions-item label="操作管理员">
                     {{baTable.form.extend!.info.admin?.nickname + '('+baTable.form.extend!.info.admin?.username+')'}}
                 </el-descriptions-item>
-                <el-descriptions-item label="回收规则">
-                    {{baTable.form.extend!.info.recycle?.name}}
+                <el-descriptions-item label="规则名称">
+                    {{baTable.form.extend!.info.sensitive?.name}}
                 </el-descriptions-item>
                 <el-descriptions-item label="数据表">
                     {{baTable.form.extend!.info.data_table}}
                 </el-descriptions-item>
-                <el-descriptions-item label="数据表主键">
-                    {{baTable.form.extend!.info.primary_key}}
+                <el-descriptions-item label="修改时间">
+                    {{timeFormat(baTable.form.extend!.info.createtime)}}
                 </el-descriptions-item>
                 <el-descriptions-item label="操作者IP">
                     {{baTable.form.extend!.info.ip}}
                 </el-descriptions-item>
-                <el-descriptions-item :width="120" :span="2" label="删除时间">
-                    {{timeFormat(baTable.form.extend!.info.createtime)}}
+                <el-descriptions-item label="数据表主键" label-class-name="color-red">
+                    {{baTable.form.extend!.info.primary_key + '=' + baTable.form.extend!.info.id_value}}
+                </el-descriptions-item>
+                <el-descriptions-item label="被修改项" label-class-name="color-red">
+                    {{baTable.form.extend!.info.data_field + (baTable.form.extend!.info.data_comment ? '('+baTable.form.extend!.info.data_comment+')':'')}}
+                </el-descriptions-item>
+                <el-descriptions-item label="修改前" label-class-name="color-red">
+                    {{baTable.form.extend!.info.before}}
+                </el-descriptions-item>
+                <el-descriptions-item label="修改后" label-class-name="color-red">
+                    {{baTable.form.extend!.info.after}}
                 </el-descriptions-item>
                 <el-descriptions-item :width="120" :span="2" label="User Agent">
                     {{baTable.form.extend!.info.useragent}}
                 </el-descriptions-item>
-                <el-descriptions-item :width="120" :span="2" label="被删除的数据" label-class-name="color-red">
-                    <el-tree class="table-el-tree" :data="baTable.form.extend!.info.data" :props="{ label: 'label', children: 'children' }" />
-                </el-descriptions-item>
             </el-descriptions>
         </div>
         <template #footer>
-            <el-button v-blur @click="onRestore(baTable.form.extend!.info.id)" type="success">
-                <Icon color="#ffffff" name="el-icon-RefreshRight" />
-                <span class="table-header-operate-text">还原</span>
+            <el-button v-blur @click="onRollback(baTable.form.extend!.info.id)" type="success">
+                <Icon size="16" color="#ffffff" name="fa fa-sign-in" />
+                <span class="table-header-operate-text">回滚</span>
             </el-button>
         </template>
     </el-dialog>
@@ -55,18 +61,18 @@ import type BaTable from '/@/utils/baTable'
 import { timeFormat } from '/@/components/table'
 import _ from 'lodash'
 import { ElMessageBox } from 'element-plus'
-import { restore } from '/@/api/backend/security/dataRecycleLog'
+import { rollback } from '/@/api/backend/security/sensitiveDataLog'
 
 const baTable = inject('baTable') as BaTable
 
 const { t } = useI18n()
 
-const onRestore = (id: string) => {
-    ElMessageBox.confirm('确定要还原吗？', '', {
-        confirmButtonText: '还原',
+const onRollback = (id: string) => {
+    ElMessageBox.confirm('确定要回滚吗？', '', {
+        confirmButtonText: '回滚',
     })
         .then(() => {
-            restore([id]).then((res) => {
+            rollback([id]).then((res) => {
                 baTable.toggleForm()
                 baTable.onTableHeaderAction('refresh', {})
             })
@@ -88,5 +94,8 @@ const onRestore = (id: string) => {
         align-items: unset;
         height: unset;
     }
+}
+.table-header-operate-text {
+    margin-left: 6px;
 }
 </style>

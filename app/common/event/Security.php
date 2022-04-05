@@ -99,7 +99,6 @@ class Security
                     $sensitiveDataLog[] = [
                         'admin_id'     => $adminId,
                         'sensitive_id' => $sensitiveData['id'],
-                        'controller'   => $request->controllerPath,
                         'data_table'   => $sensitiveData['data_table'],
                         'primary_key'  => $sensitiveData['primary_key'],
                         'data_field'   => $field,
