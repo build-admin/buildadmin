@@ -115,3 +115,22 @@ export const onResetForm = (formEl: InstanceType<typeof ElForm> | undefined) => 
     if (!formEl) return
     formEl.resetFields()
 }
+
+/**
+ * 将数据构建为ElTree的data {label:'', children: []}
+ * @param data
+ */
+export const buildJsonToElTreeData = (data: any): ElTreeData[] => {
+    if (typeof data == 'object') {
+        let childrens = []
+        for (const key in data) {
+            childrens.push({
+                label: key + ': ' + data[key],
+                children: buildJsonToElTreeData(data[key]),
+            })
+        }
+        return childrens
+    } else {
+        return []
+    }
+}

@@ -12,27 +12,13 @@
         <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
         <Table @action="baTable.onTableAction" />
 
-        <!-- 查看详情 -->
-        <el-dialog
-            custom-class="ba-operate-dialog"
-            :close-on-click-modal="false"
-            :model-value="state.showInfoModel"
-            @close="state.showInfoModel = false"
-        >
-            <template #title>
-                <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">查看详情</div>
-            </template>
-            <el-table row-key="label" :data="state.info" stripe class="w100">
-                <el-table-column prop="label" label="项目" width="180" />
-                <el-table-column prop="value" label="值" />
-            </el-table>
-        </el-dialog>
+        <Info />
     </div>
 </template>
 
 <script setup lang="ts">
 import _ from 'lodash'
-import { reactive, onMounted, provide } from 'vue'
+import { onMounted, provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { authAdminLog } from '/@/api/controllerUrls'
 import Table from '/@/components/table/index.vue'
@@ -41,21 +27,8 @@ import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import { useI18n } from 'vue-i18n'
-import { timeFormat } from '/@/components/table'
-
-interface Info {
-    label: string
-    value: string
-    children?: Info[]
-}
-
-const state: {
-    showInfoModel: boolean
-    info: Info[]
-} = reactive({
-    showInfoModel: false,
-    info: [],
-})
+import Info from './info.vue'
+import { buildJsonToElTreeData } from '/@/utils/common'
 
 const { t } = useI18n()
 
@@ -144,41 +117,14 @@ baTable.getIndex()
 
 provide('baTable', baTable)
 
-const buildChildrens = (data: any): Info[] => {
-    if (typeof data == 'object') {
-        let childrens = []
-        for (const key in data) {
-            childrens.push({
-                label: key,
-                value: data[key],
-                children: buildChildrens(data[key]),
-            })
-        }
-        return childrens
-    } else {
-        return []
-    }
-}
-
+/** 点击查看详情按钮响应 */
 const infoButtonClick = (row: TableRow) => {
     if (!row) return
+    // 数据来自表格数据,未重新请求api,深克隆,不然可能会影响表格
     let rowClone = _.cloneDeep(row)
-
-    if (rowClone.data) rowClone.data = JSON.parse(rowClone.data)
-    let info = []
-    for (const key in rowClone) {
-        if (key == 'createtime') {
-            rowClone[key] = timeFormat(rowClone[key])
-        }
-
-        info.push({
-            label: t('auth/adminLog.' + key),
-            value: rowClone[key],
-            children: key == 'data' ? buildChildrens(rowClone[key]) : [],
-        })
-    }
-    state.info = info
-    state.showInfoModel = true
+    rowClone.data = rowClone.data ? buildJsonToElTreeData(JSON.parse(rowClone.data)) : []
+    baTable.form.extend!['info'] = rowClone
+    baTable.form.operate = 'info'
 }
 
 onMounted(() => {
@@ -204,8 +150,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
-:deep(.ba-operate-dialog) .el-dialog__body {
-    padding: 0 10px;
-}
-</style>
+<style scoped lang="scss"></style>

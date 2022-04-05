@@ -148,6 +148,11 @@ declare global {
         operator: string
         render: string
     }
+
+    interface ElTreeData {
+        label: string
+        children?: ElTreeData[]
+    }
 }
 
 /*
