@@ -28,10 +28,10 @@
                 <el-descriptions-item label="操作者IP">
                     {{baTable.form.extend!.info.ip}}
                 </el-descriptions-item>
-                <el-descriptions-item label="数据表主键" label-class-name="color-red">
+                <el-descriptions-item label="数据表主键">
                     {{baTable.form.extend!.info.primary_key + '=' + baTable.form.extend!.info.id_value}}
                 </el-descriptions-item>
-                <el-descriptions-item label="被修改项" label-class-name="color-red">
+                <el-descriptions-item label="被修改项">
                     {{baTable.form.extend!.info.data_field + (baTable.form.extend!.info.data_comment ? '('+baTable.form.extend!.info.data_comment+')':'')}}
                 </el-descriptions-item>
                 <el-descriptions-item label="修改前" label-class-name="color-red">
@@ -44,6 +44,10 @@
                     {{baTable.form.extend!.info.useragent}}
                 </el-descriptions-item>
             </el-descriptions>
+            <div class="diff-box">
+                <div class="diff-box-title">修改对比</div>
+                <code-diff diffStyle="char" :old-string="baTable.form.extend!.info.before" :new-string="baTable.form.extend!.info.after" />
+            </div>
         </div>
         <template #footer>
             <el-button v-blur @click="onRollback(baTable.form.extend!.info.id)" type="success">
@@ -62,6 +66,7 @@ import { timeFormat } from '/@/components/table'
 import _ from 'lodash'
 import { ElMessageBox } from 'element-plus'
 import { rollback } from '/@/api/backend/security/sensitiveDataLog'
+import { CodeDiff } from 'v-code-diff'
 
 const baTable = inject('baTable') as BaTable
 
@@ -97,5 +102,15 @@ const onRollback = (id: string) => {
 }
 .table-header-operate-text {
     margin-left: 6px;
+}
+.diff-box :deep(.d2h-file-wrapper) {
+    border: 1px solid #ebeef5;
+}
+.diff-box-title {
+    display: flex;
+    font-weight: bold;
+    line-height: 40px;
+    align-items: center;
+    justify-content: center;
 }
 </style>

@@ -22,6 +22,7 @@
         "pinia-plugin-persistedstate": "^1.2.3",
         "screenfull": "^6.0.1",
         "sortablejs": "^1.14.0",
+        "v-code-diff": "^0.3.10",
         "vue": "^3.2.25",
         "vue-i18n": "^9.1.9",
         "vue-router": "^4.0.12"
