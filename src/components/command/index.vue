@@ -209,6 +209,7 @@ onUnmounted(() => {
                 justify-content: center;
                 height: 30px;
                 width: 30px;
+                user-select: none;
                 cursor: pointer;
                 img {
                     height: 18px;
