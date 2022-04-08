@@ -207,7 +207,7 @@ class Group extends Backend
         foreach ($data as $datum) {
             if ($datum->rules) {
                 if ($datum->rules == '*') {
-                    $datum->rules = '超级管理员';
+                    $datum->rules = __('Super administrator');
                 } else {
                     $rules = explode(',', $datum->rules);
                     if ($rules) {
@@ -216,7 +216,7 @@ class Group extends Backend
                     }
                 }
             } else {
-                $datum->rules = '无权限';
+                $datum->rules = __('No permission');
             }
         }
         return $this->tree->assembleChild($data);

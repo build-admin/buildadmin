@@ -34,7 +34,7 @@ class MoneyLog extends Backend
 
         $user = User::where('id', (int)$userId)->find();
         if (!$user) {
-            $this->error('用户找不到啦~');
+            $this->error(__("The user can't find it"));
         }
         $this->success('', [
             'user' => $user

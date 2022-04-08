@@ -48,7 +48,7 @@ class AdminInfo extends Backend
             if (isset($data['avatar']) && $data['avatar']) {
                 $row->avatar = $data['avatar'];
                 if ($row->save()) {
-                    $this->success('头像修改成功！');
+                    $this->success(__('Avatar modified successfully!'));
                 }
             }
 
