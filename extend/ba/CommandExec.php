@@ -1,6 +1,6 @@
 <?php
 
-namespace app\installapi\controller;
+namespace ba;
 
 use think\facade\Config;
 
@@ -56,8 +56,8 @@ class CommandExec
     }
 
     /**
-     * @param string $key
-     * @param bool   $outputError
+     * @param string $key         命令key
+     * @param bool   $outputError 是否直接输出错误
      * @return string
      */
     protected function getCommand($key, $outputError = true): string
@@ -106,7 +106,7 @@ class CommandExec
      */
     public function output($data, $callback = true)
     {
-        $data = $this->filterColorMark($data);
+        $data = $this->filterMark($data);
         $data = str_replace(["\r\n", "\r", "\n"], "", $data);
         if ($data) {
             echo 'data: ' . mb_convert_encoding($data, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5') . "\n\n";
@@ -114,7 +114,7 @@ class CommandExec
         }
     }
 
-    public function filterColorMark($str)
+    public function filterMark($str)
     {
         $preg = '/\[(.*?)m/i';
         $str  = preg_replace($preg, '', $str);

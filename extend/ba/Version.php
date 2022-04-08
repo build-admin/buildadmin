@@ -2,8 +2,6 @@
 
 namespace ba;
 
-use app\installapi\controller\CommandExec;
-
 /**
  * 版本类
  */

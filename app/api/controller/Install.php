@@ -1,52 +1,106 @@
 <?php
 declare (strict_types=1);
 
-namespace app\installapi\controller;
+namespace app\api\controller;
 
 use ba\Version;
 use app\common\controller\Api;
 use think\App;
+use ba\CommandExec;
 
-class Index extends Api
+/**
+ *
+ */
+class Install extends Api
 {
+    /**
+     * 环境检查状态
+     */
     static $ok   = 'ok';
     static $fail = 'fail';
     static $warn = 'warn';
 
-    static $lockFileName     = 'install.lock';
+    /**
+     * 安装锁文件名称
+     */
+    static $lockFileName = 'install.lock';
+
+    /**
+     * 数据库配置文件
+     */
     static $dbConfigFileName = 'database.php';
 
-    // 自动构建的前端文件的 outDir 相对于根目录
+    /**
+     * 自动构建的前端文件的 outDir 相对于根目录
+     */
     static $distDir = 'dist';
 
-    // 需要的PHP版本
+    /**
+     * 需要的PHP版本
+     */
     static $needPHPVersion = '7.1.0';
-    // 需要的Npm版本
+
+    /**
+     * 需要的Npm版本
+     */
     static $needNpmVersion = '7.0.0';
-    // 需要的Cnpm版本
+
+    /**
+     * 需要的Cnpm版本
+     */
     static $needCnpmVersion = '7.1.0';
-    // 需要的NodeJs版本
+
+    /**
+     * 需要的NodeJs版本
+     */
     static $needNodejsVersion = '14.13.1';
 
+    /**
+     * 安装完成标记
+     * 配置完成则建立lock文件
+     * 编辑命令成功执行再写入标记到lock文件
+     * 实现命令执行失败，刷新页面重新执行
+     */
+    static $InstallationCompletionMark = 'install-end';
 
+
+    /**
+     * 构造方法
+     * @param App $app
+     */
     public function __construct(App $app)
     {
         parent::__construct($app);
         set_time_limit(120);
     }
 
-    public function index()
+    /**
+     * 命令执行窗口
+     */
+    public function popenWindow()
     {
-        return 'BuildAdmin-' . __('Install the controller');
+        // 安装锁
+        if (is_file(public_path() . self::$lockFileName)) {
+            $contents = @file_get_contents(public_path() . self::$lockFileName);
+            if ($contents == self::$InstallationCompletionMark) {
+                return;
+            }
+        }
+
+        CommandExec::instance()->popenWindow();
     }
 
+    /**
+     * 环境基础检查
+     */
     public function envBaseCheck()
     {
-
+        // 安装锁
         if (is_file(public_path() . self::$lockFileName)) {
             $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]), [], 3);
         }
 
+        // php版本-start
         $phpVersion        = phpversion();
         $phpVersionCompare = Version::compare(self::$needPHPVersion, $phpVersion);
         if (!$phpVersionCompare) {
@@ -65,7 +119,9 @@ class Index extends Api
                 ]
             ];
         }
+        // php版本-end
 
+        // 数据库配置文件-start
         $dbConfigFile     = config_path() . self::$dbConfigFileName;
         $configIsWritable = path_is_writable(config_path()) && path_is_writable($dbConfigFile);
         if (!$configIsWritable) {
@@ -79,7 +135,9 @@ class Index extends Api
                 ]
             ];
         }
+        // 数据库配置文件-end
 
+        // public-start
         $publicIsWritable = path_is_writable(public_path());
         if (!$publicIsWritable) {
             $publicIsWritableLink = [
@@ -91,7 +149,9 @@ class Index extends Api
                 ]
             ];
         }
+        // public-end
 
+        // Mysqli-start
         $phpMysqli = extension_loaded('mysqli') && extension_loaded("PDO");
         if (!$phpMysqli) {
             $phpMysqliLink = [
@@ -107,7 +167,9 @@ class Index extends Api
                 ]
             ];
         }
+        // Mysqli-end
 
+        // popen-start
         $phpPopen = function_exists('popen') && function_exists('pclose');
         if (!$phpPopen) {
             $phpPopenLink = [
@@ -131,7 +193,9 @@ class Index extends Api
                 ],
             ];
         }
+        // popen-end
 
+        // 文件操作-start
         $phpFileOperation = function_exists('feof') && function_exists('fgets');
         if (!$phpFileOperation) {
             $phpFileOperationLink = [
@@ -155,6 +219,7 @@ class Index extends Api
                 ],
             ];
         }
+        // 文件操作-end
 
         $this->success('', [
             'php_version'        => [
@@ -190,6 +255,9 @@ class Index extends Api
         ]);
     }
 
+    /**
+     * npm环境检查
+     */
     public function envNpmCheck()
     {
         if (is_file(public_path() . self::$lockFileName)) {
@@ -291,6 +359,11 @@ class Index extends Api
         ]);
     }
 
+    /**
+     * 数据库连接-获取数据表列表
+     * @param $database
+     * @return array
+     */
     private function testConnectDatabase($database)
     {
         error_reporting(0);
@@ -325,6 +398,9 @@ class Index extends Api
         }
     }
 
+    /**
+     * 测试数据库连接
+     */
     public function testDatabase()
     {
         $database = [
@@ -344,6 +420,10 @@ class Index extends Api
         }
     }
 
+    /**
+     * 系统基础配置
+     * post请求=开始安装
+     */
     public function baseConfig()
     {
         if (is_file(public_path() . self::$lockFileName)) {
@@ -394,6 +474,9 @@ class Index extends Api
         ]);
     }
 
+    /**
+     * 移动编译好的文件到public
+     */
     public function mvDist()
     {
         $distPath      = root_path() . self::$distDir . DIRECTORY_SEPARATOR;
@@ -411,12 +494,20 @@ class Index extends Api
 
         if (rename($indexHtmlPath, $toIndexHtmlPath) && rename($assetsPath, $toAssetsPath)) {
             deldir($distPath);
+            $result = @file_put_contents(public_path() . self::$lockFileName, self::$InstallationCompletionMark);
+            if (!$result) {
+                $this->error(__('File has no write permission:%s', ['public/' . self::$lockFileName]), [], 102);
+            }
             $this->success('');
         } else {
             $this->error(__('Failed to move the front-end file, please move it manually!'), [], 104);
         }
     }
 
+    /**
+     * 获取命令执行检查的结果
+     * @return bool 是否拥有执行命令的条件
+     */
     private function commandExecutionCheck()
     {
         $check['phpPopen']             = function_exists('popen') && function_exists('pclose');
@@ -435,14 +526,21 @@ class Index extends Api
         return $envOk;
     }
 
+    /**
+     * 取得 web 目录完整路径
+     */
     public function manualInstall()
     {
-        // 取得 web 目录完整路径
         $this->success('', [
             'webPath' => root_path() . 'web'
         ]);
     }
 
+    /**
+     * 目录是否可写
+     * @param $writable
+     * @return string
+     */
     private static function writableStateDescribe($writable): string
     {
         return $writable ? __('Writable') : __('No write permission');
