@@ -1,5 +1,5 @@
 <template>
-    <div v-show="state.minimize" class="command">
+    <div v-show="state.minimize" v-drag="['.command', '.header']" class="command">
         <div class="header">
             <img draggable="false" class="logo" :src="logo" alt="BuildAdmin Logo" />
             <div class="title">{{ t('terminal') }}</div>
