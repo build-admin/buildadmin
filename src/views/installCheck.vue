@@ -68,7 +68,7 @@ import { reactive, onMounted } from 'vue'
 import Header from '../components/header/index.vue'
 import Command from '../components/command/index.vue'
 import axios from 'axios'
-import { Axios, errorTips, Response } from '/@/utils/axios'
+import { Axios, errorTips } from '/@/utils/axios'
 import { envBaseCheckUrl, envNpmCheckUrl } from '/@/api/install/index'
 import { useI18n } from 'vue-i18n'
 import { global } from '/@/utils/globalVar'
@@ -212,7 +212,7 @@ const catchErr = (err: string) => {
     })
 }
 
-const axiosThen = function (data: Response, thenCallback: Function = () => {}) {
+const axiosThen = function (data: ApiResponse, thenCallback: Function = () => {}) {
     if (data.code == 1) {
         state.envCheckData = Object.assign({}, state.envCheckData, data.data)
         thenCallback(data)
@@ -265,22 +265,26 @@ const addCheckCnpmInstall = () => {
     })
 }
 
-const getEnvBaseCheckUrl = () => {
-    return Axios.get(envBaseCheckUrl)
+const getEnvBaseCheck = () => {
+    return (Axios.get(envBaseCheckUrl) as ApiPromise)
         .then((res) => {
-            axiosThen(res.data, () => {
-                state.checkTypeIndex = 'npm'
-            })
+            if (res.data.code == 302) {
+                global.step = 'base-config'
+            } else {
+                axiosThen(res.data, () => {
+                    state.checkTypeIndex = 'npm'
+                })
+            }
         })
         .catch((err) => {
             catchErr(t(errorTips(err)))
         })
 }
 
-const getEnvNpmCheckUrl = () => {
+const getEnvNpmCheck = () => {
     return Axios.get(envNpmCheckUrl)
         .then((res) => {
-            axiosThen(res.data, (data: Response) => {
+            axiosThen(res.data, (data: ApiResponse) => {
                 if (data.data.cnpm_version.state == 'ok') {
                     state.checkTypeIndex = 'done'
                     addCheckCnpmInstall()
@@ -295,7 +299,7 @@ const getEnvNpmCheckUrl = () => {
 onMounted(() => {
     // 过早请求会造成图片加载延迟
     setTimeout(() => {
-        axios.all([getEnvBaseCheckUrl(), getEnvNpmCheckUrl()]).then(() => {
+        axios.all([getEnvBaseCheck(), getEnvNpmCheck()]).then(() => {
             checkSubmit()
         })
     }, 1000)

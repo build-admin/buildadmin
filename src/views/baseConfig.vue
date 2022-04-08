@@ -3,7 +3,7 @@
     <Header />
     <div v-if="state.commandKey || state.showMask" class="mask"></div>
     <div class="container">
-        <div class="table-title" :class="state.titleClass">{{ state.title }}</div>
+        <div class="table-title" v-if="state.title" :class="state.titleClass">{{ state.title }}</div>
         <div v-if="state.showInstallTips" class="install-tips-box">
             <div class="install-tips">
                 <img
@@ -185,6 +185,9 @@ Axios.get(baseConfigUrl)
     .then((res) => {
         if (res.data.code == 1) {
             state.showInstallTips = !res.data.data.envOk
+        } else if (res.data.code == 302) {
+            // 重试命令执行
+            state.commandKey = 'web-install'
         } else if (res.data.msg) {
             showGlobalError(res.data.msg)
         } else {
@@ -320,8 +323,6 @@ const doneBaseConfig = () => {
             state.baseConfigSubmitState = true
             if (res.data.code == 1) {
                 if (res.data.data.execution) {
-                    state.title = t("The 'cnpm install' command on the web side is being automatically executed")
-                    state.titleClass = 'text-primary'
                     state.commandKey = 'web-install'
                 } else {
                     state.title = t('After installation, please complete the unfinished matters manually')
@@ -353,8 +354,6 @@ const goUrl = (url: string) => {
 const commandCallback = (data: any) => {
     if (data.commandKey == 'web-install') {
         if (data.value == 'success') {
-            state.title = t('Automatically executing the build command on the web side')
-            state.titleClass = 'text-primary'
             state.commandKey = 'web-build'
         } else if (state.commandKey == 'web-install') {
             commandFail()

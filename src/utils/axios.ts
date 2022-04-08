@@ -36,12 +36,3 @@ export function errorTips(error: any) {
         return 'unknown error'
     }
 }
-
-export interface Response {
-    code: number
-    msg: string
-    time: string
-    data: {
-        [key: string]: any
-    }
-}

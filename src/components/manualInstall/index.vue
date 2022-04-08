@@ -57,7 +57,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { manualInstallUrl, mvDistUrl } from '/@/api/install/index'
-import { Axios, errorTips, Response } from '/@/utils/axios'
+import { Axios, errorTips } from '/@/utils/axios'
 import { global } from '/@/utils/globalVar'
 import { useI18n } from 'vue-i18n'
 
