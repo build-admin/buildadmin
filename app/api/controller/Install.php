@@ -97,6 +97,10 @@ class Install extends Api
     {
         // 安装锁
         if (is_file(public_path() . self::$lockFileName)) {
+            $contents = @file_get_contents(public_path() . self::$lockFileName);
+            if ($contents != self::$InstallationCompletionMark) {
+                $this->error('Retry Build', [], 302);
+            }
             $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]), [], 3);
         }
 
@@ -427,6 +431,10 @@ class Install extends Api
     public function baseConfig()
     {
         if (is_file(public_path() . self::$lockFileName)) {
+            $contents = @file_get_contents(public_path() . self::$lockFileName);
+            if ($contents != self::$InstallationCompletionMark) {
+                $this->error('Retry Build', [], 302);
+            }
             $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]));
         }
 
@@ -479,6 +487,13 @@ class Install extends Api
      */
     public function mvDist()
     {
+        if (is_file(public_path() . self::$lockFileName)) {
+            $contents = @file_get_contents(public_path() . self::$lockFileName);
+            if ($contents == self::$InstallationCompletionMark) {
+                $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]));
+            }
+        }
+
         $distPath      = root_path() . self::$distDir . DIRECTORY_SEPARATOR;
         $indexHtmlPath = $distPath . 'index.html';
         $assetsPath    = $distPath . 'assets';
