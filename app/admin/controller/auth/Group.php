@@ -29,13 +29,26 @@ class Group extends Backend
 
     protected $keyword = false;
 
+    /**
+     * @var array 远程select初始化传值
+     */
+    protected $initValue;
+    /**
+     * @var bool 是否组装Tree
+     */
+    protected $assembleTree;
+
     public function initialize()
     {
         parent::initialize();
         $this->model = new AdminGroup();
         $this->tree  = Tree::instance();
 
-        $this->keyword = $this->request->request("quick_search");
+        $isTree          = $this->request->param('isTree', true);
+        $this->initValue = $this->request->get("initValue/a", '');
+        $this->keyword   = $this->request->request("quick_search");
+
+        $this->assembleTree = $isTree && !$this->keyword && !$this->initValue;
     }
 
     public function index()
@@ -172,7 +185,6 @@ class Group extends Backend
             }
         }
 
-        $row->pid   = $row->pid ? $this->model->where('id', $row->pid)->value('name') : '';
         $row->rules = $row->rules ? explode(',', $row->rules) : [];
         $this->success('', [
             'row' => $row
@@ -181,12 +193,9 @@ class Group extends Backend
 
     public function select()
     {
-        $isTree       = $this->request->param('isTree');
-        $initValue    = $this->request->get("initValue/a", '');
-        $assembleTree = $isTree && !$this->keyword && !$initValue;
-        $data         = $this->getGroups($assembleTree);
+        $data = $this->getGroups();
 
-        if ($assembleTree) {
+        if ($this->assembleTree) {
             $data = $this->tree->assembleTree($this->tree->getTreeArray($data, 'name'));
         }
         $this->success('', [
@@ -194,11 +203,10 @@ class Group extends Backend
         ]);
     }
 
-    public function getGroups($assembleTree)
+    public function getGroups()
     {
-        $pk        = $this->model->getPk();
-        $initKey   = $this->request->get("initKey/s", $pk);
-        $initValue = $this->request->get("initValue/a", '');
+        $pk      = $this->model->getPk();
+        $initKey = $this->request->get("initKey/s", $pk);
 
         $where = [];
         if ($this->keyword) {
@@ -208,8 +216,8 @@ class Group extends Backend
             }
         }
 
-        if ($initValue) {
-            $where[] = [$initKey, 'in', $initValue];
+        if ($this->initValue) {
+            $where[] = [$initKey, 'in', $this->initValue];
         }
 
         $data = $this->model->where($where)->select();
@@ -229,7 +237,7 @@ class Group extends Backend
                 $datum->rules = __('No permission');
             }
         }
-        return $assembleTree ? $this->tree->assembleChild($data) : $data;
+        return $this->assembleTree ? $this->tree->assembleChild($data) : $data;
     }
 
 }

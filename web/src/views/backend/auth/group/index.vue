@@ -37,7 +37,7 @@ const baTable = new baTableClass(
     new baTableApi(authGroup),
     {
         expandAll: true,
-        dblClickNotEditColumn: [undefined, 'status'],
+        dblClickNotEditColumn: [undefined],
         column: [
             { type: 'selection', align: 'center' },
             { label: '组别名称', prop: 'name', align: 'left' },

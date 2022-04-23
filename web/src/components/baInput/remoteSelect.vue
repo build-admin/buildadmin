@@ -1,6 +1,7 @@
 <template>
     <el-select
         @focus="onFocus"
+        @blur="onBlur"
         class="remote-select"
         :loading="state.loading"
         :filterable="true"
@@ -92,6 +93,12 @@ const onChangeSelect = (val: valType) => {
 const onFocus = () => {
     if (!state.initializeData) {
         getData()
+    }
+}
+const onBlur = () => {
+    if (state.keyword) {
+        state.keyword = ''
+        state.initializeData = false
     }
 }
 

@@ -2,7 +2,7 @@
     <!-- 对话框表单 -->
     <el-dialog
         custom-class="ba-operate-dialog"
-        top="10vh"
+        top="5vh"
         :close-on-click-modal="false"
         :model-value="baTable.form.operate ? true : false"
         @close="baTable.toggleForm"
@@ -26,15 +26,18 @@
                 :label-width="baTable.form.labelWidth + 'px'"
                 :rules="rules"
             >
-                <el-form-item label="上级分组">
-                    <remoteSelect
-                        :params="{ isTree: true }"
-                        field="name"
-                        :remote-url="baTable.api.actionUrl.get('index')"
-                        v-model="baTable.form.items!.pid"
-                        placeholder="点击选择"
-                    />
-                </el-form-item>
+                <FormItem
+                    label="上级分组"
+                    v-model="baTable.form.items!.pid"
+                    type="remoteSelect"
+                    :input-attr="{
+                        params: { isTree: true },
+                        field: 'name',
+                        'remote-url': baTable.api.actionUrl.get('index'),
+                        placeholder: '点击选择',
+                    }"
+                />
+
                 <el-form-item prop="name" label="分组名称">
                     <el-input v-model="baTable.form.items!.name" type="string" placeholder="请输入分组名称"></el-input>
                 </el-form-item>
@@ -71,9 +74,9 @@
 import { reactive, ref, watch, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
-import remoteSelect from '/@/components/remoteSelect/index.vue'
+import FormItem from '/@/components/formItem/index.vue'
 import { getMenuRules } from '/@/api/backend/auth/group'
-import type { ElForm, ElTree,FormItemRule } from 'element-plus'
+import type { ElForm, ElTree, FormItemRule } from 'element-plus'
 import { uuid } from '/@/utils/random'
 
 interface MenuRules {
