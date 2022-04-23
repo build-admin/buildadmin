@@ -16,4 +16,11 @@ export default {
     delete: '删除',
     refresh: '刷新',
     operate: '操作',
+    Cancel: '取消',
+    Save: '保存',
+    Upload: '上传',
+    'Save and edit next item': '保存并编辑下一项',
+    'quick Search Placeholder': '通过{fields}模糊搜索',
+    'Please select field': '请选择{field}',
+    'Please input field': '请输入{field}',
 }

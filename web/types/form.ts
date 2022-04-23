@@ -1,5 +1,5 @@
 import { Component } from 'vue'
-import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
+import type { FormItemRule } from 'element-plus'
 declare global {
     /**
      * input可用attr,用于代码提示,渲染不同输入组件时,需要的attr是不一样的
@@ -71,6 +71,34 @@ declare global {
         'automatic-dropdown'?: boolean
         'fit-input-width'?: boolean
         'tag-type'?: 'success' | 'info' | 'warning' | 'danger'
+        params?: anyObj
+        // 远程select属性
+        field?: string
+        'remote-url'?: string
+        // 图标选择器属性
+        'show-icon-name'?: boolean
+        placement?: string
+        title?: string
+        // 图片文件上传属性
+        action?: string
+        headers?: anyObj
+        method?: string
+        data?: anyObj
+        'with-credentials'?: boolean
+        'show-file-list'?: boolean
+        drag?: boolean
+        accept?: boolean
+        'list-type'?: string
+        'auto-upload'?: boolean
+        limit?: number
+        onPreview?: Function
+        onRemove?: Function
+        onSuccess?: Function
+        onError?: Function
+        onProgress?: Function
+        onExceed?: Function
+        onBeforeUpload?: Function
+        onBeforeRemove?: Function
         onChange?: Function
         onInput?: Function
         onVisibleChange?: Function

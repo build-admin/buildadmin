@@ -1,5 +1,6 @@
 import type { RuleType } from 'async-validator'
-import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
+import { FormItemRule } from 'element-plus'
+
 
 /**
  * 手机号码验证

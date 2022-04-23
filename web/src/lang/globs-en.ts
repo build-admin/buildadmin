@@ -16,4 +16,11 @@ export default {
     delete: 'Delete',
     refresh: 'Refresh',
     operate: 'Operate',
+    Cancel: 'Cancel',
+    Save: 'Save',
+    Upload: 'Upload',
+    'Save and edit next item': 'Save and edit next item',
+    'quick Search Placeholder': 'Fuzzy search by {fields}',
+    'Please select field': 'Please select{field}',
+    'Please input field': 'Please input{field}',
 }

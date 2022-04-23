@@ -5,6 +5,10 @@ namespace app\admin\model;
 use think\model;
 use think\Exception;
 
+/**
+ * UserMoneyLog 模型
+ * @controllerUrl 'userMoneyLog'
+ */
 class UserMoneyLog extends model
 {
     protected $autoWriteTimestamp = 'int';

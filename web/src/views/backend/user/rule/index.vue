@@ -94,7 +94,7 @@ provide('baTable', baTable)
 onMounted(() => {
     baTable.table.ref = tableRef.value
     baTable.mount()
-    baTable.getIndex().then(() => {
+    baTable.getIndex()?.then(() => {
         baTable.dragSort()
     })
 })

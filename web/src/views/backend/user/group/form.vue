@@ -63,8 +63,7 @@ import { reactive, ref, watch, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import { getUserRules } from '/@/api/backend/user/group'
-import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
-import type { ElForm, ElTree } from 'element-plus'
+import type { ElForm, ElTree,FormItemRule } from 'element-plus'
 import { uuid } from '/@/utils/random'
 
 interface MenuRules {

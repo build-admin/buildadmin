@@ -10,10 +10,12 @@
     "dependencies": {
         "@element-plus/icons-vue": "^0.2.7",
         "@vueuse/core": "^7.5.3",
+        "@wangeditor/editor": "^5.0.1",
+        "@wangeditor/editor-for-vue": "^5.1.10",
         "axios": "^0.26.0",
         "countup.js": "^2.0.8",
         "echarts": "^5.2.2",
-        "element-plus": "^2.0.2",
+        "element-plus": "^2.1.10",
         "esno": "^0.14.1",
         "lodash": "^4.17.21",
         "mitt": "^3.0.0",

@@ -78,7 +78,7 @@ import type { ElForm } from 'element-plus'
 import { add } from '/@/api/backend/user/moneyLog'
 import { userUser } from '/@/api/controllerUrls'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
-import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
+import type { FormItemRule } from 'element-plus'
 
 const baTable = inject('baTable') as baTableClass
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({

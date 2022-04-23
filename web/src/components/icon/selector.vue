@@ -44,6 +44,7 @@
                 ref="selectorInput"
                 @focus="onInputFocus"
                 @blur="onInputBlur"
+                :class="'size-' + size"
             >
                 <template #prepend>
                     <div class="icon-prepend">
@@ -201,6 +202,15 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
+.size-small {
+    height: 24px;
+}
+.size-large {
+    height: 40px;
+}
+.size-default {
+    height: 32px;
+}
 .icon-prepend {
     display: flex;
     align-items: center;

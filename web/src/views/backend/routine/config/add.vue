@@ -4,16 +4,23 @@
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">增加配置项</div>
         </template>
         <div class="ba-operate-form ba-add-form" :style="'width: calc(100% - ' + state.labelWidth / 2 + 'px)'">
-            <el-form ref="formRef" @keyup.enter="onAddSubmit(formRef)" :rules="rules" :model="state.addConfig" :label-position="'left'" :label-width="120">
-                <FormItem label="变量名" type="string" v-model="state.addConfig.name" :attr="{ prop: 'name' }" />
-                <FormItem label="变量分组" type="select" v-model="state.addConfig.group" :attr="{ prop: 'group' }" :data="{ content: configGroup }" />
-                <FormItem label="变量标题" type="string" v-model="state.addConfig.title" :attr="{ prop: 'title' }" />
+            <el-form
+                ref="formRef"
+                @keyup.enter="onAddSubmit(formRef)"
+                :rules="rules"
+                :model="state.addConfig"
+                :label-position="'left'"
+                :label-width="120"
+            >
+                <FormItem label="变量名" type="string" v-model="state.addConfig.name" prop="name" />
+                <FormItem label="变量分组" type="select" v-model="state.addConfig.group" prop="group" :data="{ content: configGroup }" />
+                <FormItem label="变量标题" type="string" v-model="state.addConfig.title" prop="title" />
                 <FormItem label="变量描述" type="string" v-model="state.addConfig.tip" />
                 <FormItem
                     label="变量类型"
                     type="select"
                     v-model="state.addConfig.type"
-                    :attr="{ prop: 'type' }"
+                    prop="type"
                     :data="{ content: state.inputTypes }"
                     :input-attr="{ onChange: onTypeChange }"
                 />
@@ -31,7 +38,7 @@
                     v-model="state.addConfig.extend"
                     :input-attr="{ placeholder: '一行一个属性，无需引号，比如：class=config-item' }"
                 />
-                <FormItem label="权重" type="number" v-model.number="state.addConfig.weigh" :attr="{ prop: 'weigh' }" />
+                <FormItem label="权重" type="number" v-model.number="state.addConfig.weigh" prop="weigh" />
             </el-form>
         </div>
         <template #footer>
@@ -49,7 +56,7 @@ import { ref, reactive } from 'vue'
 import FormItem from '/@/components/formItem/index.vue'
 import { inputTypes } from '/@/components/baInput'
 import { validatorType } from '/@/utils/validate'
-import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
+import type { FormItemRule } from 'element-plus'
 import { buildValidatorData } from '/@/utils/validate'
 import { postData } from '/@/api/backend/routine/config'
 

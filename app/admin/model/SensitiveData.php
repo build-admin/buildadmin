@@ -4,6 +4,10 @@ namespace app\admin\model;
 
 use think\Model;
 
+/**
+ * SensitiveData 模型
+ * @controllerUrl 'securitySensitiveData'
+ */
 class SensitiveData extends Model
 {
     protected $name = 'security_sensitive_data';

@@ -1,4 +1,4 @@
-import { adminBuildSuffixSvgUrl } from '/@/api/common'
+import { buildSuffixSvgUrl } from '/@/api/common'
 
 /**
  * 表格和表单中文件预览图的生成
@@ -8,5 +8,5 @@ export const previewRenderFormatter = (row: TableRow, column: TableColumn, cellV
     if (imgSuffix.includes(cellValue)) {
         return row.full_url
     }
-    return adminBuildSuffixSvgUrl(cellValue)
+    return buildSuffixSvgUrl(cellValue)
 }

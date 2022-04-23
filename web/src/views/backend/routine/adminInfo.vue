@@ -93,13 +93,12 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { index, log, postData } from '/@/api/backend/routine/AdminInfo'
-import { ElForm } from 'element-plus'
+import { ElForm, FormItemRule } from 'element-plus'
 import { onResetForm } from '/@/utils/common'
 import { uuid } from '../../../utils/random'
 import { validatorMobile, validatorPassword } from '/@/utils/validate'
-import { adminFileUpload } from '/@/api/common'
+import { fileUpload } from '/@/api/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
-import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
 import { timeFormat } from '/@/components/table'
 import { useConfig } from '/@/stores/config'
 
@@ -203,7 +202,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
 const onAvatarBeforeUpload = (file: any) => {
     let fd = new FormData()
     fd.append('file', file.raw)
-    adminFileUpload(fd).then((res) => {
+    fileUpload(fd).then((res) => {
         if (res.code == 1) {
             postData({
                 id: state.adminInfo.id,

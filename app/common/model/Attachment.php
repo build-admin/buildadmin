@@ -5,6 +5,10 @@ namespace app\common\model;
 use think\Model;
 use app\admin\model\Admin;
 
+/**
+ * Attachment模型
+ * @controllerUrl 'routineAttachment'
+ */
 class Attachment extends Model
 {
     protected $autoWriteTimestamp = 'int';

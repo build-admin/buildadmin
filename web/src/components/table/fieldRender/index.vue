@@ -34,11 +34,13 @@
     <div v-if="field.render == 'tags'">
         <template v-if="Array.isArray(fieldValue)">
             <template v-for="tag in fieldValue">
-                <el-tag v-if="tag" class="m-10" size="small" effect="light">{{ tag }}</el-tag>
+                <el-tag v-if="tag" class="m-10" size="small" effect="light">{{ field.replaceValue ? (field.replaceValue[tag] ?? tag) : tag }}</el-tag>
             </template>
         </template>
         <template v-else>
-            <el-tag class="m-10" v-if="fieldValue" size="small" effect="light">{{ fieldValue }}</el-tag>
+            <el-tag class="m-10" v-if="fieldValue" size="small" effect="light">{{
+                field.replaceValue ? (field.replaceValue[fieldValue] ?? fieldValue) : fieldValue
+            }}</el-tag>
         </template>
     </div>
 

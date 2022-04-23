@@ -73,8 +73,7 @@ import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
 import { getMenuRules } from '/@/api/backend/auth/group'
-import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
-import type { ElForm, ElTree } from 'element-plus'
+import type { ElForm, ElTree,FormItemRule } from 'element-plus'
 import { uuid } from '/@/utils/random'
 
 interface MenuRules {

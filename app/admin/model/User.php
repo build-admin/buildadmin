@@ -7,6 +7,10 @@ use think\Model;
 use think\facade\Config;
 use app\admin\model\UserGroup;
 
+/**
+ * User 模型
+ * @controllerUrl 'userUser'
+ */
 class User extends Model
 {
     protected $autoWriteTimestamp = 'int';

@@ -74,7 +74,7 @@ const baTable = new baTableClass(
                 'show-overflow-tooltip': true,
                 render: 'url',
             },
-            { label: t('auth/adminLog.ip'), prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tags' },
+            { label: t('auth/adminLog.ip'), prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tag' },
             {
                 label: t('auth/adminLog.useragent'),
                 prop: 'useragent',

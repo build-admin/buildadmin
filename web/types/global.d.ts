@@ -15,6 +15,8 @@ interface InputData {
     tip?: string
     // 需要生成子级元素时,子级元素属性(比如radio)
     childrenAttr?: anyObj
+    // 城市选择器等级,1=省,2=市,3=区
+    level?: number
 }
 
 interface anyObj {

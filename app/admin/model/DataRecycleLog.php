@@ -4,6 +4,10 @@ namespace app\admin\model;
 
 use think\Model;
 
+/**
+ * DataRecycleLog 模型
+ * @controllerUrl 'securityDataRecycleLog'
+ */
 class DataRecycleLog extends Model
 {
     protected $name = 'security_data_recycle_log';

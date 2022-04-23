@@ -24,9 +24,14 @@ class Backend extends Api
     protected $model = null;
 
     /**
-     * 权重(排序)字段
+     * 权重字段
      */
     protected $weighField = 'weigh';
+
+    /**
+     * 默认排序
+     */
+    protected $defaultSortField = 'id,desc';
 
     /**
      * 表格拖拽排序时,两个权重相等则自动重新整理
@@ -109,10 +114,13 @@ class Backend extends Api
         if (empty($this->model)) {
             return [];
         }
+        $pk          = $this->model->getPk();
         $quickSearch = $this->request->get("quick_search/s", '');
         $limit       = $this->request->get("limit/d", 10);
         $order       = $this->request->get("order/s", '');
         $search      = $this->request->get("search/a", []);
+        $initKey     = $this->request->get("initKey/s", $pk);
+        $initValue   = $this->request->get("initValue/a", '');
 
         $where              = [];
         $modelTable         = strtolower($this->model->getTable());
@@ -127,6 +135,10 @@ class Backend extends Api
             }
             $where[] = [implode("|", $quickSearchArr), "LIKE", "%{$quickSearch}%"];
         }
+        if ($initValue) {
+            $where[] = [$initKey, 'in', $initValue];
+            $limit   = 999999;
+        }
 
         // 排序
         if ($order) {
@@ -135,7 +147,7 @@ class Backend extends Api
                 $order = [(string)$order[0] => $order[1]];
             }
         } else {
-            $order = [(string)$this->model->getPk() => 'desc'];
+            $order = [$pk => 'desc'];
         }
 
         // 通用搜索组装

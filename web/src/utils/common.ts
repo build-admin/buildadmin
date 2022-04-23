@@ -134,3 +134,15 @@ export const buildJsonToElTreeData = (data: any): ElTreeData[] => {
         return []
     }
 }
+
+export const isAdminApp = () => {
+    if (/^\/admin/.test(router.currentRoute.value.fullPath)) {
+        return true
+    }
+    return false
+}
+
+export const getFileNameFromPath = (path: string) => {
+    let paths = path.split('/')
+    return paths[paths.length - 1]
+}

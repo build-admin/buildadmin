@@ -4,6 +4,10 @@ namespace app\admin\model;
 
 use think\Model;
 
+/**
+ * SensitiveDataLog 模型
+ * @controllerUrl 'securitySensitiveDataLog'
+ */
 class SensitiveDataLog extends Model
 {
     protected $name = 'security_sensitive_data_log';

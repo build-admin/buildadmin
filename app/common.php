@@ -1,6 +1,8 @@
 <?php
 // 应用公共文件
 
+use think\facade\Db;
+
 if (!function_exists('path_is_writable')) {
     /**
      * 检查目录/文件是否可写
@@ -161,6 +163,26 @@ if (!function_exists('build_suffix_svg')) {
             <g><text><tspan x="220" y="380" font-size="124" font-family="Verdana, Helvetica, Arial, sans-serif" fill="white" text-anchor="middle">' . $suffix . '</tspan></text></g>
         </svg>';
         return $icon;
+    }
+}
+
+if (!function_exists('get_area')) {
+    function get_area()
+    {
+        $province     = request()->get('province', '');
+        $city         = request()->get('city', '');
+        $where        = ['pid' => 0, 'level' => 1];
+        $provincelist = null;
+        if ($province !== '') {
+            $where['pid']   = $province;
+            $where['level'] = 2;
+            if ($city !== '') {
+                $where['pid']   = $city;
+                $where['level'] = 3;
+            }
+        }
+        $provincelist = Db::name('area')->where($where)->field('id as value,name as label')->select();
+        return $provincelist;
     }
 }
 

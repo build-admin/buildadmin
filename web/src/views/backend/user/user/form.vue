@@ -129,11 +129,10 @@
 <script setup lang="ts">
 import { ref, reactive, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { adminFileUpload } from '/@/api/common'
+import { fileUpload } from '/@/api/common'
 import type baTableClass from '/@/utils/baTable'
 import { regularPassword, validatorAccount, validatorMobile } from '/@/utils/validate'
-import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
-import type { ElForm } from 'element-plus'
+import type { ElForm,FormItemRule } from 'element-plus'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
 import { userGroup } from '/@/api/controllerUrls'
 import router from '/@/router/index'
@@ -200,7 +199,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
 const onAvatarBeforeUpload = (file: any) => {
     let fd = new FormData()
     fd.append('file', file.raw)
-    adminFileUpload(fd).then((res) => {
+    fileUpload(fd).then((res) => {
         if (res.code == 1) {
             baTable.form.items!.avatar = res.data.file.full_url
         }

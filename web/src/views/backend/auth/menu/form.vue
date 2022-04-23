@@ -122,8 +122,7 @@ import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import remoteSelect from '/@/components/remoteSelect/index.vue'
 import IconSelector from '/@/components/icon/selector.vue'
-import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
-import type { ElForm } from 'element-plus'
+import type { ElForm,FormItemRule } from 'element-plus'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 const baTable = inject('baTable') as baTableClass

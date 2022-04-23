@@ -108,6 +108,17 @@ body,
 }
 /* 全局遮罩-e */
 
+/* 图片上传预览-s */
+.img-preview-dialog .el-dialog__body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img {
+        max-width: 100%;
+    }
+}
+/* 图片上传预览-e */
+
 /* 页面切换动画-s */
 .slide-right-enter-active,
 .slide-right-leave-active,

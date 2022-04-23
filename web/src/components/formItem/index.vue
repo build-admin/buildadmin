@@ -37,6 +37,10 @@ export default defineComponent({
             type: Object as PropType<InputData>,
             default: () => {},
         },
+        prop: {
+            type: String,
+            default: '',
+        },
     },
     setup(props, { emit }) {
         const onValueUpdate = (value: modelValueTypes) => {
@@ -54,13 +58,14 @@ export default defineComponent({
             })
         }
 
-        // 文本和数字输入框
-        let noNeedLabelSlot = ['string', 'number', 'textarea', 'datetime', 'select', 'selects']
+        let noNeedLabelSlot = ['string', 'number', 'textarea', 'datetime', 'select', 'selects', 'remoteSelect', 'city', 'icon'] // 不带独立label输入框
+        let needLabelSlot = ['radio', 'checkbox', 'switch', 'array', 'image', 'images', 'file', 'files', 'editor'] // 需要独立label的输入框
         if (noNeedLabelSlot.includes(props.type)) {
             return () =>
                 createVNode(
                     resolveComponent('el-form-item'),
                     {
+                        prop: props.prop,
                         ...props.attr,
                         label: props.label,
                     },
@@ -68,8 +73,8 @@ export default defineComponent({
                         default: defaultSlot,
                     }
                 )
-        } else if (props.type == 'radio' || props.type == 'checkbox' || props.type == 'switch' || props.type == 'array') {
-            // 带label的输入框
+        } else if (needLabelSlot.includes(props.type)) {
+            // 带独立label的输入框
             let title = props.data && props.data.title ? props.data.title : props.label
             const labelSlot = () => {
                 return [
@@ -97,6 +102,7 @@ export default defineComponent({
                     resolveComponent('el-form-item'),
                     {
                         class: 'ba-input-item-' + props.type,
+                        prop: props.prop,
                         ...props.attr,
                         label: props.label,
                     },
@@ -105,8 +111,6 @@ export default defineComponent({
                         default: defaultSlot,
                     }
                 )
-        } else {
-            console.warn('暂不支持' + props.type + '的输入框类型，你可以自行在 formItem 组件内添加逻辑')
         }
     },
 })

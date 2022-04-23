@@ -30,14 +30,14 @@
                     label="规则名称"
                     type="string"
                     v-model="baTable.form.items!.name"
-                    :attr="{ prop: 'name' }"
+                    prop="name"
                     :input-attr="{ placeholder: '规则名称有助于后续识别被删数据' }"
                 />
                 <FormItem
                     label="控制器"
                     type="select"
                     v-model="baTable.form.items!.controller"
-                    :attr="{ prop: 'controller' }"
+                    prop="controller"
                     :data="{ content: baTable.form.extend!.controllerList }"
                     :input-attr="{ placeholder: '数据监听机制将监控此控制器下的修改操作' }"
                 />
@@ -45,11 +45,11 @@
                     label="对应数据表"
                     type="select"
                     v-model="baTable.form.items!.data_table"
-                    :attr="{ prop: 'data_table' }"
+                    prop="data_table"
                     :data="{ content: baTable.form.extend!.tableList }"
                     :input-attr="{ onChange: baTable.onTableChange }"
                 />
-                <FormItem label="数据表主键" type="string" v-model="baTable.form.items!.primary_key" :attr="{ prop: 'primary_key' }" />
+                <FormItem label="数据表主键" type="string" v-model="baTable.form.items!.primary_key" prop="primary_key" />
                 <hr class="form-hr" />
 
                 <FormItem
@@ -57,7 +57,7 @@
                     type="selects"
                     v-model="baTable.form.items!.data_fields"
                     :key="baTable.form.extend!.fieldSelectKey"
-                    :attr="{ prop: 'data_fields' }"
+                    prop="data_fields"
                     :data="{ content: baTable.form.extend!.fieldSelect }"
                     :input-attr="{ onChange: onFieldChange }"
                     v-loading="baTable.form.extend!.fieldLoading"
@@ -76,7 +76,7 @@
                     label="状态"
                     type="radio"
                     v-model="baTable.form.items!.status"
-                    :attr="{ prop: 'status' }"
+                    prop="status"
                     :data="{ content: { '0': '禁用', '1': '启用' } }"
                 />
             </el-form>
@@ -97,8 +97,7 @@ import { reactive, ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { sensitiveDataClass, DataFields } from './index'
 import FormItem from '/@/components/formItem/index.vue'
-import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
-import type { ElForm } from 'element-plus'
+import type { ElForm,FormItemRule } from 'element-plus'
 import { buildValidatorData } from '/@/utils/validate'
 
 const formRef = ref<InstanceType<typeof ElForm>>()

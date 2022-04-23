@@ -1,17 +1,15 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\api\controller;
 
 use think\Exception;
 use think\exception\FileException;
 use app\common\library\Upload;
-use app\common\controller\Backend;
+use app\common\controller\Api;
 use think\facade\Db;
 
-class Ajax extends Backend
+class Ajax extends Api
 {
-    protected $noNeedPermission = ['*'];
-
     public function initialize()
     {
         parent::initialize();
@@ -22,7 +20,7 @@ class Ajax extends Backend
         $file = $this->request->file('file');
         try {
             $upload                = new Upload($file);
-            $attachment            = $upload->upload(null, $this->auth->id);
+            $attachment            = $upload->upload(null, 0, 0);
             $attachment['fullurl'] = full_url($attachment['url']);
             unset($attachment['createtime'], $attachment['quote']);
         } catch (Exception | FileException $e) {
@@ -45,14 +43,5 @@ class Ajax extends Backend
         $background = $this->request->param('background');
         $content    = build_suffix_svg((string)$suffix, (string)$background);
         return response($content, 200, ['Content-Length' => strlen($content)])->contentType('image/svg+xml');
-    }
-
-    public function getTablePk($table = null)
-    {
-        if (!$table) {
-            $this->error(__('Parameter error'));
-        }
-        $tablePk = Db::table($table)->getPk();
-        $this->success('', ['pk' => $tablePk]);
     }
 }

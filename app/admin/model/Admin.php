@@ -8,14 +8,29 @@ use think\Model;
 use ba\Random;
 use app\admin\model\AdminGroup;
 
+/**
+ * Admin模型
+ * @controllerUrl 'authAdmin'
+ */
 class Admin extends Model
 {
+    /**
+     * @var string 自动写入时间戳
+     */
     protected $autoWriteTimestamp = 'int';
 
+    /**
+     * @var string 自动写人创建时间
+     */
     protected $createTime = 'createtime';
+    /**
+     * @var string 自动写人更新时间
+     */
     protected $updateTime = 'updatetime';
 
-    // 追加属性
+    /**
+     * 追加属性
+     */
     protected $append = [
         'group_name_arr',
     ];

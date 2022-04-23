@@ -2,7 +2,14 @@
     <div class="default-main">
         <el-row v-loading="state.loading" :gutter="20">
             <el-col class="xs-mb-20" :xs="24" :sm="12">
-                <el-form v-if="!state.loading" ref="formRef" @keyup.enter="onSubmit(formRef)" :model="state.form" :rules="state.rules" :label-position="'top'">
+                <el-form
+                    v-if="!state.loading"
+                    ref="formRef"
+                    @keyup.enter="onSubmit(formRef)"
+                    :model="state.form"
+                    :rules="state.rules"
+                    :label-position="'top'"
+                >
                     <el-tabs v-model="state.activeTab" type="border-card" :before-leave="onBeforeLeave">
                         <el-tab-pane class="config-tab-pane" v-for="(group, key) in state.config" :key="key" :name="key" :label="group.title">
                             <div class="config-form-item" v-for="(item, idx) in group.list">
@@ -11,7 +18,7 @@
                                     :label="item.title"
                                     :type="item.type"
                                     v-model.number="state.form[item.name]"
-                                    :inputAttr="{ placeholder: item.tip, rows: 3 }"
+                                    :input-attr="{ placeholder: item.tip, rows: 3 }"
                                     :data="{ tip: item.tip, content: item.content ? item.content : {} }"
                                     :attr="Object.assign({ prop: item.name }, item.extend)"
                                 />
@@ -20,7 +27,7 @@
                                     :label="item.title"
                                     :type="item.type"
                                     v-model="state.form[item.name]"
-                                    :inputAttr="{ placeholder: item.tip, rows: 3 }"
+                                    :input-attr="{ placeholder: item.tip, rows: 3 }"
                                     :data="{ tip: item.tip, content: item.content ? item.content : {} }"
                                     :attr="Object.assign({ prop: item.name }, item.extend)"
                                 />
@@ -61,8 +68,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import FormItem from '/@/components/formItem/index.vue'
 import { index, postData, del } from '/@/api/backend/routine/config'
-import type { ElForm } from 'element-plus'
-import { FormItemRule } from 'element-plus/es/components/form/src/form.type'
+import type { ElForm, FormItemRule } from 'element-plus'
 import AddFrom from './add.vue'
 import { routePush } from '/@/utils/router'
 import { buildValidatorData } from '/@/utils/validate'

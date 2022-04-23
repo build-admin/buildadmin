@@ -1,21 +1,71 @@
 import createAxios from '/@/utils/axios'
-import { getAdminToken } from '/@/utils/common'
+import { getAdminToken, isAdminApp } from '/@/utils/common'
 import { getUrl } from '/@/utils/axios'
 
 /*
  * 公共请求函数和Url定义
  */
 
-/*
- * URL
- * import { getUrl } from '/@/utils/axios'
- * 不可以直接使用 getUrl() 获取到域名拼接好再返回；会出现`热更新时报 getUrl 未载入`的问题
- */
+// Admin模块
 export const adminUploadUrl = '/index.php/admin/ajax/upload'
-export const buildSuffixSvgUrl = '/index.php/admin/ajax/buildsuffixsvg'
+export const adminBuildSuffixSvgUrl = '/index.php/admin/ajax/buildsuffixsvg'
+export const adminAreaUrl = '/index.php/admin/ajax/area'
 export const getTablePkUrl = '/index.php/admin/ajax/getTablePk'
+
+// 公共
 export const captchaUrl = '/index.php/api/common/captcha'
 export const refreshTokenUrl = '/index.php/api/common/refreshToken'
+
+// api模块(前台)
+export const apiUploadUrl = '/index.php/api/ajax/upload'
+export const apiBuildSuffixSvgUrl = '/index.php/api/ajax/buildsuffixsvg'
+export const apiAreaUrl = '/index.php/api/ajax/area'
+
+/**
+ * 上传文件
+ */
+export function fileUpload(fd: FormData): ApiPromise {
+    return createAxios({
+        url: isAdminApp() ? adminUploadUrl : apiUploadUrl,
+        method: 'POST',
+        data: fd,
+    }) as ApiPromise
+}
+
+/**
+ * 生成文件后缀icon的svg图片
+ * @param suffix 后缀名
+ * @param background 背景色,如:rgb(255,255,255)
+ */
+export function buildSuffixSvgUrl(suffix: string, background: string = '') {
+    return (
+        getUrl() +
+        (isAdminApp() ? adminBuildSuffixSvgUrl : apiBuildSuffixSvgUrl) +
+        '?batoken=' +
+        getAdminToken() +
+        '&suffix=' +
+        suffix +
+        (background ? '&background=' + background : '')
+    )
+}
+
+/**
+ * 获取地区数据
+ */
+export function getArea(values: number[]) {
+    let params: { province?: number; city?: number } = {}
+    if (values[0]) {
+        params.province = values[0]
+    }
+    if (values[1]) {
+        params.city = values[1]
+    }
+    return createAxios({
+        url: isAdminApp() ? adminAreaUrl : apiAreaUrl,
+        method: 'GET',
+        params: params,
+    })
+}
 
 /**
  * 远程下拉框数据获取
@@ -31,17 +81,6 @@ export function getSelectData(remoteUrl: string, q: string, params: {}) {
     })
 }
 
-/**
- * admin上传文件
- */
-export function adminFileUpload(fd: FormData): ApiPromise {
-    return createAxios({
-        url: adminUploadUrl,
-        method: 'POST',
-        data: fd,
-    }) as ApiPromise
-}
-
 export function buildCaptchaUrl() {
     return getUrl() + captchaUrl
 }
@@ -54,15 +93,6 @@ export function getTablePk(table: string) {
             table: table,
         },
     })
-}
-
-/**
- * admin生成文件后缀icon的svg图片
- * @param suffix 后缀名
- * @param background 背景色,如:rgb(255,255,255)
- */
-export function adminBuildSuffixSvgUrl(suffix: string, background: string = '') {
-    return getUrl() + buildSuffixSvgUrl + '?batoken=' + getAdminToken() + '&suffix=' + suffix + (background ? '&background=' + background : '')
 }
 
 export function refreshToken(): ApiPromise {

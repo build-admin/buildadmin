@@ -37,7 +37,7 @@ const baTable = new baTableClass(
             { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
             { label: '用户名', prop: 'username', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
             { label: '昵称', prop: 'nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '分组', prop: 'group.name', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tags' },
+            { label: '分组', prop: 'group.name', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tag' },
             { label: '头像', prop: 'avatar', align: 'center', render: 'image', operator: false },
             {
                 label: '性别',
@@ -48,7 +48,7 @@ const baTable = new baTableClass(
                 replaceValue: { '0': '未知', '1': '男', '2': '女' },
             },
             { label: '手机号', prop: 'mobile', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '最后登录IP', prop: 'lastloginip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tags' },
+            { label: '最后登录IP', prop: 'lastloginip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tag' },
             { label: '最后登录', prop: 'lastlogintime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
             { label: '创建时间', prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
             {

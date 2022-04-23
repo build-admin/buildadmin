@@ -7,6 +7,10 @@ use app\admin\model\Admin;
 use app\admin\library\Auth;
 use app\admin\model\MenuRule;
 
+/**
+ * AdminLog模型
+ * @controllerUrl 'authAdminLog'
+ */
 class AdminLog extends Model
 {
     protected $autoWriteTimestamp = 'int';

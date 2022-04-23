@@ -4,6 +4,10 @@ namespace app\admin\model;
 
 use think\model;
 
+/**
+ * UserRule 模型
+ * @controllerUrl 'userRule'
+ */
 class UserRule extends model
 {
     protected $autoWriteTimestamp = 'int';
