@@ -23,6 +23,7 @@
                 label-position="right"
                 :label-width="baTable.form.labelWidth + 'px'"
                 :rules="rules"
+                v-if="!baTable.form.loading"
             >
                 <FormItem
                     type="remoteSelect"

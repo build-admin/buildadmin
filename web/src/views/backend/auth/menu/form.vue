@@ -25,6 +25,7 @@
                 label-position="right"
                 :label-width="baTable.form.labelWidth + 'px'"
                 :rules="rules"
+                v-if="!baTable.form.loading"
             >
                 <FormItem
                     type="remoteSelect"
@@ -57,9 +58,13 @@
                         placeholder="web端路由路径(path)，无需以`/admin`开头，如:auth/menu"
                     ></el-input>
                 </el-form-item>
-                <el-form-item v-if="baTable.form.items!.type != 'button'" label="规则图标">
-                    <IconSelector :show-icon-name="true" v-model="baTable.form.items!.icon" />
-                </el-form-item>
+                <FormItem
+                    v-if="baTable.form.items!.type != 'button'"
+                    type="icon"
+                    label="规则图标"
+                    v-model="baTable.form.items!.icon"
+                    :input-attr="{ 'show-icon-name': true }"
+                />
                 <el-form-item v-if="baTable.form.items!.type == 'menu'" label="菜单类型">
                     <el-radio v-model="baTable.form.items!.menu_type" label="tab" :border="true">选项卡</el-radio>
                     <el-radio v-model="baTable.form.items!.menu_type" label="link" :border="true">链接(站外)</el-radio>

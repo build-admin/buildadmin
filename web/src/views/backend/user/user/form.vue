@@ -25,6 +25,7 @@
                 label-position="right"
                 :label-width="baTable.form.labelWidth + 'px'"
                 :rules="rules"
+                v-if="!baTable.form.loading"
             >
                 <el-form-item prop="username" label="用户名">
                     <el-input v-model="baTable.form.items!.username" type="string" placeholder="管理员登录名"></el-input>
