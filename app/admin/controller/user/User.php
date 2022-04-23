@@ -93,7 +93,6 @@ class User extends Backend
 
         unset($row->salt);
         $row->password = '';
-        $row->group_id = $row->group_id ? UserGroup::where('id', $row->group_id)->value('name') : '';
         $this->success('', [
             'row' => $row
         ]);

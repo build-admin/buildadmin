@@ -58,7 +58,6 @@ class Menu extends Backend
             parent::edit($id);
         }
 
-        $row->pid = $row->pid ? $this->model->where('id', $row->pid)->value('title') : '';
         $this->success('', [
             'row' => $row
         ]);

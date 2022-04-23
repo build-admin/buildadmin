@@ -147,7 +147,6 @@ class Group extends Backend
             }
         }
 
-        $row->pid   = $row->pid ? $this->model->where('id', $row->pid)->value('name') : '';
         $row->rules = $row->rules ? explode(',', $row->rules) : [];
         $this->success('', [
             'row' => $row

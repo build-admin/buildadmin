@@ -26,15 +26,18 @@
                 :label-width="baTable.form.labelWidth + 'px'"
                 :rules="rules"
             >
-                <el-form-item prop="pid" label="上级菜单规则">
-                    <remoteSelect
-                        :params="{ isTree: true }"
-                        field="title"
-                        :remote-url="baTable.api.actionUrl.get('index')"
-                        v-model="baTable.form.items!.pid"
-                        placeholder="点击选择"
-                    />
-                </el-form-item>
+                <FormItem
+                    type="remoteSelect"
+                    prop="pid"
+                    label="上级菜单规则"
+                    v-model="baTable.form.items!.pid"
+                    placeholder="点击选择"
+                    :input-attr="{
+                        params: { isTree: true },
+                        field: 'title',
+                        'remote-url': baTable.api.actionUrl.get('index'),
+                    }"
+                />
                 <el-form-item label="规则类型">
                     <el-radio v-model="baTable.form.items!.type" label="menu_dir" :border="true">菜单目录</el-radio>
                     <el-radio v-model="baTable.form.items!.type" label="menu" :border="true">菜单项</el-radio>
@@ -120,9 +123,9 @@
 import { reactive, ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
-import remoteSelect from '/@/components/remoteSelect/index.vue'
+import FormItem from '/@/components/formItem/index.vue'
 import IconSelector from '/@/components/icon/selector.vue'
-import type { ElForm,FormItemRule } from 'element-plus'
+import type { ElForm, FormItemRule } from 'element-plus'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 const baTable = inject('baTable') as baTableClass

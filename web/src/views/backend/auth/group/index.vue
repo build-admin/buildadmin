@@ -70,15 +70,6 @@ const baTable = new baTableClass(
         // 提交前
         onSubmit: () => {
             baTable.form.items!.rules = formRef.value.getCheckeds()
-            if (baTable.form.items?.pid == baTable.form.items?.pidebak) {
-                delete baTable.form.items?.pid
-            }
-        },
-    },
-    {
-        // 获得编辑数据后
-        requestEdit: () => {
-            baTable.form.items!['pidebak'] = baTable.form.items!.pid
         },
     }
 )

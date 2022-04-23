@@ -32,15 +32,17 @@
                 <el-form-item prop="nickname" label="昵称">
                     <el-input v-model="baTable.form.items!.nickname" type="string" placeholder="请输入昵称"></el-input>
                 </el-form-item>
-                <el-form-item label="会员分组">
-                    <remoteSelect
-                        :params="{ isTree: true }"
-                        field="name"
-                        :remote-url="userGroup + 'index'"
-                        v-model="baTable.form.items!.group_id"
-                        placeholder="点击选择"
-                    />
-                </el-form-item>
+                <FormItem
+                    type="remoteSelect"
+                    label="会员分组"
+                    v-model="baTable.form.items!.group_id"
+                    placeholder="点击选择"
+                    :input-attr="{
+                        params: { isTree: true },
+                        field: 'name',
+                        'remote-url': userGroup + 'index',
+                    }"
+                />
                 <el-form-item label="头像">
                     <el-upload
                         class="avatar-uploader"
@@ -132,8 +134,8 @@ import { useI18n } from 'vue-i18n'
 import { fileUpload } from '/@/api/common'
 import type baTableClass from '/@/utils/baTable'
 import { regularPassword, validatorAccount, validatorMobile } from '/@/utils/validate'
-import type { ElForm,FormItemRule } from 'element-plus'
-import remoteSelect from '/@/components/remoteSelect/index.vue'
+import type { ElForm, FormItemRule } from 'element-plus'
+import FormItem from '/@/components/formItem/index.vue'
 import { userGroup } from '/@/api/controllerUrls'
 import router from '/@/router/index'
 

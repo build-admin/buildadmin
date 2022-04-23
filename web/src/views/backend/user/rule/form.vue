@@ -26,15 +26,18 @@
                 :label-width="baTable.form.labelWidth + 'px'"
                 :rules="rules"
             >
-                <el-form-item prop="pid" label="上级菜单规则">
-                    <remoteSelect
-                        :params="{ isTree: true }"
-                        field="title"
-                        :remote-url="baTable.api.actionUrl.get('index')"
-                        v-model="baTable.form.items!.pid"
-                        placeholder="点击选择"
-                    />
-                </el-form-item>
+                <FormItem
+                    type="remoteSelect"
+                    prop="pid"
+                    label="上级菜单规则"
+                    v-model="baTable.form.items!.pid"
+                    placeholder="点击选择"
+                    :input-attr="{
+                        params: { isTree: true },
+                        field: 'title',
+                        'remote-url': baTable.api.actionUrl.get('index'),
+                    }"
+                />
                 <el-form-item label="规则类型">
                     <el-radio class="ba-el-radio" v-model="baTable.form.items!.type" label="route" :border="true">普通路由</el-radio>
                     <el-radio class="ba-el-radio" v-model="baTable.form.items!.type" label="menu_dir" :border="true">会员中心菜单目录</el-radio>
@@ -50,9 +53,13 @@
                 <el-form-item v-if="baTable.form.items!.type != 'button'" label="路由路径">
                     <el-input v-model="baTable.form.items!.path" type="string" placeholder="web端路由路径(path)"></el-input>
                 </el-form-item>
-                <el-form-item v-if="baTable.form.items!.type != 'button'" label="规则图标">
-                    <IconSelector :show-icon-name="true" v-model="baTable.form.items!.icon" />
-                </el-form-item>
+                <FormItem
+                    v-if="baTable.form.items!.type != 'button'"
+                    type="icon"
+                    label="规则图标"
+                    v-model="baTable.form.items!.icon"
+                    :input-attr="{ 'show-icon-name': true }"
+                />
                 <el-form-item v-if="baTable.form.items!.type == 'menu'" label="菜单类型">
                     <el-radio v-model="baTable.form.items!.menu_type" label="tab" :border="true">选项卡</el-radio>
                     <el-radio v-model="baTable.form.items!.menu_type" label="link" :border="true">链接(站外)</el-radio>
@@ -116,9 +123,8 @@
 import { reactive, ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
-import remoteSelect from '/@/components/remoteSelect/index.vue'
-import IconSelector from '/@/components/icon/selector.vue'
-import type { ElForm,FormItemRule } from 'element-plus'
+import FormItem from '/@/components/formItem/index.vue'
+import type { ElForm, FormItemRule } from 'element-plus'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 const baTable = inject('baTable') as baTableClass

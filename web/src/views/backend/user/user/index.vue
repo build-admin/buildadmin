@@ -77,20 +77,6 @@ const baTable = new baTableClass(
             score: '0',
             status: 'enable',
         },
-    },
-    {
-        // 提交前
-        onSubmit: () => {
-            if (baTable.form.items?.group_id == baTable.form.items?.group_id_ebak) {
-                delete baTable.form.items?.group_id
-            }
-        },
-    },
-    {
-        // 获得编辑数据后
-        requestEdit: () => {
-            baTable.form.items!['group_id_ebak'] = baTable.form.items!.group_id
-        },
     }
 )
 

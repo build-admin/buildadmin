@@ -72,18 +72,9 @@ const baTable = new baTableClass(
         },
     },
     {
-        // 提交前
-        onSubmit: () => {
-            if (baTable.form.items?.pid == baTable.form.items?.pidebak) {
-                delete baTable.form.items?.pid
-            }
-        },
-    },
-    {
         // 获得编辑数据后
         requestEdit: () => {
             if (baTable.form.items && !baTable.form.items.icon) baTable.form.items.icon = 'el-icon-Minus'
-            baTable.form.items!['pidebak'] = baTable.form.items!.pid
         },
     }
 )

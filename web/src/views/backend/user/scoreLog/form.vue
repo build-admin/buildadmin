@@ -24,15 +24,19 @@
                 :label-width="baTable.form.labelWidth + 'px'"
                 :rules="rules"
             >
-                <el-form-item prop="user_id" label="会员ID">
-                    <remoteSelect
-                        field="nickname_text"
-                        :remote-url="userUser + 'index'"
-                        v-model="baTable.form.items!.user_id"
-                        placeholder="点击选择"
-                        @change="getAdd"
-                    />
-                </el-form-item>
+                <FormItem
+                    type="remoteSelect"
+                    prop="user_id"
+                    label="会员ID"
+                    v-model="baTable.form.items!.user_id"
+                    placeholder="点击选择"
+                    :input-attr="{
+                        pk: 'user.id',
+                        field: 'nickname_text',
+                        'remote-url': userUser + 'index',
+                        onChange: getAdd,
+                    }"
+                />
                 <el-form-item label="用户名">
                     <el-input v-model="state.userInfo.username" disabled></el-input>
                 </el-form-item>
@@ -77,7 +81,7 @@ import type baTableClass from '/@/utils/baTable'
 import type { ElForm } from 'element-plus'
 import { add } from '/@/api/backend/user/scoreLog'
 import { userUser } from '/@/api/controllerUrls'
-import remoteSelect from '/@/components/remoteSelect/index.vue'
+import FormItem from '/@/components/formItem/index.vue'
 import type { FormItemRule } from 'element-plus'
 
 const baTable = inject('baTable') as baTableClass

@@ -74,6 +74,7 @@ declare global {
         'tag-type'?: 'success' | 'info' | 'warning' | 'danger'
         params?: anyObj
         // 远程select属性
+        pk?: string
         field?: string
         'remote-url'?: string
         // 图标选择器属性

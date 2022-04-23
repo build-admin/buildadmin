@@ -17,8 +17,8 @@
             class="remote-select-option"
             v-for="item in state.options"
             :label="item[field]"
-            :value="item[pk].toString()"
-            :key="item[pk]"
+            :value="item[state.primaryKey].toString()"
+            :key="item[state.primaryKey]"
         ></el-option>
         <el-pagination
             v-if="state.total"
@@ -59,6 +59,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const state: {
+    // 主表字段名(不带表别名)
+    primaryKey: string
     options: anyObj[]
     loading: boolean
     total: number
@@ -70,6 +72,7 @@ const state: {
     selectKey: string
     initializeData: boolean
 } = reactive({
+    primaryKey: props.pk,
     options: [],
     loading: false,
     total: 0,
@@ -153,6 +156,10 @@ const initDefaultValue = () => {
 }
 
 onMounted(() => {
+    if (props.pk.indexOf('.') > 0) {
+        let pk = props.pk.split('.')
+        state.primaryKey = pk[1] ? pk[1] : pk[0]
+    }
     initDefaultValue()
 })
 
