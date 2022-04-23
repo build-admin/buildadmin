@@ -31,7 +31,7 @@
                     type="string"
                     v-model="baTable.form.items!.name"
                     prop="name"
-                    :input-attr="{ placeholder: '规则名称有助于后续识别被删数据' }"
+                    placeholder="规则名称有助于后续识别被删数据"
                 />
                 <FormItem
                     label="控制器"
@@ -39,7 +39,7 @@
                     v-model="baTable.form.items!.controller"
                     prop="controller"
                     :data="{ content: baTable.form.extend!.controllerList }"
-                    :input-attr="{ placeholder: '数据监听机制将监控此控制器下的修改操作' }"
+                    placeholder="数据监听机制将监控此控制器下的修改操作"
                 />
                 <FormItem
                     label="对应数据表"
@@ -68,7 +68,7 @@
                     :label="item.name"
                     type="string"
                     v-model="item.value"
-                    :input-attr="{ placeholder: '填写字段注释有助于后续快速识别字段' }"
+                    placeholder="填写字段注释有助于后续快速识别字段"
                 />
 
                 <hr class="form-hr" />

@@ -181,10 +181,12 @@ class Group extends Backend
 
     public function select()
     {
-        $isTree = $this->request->param('isTree');
-        $data   = $this->getGroups();
+        $isTree       = $this->request->param('isTree');
+        $initValue    = $this->request->get("initValue/a", '');
+        $assembleTree = $isTree && !$this->keyword && !$initValue;
+        $data         = $this->getGroups($assembleTree);
 
-        if ($isTree && !$this->keyword) {
+        if ($assembleTree) {
             $data = $this->tree->assembleTree($this->tree->getTreeArray($data, 'name'));
         }
         $this->success('', [
@@ -192,14 +194,22 @@ class Group extends Backend
         ]);
     }
 
-    public function getGroups()
+    public function getGroups($assembleTree)
     {
+        $pk        = $this->model->getPk();
+        $initKey   = $this->request->get("initKey/s", $pk);
+        $initValue = $this->request->get("initValue/a", '');
+
         $where = [];
         if ($this->keyword) {
             $keyword = explode(' ', $this->keyword);
             foreach ($keyword as $item) {
                 $where[] = [$this->quickSearchField, 'like', '%' . $item . '%'];
             }
+        }
+
+        if ($initValue) {
+            $where[] = [$initKey, 'in', $initValue];
         }
 
         $data = $this->model->where($where)->select();
@@ -219,7 +229,7 @@ class Group extends Backend
                 $datum->rules = __('No permission');
             }
         }
-        return $this->tree->assembleChild($data);
+        return $assembleTree ? $this->tree->assembleChild($data) : $data;
     }
 
 }

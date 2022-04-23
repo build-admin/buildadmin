@@ -61,15 +61,13 @@ class Admin extends Backend
                 $data['salt']     = $salt;
                 $data['password'] = $passwd;
                 $result           = $this->model->save($data);
-                if ($data['group_name_arr']) {
+                if ($data['group_arr']) {
                     $groupAccess = [];
-                    foreach ($data['group_name_arr'] as $datum) {
-                        if (is_numeric($datum) && AdminGroup::where('id', $datum)->value('id')) {
-                            $groupAccess[] = [
-                                'uid'      => $this->model->id,
-                                'group_id' => $datum,
-                            ];
-                        }
+                    foreach ($data['group_arr'] as $datum) {
+                        $groupAccess[] = [
+                            'uid'      => $this->model->id,
+                            'group_id' => $datum,
+                        ];
                     }
                     Db::name('admin_group_access')->insertAll($groupAccess);
                 }
@@ -133,16 +131,13 @@ class Admin extends Backend
             Db::name('admin_group_access')
                 ->where('uid', $id)
                 ->delete();
-            if ($data['group_name_arr']) {
+            if ($data['group_arr']) {
                 $groupAccess = [];
-                foreach ($data['group_name_arr'] as $datum) {
-                    $group_id = AdminGroup::where('id|name', $datum)->value('id');
-                    if ($group_id) {
-                        $groupAccess[] = [
-                            'uid'      => $id,
-                            'group_id' => $group_id,
-                        ];
-                    }
+                foreach ($data['group_arr'] as $datum) {
+                    $groupAccess[] = [
+                        'uid'      => $id,
+                        'group_id' => $datum,
+                    ];
                 }
                 Db::name('admin_group_access')->insertAll($groupAccess);
             }

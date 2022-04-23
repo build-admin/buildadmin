@@ -20,6 +20,7 @@ declare global {
         'prefix-icon'?: string | Component
         'suffix-icon'?: string | Component
         rows?: number
+        border?: boolean
         autosize?: boolean | anyObj
         autocomplete?: string
         readonly?: boolean

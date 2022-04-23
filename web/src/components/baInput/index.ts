@@ -1,6 +1,7 @@
 // 支持的输入框类型
 export const inputTypes = [
     'string',
+    'password',
     'number',
     'radio',
     'checkbox',

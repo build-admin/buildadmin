@@ -32,8 +32,17 @@ class Admin extends Model
      * 追加属性
      */
     protected $append = [
+        'group_arr',
         'group_name_arr',
     ];
+
+    public function getGroupArrAttr($value, $row)
+    {
+        $groupAccess = Db::name('admin_group_access')
+            ->where('uid', $row['id'])
+            ->column('group_id');
+        return $groupAccess;
+    }
 
     public function getGroupNameArrAttr($value, $row)
     {

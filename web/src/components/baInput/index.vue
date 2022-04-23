@@ -58,8 +58,8 @@ export default defineComponent({
         // 子级元素属性
         let childrenAttr = props.data && props.data.childrenAttr ? props.data.childrenAttr : {}
 
-        // string number textarea
-        const snt = () => {
+        // string number textarea password
+        const sntp = () => {
             return () =>
                 createVNode(resolveComponent('el-input'), {
                     type: props.type == 'string' ? 'text' : props.type,
@@ -128,9 +128,10 @@ export default defineComponent({
         }
 
         const buildFun = new Map([
-            ['string', snt],
-            ['number', snt],
-            ['textarea', snt],
+            ['string', sntp],
+            ['number', sntp],
+            ['textarea', sntp],
+            ['password', sntp],
             ['radio', rc],
             ['checkbox', rc],
             [

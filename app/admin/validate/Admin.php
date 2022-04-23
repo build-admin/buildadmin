@@ -9,12 +9,12 @@ class Admin extends Validate
     protected $failException = true;
 
     protected $rule = [
-        'username'       => 'require|regex:^[a-zA-Z][a-zA-Z0-9_]{2,15}$|unique:admin',
-        'nickname'       => 'require',
-        'password'       => 'require|regex:^[a-zA-Z0-9_]{6,32}$',
-        'email'          => 'email|unique:admin',
-        'mobile'         => 'mobile|unique:admin',
-        'group_name_arr' => 'require|array',
+        'username'  => 'require|regex:^[a-zA-Z][a-zA-Z0-9_]{2,15}$|unique:admin',
+        'nickname'  => 'require',
+        'password'  => 'require|regex:^[a-zA-Z0-9_]{6,32}$',
+        'email'     => 'email|unique:admin',
+        'mobile'    => 'mobile|unique:admin',
+        'group_arr' => 'require|array',
     ];
 
     /**
@@ -33,7 +33,7 @@ class Admin extends Validate
      * 验证场景
      */
     protected $scene = [
-        'add' => ['username', 'nickname', 'password', 'email', 'mobile', 'group_name_arr'],
+        'add' => ['username', 'nickname', 'password', 'email', 'mobile', 'group_arr'],
     ];
 
     /**
@@ -50,19 +50,19 @@ class Admin extends Validate
      */
     public function sceneEdit()
     {
-        return $this->only(['username', 'nickname', 'password', 'email', 'mobile', 'group_name_arr'])
+        return $this->only(['username', 'nickname', 'password', 'email', 'mobile', 'group_arr'])
             ->remove('password', 'require');
     }
 
     public function __construct()
     {
         $this->field   = [
-            'username'       => __('Username'),
-            'nickname'       => __('Nickname'),
-            'password'       => __('Password'),
-            'email'          => __('Email'),
-            'mobile'         => __('Mobile'),
-            'group_name_arr' => __('Group Name Arr'),
+            'username'  => __('Username'),
+            'nickname'  => __('Nickname'),
+            'password'  => __('Password'),
+            'email'     => __('Email'),
+            'mobile'    => __('Mobile'),
+            'group_arr' => __('Group Name Arr'),
         ];
         $this->message = array_merge($this->message, [
             'username.regex' => __('Please input correct username'),

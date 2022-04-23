@@ -41,6 +41,10 @@ export default defineComponent({
             type: String,
             default: '',
         },
+        placeholder: {
+            type: String,
+            default: '',
+        },
     },
     setup(props, { emit }) {
         const onValueUpdate = (value: modelValueTypes) => {
@@ -51,14 +55,14 @@ export default defineComponent({
         const defaultSlot = () => {
             return createVNode(BaInput, {
                 type: props.type,
-                attr: props.inputAttr,
+                attr: { placeholder: props.placeholder, ...props.inputAttr },
                 data: props.data,
                 modelValue: props.modelValue,
                 'onUpdate:modelValue': onValueUpdate,
             })
         }
 
-        let noNeedLabelSlot = ['string', 'number', 'textarea', 'datetime', 'select', 'selects', 'remoteSelect', 'city', 'icon'] // 不带独立label输入框
+        let noNeedLabelSlot = ['string', 'password', 'number', 'textarea', 'datetime', 'select', 'selects', 'remoteSelect', 'city', 'icon'] // 不带独立label输入框
         let needLabelSlot = ['radio', 'checkbox', 'switch', 'array', 'image', 'images', 'file', 'files', 'editor'] // 需要独立label的输入框
         if (noNeedLabelSlot.includes(props.type)) {
             return () =>
