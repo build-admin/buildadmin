@@ -147,6 +147,19 @@ class Stub
         $formFieldList = rtrim($fieldHtml, "\n");
     }
 
+    public static function buildFormRules(&$formItemRules)
+    {
+        $rulesHtml = "";
+        foreach ($formItemRules as $key => $formItemRule) {
+            $rulesArrHtml = '';
+            foreach ($formItemRule as $item) {
+                $rulesArrHtml .= $item . ', ';
+            }
+            $rulesHtml .= '    ' . $key . ': [' . rtrim($rulesArrHtml, ', ') . "],\n";
+        }
+        $formItemRules = $rulesHtml ? "\n" . $rulesHtml : '';
+    }
+
     public static function getJsonFromArray($array)
     {
         if (is_array($array)) {

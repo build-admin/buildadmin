@@ -53,7 +53,7 @@ const baTable = inject('baTable') as baTableClass
 
 const { t } = useI18n()
 
-const rules: Partial<Record<string, FormItemRule[]>> = reactive({})
+const rules: Partial<Record<string, FormItemRule[]>> = reactive({{%formItemRules%}})
 
 </script>
 

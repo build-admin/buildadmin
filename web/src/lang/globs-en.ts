@@ -23,4 +23,5 @@ export default {
     'quick Search Placeholder': 'Fuzzy search by {fields}',
     'Please select field': 'Please select{field}',
     'Please input field': 'Please input{field}',
+    'Please enter the correct field': 'Please enter the correct {field}',
 }

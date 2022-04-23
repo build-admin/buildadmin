@@ -642,6 +642,7 @@ class Crud extends Command
             $controllerAttrList    = [];// 控制器内要设置的变量列表
             $importControllerUrls  = [];// 要引入的控制器url列表
             $importPackages        = '';
+            $formItemRules         = [];// 字段验证规则
 
             // 表格列数据
             $tableColumnList = [
@@ -737,6 +738,17 @@ class Crud extends Command
                     } else {
                         $formFieldList[$field][':input-attr']['placeholder'] = "t('Please input field', { field: t('" . $this->langPrefix . $field . "') })";
                     }
+
+                    // 字段验证规则
+                    if ($column['IS_NULLABLE'] == 'NO' && !in_array($inputType, ['switch', 'icon'])) {
+                        $formItemRules[$field][] = "buildValidatorData('required', t('" . $this->langPrefix . $field . "'))";
+                    }
+                    if ($field == 'mobile') {
+                        $formItemRules[$field][] = "buildValidatorData('mobile', '', 'blur', t('Please enter the correct field', { field: t('" . $this->langPrefix . $field . "') }))";
+                    }
+                    if ($inputType == 'datetime') {
+                        $formItemRules[$field][] = "buildValidatorData('date', '', 'blur', t('Please enter the correct field', { field: t('" . $this->langPrefix . $field . "') }))";
+                    }
                 }
 
                 // 表格列
@@ -746,6 +758,7 @@ class Crud extends Command
             }
 
             Stub::buildFormField($formFieldList);
+            Stub::buildFormRules($formItemRules);
 
             // 表格列额外处理
             $tableColumnList[] = [
@@ -824,61 +837,10 @@ class Crud extends Command
             $formVue = $stub->getReplacedStub('html/form', [
                 'formItem'       => $formFieldList,
                 'importPackages' => $importPackages,
+                'formItemRules'  => $formItemRules,
             ]);
             Stub::writeToFile($formFile, $formVue);
             // TODO 继续写入其他文件
-            return;
-
-            // 循环所有字段,开始构造视图的HTML和TS信息
-            foreach ($columnList as $k => $v) {
-                $field   = $v['COLUMN_NAME'];
-                $itemArr = [];
-
-                // 这里构建Enum和Set类型的列表数据
-                if (in_array($v['DATA_TYPE'], ['enum', 'set', 'tinyint'])) {
-                    if ($v['DATA_TYPE'] !== 'tinyint') {
-                        $itemArr = substr($v['COLUMN_TYPE'], strlen($v['DATA_TYPE']) + 1, -1);
-                        $itemArr = explode(',', str_replace("'", '', $itemArr));
-                    }
-                    $itemArr = $this->getItemArray($itemArr, $field, $v['COLUMN_COMMENT']);
-                    //如果类型为tinyint且有使用备注数据
-                    if ($itemArr && $v['DATA_TYPE'] == 'tinyint') {
-                        $v['DATA_TYPE'] = 'enum';
-                    }
-                }
-                // 语言列表
-                if ($v['COLUMN_COMMENT'] != '') {
-                    $langList[] = $this->getLangItem($field, $v['COLUMN_COMMENT']);
-                }
-                $inputType = '';
-                //保留字段不能修改和添加
-                if ($v['COLUMN_KEY'] != 'PRI' && !in_array($field, $this->reservedField) && !in_array($field, $this->ignoreFields)) {
-                    $inputType = $this->getFieldType($v);
-
-                    // 如果是number类型时增加一个步长
-                    $step = $inputType == 'number' && $v['NUMERIC_SCALE'] > 0 ? '0.' . str_repeat(0, $v['NUMERIC_SCALE'] - 1) . '1' : 0;
-
-                    $formItemAttrArr  = [];
-                    $formItemRules    = [];
-                    $formInputAttrArr = [
-                        'v-model' => "baTable.form.items!.{$field}",
-                        'attr'    => [
-                            'prop' => $field
-                        ]
-                    ];
-                    // $defaultValue     = $v['COLUMN_DEFAULT'];
-                    // 如果默认值非null,则是一个必选项
-
-                    if ($v['IS_NULLABLE'] == 'NO') {
-                        $formItemRules[] = "buildValidatorData('required', {$v['COLUMN_COMMENT']})";
-                    }
-
-
-                }
-
-            }
-
-            print_r($formItemRules);
             return;
 
             // 循环关联表,追加语言包和JS列

@@ -23,4 +23,5 @@ export default {
     'quick Search Placeholder': '通过{fields}模糊搜索',
     'Please select field': '请选择{field}',
     'Please input field': '请输入{field}',
+    'Please enter the correct field': '请输入正确的{field}',
 }
