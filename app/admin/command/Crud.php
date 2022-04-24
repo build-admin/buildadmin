@@ -477,7 +477,7 @@ class Crud extends Command
         $viewArr[]        = parse_name($lastValue, 1, false);
         $viewPath         = implode(DIRECTORY_SEPARATOR, $viewArr);
         $viewDir          = $webViewsPath . $viewPath . DIRECTORY_SEPARATOR;
-        $this->langPrefix = implode('/', $viewArr) . '.';
+        $this->langPrefix = implode('.', $viewArr) . '.';
 
         // 最终将生成的文件路径
         $formFile           = $viewDir . 'form.vue';
@@ -657,28 +657,8 @@ class Crud extends Command
                 $field     = $column['COLUMN_NAME'];
                 $inputType = $this->getFieldInputType($column);
 
-                // 列替换数据-start
-                $columnData = [];
-                if (in_array($column['DATA_TYPE'], ['enum', 'set', 'tinyint'])) {
-                    if ($column['DATA_TYPE'] !== 'tinyint') {
-                        $columnData = substr($column['COLUMN_TYPE'], strlen($column['DATA_TYPE']) + 1, -1);
-                        $columnData = explode(',', str_replace("'", '', $columnData));
-                    }
-                    $columnData = $this->getItemArray($columnData, $field, $column['COLUMN_COMMENT']);
-                    // 如果类型为tinyint且有使用备注数据
-                    if ($columnData && $column['DATA_TYPE'] == 'tinyint') {
-                        $column['DATA_TYPE'] = 'enum';
-                    }
-                }
-                if (!$columnData && in_array($inputType, ['select', 'selects'])) {
-                    $columnData = $this->getItemArray($columnData, $field, $column['COLUMN_COMMENT']);
-                }
-                if ($columnData) {
-                    foreach ($columnData as $key => $columnDatum) {
-                        $columnData[$key] = "t('" . $this->langPrefix . $columnDatum . "')";
-                    }
-                }
-                // 列替换数据-end
+                // 列替换数据
+                $columnData = $this->getColumnReplaceData($column, $field, $inputType);
 
                 // 字段语言包数据
                 if ($column['COLUMN_COMMENT'] != '') {
@@ -705,7 +685,7 @@ class Crud extends Command
                     }
 
                     $formFieldList[$field] = [
-                        ':label'  => 't(\'' . $field . '\')',
+                        ':label'  => 't(\'' . $this->langPrefix . $field . '\')',
                         'type'    => $inputType,
                         'v-model' => 'baTable.form.items!.' . $field,
                         'prop'    => $field,
@@ -754,6 +734,38 @@ class Crud extends Command
                 // 表格列
                 if (!$fields || in_array($field, $fields)) {
                     $tableColumnList[] = $this->getTableColumn($field, $inputType, $column['DATA_TYPE'], $columnData);
+                }
+            }
+
+            // 关联表
+            foreach ($relations as $index => $relation) {
+                foreach ($relation['relationColumnList'] as $k => $v) {
+                    // 不显示的字段直接过滤掉
+                    if ($relation['relationFields'] && !in_array($v['COLUMN_NAME'], $relation['relationFields'])) {
+                        continue;
+                    }
+
+                    $inputType         = $this->getFieldInputType($v);
+                    $relationField     = strtolower($relation['relationName']) . '.' . $v['COLUMN_NAME'];
+                    $relationFieldLang = strtolower($relation['relationName']) . '__' . $v['COLUMN_NAME'];
+
+                    // 列替换数据
+                    $columnData = $this->getColumnReplaceData($v, $relationFieldLang, $inputType);
+
+                    // 不允许双击编辑的字段
+                    if ($inputType == 'switch') {
+                        $dblClickNotEditColumn[] = $relationField;
+                    }
+
+                    // 表格列
+                    $tableColumnList[] = $this->getTableColumn($relationField, $inputType, $v['DATA_TYPE'], $columnData, $relationFieldLang);
+
+                    // 字段语言包数据
+                    if ($v['COLUMN_COMMENT'] != '') {
+                        $columnLang        = $this->getLangItem($relationFieldLang, $v['COLUMN_COMMENT']);
+                        $langList['en']    = array_merge($langList['en'], $columnLang['en']);
+                        $langList['zh-cn'] = array_merge($langList['zh-cn'], $columnLang['zh-cn']);
+                    }
                 }
             }
 
@@ -813,9 +825,6 @@ class Crud extends Command
                 @file_put_contents($webControllerUrls, $appendUrl, FILE_APPEND);
             }
 
-            // 组装web语言包
-            Stub::writeWebLangFile($langList, $webLangEnFile, $webLangZhCnFile);
-
             // 组装index.vue
             $indexVue = $stub->getReplacedStub('html/index', [
                 'tablePk'               => $priKey,
@@ -840,100 +849,15 @@ class Crud extends Command
                 'formItemRules'  => $formItemRules,
             ]);
             Stub::writeToFile($formFile, $formVue);
-            // TODO 继续写入其他文件
-            return;
 
-            // 循环关联表,追加语言包和JS列
-            foreach ($relations as $index => $relation) {
-                foreach ($relation['relationColumnList'] as $k => $v) {
-                    // 不显示的字段直接过滤掉
-                    if ($relation['relationFields'] && !in_array($v['COLUMN_NAME'], $relation['relationFields'])) {
-                        continue;
-                    }
-
-                    $relationField = strtolower($relation['relationName']) . '.' . $v['COLUMN_NAME'];
-                    // 语言列表
-                    if ($v['COLUMN_COMMENT'] != '') {
-                        $langList[] = $this->getLangItem($relationField, $v['COLUMN_COMMENT']);
-                    }
-
-                    //过滤text类型字段
-                    if ($v['DATA_TYPE'] != 'text') {
-                        //构造JS列信息
-                        $javascriptList[] = $this->getJsColumn($relationField, $v['DATA_TYPE']);
-                    }
-                }
-            }
-
-            // JS最后一列加上操作列
-            $javascriptList[] = str_repeat(' ', 24) . "{field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}";
-            $addList          = implode("\n", array_filter($addList));
-            $editList         = implode("\n", array_filter($editList));
-            $javascriptList   = implode(",\n", array_filter($javascriptList));
-            $langList         = implode(",\n", array_filter($langList));
-            // 数组等号对齐
-            $langList = array_filter(explode(",\n", $langList . ",\n"));
-            foreach ($langList as &$line) {
-                if (preg_match("/^\s+'([^']+)'\s*=>\s*'([^']+)'\s*/is", $line, $matches)) {
-                    $line = "    '{$matches[1]}'" . str_pad('=>', ($this->langKeyMaxLen - strlen($matches[1]) + 3), ' ', STR_PAD_LEFT) . " '{$matches[2]}'";
-                }
-            }
-            unset($line);
-            $langList = implode(",\n", array_filter($langList));
+            // 组装和写入web语言包
+            Stub::writeWebLangFile($langList, $webLangEnFile, $webLangZhCnFile);
 
             // 表注释
             $tableComment = $modelTableInfo['Comment'];
             $tableComment = mb_substr($tableComment, -1) == '表' ? mb_substr($tableComment, 0, -1) . '管理' : $tableComment;
-
-            $modelInit = '';
-            if ($priKey != $order) {
-                $modelInit = $this->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modelinit', ['order' => $order]);
-            }
-
-            $data = [
-                'modelConnection'         => $db == 'database' ? '' : "protected \$connection = '{$db}';",
-                'controllerNamespace'     => $controllerNamespace,
-                'modelNamespace'          => $modelNamespace,
-                'validateNamespace'       => $validateNamespace,
-                'originControllerUrl'     => $originControllerUrl,
-                'controllerUrl'           => $controllerUrl,
-                'controllerName'          => $controllerName,
-                'controllerAssignList'    => implode("\n", $controllerAssignList),
-                'modelName'               => $modelName,
-                'modelTableName'          => $modelTableName,
-                'modelTableType'          => $modelTableType,
-                'modelTableTypeName'      => $modelTableTypeName,
-                'validateName'            => $validateName,
-                'tableComment'            => $tableComment,
-                'iconName'                => 'fa fa-circle-o',
-                'pk'                      => $priKey,
-                'order'                   => $order,
-                'table'                   => $table,
-                'tableName'               => $modelTableName,
-                'addList'                 => $addList,
-                'editList'                => $editList,
-                'javascriptList'          => $javascriptList,
-                'langList'                => $langList,
-                'softDeleteClassPath'     => in_array($this->deleteTimeField, $fieldArr) ? "use think\model\concern\SoftDelete;" : '',
-                'softDelete'              => in_array($this->deleteTimeField, $fieldArr) ? 'use SoftDelete;' : '',
-                'modelAutoWriteTimestamp' => in_array($this->createTimeField, $fieldArr) || in_array($this->updateTimeField, $fieldArr) ? "'int'" : 'false',
-                'createTime'              => in_array($this->createTimeField, $fieldArr) ? "'{$this->createTimeField}'" : 'false',
-                'updateTime'              => in_array($this->updateTimeField, $fieldArr) ? "'{$this->updateTimeField}'" : 'false',
-                'deleteTime'              => in_array($this->deleteTimeField, $fieldArr) ? "'{$this->deleteTimeField}'" : 'false',
-                'relationSearch'          => $relations ? 'true' : 'false',
-                'relationWithList'        => '',
-                'relationMethodList'      => '',
-                'controllerIndex'         => '',
-                'recyclebinJs'            => '',
-                'headingHtml'             => $headingHtml,
-                'recyclebinHtml'          => $recyclebinHtml,
-                'visibleFieldList'        => $fields ? "\$row->visible(['" . implode("','", array_filter(explode(',', $fields))) . "']);" : '',
-                'appendAttrList'          => implode(",\n", $appendAttrList),
-                'getEnumList'             => implode("\n\n", $getEnumArr),
-                'getAttrList'             => implode("\n\n", $getAttrArr),
-                'setAttrList'             => implode("\n\n", $setAttrArr),
-                'modelInit'               => $modelInit,
-            ];
+            // TODO 继续写入其他文件
+            return;
 
             // 如果使用关联模型
             if ($relations) {
@@ -995,20 +919,6 @@ class Crud extends Command
             }
             // 生成验证文件
             $this->writeToFile('validate', $data, $validateFile);
-            // 生成视图文件
-            $this->writeToFile('add', $data, $addFile);
-            $this->writeToFile('edit', $data, $editFile);
-            $this->writeToFile('index', $data, $indexFile);
-            if ($recyclebinHtml) {
-                $this->writeToFile('recyclebin', $data, $recyclebinFile);
-                $recyclebinTitle      = in_array('title', $fieldArr) ? 'title' : (in_array('name', $fieldArr) ? 'name' : '');
-                $recyclebinTitleJs    = $recyclebinTitle ? "\n                        {field: '{$recyclebinTitle}', title: __('" . (ucfirst($recyclebinTitle)) . "'), align: 'left'}," : '';
-                $data['recyclebinJs'] = $this->getReplacedStub('mixins/recyclebinjs', ['recyclebinTitleJs' => $recyclebinTitleJs, 'controllerUrl' => $_controllerUrl]);
-            }
-            // 生成JS文件
-            $this->writeToFile('javascript', $data, $javascriptFile);
-            // 生成语言文件
-            $this->writeToFile('lang', $data, $langFile);
         } catch (ErrorException $e) {
             throw new Exception('Code: ' . $e->getCode() . "\nLine: " . $e->getLine() . "\nMessage: " . $e->getMessage() . "\nFile: " . $e->getFile());
         }
@@ -1181,8 +1091,9 @@ class Crud extends Command
         return $itemArr;
     }
 
-    public function getTableColumn($field, $inputType, $fieldType, $columnData)
+    public function getTableColumn($field, $inputType, $fieldType, $columnData, $relationFieldLang = null)
     {
+        if (!$relationFieldLang) $relationFieldLang = $field;
         $nameBool   = false;
         $typeBool   = false;
         $suffixBool = false;
@@ -1207,7 +1118,7 @@ class Crud extends Command
         }
 
         $column = [
-            'label' => "t('" . $this->langPrefix . $field . "')",
+            'label' => "t('" . $this->langPrefix . $relationFieldLang . "')",
             'prop'  => $field,
             'align' => 'center',
         ];
@@ -1355,5 +1266,33 @@ class Crud extends Command
             return $result[$valIdx];
         }
         return false;
+    }
+
+    /**
+     * 列替换数据
+     */
+    public function getColumnReplaceData(&$column, $fieldName, $inputType)
+    {
+        $columnData = [];
+        if (in_array($column['DATA_TYPE'], ['enum', 'set', 'tinyint'])) {
+            if ($column['DATA_TYPE'] !== 'tinyint') {
+                $columnData = substr($column['COLUMN_TYPE'], strlen($column['DATA_TYPE']) + 1, -1);
+                $columnData = explode(',', str_replace("'", '', $columnData));
+            }
+            $columnData = $this->getItemArray($columnData, $fieldName, $column['COLUMN_COMMENT']);
+            // 如果类型为tinyint且有使用备注数据
+            if ($columnData && $column['DATA_TYPE'] == 'tinyint') {
+                $column['DATA_TYPE'] = 'enum';
+            }
+        }
+        if (!$columnData && in_array($inputType, ['select', 'selects'])) {
+            $columnData = $this->getItemArray($columnData, $fieldName, $column['COLUMN_COMMENT']);
+        }
+        if ($columnData) {
+            foreach ($columnData as $key => $columnDatum) {
+                $columnData[$key] = "t('" . $this->langPrefix . $columnDatum . "')";
+            }
+        }
+        return $columnData;
     }
 }

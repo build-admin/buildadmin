@@ -69,10 +69,43 @@ function getLangFileMessage(mList: any, locale: string) {
         if (mList[path].default) {
             //  获取文件名
             let pathName = path.slice(path.lastIndexOf(locale) + (locale.length + 1), path.lastIndexOf('.'))
-            msg[pathName] = mList[path].default
+            if (pathName.indexOf('/') > 0) {
+                let pathNameTmp = pathName.split('/')
+                for (const key in pathNameTmp) {
+                    if (typeof msg[pathNameTmp[key]] === 'undefined') {
+                        msg[pathNameTmp[key]] = []
+                    }
+                }
+                if (pathNameTmp.length == 2) {
+                    msg[pathNameTmp[0]][pathNameTmp[1]] = handleMsglist(mList[path].default)
+                } else if (pathNameTmp.length == 3) {
+                    msg[pathNameTmp[0]][pathNameTmp[1]][pathNameTmp[2]] = handleMsglist(mList[path].default)
+                } else {
+                    msg[pathName] = handleMsglist(mList[path].default)
+                }
+            } else {
+                msg[pathName] = handleMsglist(mList[path].default)
+            }
         }
     }
     return msg
+}
+
+function handleMsglist(mlist: anyObj) {
+    let newMlist: any = []
+    for (const key in mlist) {
+        if (key.indexOf('.') > 0) {
+            let keyTmp = key.split('.')
+            if (typeof newMlist[keyTmp[0]] === 'undefined') {
+                newMlist[keyTmp[0]] = []
+            } else {
+                newMlist[keyTmp[0]][keyTmp[1]] = mlist[key]
+            }
+        } else {
+            newMlist[key] = mlist[key]
+        }
+    }
+    return newMlist
 }
 
 export function editDefaultLang(lang: string): void {

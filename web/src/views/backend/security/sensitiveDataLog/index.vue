@@ -10,7 +10,7 @@
         >
             <el-popconfirm
                 @confirm="onRollbackAction"
-                :confirm-button-text="t('security/sensitiveDataLog.RollBACK')"
+                :confirm-button-text="t('security.sensitiveDataLog.RollBACK')"
                 cancel-button-text="取消"
                 confirmButtonType="success"
                 title="确定回滚选中记录？"
@@ -25,7 +25,7 @@
                                 type="success"
                             >
                                 <Icon size="16" color="#ffffff" name="fa fa-sign-in" />
-                                <span class="table-header-operate-text">{{ t('security/sensitiveDataLog.RollBACK') }}</span>
+                                <span class="table-header-operate-text">{{ t('security.sensitiveDataLog.RollBACK') }}</span>
                             </el-button>
                         </el-tooltip>
                     </div>
@@ -71,13 +71,13 @@ let optButtons: OptButton[] = [
     {
         render: 'confirmButton',
         name: 'rollback',
-        title: 'security/sensitiveDataLog.RollBACK',
+        title: 'security.sensitiveDataLog.RollBACK',
         text: '',
         type: 'success',
         icon: 'fa fa-sign-in',
         class: 'table-row-edit',
         popconfirm: {
-            confirmButtonText: t('security/sensitiveDataLog.RollBACK'),
+            confirmButtonText: t('security.sensitiveDataLog.RollBACK'),
             cancelButtonText: '取消',
             confirmButtonType: 'success',
             title: '确认要回滚记录吗？',

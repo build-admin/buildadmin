@@ -46,7 +46,7 @@ const baTable = new baTableClass(
                 align: 'center',
                 render: 'tag',
                 custom: { menu: 'danger', menu_dir: 'success', button: 'info' },
-                replaceValue: { menu: t('auth/menu.type menu'), menu_dir: t('auth/menu.type menu_dir'), button: t('auth/menu.type button') },
+                replaceValue: { menu: t('auth.menu.type menu'), menu_dir: t('auth.menu.type menu_dir'), button: t('auth.menu.type button') },
             },
             { label: '缓存', prop: 'keepalive', align: 'center', width: '80', render: 'switch' },
             { label: '状态', prop: 'status', align: 'center', width: '80', render: 'switch' },

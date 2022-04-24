@@ -52,13 +52,13 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: t('auth/adminLog.id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-            { label: t('auth/adminLog.admin_id'), prop: 'admin_id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-            { label: t('auth/adminLog.username'), prop: 'username', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 160 },
-            { label: t('auth/adminLog.title'), prop: 'title', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            { label: t('auth.adminLog.id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
+            { label: t('auth.adminLog.admin_id'), prop: 'admin_id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
+            { label: t('auth.adminLog.username'), prop: 'username', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 160 },
+            { label: t('auth.adminLog.title'), prop: 'title', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
             {
                 show: false,
-                label: t('auth/adminLog.data'),
+                label: t('auth.adminLog.data'),
                 prop: 'data',
                 align: 'center',
                 operator: 'LIKE',
@@ -66,7 +66,7 @@ const baTable = new baTableClass(
                 'show-overflow-tooltip': true,
             },
             {
-                label: t('auth/adminLog.url'),
+                label: t('auth.adminLog.url'),
                 prop: 'url',
                 align: 'center',
                 operator: 'LIKE',
@@ -74,9 +74,9 @@ const baTable = new baTableClass(
                 'show-overflow-tooltip': true,
                 render: 'url',
             },
-            { label: t('auth/adminLog.ip'), prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tag' },
+            { label: t('auth.adminLog.ip'), prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tag' },
             {
-                label: t('auth/adminLog.useragent'),
+                label: t('auth.adminLog.useragent'),
                 prop: 'useragent',
                 align: 'center',
                 operator: 'LIKE',
@@ -84,7 +84,7 @@ const baTable = new baTableClass(
                 'show-overflow-tooltip': true,
             },
             {
-                label: t('auth/adminLog.createtime'),
+                label: t('auth.adminLog.createtime'),
                 prop: 'createtime',
                 align: 'center',
                 render: 'datetime',

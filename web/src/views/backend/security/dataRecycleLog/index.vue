@@ -25,7 +25,7 @@
                                 type="success"
                             >
                                 <Icon color="#ffffff" name="el-icon-RefreshRight" />
-                                <span class="table-header-operate-text">还原</span>
+                                <span class="table-header-operate-text">{{ t('security.dataRecycleLog.restore') }}</span>
                             </el-button>
                         </el-tooltip>
                     </div>
@@ -54,7 +54,9 @@ import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import { buildJsonToElTreeData } from '/@/utils/common'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 let optButtons: OptButton[] = [
     {
         render: 'tipButton',
@@ -69,13 +71,13 @@ let optButtons: OptButton[] = [
     {
         render: 'confirmButton',
         name: 'restore',
-        title: 'security/dataRecycleLog.restore',
+        title: 'security.dataRecycleLog.restore',
         text: '',
         type: 'success',
         icon: 'el-icon-RefreshRight',
         class: 'table-row-edit',
         popconfirm: {
-            confirmButtonText: '还原',
+            confirmButtonText: t('security.dataRecycleLog.restore'),
             cancelButtonText: '取消',
             confirmButtonType: 'success',
             title: '确认要还原记录吗？',
