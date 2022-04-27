@@ -480,17 +480,17 @@ class Crud extends Command
         $this->langPrefix = implode('.', $viewArr) . '.';
 
         // 最终将生成的文件路径
-        $formFile           = $viewDir . 'form.vue';
-        $indexFile          = $viewDir . 'index.vue';
-        $serverLangZhCnFile = $adminPath . 'lang' . DIRECTORY_SEPARATOR . 'zh-cn' . DIRECTORY_SEPARATOR . $controllerBaseName . '.php';
-        $serverLangEnFile   = $adminPath . 'lang' . DIRECTORY_SEPARATOR . 'en' . DIRECTORY_SEPARATOR . $controllerBaseName . '.php';
-        $webLangZhCnFile    = $webLangPath . 'zh-cn' . DIRECTORY_SEPARATOR . $viewPath . '.ts';
-        $webLangEnFile      = $webLangPath . 'en' . DIRECTORY_SEPARATOR . $viewPath . '.ts';
+        $formFile  = $viewDir . 'form.vue';
+        $indexFile = $viewDir . 'index.vue';
+        // $serverLangZhCnFile = $adminPath . 'lang' . DIRECTORY_SEPARATOR . 'zh-cn' . DIRECTORY_SEPARATOR . $controllerBaseName . '.php';
+        // $serverLangEnFile   = $adminPath . 'lang' . DIRECTORY_SEPARATOR . 'en' . DIRECTORY_SEPARATOR . $controllerBaseName . '.php';
+        $webLangZhCnFile = $webLangPath . 'zh-cn' . DIRECTORY_SEPARATOR . $viewPath . '.ts';
+        $webLangEnFile   = $webLangPath . 'en' . DIRECTORY_SEPARATOR . $viewPath . '.ts';
 
-        // 是否为删除模式-待测
+        // 是否为删除模式
         $delete = $this->getOption('delete');
         if ($delete) {
-            $readyFiles = [$controllerFile, $modelFile, $validateFile, $formFile, $indexFile, $serverLangZhCnFile, $serverLangEnFile, $webLangZhCnFile, $webLangEnFile];
+            $readyFiles = [$controllerFile, $modelFile, $validateFile, $formFile, $indexFile, $webLangZhCnFile, $webLangEnFile];
             foreach ($readyFiles as $k => $v) {
                 $output->warning($v);
             }
@@ -941,18 +941,22 @@ class Crud extends Command
             // 生成模型文件
             $modelContent = $stub->getReplacedStub('model', $modelData);
             Stub::writeToFile($modelFile, $modelContent);
+
+            // 生成关联模型文件
             if ($relations) {
                 foreach ($relations as $i => $relation) {
                     if (!is_file($relation['relationFile'])) {
-                        // 生成关联模型文件
                         $relationFileContent = $stub->getReplacedStub('relationModel', $relation);
                         Stub::writeToFile($relation['relationFile'], $relationFileContent);
                     }
                 }
             }
-            return;
+
             // 生成验证器文件
-            $this->writeToFile('validate', $data, $validateFile);
+            Stub::writeToFile($validateFile, $stub->getReplacedStub('validate', [
+                'validateNamespace' => $validateNamespace,
+                'validateName'      => $validateName
+            ]));
 
             // TODO 生成server端语言包文件备用
         } catch (ErrorException $e) {
