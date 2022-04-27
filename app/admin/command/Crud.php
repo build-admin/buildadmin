@@ -941,17 +941,16 @@ class Crud extends Command
             // 生成模型文件
             $modelContent = $stub->getReplacedStub('model', $modelData);
             Stub::writeToFile($modelFile, $modelContent);
-            return;
-
             if ($relations) {
                 foreach ($relations as $i => $relation) {
-                    $relation['modelNamespace'] = $data['modelNamespace'];
                     if (!is_file($relation['relationFile'])) {
                         // 生成关联模型文件
-                        $this->writeToFile('relationmodel', $relation, $relation['relationFile']);
+                        $relationFileContent = $stub->getReplacedStub('relationModel', $relation);
+                        Stub::writeToFile($relation['relationFile'], $relationFileContent);
                     }
                 }
             }
+            return;
             // 生成验证器文件
             $this->writeToFile('validate', $data, $validateFile);
 
