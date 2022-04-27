@@ -621,17 +621,12 @@ class Crud extends Command
             }
             $relation['relationForeignKey'] = $relationForeignKey;
             $relation['relationPrimaryKey'] = $relationPrimaryKey;
-            $relation['relationClassName']  = $modelNamespace != $relation['relationNamespace'] ? $relation['relationNamespace'] . '\\' . $relation['relationName'] . '::class' : $relation['relationName'] . '::class';
+            $relation['relationClassName']  = $modelNamespace != $relation['relationNamespace'] ? '\\' . $relation['relationNamespace'] . '\\' . $relation['relationName'] . '::class' : $relation['relationName'] . '::class';
         }
         unset($relation);
 
         try {
             $stub                  = Stub::instance();
-            $setAttrArr            = [];// 模型修改器
-            $getAttrArr            = [];// 模型获取器
-            $getEnumArr            = [];
-            $appendAttrList        = [];// 模型追加属性
-            $controllerAssignList  = [];// 控制器要发送到前台的变量列表
             $quickSearchFieldNames = [];// 快速搜索字段列表
             $formFieldList         = [];// 表单字段列表
             $dblClickNotEditColumn = ['undefined'];// 不允许双击编辑的字段
@@ -856,7 +851,17 @@ class Crud extends Command
             // 表注释
             $tableComment = mb_substr($modelTableInfo['Comment'], -1) == '表' ? mb_substr($modelTableInfo['Comment'], 0, -1) . '管理' : $modelTableInfo['Comment'];
 
-            $modelData      = [];
+            $modelData      = [
+                'modelNamespace'          => $modelNamespace,
+                'modelName'               => $modelName,
+                'fullBaseName'            => $fullBaseName,
+                'modelConnection'         => $db == 'mysql' ? '' : "\n\tprotected \$connection = '{$db}';",
+                'modelTableType'          => $modelTableType,
+                'modelTableTypeName'      => $modelTableTypeName,
+                'modelAutoWriteTimestamp' => in_array($this->createTimeField, $fieldArr) || in_array($this->updateTimeField, $fieldArr) ? "'int'" : 'false',
+                'createTime'              => in_array($this->createTimeField, $fieldArr) ? "'{$this->createTimeField}'" : 'false',
+                'updateTime'              => in_array($this->updateTimeField, $fieldArr) ? "'{$this->updateTimeField}'" : 'false',
+            ];
             $controllerData = [
                 'controllerNamespace' => $controllerNamespace,
                 'tableComment'        => $tableComment,
@@ -866,7 +871,7 @@ class Crud extends Command
             ];
 
             if ($priKey != $defaultOrder[0]) {
-                $modelData['modelInit'] = $stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modeAfterInsert', [
+                $modelData['modeAfterInsert'] = $stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modeAfterInsert', [
                     'order' => $defaultOrder[0]
                 ]);
             }
@@ -898,7 +903,7 @@ class Crud extends Command
                     }
                 }
 
-                $modelData['relationMethodList']            = implode("\n\n", $relationMethodList);
+                $modelData['relationMethodList']            = implode("\n", $relationMethodList);
                 $controllerData['relationVisibleFieldList'] = implode("\n\t\t", $relationVisibleFieldList);
                 $controllerAttrList['withJoinTable']        = $relationWithList;
 
@@ -932,9 +937,11 @@ class Crud extends Command
 
             // 生成控制器文件
             Stub::writeToFile($controllerFile, $controllerContent);
-            return;
+
             // 生成模型文件
-            $this->writeToFile('model', $data, $modelFile);
+            $modelContent = $stub->getReplacedStub('model', $modelData);
+            Stub::writeToFile($modelFile, $modelContent);
+            return;
 
             if ($relations) {
                 foreach ($relations as $i => $relation) {
