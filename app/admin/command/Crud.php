@@ -621,7 +621,7 @@ class Crud extends Command
             }
             $relation['relationForeignKey'] = $relationForeignKey;
             $relation['relationPrimaryKey'] = $relationPrimaryKey;
-            $relation['relationClassName']  = $modelNamespace != $relation['relationNamespace'] ? $relation['relationNamespace'] . '\\' . $relation['relationName'] : $relation['relationName'];
+            $relation['relationClassName']  = $modelNamespace != $relation['relationNamespace'] ? $relation['relationNamespace'] . '\\' . $relation['relationName'] . '::class' : $relation['relationName'] . '::class';
         }
         unset($relation);
 
@@ -826,7 +826,7 @@ class Crud extends Command
             }
 
             // 组装index.vue
-            $indexVue = $stub->getReplacedStub('html/index', [
+            $indexVue = $stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'index', [
                 'tablePk'               => $priKey,
                 'fullBaseName'          => $fullBaseName,
                 'originControllerUrl'   => $originControllerUrl,
@@ -843,7 +843,7 @@ class Crud extends Command
             if ($importControllerUrls) {
                 $importPackages .= "import { " . implode(',', array_keys($importControllerUrls)) . " } from '/@/api/controllerUrls'\n";
             }
-            $formVue = $stub->getReplacedStub('html/form', [
+            $formVue = $stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'form', [
                 'formItem'       => $formFieldList,
                 'importPackages' => $importPackages,
                 'formItemRules'  => $formItemRules,
@@ -854,10 +854,22 @@ class Crud extends Command
             Stub::writeWebLangFile($langList, $webLangEnFile, $webLangZhCnFile);
 
             // 表注释
-            $tableComment = $modelTableInfo['Comment'];
-            $tableComment = mb_substr($tableComment, -1) == '表' ? mb_substr($tableComment, 0, -1) . '管理' : $tableComment;
-            // TODO 继续写入其他文件
-            return;
+            $tableComment = mb_substr($modelTableInfo['Comment'], -1) == '表' ? mb_substr($modelTableInfo['Comment'], 0, -1) . '管理' : $modelTableInfo['Comment'];
+
+            $modelData      = [];
+            $controllerData = [
+                'controllerNamespace' => $controllerNamespace,
+                'tableComment'        => $tableComment,
+                'controllerName'      => $controllerName,
+                'modelName'           => $modelName,
+                'modelNamespace'      => $modelNamespace,
+            ];
+
+            if ($priKey != $defaultOrder[0]) {
+                $modelData['modelInit'] = $stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modeAfterInsert', [
+                    'order' => $defaultOrder[0]
+                ]);
+            }
 
             // 如果使用关联模型
             if ($relations) {
@@ -878,33 +890,49 @@ class Crud extends Command
                     unset($relation['relationColumnList'], $relation['relationFieldList'], $relation['relationTableInfo']);
 
                     // 构造关联模型的方法
-                    $relationMethodList[] = $this->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modelrelationmethod', $relation);
-
-                    // 如果设置了显示主表字段，则必须显式将关联表字段显示
-                    if ($fields) {
-                        //$relationVisibleFieldList[] = "\$row->visible(['{$relation['relationMethod']}']);";
-                    }
+                    $relationMethodList[] = $stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modelBelongsToMethod', $relation);
 
                     // 显示的字段
                     if ($relation['relationFields']) {
-                        $relationVisibleFieldList[] = "\$row->getRelation('" . $relation['relationMethod'] . "')->visible(['" . implode("','", $relation['relationFields']) . "']);";
+                        $relationVisibleFieldList[] = "\$res->visible(['{$relation['relationMethod']}' => ['" . implode("','", $relation['relationFields']) . "']]);";
                     }
                 }
 
-                $data['relationWithList']         = "->withJoin(['" . implode("','", $relationWithList) . "'])";
-                $data['relationMethodList']       = implode("\n\n", $relationMethodList);
-                $data['relationVisibleFieldList'] = implode("\n\t\t\t\t", $relationVisibleFieldList);
+                $modelData['relationMethodList']            = implode("\n\n", $relationMethodList);
+                $controllerData['relationVisibleFieldList'] = implode("\n\t\t", $relationVisibleFieldList);
+                $controllerAttrList['withJoinTable']        = $relationWithList;
 
                 // 需要重写index方法
-                $data['controllerIndex'] = $this->getReplacedStub('controllerindex', $data);
-            } elseif ($fields) {
-                $data = array_merge($data, ['relationWithList' => '', 'relationMethodList' => '', 'relationVisibleFieldList' => '']);
-                // 需要重写index方法
-                $data['controllerIndex'] = $this->getReplacedStub('controllerindex', $data);
+                if ($controllerData['relationVisibleFieldList']) {
+                    $controllerData['indexMethod'] = $stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'controllerIndex', $controllerData);
+                }
             }
 
+            // 排除字段
+            $preExcludeFields        = ['createtime', 'updatetime', 'salt'];
+            $controllerExcludeFields = [];
+            foreach ($preExcludeFields as $preExcludeField) {
+                if (in_array($preExcludeField, $fieldArr)) {
+                    $controllerExcludeFields[] = $preExcludeField;
+                }
+            }
+            $controllerAttrList['preExcludeFields'] = $controllerExcludeFields;
+
+            // 控制器属性
+            $controllerAttr = '';
+            foreach ($controllerAttrList as $key => $item) {
+                if (is_array($item)) {
+                    $controllerAttr .= "\n\tprotected \${$key} = ['" . implode("', '", $item) . "'];\n";
+                } else {
+                    $controllerAttr .= "\n\tprotected \${$key} = '$item';\n";
+                }
+            }
+            $controllerData['controllerAttr'] = $controllerAttr;
+            $controllerContent                = $stub->getReplacedStub('controller', $controllerData);
+
             // 生成控制器文件
-            $this->writeToFile('controller', $data, $controllerFile);
+            Stub::writeToFile($controllerFile, $controllerContent);
+            return;
             // 生成模型文件
             $this->writeToFile('model', $data, $modelFile);
 
@@ -917,16 +945,18 @@ class Crud extends Command
                     }
                 }
             }
-            // 生成验证文件
+            // 生成验证器文件
             $this->writeToFile('validate', $data, $validateFile);
+
+            // TODO 生成server端语言包文件备用
         } catch (ErrorException $e) {
             throw new Exception('Code: ' . $e->getCode() . "\nLine: " . $e->getLine() . "\nMessage: " . $e->getMessage() . "\nFile: " . $e->getFile());
         }
 
         // 继续生成菜单
-        if ($menu) {
+        /*if ($menu) {
             exec("php think menu -c {$originControllerUrl}");
-        }
+        }*/
 
         $output->info('Build Successed');
     }
