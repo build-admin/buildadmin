@@ -24,6 +24,7 @@ class Stub
         'select',
         'selects',
         'remoteSelect',
+        'remoteSelects',
         'editor',
         'city',
         'image',
@@ -168,8 +169,8 @@ class Stub
                 $keyStr = strpos($key, "-") === false ? ' ' . $key . ': ' : ' \'' . $key . '\': ';
                 if (is_array($item)) {
                     $jsonStr .= $keyStr . self::getJsonFromArray($item) . ',';
-                } else if ($item === 'false') {
-                    $jsonStr .= $keyStr . 'false,';
+                } else if ($item === 'false' || $item === 'true') {
+                    $jsonStr .= $keyStr . ($item === 'false' ? 'false' : 'true') . ',';
                 } else if (strpos($item, "t('") === 0 || strpos($item, "t(\"") === 0) {
                     $jsonStr .= $keyStr . $item . ',';
                 } else if (($key == 'remote-url' && strpos($item, "+") !== false) || $key == 'rows') {

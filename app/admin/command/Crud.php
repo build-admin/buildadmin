@@ -124,8 +124,13 @@ class Crud extends Command
         ],
         // 远程select
         [
-            'suffix' => ['_id', '_ids'],
+            'suffix' => ['_id'],
             'value'  => 'remoteSelect',
+        ],
+        // 远程selects
+        [
+            'suffix' => ['_ids'],
+            'value'  => 'remoteSelects',
         ],
         // 城市选择器
         [
@@ -676,7 +681,7 @@ class Crud extends Command
                 // 表单字段
                 if ($column['COLUMN_KEY'] != 'PRI' && !in_array($field, $this->reservedField) && !in_array($field, $this->ignoreFields)) {
                     // 输入框默认值
-                    if ($column['COLUMN_DEFAULT'] || ($column['COLUMN_DEFAULT'] === '0' && $inputType != 'remoteSelect')) {
+                    if ($column['COLUMN_DEFAULT'] || ($column['COLUMN_DEFAULT'] === '0' && $inputType != 'remoteSelect' && $inputType != 'remoteSelects')) {
                         if (in_array($inputType, ['checkbox', 'selects'])) {
                             $column['COLUMN_DEFAULT'] = explode(',', $column['COLUMN_DEFAULT']);
                         }
@@ -697,13 +702,17 @@ class Crud extends Command
                         ];
                     } else if ($inputType == 'textarea') {
                         $formFieldList[$field][':input-attr']['rows'] = 3;
-                    } else if ($inputType == 'remoteSelect') {
+                    } else if ($inputType == 'remoteSelect' || $inputType == 'remoteSelects') {
                         $formFieldList[$field][':input-attr']['field']      = $this->getRemoteSelectField($field);
                         $remoteUrl                                          = $this->getRemoteSelectUrl($field, $relations, $webControllerUrls);
                         $formFieldList[$field][':input-attr']['remote-url'] = $remoteUrl['url'];
 
                         if ($remoteUrl['importControllerUrls']) {
                             $importControllerUrls[$remoteUrl['importControllerUrls']] = '';
+                        }
+                        if ($inputType == 'remoteSelects') {
+                            $formFieldList[$field]['type']                    = 'remoteSelect';
+                            $formFieldList[$field][':input-attr']['multiple'] = 'true';
                         }
                     } else if ($inputType == 'number') {
                         $formFieldList[$field]['v-model.number'] = $formFieldList[$field]['v-model'];
@@ -714,7 +723,7 @@ class Crud extends Command
                     }
 
                     // placeholder
-                    if (in_array($inputType, ['radio', 'checkbox', 'datetime', 'select', 'selects', 'remoteSelect', 'city', 'image', 'images', 'file', 'files', 'icon'])) {
+                    if (in_array($inputType, ['radio', 'checkbox', 'datetime', 'select', 'selects', 'remoteSelect', 'remoteSelects', 'city', 'image', 'images', 'file', 'files', 'icon'])) {
                         $formFieldList[$field][':input-attr']['placeholder'] = "t('Please select field', { field: t('" . $this->langPrefix . $field . "') })";
                     } else {
                         $formFieldList[$field][':input-attr']['placeholder'] = "t('Please input field', { field: t('" . $this->langPrefix . $field . "') })";
