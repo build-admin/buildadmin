@@ -194,7 +194,36 @@ export default defineComponent({
             [
                 'city',
                 () => {
+                    type Node = { value?: number; label?: string; leaf?: boolean }
                     let maxLevel = props.data && props.data.level ? props.data.level - 1 : 2
+                    const lastLazyValue: {
+                        value: string | number[] | unknown
+                        nodes: Node[]
+                        key: string
+                        currentRequest: any
+                    } = reactive({
+                        value: 'ready',
+                        nodes: [],
+                        key: '',
+                        currentRequest: null,
+                    })
+
+                    // 请求到的node备份-s
+                    let nodeEbak: anyObj = {}
+                    const getNodes = (level: number, key: string) => {
+                        if (nodeEbak[level] && nodeEbak[level][key]) {
+                            return nodeEbak[level][key]
+                        }
+                        return false
+                    }
+                    const setNodes = (level: number, key: string, nodes: Node[] = []) => {
+                        if (!nodeEbak[level]) {
+                            nodeEbak[level] = {}
+                        }
+                        nodeEbak[level][key] = nodes
+                    }
+                    // 请求到的node备份-e
+
                     return () =>
                         createVNode(resolveComponent('el-cascader'), {
                             modelValue: props.modelValue,
@@ -204,17 +233,34 @@ export default defineComponent({
                             props: {
                                 lazy: true,
                                 lazyLoad(node: any, resolve: any) {
+                                    // lazyLoad会频繁触发,在本地存储请求结果,供重复触发时直接读取
                                     const { level, pathValues } = node
-                                    let nodes: {
-                                        value?: number
-                                        label?: string
-                                        leaf?: boolean
-                                    }[] = []
-                                    getArea(pathValues).then((res) => {
+                                    let key = pathValues.join(',')
+                                    key = key ? key : 'init'
+
+                                    let locaNode = getNodes(level, key)
+                                    if (locaNode) {
+                                        return resolve(locaNode)
+                                    }
+
+                                    if (lastLazyValue.key == key && lastLazyValue.value == props.modelValue) {
+                                        if (lastLazyValue.currentRequest) {
+                                            return lastLazyValue.currentRequest
+                                        }
+                                        return resolve(lastLazyValue.nodes)
+                                    }
+
+                                    let nodes: Node[] = []
+                                    lastLazyValue.key = key
+                                    lastLazyValue.value = props.modelValue
+                                    lastLazyValue.currentRequest = getArea(pathValues).then((res) => {
                                         for (const key in res.data) {
                                             res.data[key].leaf = level >= maxLevel
                                             nodes.push(res.data[key])
                                         }
+                                        lastLazyValue.nodes = nodes
+                                        lastLazyValue.currentRequest = null
+                                        setNodes(level, key, nodes)
                                         resolve(nodes)
                                     })
                                 },

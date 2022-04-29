@@ -1,4 +1,4 @@
-import { Component } from 'vue'
+import { Component, CSSProperties } from 'vue'
 import type { FormItemRule } from 'element-plus'
 declare global {
     /**
@@ -93,6 +93,14 @@ declare global {
         'list-type'?: string
         'auto-upload'?: boolean
         limit?: number
+        // editor属性
+        height?: string
+        mode?: string
+        editorStyle?: CSSProperties
+        style?: CSSProperties
+        toolbarConfig?: anyObj
+        editorConfig?: anyObj
+        // 事件
         onPreview?: Function
         onRemove?: Function
         onSuccess?: Function

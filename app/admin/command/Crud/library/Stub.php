@@ -204,7 +204,7 @@ class Stub
                 'prop'  => $defaultOrder[0],
                 'order' => $defaultOrder[1],
             ];
-            $defaultOrderStub = json_encode($defaultOrderStub);
+            $defaultOrderStub = self::getJsonFromArray($defaultOrderStub);
             if ($defaultOrderStub) {
                 $defaultOrderStub = "\n        defaultOrder: " . $defaultOrderStub . ',';
                 return $defaultOrderStub;

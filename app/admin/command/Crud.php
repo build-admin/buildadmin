@@ -676,6 +676,9 @@ class Crud extends Command
                 if ($column['COLUMN_KEY'] != 'PRI' && !in_array($field, $this->reservedField) && !in_array($field, $this->ignoreFields)) {
                     // 输入框默认值
                     if ($column['COLUMN_DEFAULT'] || ($column['COLUMN_DEFAULT'] === '0' && $inputType != 'remoteSelect')) {
+                        if (in_array($inputType, ['checkbox', 'selects'])) {
+                            $column['COLUMN_DEFAULT'] = explode(',', $column['COLUMN_DEFAULT']);
+                        }
                         $inputDefaultItems[$field] = $column['COLUMN_DEFAULT'];
                     }
 
@@ -705,6 +708,8 @@ class Crud extends Command
                         $formFieldList[$field]['v-model.number'] = $formFieldList[$field]['v-model'];
                         unset($formFieldList[$field]['v-model']);
                         $formFieldList[$field][':input-attr']['step'] = $column['NUMERIC_SCALE'] > 0 ? '0.' . str_repeat(0, $column['NUMERIC_SCALE'] - 1) . '1' : 1;
+                    } else if ($inputType == 'icon') {
+                        $formFieldList[$field][':input-attr']['placement'] = 'top';
                     }
 
                     // placeholder
