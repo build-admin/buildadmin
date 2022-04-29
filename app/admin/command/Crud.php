@@ -638,6 +638,7 @@ class Crud extends Command
             $importControllerUrls  = [];// 要引入的控制器url列表
             $importPackages        = '';
             $formItemRules         = [];// 字段验证规则
+            $formDialogBig         = false;
 
             // 表格列数据
             $tableColumnList = [
@@ -734,6 +735,11 @@ class Crud extends Command
                 // 表格列
                 if (!$fields || in_array($field, $fields)) {
                     $tableColumnList[] = $this->getTableColumn($field, $inputType, $column['DATA_TYPE'], $columnData);
+                }
+
+                // form 使用较宽的 Dialog
+                if ($inputType == 'editor') {
+                    $formDialogBig = true;
                 }
             }
 
@@ -843,10 +849,12 @@ class Crud extends Command
             if ($importControllerUrls) {
                 $importPackages .= "import { " . implode(',', array_keys($importControllerUrls)) . " } from '/@/api/controllerUrls'\n";
             }
-            $formVue = $stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'form', [
+            $formDialogBig = $formDialogBig ? "\n\t\twidth='70%'" : '';
+            $formVue       = $stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'form', [
                 'formItem'       => $formFieldList,
                 'importPackages' => $importPackages,
                 'formItemRules'  => $formItemRules,
+                'formDialogBig'  => $formDialogBig,
             ]);
             Stub::writeToFile($formFile, $formVue);
 

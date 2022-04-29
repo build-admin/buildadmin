@@ -4,7 +4,7 @@
         custom-class="ba-operate-dialog"
         :close-on-click-modal="false"
         :model-value="baTable.form.operate ? true : false"
-        @close="baTable.toggleForm"
+        @close="baTable.toggleForm"{%formDialogBig%}
     >
         <template #title>
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">

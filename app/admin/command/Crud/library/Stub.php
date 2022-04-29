@@ -133,7 +133,7 @@ class Stub
         foreach ($formFieldList as &$item) {
             if (in_array($item['type'], self::$formItemType)) {
                 // FormItem
-                $fieldHtml .= '                <FormItem';
+                $fieldHtml .= "\t\t\t\t<FormItem";
                 foreach ($item as $key => $attr) {
                     if (is_array($attr)) {
                         $fieldHtml .= ' ' . $key . '="' . self::getJsonFromArray($attr) . '"';
@@ -155,7 +155,7 @@ class Stub
             foreach ($formItemRule as $item) {
                 $rulesArrHtml .= $item . ', ';
             }
-            $rulesHtml .= '    ' . $key . ': [' . rtrim($rulesArrHtml, ', ') . "],\n";
+            $rulesHtml .= "\t" . $key . ': [' . rtrim($rulesArrHtml, ', ') . "],\n";
         }
         $formItemRules = $rulesHtml ? "\n" . $rulesHtml : '';
     }
@@ -206,7 +206,7 @@ class Stub
             ];
             $defaultOrderStub = self::getJsonFromArray($defaultOrderStub);
             if ($defaultOrderStub) {
-                $defaultOrderStub = "\n        defaultOrder: " . $defaultOrderStub . ',';
+                $defaultOrderStub = "\n\t\tdefaultOrder: " . $defaultOrderStub . ',';
                 return $defaultOrderStub;
             }
         }

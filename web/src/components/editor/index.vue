@@ -37,7 +37,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    height: '300px',
+    height: '320px',
     mode: 'default',
     placeholder: '请输入内容...',
     modelValue: '',
