@@ -682,7 +682,7 @@ class Crud extends Command
                 if ($column['COLUMN_KEY'] != 'PRI' && !in_array($field, $this->reservedField) && !in_array($field, $this->ignoreFields)) {
                     // 输入框默认值
                     if ($column['COLUMN_DEFAULT'] || ($column['COLUMN_DEFAULT'] === '0' && $inputType != 'remoteSelect' && $inputType != 'remoteSelects')) {
-                        if (in_array($inputType, ['checkbox', 'selects'])) {
+                        if (in_array($inputType, ['checkbox', 'selects', 'remoteSelects'])) {
                             $column['COLUMN_DEFAULT'] = explode(',', $column['COLUMN_DEFAULT']);
                         }
                         $inputDefaultItems[$field] = $column['COLUMN_DEFAULT'];
@@ -706,6 +706,7 @@ class Crud extends Command
                         $formFieldList[$field][':input-attr']['field']      = $this->getRemoteSelectField($field);
                         $remoteUrl                                          = $this->getRemoteSelectUrl($field, $relations, $webControllerUrls);
                         $formFieldList[$field][':input-attr']['remote-url'] = $remoteUrl['url'];
+                        $formFieldList[$field][':input-attr']['pk']         = $remoteUrl['pk'];
 
                         if ($remoteUrl['importControllerUrls']) {
                             $importControllerUrls[$remoteUrl['importControllerUrls']] = '';
@@ -1286,12 +1287,14 @@ class Crud extends Command
         $defaultValue = [
             'importControllerUrls' => false,
             'url'                  => $fieldName[0],
+            'pk'                   => $fieldName[0] . '.id',
         ];
 
         $relationFile = false;
         foreach ($relations as $relation) {
             if ($relation['relationTableTypeName'] == $fieldName[0]) {
-                $relationFile = $relation['relationFile'];
+                $relationFile       = $relation['relationFile'];
+                $defaultValue['pk'] = $fieldName[0] . '.' . $relation['relationPrimaryKey'];
             }
         }
         if (!$relationFile) {
@@ -1314,6 +1317,7 @@ class Crud extends Command
         return [
             'importControllerUrls' => $controllerUrlName,
             'url'                  => $controllerUrlName . " + 'index'",
+            'pk'                   => $defaultValue['pk'],
         ];
     }
 
