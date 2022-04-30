@@ -100,6 +100,8 @@ declare global {
         style?: CSSProperties
         toolbarConfig?: anyObj
         editorConfig?: anyObj
+        // 返回数据类型
+        'data-type'?: string
         // 事件
         onPreview?: Function
         onRemove?: Function

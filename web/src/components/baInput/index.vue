@@ -126,6 +126,27 @@ export default defineComponent({
                     () => vNode
                 )
         }
+        // datetime
+        const datetime = () => {
+            let valueFormat = 'YYYY-MM-DD HH:mm:ss'
+            switch (props.type) {
+                case 'date':
+                    valueFormat = 'YYYY-MM-DD'
+                    break
+                case 'year':
+                    valueFormat = 'YYYY'
+                    break
+            }
+            return () =>
+                createVNode(resolveComponent('el-date-picker'), {
+                    class: 'w100',
+                    type: props.type,
+                    'value-format': valueFormat,
+                    ...props.attr,
+                    modelValue: props.modelValue,
+                    'onUpdate:modelValue': onValueUpdate,
+                })
+        }
 
         const buildFun = new Map([
             ['string', sntp],
@@ -153,14 +174,17 @@ export default defineComponent({
                         })
                 },
             ],
+            ['datetime', datetime],
+            ['year', datetime],
+            ['date', datetime],
             [
-                'datetime',
+                'time',
                 () => {
                     return () =>
-                        createVNode(resolveComponent('el-date-picker'), {
+                        createVNode(resolveComponent('el-time-picker'), {
                             class: 'w100',
-                            type: 'datetime',
-                            'value-format': 'YYYY-MM-DD HH:mm:ss',
+                            clearable: true,
+                            format: 'HH:mm:ss',
                             ...props.attr,
                             modelValue: props.modelValue,
                             'onUpdate:modelValue': onValueUpdate,

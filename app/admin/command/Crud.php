@@ -109,8 +109,20 @@ class Crud extends Command
             'value'  => 'datetime',
         ],
         [
-            'type'  => ['year', 'date', 'time', 'datetime', 'timestamp'],
+            'type'  => ['datetime', 'timestamp'],
             'value' => 'datetime',
+        ],
+        [
+            'type'  => ['date'],
+            'value' => 'date',
+        ],
+        [
+            'type'  => ['year'],
+            'value' => 'year',
+        ],
+        [
+            'type'  => ['time'],
+            'value' => 'time',
         ],
         // 单选select
         [
@@ -644,6 +656,7 @@ class Crud extends Command
             $importPackages        = '';
             $formItemRules         = [];// 字段验证规则
             $formDialogBig         = false;
+            $modelSetAttrArr       = [];
 
             // 表格列数据
             $tableColumnList = [
@@ -721,10 +734,15 @@ class Crud extends Command
                         $formFieldList[$field][':input-attr']['step'] = $column['NUMERIC_SCALE'] > 0 ? '0.' . str_repeat(0, $column['NUMERIC_SCALE'] - 1) . '1' : 1;
                     } else if ($inputType == 'icon') {
                         $formFieldList[$field][':input-attr']['placement'] = 'top';
+                    } else if ($inputType == 'datetime' && $column['DATA_TYPE'] == 'int') {
+                        // 增加model的set
+                        $modelSetAttrArr[] = $stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modelSetIntDateTimeAttr', [
+                            'field' => ucfirst($this->getCamelizeName($field))
+                        ]);
                     }
 
                     // placeholder
-                    if (in_array($inputType, ['radio', 'checkbox', 'datetime', 'select', 'selects', 'remoteSelect', 'remoteSelects', 'city', 'image', 'images', 'file', 'files', 'icon'])) {
+                    if (in_array($inputType, ['radio', 'checkbox', 'datetime', 'year', 'date', 'time', 'select', 'selects', 'remoteSelect', 'remoteSelects', 'city', 'image', 'images', 'file', 'files', 'icon'])) {
                         $formFieldList[$field][':input-attr']['placeholder'] = "t('Please select field', { field: t('" . $this->langPrefix . $field . "') })";
                     } else {
                         $formFieldList[$field][':input-attr']['placeholder'] = "t('Please input field', { field: t('" . $this->langPrefix . $field . "') })";
@@ -737,7 +755,7 @@ class Crud extends Command
                     if ($field == 'mobile') {
                         $formItemRules[$field][] = "buildValidatorData('mobile', '', 'blur', t('Please enter the correct field', { field: t('" . $this->langPrefix . $field . "') }))";
                     }
-                    if ($inputType == 'datetime') {
+                    if ($inputType == 'datetime' || $inputType == 'date') {
                         $formItemRules[$field][] = "buildValidatorData('date', '', 'blur', t('Please enter the correct field', { field: t('" . $this->langPrefix . $field . "') }))";
                     }
                 }
@@ -926,7 +944,7 @@ class Crud extends Command
                     }
                 }
 
-                $modelData['relationMethodList']            = implode("\n", $relationMethodList);
+                $modelData['modelMethodList']               = implode("\n", array_merge($modelSetAttrArr, $relationMethodList));
                 $controllerData['relationVisibleFieldList'] = implode("\n\t\t", $relationVisibleFieldList);
                 $controllerAttrList['withJoinTable']        = $relationWithList;
 
@@ -1279,6 +1297,12 @@ class Crud extends Command
             }
         }
         return 'name';
+    }
+
+    protected function getCamelizeName($uncamelized_words, $separator = '_')
+    {
+        $uncamelized_words = $separator . str_replace($separator, " ", strtolower($uncamelized_words));
+        return ltrim(str_replace(" ", "", ucwords($uncamelized_words)), $separator);
     }
 
     protected function getRemoteSelectUrl($fieldName, $relations, $webControllerUrls)

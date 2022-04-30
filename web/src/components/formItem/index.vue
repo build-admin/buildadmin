@@ -62,7 +62,7 @@ export default defineComponent({
             })
         }
 
-        let noNeedLabelSlot = ['string', 'password', 'number', 'textarea', 'datetime', 'select', 'selects', 'remoteSelect', 'city', 'icon'] // 不带独立label输入框
+        let noNeedLabelSlot = ['string', 'password', 'number', 'textarea', 'datetime', 'year', 'date', 'time', 'select', 'selects', 'remoteSelect', 'city', 'icon'] // 不带独立label输入框
         let needLabelSlot = ['radio', 'checkbox', 'switch', 'array', 'image', 'images', 'file', 'files', 'editor'] // 需要独立label的输入框
         if (noNeedLabelSlot.includes(props.type)) {
             return () =>
