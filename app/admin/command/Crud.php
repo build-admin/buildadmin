@@ -323,6 +323,8 @@ class Crud extends Command
 
     protected $langPrefix = '';
 
+    protected $stub = null;
+
     protected function configure()
     {
         $this->setName('crud')->setDescription('Build CRUD controller and model from table');
@@ -333,6 +335,7 @@ class Crud extends Command
 
     protected function execute(Input $input, Output $output)
     {
+        $this->stub        = Stub::instance();
         $this->input       = $input;
         $this->output      = $output;
         $adminPath         = dirname(__DIR__) . DIRECTORY_SEPARATOR;
@@ -643,7 +646,6 @@ class Crud extends Command
         unset($relation);
 
         try {
-            $stub                  = Stub::instance();
             $quickSearchFieldNames = [];// 快速搜索字段列表
             $formFieldList         = [];// 表单字段列表
             $dblClickNotEditColumn = ['undefined'];// 不允许双击编辑的字段
@@ -734,12 +736,10 @@ class Crud extends Command
                         $formFieldList[$field][':input-attr']['step'] = $column['NUMERIC_SCALE'] > 0 ? '0.' . str_repeat(0, $column['NUMERIC_SCALE'] - 1) . '1' : 1;
                     } else if ($inputType == 'icon') {
                         $formFieldList[$field][':input-attr']['placement'] = 'top';
-                    } else if ($inputType == 'datetime' && $column['DATA_TYPE'] == 'int') {
-                        // 增加model的set
-                        $modelSetAttrArr[] = $stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modelSetIntDateTimeAttr', [
-                            'field' => ucfirst($this->getCamelizeName($field))
-                        ]);
                     }
+
+                    // 模型的属性修改器获取器
+                    $this->getModelAttrMethod($modelSetAttrArr, $field, $inputType, $column);
 
                     // placeholder
                     if (in_array($inputType, ['radio', 'checkbox', 'datetime', 'year', 'date', 'time', 'select', 'selects', 'remoteSelect', 'remoteSelects', 'city', 'image', 'images', 'file', 'files', 'icon'])) {
@@ -860,7 +860,7 @@ class Crud extends Command
             }
 
             // 组装index.vue
-            $indexVue = $stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'index', [
+            $indexVue = $this->stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'index', [
                 'tablePk'               => $priKey,
                 'fullBaseName'          => $fullBaseName,
                 'originControllerUrl'   => $originControllerUrl,
@@ -878,7 +878,7 @@ class Crud extends Command
                 $importPackages .= "import { " . implode(',', array_keys($importControllerUrls)) . " } from '/@/api/controllerUrls'\n";
             }
             $formDialogBig = $formDialogBig ? "\n\t\twidth='70%'" : '';
-            $formVue       = $stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'form', [
+            $formVue       = $this->stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'form', [
                 'formItem'       => $formFieldList,
                 'importPackages' => $importPackages,
                 'formItemRules'  => $formItemRules,
@@ -912,7 +912,7 @@ class Crud extends Command
             ];
 
             if ($priKey != $defaultOrder[0]) {
-                $modelData['modeAfterInsert'] = $stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modeAfterInsert', [
+                $modelData['modeAfterInsert'] = $this->stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modeAfterInsert', [
                     'order' => $defaultOrder[0]
                 ]);
             }
@@ -936,7 +936,7 @@ class Crud extends Command
                     unset($relation['relationColumnList'], $relation['relationFieldList'], $relation['relationTableInfo']);
 
                     // 构造关联模型的方法
-                    $relationMethodList[] = $stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modelBelongsToMethod', $relation);
+                    $relationMethodList[] = $this->stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modelBelongsToMethod', $relation);
 
                     // 显示的字段
                     if ($relation['relationFields']) {
@@ -950,7 +950,7 @@ class Crud extends Command
 
                 // 需要重写index方法
                 if ($controllerData['relationVisibleFieldList']) {
-                    $controllerData['indexMethod'] = $stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'controllerIndex', $controllerData);
+                    $controllerData['indexMethod'] = $this->stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'controllerIndex', $controllerData);
                 }
             }
 
@@ -974,27 +974,27 @@ class Crud extends Command
                 }
             }
             $controllerData['controllerAttr'] = $controllerAttr;
-            $controllerContent                = $stub->getReplacedStub('controller', $controllerData);
+            $controllerContent                = $this->stub->getReplacedStub('controller', $controllerData);
 
             // 生成控制器文件
             Stub::writeToFile($controllerFile, $controllerContent);
 
             // 生成模型文件
-            $modelContent = $stub->getReplacedStub('model', $modelData);
+            $modelContent = $this->stub->getReplacedStub('model', $modelData);
             Stub::writeToFile($modelFile, $modelContent);
 
             // 生成关联模型文件
             if ($relations) {
                 foreach ($relations as $i => $relation) {
                     if (!is_file($relation['relationFile'])) {
-                        $relationFileContent = $stub->getReplacedStub('relationModel', $relation);
+                        $relationFileContent = $this->stub->getReplacedStub('relationModel', $relation);
                         Stub::writeToFile($relation['relationFile'], $relationFileContent);
                     }
                 }
             }
 
             // 生成验证器文件
-            Stub::writeToFile($validateFile, $stub->getReplacedStub('validate', [
+            Stub::writeToFile($validateFile, $this->stub->getReplacedStub('validate', [
                 'validateNamespace' => $validateNamespace,
                 'validateName'      => $validateName
             ]));
@@ -1297,6 +1297,20 @@ class Crud extends Command
             }
         }
         return 'name';
+    }
+
+    protected function getModelAttrMethod(&$modelSetAttrArr, $field, $inputType, $column)
+    {
+        $fieldName = ucfirst($this->getCamelizeName($field));
+        if ($inputType == 'datetime' && $column['DATA_TYPE'] == 'int') {
+            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setIntDateTime', [
+                'field' => $fieldName
+            ]);
+        } else if ($inputType == 'switch') {
+            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setSwitch', [
+                'field' => $fieldName
+            ]);
+        }
     }
 
     protected function getCamelizeName($uncamelized_words, $separator = '_')

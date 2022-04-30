@@ -172,6 +172,7 @@ const getTagType = (value: string, custom: any): TagProps['type'] => {
     text-align: center;
 }
 .images-item {
+    width: 50px;
     margin: 0 5px;
 }
 .el-image {

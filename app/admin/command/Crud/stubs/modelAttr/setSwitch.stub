@@ -1,0 +1,5 @@
+
+    public function set{%field%}Attr($value, $row)
+    {
+        return $value ? '1' : '0';
+    }
