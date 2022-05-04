@@ -96,6 +96,22 @@ class Stub
         return app_path() . 'admin' . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR . 'Crud' . DIRECTORY_SEPARATOR . 'stubs' . DIRECTORY_SEPARATOR . $name . '.stub';
     }
 
+    public static function buildModelFieldType($modelFieldType)
+    {
+        if (!$modelFieldType) return '';
+        $maxStrLang = 0;
+        foreach ($modelFieldType as $key => $item) {
+            $strLang    = strlen($key);
+            $maxStrLang = $strLang > $maxStrLang ? $strLang : $maxStrLang;
+        }
+
+        $str = "";
+        foreach ($modelFieldType as $key => $item) {
+            $str .= "\t\t'{$key}'" . str_pad('=>', ($maxStrLang - strlen($key) + 3), ' ', STR_PAD_LEFT) . " '{$item}',\n";
+        }
+        return "\n\tprotected \$type = [\n" . rtrim($str, "\n") . "\n\t];";
+    }
+
     public static function buildTableColumnKey($key, $item)
     {
         if (is_array($item)) {

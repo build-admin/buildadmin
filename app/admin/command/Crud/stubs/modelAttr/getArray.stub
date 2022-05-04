@@ -1,5 +1,5 @@
 
     public function get{%field%}Attr($value, $row)
     {
-        return !$value ? [] : $value;
+        return !$value ? [] : json_decode($value, true);
     }

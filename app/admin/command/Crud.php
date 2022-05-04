@@ -659,6 +659,7 @@ class Crud extends Command
             $formItemRules         = [];// 字段验证规则
             $formDialogBig         = false;
             $modelSetAttrArr       = [];
+            $modelFieldType        = [];
 
             // 表格列数据
             $tableColumnList = [
@@ -736,6 +737,8 @@ class Crud extends Command
                         $formFieldList[$field][':input-attr']['step'] = $column['NUMERIC_SCALE'] > 0 ? '0.' . str_repeat(0, $column['NUMERIC_SCALE'] - 1) . '1' : 1;
                     } else if ($inputType == 'icon') {
                         $formFieldList[$field][':input-attr']['placement'] = 'top';
+                    } else if ($inputType == 'array') {
+                        $modelFieldType[$field] = 'json';
                     }
 
                     // 模型的属性修改器获取器
@@ -980,7 +983,8 @@ class Crud extends Command
             Stub::writeToFile($controllerFile, $controllerContent);
 
             // 生成模型文件
-            $modelContent = $this->stub->getReplacedStub('model', $modelData);
+            $modelData['modelFieldType'] = Stub::buildModelFieldType($modelFieldType);
+            $modelContent                = $this->stub->getReplacedStub('model', $modelData);
             Stub::writeToFile($modelFile, $modelContent);
 
             // 生成关联模型文件
