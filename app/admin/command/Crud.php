@@ -1314,12 +1314,19 @@ class Crud extends Command
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'stringToArrayMethod', [
                 'field' => $fieldName
             ]);
+            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'arrayToStringMethod', [
+                'field' => $fieldName
+            ]);
+        } else if (in_array($inputType, ['remoteSelect'])) {
+            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'defaultEmptyStringMethod', [
+                'field' => $fieldName
+            ]);
         } else if ($inputType == 'array') {
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'getArray', [
                 'field' => $fieldName
             ]);
         } else if (in_array($inputType, ['editor', 'textarea'])) {
-            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'getEditor', [
+            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'defaultEmptyStringMethod', [
                 'field' => $fieldName
             ]);
         } else if ($inputType == 'time') {

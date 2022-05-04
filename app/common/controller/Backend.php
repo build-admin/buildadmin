@@ -147,7 +147,16 @@ class Backend extends Api
                 $order = [(string)$order[0] => $order[1]];
             }
         } else {
-            $order = [$pk => 'desc'];
+            if (is_array($this->defaultSortField)) {
+                $order = $this->defaultSortField;
+            } else {
+                $order = explode(',', $this->defaultSortField);
+                if (isset($order[0]) && isset($order[1])) {
+                    $order = [$order[0] => $order[1]];
+                } else {
+                    $order = [$pk => 'desc'];
+                }
+            }
         }
 
         // 通用搜索组装

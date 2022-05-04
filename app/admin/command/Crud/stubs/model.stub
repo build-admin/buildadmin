@@ -18,6 +18,6 @@ class {%modelName%} extends Model
 
     protected $createTime = {%createTime%};
     protected $updateTime = {%updateTime%};
-
+{%modeAfterInsert%}
 {%modelMethodList%}
 }

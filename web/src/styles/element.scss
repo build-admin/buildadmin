@@ -1,8 +1,5 @@
 /* 修复 Chrome 浏览器输入框内选中字符行高异常的bug-s */
-.el-input--large .el-input__inner {
-    line-height: 38px;
-}
-.el-input--default .el-input__inner {
+.el-input .el-input__inner {
     line-height: 30px;
 }
 /* 修复 Chrome 浏览器输入框内选中字符行高异常的bug-e */

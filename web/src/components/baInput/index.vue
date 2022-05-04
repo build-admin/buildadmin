@@ -445,6 +445,9 @@ export default defineComponent({
                     watch(
                         () => props.modelValue,
                         (newVal) => {
+                            if (newVal === undefined) {
+                                return
+                            }
                             let newValArr = stringToArray(newVal as string)
                             if (newValArr.sort().toString() != (getFullUrls('array') as string[]).sort().toString()) {
                                 init(newVal as string)
@@ -665,6 +668,9 @@ export default defineComponent({
                     watch(
                         () => props.modelValue,
                         (newVal) => {
+                            if (newVal === undefined) {
+                                return
+                            }
                             let newValArr = stringToArray(newVal as string)
                             if (newValArr.sort().toString() != (getFullUrls('array') as string[]).sort().toString()) {
                                 init(newVal as string)
