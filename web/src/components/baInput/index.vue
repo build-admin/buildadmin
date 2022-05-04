@@ -119,6 +119,7 @@ export default defineComponent({
                     {
                         class: 'w100',
                         multiple: props.type == 'select' ? false : true,
+                        clearable: true,
                         ...props.attr,
                         modelValue: props.modelValue,
                         'onUpdate:modelValue': onValueUpdate,

@@ -1,7 +1,7 @@
 
     public function get{%field%}Attr($value, $row)
     {
-        if (!$value) {
+        if ($value == '') {
             return [];
         }
         if (!is_array($value)) {

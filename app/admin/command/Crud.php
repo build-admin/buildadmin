@@ -739,6 +739,8 @@ class Crud extends Command
                         $formFieldList[$field][':input-attr']['placement'] = 'top';
                     } else if ($inputType == 'array') {
                         $modelFieldType[$field] = 'json';
+                    } else if ($inputType == 'datetime' && $column['DATA_TYPE'] == 'int') {
+                        $modelFieldType[$field] = 'timestamp:Y-m-d H:i:s';
                     }
 
                     // 模型的属性修改器获取器
@@ -1306,11 +1308,7 @@ class Crud extends Command
     protected function getModelAttrMethod(&$modelSetAttrArr, $field, $inputType, $column)
     {
         $fieldName = ucfirst($this->getCamelizeName($field));
-        if ($inputType == 'datetime' && $column['DATA_TYPE'] == 'int') {
-            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setIntDateTime', [
-                'field' => $fieldName
-            ]);
-        } else if ($inputType == 'switch') {
+        if ($inputType == 'switch') {
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setSwitch', [
                 'field' => $fieldName
             ]);
@@ -1335,6 +1333,10 @@ class Crud extends Command
             ]);
         } else if ($inputType == 'time') {
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setTime', [
+                'field' => $fieldName
+            ]);
+        } else if ($inputType == 'year') {
+            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'getYear', [
                 'field' => $fieldName
             ]);
         }
