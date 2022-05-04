@@ -1310,6 +1310,22 @@ class Crud extends Command
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setSwitch', [
                 'field' => $fieldName
             ]);
+        } else if (in_array($inputType, ['checkbox', 'selects', 'remoteSelects'])) {
+            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'stringToArrayMethod', [
+                'field' => $fieldName
+            ]);
+        } else if ($inputType == 'array') {
+            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'getArray', [
+                'field' => $fieldName
+            ]);
+        } else if (in_array($inputType, ['editor', 'textarea'])) {
+            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'getEditor', [
+                'field' => $fieldName
+            ]);
+        } else if ($inputType == 'time') {
+            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setTime', [
+                'field' => $fieldName
+            ]);
         }
     }
 
