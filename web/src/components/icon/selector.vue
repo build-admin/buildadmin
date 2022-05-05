@@ -185,7 +185,8 @@ watch(
     () => props.modelValue,
     () => {
         state.iconKey++
-        if (props.modelValue != state.prependIcon && props.modelValue != '') state.defaultModelValue = props.modelValue
+        if (props.modelValue != state.prependIcon) state.defaultModelValue = props.modelValue
+        if (props.modelValue == '') state.defaultModelValue = 'el-icon-Minus'
         state.prependIcon = props.modelValue
     }
 )

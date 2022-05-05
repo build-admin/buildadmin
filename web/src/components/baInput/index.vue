@@ -454,7 +454,7 @@ export default defineComponent({
                         () => props.modelValue,
                         (newVal) => {
                             if (newVal === undefined) {
-                                return
+                                return init('')
                             }
                             let newValArr = stringToArray(newVal as string)
                             if (newValArr.sort().toString() != (getFullUrls('array') as string[]).sort().toString()) {
@@ -677,7 +677,7 @@ export default defineComponent({
                         () => props.modelValue,
                         (newVal) => {
                             if (newVal === undefined) {
-                                return
+                                return init('')
                             }
                             let newValArr = stringToArray(newVal as string)
                             if (newValArr.sort().toString() != (getFullUrls('array') as string[]).sort().toString()) {

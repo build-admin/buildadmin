@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 
 type baInputArray = { key: string; value: string }
 interface Props {
@@ -57,6 +57,10 @@ const onAddArrayItem = () => {
 const onDelArrayItem = (idx: number) => {
     state.value.splice(idx, 1)
 }
+
+watch(() => props.modelValue, (newVal) => {
+    state.value = newVal
+})
 </script>
 
 <style scoped lang="scss">

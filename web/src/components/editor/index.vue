@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
-import { onBeforeUnmount, reactive, shallowRef, onMounted, CSSProperties, computed } from 'vue'
+import { onBeforeUnmount, reactive, shallowRef, onMounted, CSSProperties, computed, watch } from 'vue'
 import { IEditorConfig, IToolbarConfig, i18nChangeLanguage } from '@wangeditor/editor'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { useConfig } from '/@/stores/config'
@@ -104,6 +104,10 @@ const getRef = () => {
 
 defineExpose({
     getRef,
+})
+
+watch(() => props.modelValue, (newVal) => {
+    state.value = newVal
 })
 </script>
 
