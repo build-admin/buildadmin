@@ -657,9 +657,10 @@ class Crud extends Command
             $importControllerUrls  = [];// 要引入的控制器url列表
             $importPackages        = '';
             $formItemRules         = [];// 字段验证规则
-            $formDialogBig         = false;
+            $formDialogBig         = false;// 存在富文本编辑器则加宽表单dialog
             $modelSetAttrArr       = [];
             $modelFieldType        = [];
+            $enableDragSort        = in_array('weigh', $fieldArr);
             $controllerData        = [
                 'controllerNamespace' => $controllerNamespace,
                 'controllerName'      => $controllerName,
@@ -751,8 +752,8 @@ class Crud extends Command
                     } elseif ($inputType == 'datetime' && $column['DATA_TYPE'] == 'int') {
                         $modelFieldType[$field] = 'timestamp:Y-m-d H:i:s';
                     } elseif ($inputType == 'editor') {
-                        $formFieldList[$field]['@keyup.enter.stop']   = '';
-                        $formFieldList[$field]['@keyup.ctrl.enter']   = 'baTable.onSubmit(formRef)';
+                        $formFieldList[$field]['@keyup.enter.stop'] = '';
+                        $formFieldList[$field]['@keyup.ctrl.enter'] = 'baTable.onSubmit(formRef)';
 
                         $formDialogBig = true; // form 使用较宽的 Dialog
                         // 重写edit方法
@@ -826,7 +827,7 @@ class Crud extends Command
             $tableColumnList[] = [
                 'label'    => "t('operate')",
                 'align'    => 'center',
-                'width'    => 100,
+                'width'    => $enableDragSort ? 140 : 100,
                 'render'   => 'buttons',
                 'buttons'  => 'optButtons',
                 'operator' => 'false',
@@ -841,8 +842,8 @@ class Crud extends Command
             // 不允许双击编辑的字段
             Stub::buildDblClickNotEditColumn($dblClickNotEditColumn);
 
-            // 检测是否存在weigh字段,开启拖拽排序
-            if (in_array('weigh', $fieldArr)) {
+            // 开启拖拽排序
+            if ($enableDragSort) {
                 array_unshift($optButtons, 'weigh-sort');
             }
             $optButtons = json_encode($optButtons);
