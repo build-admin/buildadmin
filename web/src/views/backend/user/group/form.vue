@@ -12,41 +12,42 @@
                 {{ baTable.form.operate ? t(baTable.form.operate) : '' }}
             </div>
         </template>
-        <div
-            v-loading="baTable.form.loading"
-            class="ba-operate-form"
-            :class="'ba-' + baTable.form.operate + '-form'"
-            :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
-        >
-            <el-form
-                ref="formRef"
-                @keyup.enter="baTable.onSubmit(formRef)"
-                :model="baTable.form.items"
-                label-position="right"
-                :label-width="baTable.form.labelWidth + 'px'"
-                :rules="rules"
+        <el-scrollbar v-loading="baTable.form.loading" max-height="60vh">
+            <div
+                class="ba-operate-form"
+                :class="'ba-' + baTable.form.operate + '-form'"
+                :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
             >
-                <el-form-item prop="name" label="分组名称">
-                    <el-input v-model="baTable.form.items!.name" type="string" placeholder="请输入分组名称"></el-input>
-                </el-form-item>
-                <el-form-item prop="auth" label="权限">
-                    <el-tree
-                        ref="treeRef"
-                        :key="state.treeKey"
-                        :default-checked-keys="state.defaultCheckedKeys"
-                        :default-expand-all="true"
-                        show-checkbox
-                        node-key="id"
-                        :props="{ children: 'children', label: 'title' }"
-                        :data="state.menuRules"
-                    />
-                </el-form-item>
-                <el-form-item label="状态">
-                    <el-radio v-model="baTable.form.items!.status" label="0" :border="true">禁用</el-radio>
-                    <el-radio v-model="baTable.form.items!.status" label="1" :border="true">启用</el-radio>
-                </el-form-item>
-            </el-form>
-        </div>
+                <el-form
+                    ref="formRef"
+                    @keyup.enter="baTable.onSubmit(formRef)"
+                    :model="baTable.form.items"
+                    label-position="right"
+                    :label-width="baTable.form.labelWidth + 'px'"
+                    :rules="rules"
+                >
+                    <el-form-item prop="name" label="分组名称">
+                        <el-input v-model="baTable.form.items!.name" type="string" placeholder="请输入分组名称"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="auth" label="权限">
+                        <el-tree
+                            ref="treeRef"
+                            :key="state.treeKey"
+                            :default-checked-keys="state.defaultCheckedKeys"
+                            :default-expand-all="true"
+                            show-checkbox
+                            node-key="id"
+                            :props="{ children: 'children', label: 'title' }"
+                            :data="state.menuRules"
+                        />
+                    </el-form-item>
+                    <el-form-item label="状态">
+                        <el-radio v-model="baTable.form.items!.status" label="0" :border="true">禁用</el-radio>
+                        <el-radio v-model="baTable.form.items!.status" label="1" :border="true">启用</el-radio>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
                 <el-button @click="baTable.toggleForm('')">取消</el-button>
@@ -63,7 +64,7 @@ import { reactive, ref, watch, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import { getUserRules } from '/@/api/backend/user/group'
-import type { ElForm, ElTree,FormItemRule } from 'element-plus'
+import type { ElForm, ElTree, FormItemRule } from 'element-plus'
 import { uuid } from '/@/utils/random'
 
 interface MenuRules {

@@ -79,20 +79,25 @@ body,
 /* 新增/编辑表单-s */
 .ba-operate-dialog {
     min-width: 400px;
-    max-width: 700px;
+    overflow: hidden;
 }
 .ba-operate-dialog .el-dialog__header {
     padding-bottom: 16px;
     border-bottom: 1px solid var(--color-bg-1);
 }
 .ba-operate-dialog .el-dialog__body {
-    padding-bottom: 60px;
+    padding-top: 0;
+    padding-bottom: 52px;
 }
 .ba-operate-dialog .el-dialog__footer {
-    padding-top: 0;
+    padding: 10px var(--el-dialog-padding-primary);
+    box-shadow: var(--el-box-shadow);
     position: absolute;
     width: 100%;
     bottom: 0px;
+}
+.ba-operate-form {
+    padding-top: 30px;
 }
 /* 新增/编辑表单-e */
 

@@ -11,59 +11,61 @@
                 {{ baTable.form.operate ? t(baTable.form.operate) : '' }}
             </div>
         </template>
-        <div
-            class="ba-operate-form"
-            :class="'ba-' + baTable.form.operate + '-form'"
-            :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
-        >
-            <el-form
-                ref="formRef"
-                @keyup.enter="baTable.onSubmit(formRef)"
-                :model="baTable.form.items"
-                label-position="right"
-                :label-width="baTable.form.labelWidth + 'px'"
-                :rules="rules"
-                v-if="!baTable.form.loading"
+        <el-scrollbar max-height="60vh">
+            <div
+                class="ba-operate-form"
+                :class="'ba-' + baTable.form.operate + '-form'"
+                :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
             >
-                <FormItem
-                    type="remoteSelect"
-                    prop="user_id"
-                    label="会员ID"
-                    v-model="baTable.form.items!.user_id"
-                    placeholder="点击选择"
-                    :input-attr="{
-                        pk: 'user.id',
-                        field: 'nickname_text',
-                        'remote-url': userUser + 'index',
-                        onChange: getAdd,
-                    }"
-                />
-                <el-form-item label="用户名">
-                    <el-input v-model="state.userInfo.username" disabled></el-input>
-                </el-form-item>
-                <el-form-item label="用户昵称">
-                    <el-input v-model="state.userInfo.nickname" disabled></el-input>
-                </el-form-item>
-                <el-form-item label="当前余额">
-                    <el-input v-model="state.userInfo.money" disabled type="number"></el-input>
-                </el-form-item>
-                <el-form-item prop="money" label="变动数额">
-                    <el-input @input="changeMoney" v-model="baTable.form.items!.money" type="number" placeholder="请输入余额变更数额"></el-input>
-                </el-form-item>
-                <el-form-item label="变更后余额">
-                    <el-input v-model="state.after" type="number" disabled></el-input>
-                </el-form-item>
-                <el-form-item prop="memo" label="备注">
-                    <el-input
-                        @keyup.enter.stop=""
-                        @keyup.ctrl.enter="baTable.onSubmit(formRef)"
-                        v-model="baTable.form.items!.memo"
-                        type="textarea"
-                        placeholder="请输入变更备注/说明"
-                    ></el-input>
-                </el-form-item>
-            </el-form>
-        </div>
+                <el-form
+                    ref="formRef"
+                    @keyup.enter="baTable.onSubmit(formRef)"
+                    :model="baTable.form.items"
+                    label-position="right"
+                    :label-width="baTable.form.labelWidth + 'px'"
+                    :rules="rules"
+                    v-if="!baTable.form.loading"
+                >
+                    <FormItem
+                        type="remoteSelect"
+                        prop="user_id"
+                        label="会员ID"
+                        v-model="baTable.form.items!.user_id"
+                        placeholder="点击选择"
+                        :input-attr="{
+                            pk: 'user.id',
+                            field: 'nickname_text',
+                            'remote-url': userUser + 'index',
+                            onChange: getAdd,
+                        }"
+                    />
+                    <el-form-item label="用户名">
+                        <el-input v-model="state.userInfo.username" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="用户昵称">
+                        <el-input v-model="state.userInfo.nickname" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="当前余额">
+                        <el-input v-model="state.userInfo.money" disabled type="number"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="money" label="变动数额">
+                        <el-input @input="changeMoney" v-model="baTable.form.items!.money" type="number" placeholder="请输入余额变更数额"></el-input>
+                    </el-form-item>
+                    <el-form-item label="变更后余额">
+                        <el-input v-model="state.after" type="number" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item prop="memo" label="备注">
+                        <el-input
+                            @keyup.enter.stop=""
+                            @keyup.ctrl.enter="baTable.onSubmit(formRef)"
+                            v-model="baTable.form.items!.memo"
+                            type="textarea"
+                            placeholder="请输入变更备注/说明"
+                        ></el-input>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
                 <el-button @click="baTable.toggleForm('')">取消</el-button>

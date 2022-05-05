@@ -2,7 +2,6 @@
     <!-- 对话框表单 -->
     <el-dialog
         custom-class="ba-operate-dialog"
-        top="5vh"
         :close-on-click-modal="false"
         :model-value="baTable.form.operate ? true : false"
         @close="baTable.toggleForm"
@@ -12,54 +11,55 @@
                 {{ baTable.form.operate ? t(baTable.form.operate) : '' }}
             </div>
         </template>
-        <div
-            v-loading="baTable.form.loading"
-            class="ba-operate-form"
-            :class="'ba-' + baTable.form.operate + '-form'"
-            :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
-        >
-            <el-form
-                ref="formRef"
-                @keyup.enter="baTable.onSubmit(formRef)"
-                :model="baTable.form.items"
-                label-position="right"
-                :label-width="baTable.form.labelWidth + 'px'"
-                :rules="rules"
-                v-if="!baTable.form.loading"
+        <el-scrollbar v-loading="baTable.form.loading" max-height="60vh">
+            <div
+                class="ba-operate-form"
+                :class="'ba-' + baTable.form.operate + '-form'"
+                :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
             >
-                <FormItem
-                    label="上级分组"
-                    v-model="baTable.form.items!.pid"
-                    type="remoteSelect"
-                    :input-attr="{
-                        params: { isTree: true },
-                        field: 'name',
-                        'remote-url': baTable.api.actionUrl.get('index'),
-                        placeholder: '点击选择',
-                    }"
-                />
-
-                <el-form-item prop="name" label="分组名称">
-                    <el-input v-model="baTable.form.items!.name" type="string" placeholder="请输入分组名称"></el-input>
-                </el-form-item>
-                <el-form-item prop="auth" label="权限">
-                    <el-tree
-                        ref="treeRef"
-                        :key="state.treeKey"
-                        :default-checked-keys="state.defaultCheckedKeys"
-                        :default-expand-all="true"
-                        show-checkbox
-                        node-key="id"
-                        :props="{ children: 'children', label: 'title' }"
-                        :data="state.menuRules"
+                <el-form
+                    ref="formRef"
+                    @keyup.enter="baTable.onSubmit(formRef)"
+                    :model="baTable.form.items"
+                    label-position="right"
+                    :label-width="baTable.form.labelWidth + 'px'"
+                    :rules="rules"
+                    v-if="!baTable.form.loading"
+                >
+                    <FormItem
+                        label="上级分组"
+                        v-model="baTable.form.items!.pid"
+                        type="remoteSelect"
+                        :input-attr="{
+                            params: { isTree: true },
+                            field: 'name',
+                            'remote-url': baTable.api.actionUrl.get('index'),
+                            placeholder: '点击选择',
+                        }"
                     />
-                </el-form-item>
-                <el-form-item label="状态">
-                    <el-radio v-model="baTable.form.items!.status" label="0" :border="true">禁用</el-radio>
-                    <el-radio v-model="baTable.form.items!.status" label="1" :border="true">启用</el-radio>
-                </el-form-item>
-            </el-form>
-        </div>
+
+                    <el-form-item prop="name" label="分组名称">
+                        <el-input v-model="baTable.form.items!.name" type="string" placeholder="请输入分组名称"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="auth" label="权限">
+                        <el-tree
+                            ref="treeRef"
+                            :key="state.treeKey"
+                            :default-checked-keys="state.defaultCheckedKeys"
+                            :default-expand-all="true"
+                            show-checkbox
+                            node-key="id"
+                            :props="{ children: 'children', label: 'title' }"
+                            :data="state.menuRules"
+                        />
+                    </el-form-item>
+                    <el-form-item label="状态">
+                        <el-radio v-model="baTable.form.items!.status" label="0" :border="true">禁用</el-radio>
+                        <el-radio v-model="baTable.form.items!.status" label="1" :border="true">启用</el-radio>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
                 <el-button @click="baTable.toggleForm('')">取消</el-button>

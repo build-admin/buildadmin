@@ -8,47 +8,49 @@
         <template #title>
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">查看详情</div>
         </template>
-        <div v-loading="baTable.form.loading" class="ba-operate-form" :class="'ba-' + baTable.form.operate + '-form'">
-            <el-descriptions v-if="!_.isEmpty(baTable.form.extend!.info)" :column="2" border>
-                <el-descriptions-item label="ID">
-                    {{baTable.form.extend!.info.id}}
-                </el-descriptions-item>
-                <el-descriptions-item label="操作管理员">
-                    {{baTable.form.extend!.info.admin?.nickname + '('+baTable.form.extend!.info.admin?.username+')'}}
-                </el-descriptions-item>
-                <el-descriptions-item label="规则名称">
-                    {{baTable.form.extend!.info.sensitive?.name}}
-                </el-descriptions-item>
-                <el-descriptions-item label="数据表">
-                    {{baTable.form.extend!.info.data_table}}
-                </el-descriptions-item>
-                <el-descriptions-item label="修改时间">
-                    {{timeFormat(baTable.form.extend!.info.createtime)}}
-                </el-descriptions-item>
-                <el-descriptions-item label="操作者IP">
-                    {{baTable.form.extend!.info.ip}}
-                </el-descriptions-item>
-                <el-descriptions-item label="数据表主键">
-                    {{baTable.form.extend!.info.primary_key + '=' + baTable.form.extend!.info.id_value}}
-                </el-descriptions-item>
-                <el-descriptions-item label="被修改项">
-                    {{baTable.form.extend!.info.data_field + (baTable.form.extend!.info.data_comment ? '('+baTable.form.extend!.info.data_comment+')':'')}}
-                </el-descriptions-item>
-                <el-descriptions-item label="修改前" label-class-name="color-red">
-                    {{baTable.form.extend!.info.before}}
-                </el-descriptions-item>
-                <el-descriptions-item label="修改后" label-class-name="color-red">
-                    {{baTable.form.extend!.info.after}}
-                </el-descriptions-item>
-                <el-descriptions-item :width="120" :span="2" label="User Agent">
-                    {{baTable.form.extend!.info.useragent}}
-                </el-descriptions-item>
-            </el-descriptions>
-            <div class="diff-box">
-                <div class="diff-box-title">修改对比</div>
-                <code-diff diffStyle="char" :old-string="baTable.form.extend!.info.before" :new-string="baTable.form.extend!.info.after" />
+        <el-scrollbar v-loading="baTable.form.loading" max-height="60vh">
+            <div class="ba-operate-form" :class="'ba-' + baTable.form.operate + '-form'">
+                <el-descriptions v-if="!_.isEmpty(baTable.form.extend!.info)" :column="2" border>
+                    <el-descriptions-item label="ID">
+                        {{baTable.form.extend!.info.id}}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="操作管理员">
+                        {{baTable.form.extend!.info.admin?.nickname + '('+baTable.form.extend!.info.admin?.username+')'}}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="规则名称">
+                        {{baTable.form.extend!.info.sensitive?.name}}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="数据表">
+                        {{baTable.form.extend!.info.data_table}}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="修改时间">
+                        {{timeFormat(baTable.form.extend!.info.createtime)}}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="操作者IP">
+                        {{baTable.form.extend!.info.ip}}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="数据表主键">
+                        {{baTable.form.extend!.info.primary_key + '=' + baTable.form.extend!.info.id_value}}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="被修改项">
+                        {{baTable.form.extend!.info.data_field + (baTable.form.extend!.info.data_comment ? '('+baTable.form.extend!.info.data_comment+')':'')}}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="修改前" label-class-name="color-red">
+                        {{baTable.form.extend!.info.before}}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="修改后" label-class-name="color-red">
+                        {{baTable.form.extend!.info.after}}
+                    </el-descriptions-item>
+                    <el-descriptions-item :width="120" :span="2" label="User Agent">
+                        {{baTable.form.extend!.info.useragent}}
+                    </el-descriptions-item>
+                </el-descriptions>
+                <div class="diff-box">
+                    <div class="diff-box-title">修改对比</div>
+                    <code-diff diffStyle="char" :old-string="baTable.form.extend!.info.before" :new-string="baTable.form.extend!.info.after" />
+                </div>
             </div>
-        </div>
+        </el-scrollbar>
         <template #footer>
             <el-button v-blur @click="onRollback(baTable.form.extend!.info.id)" type="success">
                 <Icon size="16" color="#ffffff" name="fa fa-sign-in" />

@@ -889,7 +889,7 @@ class Crud extends Command
             if ($importControllerUrls) {
                 $importPackages .= "import { " . implode(',', array_keys($importControllerUrls)) . " } from '/@/api/controllerUrls'\n";
             }
-            $formDialogBig = $formDialogBig ? "\n\t\twidth='80%'" : '';
+            $formDialogBig = $formDialogBig ? "\n\t\twidth='50%'" : '';
             $formVue       = $this->stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'form', [
                 'formItem'       => $formFieldList,
                 'importPackages' => $importPackages,

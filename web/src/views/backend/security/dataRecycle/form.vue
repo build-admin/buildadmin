@@ -11,54 +11,55 @@
                 {{ baTable.form.operate ? t(baTable.form.operate) : '' }}
             </div>
         </template>
-        <div
-            v-loading="baTable.form.loading"
-            class="ba-operate-form"
-            :class="'ba-' + baTable.form.operate + '-form'"
-            :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
-        >
-            <el-form
-                v-if="!baTable.form.loading"
-                ref="formRef"
-                @keyup.enter="baTable.onSubmit(formRef)"
-                :model="baTable.form.items"
-                label-position="right"
-                :label-width="baTable.form.labelWidth + 'px'"
-                :rules="rules"
+        <el-scrollbar v-loading="baTable.form.loading" max-height="60vh">
+            <div
+                class="ba-operate-form"
+                :class="'ba-' + baTable.form.operate + '-form'"
+                :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
             >
-                <FormItem
-                    label="规则名称"
-                    type="string"
-                    v-model="baTable.form.items!.name"
-                    prop="name"
-                    placeholder="规则名称有助于后续识别被删数据"
-                />
-                <FormItem
-                    label="控制器"
-                    type="select"
-                    v-model="baTable.form.items!.controller"
-                    prop="controller"
-                    :data="{ content: formData.controllerList }"
-                    placeholder="数据回收机制将监控此控制器下的删除操作"
-                />
-                <FormItem
-                    label="对应数据表"
-                    type="select"
-                    v-model="baTable.form.items!.data_table"
-                    prop="data_table"
-                    :data="{ content: formData.tableList }"
-                    :input-attr="{ onChange: onTableChange }"
-                />
-                <FormItem label="数据表主键" type="string" v-model="baTable.form.items!.primary_key" prop="primary_key" />
-                <FormItem
-                    label="状态"
-                    type="radio"
-                    v-model="baTable.form.items!.status"
-                    prop="status"
-                    :data="{ content: { '0': '禁用', '1': '启用' } }"
-                />
-            </el-form>
-        </div>
+                <el-form
+                    v-if="!baTable.form.loading"
+                    ref="formRef"
+                    @keyup.enter="baTable.onSubmit(formRef)"
+                    :model="baTable.form.items"
+                    label-position="right"
+                    :label-width="baTable.form.labelWidth + 'px'"
+                    :rules="rules"
+                >
+                    <FormItem
+                        label="规则名称"
+                        type="string"
+                        v-model="baTable.form.items!.name"
+                        prop="name"
+                        placeholder="规则名称有助于后续识别被删数据"
+                    />
+                    <FormItem
+                        label="控制器"
+                        type="select"
+                        v-model="baTable.form.items!.controller"
+                        prop="controller"
+                        :data="{ content: formData.controllerList }"
+                        placeholder="数据回收机制将监控此控制器下的删除操作"
+                    />
+                    <FormItem
+                        label="对应数据表"
+                        type="select"
+                        v-model="baTable.form.items!.data_table"
+                        prop="data_table"
+                        :data="{ content: formData.tableList }"
+                        :input-attr="{ onChange: onTableChange }"
+                    />
+                    <FormItem label="数据表主键" type="string" v-model="baTable.form.items!.primary_key" prop="primary_key" />
+                    <FormItem
+                        label="状态"
+                        type="radio"
+                        v-model="baTable.form.items!.status"
+                        prop="status"
+                        :data="{ content: { '0': '禁用', '1': '启用' } }"
+                    />
+                </el-form>
+            </div>
+        </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
                 <el-button @click="baTable.toggleForm('')">取消</el-button>

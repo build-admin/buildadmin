@@ -11,76 +11,77 @@
                 {{ baTable.form.operate ? t(baTable.form.operate) : '' }}
             </div>
         </template>
-        <div
-            v-loading="baTable.form.loading"
-            class="ba-operate-form"
-            :class="'ba-' + baTable.form.operate + '-form'"
-            :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
-        >
-            <el-form
-                v-if="!baTable.form.loading"
-                ref="formRef"
-                @keyup.enter="baTable.onSubmit(formRef)"
-                :model="baTable.form.items"
-                label-position="right"
-                :label-width="baTable.form.labelWidth + 'px'"
-                :rules="rules"
+        <el-scrollbar v-loading="baTable.form.loading" max-height="60vh">
+            <div
+                class="ba-operate-form"
+                :class="'ba-' + baTable.form.operate + '-form'"
+                :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
             >
-                <FormItem
-                    label="规则名称"
-                    type="string"
-                    v-model="baTable.form.items!.name"
-                    prop="name"
-                    placeholder="规则名称有助于后续识别被删数据"
-                />
-                <FormItem
-                    label="控制器"
-                    type="select"
-                    v-model="baTable.form.items!.controller"
-                    prop="controller"
-                    :data="{ content: baTable.form.extend!.controllerList }"
-                    placeholder="数据监听机制将监控此控制器下的修改操作"
-                />
-                <FormItem
-                    label="对应数据表"
-                    type="select"
-                    v-model="baTable.form.items!.data_table"
-                    prop="data_table"
-                    :data="{ content: baTable.form.extend!.tableList }"
-                    :input-attr="{ onChange: baTable.onTableChange }"
-                />
-                <FormItem label="数据表主键" type="string" v-model="baTable.form.items!.primary_key" prop="primary_key" />
-                <hr class="form-hr" />
+                <el-form
+                    v-if="!baTable.form.loading"
+                    ref="formRef"
+                    @keyup.enter="baTable.onSubmit(formRef)"
+                    :model="baTable.form.items"
+                    label-position="right"
+                    :label-width="baTable.form.labelWidth + 'px'"
+                    :rules="rules"
+                >
+                    <FormItem
+                        label="规则名称"
+                        type="string"
+                        v-model="baTable.form.items!.name"
+                        prop="name"
+                        placeholder="规则名称有助于后续识别被删数据"
+                    />
+                    <FormItem
+                        label="控制器"
+                        type="select"
+                        v-model="baTable.form.items!.controller"
+                        prop="controller"
+                        :data="{ content: baTable.form.extend!.controllerList }"
+                        placeholder="数据监听机制将监控此控制器下的修改操作"
+                    />
+                    <FormItem
+                        label="对应数据表"
+                        type="select"
+                        v-model="baTable.form.items!.data_table"
+                        prop="data_table"
+                        :data="{ content: baTable.form.extend!.tableList }"
+                        :input-attr="{ onChange: baTable.onTableChange }"
+                    />
+                    <FormItem label="数据表主键" type="string" v-model="baTable.form.items!.primary_key" prop="primary_key" />
+                    <hr class="form-hr" />
 
-                <FormItem
-                    label="敏感字段"
-                    type="selects"
-                    v-model="baTable.form.items!.data_fields"
-                    :key="baTable.form.extend!.fieldSelectKey"
-                    prop="data_fields"
-                    :data="{ content: baTable.form.extend!.fieldSelect }"
-                    :input-attr="{ onChange: onFieldChange }"
-                    v-loading="baTable.form.extend!.fieldLoading"
-                />
+                    <FormItem
+                        label="敏感字段"
+                        type="selects"
+                        v-model="baTable.form.items!.data_fields"
+                        :key="baTable.form.extend!.fieldSelectKey"
+                        prop="data_fields"
+                        :data="{ content: baTable.form.extend!.fieldSelect }"
+                        :input-attr="{ onChange: onFieldChange }"
+                        v-loading="baTable.form.extend!.fieldLoading"
+                    />
 
-                <FormItem
-                    v-for="item in state.dataFields"
-                    :label="item.name"
-                    type="string"
-                    v-model="item.value"
-                    placeholder="填写字段注释有助于后续快速识别字段"
-                />
+                    <FormItem
+                        v-for="item in state.dataFields"
+                        :label="item.name"
+                        type="string"
+                        v-model="item.value"
+                        placeholder="填写字段注释有助于后续快速识别字段"
+                    />
 
-                <hr class="form-hr" />
-                <FormItem
-                    label="状态"
-                    type="radio"
-                    v-model="baTable.form.items!.status"
-                    prop="status"
-                    :data="{ content: { '0': '禁用', '1': '启用' } }"
-                />
-            </el-form>
-        </div>
+                    <hr class="form-hr" />
+                    <FormItem
+                        label="状态"
+                        type="radio"
+                        v-model="baTable.form.items!.status"
+                        prop="status"
+                        :data="{ content: { '0': '禁用', '1': '启用' } }"
+                    />
+                </el-form>
+            </div>
+        </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
                 <el-button @click="baTable.toggleForm('')">取消</el-button>
@@ -97,7 +98,7 @@ import { reactive, ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { sensitiveDataClass, DataFields } from './index'
 import FormItem from '/@/components/formItem/index.vue'
-import type { ElForm,FormItemRule } from 'element-plus'
+import type { ElForm, FormItemRule } from 'element-plus'
 import { buildValidatorData } from '/@/utils/validate'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
