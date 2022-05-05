@@ -725,6 +725,8 @@ class Crud extends Command
                         ];
                     } elseif ($inputType == 'textarea') {
                         $formFieldList[$field][':input-attr']['rows'] = 3;
+                        $formFieldList[$field]['@keyup.enter.stop']   = '';
+                        $formFieldList[$field]['@keyup.ctrl.enter']   = 'baTable.onSubmit(formRef)';
                     } elseif ($inputType == 'remoteSelect' || $inputType == 'remoteSelects') {
                         $formFieldList[$field][':input-attr']['field']      = $this->getRemoteSelectField($field);
                         $remoteUrl                                          = $this->getRemoteSelectUrl($field, $relations, $webControllerUrls);
@@ -749,8 +751,10 @@ class Crud extends Command
                     } elseif ($inputType == 'datetime' && $column['DATA_TYPE'] == 'int') {
                         $modelFieldType[$field] = 'timestamp:Y-m-d H:i:s';
                     } elseif ($inputType == 'editor') {
-                        $formDialogBig = true; // form 使用较宽的 Dialog
+                        $formFieldList[$field]['@keyup.enter.stop']   = '';
+                        $formFieldList[$field]['@keyup.ctrl.enter']   = 'baTable.onSubmit(formRef)';
 
+                        $formDialogBig = true; // form 使用较宽的 Dialog
                         // 重写edit方法
                         $controllerData['methods']['edit'] = $this->stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'controllerEditor', []);
                     }
