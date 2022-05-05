@@ -705,7 +705,7 @@ class Crud extends Command
                 if ($column['COLUMN_KEY'] != 'PRI' && !in_array($field, $this->reservedField) && !in_array($field, $this->ignoreFields)) {
                     // 输入框默认值
                     if ($column['COLUMN_DEFAULT'] || ($column['COLUMN_DEFAULT'] === '0' && $inputType != 'remoteSelect' && $inputType != 'remoteSelects')) {
-                        if (in_array($inputType, ['checkbox', 'selects', 'remoteSelects'])) {
+                        if (in_array($inputType, ['checkbox', 'selects', 'remoteSelects', 'city'])) {
                             $column['COLUMN_DEFAULT'] = explode(',', $column['COLUMN_DEFAULT']);
                         }
                         $inputDefaultItems[$field] = $column['COLUMN_DEFAULT'];
@@ -889,7 +889,7 @@ class Crud extends Command
             if ($importControllerUrls) {
                 $importPackages .= "import { " . implode(',', array_keys($importControllerUrls)) . " } from '/@/api/controllerUrls'\n";
             }
-            $formDialogBig = $formDialogBig ? "\n\t\twidth='70%'" : '';
+            $formDialogBig = $formDialogBig ? "\n\t\twidth='80%'" : '';
             $formVue       = $this->stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'form', [
                 'formItem'       => $formFieldList,
                 'importPackages' => $importPackages,
@@ -1314,7 +1314,7 @@ class Crud extends Command
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setSwitch', [
                 'field' => $fieldName
             ]);
-        } elseif (in_array($inputType, ['checkbox', 'selects', 'remoteSelects'])) {
+        } elseif (in_array($inputType, ['checkbox', 'selects', 'remoteSelects', 'city'])) {
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'stringToArrayMethod', [
                 'field' => $fieldName
             ]);

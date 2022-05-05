@@ -289,7 +289,14 @@ export default defineComponent({
                                     lastLazyValue.key = key
                                     lastLazyValue.value = props.modelValue
                                     lastLazyValue.currentRequest = getArea(pathValues).then((res) => {
+                                        let toStr = false
+                                        if (props.modelValue && typeof (props.modelValue as anyObj)[0] === 'string') {
+                                            toStr = true
+                                        }
                                         for (const key in res.data) {
+                                            if (toStr) {
+                                                res.data[key].value = res.data[key].value.toString()
+                                            }
                                             res.data[key].leaf = level >= maxLevel
                                             nodes.push(res.data[key])
                                         }

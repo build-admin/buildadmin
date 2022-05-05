@@ -15,7 +15,11 @@
                 <el-button @click="onDelArrayItem(idx)" size="small" icon="el-icon-Delete" circle />
             </el-col>
         </el-row>
-        <el-button v-blur class="ba-add-array-item" @click="onAddArrayItem" icon="el-icon-Plus">添加</el-button>
+        <el-row :gutter="10">
+            <el-col :span="10" :offset="10">
+                <el-button v-blur class="ba-add-array-item" @click="onAddArrayItem" icon="el-icon-Plus">添加</el-button>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
@@ -69,6 +73,5 @@ const onDelArrayItem = (idx: number) => {
 }
 .ba-add-array-item {
     float: right;
-    margin-right: 6px;
 }
 </style>
