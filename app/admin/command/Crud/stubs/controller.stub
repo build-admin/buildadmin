@@ -21,6 +21,5 @@ class {%controllerName%} extends Backend
         parent::initialize();
         $this->model = new \{%modelNamespace%}\{%modelName%};
     }
-
-{%indexMethod%}
+{%methods%}
 }

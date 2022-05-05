@@ -660,6 +660,13 @@ class Crud extends Command
             $formDialogBig         = false;
             $modelSetAttrArr       = [];
             $modelFieldType        = [];
+            $controllerData        = [
+                'controllerNamespace' => $controllerNamespace,
+                'controllerName'      => $controllerName,
+                'modelName'           => $modelName,
+                'modelNamespace'      => $modelNamespace,
+                'methods'             => [],
+            ];
 
             // 表格列数据
             $tableColumnList = [
@@ -741,6 +748,11 @@ class Crud extends Command
                         $modelFieldType[$field] = 'json';
                     } else if ($inputType == 'datetime' && $column['DATA_TYPE'] == 'int') {
                         $modelFieldType[$field] = 'timestamp:Y-m-d H:i:s';
+                    } else if ($inputType == 'editor') {
+                        $formDialogBig = true; // form 使用较宽的 Dialog
+
+                        // 重写edit方法
+                        $controllerData['methods']['edit'] = $this->stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'controllerEditor', []);
                     }
 
                     // 模型的属性修改器获取器
@@ -768,11 +780,6 @@ class Crud extends Command
                 // 表格列
                 if (!$fields || in_array($field, $fields)) {
                     $tableColumnList[] = $this->getTableColumn($field, $inputType, $column['DATA_TYPE'], $columnData);
-                }
-
-                // form 使用较宽的 Dialog
-                if ($inputType == 'editor') {
-                    $formDialogBig = true;
                 }
             }
 
@@ -897,7 +904,7 @@ class Crud extends Command
             // 表注释
             $tableComment = mb_substr($modelTableInfo['Comment'], -1) == '表' ? mb_substr($modelTableInfo['Comment'], 0, -1) . '管理' : $modelTableInfo['Comment'];
 
-            $modelData      = [
+            $modelData                      = [
                 'modelNamespace'          => $modelNamespace,
                 'modelName'               => $modelName,
                 'fullBaseName'            => $fullBaseName,
@@ -908,13 +915,7 @@ class Crud extends Command
                 'createTime'              => in_array($this->createTimeField, $fieldArr) ? "'{$this->createTimeField}'" : 'false',
                 'updateTime'              => in_array($this->updateTimeField, $fieldArr) ? "'{$this->updateTimeField}'" : 'false',
             ];
-            $controllerData = [
-                'controllerNamespace' => $controllerNamespace,
-                'tableComment'        => $tableComment,
-                'controllerName'      => $controllerName,
-                'modelName'           => $modelName,
-                'modelNamespace'      => $modelNamespace,
-            ];
+            $controllerData['tableComment'] = $tableComment;
 
             if ($priKey != $defaultOrder[0]) {
                 $modelData['modeAfterInsert'] = $this->stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'modeAfterInsert', [
@@ -955,7 +956,7 @@ class Crud extends Command
 
                 // 需要重写index方法
                 if ($controllerData['relationVisibleFieldList']) {
-                    $controllerData['indexMethod'] = $this->stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'controllerIndex', $controllerData);
+                    $controllerData['methods']['index'] = $this->stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'controllerIndex', $controllerData);
                 }
             }
 
@@ -979,6 +980,7 @@ class Crud extends Command
                 }
             }
             $controllerData['controllerAttr'] = $controllerAttr;
+            $controllerData['methods']        = implode("\n", $controllerData['methods']);
             $controllerContent                = $this->stub->getReplacedStub('controller', $controllerData);
 
             // 生成控制器文件
@@ -1312,27 +1314,31 @@ class Crud extends Command
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setSwitch', [
                 'field' => $fieldName
             ]);
-        } else if (in_array($inputType, ['checkbox', 'selects', 'remoteSelects'])) {
+        } elseif (in_array($inputType, ['checkbox', 'selects', 'remoteSelects'])) {
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'stringToArrayMethod', [
                 'field' => $fieldName
             ]);
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'arrayToStringMethod', [
                 'field' => $fieldName
             ]);
-        } else if ($inputType == 'array') {
+        } elseif ($inputType == 'array') {
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'getArray', [
                 'field' => $fieldName
             ]);
-        } else if (in_array($inputType, ['editor', 'textarea', 'remoteSelect'])) {
+        } elseif (in_array($inputType, ['textarea', 'remoteSelect'])) {
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'defaultEmptyStringMethod', [
                 'field' => $fieldName
             ]);
-        } else if ($inputType == 'time') {
+        } elseif ($inputType == 'time') {
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setTime', [
                 'field' => $fieldName
             ]);
-        } else if ($inputType == 'year') {
+        } elseif ($inputType == 'year') {
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'getYear', [
+                'field' => $fieldName
+            ]);
+        } elseif ($inputType == 'editor') {
+            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'getEditor', [
                 'field' => $fieldName
             ]);
         }
