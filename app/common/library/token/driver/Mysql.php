@@ -66,7 +66,7 @@ class Mysql extends Driver
                 //返回剩余有效时间
                 $data['expires_in'] = $this->getExpiredIn($data['expiretime']);
                 return $data;
-            } else if ($data['type'] == 'admin-refresh' || $data['type'] == 'user-refresh') {
+            } elseif ($data['type'] == 'admin-refresh' || $data['type'] == 'user-refresh') {
                 return $data;
             } else {
                 // token过期-触发前端刷新token

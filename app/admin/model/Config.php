@@ -49,7 +49,7 @@ class Config extends Model
         if (in_array($row['type'], $this->jsonDecodeType)) {
             $arr = json_decode($value, true);
             return $arr ? $arr : [];
-        } else if ($row['type'] == 'switch') {
+        } elseif ($row['type'] == 'switch') {
             return (bool)$value;
         } else {
             return $value ? $value : '';
@@ -60,7 +60,7 @@ class Config extends Model
     {
         if (in_array($row['type'], $this->jsonDecodeType)) {
             return $value ? json_encode($value) : '';
-        } else if ($row['type'] == 'switch') {
+        } elseif ($row['type'] == 'switch') {
             return $value ? '1' : '0';
         }
 

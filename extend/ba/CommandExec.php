@@ -145,7 +145,7 @@ class CommandExec
             if (strpos(strtolower($output), 'all packages installed') !== false) {
                 $this->output($this->CurrentCommandKey . '-success', false);
             }
-        } else if ($this->CurrentCommandKey == 'install-cnpm') {
+        } elseif ($this->CurrentCommandKey == 'install-cnpm') {
             $preg  = "/added ([0-9]*) packages in/i";
             $preg2 = "/added ([0-9]*) packages, removed/i";
             if (preg_match($preg, $output)) {
@@ -154,7 +154,7 @@ class CommandExec
             if (preg_match($preg2, $output)) {
                 $this->output('install-cnpm-success', false);
             }
-        } else if ($this->CurrentCommandKey == 'web-build') {
+        } elseif ($this->CurrentCommandKey == 'web-build') {
             if (strpos(strtolower($output), 'build successfully!') !== false) {
                 $this->output($this->CurrentCommandKey . '-success', false);
             }

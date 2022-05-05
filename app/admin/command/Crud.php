@@ -723,9 +723,9 @@ class Crud extends Command
                         $formFieldList[$field][':data'] = [
                             'content' => $columnData,
                         ];
-                    } else if ($inputType == 'textarea') {
+                    } elseif ($inputType == 'textarea') {
                         $formFieldList[$field][':input-attr']['rows'] = 3;
-                    } else if ($inputType == 'remoteSelect' || $inputType == 'remoteSelects') {
+                    } elseif ($inputType == 'remoteSelect' || $inputType == 'remoteSelects') {
                         $formFieldList[$field][':input-attr']['field']      = $this->getRemoteSelectField($field);
                         $remoteUrl                                          = $this->getRemoteSelectUrl($field, $relations, $webControllerUrls);
                         $formFieldList[$field][':input-attr']['remote-url'] = $remoteUrl['url'];
@@ -738,17 +738,17 @@ class Crud extends Command
                             $formFieldList[$field]['type']                    = 'remoteSelect';
                             $formFieldList[$field][':input-attr']['multiple'] = 'true';
                         }
-                    } else if ($inputType == 'number') {
+                    } elseif ($inputType == 'number') {
                         $formFieldList[$field]['v-model.number'] = $formFieldList[$field]['v-model'];
                         unset($formFieldList[$field]['v-model']);
                         $formFieldList[$field][':input-attr']['step'] = $column['NUMERIC_SCALE'] > 0 ? '0.' . str_repeat(0, $column['NUMERIC_SCALE'] - 1) . '1' : 1;
-                    } else if ($inputType == 'icon') {
+                    } elseif ($inputType == 'icon') {
                         $formFieldList[$field][':input-attr']['placement'] = 'top';
-                    } else if ($inputType == 'array') {
+                    } elseif ($inputType == 'array') {
                         $modelFieldType[$field] = 'json';
-                    } else if ($inputType == 'datetime' && $column['DATA_TYPE'] == 'int') {
+                    } elseif ($inputType == 'datetime' && $column['DATA_TYPE'] == 'int') {
                         $modelFieldType[$field] = 'timestamp:Y-m-d H:i:s';
-                    } else if ($inputType == 'editor') {
+                    } elseif ($inputType == 'editor') {
                         $formDialogBig = true; // form 使用较宽的 Dialog
 
                         // 重写edit方法
@@ -1035,7 +1035,7 @@ class Crud extends Command
             foreach ($value as $item) {
                 if (stripos($item, ',') !== false) {
                     $valueTmp = array_merge($valueTmp, explode(',', $item));
-                } else if (stripos($item, '，') !== false) {
+                } elseif (stripos($item, '，') !== false) {
                     $valueTmp = array_merge($valueTmp, explode('，', $item));
                 } else {
                     $valueTmp[] = $item;

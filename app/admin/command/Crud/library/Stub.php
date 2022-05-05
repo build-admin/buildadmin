@@ -124,7 +124,7 @@ class Stub
         } else {
             if ($item === 'false') {
                 $itemJson = ' ' . $key . ': false,';
-            } else if (in_array($key, ['label', 'width', 'buttons']) || strpos($item, "t('") === 0 || strpos($item, "t(\"") === 0) {
+            } elseif (in_array($key, ['label', 'width', 'buttons']) || strpos($item, "t('") === 0 || strpos($item, "t(\"") === 0) {
                 $itemJson = ' ' . $key . ': ' . $item . ',';
             } else {
                 $itemJson = ' ' . $key . ': \'' . $item . '\',';
@@ -188,11 +188,11 @@ class Stub
                 $keyStr = strpos($key, "-") === false ? ' ' . $key . ': ' : ' \'' . $key . '\': ';
                 if (is_array($item)) {
                     $jsonStr .= $keyStr . self::getJsonFromArray($item) . ',';
-                } else if ($item === 'false' || $item === 'true') {
+                } elseif ($item === 'false' || $item === 'true') {
                     $jsonStr .= $keyStr . ($item === 'false' ? 'false' : 'true') . ',';
-                } else if (strpos($item, "t('") === 0 || strpos($item, "t(\"") === 0) {
+                } elseif (strpos($item, "t('") === 0 || strpos($item, "t(\"") === 0) {
                     $jsonStr .= $keyStr . $item . ',';
-                } else if (($key == 'remote-url' && strpos($item, "+") !== false) || $key == 'rows') {
+                } elseif (($key == 'remote-url' && strpos($item, "+") !== false) || $key == 'rows') {
                     $jsonStr .= $keyStr . $item . ',';
                 } else {
                     $jsonStr .= $keyStr . '\'' . $item . '\',';
