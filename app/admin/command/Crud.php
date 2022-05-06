@@ -207,6 +207,7 @@ class Crud extends Command
         [
             'name' => ['weigh'],
             'attr' => [
+                'sortable' => 'custom',
                 'operator' => 'false',
             ],
         ],

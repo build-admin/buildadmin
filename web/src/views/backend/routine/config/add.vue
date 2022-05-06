@@ -3,7 +3,7 @@
         <template #title>
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">增加配置项</div>
         </template>
-        <el-scrollbar max-height="60vh">
+        <el-scrollbar class="ba-table-form-scrollbar">
             <div class="ba-operate-form ba-add-form" :style="'width: calc(100% - ' + state.labelWidth / 2 + 'px)'">
                 <el-form
                     ref="formRef"

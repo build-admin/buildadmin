@@ -11,7 +11,7 @@
                 {{ baTable.form.operate ? t(baTable.form.operate) : '' }}
             </div>
         </template>
-        <el-scrollbar v-loading="baTable.form.loading" max-height="60vh">
+        <el-scrollbar v-loading="baTable.form.loading" class="ba-table-form-scrollbar">
             <div
                 class="ba-operate-form"
                 :class="'ba-' + baTable.form.operate + '-form'"

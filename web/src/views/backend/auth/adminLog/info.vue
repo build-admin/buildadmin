@@ -9,7 +9,7 @@
         <template #title>
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">查看详情</div>
         </template>
-        <el-scrollbar v-loading="baTable.form.loading" max-height="60vh">
+        <el-scrollbar v-loading="baTable.form.loading" class="ba-table-form-scrollbar">
             <div class="ba-operate-form" :class="'ba-' + baTable.form.operate + '-form'">
                 <el-descriptions :column="2" border>
                     <el-descriptions-item label="ID">
