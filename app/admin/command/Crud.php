@@ -203,6 +203,13 @@ class Crud extends Command
                 'operator' => 'RANGE',
             ],
         ],
+        // 字段名称为 ['weigh'] 则关闭字段筛选
+        [
+            'name' => ['weigh'],
+            'attr' => [
+                'operator' => 'false',
+            ],
+        ],
         // 输入框被判定为 ['number'] 则通用搜索中使用范围筛选
         [
             'type' => ['number'],
@@ -756,8 +763,9 @@ class Crud extends Command
                         $formFieldList[$field]['@keyup.ctrl.enter'] = 'baTable.onSubmit(formRef)';
 
                         $formDialogBig = true; // form 使用较宽的 Dialog
-                        // 重写edit方法
-                        $controllerData['methods']['edit'] = $this->stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'controllerEditor', []);
+                        // 重写edit和add方法
+                        $controllerData['methods']['add']  = $this->stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'controllerEditorAddMethod', []);
+                        $controllerData['methods']['edit'] = $this->stub->getReplacedStub('mixins' . DIRECTORY_SEPARATOR . 'controllerEditorEditMethod', []);
                     }
 
                     // 模型的属性修改器获取器
@@ -772,7 +780,11 @@ class Crud extends Command
 
                     // 字段验证规则
                     if ($column['IS_NULLABLE'] == 'NO' && !in_array($inputType, ['switch', 'icon'])) {
-                        $formItemRules[$field][] = "buildValidatorData('required', t('" . $this->langPrefix . $field . "'))";
+                        if ($inputType == 'editor') {
+                            $formItemRules[$field][] = "buildValidatorData('editorRequired', t('" . $this->langPrefix . $field . "'))";
+                        } else {
+                            $formItemRules[$field][] = "buildValidatorData('required', t('" . $this->langPrefix . $field . "'))";
+                        }
                     }
                     if ($field == 'mobile') {
                         $formItemRules[$field][] = "buildValidatorData('mobile', '', 'blur', t('Please enter the correct field', { field: t('" . $this->langPrefix . $field . "') }))";
@@ -955,7 +967,6 @@ class Crud extends Command
                     }
                 }
 
-                $modelData['modelMethodList']               = implode("\n", array_merge($modelSetAttrArr, $relationMethodList));
                 $controllerData['relationVisibleFieldList'] = implode("\n\t\t", $relationVisibleFieldList);
                 $controllerAttrList['withJoinTable']        = $relationWithList;
 
@@ -992,8 +1003,10 @@ class Crud extends Command
             Stub::writeToFile($controllerFile, $controllerContent);
 
             // 生成模型文件
-            $modelData['modelFieldType'] = Stub::buildModelFieldType($modelFieldType);
-            $modelContent                = $this->stub->getReplacedStub('model', $modelData);
+            $modelMethodList              = array_merge($modelSetAttrArr, $relationMethodList ?? []);
+            $modelData['modelMethodList'] = $modelMethodList ? implode("\n", $modelMethodList) : '';
+            $modelData['modelFieldType']  = Stub::buildModelFieldType($modelFieldType);
+            $modelContent                 = $this->stub->getReplacedStub('model', $modelData);
             Stub::writeToFile($modelFile, $modelContent);
 
             // 生成关联模型文件

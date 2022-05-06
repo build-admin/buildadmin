@@ -1,7 +1,6 @@
 import type { RuleType } from 'async-validator'
 import { FormItemRule } from 'element-plus'
 
-
 /**
  * 手机号码验证
  * 用于表单验证
@@ -60,6 +59,13 @@ export function validatorVarName(rule: any, val: string, callback: Function) {
     return callback()
 }
 
+export function validatorEditorRequired(rule: any, val: string, callback: Function) {
+    if (!val || val == '<p><br></p>') {
+        return callback(new Error('内容不能为空'))
+    }
+    return callback()
+}
+
 /**
  * 构建表单验证规则
  * @var ruleName 规则名:required=必填,mobile=手机号,account=账户,password=密码,varName=变量名,number、integer、float、date、url、email
@@ -106,6 +112,7 @@ export function buildValidatorData(ruleName: string, title: string, trigger: str
         account: validatorAccount,
         password: validatorPassword,
         varName: validatorVarName,
+        editorRequired: validatorEditorRequired,
     }
     if (validatorCustomFun[ruleName]) {
         return {
