@@ -14,13 +14,21 @@
 
     <!-- image -->
     <div v-if="field.render == 'image'" class="ba-render-image">
-        <el-image :preview-teleported="true" :preview-src-list="[fieldValue]" :src="fieldValue"></el-image>
+        <el-image v-if="fieldValue" :preview-teleported="true" :preview-src-list="[fieldValue]" :src="fieldValue"></el-image>
     </div>
 
     <!-- images -->
     <div v-if="field.render == 'images'" class="ba-render-image">
-        <img class="images-item" src="~assets/bg.jpg" />
-        <img class="images-item" src="~assets/bg.jpg" />
+        <template v-if="Array.isArray(fieldValue) && fieldValue.length">
+            <el-image
+                v-for="(item, idx) in fieldValue"
+                :initial-index="idx"
+                :preview-teleported="true"
+                :preview-src-list="fieldValue"
+                class="images-item"
+                :src="item"
+            ></el-image>
+        </template>
     </div>
 
     <!-- tag -->
@@ -34,12 +42,12 @@
     <div v-if="field.render == 'tags'">
         <template v-if="Array.isArray(fieldValue)">
             <template v-for="tag in fieldValue">
-                <el-tag v-if="tag" class="m-10" size="small" effect="light">{{ field.replaceValue ? (field.replaceValue[tag] ?? tag) : tag }}</el-tag>
+                <el-tag v-if="tag" class="m-10" size="small" effect="light">{{ field.replaceValue ? field.replaceValue[tag] ?? tag : tag }}</el-tag>
             </template>
         </template>
         <template v-else>
             <el-tag class="m-10" v-if="fieldValue" size="small" effect="light">{{
-                field.replaceValue ? (field.replaceValue[fieldValue] ?? fieldValue) : fieldValue
+                field.replaceValue ? field.replaceValue[fieldValue] ?? fieldValue : fieldValue
             }}</el-tag>
         </template>
     </div>

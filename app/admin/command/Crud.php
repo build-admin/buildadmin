@@ -1319,7 +1319,7 @@ class Crud extends Command
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setSwitch', [
                 'field' => $fieldName
             ]);
-        } elseif (in_array($inputType, ['checkbox', 'selects', 'remoteSelects', 'city'])) {
+        } elseif (in_array($inputType, ['checkbox', 'selects', 'remoteSelects', 'city', 'images'])) {
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'stringToArrayMethod', [
                 'field' => $fieldName
             ]);
