@@ -756,7 +756,8 @@ class Crud extends Command
                     } elseif ($inputType == 'icon') {
                         $formFieldList[$field][':input-attr']['placement'] = 'top';
                     } elseif ($inputType == 'array') {
-                        $modelFieldType[$field] = 'json';
+                        $modelFieldType[$field]    = 'json';
+                        $inputDefaultItems[$field] = [];
                     } elseif ($inputType == 'datetime' && $column['DATA_TYPE'] == 'int') {
                         $modelFieldType[$field] = 'timestamp:Y-m-d H:i:s';
                     } elseif ($inputType == 'editor') {
@@ -886,7 +887,7 @@ class Crud extends Command
             $appendUrl                 = "export const {$fullBaseName} = '{$controllerUrl}'";
             $webControllerUrlsContents = @file_get_contents($webControllerUrls);
             if (strpos($webControllerUrlsContents, $appendUrl) === false) {
-                @file_put_contents($webControllerUrls, $appendUrl, FILE_APPEND);
+                @file_put_contents($webControllerUrls, $appendUrl . "\n", FILE_APPEND);
             }
 
             // 组装index.vue
@@ -1334,7 +1335,7 @@ class Crud extends Command
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setSwitch', [
                 'field' => $fieldName
             ]);
-        } elseif (in_array($inputType, ['checkbox', 'selects', 'remoteSelects', 'city', 'images'])) {
+        } elseif (in_array($inputType, ['checkbox', 'selects', 'remoteSelects', 'city', 'images', 'files'])) {
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'stringToArrayMethod', [
                 'field' => $fieldName
             ]);
