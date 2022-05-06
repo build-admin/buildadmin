@@ -897,7 +897,7 @@ class Crud extends Command
                 'tableColumnList'       => $tableColumnList,
                 'dblClickNotEditColumn' => $dblClickNotEditColumn,
                 'optButtons'            => $optButtons,
-                'inputDefaultItems'     => $inputDefaultItems,
+                'inputDefaultItems'     => $inputDefaultItems ? $inputDefaultItems : '',
                 'defaultOrderStub'      => $defaultOrderStub,
                 'langPrefix'            => $this->langPrefix,
             ]);
@@ -909,9 +909,9 @@ class Crud extends Command
             }
             $formDialogBig = $formDialogBig ? "\n\t\twidth='50%'" : '';
             $formVue       = $this->stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'form', [
-                'formItem'       => $formFieldList,
+                'formItem'       => $formFieldList ? $formFieldList : '',
                 'importPackages' => $importPackages,
-                'formItemRules'  => $formItemRules,
+                'formItemRules'  => $formItemRules ? $formItemRules : '',
                 'formDialogBig'  => $formDialogBig,
             ]);
             Stub::writeToFile($formFile, $formVue);
@@ -932,6 +932,7 @@ class Crud extends Command
                 'modelAutoWriteTimestamp' => in_array($this->createTimeField, $fieldArr) || in_array($this->updateTimeField, $fieldArr) ? "'int'" : 'false',
                 'createTime'              => in_array($this->createTimeField, $fieldArr) ? "'{$this->createTimeField}'" : 'false',
                 'updateTime'              => in_array($this->updateTimeField, $fieldArr) ? "'{$this->updateTimeField}'" : 'false',
+                'modeAfterInsert'         => '',
             ];
             $controllerData['tableComment'] = $tableComment;
 
@@ -968,7 +969,7 @@ class Crud extends Command
                     }
                 }
 
-                $controllerData['relationVisibleFieldList'] = implode("\n\t\t", $relationVisibleFieldList);
+                $controllerData['relationVisibleFieldList'] = $relationVisibleFieldList ? implode("\n\t\t", $relationVisibleFieldList) : '';
                 $controllerAttrList['withJoinTable']        = $relationWithList;
 
                 // 需要重写index方法
@@ -997,7 +998,7 @@ class Crud extends Command
                 }
             }
             $controllerData['controllerAttr'] = $controllerAttr;
-            $controllerData['methods']        = implode("\n", $controllerData['methods']);
+            $controllerData['methods']        = (isset($controllerData['methods']) && $controllerData['methods']) ? implode("\n", $controllerData['methods']) : '';
             $controllerContent                = $this->stub->getReplacedStub('controller', $controllerData);
 
             // 生成控制器文件

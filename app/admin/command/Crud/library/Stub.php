@@ -247,7 +247,7 @@ class Stub
         if (isset($langList['en']) && $langList['en']) {
             $enLangTs = '';
             foreach ($langList['en'] as $key => $item) {
-                $enLangTs .= '        "' . $key . '": "' . $item . "\",\n";
+                $enLangTs .= "\t" . '"' . $key . '": "' . $item . "\",\n";
             }
             $enLangTs = "export default {\n" . $enLangTs . "}";
             self::writeToFile($webLangEnFile, $enLangTs);
@@ -256,7 +256,7 @@ class Stub
         if (isset($langList['zh-cn']) && $langList['zh-cn']) {
             $zhCnLangTs = '';
             foreach ($langList['zh-cn'] as $key => $item) {
-                $zhCnLangTs .= '        "' . $key . '": "' . $item . "\",\n";
+                $zhCnLangTs .= "\t" . '"' . $key . '": "' . $item . "\",\n";
             }
             $zhCnLangTs = "export default {\n" . $zhCnLangTs . "}";
             self::writeToFile($webLangZhCnFile, $zhCnLangTs);
