@@ -113,7 +113,7 @@ if (!function_exists('get_route_remark')) {
             ->where('name', $path)
             ->whereOr('name', $path . '/' . $actionname)
             ->value('remark');
-        return __($remark);
+        return __((string)$remark);
     }
 }
 
