@@ -30,11 +30,6 @@ class Index extends Backend
         ]);
     }
 
-    public function test()
-    {
-
-    }
-
     public function login()
     {
         // 检查登录态

@@ -31,7 +31,7 @@ class Common extends Api
         $refreshToken = Token::get($refreshToken);
 
         if (!$refreshToken || $refreshToken['expiretime'] < time()) {
-            $this->error(__('Invalid token'));
+            $this->error(__('Login expired, please login again.'));
         }
 
         $newToken = Random::uuid();
