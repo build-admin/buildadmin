@@ -24,4 +24,7 @@ export default {
     'Please select field': '请选择{field}',
     'Please input field': '请输入{field}',
     'Please enter the correct field': '请输入正确的{field}',
+    Terminal: '终端',
+    'Command run log': '命令运行日志',
+    'Retry': '重试',
 }

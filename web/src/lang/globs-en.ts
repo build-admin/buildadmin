@@ -24,4 +24,7 @@ export default {
     'Please select field': 'Please select{field}',
     'Please input field': 'Please input{field}',
     'Please enter the correct field': 'Please enter the correct {field}',
+    Terminal: 'Terminal',
+    'Command run log': 'Command run log',
+    'Retry': 'Retry',
 }

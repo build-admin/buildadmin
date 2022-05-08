@@ -53,3 +53,17 @@ export interface AdminInfo {
     token: string
     refreshToken: string
 }
+
+export interface TaskItem {
+    createtime: string
+    status: number
+    command: string
+    message: string[]
+    showMessage: boolean
+}
+
+export interface Terminal {
+    show: boolean
+    showDot: boolean
+    taskList: TaskItem[]
+}
