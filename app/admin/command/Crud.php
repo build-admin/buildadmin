@@ -8,10 +8,11 @@ use think\facade\Lang;
 use think\console\Input;
 use think\console\Output;
 use think\console\Command;
-use think\console\input\Option;
 use think\facade\Config;
-use think\exception\ErrorException;
+use app\common\library\Menu;
 use app\admin\model\MenuRule;
+use think\console\input\Option;
+use think\exception\ErrorException;
 use app\admin\command\Crud\library\Stub;
 
 class Crud extends Command
@@ -329,6 +330,18 @@ class Crud extends Command
      */
     protected $updateTimeField = 'updatetime';
 
+    /**
+     * 子级菜单数组(权限节点)
+     * @var string
+     */
+    protected $menuChildren = [
+        ['type' => 'button', 'title' => '查看', 'name' => '/index', 'status' => '1'],
+        ['type' => 'button', 'title' => '添加', 'name' => '/add', 'status' => '1'],
+        ['type' => 'button', 'title' => '编辑', 'name' => '/edit', 'status' => '1'],
+        ['type' => 'button', 'title' => '删除', 'name' => '/del', 'status' => '1'],
+        ['type' => 'button', 'title' => '快速排序', 'name' => '/sortable', 'status' => '1'],
+    ];
+
     protected $langPrefix = '';
 
     protected $stub = null;
@@ -549,7 +562,7 @@ class Crud extends Command
             }
 
             // 删除菜单
-            $this->delMenuRule(MenuRule::where('name', $originControllerUrl)->value('id'));
+            Menu::delete($originControllerUrl, true);
 
             $output->info('Delete Successed');
 
@@ -1049,12 +1062,11 @@ class Crud extends Command
                         continue;
                     }
                     $menu = [
-                        'pid'       => $pid,
-                        'type'      => 'menu_dir',
-                        'title'     => $item,
-                        'name'      => $item,
-                        'path'      => $item,
-                        'menu_type' => 'tab',
+                        'pid'   => $pid,
+                        'type'  => 'menu_dir',
+                        'title' => $item,
+                        'name'  => $item,
+                        'path'  => $item,
                     ];
                     $menu = MenuRule::create($menu);
                     $pid  = $menu->id;
@@ -1062,18 +1074,22 @@ class Crud extends Command
             }
 
             // 建立菜单
+            foreach ($this->menuChildren as &$item) {
+                $item['name'] = $originControllerUrl . $item['name'];
+            }
             $componentPath = '/' . str_replace($webPath, '', $indexFile);
             $componentPath = str_replace('\\', '/', $componentPath);
-            $menu          = [
-                'pid'       => $pid,
-                'type'      => 'menu',
-                'title'     => $tableComment,
-                'name'      => $originControllerUrl,
-                'path'      => $originControllerUrl,
-                'menu_type' => 'tab',
-                'component' => $componentPath,
-            ];
-            MenuRule::create($menu);
+            Menu::create([
+                [
+                    'type'      => 'menu',
+                    'title'     => $tableComment,
+                    'name'      => $originControllerUrl,
+                    'path'      => $originControllerUrl,
+                    'menu_type' => 'tab',
+                    'component' => $componentPath,
+                    'children'  => $this->menuChildren,
+                ]
+            ], $pid);
         }
         $output->info('Build Successed');
     }
@@ -1459,20 +1475,6 @@ class Crud extends Command
             return $result[$valIdx];
         }
         return false;
-    }
-
-    protected function delMenuRule($pid)
-    {
-        if (!$pid) {
-            return true;
-        }
-        $p = MenuRule::where('pid', $pid)->find();
-        if (!$p) {
-            $delRule = MenuRule::where('id', $pid)->find();
-            $delRule->delete();
-            $this->delMenuRule($delRule->pid);
-        }
-        return true;
     }
 
     /**

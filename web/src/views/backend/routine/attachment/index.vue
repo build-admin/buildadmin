@@ -52,7 +52,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             sortable: 'custom',
             operatorPlaceholder: 'bytes',
         },
-        { label: '类型', prop: 'mimetype', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+        { label: '类型', prop: 'mimetype', align: 'center', operator: 'LIKE', "show-overflow-tooltip": true, operatorPlaceholder: '模糊查询' },
         {
             label: '预览',
             prop: 'suffix',
