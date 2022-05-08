@@ -14,7 +14,7 @@
             trigger="click"
             :hide-on-click="true"
         >
-            <div class="nav-menu-item" :class="state.currentNavMenu == 'lang' ? 'hover' : ''">
+            <div class="nav-menu-item pt2" :class="state.currentNavMenu == 'lang' ? 'hover' : ''">
                 <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" name="local-lang" size="18" />
             </div>
             <template #dropdown>
@@ -28,6 +28,11 @@
         <div @click="onFullScreen" class="nav-menu-item" :class="state.isFullScreen ? 'hover' : ''">
             <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" v-if="state.isFullScreen" name="local-full-screen-cancel" size="18" />
             <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" v-else name="el-icon-FullScreen" size="18" />
+        </div>
+        <div @click="terminal.toggle()" class="nav-menu-item pt2">
+            <el-badge :is-dot="terminal.state.showDot">
+                <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" name="local-terminal" size="26" />
+            </el-badge>
         </div>
         <el-popover
             @show="onCurrentNavMenu(true, 'adminInfo')"
@@ -66,6 +71,7 @@
             <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" name="fa fa-cogs" size="18" />
         </div>
         <Config />
+        <TerminalVue v-if="terminal.state.show" />
     </div>
 </template>
 
@@ -78,16 +84,19 @@ import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import Config from './config.vue'
 import { useAdminInfo } from '/@/stores/adminInfo'
+import { useTerminal } from '/@/stores/terminal'
 import { Local } from '/@/utils/storage'
 import { ADMIN_INFO } from '/@/stores/constant/cacheKey'
 import router from '/@/router'
 import { routePush } from '/@/utils/router'
 import { logout } from '/@/api/backend/index'
+import TerminalVue from '/@/components/terminal/index.vue'
 
 const { t } = useI18n()
 
 const adminInfo = useAdminInfo()
 const configStore = useConfig()
+const terminal = useTerminal()
 
 const state = reactive({
     isFullScreen: false,
@@ -136,6 +145,7 @@ const onLogout = () => {
     height: 100%;
     margin-left: auto;
     background-color: v-bind('layoutConfig.headerBarBackground');
+    overflow: hidden;
     .nav-menu-item {
         height: 100%;
         width: 40px;
@@ -195,6 +205,9 @@ const onLogout = () => {
     display: flex;
     justify-content: space-around;
     background: var(--color-bg-2);
+}
+.pt2 {
+    padding-top: 2px;
 }
 
 @keyframes twinkle {

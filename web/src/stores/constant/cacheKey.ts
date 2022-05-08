@@ -2,5 +2,6 @@
 export const ADMIN_INFO = 'adminInfo'
 export const STORE_CONFIG = 'storeConfig'
 export const STORE_TAB_VIEW_CONFIG = 'storeTabViewConfig'
+export const STORE_TERMINAL = 'storeTerminal'
 export const WORKING_TIME = 'workingTime'
 export const BEFORE_RESIZE_LAYOUT = 'beforeResizeLayout'
