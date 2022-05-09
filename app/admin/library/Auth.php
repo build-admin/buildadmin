@@ -138,7 +138,7 @@ class Auth extends \ba\Auth
     public function setRefreshToken($keeptime = 0)
     {
         $this->refreshToken = Random::uuid();
-        Token::set($this->refreshToken, 'admin-refresh', $this->model->id, $this->keeptime);
+        Token::set($this->refreshToken, 'admin-refresh', $this->model->id, $keeptime);
     }
 
     /**
