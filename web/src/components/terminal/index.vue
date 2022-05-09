@@ -1,6 +1,6 @@
 <template>
-    <el-dialog v-model="terminal.state.show" :title="t('Terminal')" width="42%">
-        <el-timeline>
+    <el-dialog v-model="terminal.state.show" :title="t('terminal.Terminal')" width="42%">
+        <el-timeline v-if="terminal.state.taskList.length">
             <el-timeline-item
                 v-for="(item, idx) in terminal.state.taskList"
                 class="task-item"
@@ -13,73 +13,108 @@
                 <el-card>
                     <div>
                         <el-tag :type="(getTaskStatus(item.status)['statusType'] as '')">{{ getTaskStatus(item.status)['statusText'] }}</el-tag>
+                        <el-tag
+                            class="block-on-failure-tag"
+                            v-if="(item.status == taskStatus.Failed || item.status == taskStatus.Unknown) && item.blockOnFailure"
+                            type="warning"
+                            >{{ t('terminal.Failure to execute this command will block the execution of the queue') }}</el-tag
+                        >
                         <span class="command">{{ item.command }}</span>
                         <div class="task-opt">
                             <el-button
                                 :title="t('Retry')"
-                                v-if="item.status == 4 || item.status == 5"
+                                v-if="item.status == taskStatus.Failed || item.status == taskStatus.Unknown"
                                 size="small"
                                 v-blur
                                 type="warning"
                                 icon="el-icon-RefreshRight"
                                 circle
+                                @click="terminal.retryTask(idx)"
                             />
-                            <el-button @click="terminal.delTask(idx)" :title="t('delete')" size="small" v-blur type="danger" icon="el-icon-Delete" circle />
+                            <el-button
+                                @click="terminal.delTask(idx)"
+                                :title="t('delete')"
+                                size="small"
+                                v-blur
+                                type="danger"
+                                icon="el-icon-Delete"
+                                circle
+                            />
                         </div>
                     </div>
-                    <template v-if="item.status != 0">
-                        <div v-if="item.status != 1 && item.status != 2" @click="terminal.setTaskShowMessage(idx)" class="toggle-message-display">
-                            <span>{{ t('Command run log') }}</span>
+                    <template v-if="item.status != taskStatus.Waiting">
+                        <div
+                            v-if="item.status != taskStatus.Connecting && item.status != taskStatus.Executing"
+                            @click="terminal.setTaskShowMessage(idx)"
+                            class="toggle-message-display"
+                        >
+                            <span>{{ t('terminal.Command run log') }}</span>
                             <Icon :name="item.showMessage ? 'el-icon-ArrowUp' : 'el-icon-ArrowDown'" size="16" color="#909399" />
                         </div>
-                        <div v-if="item.status == 1 || item.status == 2 || (item.status > 2 && item.showMessage)" class="exec-message">
-                            <el-scrollbar :ref="messageScrollbarRefs.set" class="exec-message-scrollbar">
-                                <div v-for="msg in item.message" class="message-item">{{ msg }}</div>
-                            </el-scrollbar>
+                        <div
+                            v-if="
+                                item.status == taskStatus.Connecting ||
+                                item.status == taskStatus.Executing ||
+                                (item.status > taskStatus.Executing && item.showMessage)
+                            "
+                            class="exec-message"
+                            :class="'exec-message-' + item.uuid"
+                        >
+                            <div v-for="msg in item.message" class="message-item">{{ msg }}</div>
                         </div>
                     </template>
                 </el-card>
             </el-timeline-item>
         </el-timeline>
+        <el-empty v-else :image-size="80" :description="t('terminal.No mission yet')" />
+
+        <el-button-group>
+            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('test-install', false)">{{ t('terminal.Test command') }}</el-button>
+            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('web-install')">{{
+                t('terminal.Install dependent packages')
+            }}</el-button>
+            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('web-build')">{{ t('terminal.Republish') }}</el-button>
+            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('npm-v', false)">npm -v</el-button>
+            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('install-cnpm', false)">{{ t('terminal.Install cnpm') }}</el-button>
+            <el-button class="terminal-menu-item" v-blur @click="terminal.clearSuccessTask()">{{ t('terminal.Clean up task list') }}</el-button>
+        </el-button-group>
     </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
 import { useTerminal } from '/@/stores/terminal'
 import { useI18n } from 'vue-i18n'
-import { useTemplateRefsList } from '@vueuse/core'
+import { taskStatus } from './constant'
 
 const { t } = useI18n()
 const terminal = useTerminal()
-const messageScrollbarRefs = useTemplateRefsList()
 
 const getTaskStatus = (status: number) => {
-    let statusText = '未知'
+    let statusText = t('terminal.unknown')
     let statusType = ''
     switch (status) {
-        case 0:
-            statusText = '等待执行'
+        case taskStatus.Waiting:
+            statusText = t('terminal.Waiting for execution')
             statusType = 'info'
             break
-        case 1:
-            statusText = '连接中...'
+        case taskStatus.Connecting:
+            statusText = t('terminal.Connecting')
             statusType = 'warning'
             break
-        case 2:
-            statusText = '执行中...'
+        case taskStatus.Executing:
+            statusText = t('terminal.Executing')
             statusType = 'warning'
             break
-        case 3:
-            statusText = '执行成功'
+        case taskStatus.Success:
+            statusText = t('terminal.Successful execution')
             statusType = 'success'
             break
-        case 4:
-            statusText = '执行失败'
+        case taskStatus.Failed:
+            statusText = t('terminal.Execution failed')
             statusType = 'danger'
             break
-        case 5:
-            statusText = '执行结果未知'
+        case taskStatus.Unknown:
+            statusText = t('terminal.Unknown execution result')
             statusType = 'danger'
             break
     }
@@ -103,8 +138,27 @@ const getTaskStatus = (status: number) => {
     padding: 6px;
     background-color: #424251;
     margin-top: 10px;
-    .exec-message-scrollbar {
-        height: 200px;
+    min-height: 30px;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #c8c9cc;
+        border-radius: 4px;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+    &::-webkit-scrollbar-track {
+        background: #f5f5f5;
+    }
+    &:hover {
+        &::-webkit-scrollbar-thumb:hover {
+            background: #909399;
+        }
     }
 }
 .toggle-message-display {
@@ -127,5 +181,11 @@ const getTaskStatus = (status: number) => {
     .task-opt {
         display: inline;
     }
+}
+.block-on-failure-tag {
+    margin-left: 10px;
+}
+.terminal-menu-item {
+    margin-bottom: 10px;
 }
 </style>

@@ -11,6 +11,7 @@ export const adminUploadUrl = '/index.php/admin/ajax/upload'
 export const adminBuildSuffixSvgUrl = '/index.php/admin/ajax/buildsuffixsvg'
 export const adminAreaUrl = '/index.php/admin/ajax/area'
 export const getTablePkUrl = '/index.php/admin/ajax/getTablePk'
+export const terminalUrl = '/index.php/admin/install/terminal'
 
 // 公共
 export const captchaUrl = '/index.php/api/common/captcha'
@@ -65,6 +66,13 @@ export function getArea(values: number[]) {
         method: 'GET',
         params: params,
     })
+}
+
+/**
+ * 构建命令执行窗口url
+ */
+export function buildTerminalUrl(commandKey: string, outputExtend: string) {
+    return getUrl() + terminalUrl + '?command=' + commandKey + '&extend=' + outputExtend + '&batoken=' + getAdminToken()
 }
 
 /**

@@ -2,7 +2,11 @@
 
 namespace ba;
 
+use think\Response;
 use think\facade\Config;
+use think\facade\Cookie;
+use app\admin\library\Auth;
+use think\exception\HttpResponseException;
 
 /**
  * 命令执行类
@@ -15,22 +19,30 @@ class CommandExec
     protected static $instance;
 
     /**
-     * 连接命令行成功标识
-     * @var string
+     * 结果输出扩展
+     * 每次命令执行有输出时,同时携带扩展数据
      */
-    protected $linkSuccessful = 'link-successful';
+    protected $outputExtend = null;
 
     /**
-     * 命令执行完成标识
-     * @var string
+     * 状态标识
      */
-    protected $commandExecutionCompleted = 'command-execution-completed';
+    protected $flag = [
+        // 连接成功
+        'link-success'   => 'command-link-success',
+        // 执行成功
+        'exec-success'   => 'command-exec-success',
+        // 执行完成 - 执行完成但未成功则为失败
+        'exec-completed' => 'command-exec-completed',
+        // 执行出错 - 不区分命令
+        'exec-error'     => 'command-exec-error',
+    ];
 
     /**
      * 当前执行的命令,$command 的 key
      * @var string
      */
-    protected $CurrentCommandKey = '';
+    protected $currentCommandKey = '';
 
     /**
      * 对可以执行的命令进行限制
@@ -38,46 +50,58 @@ class CommandExec
      */
     protected $command = [];
 
-    public function __construct()
+    public function __construct($authentication)
     {
+        set_time_limit(120);
+        if ($authentication) {
+            $token = request()->server('HTTP_BATOKEN', request()->request('batoken', Cookie::get('batoken') ?: false));
+            $auth  = Auth::instance();
+            $auth->init($token);
+            if (!$auth->isLogin()) {
+                $this->output('Error: Please login first');
+                $this->outputFlag('exec-error');
+                $this->break();
+            }
+        }
         $this->command = Config::get('buildadmin.allowed_commands');
     }
 
     /**
      * 初始化
      */
-    public static function instance()
+    public static function instance($authentication = true)
     {
         if (is_null(self::$instance)) {
-            self::$instance = new static();
+            self::$instance = new static($authentication);
         }
 
         return self::$instance;
     }
 
     /**
+     * 获取命令
      * @param string $key         命令key
      * @param bool   $outputError 是否直接输出错误
      * @return string
      */
-    protected function getCommand($key, $outputError = true): string
+    protected function getCommand(string $key, bool $outputError = true): string
     {
         if (!$key || !array_key_exists($key, $this->command)) {
             if ($outputError) {
                 $this->output('Error: Command not allowed');
-                $this->output($this->commandExecutionCompleted);
+                $this->outputFlag('exec-error');
             }
-            return false;
+            $this->break();
         }
 
-        $this->CurrentCommandKey = $key;
+        $this->currentCommandKey = $key;
         return $this->command[$key];
     }
 
     /**
-     * 命令执行窗口的api
+     * 终端
      */
-    public function popenWindow()
+    public function terminal()
     {
         header('Content-Type: text/event-stream');
         header('Cache-Control: no-cache');
@@ -85,11 +109,11 @@ class CommandExec
         ob_end_flush();
         ob_implicit_flush(1);// 开启绝对刷新
 
-        $command = $this->getCommand(request()->param('command'));
-        if (!$command) return;
+        $this->outputExtend = request()->param('extend');
+        $command            = $this->getCommand(request()->param('command'));
 
-        $this->output($this->linkSuccessful);
-        $this->output('> ' . $command);
+        $this->outputFlag('link-success');
+        $this->output('> ' . $command, false);
         if (ob_get_level() == 0) ob_start();
         $handle = popen($command . ' 2>&1', 'r');
         while (!feof($handle)) {
@@ -97,21 +121,40 @@ class CommandExec
             @ob_flush();// 刷新浏览器缓冲区
         }
         pclose($handle);
-        $this->output($this->commandExecutionCompleted);
+        $this->outputFlag('exec-completed');
     }
 
     /**
      * 输出 EventSource 数据
-     * @param $data
+     * @param string $data
+     * @param bool   $callback
      */
-    public function output($data, $callback = true)
+    public function output(string $data, bool $callback = true)
     {
         $data = $this->filterMark($data);
         $data = str_replace(["\r\n", "\r", "\n"], "", $data);
+        $data = mb_convert_encoding($data, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5');
+        $data = [
+            'data'   => $data,
+            'extend' => $this->outputExtend,
+            'key'    => $this->currentCommandKey,
+        ];
+        $data = json_encode($data, JSON_UNESCAPED_UNICODE);
         if ($data) {
-            echo 'data: ' . mb_convert_encoding($data, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5') . "\n\n";
+            echo 'data: ' . $data . "\n\n";
             if ($callback) $this->outputCallback($data);
         }
+    }
+
+    /**
+     * 输出状态标记
+     * @param string $flag
+     * @param string $command
+     * @param bool   $callback
+     */
+    public function outputFlag(string $flag)
+    {
+        $this->output($this->flag[$flag], false);
     }
 
     public function filterMark($str)
@@ -140,27 +183,28 @@ class CommandExec
      */
     public function outputCallback($output)
     {
-        if ($this->CurrentCommandKey == 'test-install' || $this->CurrentCommandKey == 'web-install') {
-            // 检测命令执行成功还是失败
+        if ($this->currentCommandKey == 'test-install' || $this->currentCommandKey == 'web-install') {
             if (strpos(strtolower($output), 'all packages installed') !== false) {
-                $this->output($this->CurrentCommandKey . '-success', false);
+                $this->outputFlag('exec-success');
             }
-        } elseif ($this->CurrentCommandKey == 'install-cnpm') {
+        } elseif ($this->currentCommandKey == 'install-cnpm') {
             $preg  = "/added ([0-9]*) packages in/i";
             $preg2 = "/added ([0-9]*) packages, removed/i";
-            if (preg_match($preg, $output)) {
-                $this->output('install-cnpm-success', false);
+            $preg3 = "/removed ([0-9]*) packages, and changed ([0-9]*) packages in/i";
+            if (preg_match($preg, $output) || preg_match($preg2, $output) || preg_match($preg3, $output)) {
+                $this->outputFlag('exec-success');
             }
-            if (preg_match($preg2, $output)) {
-                $this->output('install-cnpm-success', false);
-            }
-        } elseif ($this->CurrentCommandKey == 'web-build') {
+        } elseif ($this->currentCommandKey == 'web-build') {
             if (strpos(strtolower($output), 'build successfully!') !== false) {
-                $this->output($this->CurrentCommandKey . '-success', false);
+                $this->outputFlag('exec-success');
+            }
+        } elseif ($this->currentCommandKey == 'npm-v') {
+            $preg = "/([0-9]+)\.([0-9]+)\.([0-9]+)/";
+            if (preg_match($preg, $output)) {
+                $this->outputFlag('exec-success');
             }
         }
     }
-
 
     /**
      * 执行一个命令并以字符串数组的方式返回执行输出
@@ -174,7 +218,6 @@ class CommandExec
             return false;
         }
         $command = $this->getCommand($commandKey, false);
-        if (!$command) return false;
 
         $res    = [];
         $handle = popen($command . ' 2>&1', 'r');
@@ -183,5 +226,10 @@ class CommandExec
         }
         pclose($handle);
         return $res;
+    }
+
+    public function break()
+    {
+        throw new HttpResponseException(Response::create()->contentType('text/event-stream'));
     }
 }

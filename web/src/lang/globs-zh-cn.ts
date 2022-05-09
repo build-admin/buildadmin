@@ -19,12 +19,10 @@ export default {
     Cancel: '取消',
     Save: '保存',
     Upload: '上传',
+    Retry: '重试',
     'Save and edit next item': '保存并编辑下一项',
     'quick Search Placeholder': '通过{fields}模糊搜索',
     'Please select field': '请选择{field}',
     'Please input field': '请输入{field}',
     'Please enter the correct field': '请输入正确的{field}',
-    Terminal: '终端',
-    'Command run log': '命令运行日志',
-    'Retry': '重试',
 }

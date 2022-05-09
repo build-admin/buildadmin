@@ -4,6 +4,7 @@ interface Window {
     unique: number
     tokenRefreshing: boolean
     requests: Function[]
+    eventSource: EventSource
 }
 
 interface InputData {
