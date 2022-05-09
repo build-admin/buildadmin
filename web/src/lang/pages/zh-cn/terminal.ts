@@ -14,5 +14,6 @@ export default {
     'Successful execution': '执行成功',
     'Execution failed': '执行失败',
     'Unknown execution result': '执行结果未知',
+    'Are you sure you want to republish?': '确认要重新发布吗？',
     'Failure to execute this command will block the execution of the queue': '本命令执行失败会阻断队列执行',
 }

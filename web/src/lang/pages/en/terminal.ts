@@ -14,5 +14,6 @@ export default {
     'Successful execution': 'Successful execution',
     'Execution failed': 'Execution failed',
     'Unknown execution result': 'Unknown execution result',
+    'Are you sure you want to republish?': 'Are you sure you want to republish?',
     'Failure to execute this command will block the execution of the queue': 'Failure to execute this command will block the execution of the queue',
 }

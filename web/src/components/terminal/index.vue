@@ -73,7 +73,7 @@
             <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('web-install')">{{
                 t('terminal.Install dependent packages')
             }}</el-button>
-            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('web-build')">{{ t('terminal.Republish') }}</el-button>
+            <el-button class="terminal-menu-item" v-blur @click="webBuild()">{{ t('terminal.Republish') }}</el-button>
             <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('npm-v', false)">npm -v</el-button>
             <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('install-cnpm', false)">{{ t('terminal.Install cnpm') }}</el-button>
             <el-button class="terminal-menu-item" v-blur @click="terminal.clearSuccessTask()">{{ t('terminal.Clean up task list') }}</el-button>
@@ -85,6 +85,7 @@
 import { useTerminal } from '/@/stores/terminal'
 import { useI18n } from 'vue-i18n'
 import { taskStatus } from './constant'
+import { ElMessageBox } from 'element-plus'
 
 const { t } = useI18n()
 const terminal = useTerminal()
@@ -122,6 +123,16 @@ const getTaskStatus = (status: number) => {
         statusText: statusText,
         statusType: statusType,
     }
+}
+
+const webBuild = () => {
+    ElMessageBox.confirm(t('terminal.Are you sure you want to republish?'), t('Reminder'), {
+        confirmButtonText: t('Confirm'),
+        cancelButtonText: t('Cancel'),
+        type: 'warning',
+    }).then(() => {
+        terminal.addTask('web-build')
+    })
 }
 </script>
 

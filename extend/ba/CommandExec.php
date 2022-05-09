@@ -50,6 +50,11 @@ class CommandExec
      */
     protected $command = [];
 
+    /**
+     * 自动构建的前端文件的 outDir（相对于根目录）
+     */
+    protected $distDir = 'dist';
+
     public function __construct($authentication)
     {
         set_time_limit(120);
@@ -196,7 +201,11 @@ class CommandExec
             }
         } elseif ($this->currentCommandKey == 'web-build') {
             if (strpos(strtolower($output), 'build successfully!') !== false) {
-                $this->outputFlag('exec-success');
+                if ($this->mvDist()) {
+                    $this->outputFlag('exec-success');
+                } else {
+                    $this->output('Build succeeded, but move file failed. Please operate manually.');
+                }
             }
         } elseif ($this->currentCommandKey == 'npm-v') {
             $preg = "/([0-9]+)\.([0-9]+)\.([0-9]+)/";
@@ -231,5 +240,27 @@ class CommandExec
     public function break()
     {
         throw new HttpResponseException(Response::create()->contentType('text/event-stream'));
+    }
+
+    public function mvDist()
+    {
+        $distPath      = root_path() . $this->distDir . DIRECTORY_SEPARATOR;
+        $indexHtmlPath = $distPath . 'index.html';
+        $assetsPath    = $distPath . 'assets';
+        if (!file_exists($indexHtmlPath) || !file_exists($assetsPath)) {
+            return false;
+        }
+
+        $toIndexHtmlPath = root_path() . 'public' . DIRECTORY_SEPARATOR . 'index.html';
+        $toAssetsPath    = root_path() . 'public' . DIRECTORY_SEPARATOR . 'assets';
+        @unlink($toIndexHtmlPath);
+        deldir($toAssetsPath);
+
+        if (rename($indexHtmlPath, $toIndexHtmlPath) && rename($assetsPath, $toAssetsPath)) {
+            deldir($distPath);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
