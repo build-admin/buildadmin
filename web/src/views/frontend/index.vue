@@ -6,10 +6,10 @@
                     <img src="~assets/logo.png" />
                     <span>{{ state.data.site_name }}</span>
                 </div>
-                <div class="header-link">
+                <!-- <div class="header-link">
                     <Icon name="el-icon-User" size="16" color="#ffffff" />
                     <span>会员中心</span>
-                </div>
+                </div> -->
             </el-header>
             <el-main class="main">
                 <div class="main-container">
@@ -54,7 +54,7 @@ index().then((res) => {
 .container {
     width: 100vw;
     height: 100vh;
-    background-color: var(--color-primary-sub-3);
+    background: url(/@/assets/bg.jpg) repeat;
     color: var(--color-basic-white);
     .header {
         display: flex;
