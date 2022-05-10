@@ -112,9 +112,11 @@ const onLabelNeed = (link: CheckLink) => {
                     },
                 })
                 state.envCheckData = Object.assign({}, state.envCheckData, {
-                    describe: t('already installed'),
-                    state: 'ok',
-                    link: [],
+                    cnpm_version: {
+                        describe: t('already installed'),
+                        state: 'ok',
+                        link: [],
+                    },
                 })
                 addCheckCnpmInstall()
             }

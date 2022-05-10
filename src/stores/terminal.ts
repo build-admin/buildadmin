@@ -74,7 +74,7 @@ export const useTerminal = defineStore(
             })
 
             // 清理任务列表
-            clearSuccessTask()
+            // clearSuccessTask()
 
             startTask()
         }
