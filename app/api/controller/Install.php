@@ -9,7 +9,7 @@ use think\App;
 use ba\CommandExec;
 
 /**
- *
+ * 安装控制器
  */
 class Install extends Api
 {
@@ -77,7 +77,7 @@ class Install extends Api
     /**
      * 命令执行窗口
      */
-    public function popenWindow()
+    public function terminal()
     {
         // 安装锁
         if (is_file(public_path() . self::$lockFileName)) {
@@ -87,7 +87,7 @@ class Install extends Api
             }
         }
 
-        CommandExec::instance()->popenWindow();
+        CommandExec::instance(false)->terminal();
     }
 
     /**
@@ -97,11 +97,7 @@ class Install extends Api
     {
         // 安装锁
         if (is_file(public_path() . self::$lockFileName)) {
-            $contents = @file_get_contents(public_path() . self::$lockFileName);
-            if ($contents != self::$InstallationCompletionMark) {
-                $this->error('Retry Build', [], 302);
-            }
-            $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]), [], 3);
+            $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]), []);
         }
 
         // php版本-start

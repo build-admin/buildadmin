@@ -78,7 +78,7 @@ class Version
 
     public static function getNpmVersion()
     {
-        $execOut = CommandExec::instance()->getOutputFromPopen('npm-v');
+        $execOut = CommandExec::instance(false)->getOutputFromPopen('npm-v');
         if ($execOut && isset($execOut[0]) && self::checkDigitalVersion($execOut[0])) {
             return $execOut[0];
         } else {
@@ -88,7 +88,7 @@ class Version
 
     public static function getCnpmVersion()
     {
-        $execOut = CommandExec::instance()->getOutputFromPopen('cnpm-v');
+        $execOut = CommandExec::instance(false)->getOutputFromPopen('cnpm-v');
         if ($execOut && isset($execOut[0])) {
             $preg = '/cnpm@(.+?) \(/is';
             preg_match($preg, $execOut[0], $result);
@@ -100,7 +100,7 @@ class Version
 
     public static function getNodeJsVersion()
     {
-        $execOut = CommandExec::instance()->getOutputFromPopen('node-v');
+        $execOut = CommandExec::instance(false)->getOutputFromPopen('node-v');
         if ($execOut && isset($execOut[0]) && self::checkDigitalVersion($execOut[0])) {
             return $execOut[0];
         } else {
