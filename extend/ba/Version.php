@@ -2,31 +2,13 @@
 
 namespace ba;
 
+use think\Exception;
+
 /**
  * 版本类
  */
 class Version
 {
-    /**
-     * 提取版本号中的数字
-     * @param $str
-     * @return array|string|string[]|null
-     */
-    public static function reg(string $str)
-    {
-        return preg_replace('/[^0-9]/', '', $str);
-    }
-
-    /**
-     * 版本号位数不足时补位0
-     * @param $str
-     * @param $length
-     * @return string
-     */
-    public static function cover(string $str, int $length): string
-    {
-        return str_pad($str, $length, '0');
-    }
 
     /**
      * 比较两个版本号
@@ -41,6 +23,9 @@ class Version
         }
 
         // 删除开头的 V
+        if (strtolower($v1[0]) == 'v') {
+            $v1 = substr($v1, 1);
+        }
         if (strtolower($v2[0]) == 'v') {
             $v2 = substr($v2, 1);
         }
@@ -49,14 +34,31 @@ class Version
             return true;
         }
 
-        $length = strlen(self::reg($v1)) > strlen(self::reg($v2)) ? strlen(self::reg($v1)) : strlen(self::reg($v2));
-        $v1     = self::cover(self::reg($v1), $length);
-        $v2     = self::cover(self::reg($v2), $length);
-        if ($v1 == $v2) {
-            return true;
-        } else {
-            return $v2 > $v1;
+        $v1 = explode('.', $v1);
+        $v2 = explode('.', $v2);
+        if (!is_array($v1) || !is_array($v2)) {
+            throw new Exception('Version number format error');
         }
+
+        // 将号码逐个进行比较
+        for ($i = 0; $i < count($v1); $i++) {
+            if (!isset($v2[$i])) {
+                break;
+            }
+            if ($v1[$i] == $v2[$i]) {
+                continue;
+            }
+            if ($v1[$i] > $v2[$i]) {
+                return false;
+            }
+            if ($v1[$i] < $v2[$i]) {
+                return true;
+            }
+        }
+        if (count($v1) != count($v2)) {
+            return !(count($v1) > count($v2));
+        }
+        throw new Exception('Version number comparison failed');
     }
 
     public static function checkDigitalVersion($version)
