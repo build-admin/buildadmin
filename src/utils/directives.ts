@@ -1,8 +1,68 @@
-import { App } from 'vue'
+import { App, nextTick } from 'vue'
 
 export function directives(app: App) {
     // 拖动指令
     dragDirective(app)
+    // 缩放指令
+    zoomDirective(app)
+    // 点击后自动失焦指令
+    blurDirective(app)
+}
+
+/**
+ * 点击后自动失焦指令
+ * @description v-blur
+ */
+function blurDirective(app: App) {
+    app.directive('blur', {
+        mounted(el) {
+            el.addEventListener('focus', () => {
+                el.blur()
+            })
+        },
+    })
+}
+
+/**
+ * 缩放指令
+ * @description v-zoom="[domEl]"`
+ * @description domEl=要开启缩放的元素
+ */
+function zoomDirective(app: App) {
+    app.directive('zoom', {
+        mounted(el, binding) {
+            if (!binding.value) return false
+
+            nextTick(() => {
+                const zoomDom = document.querySelector(binding.value) as HTMLElement
+                var zoomhandleEl = document.createElement('div')
+                zoomhandleEl.className = 'zoom-handle'
+                zoomhandleEl.onmouseenter = () => {
+                    zoomhandleEl.onmousedown = (e: MouseEvent) => {
+                        let x = e.clientX
+                        let y = e.clientY
+                        let zoomDomWidth = zoomDom.offsetWidth
+                        let zoomDomHeight = zoomDom.offsetHeight
+                        document.onmousemove = (e: MouseEvent) => {
+                            e.preventDefault() // 移动时禁用默认事件
+                            let w = zoomDomWidth + (e.clientX - x) * 2
+                            let h = zoomDomHeight + (e.clientY - y)
+
+                            zoomDom.style.width = `${w}px`
+                            zoomDom.style.height = `${h}px`
+                        }
+
+                        document.onmouseup = function () {
+                            document.onmousemove = null
+                            document.onmouseup = null
+                        }
+                    }
+                }
+
+                zoomDom.appendChild(zoomhandleEl)
+            })
+        },
+    })
 }
 
 /**

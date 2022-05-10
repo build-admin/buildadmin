@@ -2,10 +2,19 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { i18n } from '/@/lang/index'
 import { directives } from '/@/utils/directives'
+import pinia from '/@/stores/index'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
-const app = createApp(App)
+async function start() {
+    const app = createApp(App)
 
-directives(app) // 指令
+    app.use(pinia)
+    app.use(i18n)
+    app.use(ElementPlus, { i18n: i18n.global.t })
 
-app.use(i18n)
-app.mount('#app')
+    directives(app) // 指令
+
+    app.mount('#app')
+}
+start()

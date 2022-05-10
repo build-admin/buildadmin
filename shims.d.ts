@@ -15,3 +15,11 @@ interface ApiResponse<T = any> {
 }
 
 interface ApiPromise<T = any> extends Promise<ApiResponse<T>> {}
+
+interface anyObj {
+    [key:string]:any
+}
+
+interface Window {
+    eventSource: EventSource
+}

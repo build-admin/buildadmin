@@ -1,5 +1,5 @@
 <template>
-    <Command v-if="state.commandKey" top="230px" right="calc(50% - 230px)" :command-key="state.commandKey" @callback="commandCallback" />
+    <!-- <Command v-if="state.commandKey" top="230px" right="calc(50% - 230px)" :command-key="state.commandKey" @callback="commandCallback" /> -->
     <Header />
     <div v-if="state.commandKey || state.showMask" class="mask"></div>
     <div class="container">
@@ -64,7 +64,7 @@
 <script setup lang="ts">
 import { reactive, onMounted, onUnmounted } from 'vue'
 import Header from '../components/header/index.vue'
-import Command from '../components/command/index.vue'
+// import Command from '../components/command/index.vue'
 import { testDatabaseUrl, baseConfigUrl, mvDistUrl } from '/@/api/install/index'
 import { Axios, errorTips } from '/@/utils/axios'
 import { useI18n } from 'vue-i18n'

@@ -38,6 +38,22 @@ const viteConfig: UserConfig = {
         port: VITE_PORT,
         open: VITE_OPEN,
     },
+    css: {
+        postcss: {
+            plugins: [
+                {
+                    postcssPlugin: 'internal:charset-removal',
+                    AtRule: {
+                        charset: (atRule) => {
+                            if (atRule.name === 'charset') {
+                                atRule.remove()
+                            }
+                        },
+                    },
+                },
+            ],
+        },
+    },
 }
 
 export default viteConfig
