@@ -40,7 +40,13 @@ export const useTerminal = defineStore(
             if ((status == taskStatus.Failed || status == taskStatus.Unknown) && state.taskList[idx].blockOnFailure) {
                 setTaskShowMessage(idx, true)
             }
+        }
 
+        function taskCompleted(idx: number) {
+            if (typeof state.taskList[idx].callback != 'function') {
+                return
+            }
+            let status = state.taskList[idx].status
             if (status == taskStatus.Failed || status == taskStatus.Unknown) {
                 state.taskList[idx].callback(taskStatus.Failed)
             } else if (status == taskStatus.Success) {
@@ -131,12 +137,14 @@ export const useTerminal = defineStore(
                 if (data.data == 'command-exec-error') {
                     setTaskStatus(taskIdx, taskStatus.Failed)
                     window.eventSource.close()
+                    taskCompleted(taskIdx)
                     startTask()
                 } else if (data.data == 'command-exec-completed') {
                     window.eventSource.close()
                     if (state.taskList[taskIdx].status != taskStatus.Success) {
                         setTaskStatus(taskIdx, taskStatus.Failed)
                     }
+                    taskCompleted(taskIdx)
                     startTask()
                 } else if (data.data == 'command-link-success') {
                     setTaskStatus(taskIdx, taskStatus.Executing)
@@ -149,6 +157,7 @@ export const useTerminal = defineStore(
             window.eventSource.onerror = function (e) {
                 window.eventSource.close()
                 setTaskStatus(taskKey, taskStatus.Failed)
+                taskCompleted(taskKey)
             }
         }
 

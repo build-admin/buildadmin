@@ -91,8 +91,8 @@ const selectLang = (name: string) => {
     .logo {
         display: block;
         margin: 0 auto;
-        width: 120px;
-        height: 120px;
+        width: 110px;
+        height: 110px;
     }
     .title {
         display: block;

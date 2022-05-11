@@ -119,4 +119,7 @@ export default {
     'The service is temporarily unavailable. Please try again later!': '服务暂时无法访问，请稍后再试！',
     'Abnormal problem, please contact the website administrator!': '异常问题，请联系网站管理员！',
     "You're disconnected!": '您断网了！',
+    Required: '必填',
+    'Composed of letters, numbers and underscores, (6-32 bits)': '由字母、数字、下划线组成，(6-32位)',
+    'It is composed of letters, numbers and underscores, starting with letters (3-15 digits)': '由字母、数字、下划线组成，以字母开头(3-15位)',
 }

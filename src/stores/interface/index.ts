@@ -60,3 +60,22 @@ export interface CheckLink {
     title?: string
     url?: string
 }
+
+export interface ConfigState {
+    formItem: any
+    showFormItem: boolean
+    showError: string
+    baseConfigSubmitState: boolean
+    databaseCheck: string
+    databases: any
+    showInstallTips: boolean
+    autoJumpSeconds: number
+}
+
+export interface DatabaseData {
+    hostname: string
+    username: string
+    password: string
+    hostport: string
+    database: string
+}

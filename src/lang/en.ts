@@ -122,4 +122,8 @@ export default {
     'The service is temporarily unavailable. Please try again later!': 'The service is temporarily unavailable. Please try again later!',
     'Abnormal problem, please contact the website administrator!': 'Abnormal problem, please contact the website administrator!',
     "You're disconnected!": "You're disconnected!",
+    Required: 'Required',
+    'Composed of letters, numbers and underscores, (6-32 bits)': 'Composed of letters, numbers and underscores, (6-32 bits)',
+    'It is composed of letters, numbers and underscores, starting with letters (3-15 digits)':
+        'It is composed of letters, numbers and underscores, starting with letters (3-15 digits)',
 }
