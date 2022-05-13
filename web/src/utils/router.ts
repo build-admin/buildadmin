@@ -107,8 +107,11 @@ const handleMenuRule = (routes: any, pathPrefix = '/') => {
             continue
         }
         if (routes[key].type == 'menu' || routes[key].type == 'menu_dir') {
-            if (routes[key].type == 'menu_dir' && !routes[key].children) {
-                continue
+            if (routes[key].type == 'menu_dir') {
+                if (!routes[key].children) {
+                    continue
+                }
+                routes[key].menu_type = 'tab'
             }
 
             routes[key].type = routes[key].menu_type

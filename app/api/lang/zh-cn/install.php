@@ -22,6 +22,8 @@ return [
     'File has no write permission:%s'                                                                                    => '文件无写入权限:%s',
     'The system has completed installation. If you need to reinstall, please delete the %s file first'                   => '系统已完成安装。如果需要重新安装，请先删除 %s 文件',
     'Database connection failed:%s'                                                                                      => '数据库连接失败:%s',
+    'Failed to install SQL execution:%s'                                                                                 => '安装SQL执行失败:%s',
+    'unknown'                                                                                                            => '未知',
     'Database does not exist'                                                                                            => '数据库不存在!',
     'No built front-end file found, please rebuild manually!'                                                            => '没有找到构建好的前端文件，请手动重新构建！',
     'Failed to move the front-end file, please move it manually!'                                                        => '移动前端文件失败，请手动移动！',
@@ -36,4 +38,5 @@ return [
     'Using the installation service correctly will not cause any potential security problems. Click to view the details' => '安装服务使用正确不会造成任何潜在安全问题，点击查看详情',
     'Feof and fgets functions in PHP Ini is disabled'                                                                    => 'feof和fgets函数在php.ini中被禁用掉了',
     'Please install NPM first'                                                                                           => '请先安装npm',
+    'Installation error:%s'                                                                                              => '安装出错:%s',
 ];

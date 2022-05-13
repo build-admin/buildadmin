@@ -22,6 +22,8 @@ return [
     'File has no write permission:%s'                                                                                    => 'File has no write permission:%s',
     'The system has completed installation. If you need to reinstall, please delete the %s file first'                   => 'The system has completed installation. If you need to reinstall, please delete the %s file first',
     'Database connection failed:%s'                                                                                      => 'Database connection failed:%s',
+    'Failed to install SQL execution:%s'                                                                                 => 'Failed to install SQL execution:%s',
+    'unknown'                                                                                                            => 'unknown',
     'Database does not exist'                                                                                            => 'Database does not exist!',
     'No built front-end file found, please rebuild manually!'                                                            => 'No built front-end file found, please rebuild manually!',
     'Failed to move the front-end file, please move it manually!'                                                        => 'Failed to move the front-end file, please move it manually!',
@@ -36,4 +38,5 @@ return [
     'Using the installation service correctly will not cause any potential security problems. Click to view the details' => 'Using the installation service correctly will not cause any potential security problems. Click to view the details',
     'Feof and fgets functions in PHP Ini is disabled'                                                                    => 'Feof and fgets functions in PHP Ini is disabled',
     'Please install NPM first'                                                                                           => 'Please install NPM first',
+    'Installation error:%s'                                                                                              => 'Installation error:%s',
 ];

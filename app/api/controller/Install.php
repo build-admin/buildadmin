@@ -3,10 +3,17 @@ declare (strict_types=1);
 
 namespace app\api\controller;
 
+use ba\Random;
 use ba\Version;
 use app\common\controller\Api;
 use think\App;
 use ba\CommandExec;
+use think\Exception;
+use think\facade\Config;
+use think\facade\Db;
+use think\db\exception\PDOException;
+use app\admin\model\Admin as AdminModel;
+use app\admin\model\User as UserModel;
 
 /**
  * 安装控制器
@@ -26,9 +33,10 @@ class Install extends Api
     static $lockFileName = 'install.lock';
 
     /**
-     * 数据库配置文件
+     * 配置文件
      */
-    static $dbConfigFileName = 'database.php';
+    static $dbConfigFileName    = 'database.php';
+    static $buildConfigFileName = 'buildadmin.php';
 
     /**
      * 自动构建的前端文件的 outDir 相对于根目录
@@ -360,45 +368,6 @@ class Install extends Api
     }
 
     /**
-     * 数据库连接-获取数据表列表
-     * @param $database
-     * @return array
-     */
-    private function testConnectDatabase($database)
-    {
-        error_reporting(0);
-        mysqli_report(MYSQLI_REPORT_OFF);
-
-        $conn = mysqli_init();
-        $conn->options(MYSQLI_OPT_CONNECT_TIMEOUT, 6);
-
-        $conn->real_connect($database['hostname'] . ':' . $database['hostport'], $database['username'], $database['password']);
-        if ($conn->connect_error) {
-            return [
-                'code' => 0,
-                'msg'  => __('Database connection failed:%s', [mb_convert_encoding($conn->connect_error, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')])
-            ];
-        } else {
-            $databases = [];
-            // 不需要的数据表
-            $databasesExclude = ['information_schema', 'mysql', 'performance_schema', 'sys'];
-            $res              = $conn->query("SHOW DATABASES");
-            while ($row = mysqli_fetch_assoc($res)) {
-                if (!in_array($row['Database'], $databasesExclude)) {
-                    $databases[] = $row['Database'];
-                }
-            }
-            $conn->close();
-
-            return [
-                'code'      => 1,
-                'msg'       => '',
-                'databases' => $databases,
-            ];
-        }
-    }
-
-    /**
      * 测试数据库连接
      */
     public function testDatabase()
@@ -441,18 +410,35 @@ class Install extends Api
 
         $param = $this->request->only(['hostname', 'username', 'password', 'hostport', 'database', 'prefix', 'adminname', 'adminpassword', 'sitename']);
 
-        // 检测数据库连接
-        $conn = $this->testConnectDatabase($param);
-        if ($conn['code'] == 0) {
-            $this->error($conn['msg']);
-        }
+        // 数据库配置测试
+        try {
+            $dbConfig                                     = Config::get('database');
+            $dbConfig['connections']['mysql']['hostname'] = $param['hostname'];
+            $dbConfig['connections']['mysql']['database'] = $param['database'];
+            $dbConfig['connections']['mysql']['username'] = $param['username'];
+            $dbConfig['connections']['mysql']['password'] = $param['password'];
+            $dbConfig['connections']['mysql']['hostport'] = $param['hostport'];
+            $dbConfig['connections']['mysql']['prefix']   = $param['prefix'];
+            Config::set(['connections' => $dbConfig['connections']], 'database');
 
-        // 检测数据库是否存在
-        if (!in_array($param['database'], $conn['databases'])) {
-            $this->error(__('Database does not exist'));
+            $connect = Db::connect('mysql');
+            $connect->execute("SELECT 1");
+        } catch (PDOException $e) {
+            $this->error(__('Database connection failed:%s', [mb_convert_encoding($e->getMessage(), 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')]));
         }
 
         // 导入安装sql
+        try {
+            $sql = file_get_contents(root_path() . 'app' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'buildadmin.sql');
+            $sql = str_replace("__PREFIX__", $param['prefix'], $sql);
+            $connect->getPdo()->exec($sql);
+        } catch (PDOException $e) {
+            $errorMsg = $e->getMessage();
+            $this->error(__('Failed to install SQL execution:%s', [mb_convert_encoding($errorMsg ? $errorMsg : 'unknown', 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')]));
+        } catch (Exception $e) {
+            $errorMsg = $e->getMessage();
+            $this->error(__('Installation error:%s', [mb_convert_encoding($errorMsg ? $errorMsg : 'unknown', 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')]));
+        }
 
         // 写入数据库配置文件
         $dbConfigFile    = config_path() . self::$dbConfigFileName;
@@ -464,13 +450,61 @@ class Install extends Api
         $dbConfigText    = preg_replace_callback("/'(hostname|database|username|password|hostport|prefix)'(\s+)=>(\s+)env\('database\.(.*)',\s+'(.*)'\)\,/", $callback, $dbConfigContent);
         $result          = @file_put_contents($dbConfigFile, $dbConfigText);
         if (!$result) {
-            $this->error(__('File has no write permission:%s', ['config/' . self::$dbConfigFileName]), [], 101);
+            $this->error(__('File has no write permission:%s', ['config/' . self::$dbConfigFileName]));
         }
+
+        // 写入.env-example文件
+        $envFile        = root_path() . '.env-example';
+        $envFileContent = @file_get_contents($envFile);
+        $envFileContent .= "\n\n" . '[DATABASE]' . "\n";
+        $envFileContent .= 'TYPE = mysql' . "\n";
+        $envFileContent .= 'HOSTNAME = ' . $param['hostname'] . "\n";
+        $envFileContent .= 'DATABASE = ' . $param['database'] . "\n";
+        $envFileContent .= 'USERNAME = ' . $param['username'] . "\n";
+        $envFileContent .= 'PASSWORD = ' . $param['password'] . "\n";
+        $envFileContent .= 'HOSTPORT = ' . $param['hostport'] . "\n";
+        $envFileContent .= 'CHARSET = utf8' . "\n";
+        $envFileContent .= 'DEBUG = true' . "\n";
+        $result         = @file_put_contents($envFile, $envFileContent);
+        if (!$result) {
+            $this->error(__('File has no write permission:%s', ['/' . $envFile]));
+        }
+
+        // 设置新的Token随机密钥key
+        $oldTokenKey        = Config::get('buildadmin.token.key');
+        $newTokenKey        = Random::build('alnum', 32);
+        $buildConfigFile    = config_path() . self::$buildConfigFileName;
+        $buildConfigContent = @file_get_contents($buildConfigFile);
+        $buildConfigContent = preg_replace("/'key'(\s+)=>(\s+)'{$oldTokenKey}'/", "'key'\$1=>\$2'{$newTokenKey}'", $buildConfigContent);
+        $result             = @file_put_contents($buildConfigFile, $buildConfigContent);
+        if (!$result) {
+            $this->error(__('File has no write permission:%s', ['config/' . self::$buildConfigFileName]));
+        }
+
+        // 管理员配置入库
+        $adminModel             = new AdminModel();
+        $defaultAdmin           = $adminModel->where('username', 'admin')->find();
+        $defaultAdmin->username = $param['adminname'];
+        $defaultAdmin->nickname = ucfirst($param['adminname']);
+        $defaultAdmin->save();
+
+        if (isset($param['adminpassword']) && $param['adminpassword']) {
+            $adminModel->resetPassword($defaultAdmin->id, $param['adminpassword']);
+        }
+
+        // 默认用户密码修改
+        $user = new UserModel();
+        $user->resetPassword(1, Random::build());
+
+        // 修改站点名称
+        $connect->table($param['prefix'] . 'config')->where('name', 'site_name')->update([
+            'value' => $param['sitename']
+        ]);
 
         // 建立安装锁文件
         $result = @file_put_contents(public_path() . self::$lockFileName, date('Y-m-d H:i:s'));
         if (!$result) {
-            $this->error(__('File has no write permission:%s', ['public/' . self::$lockFileName]), [], 102);
+            $this->error(__('File has no write permission:%s', ['public/' . self::$lockFileName]));
         }
 
         $this->success('', [
@@ -555,5 +589,44 @@ class Install extends Api
     private static function writableStateDescribe($writable): string
     {
         return $writable ? __('Writable') : __('No write permission');
+    }
+
+    /**
+     * 数据库连接-获取数据表列表
+     * @param $database
+     * @return array
+     */
+    private function testConnectDatabase($database)
+    {
+        try {
+            $dbConfig                         = Config::get('database');
+            $dbConfig['connections']['mysql'] = array_merge($dbConfig['connections']['mysql'], $database);
+            Config::set(['connections' => $dbConfig['connections']], 'database');
+
+            $connect = Db::connect('mysql');
+            $connect->execute("SELECT 1");
+        } catch (PDOException $e) {
+            $errorMsg = $e->getMessage();
+            return [
+                'code' => 0,
+                'msg'  => __('Database connection failed:%s', [mb_convert_encoding($errorMsg ? $errorMsg : 'unknown', 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')])
+            ];
+        }
+
+        $databases = [];
+        // 不需要的数据表
+        $databasesExclude = ['information_schema', 'mysql', 'performance_schema', 'sys'];
+        $res              = $connect->query("SHOW DATABASES");
+        foreach ($res as $row) {
+            if (!in_array($row['Database'], $databasesExclude)) {
+                $databases[] = $row['Database'];
+            }
+        }
+
+        return [
+            'code'      => 1,
+            'msg'       => '',
+            'databases' => $databases,
+        ];
     }
 }
