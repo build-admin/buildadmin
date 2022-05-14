@@ -66,8 +66,8 @@ class Install extends Api
     /**
      * 安装完成标记
      * 配置完成则建立lock文件
-     * 编辑命令成功执行再写入标记到lock文件
-     * 实现命令执行失败，刷新页面重新执行
+     * 执行命令成功执行再写入标记到lock文件
+     * 实现命令执行失败，重载页面可重新执行
      */
     static $InstallationCompletionMark = 'install-end';
 
@@ -456,7 +456,7 @@ class Install extends Api
         // 写入.env-example文件
         $envFile        = root_path() . '.env-example';
         $envFileContent = @file_get_contents($envFile);
-        $envFileContent .= "\n\n" . '[DATABASE]' . "\n";
+        $envFileContent .= "\n" . '[DATABASE]' . "\n";
         $envFileContent .= 'TYPE = mysql' . "\n";
         $envFileContent .= 'HOSTNAME = ' . $param['hostname'] . "\n";
         $envFileContent .= 'DATABASE = ' . $param['database'] . "\n";
@@ -513,9 +513,9 @@ class Install extends Api
     }
 
     /**
-     * 移动编译好的文件到public
+     * 标记命令执行完毕
      */
-    public function mvDist()
+    public function commandExecComplete()
     {
         if (is_file(public_path() . self::$lockFileName)) {
             $contents = @file_get_contents(public_path() . self::$lockFileName);
@@ -524,29 +524,11 @@ class Install extends Api
             }
         }
 
-        $distPath      = root_path() . self::$distDir . DIRECTORY_SEPARATOR;
-        $indexHtmlPath = $distPath . 'index.html';
-        $assetsPath    = $distPath . 'assets';
-
-        if (!file_exists($indexHtmlPath) || !file_exists($assetsPath)) {
-            $this->error(__('No built front-end file found, please rebuild manually!'), [], 103);
+        $result = @file_put_contents(public_path() . self::$lockFileName, self::$InstallationCompletionMark);
+        if (!$result) {
+            $this->error(__('File has no write permission:%s', ['public/' . self::$lockFileName]));
         }
-
-        $toIndexHtmlPath = root_path() . 'public' . DIRECTORY_SEPARATOR . 'index.html';
-        $toAssetsPath    = root_path() . 'public' . DIRECTORY_SEPARATOR . 'assets';
-        @unlink($toIndexHtmlPath);
-        deldir($toAssetsPath);
-
-        if (rename($indexHtmlPath, $toIndexHtmlPath) && rename($assetsPath, $toAssetsPath)) {
-            deldir($distPath);
-            $result = @file_put_contents(public_path() . self::$lockFileName, self::$InstallationCompletionMark);
-            if (!$result) {
-                $this->error(__('File has no write permission:%s', ['public/' . self::$lockFileName]), [], 102);
-            }
-            $this->success('');
-        } else {
-            $this->error(__('Failed to move the front-end file, please move it manually!'), [], 104);
-        }
+        $this->success('');
     }
 
     /**
