@@ -53,7 +53,7 @@ import { useI18n } from 'vue-i18n'
 import { CheckState, CheckLink } from '/@/stores/interface/index'
 import { useCommon } from '/@/stores/common'
 import { useTerminal } from '/@/stores/terminal'
-import { ElNotification } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { taskStatus } from '/@/components/terminal/constant'
 
 const { t } = useI18n()
@@ -143,10 +143,11 @@ const showError = (msg: string) => {
     if (state.checkDoneIndex == 'fail') {
         state.checkDoneIndex = 'executing' // 隐藏checkDone的提示消息
     }
-    ElNotification({
+    ElMessage({
         type: 'error',
         message: msg,
         duration: 0,
+        center: true,
     })
 }
 

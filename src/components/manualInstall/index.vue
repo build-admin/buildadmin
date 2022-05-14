@@ -54,7 +54,7 @@
 import { reactive } from 'vue'
 import { getManualInstall, postMvDist } from '/@/api/install/index'
 import { useI18n } from 'vue-i18n'
-import { ElNotification } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { useCommon } from '/@/stores/common'
 
 const { t } = useI18n()
@@ -76,9 +76,10 @@ const mvDist = () => {
             if (res.data.code == 1) {
                 common.setStep('done')
             } else {
-                ElNotification({
+                ElMessage({
                     type: 'error',
                     message: res.data.msg,
+                    center: true,
                 })
             }
         })
@@ -91,9 +92,10 @@ getManualInstall().then((res) => {
     if (res.data.code == 1) {
         state.webPath = res.data.data.webPath
     } else {
-        ElNotification({
+        ElMessage({
             type: 'error',
             message: res.data.msg,
+            center: true,
         })
     }
 })

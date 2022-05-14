@@ -1,4 +1,4 @@
-import { ElNotification } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { Axios, getUrl } from '/@/utils/axios'
 
 const entryFile = '/index.php'
@@ -53,9 +53,10 @@ export const postBaseConfig = (values: anyObj) => {
 export const commandExecComplete = () => {
     Axios.post(commandExecCompleteUrl).then((res) => {
         if (res.data.code != 1) {
-            ElNotification({
+            ElMessage({
                 type: 'error',
                 message: res.data.msg,
+                center: true,
             })
         }
     })

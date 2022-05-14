@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { isProd } from '/@/utils/vite'
-import { ElNotification } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { i18n } from '../lang'
 
 var langValue = window.localStorage.getItem('ba-lang') || 'zh-cn'
@@ -65,8 +65,9 @@ export function httpErrorStatusHandle(error: any) {
         message = i18n.global.t('unknown error')
     }
 
-    ElNotification({
+    ElMessage({
         type: 'error',
         message,
+        center: true,
     })
 }

@@ -69,7 +69,7 @@ import { useI18n } from 'vue-i18n'
 import { ConfigState, DatabaseData } from '/@/stores/interface/index'
 import { useCommon } from '/@/stores/common'
 import { useTerminal } from '/@/stores/terminal'
-import { ElForm, ElNotification, FormItemRule } from 'element-plus'
+import { ElForm, ElMessage, FormItemRule } from 'element-plus'
 import { taskStatus } from '/@/components/terminal/constant'
 
 var timer: NodeJS.Timer
@@ -174,9 +174,10 @@ const validation = {
         if (database) {
             if (state.databases.indexOf(database) === -1) {
                 if (showError) {
-                    ElNotification({
+                    ElMessage({
                         type: 'error',
                         message: t('The entered database was not found!'),
+                        center: true,
                     })
                 } else {
                     return callback(t('The entered database was not found!'))
@@ -217,9 +218,10 @@ const validation = {
                 } else {
                     state.databaseCheck = 'wait'
                     state.databases = []
-                    ElNotification({
+                    ElMessage({
                         type: 'error',
                         message: res.data.msg,
+                        center: true,
                     })
                 }
             })
@@ -346,9 +348,10 @@ const submitBaseConfig = (formEl: InstanceType<typeof ElForm> | undefined = unde
                             common.setStep('manualInstall') // 跳转到手动完成未尽事宜页面
                         }
                     } else {
-                        ElNotification({
+                        ElMessage({
                             type: 'error',
                             message: res.data.msg,
+                            center: true,
                         })
                     }
                 })
@@ -363,9 +366,10 @@ getBaseConfig().then((res) => {
     if (res.data.code == 1) {
         state.showInstallTips = !res.data.data.envOk
     } else if (res.data.code == 0) {
-        ElNotification({
+        ElMessage({
             type: 'error',
             message: res.data.msg,
+            center: true,
             duration: 0,
         })
     } else if (res.data.code == 302) {
