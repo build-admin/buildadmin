@@ -2,6 +2,8 @@
     <el-config-provider :locale="lang">
         <Check v-if="common.state.step == 'check'" />
         <Config v-if="common.state.step == 'config'" />
+        <Done v-if="common.state.step == 'done'" />
+        <ManualInstall v-if="common.state.step == 'manualInstall'" />
 
         <Terminal />
         <div class="ba-terminal">
@@ -20,6 +22,8 @@ import { useTerminal } from '/@/stores/terminal'
 import logo from '/@/assets/img/logo.svg'
 import Check from '/@/views/check.vue'
 import Config from '/@/views/config.vue'
+import Done from '/@/views/done.vue'
+import ManualInstall from '/@/views/manualInstall.vue'
 
 const common = useCommon()
 const terminal = useTerminal()

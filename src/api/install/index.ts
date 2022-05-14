@@ -68,6 +68,10 @@ export const postMvDist = () => {
     return Axios.post(mvDistUrl)
 }
 
+export const getManualInstall = () => {
+    return Axios.get(manualInstallUrl)
+}
+
 /**
  * 构建Terminal的Url
  */

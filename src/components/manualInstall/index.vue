@@ -1,12 +1,6 @@
 <template>
     <div class="container">
         <div class="title">{{ t('Unfinished matters manually') }}</div>
-        <transition name="slide-bottom">
-            <div v-show="state.showError" class="error-tips">
-                <div>{{ state.showError }}</div>
-                <img @click="closeError" class="error-img" src="~assets/img/install/close.png" alt="" />
-            </div>
-        </transition>
         <div class="content">
             <div class="content-item">1、{{ t('Open terminal (windows PowerShell)') }}</div>
             <div class="content-item">
@@ -56,15 +50,15 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { manualInstallUrl, mvDistUrl } from '/@/api/install/index'
-import { Axios, errorTips } from '/@/utils/axios'
-import { global } from '/@/utils/globalVar'
+import { getManualInstall, postMvDist } from '/@/api/install/index'
 import { useI18n } from 'vue-i18n'
+import { ElNotification } from 'element-plus'
+import { useCommon } from '/@/stores/common'
 
 const { t } = useI18n()
+const common = useCommon()
 
 const state = reactive({
-    showError: '',
     showLoading: '',
     webPath: t('Getting full path of root directory / Web'),
 })
@@ -73,38 +67,34 @@ const goUrl = (url: string) => {
     window.open(url)
 }
 
-const closeError = () => {
-    state.showError = ''
-}
-
-Axios.get(manualInstallUrl)
-    .then((res) => {
-        if (res.data.code == 1) {
-            state.webPath = res.data.data.webPath
-        } else {
-            state.showError = res.data.msg
-        }
-    })
-    .catch((err) => {
-        state.showError = t(errorTips(err))
-    })
-
 const mvDist = () => {
     state.showLoading = t('Moving automatically')
-    Axios.post(mvDistUrl)
+    postMvDist()
         .then((res) => {
             if (res.data.code == 1) {
-                global.step = 'done'
+                common.setStep('done')
             } else {
-                state.showError = res.data.msg
+                ElNotification({
+                    type: 'error',
+                    message: res.data.msg,
+                })
             }
-            state.showLoading = ''
         })
-        .catch((err) => {
+        .finally(() => {
             state.showLoading = ''
-            state.showError = t(errorTips(err))
         })
 }
+
+getManualInstall().then((res) => {
+    if (res.data.code == 1) {
+        state.webPath = res.data.data.webPath
+    } else {
+        ElNotification({
+            type: 'error',
+            message: res.data.msg,
+        })
+    }
+})
 </script>
 
 <style scoped lang="scss">
@@ -169,25 +159,6 @@ const mvDist = () => {
 :deep(.text-bold) {
     font-weight: bold;
     padding: 0 2px;
-}
-.error-tips {
-    display: block;
-    position: relative;
-    max-width: 500px;
-    padding: 15px;
-    margin: 15px auto;
-    background-color: #f56c6c;
-    color: #fff;
-    border-radius: 4px;
-    font-size: 15px;
-    .error-img {
-        position: absolute;
-        top: 0px;
-        right: 0px;
-        width: 22px;
-        height: 22px;
-        cursor: pointer;
-    }
 }
 .loading {
     font-size: 13px;
