@@ -52,7 +52,7 @@ export default {
     'Waiting for execution': ' 等待执行',
     'Connection successful, executing': '连接成功 正在执行 ',
     'Unfinished matters manually': '手动完成未尽事宜',
-    'Open terminal (windows PowerShell)': '打开终端（Windows PowerShell）',
+    'Open terminal (windows PowerShell)': '打开您PC/服务器的终端（Windows PowerShell）',
     'Execute command': '执行命令',
     'Execution failed?': '执行失败了?',
     'Move the built file to the specified location of the system': '移动构建好的文件到系统指定位置',
@@ -122,4 +122,6 @@ export default {
     Required: '必填',
     'Composed of letters, numbers and underscores, (6-32 bits)': '由字母、数字、下划线组成，(6-32位)',
     'It is composed of letters, numbers and underscores, starting with letters (3-15 digits)': '由字母、数字、下划线组成，以字母开头(3-15位)',
+    'If cnpm is not installed, execute:npm install': '未安装 cnpm 则执行 npm install 即可',
+    'If cnpm is not installed, execute:npm run build:online': '未安装 cnpm 则执行 npm run build:online 即可',
 }

@@ -13,6 +13,7 @@
                 <div @click="goUrl('https://www.kancloud.cn/buildadmin/buildadmin/2653900')" class="block-help link">
                     {{ t('Execution failed?') }}
                 </div>
+                <div class="min-help">{{ t('If cnpm is not installed, execute:npm install') }}</div>
             </div>
             <div class="content-item">
                 <div>4、{{ t('Execute command') }}</div>
@@ -20,6 +21,7 @@
                 <div @click="goUrl('https://www.kancloud.cn/buildadmin/buildadmin/2655209')" class="block-help link">
                     {{ t('Execution failed?') }}
                 </div>
+                <div class="min-help">{{ t('If cnpm is not installed, execute:npm run build:online') }}</div>
             </div>
             <div class="content-item">
                 <div>5、{{ t('Move the built file to the specified location of the system') }}</div>
