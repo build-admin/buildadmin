@@ -377,6 +377,7 @@ class Install extends Api
             'username' => $this->request->post('username'),
             'password' => $this->request->post('password'),
             'hostport' => $this->request->post('hostport'),
+            'database' => '',
         ];
 
         $conn = $this->testConnectDatabase($database);
