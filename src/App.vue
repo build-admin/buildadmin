@@ -36,6 +36,14 @@ const lang = getLocaleMessage(langValue) as any
 </script>
 
 <style>
+/* 基本样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none !important;
+}
+
 html,
 body,
 #app {

@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="terminal.state.show" :title="t('terminal.Terminal')" width="42%">
+    <el-dialog v-model="terminal.state.show" :title="t('terminal.Terminal')" custom-class="ba-terminal-dialog" :append-to-body="true">
         <el-timeline v-if="terminal.state.taskList.length">
             <el-timeline-item
                 v-for="(item, idx) in terminal.state.taskList"
@@ -194,5 +194,22 @@ const webBuild = () => {
 }
 .terminal-menu-item {
     margin-bottom: 10px;
+}
+</style>
+
+<style lang="scss">
+// dialog自定义类目深度选择器失效
+.ba-terminal-dialog {
+    width: 42% !important;
+}
+@media screen and (max-width: 768px) {
+    .ba-terminal-dialog {
+        width: 80% !important;
+    }
+}
+@media screen and (max-width: 540px) {
+    .ba-terminal-dialog {
+        width: 94% !important;
+    }
 }
 </style>
