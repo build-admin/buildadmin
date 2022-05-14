@@ -1,3 +1,4 @@
+import { ElNotification } from 'element-plus'
 import { Axios, getUrl } from '/@/utils/axios'
 
 const entryFile = '/index.php'
@@ -6,6 +7,7 @@ export const envBaseCheckUrl = entryFile + '/api/install/envbasecheck'
 export const envNpmCheckUrl = entryFile + '/api/install/envnpmcheck'
 export const testDatabaseUrl = entryFile + '/api/install/testdatabase'
 export const baseConfigUrl = entryFile + '/api/install/baseconfig'
+export const commandExecCompleteUrl = entryFile + '/api/install/commandexeccomplete'
 export const mvDistUrl = entryFile + '/api/install/mvDist'
 export const manualInstallUrl = entryFile + '/api/install/manualInstall'
 export const terminalUrl = entryFile + '/api/install/terminal'
@@ -43,6 +45,20 @@ export const getBaseConfig = () => {
  */
 export const postBaseConfig = (values: anyObj) => {
     return Axios.post(baseConfigUrl, values)
+}
+
+/**
+ * 标记命令执行完毕
+ */
+export const commandExecComplete = () => {
+    Axios.post(commandExecCompleteUrl).then((res) => {
+        if (res.data.code != 1) {
+            ElNotification({
+                type: 'error',
+                message: res.data.msg,
+            })
+        }
+    })
 }
 
 /**

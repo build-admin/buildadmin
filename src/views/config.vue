@@ -64,7 +64,7 @@
 <script setup lang="ts">
 import { reactive, onMounted, onUnmounted, ref } from 'vue'
 import Header from '../components/header/index.vue'
-import { postTestDatabase, getBaseConfig, postBaseConfig, postMvDist } from '/@/api/install/index'
+import { postTestDatabase, getBaseConfig, postBaseConfig, commandExecComplete } from '/@/api/install/index'
 import { useI18n } from 'vue-i18n'
 import { ConfigState, DatabaseData } from '/@/stores/interface/index'
 import { useCommon } from '/@/stores/common'
@@ -303,6 +303,25 @@ const setGlobalError = (msg: string = '') => {
     state.showError = msg
 }
 
+const execCommand = () => {
+    terminal.toggle(true)
+    terminal.addTask('web-install', true, (res: number) => {
+        if (res == taskStatus.Success) {
+            terminal.addTask('web-build', true, (res: number) => {
+                if (res == taskStatus.Success) {
+                    commandExecComplete()
+                    terminal.toggle(false)
+                    common.setStep('done')
+                } else if (res == taskStatus.Failed) {
+                    commandFail()
+                }
+            })
+        } else if (res == taskStatus.Failed) {
+            commandFail()
+        }
+    })
+}
+
 const submitBaseConfig = (formEl: InstanceType<typeof ElForm> | undefined = undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
@@ -321,21 +340,7 @@ const submitBaseConfig = (formEl: InstanceType<typeof ElForm> | undefined = unde
                 .then((res) => {
                     if (res.data.code == 1) {
                         if (res.data.data.execution) {
-                            terminal.toggle(true)
-                            terminal.addTask('web-install', true, (res: number) => {
-                                if (res == taskStatus.Success) {
-                                    terminal.addTask('web-build', true, (res: number) => {
-                                        if (res == taskStatus.Success) {
-                                            terminal.toggle(false)
-                                            common.setStep('done')
-                                        } else if (res == taskStatus.Failed) {
-                                            commandFail()
-                                        }
-                                    })
-                                } else if (res == taskStatus.Failed) {
-                                    commandFail()
-                                }
-                            })
+                            execCommand()
                         } else {
                             state.showInstallTips = false // 隐藏手动操作安装未尽事宜提示
                             common.setStep('manualInstall') // 跳转到手动完成未尽事宜页面
@@ -363,6 +368,9 @@ getBaseConfig().then((res) => {
             message: res.data.msg,
             duration: 0,
         })
+    } else if (res.data.code == 302) {
+        // 安装配置完成但命令未完成执行
+        execCommand()
     } else {
         state.showInstallTips = true
     }
