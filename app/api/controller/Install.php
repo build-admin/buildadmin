@@ -554,13 +554,26 @@ class Install extends Api
     }
 
     /**
-     * 取得 web 目录完整路径
+     * 安装指引
      */
     public function manualInstall()
     {
         $this->success('', [
             'webPath' => root_path() . 'web'
         ]);
+    }
+
+    public function mvDist()
+    {
+        if (!is_file(root_path() . self::$distDir . DIRECTORY_SEPARATOR . 'index.html')) {
+            $this->error(__('No built front-end file found, please rebuild manually!'));
+        }
+
+        if (CommandExec::instance(false)->mvDist()) {
+            $this->success();
+        } else {
+            $this->error(__('Failed to move the front-end file, please move it manually!'));
+        }
     }
 
     /**
