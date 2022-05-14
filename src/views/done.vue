@@ -6,6 +6,14 @@
             <div>{{ t('Background URL') }}</div>
             <div @click="goUrl(state.adminUrl)" class="admin-url">{{ state.adminUrl }}</div>
         </div>
+        <div class="text-warning">
+            <el-alert
+                :closable="false"
+                center
+                :title="t('It is recommended to delete the root directory / public / install folder; This page is only visible on your device.')"
+                type="error"
+            />
+        </div>
         <div class="done-button">
             <button @click="goUrl(state.indexUrl)" class="index">{{ t('Access foreground') }}</button>
             <button @click="goUrl(state.adminUrl)" class="admin">{{ t('Access background') }}</button>
@@ -40,6 +48,10 @@ const goUrl = (url: string) => {
         text-align: center;
         font-size: 20px;
         color: #67c23a;
+    }
+    .text-warning {
+        max-width: 500px;
+        margin: 20px auto;
     }
     .done-box {
         display: block;
