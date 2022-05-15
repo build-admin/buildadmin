@@ -81,8 +81,14 @@ class Version
     public static function getNpmVersion()
     {
         $execOut = CommandExec::instance(false)->getOutputFromPopen('npm-v');
-        if ($execOut && isset($execOut[0]) && self::checkDigitalVersion($execOut[0])) {
-            return $execOut[0];
+        if ($execOut) {
+            if (isset($execOut[0]) && self::checkDigitalVersion($execOut[0])) {
+                return $execOut[0];
+            } else if (isset($execOut[1]) && self::checkDigitalVersion($execOut[1])) {
+                return $execOut[1];
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -91,9 +97,10 @@ class Version
     public static function getCnpmVersion()
     {
         $execOut = CommandExec::instance(false)->getOutputFromPopen('cnpm-v');
-        if ($execOut && isset($execOut[0])) {
-            $preg = '/cnpm@(.+?) \(/is';
-            preg_match($preg, $execOut[0], $result);
+        if ($execOut) {
+            $execOut = implode('', $execOut);
+            $preg    = '/cnpm@(.+?) \(/is';
+            preg_match($preg, $execOut, $result);
             return $result[1] ?? false;
         } else {
             return false;
