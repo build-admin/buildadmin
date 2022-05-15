@@ -19,6 +19,11 @@ class CommandExec
     protected static $instance;
 
     /**
+     * 配置文件名
+     */
+    static $buildConfigFileName = 'buildadmin.php';
+
+    /**
      * 结果输出扩展
      * 每次命令执行有输出时,同时携带扩展数据
      */
@@ -265,5 +270,18 @@ class CommandExec
         } else {
             return false;
         }
+    }
+
+    public function changePackageManager($packageManager = 'none')
+    {
+        $newPackageManager = request()->post('manager', $packageManager);
+
+        // 不保存在数据库中，因为切换包管理器时，数据库资料可能还未配置
+        $oldPackageManager  = Config::get('buildadmin.npm_package_manager');
+        $buildConfigFile    = config_path() . self::$buildConfigFileName;
+        $buildConfigContent = @file_get_contents($buildConfigFile);
+        $buildConfigContent = preg_replace("/'npm_package_manager'(\s+)=>(\s+)'{$oldPackageManager}'/", "'npm_package_manager'\$1=>\$2'{$newPackageManager}'", $buildConfigContent);
+        $result             = @file_put_contents($buildConfigFile, $buildConfigContent);
+        return (bool)$result;
     }
 }

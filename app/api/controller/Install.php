@@ -98,6 +98,26 @@ class Install extends Api
         CommandExec::instance(false)->terminal();
     }
 
+    public function changePackageManager()
+    {
+        // 安装锁
+        if (is_file(public_path() . self::$lockFileName)) {
+            $contents = @file_get_contents(public_path() . self::$lockFileName);
+            if ($contents == self::$InstallationCompletionMark) {
+                return;
+            }
+        }
+
+        $newPackageManager = request()->post('manager', 'none');
+        if (CommandExec::instance(false)->changePackageManager($newPackageManager)) {
+            $this->success('', [
+                'manager' => $newPackageManager
+            ]);
+        } else {
+            $this->error(__('Failed to switch package manager. Please modify the configuration file manually:%s', ['根目录/config/buildadmin.php']));
+        }
+    }
+
     /**
      * 环境基础检查
      */

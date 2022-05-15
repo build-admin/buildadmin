@@ -39,4 +39,5 @@ return [
     'Feof and fgets functions in PHP Ini is disabled'                                                                    => 'Feof and fgets functions in PHP Ini is disabled',
     'Please install NPM first'                                                                                           => 'Please install NPM first',
     'Installation error:%s'                                                                                              => 'Installation error:%s',
+    'Failed to switch package manager. Please modify the configuration file manually:%s'                                 => 'Failed to switch package manager. Please modify the configuration file manually:%s',
 ];
