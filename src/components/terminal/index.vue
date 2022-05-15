@@ -1,5 +1,11 @@
 <template>
-    <el-dialog v-model="terminal.state.show" :title="t('terminal.Terminal')" custom-class="ba-terminal-dialog" :append-to-body="true">
+    <el-dialog
+        v-bind="$attrs"
+        v-model="terminal.state.show"
+        :title="t('terminal.Terminal') + ' - ' + terminal.state.packageManager"
+        custom-class="ba-terminal-dialog"
+        :append-to-body="true"
+    >
         <el-timeline v-if="terminal.state.taskList.length">
             <el-timeline-item
                 v-for="(item, idx) in terminal.state.taskList"
@@ -70,9 +76,31 @@
             }}</el-button>
             <el-button class="terminal-menu-item" v-blur @click="webBuild()">{{ t('terminal.Republish') }}</el-button>
             <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('npm-v', false)">npm -v</el-button>
-            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('install-cnpm', false)">{{ t('terminal.Install cnpm') }}</el-button>
+            <el-button class="terminal-menu-item" v-blur @click="terminal.togglePackageManagerDialog(true)">{{
+                t('Switch package manager')
+            }}</el-button>
             <el-button class="terminal-menu-item" v-blur @click="terminal.clearSuccessTask()">{{ t('terminal.Clean up task list') }}</el-button>
         </el-button-group>
+    </el-dialog>
+
+    <el-dialog v-model="terminal.state.showPackageManagerDialog" custom-class="ba-terminal-dialog" :title="t('Please select package manager')" center>
+        <div class="indent-2">
+            {{
+                t(
+                    'Buildadmin has a read-only Web terminal, which can easily execute NPM install, NPM build and other commands after crud and other operations'
+                )
+            }}
+        </div>
+        <template #footer>
+            <div class="package-manager-dialog-footer">
+                <el-button @click="changePackageManager('npm')">npm</el-button>
+                <el-button @click="changePackageManager('cnpm')">cnpm</el-button>
+                <el-button @click="changePackageManager('pnpm')">pnpm</el-button>
+                <el-button @click="changePackageManager('yarn')">yarn</el-button>
+                <el-button @click="changePackageManager('ni')">ni</el-button>
+                <el-button @click="changePackageManager('none')">{{ t('I want to execute the command manually') }}</el-button>
+            </div>
+        </template>
     </el-dialog>
 </template>
 
@@ -82,6 +110,7 @@ import { useI18n } from 'vue-i18n'
 import { taskStatus } from './constant'
 import { ElMessageBox } from 'element-plus'
 import { ArrowDown, ArrowUp, RefreshRight, Delete } from '@element-plus/icons-vue'
+import { changePackageManager } from '/@/api/install/index'
 
 const { t } = useI18n()
 const terminal = useTerminal()

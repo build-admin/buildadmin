@@ -1,5 +1,6 @@
 import { ElMessage } from 'element-plus'
 import { Axios, getUrl } from '/@/utils/axios'
+import { useTerminal } from '/@/stores/terminal'
 
 const entryFile = '/index.php'
 
@@ -11,6 +12,7 @@ export const commandExecCompleteUrl = entryFile + '/api/install/commandexeccompl
 export const mvDistUrl = entryFile + '/api/install/mvDist'
 export const manualInstallUrl = entryFile + '/api/install/manualInstall'
 export const terminalUrl = entryFile + '/api/install/terminal'
+export const changePackageManagerUrl = entryFile + '/api/install/changePackageManager'
 
 /**
  * 安装环境检查
@@ -60,6 +62,22 @@ export const commandExecComplete = () => {
             })
         }
     })
+}
+
+export const changePackageManager = (val: string) => {
+    const terminal = useTerminal()
+    Axios.post(changePackageManagerUrl, { manager: val }).then((res) => {
+        if (res.data.code == 1) {
+            terminal.changePackageManager(res.data.data.manager)
+        } else {
+            ElMessage({
+                type: 'error',
+                message: res.data.msg,
+                center: true,
+            })
+        }
+    })
+    terminal.togglePackageManagerDialog(false)
 }
 
 /**

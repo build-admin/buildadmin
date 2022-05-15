@@ -14,6 +14,8 @@ export const useTerminal = defineStore(
             show: false,
             showDot: false,
             taskList: [],
+            packageManager: 'cnpm',
+            showPackageManagerDialog: false,
         })
 
         function init() {
@@ -33,6 +35,15 @@ export const useTerminal = defineStore(
 
         function toggleDot(val: boolean = !state.showDot) {
             state.showDot = val
+        }
+
+        function togglePackageManagerDialog(val: boolean = !state.showPackageManagerDialog) {
+            toggle(!val)
+            state.showPackageManagerDialog = val
+        }
+
+        function changePackageManager(val: string) {
+            state.packageManager = val
         }
 
         function setTaskStatus(idx: number, status: number) {
@@ -200,6 +211,8 @@ export const useTerminal = defineStore(
             startTask,
             retryTask,
             clearSuccessTask,
+            togglePackageManagerDialog,
+            changePackageManager,
         }
     },
     {

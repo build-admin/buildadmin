@@ -21,6 +21,8 @@ export interface Terminal {
     show: boolean
     showDot: boolean
     taskList: TaskItem[]
+    packageManager: string
+    showPackageManagerDialog: boolean
 }
 
 export interface Common {

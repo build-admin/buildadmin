@@ -130,4 +130,9 @@ export default {
     'If cnpm is not installed, execute:npm run build:online': 'If cnpm is not installed, execute:npm run build:online',
     'It is recommended to delete the root directory / public / install folder; This page is only visible on your device.':
         'It is recommended to delete the root directory / public / install folder; This page is only visible on your device.',
+    'Switch package manager': 'Switch package manager',
+    'Please select package manager': 'Please select package manager',
+    'Buildadmin has a read-only Web terminal, which can easily execute NPM install, NPM build and other commands after crud and other operations':
+        'Buildadmin has a read-only Web terminal, which can easily execute NPM install, NPM build and other commands after crud and other operations',
+    'I want to execute the command manually': 'I want to execute the command manually',
 }
