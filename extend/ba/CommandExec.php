@@ -197,7 +197,10 @@ class CommandExec
             $preg2 = "/added ([0-9]*) packages, removed/i";
             $preg3 = "/removed ([0-9]*) packages, and changed ([0-9]*) packages in/i";
             if (preg_match($preg, $output) || preg_match($preg2, $output) || preg_match($preg3, $output)) {
-                $this->outputFlag('exec-success');
+                // 获取一次cnpm版本号
+                if (Version::getCnpmVersion()) {
+                    $this->outputFlag('exec-success');
+                }
             }
         } elseif ($this->currentCommandKey == 'web-build') {
             if (strpos(strtolower($output), 'build successfully!') !== false) {
