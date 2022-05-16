@@ -8,12 +8,17 @@ export const useCommon = defineStore(
     () => {
         const state: Common = reactive({
             step: 'check',
+            showStartDialog: true,
         })
 
         function setStep(val: Common['step']) {
             state.step = val
         }
-        return { state, setStep }
+
+        function toggleStartDialog(val: boolean) {
+            state.showStartDialog = val
+        }
+        return { state, setStep, toggleStartDialog }
     },
     {
         persist: {

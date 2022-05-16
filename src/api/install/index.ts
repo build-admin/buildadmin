@@ -25,7 +25,10 @@ export const getEnvBaseCheck = () => {
  * npm环境检查
  */
 export const getEnvNpmCheck = () => {
-    return Axios.get(envNpmCheckUrl)
+    const terminal = useTerminal()
+    return Axios.post(envNpmCheckUrl, {
+        manager: terminal.state.packageManager,
+    })
 }
 
 /**

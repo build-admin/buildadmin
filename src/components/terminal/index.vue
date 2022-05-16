@@ -78,9 +78,7 @@
             }}</el-button>
             <el-button class="terminal-menu-item" v-blur @click="webBuild()">{{ t('terminal.Republish') }}</el-button>
             <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('version-view.npm', false)">npm -v</el-button>
-            <el-button class="terminal-menu-item" v-blur @click="terminal.togglePackageManagerDialog(true)">{{
-                t('Switch package manager')
-            }}</el-button>
+            <el-button class="terminal-menu-item" v-blur @click="onSwitchPackageManager">{{ t('Switch package manager') }}</el-button>
             <el-button class="terminal-menu-item" v-blur @click="terminal.clearSuccessTask()">{{ t('terminal.Clean up task list') }}</el-button>
         </el-button-group>
     </el-dialog>
@@ -161,6 +159,17 @@ const webBuild = () => {
         type: 'warning',
     }).then(() => {
         terminal.addTaskPM('web-build')
+    })
+}
+
+const onSwitchPackageManager = () => {
+    ElMessageBox.confirm(t('Setup will restart. Are you sure you want to switch package manager?'), t('Reminder'), {
+        confirmButtonText: t('Confirm'),
+        cancelButtonText: t('Cancel'),
+        type: 'warning',
+    }).then(() => {
+        window.localStorage.clear()
+        location.reload()
     })
 }
 </script>

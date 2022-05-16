@@ -6,7 +6,7 @@
             <transition-group name="slide-bottom">
                 <div class="table-item" :class="idx" v-for="(item, idx) in state.envCheckData" :key="idx + item.describe + item.state">
                     <div class="table-label">
-                        {{ t(idx) }}
+                        {{ idx.toString() == 'npm_package_manager' ? t(idx) + ' ' + terminal.state.packageManager : t(idx) }}
                         <template v-if="item.link && item.link.length > 0">
                             <span
                                 v-for="(link, linkidx) in item.link"
@@ -44,7 +44,7 @@
         </div>
     </div>
     <el-dialog
-        v-model="state.showStartDialog"
+        v-model="common.state.showStartDialog"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
         :show-close="false"
@@ -84,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import Header from '../components/header/index.vue'
 import { getEnvBaseCheck, getEnvNpmCheck } from '/@/api/install/index'
 import { useI18n } from 'vue-i18n'
@@ -109,7 +109,7 @@ const state: CheckState = reactive({
     checkType: {
         base: 'Basic environment',
         npm: 'NPM correlation',
-        npminstall: 'Test cnpm install',
+        npminstall: 'Test npm install',
         done: 'Check complete',
     },
     checkTypeIndex: 'base',
@@ -119,10 +119,9 @@ const state: CheckState = reactive({
         executing: 'executing',
     },
     checkDoneIndex: 'executing',
-    showStartDialog: true,
     startForm: {
         lang: locale.value,
-        packageManager: 'cnpm',
+        packageManager: terminal.state.packageManager,
     },
 })
 
@@ -134,11 +133,12 @@ const getSrc = (name: string) => {
 
 const changeLang = (val: string) => {
     window.localStorage.setItem('ba-lang', val)
-    locale.value = val
+    location.reload()
 }
 
 const startInstall = () => {
-    state.showStartDialog = false
+    common.toggleStartDialog(false)
+    terminal.changePackageManager(state.startForm.packageManager)
     // 获取基础环境检查结果
     getEnvBaseCheck().then((res) => {
         if (res.data.code != 1) {
@@ -155,34 +155,35 @@ const startInstall = () => {
 const onLabelNeed = (link: CheckLink) => {
     if (link.type == 'faq') {
         window.open(link.url)
-    } else if (link.type == 'install-cnpm') {
-        // 安装cnpm
+    } else if (link.type == 'install-package-manager') {
+        // 安装包管理器
         state.checkDoneIndex = 'executing'
         terminal.toggle(true)
-        terminal.addTask('install-package-manager.cnpm', true, (res: number) => {
+        terminal.addTaskPM('install-package-manager', true, (res: number) => {
             terminal.toggle(false)
             checkSubmit()
             if (res == taskStatus.Failed) {
-                showError(t('Sorry, the automatic installation of cnpm failed. Please complete the installation of cnpm manually!'))
+                showError(t('Sorry, the automatic installation of package manager failed. Please complete the installation manually!'))
             } else if (res == taskStatus.Success) {
                 state.envCheckData = Object.assign({}, state.envCheckData, {
                     success: {
-                        describe: t('Cnpm is ready!'),
+                        describe: t('PM is ready!'),
                         state: 'ok',
                         link: [],
                     },
                 })
                 state.envCheckData = Object.assign({}, state.envCheckData, {
-                    cnpm_version: {
+                    npm_package_manager: {
                         describe: t('already installed'),
                         state: 'ok',
                         link: [],
+                        pm: terminal.state.packageManager,
                     },
                 })
-                addCheckCnpmInstall()
+                addCheckNpmInstall()
             }
         })
-    } else if (link.type == 'test-cnpm-install') {
+    } else if (link.type == 'test-npm-install') {
         axiosNpmTestInstall()
     }
 }
@@ -226,25 +227,25 @@ const envNpmCheck = () => {
         }
         state.envCheckData = Object.assign({}, state.envCheckData, res.data.data)
 
-        if (res.data.data.cnpm_version.state == 'ok') {
-            addCheckCnpmInstall()
+        if (res.data.data.npm_package_manager.state == 'ok') {
+            addCheckNpmInstall()
         }
     })
 }
 
 /**
- * 添加点击测试cnpm install按钮
+ * 添加点击测试npm install按钮
  */
-const addCheckCnpmInstall = () => {
+const addCheckNpmInstall = () => {
     state.envCheckData = Object.assign({}, state.envCheckData, {
-        'check cnpm install': {
+        'check npm install': {
             describe: '',
             state: 'warn',
             link: [
                 {
                     name: t('Click to test'),
-                    title: t('Click to test') + ' cnpm install',
-                    type: 'test-cnpm-install',
+                    title: t('Click to test') + ' npm install',
+                    type: 'test-npm-install',
                 },
             ],
         },
@@ -257,14 +258,14 @@ const addCheckCnpmInstall = () => {
 const axiosNpmTestInstall = () => {
     state.checkDoneIndex = 'executing'
     state.checkTypeIndex = 'npminstall'
-    closeTableLabel('check cnpm install')
+    closeTableLabel('check npm install')
     terminal.toggle(true)
     terminal.addTaskPM('test-install', true, (res: number) => {
         checkSubmit()
         terminal.toggle(false)
         if (res == taskStatus.Failed) {
-            let cnpmInstall = {
-                'cnpm-install': {
+            let npmInstall = {
+                'test-npm-install': {
                     describe: t('Command execution test failed'),
                     state: 'warn',
                     link: [
@@ -278,10 +279,10 @@ const axiosNpmTestInstall = () => {
                     ],
                 },
             }
-            state.envCheckData = Object.assign({}, state.envCheckData, cnpmInstall)
+            state.envCheckData = Object.assign({}, state.envCheckData, npmInstall)
         } else if (res == taskStatus.Success) {
-            let cnpmInstall = { 'cnpm-install': { describe: t('Can execute'), state: 'ok', link: [] } }
-            state.envCheckData = Object.assign({}, state.envCheckData, cnpmInstall)
+            let npmInstall = { 'test-npm-install': { describe: t('Can execute'), state: 'ok', link: [] } }
+            state.envCheckData = Object.assign({}, state.envCheckData, npmInstall)
         }
     })
 }
@@ -308,6 +309,12 @@ const checkSubmit = () => {
     state.checkDoneIndex = 'ok'
     return true
 }
+
+onMounted(() => {
+    if (!common.state.showStartDialog) {
+        startInstall()
+    }
+})
 </script>
 
 <style scoped lang="scss">

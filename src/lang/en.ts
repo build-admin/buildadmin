@@ -3,14 +3,13 @@ export default {
     'Environmental inspection': 'Environmental inspection',
     'Checking installation environment': 'Checking installation environment',
     'Current execution to:': 'Current execution to:',
-    'Installing cnpm': 'Installing cnpm',
     'Step 2 site configuration': 'Step 2 site configuration',
     'Environmental inspection passed': 'Environmental inspection passed',
     'This environmental check failed': 'This environmental check failed',
     'The environment check failed, but the installation can continue': 'The environment check failed/unconfirmed, but the installation can continue',
     'Basic environment': 'Basic environment',
     'NPM correlation': 'NPM correlation',
-    'Test cnpm install': 'Test cnpm install',
+    'Test npm install': 'Test npm install',
     'Check complete': 'Check complete',
     'Congratulations, the installation can continue~': 'Congratulations, the installation can continue~',
     'Sorry, the necessary installation environment conditions have not been met, please check the above form!':
@@ -28,21 +27,21 @@ export default {
     php_popen: 'PHP Popen and Pclose permission',
     php_file_operation: 'PHP File operation related',
     npm_version: 'NPM Version',
-    cnpm_version: 'CNPM Version',
+    npm_package_manager: 'NPM package manager',
     nodejs_version: 'node.js Version',
     error: 'error',
     success: 'success',
-    'cnpm-install': 'Test cnpm install',
-    'check cnpm install': 'Do you want to test `cnpm install`',
+    'test-npm-install': 'Test npm install',
+    'check npm install': 'Test command execution?',
     'Click to test': 'Click to test',
     'Can execute': 'Can execute',
     'Command execution test failed': 'Command execution test failed',
-    'Cnpm is ready!': 'Cnpm is ready!',
+    'PM is ready!': 'The NPM package manager is ready!',
     'already installed': 'already installed',
     'The installation can continue, and some operations need to be completed manually':
         'The installation can continue, and some operations need to be completed manually',
-    'Sorry, the automatic installation of cnpm failed. Please complete the installation of cnpm manually!':
-        'Sorry, the automatic installation of cnpm failed. Please complete the installation of cnpm manually!',
+    'Sorry, the automatic installation of package manager failed. Please complete the installation manually!':
+        'Sorry, the automatic installation of package manager failed. Please complete the installation manually!',
     'Click to see how to solve it': 'Click to see how to solve it',
     'How to solve': 'How to solve',
     terminal: 'terminal',
@@ -107,8 +106,6 @@ export default {
     'After installation, please complete the unfinished matters manually': 'After installation, please complete the unfinished matters manually',
     'Automatically executing the build command on the web side': 'Automatically executing the build command on the web side',
     'Installation complete': 'Installation complete',
-    "The 'cnpm install' command on the web side is being automatically executed":
-        "The 'cnpm install' command on the web side is being automatically executed",
     'The table prefix can only contain alphanumeric characters and underscores, and starts with a letter':
         'The table prefix can only contain alphanumeric characters and underscores, and starts with a letter',
     'Manual Install 1': 'The automatic execution of the command failed. Please complete the unfinished matters manually.',
@@ -142,4 +139,5 @@ export default {
     'The system has a Web terminal. Please select an installed or your favorite NPM package manager':
         'The system has a Web terminal. Please select an installed or your favorite NPM package manager',
     'Start installation': 'Start installation',
+    'Setup will restart. Are you sure you want to switch package manager?': 'Setup will restart. Are you sure you want to switch package manager?',
 }

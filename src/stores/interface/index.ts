@@ -28,6 +28,8 @@ export interface Terminal {
 export interface Common {
     // 安装步骤
     step: 'check' | 'config' | 'done' | 'manualInstall'
+    // 显示开始dialog
+    showStartDialog: boolean
 }
 
 export interface CheckState {
@@ -54,7 +56,6 @@ export interface CheckState {
         executing: string
     }
     checkDoneIndex: 'ok' | 'fail' | 'executing'
-    showStartDialog: boolean
     startForm: {
         lang: string
         packageManager: string

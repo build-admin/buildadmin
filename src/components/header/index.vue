@@ -22,7 +22,7 @@ const { t, locale } = useI18n()
 
 const selectLang = (name: string) => {
     window.localStorage.setItem('ba-lang', name)
-    locale.value = name
+    location.reload()
 }
 </script>
 
