@@ -601,10 +601,14 @@ class Install extends Api
      */
     private function commandExecutionCheck()
     {
+        $pm = Config::get('buildadmin.npm_package_manager');
+        if ($pm == 'none') {
+            return false;
+        }
         $check['phpPopen']             = function_exists('popen') && function_exists('pclose');
         $check['phpFileOperation']     = function_exists('feof') && function_exists('fgets');
         $check['npmVersionCompare']    = Version::compare(self::$needDependentVersion['npm'], Version::getVersion('npm'));
-        $check['cnpmVersionCompare']   = Version::compare(self::$needDependentVersion['cnpm'], Version::getCnpmVersion());
+        $check['pmVersionCompare']     = Version::compare(self::$needDependentVersion[$pm], Version::getVersion($pm));
         $check['nodejsVersionCompare'] = Version::compare(self::$needDependentVersion['node'], Version::getVersion('node'));
 
         $envOk = true;
