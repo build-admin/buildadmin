@@ -284,6 +284,9 @@ class Install extends Api
             $this->error('', [], 2);
         }
 
+        $packageManager = request()->post('manager', 'none');
+
+        // npm
         $npmVersion        = Version::getVersion('npm');
         $npmVersionCompare = Version::compare(self::$needDependentVersion['npm'], $npmVersion);
         if (!$npmVersionCompare || !$npmVersion) {
@@ -301,6 +304,53 @@ class Install extends Api
                     'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653897'
                 ]
             ];
+        }
+
+        // 包管理器
+        if (in_array($packageManager, ['npm', 'cnpm', 'pnpm', 'yarn'])) {
+            $pmVersion        = Version::getVersion($packageManager);
+            $pmVersionCompare = Version::compare(self::$needDependentVersion[$packageManager], $pmVersion);
+
+            if (!$pmVersion) {
+                // 安装
+                $pmVersionLink[] = [
+                    // 需要版本
+                    'name' => __('need') . ' >= ' . self::$needDependentVersion[$packageManager],
+                    'type' => 'text'
+                ];
+                if ($npmVersionCompare) {
+                    $pmVersionLink[] = [
+                        // 点击安装
+                        'name'  => __('Click Install %s', [$packageManager]),
+                        'title' => '',
+                        'type'  => 'install-package-manager'
+                    ];
+                } else {
+                    $pmVersionLink[] = [
+                        // 请先安装npm
+                        'name' => __('Please install NPM first'),
+                        'type' => 'text'
+                    ];
+                }
+            } elseif (!$pmVersionCompare) {
+                // 版本不足
+                $pmVersionLink[] = [
+                    // 需要版本
+                    'name' => __('need') . ' >= ' . self::$needDependentVersion[$packageManager],
+                    'type' => 'text'
+                ];
+                $pmVersionLink[] = [
+                    // 请升级
+                    'name' => __('Please upgrade %s version', [$packageManager]),
+                    'type' => 'text'
+                ];
+            }
+        } elseif ($packageManager == 'ni') {
+            $pmVersion        = __('nothing');
+            $pmVersionCompare = true;
+        } else {
+            $pmVersion        = __('nothing');
+            $pmVersionCompare = false;
         }
 
         $cnpmVersion        = Version::getCnpmVersion();
@@ -341,6 +391,7 @@ class Install extends Api
             ];
         }
 
+        // nodejs
         $nodejsVersion        = Version::getVersion('node');
         $nodejsVersionCompare = Version::compare(self::$needDependentVersion['node'], $nodejsVersion);
         if (!$nodejsVersionCompare || !$nodejsVersion) {
@@ -361,20 +412,20 @@ class Install extends Api
         }
 
         $this->success('', [
-            'npm_version'    => [
+            'npm_version'         => [
                 'describe' => $npmVersion ? $npmVersion : __('Acquisition failed'),
                 'state'    => $npmVersionCompare ? self::$ok : self::$warn,
                 'link'     => $npmVersionLink ?? [],
             ],
-            'nodejs_version' => [
+            'nodejs_version'      => [
                 'describe' => $nodejsVersion ? $nodejsVersion : __('Acquisition failed'),
                 'state'    => $nodejsVersionCompare ? self::$ok : self::$warn,
                 'link'     => $nodejsVersionLink ?? []
             ],
-            'cnpm_version'   => [
-                'describe' => $cnpmVersion ? $cnpmVersion : __('Acquisition failed'),
-                'state'    => $cnpmVersionCompare ? self::$ok : self::$warn,
-                'link'     => $cnpmVersionLink ?? []
+            'npm_package_manager' => [
+                'describe' => $pmVersion ? $pmVersion : __('Acquisition failed'),
+                'state'    => $pmVersionCompare ? self::$ok : self::$warn,
+                'link'     => $pmVersionLink ?? [],
             ]
         ]);
     }

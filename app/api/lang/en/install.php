@@ -12,8 +12,7 @@ return [
     'disabled'                                                                                                           => 'disabled',
     'Allow operation'                                                                                                    => 'Allow operation',
     'Acquisition failed'                                                                                                 => 'Check failed',
-    'It is recommended to add cnpm. Click Install'                                                                       => 'It is recommended to add cnpm. Click Install',
-    'Click Install cnpm'                                                                                                 => 'Click Install cnpm',
+    'Click Install %s'                                                                                                   => '点击安装%s',
     'Writable'                                                                                                           => 'Writable',
     'No write permission'                                                                                                => 'No write permission',
     'already installed'                                                                                                  => 'Already installed',
@@ -40,4 +39,6 @@ return [
     'Please install NPM first'                                                                                           => 'Please install NPM first',
     'Installation error:%s'                                                                                              => 'Installation error:%s',
     'Failed to switch package manager. Please modify the configuration file manually:%s'                                 => 'Failed to switch package manager. Please modify the configuration file manually:%s',
+    'Please upgrade %s version'                                                                                          => 'Please upgrade %s version',
+    'nothing'                                                                                                            => 'nothing',
 ];

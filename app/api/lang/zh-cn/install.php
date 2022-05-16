@@ -12,8 +12,7 @@ return [
     'disabled'                                                                                                           => '已禁用',
     'Allow operation'                                                                                                    => '允许操作',
     'Acquisition failed'                                                                                                 => '获取失败',
-    'It is recommended to add cnpm. Click Install'                                                                       => '建议添加cnpm,可点击安装',
-    'Click Install cnpm'                                                                                                 => '点击安装cnpm',
+    'Click Install %s'                                                                                                   => '点击安装%s',
     'Writable'                                                                                                           => '可写',
     'No write permission'                                                                                                => '无写权限',
     'already installed'                                                                                                  => '已安装',
@@ -40,4 +39,6 @@ return [
     'Please install NPM first'                                                                                           => '请先安装npm',
     'Installation error:%s'                                                                                              => '安装出错：%s',
     'Failed to switch package manager. Please modify the configuration file manually:%s'                                 => '包管理器切换失败，请手动修改配置文件：%s',
+    'Please upgrade %s version'                                                                                          => '请升级%s版本',
+    'nothing'                                                                                                            => '无',
 ];

@@ -34,6 +34,10 @@ class Version
             return true;
         }
 
+        // 丢弃'-'后面的内容
+        if (strpos($v1, '-') !== false) $v1 = explode('-', $v1)[0];
+        if (strpos($v2, '-') !== false) $v2 = explode('-', $v2)[0];
+
         $v1 = explode('.', $v1);
         $v2 = explode('.', $v2);
         if (!is_array($v1) || !is_array($v2)) {
