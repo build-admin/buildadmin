@@ -54,6 +54,11 @@ export interface CheckState {
         executing: string
     }
     checkDoneIndex: 'ok' | 'fail' | 'executing'
+    showStartDialog: boolean
+    startForm: {
+        lang: string
+        packageManager: string
+    }
 }
 
 export interface CheckLink {

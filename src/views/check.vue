@@ -43,6 +43,44 @@
             <div class="button" @click="goConfig" :class="state.checkDoneIndex == 'ok' ? 'pass' : ''">{{ t('Step 2 site configuration') }}</div>
         </div>
     </div>
+    <el-dialog
+        v-model="state.showStartDialog"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        :show-close="false"
+        :destroy-on-close="true"
+        custom-class="ba-terminal-dialog"
+        :title="t('Ready to start')"
+        center
+    >
+        <el-form @keyup.enter="startInstall" class="start-from" label-position="left" label-width="120px" :model="state.startForm">
+            <el-form-item :label="t('language')">
+                <el-select @change="changeLang" class="w100" v-model="state.startForm.lang">
+                    <el-option label="中文简体" value="zh-cn"></el-option>
+                    <el-option label="English" value="en"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item :label="t('NPM package manager')">
+                <el-select class="w100" v-model="state.startForm.packageManager">
+                    <el-option label="npm" value="npm"></el-option>
+                    <el-option label="cnpm" value="cnpm"></el-option>
+                    <el-option label="pnpm" value="pnpm"></el-option>
+                    <el-option label="yarn" value="yarn"></el-option>
+                    <el-option label="ni" value="ni"></el-option>
+                    <el-option :label="t('I want to execute the command manually')" value="none"></el-option>
+                </el-select>
+                <div class="block-help">
+                    {{ t('The system has a Web terminal. Please select an installed or your favorite NPM package manager') }}
+                </div>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <el-button @click="startInstall" type="primary" size="large" round>
+                <el-icon><Promotion /></el-icon>
+                <span class="start-install">{{ t('Start installation') }}</span>
+            </el-button>
+        </template>
+    </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -55,8 +93,9 @@ import { useCommon } from '/@/stores/common'
 import { useTerminal } from '/@/stores/terminal'
 import { ElMessage } from 'element-plus'
 import { taskStatus } from '/@/components/terminal/constant'
+import { Promotion } from '@element-plus/icons-vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const common = useCommon()
 const terminal = useTerminal()
 
@@ -80,12 +119,34 @@ const state: CheckState = reactive({
         executing: 'executing',
     },
     checkDoneIndex: 'executing',
+    showStartDialog: true,
+    startForm: {
+        lang: locale.value,
+        packageManager: 'cnpm',
+    },
 })
 
 const modules = import.meta.globEager('../assets/img/install/*.png')
 const getSrc = (name: string) => {
     const path = `../assets/img/install/${name}.png`
     return modules[path].default
+}
+
+const changeLang = (val: string) => {
+    window.localStorage.setItem('ba-lang', val)
+    locale.value = val
+}
+
+const startInstall = () => {
+    state.showStartDialog = false
+    // 获取基础环境检查结果
+    getEnvBaseCheck().then((res) => {
+        if (res.data.code != 1) {
+            return showError(res.data.msg)
+        }
+        envNpmCheck()
+        state.envCheckData = res.data.data
+    })
 }
 
 /**
@@ -150,17 +211,6 @@ const showError = (msg: string) => {
         center: true,
     })
 }
-
-/**
- * 获取基础环境检查结果
- */
-getEnvBaseCheck().then((res) => {
-    if (res.data.code != 1) {
-        return showError(res.data.msg)
-    }
-    envNpmCheck()
-    state.envCheckData = res.data.data
-})
 
 /**
  * 获取npm检查结果
@@ -352,5 +402,20 @@ const checkSubmit = () => {
 }
 .button.pass {
     opacity: 1;
+}
+.start-install {
+    margin-left: 10px;
+}
+.w100 {
+    width: 100%;
+}
+.start-from :deep(.el-input__inner) {
+    line-height: 29px;
+}
+.block-help {
+    font-size: 13px;
+    color: #606266;
+    padding-top: 5px;
+    line-height: 15px;
 }
 </style>

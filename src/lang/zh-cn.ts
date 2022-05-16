@@ -132,4 +132,10 @@ export default {
         '只读WEB终端，可以在CRUD等操作后方便的执行 npm install、npm build 等命令，请在下方选择一个已安装好或您喜欢的的 NPM 包管理器',
     'I want to execute the command manually': '我想手动执行命令',
     Reminder: '温馨提醒',
+    'Ready to start': '准备开始',
+    language: '语言',
+    'NPM package manager': 'NPM包管理器',
+    'The system has a Web terminal. Please select an installed or your favorite NPM package manager':
+        '系统拥有WEB终端，请选择一个已安装好或您喜欢的的NPM包管理器',
+    'Start installation': '开始安装',
 }

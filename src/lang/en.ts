@@ -136,4 +136,10 @@ export default {
         'Read only Web terminal can easily execute NPM install, NPM build and other commands after crud and other operations. Please select an installed or your favorite NPM package manager below',
     'I want to execute the command manually': 'I want to execute the command manually',
     Reminder: 'Reminder',
+    'Ready to start': 'Ready to start',
+    language: 'language',
+    'NPM package manager': 'NPM package manager',
+    'The system has a Web terminal. Please select an installed or your favorite NPM package manager':
+        'The system has a Web terminal. Please select an installed or your favorite NPM package manager',
+    'Start installation': 'Start installation',
 }
