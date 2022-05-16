@@ -80,7 +80,7 @@ export const changePackageManager = (val: string) => {
             })
         }
     })
-    terminal.togglePackageManagerDialog(false)
+    // terminal.togglePackageManagerDialog(false)
 }
 
 /**

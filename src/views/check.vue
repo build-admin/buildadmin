@@ -138,8 +138,10 @@ const changeLang = (val: string) => {
 }
 
 const startInstall = () => {
+    if (common.state.showStartDialog) {
+        changePackageManager(state.startForm.packageManager)
+    }
     common.toggleStartDialog(false)
-    changePackageManager(state.startForm.packageManager)
     // 获取基础环境检查结果
     getEnvBaseCheck().then((res) => {
         if (res.data.code != 1) {
