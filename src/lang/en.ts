@@ -135,4 +135,5 @@ export default {
     'Buildadmin has a read-only Web terminal, which can easily execute NPM install, NPM build and other commands after crud and other operations':
         'Buildadmin has a read-only Web terminal, which can easily execute NPM install, NPM build and other commands after crud and other operations',
     'I want to execute the command manually': 'I want to execute the command manually',
+    'Reminder': 'Reminder',
 }

@@ -98,7 +98,7 @@ const onLabelNeed = (link: CheckLink) => {
         // 安装cnpm
         state.checkDoneIndex = 'executing'
         terminal.toggle(true)
-        terminal.addTask('install-cnpm', true, (res: number) => {
+        terminal.addTask('install-package-manager.cnpm', true, (res: number) => {
             terminal.toggle(false)
             checkSubmit()
             if (res == taskStatus.Failed) {
@@ -209,7 +209,7 @@ const axiosNpmTestInstall = () => {
     state.checkTypeIndex = 'npminstall'
     closeTableLabel('check cnpm install')
     terminal.toggle(true)
-    terminal.addTask('test-install', true, (res: number) => {
+    terminal.addTaskPM('test-install', true, (res: number) => {
         checkSubmit()
         terminal.toggle(false)
         if (res == taskStatus.Failed) {

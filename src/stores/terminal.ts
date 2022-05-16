@@ -96,6 +96,10 @@ export const useTerminal = defineStore(
             startTask()
         }
 
+        function addTaskPM(command: string, blockOnFailure: boolean = true, callback: Function = () => {}) {
+            addTask(command + '.' + state.packageManager, blockOnFailure, callback)
+        }
+
         function delTask(idx: number) {
             if (state.taskList[idx].status != taskStatus.Connecting && state.taskList[idx].status != taskStatus.Executing) {
                 state.taskList.splice(idx, 1)
@@ -207,6 +211,7 @@ export const useTerminal = defineStore(
             setTaskShowMessage,
             addTaskMessage,
             addTask,
+            addTaskPM,
             delTask,
             startTask,
             retryTask,

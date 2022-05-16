@@ -131,4 +131,5 @@ export default {
     'Buildadmin has a read-only Web terminal, which can easily execute NPM install, NPM build and other commands after crud and other operations':
         'BuildAdmin 拥有只读WEB终端，可以在CRUD等操作后方便的执行 npm install、npm build 等命令',
     'I want to execute the command manually': '我想手动执行命令',
+    'Reminder': '温馨提醒',
 }
