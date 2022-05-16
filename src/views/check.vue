@@ -94,6 +94,7 @@ import { useTerminal } from '/@/stores/terminal'
 import { ElMessage } from 'element-plus'
 import { taskStatus } from '/@/components/terminal/constant'
 import { Promotion } from '@element-plus/icons-vue'
+import { changePackageManager } from '/@/api/install/index'
 
 const { t, locale } = useI18n()
 const common = useCommon()
@@ -138,7 +139,7 @@ const changeLang = (val: string) => {
 
 const startInstall = () => {
     common.toggleStartDialog(false)
-    terminal.changePackageManager(state.startForm.packageManager)
+    changePackageManager(state.startForm.packageManager)
     // 获取基础环境检查结果
     getEnvBaseCheck().then((res) => {
         if (res.data.code != 1) {
