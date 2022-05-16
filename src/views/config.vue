@@ -51,9 +51,12 @@
                         <div v-show="state.databaseCheck == 'connecting'" class="connecting-prompt">
                             <span>{{ t('Test connection to data server') }}</span>
                         </div>
-                        <el-button type="primary" class="button" @click="submitBaseConfig(formRef)" :loading="state.baseConfigSubmitState">{{
-                            t('Install now')
-                        }}</el-button>
+                        <div class="footer-buttons">
+                            <el-button class="button" @click="common.setStep('check')">{{ t('Previous step') }}</el-button>
+                            <el-button type="primary" class="button" @click="submitBaseConfig(formRef)" :loading="state.baseConfigSubmitState">{{
+                                t('Install now')
+                            }}</el-button>
+                        </div>
                     </div>
                 </transition>
             </el-form>
@@ -450,10 +453,16 @@ onUnmounted(() => {
             }
         }
     }
-    .button {
+    .footer-buttons {
         margin-top: 20px;
         width: 100%;
-        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .button {
+            width: 50%;
+            height: 42px;
+        }
     }
     .connecting-prompt {
         position: fixed;

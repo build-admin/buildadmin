@@ -141,4 +141,5 @@ export default {
     'Start installation': 'Start installation',
     'Setup will restart. Are you sure you want to switch package manager?': 'Setup will restart. Are you sure you want to switch package manager?',
     'None - manual execution': 'None - manual execution',
+    'Previous step': 'Previous step',
 }

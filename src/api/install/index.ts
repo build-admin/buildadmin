@@ -73,11 +73,13 @@ export const changePackageManager = (val: string) => {
         if (res.data.code == 1) {
             terminal.changePackageManager(res.data.data.manager)
         } else {
-            ElMessage({
-                type: 'error',
-                message: res.data.msg,
-                center: true,
-            })
+            if (res.data.msg) {
+                ElMessage({
+                    type: 'error',
+                    message: res.data.msg,
+                    center: true,
+                })
+            }
         }
     })
     // terminal.togglePackageManagerDialog(false)
