@@ -220,7 +220,8 @@ class CommandExec
             return strpos(strtolower($output), 'all packages installed') !== false;
         } elseif ($name == 'pnpm') {
             $preg = "/Progress: resolved ([0-9]*), reused ([0-9]*), downloaded ([0-9]*), added ([0-9]*), done/i";
-            return preg_match($preg, $output);
+            $preg2 = "/Lockfile is up-to-date, resolution step is skipped/i";
+            return preg_match($preg, $output) || preg_match($preg2, $output);
         } elseif ($name == 'yarn') {
             return strpos(strtolower($output), 'done in ') !== false;
         } else {
