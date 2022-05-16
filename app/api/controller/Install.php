@@ -44,24 +44,16 @@ class Install extends Api
     static $distDir = 'dist';
 
     /**
-     * 需要的PHP版本
+     * 需要的依赖版本
      */
-    static $needPHPVersion = '7.1.0';
-
-    /**
-     * 需要的Npm版本
-     */
-    static $needNpmVersion = '7.0.0';
-
-    /**
-     * 需要的Cnpm版本
-     */
-    static $needCnpmVersion = '7.1.0';
-
-    /**
-     * 需要的NodeJs版本
-     */
-    static $needNodejsVersion = '14.13.1';
+    static $needDependentVersion = [
+        'php'  => '7.1.0',
+        'npm'  => '7.0.0',
+        'cnpm' => '7.1.0',
+        'node' => '14.13.1',
+        'yarn' => '1.2.0',
+        'pnpm' => '6.32.13',
+    ];
 
     /**
      * 安装完成标记
@@ -130,12 +122,12 @@ class Install extends Api
 
         // php版本-start
         $phpVersion        = phpversion();
-        $phpVersionCompare = Version::compare(self::$needPHPVersion, $phpVersion);
+        $phpVersionCompare = Version::compare(self::$needDependentVersion['php'], $phpVersion);
         if (!$phpVersionCompare) {
             $phpVersionLink = [
                 [
                     // 需要PHP版本
-                    'name' => __('need') . ' >= ' . self::$needPHPVersion,
+                    'name' => __('need') . ' >= ' . self::$needDependentVersion['php'],
                     'type' => 'text'
                 ],
                 [
@@ -292,13 +284,13 @@ class Install extends Api
             $this->error('', [], 2);
         }
 
-        $npmVersion        = Version::getNpmVersion();
-        $npmVersionCompare = Version::compare(self::$needNpmVersion, $npmVersion);
+        $npmVersion        = Version::getVersion('npm');
+        $npmVersionCompare = Version::compare(self::$needDependentVersion['npm'], $npmVersion);
         if (!$npmVersionCompare || !$npmVersion) {
             $npmVersionLink = [
                 [
                     // 需要版本
-                    'name' => __('need') . ' >= ' . self::$needNpmVersion,
+                    'name' => __('need') . ' >= ' . self::$needDependentVersion['npm'],
                     'type' => 'text'
                 ],
                 [
@@ -312,11 +304,11 @@ class Install extends Api
         }
 
         $cnpmVersion        = Version::getCnpmVersion();
-        $cnpmVersionCompare = Version::compare(self::$needCnpmVersion, $cnpmVersion);
+        $cnpmVersionCompare = Version::compare(self::$needDependentVersion['cnpm'], $cnpmVersion);
         if (!$cnpmVersionCompare || !$cnpmVersion) {
             $cnpmVersionLink[] = [
                 // 需要版本
-                'name' => __('need') . ' >= ' . self::$needCnpmVersion,
+                'name' => __('need') . ' >= ' . self::$needDependentVersion['cnpm'],
                 'type' => 'text'
             ];
 
@@ -337,7 +329,7 @@ class Install extends Api
         } elseif (!$cnpmVersionCompare && $cnpmVersion) {
             $cnpmVersionLink[] = [
                 // 需要版本
-                'name' => __('need') . ' >= ' . self::$needCnpmVersion,
+                'name' => __('need') . ' >= ' . self::$needDependentVersion['cnpm'],
                 'type' => 'text'
             ];
             $cnpmVersionLink[] = [
@@ -349,13 +341,13 @@ class Install extends Api
             ];
         }
 
-        $nodejsVersion        = Version::getNodeJsVersion();
-        $nodejsVersionCompare = Version::compare(self::$needNodejsVersion, $nodejsVersion);
+        $nodejsVersion        = Version::getVersion('node');
+        $nodejsVersionCompare = Version::compare(self::$needDependentVersion['node'], $nodejsVersion);
         if (!$nodejsVersionCompare || !$nodejsVersion) {
             $nodejsVersionLink = [
                 [
                     // 需要版本
-                    'name' => __('need') . ' >= ' . self::$needNodejsVersion,
+                    'name' => __('need') . ' >= ' . self::$needDependentVersion['node'],
                     'type' => 'text'
                 ],
                 [
@@ -560,9 +552,9 @@ class Install extends Api
     {
         $check['phpPopen']             = function_exists('popen') && function_exists('pclose');
         $check['phpFileOperation']     = function_exists('feof') && function_exists('fgets');
-        $check['npmVersionCompare']    = Version::compare(self::$needNpmVersion, Version::getNpmVersion());
-        $check['cnpmVersionCompare']   = Version::compare(self::$needCnpmVersion, Version::getCnpmVersion());
-        $check['nodejsVersionCompare'] = Version::compare(self::$needNodejsVersion, Version::getNodeJsVersion());
+        $check['npmVersionCompare']    = Version::compare(self::$needDependentVersion['npm'], Version::getVersion('npm'));
+        $check['cnpmVersionCompare']   = Version::compare(self::$needDependentVersion['cnpm'], Version::getCnpmVersion());
+        $check['nodejsVersionCompare'] = Version::compare(self::$needDependentVersion['node'], Version::getVersion('node'));
 
         $envOk = true;
         foreach ($check as $value) {

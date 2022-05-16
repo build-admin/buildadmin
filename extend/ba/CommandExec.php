@@ -222,7 +222,7 @@ class CommandExec
             $preg = "/Progress: resolved ([0-9]*), reused ([0-9]*), downloaded ([0-9]*), added ([0-9]*), done/i";
             return preg_match($preg, $output);
         } elseif ($name == 'yarn') {
-            return strpos(strtolower($output), 'Done in ') !== false;
+            return strpos(strtolower($output), 'done in ') !== false;
         } else {
             return false;
         }
@@ -253,6 +253,8 @@ class CommandExec
             if ($this->npmInstallCallback($output, 'npm')) {
                 // 获取一次版本号
                 if (isset($commandKeyArr[1]) && in_array($commandKeyArr[1], ['cnpm', 'yarn', 'pnpm']) && Version::getVersion($commandKeyArr[1])) {
+                    $this->outputFlag('exec-success');
+                } elseif (isset($commandKeyArr[1]) && $commandKeyArr[1] == 'ni') {
                     $this->outputFlag('exec-success');
                 }
             }
