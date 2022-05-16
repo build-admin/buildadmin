@@ -85,13 +85,15 @@
         </el-button-group>
     </el-dialog>
 
-    <el-dialog v-model="terminal.state.showPackageManagerDialog" custom-class="ba-terminal-dialog" :title="t('Please select package manager')" center>
+    <el-dialog
+        @close="terminal.togglePackageManagerDialog(false)"
+        v-model="terminal.state.showPackageManagerDialog"
+        custom-class="ba-terminal-dialog"
+        :title="t('Please select package manager')"
+        center
+    >
         <div class="indent-2">
-            {{
-                t(
-                    'Buildadmin has a read-only Web terminal, which can easily execute NPM install, NPM build and other commands after crud and other operations'
-                )
-            }}
+            {{ t('Switch package manager title') }}
         </div>
         <template #footer>
             <div class="package-manager-dialog-footer">

@@ -128,8 +128,8 @@ export default {
         '建议删除 根目录/public/install 文件夹；本页仅在您的设备上可见。',
     'Switch package manager': '切换包管理器',
     'Please select package manager': '请选择包管理器',
-    'Buildadmin has a read-only Web terminal, which can easily execute NPM install, NPM build and other commands after crud and other operations':
-        'BuildAdmin 拥有只读WEB终端，可以在CRUD等操作后方便的执行 npm install、npm build 等命令',
+    'Switch package manager title':
+        '只读WEB终端，可以在CRUD等操作后方便的执行 npm install、npm build 等命令，请在下方选择一个已安装好或您喜欢的的 NPM 包管理器',
     'I want to execute the command manually': '我想手动执行命令',
-    'Reminder': '温馨提醒',
+    Reminder: '温馨提醒',
 }
