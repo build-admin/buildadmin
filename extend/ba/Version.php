@@ -78,25 +78,9 @@ class Version
         return false;
     }
 
-    public static function getNpmVersion()
-    {
-        $execOut = CommandExec::instance(false)->getOutputFromPopen('npm-v');
-        if ($execOut) {
-            if (isset($execOut[0]) && self::checkDigitalVersion($execOut[0])) {
-                return $execOut[0];
-            } else if (isset($execOut[1]) && self::checkDigitalVersion($execOut[1])) {
-                return $execOut[1];
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
     public static function getCnpmVersion()
     {
-        $execOut = CommandExec::instance(false)->getOutputFromPopen('cnpm-v');
+        $execOut = CommandExec::instance(false)->getOutputFromPopen('version-view.cnpm');
         if ($execOut) {
             $execOut = implode('', $execOut);
             $preg    = '/cnpm@(.+?) \(/is';
@@ -107,13 +91,28 @@ class Version
         }
     }
 
-    public static function getNodeJsVersion()
+    /**
+     * 获取依赖版本号
+     * @param string $name 支持：npm、cnpm、yarn、pnpm、node
+     */
+    public static function getVersion(string $name)
     {
-        $execOut = CommandExec::instance(false)->getOutputFromPopen('node-v');
-        if ($execOut && isset($execOut[0]) && self::checkDigitalVersion($execOut[0])) {
-            return $execOut[0];
-        } else {
-            return false;
+        if ($name == 'cnpm') {
+            return self::getCnpmVersion();
+        } elseif (in_array($name, ['npm', 'yarn', 'pnpm', 'node'])) {
+            $execOut = CommandExec::instance(false)->getOutputFromPopen('version-view.' . $name);
+            if ($execOut) {
+                // 检测两行，第一行可能会是个警告消息
+                for ($i = 0; $i < 2; $i++) {
+                    if (isset($execOut[$i]) && self::checkDigitalVersion($execOut[$i])) {
+                        return $execOut[$i];
+                    }
+                }
+            } else {
+                return false;
+            }
         }
+
+        return false;
     }
 }

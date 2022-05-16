@@ -60,6 +60,10 @@ class CommandExec
      */
     protected $distDir = 'dist';
 
+    /**
+     * 构造函数
+     * @param bool $authentication 是否鉴权
+     */
     public function __construct($authentication)
     {
         set_time_limit(120);
@@ -68,9 +72,7 @@ class CommandExec
             $auth  = Auth::instance();
             $auth->init($token);
             if (!$auth->isLogin()) {
-                $this->output('Error: Please login first');
-                $this->outputFlag('exec-error');
-                $this->break();
+                $this->execError('Error: Please login first', true);
             }
         }
         $this->command = Config::get('buildadmin.allowed_commands');
@@ -91,21 +93,39 @@ class CommandExec
     /**
      * 获取命令
      * @param string $key         命令key
-     * @param bool   $outputError 是否直接输出错误
+     * @param bool   $outputError 是否直接输出错误(通过event-stream)
      * @return string
      */
     protected function getCommand(string $key, bool $outputError = true): string
     {
-        if (!$key || !array_key_exists($key, $this->command)) {
-            if ($outputError) {
-                $this->output('Error: Command not allowed');
-                $this->outputFlag('exec-error');
-            }
+        if (!$key) {
+            if ($outputError) $this->execError('Error: Command not allowed', true);
             $this->break();
         }
 
         $this->currentCommandKey = $key;
-        return $this->command[$key];
+
+        if (stripos($key, '.')) {
+            $key = explode('.', $key);
+            if (!array_key_exists($key[0], $this->command) || !is_array($this->command[$key[0]]) || !array_key_exists($key[1], $this->command[$key[0]])) {
+                if ($outputError) $this->execError('Error: Command not allowed', true);
+                $this->break();
+            }
+            return $this->command[$key[0]][$key[1]];
+        } else {
+            if (!array_key_exists($key, $this->command)) {
+                if ($outputError) $this->execError('Error: Command not allowed', true);
+                $this->break();
+            }
+            return $this->command[$key];
+        }
+    }
+
+    public function execError($error, $break = false)
+    {
+        $this->output($error);
+        $this->outputFlag('exec-error');
+        if ($break) $this->break();
     }
 
     /**
@@ -188,26 +208,55 @@ class CommandExec
     }
 
     /**
+     * npm Install 时检测是否执行成功
+     * @param string $output
+     */
+    public function npmInstallCallback(string $output, $name)
+    {
+        if ($name == 'npm') {
+            $preg[] = "[added|removed|changed|audited] ([0-9]*) package";
+            return preg_match('/' . implode('|', $preg) . '/i', $output);
+        } elseif ($name == 'cnpm') {
+            return strpos(strtolower($output), 'all packages installed') !== false;
+        } elseif ($name == 'pnpm') {
+            $preg = "/Progress: resolved ([0-9]*), reused ([0-9]*), downloaded ([0-9]*), added ([0-9]*), done/i";
+            return preg_match($preg, $output);
+        } elseif ($name == 'yarn') {
+            return strpos(strtolower($output), 'Done in ') !== false;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * 输出检测,检测命令执行状态等操作
      * @param $output
      */
     public function outputCallback($output)
     {
-        if ($this->currentCommandKey == 'test-install' || $this->currentCommandKey == 'web-install') {
-            if (strpos(strtolower($output), 'all packages installed') !== false) {
-                $this->outputFlag('exec-success');
-            }
-        } elseif ($this->currentCommandKey == 'install-cnpm') {
-            $preg  = "/added ([0-9]*) packages in/i";
-            $preg2 = "/added ([0-9]*) packages, removed/i";
-            $preg3 = "/removed ([0-9]*) packages, and changed ([0-9]*) packages in/i";
-            if (preg_match($preg, $output) || preg_match($preg2, $output) || preg_match($preg3, $output)) {
-                // 获取一次cnpm版本号
-                if (Version::getCnpmVersion()) {
+        if (stripos($this->currentCommandKey, '.')) {
+            $commandKeyArr = explode('.', $this->currentCommandKey);
+            $commandPKey   = $commandKeyArr[0] ?? '';
+        } else {
+            $commandPKey = $this->currentCommandKey;
+        }
+
+        if ($commandPKey == 'test-install' || $commandPKey == 'web-install') {
+            if (isset($commandKeyArr[1])) {
+                if ($commandKeyArr[1] == 'ni' && ($this->npmInstallCallback($output, 'npm') || $this->npmInstallCallback($output, 'cnpm') || $this->npmInstallCallback($output, 'pnpm') || $this->npmInstallCallback($output, 'yarn'))) {
+                    $this->outputFlag('exec-success');
+                } elseif ($this->npmInstallCallback($output, $commandKeyArr[1])) {
                     $this->outputFlag('exec-success');
                 }
             }
-        } elseif ($this->currentCommandKey == 'web-build') {
+        } elseif ($commandPKey == 'install-package-manager') {
+            if ($this->npmInstallCallback($output, 'npm')) {
+                // 获取一次版本号
+                if (isset($commandKeyArr[1]) && in_array($commandKeyArr[1], ['cnpm', 'yarn', 'pnpm']) && Version::getVersion($commandKeyArr[1])) {
+                    $this->outputFlag('exec-success');
+                }
+            }
+        } elseif ($commandPKey == 'web-build') {
             if (strpos(strtolower($output), 'build successfully!') !== false) {
                 if ($this->mvDist()) {
                     $this->outputFlag('exec-success');
@@ -215,7 +264,7 @@ class CommandExec
                     $this->output('Build succeeded, but move file failed. Please operate manually.');
                 }
             }
-        } elseif ($this->currentCommandKey == 'npm-v') {
+        } elseif ($this->currentCommandKey == 'version-view.npm') {
             $preg = "/([0-9]+)\.([0-9]+)\.([0-9]+)/";
             if (preg_match($preg, $output)) {
                 $this->outputFlag('exec-success');

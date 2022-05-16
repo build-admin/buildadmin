@@ -16,15 +16,41 @@ return [
     'npm_package_manager'  => 'cnpm',
     // 允许执行的命令
     'allowed_commands'     => [
-        'ping-baidu'   => 'ping baidu.com',
-        'cnpm-install' => 'cnpm install',
-        'npm-v'        => 'npm -v',
-        'cnpm-v'       => 'cnpm -v',
-        'node-v'       => 'node -v',
-        'install-cnpm' => 'npm install -g cnpm --registry=https://registry.npmmirror.com',
-        'test-install' => 'cd npm-install-test && cnpm install',
-        'web-install'  => 'cd ../web && cnpm install',
-        'web-build'    => 'cd ../web && cnpm run build:online',
+        'install-package-manager' => [
+            'cnpm' => 'npm install cnpm -g --registry=https://registry.npmmirror.com',
+            'yarn' => 'npm install -g yarn',
+            'pnpm' => 'npm install -g pnpm',
+            'ni'   => 'npm install -g @antfu/ni',
+        ],
+        'version-view'            => [
+            'npm'  => 'npm -v',
+            'cnpm' => 'cnpm -v',
+            'yarn' => 'yarn -v',
+            'pnpm' => 'pnpm -v',
+            'node' => 'node -v',
+        ],
+        'test-install'            => [
+            'npm'  => 'cd npm-install-test && npm install',
+            'cnpm' => 'cd npm-install-test && cnpm install',
+            'yarn' => 'cd npm-install-test && yarn install',
+            'pnpm' => 'cd npm-install-test && pnpm install',
+            'ni'   => 'cd npm-install-test && ni install',
+        ],
+        'web-install'             => [
+            'npm'  => 'cd ../web && npm install',
+            'cnpm' => 'cd ../web && cnpm install',
+            'yarn' => 'cd ../web && yarn install',
+            'pnpm' => 'cd ../web && pnpm install',
+            'ni'   => 'cd ../web && ni install',
+        ],
+        'web-build'               => [
+            'npm'  => 'cd ../web && npm run build:online',
+            'cnpm' => 'cd ../web && cnpm run build:online',
+            'yarn' => 'cd ../web && yarn run build:online',
+            'pnpm' => 'cd ../web && pnpm run build:online',
+            'ni'   => 'cd ../web && nr build:online',
+        ],
+        'ping-baidu'              => 'ping baidu.com',
     ],
     'token'                => [
         // 默认驱动方式
