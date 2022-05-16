@@ -137,4 +137,5 @@ export default {
         '系统拥有WEB终端，请选择一个已安装好或您喜欢的的NPM包管理器',
     'Start installation': '开始安装',
     'Setup will restart. Are you sure you want to switch package manager?': '将重新开始安装程序，请确定要切换包管理器吗？',
+    'None - manual execution': '无-手动执行',
 }

@@ -6,7 +6,7 @@
             <transition-group name="slide-bottom">
                 <div class="table-item" :class="idx" v-for="(item, idx) in state.envCheckData" :key="idx + item.describe + item.state">
                     <div class="table-label">
-                        {{ idx.toString() == 'npm_package_manager' ? t(idx) + ' ' + terminal.state.packageManager : t(idx) }}
+                        {{ idx.toString() == 'npm_package_manager' ? t(idx) + ' ' + getAmicablePackageManager() : t(idx) }}
                         <template v-if="item.link && item.link.length > 0">
                             <span
                                 v-for="(link, linkidx) in item.link"
@@ -308,6 +308,14 @@ const checkSubmit = () => {
     }
     state.checkDoneIndex = 'ok'
     return true
+}
+
+const getAmicablePackageManager = () => {
+    if (terminal.state.packageManager == 'none') {
+        return t('None - manual execution')
+    } else {
+        return terminal.state.packageManager
+    }
 }
 
 onMounted(() => {
