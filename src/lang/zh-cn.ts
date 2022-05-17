@@ -123,7 +123,7 @@ export default {
     'If cnpm is not installed, execute:npm install': '未安装 cnpm 则执行 npm install 即可',
     'If cnpm is not installed, execute:npm run build:online': '未安装 cnpm 则执行 npm run build:online 即可',
     'It is recommended to delete the root directory / public / install folder; This page is only visible on your device.':
-        '建议删除 根目录/public/install 文件夹；本页仅在您的设备上可见。',
+        '建议删除: 根目录/public/install 文件夹；本页仅在您的设备上可见。',
     'Switch package manager': '切换包管理器',
     'Please select package manager': '请选择包管理器',
     'Switch package manager title':
@@ -139,4 +139,5 @@ export default {
     'Setup will restart. Are you sure you want to switch package manager?': '将重新开始安装程序，请确定要切换包管理器吗？',
     'None - manual execution': '无-手动执行',
     'Previous step': '上一步',
+    'Hide index.html?': '隐藏 index.html？',
 }

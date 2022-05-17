@@ -15,8 +15,9 @@
             />
         </div>
         <div class="done-button">
-            <button @click="goUrl(state.indexUrl)" class="index">{{ t('Access foreground') }}</button>
-            <button @click="goUrl(state.adminUrl)" class="admin">{{ t('Access background') }}</button>
+            <el-button @click="goUrl(state.hideIndexUrl)" type="primary" plain size="large">{{ t('Hide index.html?') }}</el-button>
+            <el-button @click="goUrl(state.indexUrl)" type="primary" plain size="large">{{ t('Access foreground') }}</el-button>
+            <el-button @click="goUrl(state.adminUrl)" type="primary" size="large">{{ t('Access background') }}</el-button>
         </div>
     </div>
 </template>
@@ -30,6 +31,7 @@ const { t } = useI18n()
 
 const host = window.location.protocol + '//' + window.location.host
 const state = reactive({
+    hideIndexUrl: 'https://www.kancloud.cn/buildadmin/buildadmin/2763955',
     indexUrl: host + '/index.html/#/',
     adminUrl: host + '/index.html/#/admin',
 })
@@ -82,28 +84,10 @@ const goUrl = (url: string) => {
     .done-button {
         display: flex;
         justify-content: space-around;
-        max-width: 300px;
+        max-width: 500px;
         margin: 0 auto;
-        .index {
-            background-color: #909399;
-            color: #fff;
-        }
-        .admin {
-            background-color: #409eff;
-            color: #fff;
-        }
         button {
-            font-weight: bold;
-            border-radius: 6px;
-            border: none;
-            outline: none;
-            width: 110px;
-            height: 40px;
-            opacity: 0.8;
-            cursor: pointer;
-            &:hover {
-                opacity: 1;
-            }
+            width: 130px;
         }
     }
 }

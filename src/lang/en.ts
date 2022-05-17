@@ -142,4 +142,5 @@ export default {
     'Setup will restart. Are you sure you want to switch package manager?': 'Setup will restart. Are you sure you want to switch package manager?',
     'None - manual execution': 'None - manual execution',
     'Previous step': 'Previous step',
+    'Hide index.html?': 'Hide index.html?',
 }
