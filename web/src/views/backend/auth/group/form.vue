@@ -128,7 +128,7 @@ getMenuRules().then((res) => {
 })
 
 const getCheckeds = () => {
-    return treeRef.value!.getCheckedKeys()
+    return treeRef.value!.getCheckedKeys().concat(treeRef.value!.getHalfCheckedKeys())
 }
 
 defineExpose({
