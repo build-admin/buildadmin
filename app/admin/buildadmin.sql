@@ -56,10 +56,10 @@ CREATE TABLE `__PREFIX__admin_group` (
 -- Records of __PREFIX__admin_group
 -- ----------------------------
 BEGIN;
-INSERT INTO `__PREFIX__admin_group` VALUES ('1', '0', '超级管理组', '*', '1645876529', '1647805864', '1');
-INSERT INTO `__PREFIX__admin_group` VALUES ('2', '1', '一级管理员', '29,45,46,47,48,50,49,2,51,32,4,54,55,56,59,58,53', '1645876529', '1652378857', '1');
-INSERT INTO `__PREFIX__admin_group` VALUES ('3', '2', '二级管理员', '29,45,46,47,48,50,49', '1645876529', '1652378879', '1');
-INSERT INTO `__PREFIX__admin_group` VALUES ('4', '3', '三级管理员', '29,2,51,32,4', '1645876529', '1652378889', '1');
+INSERT INTO `__PREFIX__admin_group` VALUES ('1', '0', '超级管理组', '*', '', '1645876529', '1647805864', '1');
+INSERT INTO `__PREFIX__admin_group` VALUES ('2', '1', '一级管理员', '29,45,46,47,48,50,49,2,51,32,4,54,55,56,59,58,53', '', '1645876529', '1652378857', '1');
+INSERT INTO `__PREFIX__admin_group` VALUES ('3', '2', '二级管理员', '29,45,46,47,48,50,49', '', '1645876529', '1652378879', '1');
+INSERT INTO `__PREFIX__admin_group` VALUES ('4', '3', '三级管理员', '29,2,51,32,4', '', '1645876529', '1652378889', '1');
 COMMIT;
 
 -- ----------------------------
@@ -516,7 +516,7 @@ CREATE TABLE `__PREFIX__user_group` (
 -- Records of __PREFIX__user_group
 -- ----------------------------
 BEGIN;
-INSERT INTO `__PREFIX__user_group` VALUES ('1', '默认分组', '*', '1', '1648167137', '1648167095');
+INSERT INTO `__PREFIX__user_group` VALUES ('1', '默认分组', '*', '', '1', '1648167137', '1648167095');
 COMMIT;
 
 -- ----------------------------
