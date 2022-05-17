@@ -5,7 +5,6 @@ export default {
     'Test command': 'Test command',
     'Install dependent packages': 'Install dependent packages',
     Republish: 'Republish',
-    'Install cnpm': 'Install cnpm',
     'Clean up task list': 'Clean up task list',
     unknown: 'unknown',
     'Waiting for execution': 'Waiting for execution',

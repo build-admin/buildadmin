@@ -5,7 +5,6 @@ export default {
     'Test command': '测试命令',
     'Install dependent packages': '安装依赖包',
     Republish: '重新发布',
-    'Install cnpm': '安装cnpm',
     'Clean up task list': '清理任务列表',
     unknown: '未知',
     'Waiting for execution': '等待执行',
