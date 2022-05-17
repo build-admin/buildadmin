@@ -14,6 +14,8 @@ export const useTerminal = defineStore(
             show: false,
             showDot: false,
             taskList: [],
+            packageManager: 'cnpm',
+            showPackageManagerDialog: false,
         })
 
         function init() {
@@ -35,10 +37,31 @@ export const useTerminal = defineStore(
             state.showDot = val
         }
 
+        function togglePackageManagerDialog(val: boolean = !state.showPackageManagerDialog) {
+            toggle(!val)
+            state.showPackageManagerDialog = val
+        }
+
+        function changePackageManager(val: string) {
+            state.packageManager = val
+        }
+
         function setTaskStatus(idx: number, status: number) {
             state.taskList[idx].status = status
             if ((status == taskStatus.Failed || status == taskStatus.Unknown) && state.taskList[idx].blockOnFailure) {
                 setTaskShowMessage(idx, true)
+            }
+        }
+
+        function taskCompleted(idx: number) {
+            if (typeof state.taskList[idx].callback != 'function') {
+                return
+            }
+            let status = state.taskList[idx].status
+            if (status == taskStatus.Failed || status == taskStatus.Unknown) {
+                state.taskList[idx].callback(taskStatus.Failed)
+            } else if (status == taskStatus.Success) {
+                state.taskList[idx].callback(taskStatus.Success)
             }
         }
 
@@ -54,7 +77,7 @@ export const useTerminal = defineStore(
             })
         }
 
-        function addTask(command: string, blockOnFailure: boolean = true) {
+        function addTask(command: string, blockOnFailure: boolean = true, callback: Function = () => {}) {
             if (!state.show) toggleDot(true)
             state.taskList = state.taskList.concat({
                 uuid: uuid(),
@@ -64,12 +87,17 @@ export const useTerminal = defineStore(
                 message: [],
                 showMessage: false,
                 blockOnFailure: blockOnFailure,
+                callback: callback,
             })
 
             // 清理任务列表
             clearSuccessTask()
 
             startTask()
+        }
+
+        function addTaskPM(command: string, blockOnFailure: boolean = true, callback: Function = () => {}) {
+            addTask(command + '.' + state.packageManager, blockOnFailure, callback)
         }
 
         function delTask(idx: number) {
@@ -124,12 +152,14 @@ export const useTerminal = defineStore(
                 if (data.data == 'command-exec-error') {
                     setTaskStatus(taskIdx, taskStatus.Failed)
                     window.eventSource.close()
+                    taskCompleted(taskIdx)
                     startTask()
                 } else if (data.data == 'command-exec-completed') {
                     window.eventSource.close()
                     if (state.taskList[taskIdx].status != taskStatus.Success) {
                         setTaskStatus(taskIdx, taskStatus.Failed)
                     }
+                    taskCompleted(taskIdx)
                     startTask()
                 } else if (data.data == 'command-link-success') {
                     setTaskStatus(taskIdx, taskStatus.Executing)
@@ -142,6 +172,7 @@ export const useTerminal = defineStore(
             window.eventSource.onerror = function (e) {
                 window.eventSource.close()
                 setTaskStatus(taskKey, taskStatus.Failed)
+                taskCompleted(taskKey)
             }
         }
 
@@ -180,10 +211,13 @@ export const useTerminal = defineStore(
             setTaskShowMessage,
             addTaskMessage,
             addTask,
+            addTaskPM,
             delTask,
             startTask,
             retryTask,
             clearSuccessTask,
+            togglePackageManagerDialog,
+            changePackageManager,
         }
     },
     {

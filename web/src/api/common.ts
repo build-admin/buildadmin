@@ -12,6 +12,7 @@ export const adminBuildSuffixSvgUrl = '/index.php/admin/ajax/buildsuffixsvg'
 export const adminAreaUrl = '/index.php/admin/ajax/area'
 export const getTablePkUrl = '/index.php/admin/ajax/getTablePk'
 export const terminalUrl = '/index.php/admin/install/terminal'
+export const changePackageManagerUrl = '/index.php/admin/ajax/changePackageManager'
 
 // 公共
 export const captchaUrl = '/index.php/api/common/captcha'
@@ -73,6 +74,19 @@ export function getArea(values: number[]) {
  */
 export function buildTerminalUrl(commandKey: string, outputExtend: string) {
     return getUrl() + terminalUrl + '?command=' + commandKey + '&extend=' + outputExtend + '&batoken=' + getAdminToken()
+}
+
+/**
+ * 请求切换包管理器
+ */
+export function postChangePackageManager(val: string):ApiPromise {
+    return createAxios({
+        url: changePackageManagerUrl,
+        method: 'POST',
+        data: {
+            manager: val,
+        }
+    }) as ApiPromise
 }
 
 /**

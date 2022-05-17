@@ -69,10 +69,14 @@ export interface TaskItem {
     showMessage: boolean
     // 失败阻断后续命令执行
     blockOnFailure: boolean
+    // 执行结果回调
+    callback: Function
 }
 
 export interface Terminal {
     show: boolean
     showDot: boolean
     taskList: TaskItem[]
+    packageManager: string
+    showPackageManagerDialog: boolean
 }

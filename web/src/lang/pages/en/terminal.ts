@@ -5,7 +5,6 @@ export default {
     'Test command': 'Test command',
     'Install dependent packages': 'Install dependent packages',
     Republish: 'Republish',
-    'Install cnpm': 'Install cnpm',
     'Clean up task list': 'Clean up task list',
     unknown: 'unknown',
     'Waiting for execution': 'Waiting for execution',
@@ -16,4 +15,8 @@ export default {
     'Unknown execution result': 'Unknown execution result',
     'Are you sure you want to republish?': 'Are you sure you want to republish?',
     'Failure to execute this command will block the execution of the queue': 'Failure to execute this command will block the execution of the queue',
+    'Switch package manager': 'Switch package manager',
+    'Please select package manager': 'Please select package manager',
+    'Switch package manager title': 'Read only Web terminal can easily execute NPM install, NPM build and other commands after crud and other operations. Please select an installed or your favorite NPM package manager below',
+    'I want to execute the command manually': 'I want to execute the command manually',
 }

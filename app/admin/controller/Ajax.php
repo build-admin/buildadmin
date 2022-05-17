@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use ba\CommandExec;
 use think\Exception;
 use think\exception\FileException;
 use app\common\library\Upload;
@@ -54,5 +55,17 @@ class Ajax extends Backend
         }
         $tablePk = Db::table($table)->getPk();
         $this->success('', ['pk' => $tablePk]);
+    }
+
+    public function changePackageManager()
+    {
+        $newPackageManager = $this->request->post('manager', 'none');
+        if (CommandExec::instance(false)->changePackageManager($newPackageManager)) {
+            $this->success('', [
+                'manager' => $newPackageManager
+            ]);
+        } else {
+            $this->error(__('Failed to switch package manager. Please modify the configuration file manually:%s', ['根目录/config/buildadmin.php']));
+        }
     }
 }

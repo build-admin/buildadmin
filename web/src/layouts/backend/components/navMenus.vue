@@ -71,7 +71,7 @@
             <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" name="fa fa-cogs" size="18" />
         </div>
         <Config />
-        <TerminalVue v-if="terminal.state.show" />
+        <TerminalVue />
     </div>
 </template>
 

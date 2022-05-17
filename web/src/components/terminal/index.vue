@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="terminal.state.show" :title="t('terminal.Terminal')" custom-class="ba-terminal-dialog" :append-to-body="true">
+    <el-dialog v-bind="$attrs" v-model="terminal.state.show" :title="t('terminal.Terminal') + ' - ' + terminal.state.packageManager" custom-class="ba-terminal-dialog" :append-to-body="true">
         <el-timeline v-if="terminal.state.taskList.length">
             <el-timeline-item
                 v-for="(item, idx) in terminal.state.taskList"
@@ -69,15 +69,37 @@
         <el-empty v-else :image-size="80" :description="t('terminal.No mission yet')" />
 
         <el-button-group>
-            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('test-install', false)">{{ t('terminal.Test command') }}</el-button>
-            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('web-install')">{{
+            <el-button class="terminal-menu-item" v-blur @click="terminal.addTaskPM('test-install', false)">{{ t('terminal.Test command') }}</el-button>
+            <el-button class="terminal-menu-item" v-blur @click="terminal.addTaskPM('web-install')">{{
                 t('terminal.Install dependent packages')
             }}</el-button>
             <el-button class="terminal-menu-item" v-blur @click="webBuild()">{{ t('terminal.Republish') }}</el-button>
-            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('npm-v', false)">npm -v</el-button>
-            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('install-cnpm', false)">{{ t('terminal.Install cnpm') }}</el-button>
+            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('version-view.npm', false)">npm -v</el-button>
+            <el-button class="terminal-menu-item" v-blur @click="terminal.togglePackageManagerDialog(true)">{{ t('terminal.Switch package manager') }}</el-button>
             <el-button class="terminal-menu-item" v-blur @click="terminal.clearSuccessTask()">{{ t('terminal.Clean up task list') }}</el-button>
         </el-button-group>
+    </el-dialog>
+
+    <el-dialog
+        @close="terminal.togglePackageManagerDialog(false)"
+        v-model="terminal.state.showPackageManagerDialog"
+        custom-class="ba-terminal-dialog"
+        :title="t('terminal.Please select package manager')"
+        center
+    >
+        <div class="indent-2">
+            {{ t('terminal.Switch package manager title') }}
+        </div>
+        <template #footer>
+            <div class="package-manager-dialog-footer">
+                <el-button @click="changePackageManager('npm')">npm</el-button>
+                <el-button @click="changePackageManager('cnpm')">cnpm</el-button>
+                <el-button @click="changePackageManager('pnpm')">pnpm</el-button>
+                <el-button @click="changePackageManager('yarn')">yarn</el-button>
+                <el-button @click="changePackageManager('ni')">ni</el-button>
+                <el-button @click="changePackageManager('none')">{{ t('terminal.I want to execute the command manually') }}</el-button>
+            </div>
+        </template>
     </el-dialog>
 </template>
 
@@ -86,6 +108,7 @@ import { useTerminal } from '/@/stores/terminal'
 import { useI18n } from 'vue-i18n'
 import { taskStatus } from './constant'
 import { ElMessageBox } from 'element-plus'
+import { postChangePackageManager } from '/@/api/common'
 
 const { t } = useI18n()
 const terminal = useTerminal()
@@ -131,8 +154,17 @@ const webBuild = () => {
         cancelButtonText: t('Cancel'),
         type: 'warning',
     }).then(() => {
-        terminal.addTask('web-build')
+        terminal.addTaskPM('web-build')
     })
+}
+
+const changePackageManager = (val: string) => {
+    postChangePackageManager(val).then((res) => {
+        if (res.code == 1) {
+            terminal.changePackageManager(res.data.manager)
+        }
+    })
+    terminal.togglePackageManagerDialog(false)
 }
 </script>
 
