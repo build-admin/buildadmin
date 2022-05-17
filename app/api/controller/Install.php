@@ -353,44 +353,6 @@ class Install extends Api
             $pmVersionCompare = false;
         }
 
-        $cnpmVersion        = Version::getCnpmVersion();
-        $cnpmVersionCompare = Version::compare(self::$needDependentVersion['cnpm'], $cnpmVersion);
-        if (!$cnpmVersionCompare || !$cnpmVersion) {
-            $cnpmVersionLink[] = [
-                // 需要版本
-                'name' => __('need') . ' >= ' . self::$needDependentVersion['cnpm'],
-                'type' => 'text'
-            ];
-
-            if ($npmVersionCompare) {
-                $cnpmVersionLink[] = [
-                    // 点击安装
-                    'name'  => __('Click Install cnpm'),
-                    'title' => '',
-                    'type'  => 'install-cnpm'
-                ];
-            } else {
-                $cnpmVersionLink[] = [
-                    // 请先安装npm
-                    'name' => __('Please install NPM first'),
-                    'type' => 'text'
-                ];
-            }
-        } elseif (!$cnpmVersionCompare && $cnpmVersion) {
-            $cnpmVersionLink[] = [
-                // 需要版本
-                'name' => __('need') . ' >= ' . self::$needDependentVersion['cnpm'],
-                'type' => 'text'
-            ];
-            $cnpmVersionLink[] = [
-                // 如何解决
-                'name'  => __('How to solve?'),
-                'title' => __('Click to see how to solve it'),
-                'type'  => 'faq',
-                'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653898'
-            ];
-        }
-
         // nodejs
         $nodejsVersion        = Version::getVersion('node');
         $nodejsVersionCompare = Version::compare(self::$needDependentVersion['node'], $nodejsVersion);
