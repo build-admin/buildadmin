@@ -77,7 +77,19 @@
                 :content="btn.title ? t(btn.title) : ''"
                 placement="top"
             >
-                <el-button v-blur @click="onButtonClick(btn.name)" :class="btn.class" class="table-operate" :type="btn.type">
+                <el-button
+                    v-if="btn.name == 'edit'"
+                    v-auth="'edit'"
+                    v-blur
+                    @click="onButtonClick(btn.name)"
+                    :class="btn.class"
+                    class="table-operate"
+                    :type="btn.type"
+                >
+                    <Icon :name="btn.icon" />
+                    <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                </el-button>
+                <el-button v-else v-blur @click="onButtonClick(btn.name)" :class="btn.class" class="table-operate" :type="btn.type">
                     <Icon :name="btn.icon" />
                     <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
                 </el-button>
@@ -86,7 +98,11 @@
                 <template #reference>
                     <div class="ml-6">
                         <el-tooltip :disabled="btn.title ? false : true" :content="btn.title ? t(btn.title) : ''" placement="top">
-                            <el-button v-blur :class="btn.class" class="table-operate" :type="btn.type">
+                            <el-button v-if="btn.name == 'delete'" v-auth="'del'" v-blur :class="btn.class" class="table-operate" :type="btn.type">
+                                <Icon :name="btn.icon" />
+                                <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                            </el-button>
+                            <el-button v-else v-blur :class="btn.class" class="table-operate" :type="btn.type">
                                 <Icon :name="btn.icon" />
                                 <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
                             </el-button>
@@ -100,7 +116,18 @@
                 :content="btn.title ? t(btn.title) : ''"
                 placement="top"
             >
-                <el-button :class="btn.class" class="table-operate move-button" :type="btn.type">
+                <el-button
+                    v-if="btn.name == 'weigh-sort'"
+                    v-auth="'sortable'"
+                    v-blur
+                    :class="btn.class"
+                    class="table-operate move-button"
+                    :type="btn.type"
+                >
+                    <Icon :name="btn.icon" />
+                    <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                </el-button>
+                <el-button v-else v-blur :class="btn.class" class="table-operate move-button" :type="btn.type">
                     <Icon :name="btn.icon" />
                     <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
                 </el-button>

@@ -42,6 +42,7 @@ export interface NavTabs {
     tabsView: Array<viewMenu>
     tabFullScreen: Boolean
     tabsViewRoutes: Array<viewMenu>
+    authNode: Map<string, string[]>
 }
 
 export interface AdminInfo {

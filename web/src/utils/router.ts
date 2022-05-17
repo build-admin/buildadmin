@@ -4,6 +4,7 @@ import { isNavigationFailure, NavigationFailureType } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { useNavTabs } from '../stores/navTabs'
 import { adminBaseRoute } from '/@/router/static'
+import _ from 'lodash'
 
 export const clickMenu = (menu: viewMenu) => {
     switch (menu.type) {
@@ -77,7 +78,8 @@ export const pushFirstRoute = () => {
 export const handleAdminRoute = (routes: any) => {
     const viewsComponent = import.meta.globEager('/src/views/backend/**/*.vue')
     addRouteAll(viewsComponent, routes, adminBaseRoute.name as string)
-    return handleMenuRule(routes, '/' + (adminBaseRoute.name as string) + '/')
+    let menuAdminBaseRoute = '/' + (adminBaseRoute.name as string) + '/'
+    return handleMenuRule(_.cloneDeep(routes), menuAdminBaseRoute, menuAdminBaseRoute)
 }
 
 /**
@@ -100,8 +102,9 @@ export const getMenuPaths = (menus: any): any[] => {
 /**
  * 后台菜单处理
  */
-const handleMenuRule = (routes: any, pathPrefix = '/') => {
+const handleMenuRule = (routes: any, pathPrefix = '/', parent = '/') => {
     let menuRule = []
+    let authNode = []
     for (const key in routes) {
         if (routes[key].extend == 'add_rules_only') {
             continue
@@ -123,10 +126,17 @@ const handleMenuRule = (routes: any, pathPrefix = '/') => {
             delete routes[key].url
             delete routes[key].menu_type
             if (routes[key].children && routes[key].children.length > 0) {
-                routes[key].children = handleMenuRule(routes[key].children, pathPrefix)
+                routes[key].children = handleMenuRule(routes[key].children, pathPrefix, routes[key].path)
             }
             menuRule.push(routes[key])
+        } else {
+            // 权限节点
+            authNode.push(pathPrefix + routes[key].name)
         }
+    }
+    if (authNode.length) {
+        const navTabs = useNavTabs()
+        navTabs.setAuthNode(parent, authNode)
     }
     return menuRule
 }

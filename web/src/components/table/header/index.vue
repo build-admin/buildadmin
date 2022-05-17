@@ -10,13 +10,13 @@
             </el-button>
         </el-tooltip>
         <el-tooltip v-if="buttons.includes('add')" content="添加记录" placement="top">
-            <el-button v-blur @click="onAction('add')" class="table-header-operate" type="primary">
+            <el-button v-auth="'add'" v-blur @click="onAction('add')" class="table-header-operate" type="primary">
                 <Icon name="fa fa-plus" />
                 <span class="table-header-operate-text">添加</span>
             </el-button>
         </el-tooltip>
         <el-tooltip v-if="buttons.includes('edit')" content="编辑选中行" placement="top">
-            <el-button v-blur @click="onAction('edit')" :disabled="!enableBatchOpt" class="table-header-operate" type="primary">
+            <el-button v-auth="'edit'" v-blur @click="onAction('edit')" :disabled="!enableBatchOpt" class="table-header-operate" type="primary">
                 <Icon name="fa fa-pencil" />
                 <span class="table-header-operate-text">编辑</span>
             </el-button>
@@ -32,7 +32,7 @@
             <template #reference>
                 <div class="mlr-12">
                     <el-tooltip content="删除选中行" placement="top">
-                        <el-button v-blur :disabled="!enableBatchOpt" class="table-header-operate" type="danger">
+                        <el-button v-auth="'del'" v-blur :disabled="!enableBatchOpt" class="table-header-operate" type="danger">
                             <Icon name="fa fa-trash" />
                             <span class="table-header-operate-text">删除</span>
                         </el-button>
@@ -41,7 +41,7 @@
             </template>
         </el-popconfirm>
         <el-tooltip v-if="buttons.includes('unfold')" :content="(baTable.table.expandAll ? '收缩' : '展开') + '所有子菜单'" placement="top">
-            <el-button v-blur @click="changeUnfold" :type="baTable.table.expandAll ? 'danger' : 'warning'">
+            <el-button v-blur @click="changeUnfold" class="table-header-operate" :type="baTable.table.expandAll ? 'danger' : 'warning'">
                 <span class="table-header-operate-text">{{ baTable.table.expandAll ? '收缩所有' : '展开所有' }}</span>
             </el-button>
         </el-tooltip>
