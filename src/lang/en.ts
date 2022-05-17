@@ -123,8 +123,6 @@ export default {
     'Composed of letters, numbers and underscores, (6-32 bits)': 'Composed of letters, numbers and underscores, (6-32 bits)',
     'It is composed of letters, numbers and underscores, starting with letters (3-15 digits)':
         'It is composed of letters, numbers and underscores, starting with letters (3-15 digits)',
-    'If cnpm is not installed, execute:npm install': 'If cnpm is not installed, execute:npm install',
-    'If cnpm is not installed, execute:npm run build:online': 'If cnpm is not installed, execute:npm run build:online',
     'It is recommended to delete the root directory / public / install folder; This page is only visible on your device.':
         'It is recommended to delete the root directory / public / install folder; This page is only visible on your device.',
     'Switch package manager': 'Switch package manager',

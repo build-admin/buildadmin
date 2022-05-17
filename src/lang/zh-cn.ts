@@ -120,8 +120,6 @@ export default {
     Required: '必填',
     'Composed of letters, numbers and underscores, (6-32 bits)': '由字母、数字、下划线组成，(6-32位)',
     'It is composed of letters, numbers and underscores, starting with letters (3-15 digits)': '由字母、数字、下划线组成，以字母开头(3-15位)',
-    'If cnpm is not installed, execute:npm install': '未安装 cnpm 则执行 npm install 即可',
-    'If cnpm is not installed, execute:npm run build:online': '未安装 cnpm 则执行 npm run build:online 即可',
     'It is recommended to delete the root directory / public / install folder; This page is only visible on your device.':
         '建议删除: 根目录/public/install 文件夹；本页仅在您的设备上可见。',
     'Switch package manager': '切换包管理器',
