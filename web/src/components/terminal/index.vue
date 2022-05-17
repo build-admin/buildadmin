@@ -19,6 +19,12 @@
                             type="warning"
                             >{{ t('terminal.Failure to execute this command will block the execution of the queue') }}</el-tag
                         >
+                        <el-tag
+                            class="block-on-failure-tag"
+                            v-if="item.status == taskStatus.Executing || item.status == taskStatus.Connecting"
+                            type="danger"
+                            >{{ t('terminal.Do not refresh the browser') }}</el-tag
+                        >
                         <span class="command">{{ item.command }}</span>
                         <div class="task-opt">
                             <el-button
