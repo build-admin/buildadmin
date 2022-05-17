@@ -146,3 +146,17 @@ export const getFileNameFromPath = (path: string) => {
     let paths = path.split('/')
     return paths[paths.length - 1]
 }
+
+/**
+ * 页面按钮鉴权
+ * @param name
+ */
+export const auth = (name: string) => {
+    const navTabs = useNavTabs()
+    if (navTabs.state.authNode.has(router.currentRoute.value.path)) {
+        if (navTabs.state.authNode.get(router.currentRoute.value.path)!.some((v: string) => v == router.currentRoute.value.path + '/' + name)) {
+            return true
+        }
+    }
+    return false
+}

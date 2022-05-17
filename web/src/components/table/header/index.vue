@@ -9,20 +9,20 @@
                 <Icon name="fa fa-refresh" />
             </el-button>
         </el-tooltip>
-        <el-tooltip v-if="buttons.includes('add')" content="添加记录" placement="top">
-            <el-button v-auth="'add'" v-blur @click="onAction('add')" class="table-header-operate" type="primary">
+        <el-tooltip v-if="buttons.includes('add') && auth('add')" content="添加记录" placement="top">
+            <el-button v-blur @click="onAction('add')" class="table-header-operate" type="primary">
                 <Icon name="fa fa-plus" />
                 <span class="table-header-operate-text">添加</span>
             </el-button>
         </el-tooltip>
-        <el-tooltip v-if="buttons.includes('edit')" content="编辑选中行" placement="top">
-            <el-button v-auth="'edit'" v-blur @click="onAction('edit')" :disabled="!enableBatchOpt" class="table-header-operate" type="primary">
+        <el-tooltip v-if="buttons.includes('edit') && auth('edit')" content="编辑选中行" placement="top">
+            <el-button v-blur @click="onAction('edit')" :disabled="!enableBatchOpt" class="table-header-operate" type="primary">
                 <Icon name="fa fa-pencil" />
                 <span class="table-header-operate-text">编辑</span>
             </el-button>
         </el-tooltip>
         <el-popconfirm
-            v-if="buttons.includes('delete')"
+            v-if="buttons.includes('delete') && auth('del')"
             @confirm="onAction('delete')"
             confirm-button-text="删除"
             cancel-button-text="取消"
@@ -32,7 +32,7 @@
             <template #reference>
                 <div class="mlr-12">
                     <el-tooltip content="删除选中行" placement="top">
-                        <el-button v-auth="'del'" v-blur :disabled="!enableBatchOpt" class="table-header-operate" type="danger">
+                        <el-button v-blur :disabled="!enableBatchOpt" class="table-header-operate" type="danger">
                             <Icon name="fa fa-trash" />
                             <span class="table-header-operate-text">删除</span>
                         </el-button>
@@ -84,7 +84,7 @@
 
 <script setup lang="ts">
 import { reactive, computed, inject } from 'vue'
-import { debounce } from '/@/utils/common'
+import { debounce, auth } from '/@/utils/common'
 import type baTableClass from '/@/utils/baTable'
 import ComSearch from '/@/components/table/comSearch/index.vue'
 
