@@ -110,7 +110,7 @@ getManualInstall().then((res) => {
     }
     .content {
         display: block;
-        max-width: 500px;
+        max-width: 560px;
         padding: 15px;
         margin: 15px auto;
         background-color: #fff;

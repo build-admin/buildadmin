@@ -338,7 +338,7 @@ onMounted(() => {
         color: #303133;
     }
     .table {
-        max-width: 500px;
+        max-width: 560px;
         padding: 20px;
         margin: 10px auto;
     }

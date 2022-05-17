@@ -414,7 +414,7 @@ onUnmounted(() => {
         color: #303133;
     }
     .table {
-        max-width: 500px;
+        max-width: 560px;
         padding: 20px;
         margin: 0 auto;
         .table-item-br {
