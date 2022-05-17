@@ -83,11 +83,14 @@ class Group extends Backend
 
                 if ($superAdmin) {
                     $data['rules'] = '*';
+                    unset($data['half_rules']);
                 } else {
-                    $data['rules'] = implode(',', $data['rules']);
+                    $data['rules']      = implode(',', $data['rules']);
+                    $data['half_rules'] = implode(',', $data['half_rules']);
                 }
             } else {
                 unset($data['rules']);
+                unset($data['half_rules']);
             }
 
             $result = false;
@@ -147,12 +150,15 @@ class Group extends Backend
                 }
 
                 if ($superAdmin) {
-                    $data['rules'] = '*';
+                    $data['rules']      = '*';
+                    $data['half_rules'] = '';
                 } else {
-                    $data['rules'] = implode(',', $data['rules']);
+                    $data['rules']      = implode(',', $data['rules']);
+                    $data['half_rules'] = implode(',', $data['half_rules']);
                 }
             } else {
                 unset($data['rules']);
+                unset($data['half_rules']);
             }
 
             $result = false;
@@ -185,7 +191,15 @@ class Group extends Backend
             }
         }
 
-        $row->rules = $row->rules ? explode(',', $row->rules) : [];
+        $rules           = $row->rules ? explode(',', $row->rules) : [];
+        $row->half_rules = $row->half_rules ? explode(',', $row->half_rules) : [];
+        foreach ($row->half_rules as $half_rule) {
+            $ruKey = array_search($half_rule, $rules);
+            if ($ruKey) {
+                unset($rules[$ruKey]);
+            }
+        }
+        $row->rules = $rules;
         $this->success('', [
             'row' => $row
         ]);

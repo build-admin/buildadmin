@@ -118,8 +118,13 @@ const getCheckeds = () => {
     return treeRef.value!.getCheckedKeys().concat(treeRef.value!.getHalfCheckedKeys())
 }
 
+const getHalfCheckeds = () => {
+    return treeRef.value!.getHalfCheckedKeys()
+}
+
 defineExpose({
     getCheckeds,
+    getHalfCheckeds,
 })
 
 watch(

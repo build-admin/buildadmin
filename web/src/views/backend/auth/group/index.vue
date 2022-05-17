@@ -70,6 +70,7 @@ const baTable = new baTableClass(
         // 提交前
         onSubmit: () => {
             baTable.form.items!.rules = formRef.value.getCheckeds()
+            baTable.form.items!.half_rules = formRef.value.getHalfCheckeds()
         },
     }
 )
