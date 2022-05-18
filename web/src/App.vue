@@ -8,7 +8,7 @@ import { onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import iconfontInit from '/@/utils/iconfont'
 import { useRoute } from 'vue-router'
-import { setTitle } from '/@/utils/common'
+import { setTitleFromRoute } from '/@/utils/common'
 import { useConfig } from '/@/stores/config'
 import { useTerminal } from '/@/stores/terminal'
 
@@ -28,7 +28,7 @@ onMounted(() => {
 watch(
     () => route.path,
     () => {
-        setTitle(t)
+        setTitleFromRoute(t)
     }
 )
 </script>

@@ -43,7 +43,7 @@ export function loadJs(url: string): void {
 /**
  * 设置浏览器标题
  */
-export function setTitle(t: any = null) {
+export function setTitleFromRoute(t: any = null) {
     const navTabs = useNavTabs()
     nextTick(() => {
         var webTitle: string = ''
@@ -55,6 +55,10 @@ export function setTitle(t: any = null) {
         }
         document.title = `${webTitle}`
     })
+}
+
+export function setTitle(title: string) {
+    document.title = `${title}`
 }
 
 /**

@@ -35,18 +35,22 @@
 import { reactive } from 'vue'
 import indexCover from '/@/assets/index/index-cover.svg'
 import { index } from '/@/api/frontend/index'
+import { setTitle } from '/@/utils/common'
 
 const state: {
     data: {
-        site_name?: string
+        site_name: string
         record_number?: string
     }
 } = reactive({
-    data: {},
+    data: {
+        site_name: '',
+    },
 })
 
 index().then((res) => {
     state.data = res.data
+    setTitle(state.data.site_name)
 })
 </script>
 
