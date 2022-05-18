@@ -167,7 +167,7 @@ if (props.property.indexOf('.') > -1) {
     let fieldNameArr = props.property.split('.')
     let val: any = props.row[fieldNameArr[0]]
     for (let index = 1; index < fieldNameArr.length; index++) {
-        val = val[fieldNameArr[index]]
+        val = val ? (val[fieldNameArr[index]] ?? ''):''
     }
     fieldValue.value = val
 }
