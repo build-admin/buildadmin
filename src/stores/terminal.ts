@@ -6,6 +6,7 @@ import { timeFormat } from '/@/utils/common'
 import { buildTerminalUrl } from '/@/api/install/index'
 import { uuid } from '/@/utils/common'
 import { taskStatus } from '/@/components/terminal/constant'
+import { useCommon } from './common'
 
 export const useTerminal = defineStore(
     'terminal',
@@ -62,6 +63,11 @@ export const useTerminal = defineStore(
                 state.taskList[idx].callback(taskStatus.Failed)
             } else if (status == taskStatus.Success) {
                 state.taskList[idx].callback(taskStatus.Success)
+
+                if (state.taskList[idx].command == 'web-build' + '.' + state.packageManager) {
+                    const common = useCommon()
+                    if (common.state.step == 'manualInstall') common.setStep('done')
+                }
             }
         }
 
