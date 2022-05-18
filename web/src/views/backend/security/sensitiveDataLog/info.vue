@@ -47,7 +47,7 @@
                 </el-descriptions>
                 <div class="diff-box">
                     <div class="diff-box-title">修改对比</div>
-                    <code-diff diffStyle="char" :old-string="baTable.form.extend!.info.before" :new-string="baTable.form.extend!.info.after" />
+                    <code-diff diffStyle="char" :old-string="baTable.form.extend!.info.before ?? ''" :new-string="baTable.form.extend!.info.after ?? ''" />
                 </div>
             </div>
         </el-scrollbar>
