@@ -66,7 +66,10 @@ export const useTerminal = defineStore(
 
                 if (state.taskList[idx].command == 'web-build' + '.' + state.packageManager) {
                     const common = useCommon()
-                    if (common.state.step == 'manualInstall') common.setStep('done')
+                    if (common.state.step == 'manualInstall') {
+                        toggle(false)
+                        common.setStep('done')
+                    }
                 }
             }
         }
