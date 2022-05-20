@@ -14,7 +14,7 @@
         <Table ref="tableRef" :pagination="false" @action="baTable.onTableAction" />
 
         <!-- 表单 -->
-        <Form ref="formRef" />
+        <PopupForm ref="formRef" />
     </div>
 </template>
 
@@ -25,7 +25,7 @@ import { baTableApi } from '/@/api/common'
 import { authGroup } from '/@/api/controllerUrls'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
-import Form from './form.vue'
+import PopupForm from './popupForm.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { useI18n } from 'vue-i18n'
 

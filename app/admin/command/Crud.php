@@ -519,7 +519,7 @@ class Crud extends Command
         $this->langPrefix = implode('.', $viewArr) . '.';
 
         // 最终将生成的文件路径
-        $formFile  = $viewDir . 'form.vue';
+        $formFile  = $viewDir . 'popupForm.vue';
         $indexFile = $viewDir . 'index.vue';
         // $serverLangZhCnFile = $adminPath . 'lang' . DIRECTORY_SEPARATOR . 'zh-cn' . DIRECTORY_SEPARATOR . $controllerBaseName . '.php';
         // $serverLangEnFile   = $adminPath . 'lang' . DIRECTORY_SEPARATOR . 'en' . DIRECTORY_SEPARATOR . $controllerBaseName . '.php';

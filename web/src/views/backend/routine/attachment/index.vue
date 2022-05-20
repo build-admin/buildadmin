@@ -15,14 +15,14 @@
             <Table ref="tableRef" @action="baTable.onTableAction" />
 
             <!-- 编辑和新增表单 -->
-            <Form />
+            <PopupForm />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, provide } from 'vue'
-import Form from './form.vue'
+import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import baTableClass from '/@/utils/baTable'

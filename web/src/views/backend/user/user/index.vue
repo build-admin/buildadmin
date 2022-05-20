@@ -14,7 +14,7 @@
         <Table ref="tableRef" @action="baTable.onTableAction" />
 
         <!-- 表单 -->
-        <Form />
+        <PopupForm />
     </div>
 </template>
 
@@ -22,7 +22,7 @@
 import { ref, provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { userUser } from '/@/api/controllerUrls'
-import Form from './form.vue'
+import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'

@@ -14,7 +14,7 @@
         <Table ref="tableRef" @action="baTable.onTableAction" />
 
         <!-- 表单 -->
-        <Form ref="formRef" :form-data="addFormData" />
+        <PopupForm ref="formRef" :form-data="addFormData" />
     </div>
 </template>
 
@@ -23,7 +23,7 @@ import { onMounted, ref, reactive, provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { securityDataRecycle } from '/@/api/controllerUrls'
 import { add } from '/@/api/backend/security/dataRecycle'
-import Form from './form.vue'
+import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'

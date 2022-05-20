@@ -20,7 +20,7 @@
         <Table ref="tableRef" @action="baTable.onTableAction" />
 
         <!-- 表单 -->
-        <Form />
+        <PopupForm />
     </div>
 </template>
 
@@ -29,7 +29,7 @@ import _ from 'lodash'
 import { ref, provide, reactive, watch } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { userMoneyLog } from '/@/api/controllerUrls'
-import Form from './form.vue'
+import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { baTableApi } from '/@/api/common'

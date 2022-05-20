@@ -13,14 +13,14 @@
         <Table ref="tableRef" :pagination="false" @action="baTable.onTableAction" />
 
         <!-- 表单 -->
-        <Form />
+        <PopupForm />
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, provide } from 'vue'
 import { authMenu } from '/@/api/controllerUrls'
-import Form from './form.vue'
+import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
