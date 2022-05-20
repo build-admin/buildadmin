@@ -80,6 +80,13 @@ watch(
 )
 </script>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
+    name: 'layout/main',
+})
+</script>
+
 <style scoped lang="scss">
 .layout-container .layout-main {
     padding: 0 !important;

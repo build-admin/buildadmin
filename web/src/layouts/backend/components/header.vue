@@ -16,10 +16,13 @@ const navTabs = useNavTabs()
 const tabFullScreen = computed(() => navTabs.state.tabFullScreen)
 const layoutMode = computed(() => config.layout.layoutMode)
 </script>
+
 <script lang="ts">
-export default {
+import { defineComponent } from 'vue'
+export default defineComponent({
+    name: 'layout/header',
     components: { DefaultNavBar, ClassicNavBar, StreamlineNavBar },
-}
+})
 </script>
 
 <style scoped lang="scss">

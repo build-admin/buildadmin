@@ -20,6 +20,13 @@ const menuWidth = computed(() => config.menuWidth())
 const layout = computed(() => config.layout)
 </script>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
+    name: 'layout/aside',
+})
+</script>
+
 <style scoped lang="scss">
 .layout-aside-Default {
     background: var(--color-basic-white);
