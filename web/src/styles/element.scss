@@ -1,9 +1,14 @@
 /* 修复 Chrome 浏览器输入框内选中字符行高异常的bug-s */
 .el-input .el-input__inner {
-    line-height: 30px;
+    line-height: 29px;
 }
 /* 修复 Chrome 浏览器输入框内选中字符行高异常的bug-e */
 
+.datetime-picker {
+    height: 32px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
 .el-divider__text.is-center {
     transform: translateX(-50%) translateY(-62%);
 }
