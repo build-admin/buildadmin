@@ -1,29 +1,29 @@
 {
-  "name": "build-admin-install",
-  "private": true,
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint-fix": "eslint --fix --ext .js --ext .jsx --ext .vue src/"
-  },
-  "dependencies": {
-    "@element-plus/icons-vue": "^1.1.4",
-    "axios": "^0.26.0",
-    "element-plus": "^2.2.0",
-    "pinia": "^2.0.14",
-    "pinia-plugin-persistedstate": "^1.5.1",
-    "vue": "^3.2.25",
-    "vue-i18n": "^9.1.9"
-  },
-  "devDependencies": {
-    "@types/node": "^17.0.18",
-    "@vitejs/plugin-vue": "^2.2.0",
-    "sass": "^1.49.7",
-    "sass-loader": "^12.6.0",
-    "dotenv": "^16.0.0",
-    "typescript": "^4.5.4",
-    "vite": "^2.8.0",
-    "vue-tsc": "^0.29.8"
-  }
+    "name": "build-admin-install",
+    "private": true,
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "lint-fix": "eslint --fix --ext .js --ext .jsx --ext .vue src/"
+    },
+    "dependencies": {
+        "@element-plus/icons-vue": "~1.1.4",
+        "axios": "~0.26.0",
+        "element-plus": "~2.2.0",
+        "pinia": "~2.0.14",
+        "pinia-plugin-persistedstate": "~1.5.1",
+        "vue": "~3.2.25",
+        "vue-i18n": "~9.1.9"
+    },
+    "devDependencies": {
+        "@types/node": "~17.0.18",
+        "@vitejs/plugin-vue": "~2.3.3",
+        "sass": "~1.49.7",
+        "sass-loader": "~12.6.0",
+        "dotenv": "~16.0.0",
+        "typescript": "~4.5.4",
+        "vite": "~2.9.8",
+        "vue-tsc": "~0.29.8"
+    }
 }
