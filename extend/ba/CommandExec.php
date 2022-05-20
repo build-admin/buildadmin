@@ -66,7 +66,7 @@ class CommandExec
      */
     public function __construct($authentication)
     {
-        set_time_limit(120);
+        set_time_limit(200);
         if ($authentication) {
             $token = request()->server('HTTP_BATOKEN', request()->request('batoken', Cookie::get('batoken') ?: false));
             $auth  = Auth::instance();
