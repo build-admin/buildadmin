@@ -15,7 +15,7 @@ export const useTerminal = defineStore(
             show: false,
             showDot: false,
             taskList: [],
-            packageManager: 'cnpm',
+            packageManager: 'pnpm',
             showPackageManagerDialog: false,
         })
 
@@ -186,8 +186,10 @@ export const useTerminal = defineStore(
             }
             window.eventSource.onerror = function (e) {
                 window.eventSource.close()
-                setTaskStatus(taskKey, taskStatus.Failed)
-                taskCompleted(taskKey)
+                let taskIdx = findTaskIdxFromGuess(taskKey)
+                if (taskIdx === false) return
+                setTaskStatus(taskIdx, taskStatus.Failed)
+                taskCompleted(taskIdx)
             }
         }
 
@@ -208,6 +210,20 @@ export const useTerminal = defineStore(
                 }
             }
             return false
+        }
+
+        function findTaskIdxFromGuess(idx: number) {
+            if (!state.taskList[idx]) {
+                let taskKey: number = -1
+                for (const key in state.taskList) {
+                    if (state.taskList[key].status == taskStatus.Connecting || state.taskList[key].status == taskStatus.Executing) {
+                        taskKey = parseInt(key)
+                    }
+                }
+                return taskKey === -1 ? false : taskKey
+            } else {
+                return idx
+            }
         }
 
         function execMessageScrollbarKeep(uuid: string) {
