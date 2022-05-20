@@ -8,7 +8,7 @@
         "lint-fix": "eslint --fix --ext .js --ext .jsx --ext .vue src/"
     },
     "dependencies": {
-        "@element-plus/icons-vue": "~0.2.7",
+        "@element-plus/icons-vue": "~1.1.4",
         "@vueuse/core": "~7.5.3",
         "@wangeditor/editor": "~5.0.1",
         "@wangeditor/editor-for-vue": "~5.1.10",
