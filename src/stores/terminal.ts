@@ -48,6 +48,9 @@ export const useTerminal = defineStore(
         }
 
         function setTaskStatus(idx: number, status: number) {
+            if (!state.taskList[idx]) {
+                return
+            }
             state.taskList[idx].status = status
             if ((status == taskStatus.Failed || status == taskStatus.Unknown) && state.taskList[idx].blockOnFailure) {
                 setTaskShowMessage(idx, true)
@@ -55,6 +58,9 @@ export const useTerminal = defineStore(
         }
 
         function taskCompleted(idx: number) {
+            if (!state.taskList[idx]) {
+                return
+            }
             if (typeof state.taskList[idx].callback != 'function') {
                 return
             }

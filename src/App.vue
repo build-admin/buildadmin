@@ -15,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import Terminal from '/@/components/terminal/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useCommon } from '/@/stores/common'
@@ -33,6 +34,10 @@ var langValue = window.localStorage.getItem('ba-lang') || 'zh-cn'
 locale.value = langValue
 
 const lang = getLocaleMessage(langValue) as any
+
+onMounted(() => {
+    terminal.init()
+})
 </script>
 
 <style>
