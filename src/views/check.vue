@@ -277,7 +277,7 @@ const axiosNpmTestInstall = () => {
                             name: t('How to solve'),
                             title: t('Click to see how to solve it'),
                             type: 'faq',
-                            url: 'https://www.kancloud.cn/buildadmin/buildadmin/2653900',
+                            url: 'https://wonderful-code.gitee.io/guide/install/npmInstallFail.html',
                         },
                     ],
                 },

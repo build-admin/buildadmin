@@ -10,14 +10,14 @@
             <div class="content-item">
                 <div>3、{{ t('Execute command') }}</div>
                 <div class="command">npm install</div>
-                <div @click="goUrl('https://www.kancloud.cn/buildadmin/buildadmin/2653900')" class="block-help link">
+                <div @click="goUrl('https://wonderful-code.gitee.io/guide/install/npmInstallFail.html')" class="block-help link">
                     {{ t('Execution failed?') }}
                 </div>
             </div>
             <div class="content-item">
                 <div>4、{{ t('Execute command') }}</div>
                 <div class="command">npm run build:online</div>
-                <div @click="goUrl('https://www.kancloud.cn/buildadmin/buildadmin/2655209')" class="block-help link">
+                <div @click="goUrl('https://wonderful-code.gitee.io/guide/install/npmBuildFail.html')" class="block-help link">
                     {{ t('Execution failed?') }}
                 </div>
             </div>

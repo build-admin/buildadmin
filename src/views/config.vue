@@ -16,7 +16,7 @@
                 </div>
                 <div class="install-tips-item">
                     {{ t("If you don't want to open the corresponding permission due to some security factors, please check ")
-                    }}<span @click="goUrl('https://www.kancloud.cn/buildadmin/buildadmin/2653889')" class="change-route">{{
+                    }}<span @click="goUrl('https://wonderful-code.gitee.io/guide/install/senior.html')" class="change-route">{{
                         t('how installation services ensure system security')
                     }}</span>
                 </div>
