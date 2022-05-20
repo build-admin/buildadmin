@@ -10,7 +10,7 @@
     "dependencies": {
         "@element-plus/icons-vue": "~1.1.4",
         "axios": "~0.26.0",
-        "element-plus": "~2.2.0",
+        "element-plus": "~2.1.10",
         "pinia": "~2.0.14",
         "pinia-plugin-persistedstate": "~1.5.1",
         "vue": "~3.2.25",
