@@ -135,7 +135,7 @@ class Install extends Api
                     'name'  => __('How to solve?'),
                     'title' => __('Click to see how to solve it'),
                     'type'  => 'faq',
-                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653891'
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/preparePHP.html'
                 ]
             ];
         }
@@ -151,7 +151,7 @@ class Install extends Api
                     'name'  => __('View reason'),
                     'title' => __('Click to view the reason'),
                     'type'  => 'faq',
-                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653892'
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/dirNoPermission.html'
                 ]
             ];
         }
@@ -165,7 +165,7 @@ class Install extends Api
                     'name'  => __('View reason'),
                     'title' => __('Click to view the reason'),
                     'type'  => 'faq',
-                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653893'
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/dirNoPermission.html'
                 ]
             ];
         }
@@ -183,7 +183,7 @@ class Install extends Api
                     'name'  => __('How to solve?'),
                     'title' => __('Click to see how to solve it'),
                     'type'  => 'faq',
-                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653894'
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/missingExtension.html'
                 ]
             ];
         }
@@ -197,19 +197,19 @@ class Install extends Api
                     'name'  => __('View reason'),
                     'title' => __('Popen and Pclose functions in PHP Ini is disabled'),
                     'type'  => 'faq',
-                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653895'
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/disablement.html'
                 ],
                 [
                     'name'  => __('How to modify'),
                     'title' => __('Click to view how to modify'),
                     'type'  => 'faq',
-                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653895'
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/disablement.html'
                 ],
                 [
                     'name'  => __('Security assurance?'),
                     'title' => __('Using the installation service correctly will not cause any potential security problems. Click to view the details'),
                     'type'  => 'faq',
-                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653889'
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/senior.html'
                 ],
             ];
         }
@@ -223,19 +223,19 @@ class Install extends Api
                     'name'  => __('View reason'),
                     'title' => __('Feof and fgets functions in PHP Ini is disabled'),
                     'type'  => 'faq',
-                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653896'
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/fileOperation.html'
                 ],
                 [
                     'name'  => __('How to modify'),
                     'title' => __('Click to view how to modify'),
                     'type'  => 'faq',
-                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653896'
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/fileOperation.html'
                 ],
                 [
                     'name'  => __('Security assurance?'),
                     'title' => __('Using the installation service correctly will not cause any potential security problems. Click to view the details'),
                     'type'  => 'faq',
-                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653889'
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/senior.html'
                 ],
             ];
         }
@@ -301,7 +301,7 @@ class Install extends Api
                     'name'  => __('How to solve?'),
                     'title' => __('Click to see how to solve it'),
                     'type'  => 'faq',
-                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653897'
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/prepareNpm.html'
                 ]
             ];
         }
@@ -368,7 +368,7 @@ class Install extends Api
                     'name'  => __('How to solve?'),
                     'title' => __('Click to see how to solve it'),
                     'type'  => 'faq',
-                    'url'   => 'https://www.kancloud.cn/buildadmin/buildadmin/2653899'
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/prepareNodeJs.html'
                 ]
             ];
         }
