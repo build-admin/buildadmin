@@ -7,7 +7,7 @@
         "removeComments": false,
         "strict": true,
         "jsx": "preserve",
-        "sourceMap": true,
+        "sourceMap": false,
         "resolveJsonModule": true,
         "esModuleInterop": true,
         "lib": ["esnext", "dom"],
