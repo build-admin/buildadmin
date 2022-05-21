@@ -8,7 +8,7 @@ import { getUrl } from '/@/utils/axios'
 
 // Admin模块
 export const adminUploadUrl = '/index.php/admin/ajax/upload'
-export const adminBuildSuffixSvgUrl = '/index.php/admin/ajax/buildsuffixsvg'
+export const adminBuildSuffixSvgUrl = '/index.php/admin/ajax/buildSuffixSvg'
 export const adminAreaUrl = '/index.php/admin/ajax/area'
 export const getTablePkUrl = '/index.php/admin/ajax/getTablePk'
 export const terminalUrl = '/index.php/admin/install/terminal'
@@ -20,7 +20,7 @@ export const refreshTokenUrl = '/index.php/api/common/refreshToken'
 
 // api模块(前台)
 export const apiUploadUrl = '/index.php/api/ajax/upload'
-export const apiBuildSuffixSvgUrl = '/index.php/api/ajax/buildsuffixsvg'
+export const apiBuildSuffixSvgUrl = '/index.php/api/ajax/buildSuffixSvg'
 export const apiAreaUrl = '/index.php/api/ajax/area'
 
 /**
