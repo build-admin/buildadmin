@@ -40,7 +40,6 @@
         "eslint-plugin-vue": "~8.2.0",
         "prettier": "~2.5.1",
         "sass": "~1.47.0",
-        "sass-loader": "~12.4.0",
         "typescript": "~4.4.4",
         "vite": "~2.9.8",
         "vue-eslint-parser": "~8.0.1"
