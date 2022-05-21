@@ -76,7 +76,7 @@ const onSetNavTabsMinWidth = () => {
     const navBar = document.querySelector('.nav-bar') as HTMLElement
     const navMenus = document.querySelector('.nav-menus') as HTMLElement
     const minWidth = navBar.offsetWidth - (navMenus.offsetWidth + 20)
-    navTabs.style.minWidth = minWidth.toString() + 'px'
+    navTabs.style.width = minWidth.toString() + 'px'
 }
 
 onMounted(() => {
