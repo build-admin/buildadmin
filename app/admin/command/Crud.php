@@ -554,7 +554,7 @@ class Crud extends Command
                         break;
                     case $formFile:
                     case $indexFile:
-                        $this->removeEmptyBaseDir($v, $viewArr);
+                        $this->removeEmptyBaseDir($v, $viewArr, 0);
                         break;
                     default:
                         $this->removeEmptyBaseDir($v, $controllerArr);
@@ -1204,13 +1204,14 @@ class Crud extends Command
 
     /**
      * 移除相对的空目录.
-     * @param $parseFile
-     * @param $parseArr
+     * @param string $parseFile
+     * @param array  $parseArr
+     * @param int    $level
      * @return bool
      */
-    protected function removeEmptyBaseDir($parseFile, $parseArr): bool
+    protected function removeEmptyBaseDir(string $parseFile, array $parseArr, int $level = 1): bool
     {
-        if (count($parseArr) > 1) {
+        if (count($parseArr) > $level) {
             $parentDir = dirname($parseFile);
             for ($i = 0; $i < count($parseArr); $i++) {
                 try {
