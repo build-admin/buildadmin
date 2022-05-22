@@ -89,13 +89,13 @@ class Crud extends Command
         ],
         // 富文本-识别规则和textarea重合,优先识别为富文本
         [
-            'type'   => ['longtext', 'text', 'mediumtext', 'smalltext', 'tinytext'],
+            'type'   => ['longtext', 'text', 'mediumtext', 'smalltext', 'tinytext', 'bigtext'],
             'suffix' => ['content', 'editor'],
             'value'  => 'editor',
         ],
         // textarea
         [
-            'type'  => ['longtext', 'text', 'mediumtext', 'smalltext', 'tinytext'],
+            'type'  => ['longtext', 'text', 'mediumtext', 'smalltext', 'tinytext', 'bigtext'],
             'value' => 'textarea',
         ],
         // Array
