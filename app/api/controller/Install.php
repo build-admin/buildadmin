@@ -589,7 +589,7 @@ class Install extends Api
     public function manualInstall()
     {
         $this->success('', [
-            'webPath' => root_path() . 'web'
+            'webPath' => str_replace('\\', '/', root_path() . 'web')
         ]);
     }
 
