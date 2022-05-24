@@ -119,7 +119,6 @@
                 <el-button
                     v-if="btn.name == 'weigh-sort'"
                     v-auth="'sortable'"
-                    v-blur
                     :class="btn.class"
                     class="table-operate move-button"
                     :type="btn.type"
