@@ -95,6 +95,11 @@ class Crud extends Command
         ],
         // textarea
         [
+            'type'   => ['varchar'],
+            'suffix' => ['textarea', 'multiline', 'rows'],
+            'value'  => 'textarea',
+        ],
+        [
             'type'  => ['longtext', 'text', 'mediumtext', 'smalltext', 'tinytext', 'bigtext'],
             'value' => 'textarea',
         ],
