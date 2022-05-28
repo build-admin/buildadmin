@@ -1,7 +1,7 @@
 <template>
     <div class="default-main">
-        <el-row :gutter="20">
-            <el-col class="lg-mb-20" :xs="24" :sm="24" :md="24" :lg="8">
+        <el-row :gutter="30">
+            <el-col class="lg-mb-20" :xs="24" :sm="24" :md="24" :lg="10">
                 <div class="admin-info">
                     <el-upload
                         class="avatar-uploader"
@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </el-col>
-            <el-col v-loading="state.logLoading" :xs="24" :sm="24" :md="24" :lg="14" :offset="1">
+            <el-col v-loading="state.logLoading" :xs="24" :sm="24" :md="24" :lg="12">
                 <el-card header="操作日志" shadow="never">
                     <el-timeline>
                         <el-timeline-item v-for="item in state.log" size="large" :timestamp="timeFormat(item.createtime)">
