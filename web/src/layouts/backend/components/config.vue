@@ -1,8 +1,8 @@
 <template>
     <div class="layout-config-drawer">
-        <el-drawer v-model="config.showDrawer" title="布局配置" size="310px" @close="onCloseDrawer">
+        <el-drawer v-model="configStore.layout.showDrawer" title="布局配置" size="310px" @close="onCloseDrawer">
             <el-scrollbar class="layout-mode-style-scrollbar">
-                <el-form ref="formRef" :model="config">
+                <el-form ref="formRef" :model="configStore.layout">
                     <div class="layout-mode-styles-box">
                         <el-divider border-style="dashed">布局方式</el-divider>
                         <div class="layout-mode-box-style">
@@ -11,7 +11,7 @@
                                     <div
                                         @click="setLayoutMode('Default')"
                                         class="layout-mode-style default"
-                                        :class="config.layoutMode == 'Default' ? 'active' : ''"
+                                        :class="configStore.layout.layoutMode == 'Default' ? 'active' : ''"
                                     >
                                         <div class="layout-mode-style-box">
                                             <div class="layout-mode-style-aside"></div>
@@ -27,7 +27,7 @@
                                     <div
                                         @click="setLayoutMode('Classic')"
                                         class="layout-mode-style classic"
-                                        :class="config.layoutMode == 'Classic' ? 'active' : ''"
+                                        :class="configStore.layout.layoutMode == 'Classic' ? 'active' : ''"
                                     >
                                         <div class="layout-mode-style-box">
                                             <div class="layout-mode-style-aside"></div>
@@ -45,7 +45,7 @@
                                     <div
                                         @click="setLayoutMode('Streamline')"
                                         class="layout-mode-style streamline"
-                                        :class="config.layoutMode == 'Streamline' ? 'active' : ''"
+                                        :class="configStore.layout.layoutMode == 'Streamline' ? 'active' : ''"
                                     >
                                         <div class="layout-mode-style-box">
                                             <div class="layout-mode-style-container-box">
@@ -63,7 +63,7 @@
                             <el-form-item label="后台页面切换动画">
                                 <el-select
                                     @change="onCommitState($event, 'mainAnimation')"
-                                    v-model="config.mainAnimation"
+                                    v-model="configStore.layout.mainAnimation"
                                     placeholder="请选择动画名称"
                                 >
                                     <el-option label="slide-right" value="slide-right"></el-option>
@@ -80,63 +80,78 @@
                         <el-divider border-style="dashed">侧边栏</el-divider>
                         <div class="layout-config-aside">
                             <el-form-item label="侧边菜单栏背景色">
-                                <el-color-picker @change="onCommitState($event, 'menuBackground')" v-model="config.menuBackground" />
+                                <el-color-picker @change="onCommitState($event, 'menuBackground')" v-model="configStore.layout.menuBackground" />
                             </el-form-item>
                             <el-form-item label="侧边菜单文字颜色">
-                                <el-color-picker @change="onCommitState($event, 'menuColor')" v-model="config.menuColor" />
+                                <el-color-picker @change="onCommitState($event, 'menuColor')" v-model="configStore.layout.menuColor" />
                             </el-form-item>
                             <el-form-item label="侧边菜单激活项背景色">
-                                <el-color-picker @change="onCommitState($event, 'menuActiveBackground')" v-model="config.menuActiveBackground" />
+                                <el-color-picker
+                                    @change="onCommitState($event, 'menuActiveBackground')"
+                                    v-model="configStore.layout.menuActiveBackground"
+                                />
                             </el-form-item>
                             <el-form-item label="侧边菜单激活项文字色">
-                                <el-color-picker @change="onCommitState($event, 'menuActiveColor')" v-model="config.menuActiveColor" />
+                                <el-color-picker @change="onCommitState($event, 'menuActiveColor')" v-model="configStore.layout.menuActiveColor" />
                             </el-form-item>
                             <el-form-item label="显示侧边菜单顶栏(LOGO栏)">
-                                <el-switch @change="onCommitState($event, 'menuShowTopBar')" v-model="config.menuShowTopBar"></el-switch>
+                                <el-switch @change="onCommitState($event, 'menuShowTopBar')" v-model="configStore.layout.menuShowTopBar"></el-switch>
                             </el-form-item>
                             <el-form-item label="侧边菜单顶栏背景色">
-                                <el-color-picker @change="onCommitState($event, 'menuTopBarBackground')" v-model="config.menuTopBarBackground" />
+                                <el-color-picker
+                                    @change="onCommitState($event, 'menuTopBarBackground')"
+                                    v-model="configStore.layout.menuTopBarBackground"
+                                />
                             </el-form-item>
                             <el-form-item label="侧边菜单宽度(展开时)">
-                                <el-input @input="onCommitState($event, 'menuWidth')" type="number" :step="10" v-model="config.menuWidth">
+                                <el-input @input="onCommitState($event, 'menuWidth')" type="number" :step="10" v-model="configStore.layout.menuWidth">
                                     <template #append>px</template>
                                 </el-input>
                             </el-form-item>
                             <el-form-item label="侧边菜单默认图标">
-                                <selector @change="onCommitMenuDefaultIcon($event, 'menuDefaultIcon')" v-model="config.menuDefaultIcon" />
+                                <selector @change="onCommitMenuDefaultIcon($event, 'menuDefaultIcon')" v-model="configStore.layout.menuDefaultIcon" />
                             </el-form-item>
                             <el-form-item label="侧边菜单水平折叠">
-                                <el-switch @change="onCommitState($event, 'menuCollapse')" v-model="config.menuCollapse"></el-switch>
+                                <el-switch @change="onCommitState($event, 'menuCollapse')" v-model="configStore.layout.menuCollapse"></el-switch>
                             </el-form-item>
                             <el-form-item label="侧边菜单手风琴">
-                                <el-switch @change="onCommitState($event, 'menuUniqueOpened')" v-model="config.menuUniqueOpened"></el-switch>
+                                <el-switch
+                                    @change="onCommitState($event, 'menuUniqueOpened')"
+                                    v-model="configStore.layout.menuUniqueOpened"
+                                ></el-switch>
                             </el-form-item>
                         </div>
 
                         <el-divider border-style="dashed">顶栏</el-divider>
                         <div class="layout-config-aside">
                             <el-form-item label="顶栏背景色">
-                                <el-color-picker @change="onCommitState($event, 'headerBarBackground')" v-model="config.headerBarBackground" />
+                                <el-color-picker
+                                    @change="onCommitState($event, 'headerBarBackground')"
+                                    v-model="configStore.layout.headerBarBackground"
+                                />
                             </el-form-item>
                             <el-form-item label="顶栏文字色">
-                                <el-color-picker @change="onCommitState($event, 'headerBarTabColor')" v-model="config.headerBarTabColor" />
+                                <el-color-picker
+                                    @change="onCommitState($event, 'headerBarTabColor')"
+                                    v-model="configStore.layout.headerBarTabColor"
+                                />
                             </el-form-item>
                             <el-form-item label="顶栏悬停时背景色">
                                 <el-color-picker
                                     @change="onCommitState($event, 'headerBarHoverBackground')"
-                                    v-model="config.headerBarHoverBackground"
+                                    v-model="configStore.layout.headerBarHoverBackground"
                                 />
                             </el-form-item>
                             <el-form-item label="顶栏菜单激活项背景色">
                                 <el-color-picker
                                     @change="onCommitState($event, 'headerBarTabActiveBackground')"
-                                    v-model="config.headerBarTabActiveBackground"
+                                    v-model="configStore.layout.headerBarTabActiveBackground"
                                 />
                             </el-form-item>
                             <el-form-item label="顶栏菜单激活项文字色">
                                 <el-color-picker
                                     @change="onCommitState($event, 'headerBarTabActiveColor')"
-                                    v-model="config.headerBarTabActiveColor"
+                                    v-model="configStore.layout.headerBarTabActiveColor"
                                 />
                             </el-form-item>
                         </div>
@@ -155,7 +170,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 import { useRouter } from 'vue-router'
@@ -167,8 +181,6 @@ const configStore = useConfig()
 const navTabs = useNavTabs()
 const router = useRouter()
 
-const config = computed(() => configStore.layout)
-
 const onCommitState = (value: any, name: any) => {
     configStore.setLayout(name, value)
 }
@@ -176,7 +188,7 @@ const onCommitState = (value: any, name: any) => {
 const setLayoutMode = (mode: string) => {
     Session.set(BEFORE_RESIZE_LAYOUT, {
         layoutMode: mode,
-        menuCollapse: config.value.menuCollapse,
+        menuCollapse: configStore.layout.menuCollapse,
     })
     configStore.setLayoutMode(mode)
 }

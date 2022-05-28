@@ -1,22 +1,20 @@
 <template>
     <div class="nav-bar">
-        <div v-if="layoutConfig.shrink && layoutConfig.menuCollapse" class="unfold">
-            <Icon @click="onMenuCollapse" name="fa fa-indent" :color="layoutConfig.menuActiveColor" size="18" />
+        <div v-if="config.layout.shrink && config.layout.menuCollapse" class="unfold">
+            <Icon @click="onMenuCollapse" name="fa fa-indent" :color="config.layout.menuActiveColor" size="18" />
         </div>
-        <NavTabs v-if="!layoutConfig.shrink" />
+        <NavTabs v-if="!config.layout.shrink" />
         <NavMenus />
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useConfig } from '/@/stores/config'
 import NavTabs from '/@/layouts/backend/components/navBar/tabs.vue'
 import NavMenus from '../navMenus.vue'
 import { showShade } from '/@/utils/pageShade'
 
 const config = useConfig()
-const layoutConfig = computed(() => config.layout)
 
 const onMenuCollapse = () => {
     showShade('ba-aside-menu-shade', () => {
@@ -31,7 +29,7 @@ const onMenuCollapse = () => {
     display: flex;
     height: 50px;
     width: 100%;
-    background-color: v-bind('layoutConfig.headerBarBackground');
+    background-color: v-bind('config.layout.headerBarBackground');
     :deep(.nav-tabs) {
         display: flex;
         height: 100%;
@@ -45,7 +43,7 @@ const onMenuCollapse = () => {
             z-index: 1;
             height: 100%;
             user-select: none;
-            color: v-bind('layoutConfig.headerBarTabColor');
+            color: v-bind('config.layout.headerBarTabColor');
             transition: all 0.2s;
             -webkit-transition: all 0.2s;
             .close-icon {
@@ -58,16 +56,16 @@ const onMenuCollapse = () => {
                 border-radius: 50%;
             }
             &.active {
-                color: v-bind('layoutConfig.headerBarTabActiveColor');
+                color: v-bind('config.layout.headerBarTabActiveColor');
             }
             &:hover {
-                background-color: v-bind('layoutConfig.headerBarHoverBackground');
+                background-color: v-bind('config.layout.headerBarHoverBackground');
             }
         }
         .nav-tabs-active-box {
             position: absolute;
             height: 50px;
-            background-color: v-bind('layoutConfig.headerBarTabActiveBackground');
+            background-color: v-bind('config.layout.headerBarTabActiveBackground');
             transition: all 0.2s;
             -webkit-transition: all 0.2s;
         }

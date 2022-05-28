@@ -1,4 +1,4 @@
-import { computed, CSSProperties } from 'vue'
+import { CSSProperties } from 'vue'
 import { useNavTabs } from '/@/stores/navTabs'
 
 /**
@@ -8,10 +8,9 @@ import { useNavTabs } from '/@/stores/navTabs'
  */
 export function mainHeight(extra: number = 0): CSSProperties {
     const navTabs = useNavTabs()
-    const tabFullScreen = computed(() => navTabs.state.tabFullScreen)
 
     let height = extra
-    if (!tabFullScreen.value) {
+    if (!navTabs.state.tabFullScreen) {
         height += 75
     }
     return {

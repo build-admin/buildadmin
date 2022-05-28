@@ -6,13 +6,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useConfig } from '/@/stores/config'
 import NavTabs from '/@/layouts/backend/components/navBar/tabs.vue'
 import NavMenus from '../navMenus.vue'
 
 const config = useConfig()
-const layout = computed(() => config.layout)
 </script>
 
 <style lang="scss" scoped>
@@ -33,7 +31,7 @@ const layout = computed(() => config.layout)
             z-index: 1;
             user-select: none;
             opacity: 0.7;
-            color: v-bind('layout.headerBarTabColor');
+            color: v-bind('config.layout.headerBarTabColor');
             .close-icon {
                 padding: 2px;
                 margin: 2px 0 0 4px;
@@ -44,7 +42,7 @@ const layout = computed(() => config.layout)
                 border-radius: 50%;
             }
             &.active {
-                color: v-bind('layout.headerBarTabActiveColor');
+                color: v-bind('config.layout.headerBarTabActiveColor');
             }
             &:hover {
                 opacity: 1;
@@ -54,7 +52,7 @@ const layout = computed(() => config.layout)
             position: absolute;
             height: 40px;
             border-radius: var(--el-border-radius-base);
-            background-color: v-bind('layout.headerBarTabActiveBackground');
+            background-color: v-bind('config.layout.headerBarTabActiveBackground');
             box-shadow: var(--el-box-shadow-light);
             transition: all 0.2s;
             -webkit-transition: all 0.2s;

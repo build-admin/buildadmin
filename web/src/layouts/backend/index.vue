@@ -1,5 +1,5 @@
 <template>
-    <component :is="layoutConfig.layoutMode"></component>
+    <component :is="config.layout.layoutMode"></component>
 </template>
 
 <script setup lang="ts">
@@ -9,7 +9,7 @@ import { useRoute } from 'vue-router'
 import Default from '/@/layouts/container/default.vue'
 import Classic from '/@/layouts/container/classic.vue'
 import Streamline from '/@/layouts/container/streamline.vue'
-import { computed, onMounted, onBeforeMount, onUnmounted } from 'vue'
+import { onMounted, onBeforeMount, onUnmounted } from 'vue'
 import { Session } from '/@/utils/storage'
 import { index } from '/@/api/backend'
 import { handleAdminRoute, getMenuPaths, pushFirstRoute } from '/@/utils/router'
@@ -43,12 +43,10 @@ index().then((res) => {
     }
 })
 
-const layoutConfig = computed(() => config.layout)
-
 const onAdaptiveLayout = () => {
     let defaultBeforeResizeLayout = {
-        layoutMode: layoutConfig.value.layoutMode,
-        menuCollapse: layoutConfig.value.menuCollapse,
+        layoutMode: config.layout.layoutMode,
+        menuCollapse: config.layout.menuCollapse,
     }
     let beforeResizeLayout = Session.get(BEFORE_RESIZE_LAYOUT)
     if (!beforeResizeLayout) Session.set(BEFORE_RESIZE_LAYOUT, defaultBeforeResizeLayout)

@@ -78,7 +78,7 @@
                         :page-size="state.logPageSize"
                         :page-sizes="[12, 22, 52, 100]"
                         background
-                        :layout="shrink ? 'prev, next, jumper' : 'sizes, ->, prev, pager, next, jumper'"
+                        :layout="config.layout.shrink ? 'prev, next, jumper' : 'sizes, ->, prev, pager, next, jumper'"
                         :total="state.logTotal"
                         @size-change="onLogSizeChange"
                         @current-change="onLogCurrentChange"
@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { index, log, postData } from '/@/api/backend/routine/AdminInfo'
 import { ElForm, FormItemRule } from 'element-plus'
@@ -105,7 +105,6 @@ import { useConfig } from '/@/stores/config'
 const { t } = useI18n()
 const formRef = ref<InstanceType<typeof ElForm>>()
 const config = useConfig()
-const shrink = computed(() => config.layout.shrink)
 
 const adminInfoStore = useAdminInfo()
 

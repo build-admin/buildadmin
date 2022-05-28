@@ -3,14 +3,14 @@
         <el-menu
             class="layouts-menu-vertical"
             :collapse-transition="false"
-            :unique-opened="layoutConfig.menuUniqueOpened"
+            :unique-opened="config.layout.menuUniqueOpened"
             :default-active="state.defaultActive"
-            :collapse="layoutConfig.menuCollapse"
-            :background-color="layoutConfig.menuBackground"
-            :text-color="layoutConfig.menuColor"
-            :active-text-color="layoutConfig.menuActiveColor"
+            :collapse="config.layout.menuCollapse"
+            :background-color="config.layout.menuBackground"
+            :text-color="config.layout.menuColor"
+            :active-text-color="config.layout.menuActiveColor"
         >
-            <MenuTree :menus="menus" />
+            <MenuTree :menus="navTabs.state.tabsViewRoutes" />
         </el-menu>
     </el-scrollbar>
 </template>
@@ -33,14 +33,12 @@ const state = reactive({
     defaultActive: '',
 })
 
-const menus = computed(() => navTabs.state.tabsViewRoutes)
-const layoutConfig = computed(() => config.layout)
 const verticalMenusScrollbarHeight = computed(() => {
     let menuTopBarHeight = 0
-    if (layoutConfig.value.menuShowTopBar) {
+    if (config.layout.menuShowTopBar) {
         menuTopBarHeight = 50
     }
-    if (layoutConfig.value.layoutMode == 'Default') {
+    if (config.layout.layoutMode == 'Default') {
         return 'calc(100vh - ' + (32 + menuTopBarHeight) + 'px)'
     } else {
         return 'calc(100vh - ' + menuTopBarHeight + 'px)'

@@ -1,6 +1,9 @@
 <template>
-    <el-aside v-if="!tabFullScreen" :class="'layout-aside-' + layout.layoutMode + ' ' + (layout.shrink ? 'shrink' : '')">
-        <Logo v-if="layout.menuShowTopBar" />
+    <el-aside
+        v-if="!navTabs.state.tabFullScreen"
+        :class="'layout-aside-' + config.layout.layoutMode + ' ' + (config.layout.shrink ? 'shrink' : '')"
+    >
+        <Logo v-if="config.layout.menuShowTopBar" />
         <MenuVertical />
     </el-aside>
 </template>
@@ -15,9 +18,7 @@ import { useNavTabs } from '/@/stores/navTabs'
 const config = useConfig()
 const navTabs = useNavTabs()
 
-const tabFullScreen = computed(() => navTabs.state.tabFullScreen)
 const menuWidth = computed(() => config.menuWidth())
-const layout = computed(() => config.layout)
 </script>
 
 <script lang="ts">

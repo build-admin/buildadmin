@@ -1,6 +1,6 @@
 <template>
     <div class="layouts-menu-horizontal">
-        <div class="menu-horizontal-logo" v-if="layoutConfig.menuShowTopBar">
+        <div class="menu-horizontal-logo" v-if="config.layout.menuShowTopBar">
             <Logo />
         </div>
         <el-scrollbar ref="horizontalMenusRef" class="horizontal-menus-scrollbar">
@@ -8,9 +8,9 @@
                 class="menu-horizontal"
                 mode="horizontal"
                 :default-active="state.defaultActive"
-                :background-color="layoutConfig.menuBackground"
-                :text-color="layoutConfig.menuColor"
-                :active-text-color="layoutConfig.menuActiveColor"
+                :background-color="config.layout.menuBackground"
+                :text-color="config.layout.menuColor"
+                :active-text-color="config.layout.menuActiveColor"
                 :key="state.menuKey"
             >
                 <!-- 横向菜单直接使用 <MenuTree :menus="menus" /> 会报警告 -->
@@ -18,7 +18,7 @@
                     <template v-if="menu.children && menu.children.length > 0">
                         <el-sub-menu :index="menu.path" :key="menu.path">
                             <template #title>
-                                <Icon :color="layoutConfig.menuColor" :name="menu.icon ? menu.icon : layoutConfig.menuDefaultIcon" />
+                                <Icon :color="config.layout.menuColor" :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon" />
                                 <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
                             </template>
                             <menu-tree :menus="menu.children"></menu-tree>
@@ -26,7 +26,7 @@
                     </template>
                     <template v-else>
                         <el-menu-item :index="menu.path" :key="menu.path" @click="clickMenu(menu)">
-                            <Icon :color="layoutConfig.menuColor" :name="menu.icon ? menu.icon : layoutConfig.menuDefaultIcon" />
+                            <Icon :color="config.layout.menuColor" :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon" />
                             <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
                         </el-menu-item>
                     </template>
@@ -64,7 +64,6 @@ const menus = computed(() => {
     state.menuKey = uuid()
     return navTabs.state.tabsViewRoutes
 })
-const layoutConfig = computed(() => config.layout)
 
 // 激活当前路由的菜单
 const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
@@ -102,7 +101,7 @@ onBeforeRouteUpdate((to) => {
 .menu-horizontal-logo {
     width: 180px;
     &:hover {
-        background-color: v-bind('layoutConfig.headerBarHoverBackground');
+        background-color: v-bind('config.layout.headerBarHoverBackground');
     }
 }
 .menu-horizontal {
@@ -120,6 +119,6 @@ onBeforeRouteUpdate((to) => {
     color: var(--el-menu-active-color) !important;
 }
 .el-menu-item.is-active {
-    background-color: v-bind('layoutConfig.menuActiveBackground');
+    background-color: v-bind('config.layout.menuActiveBackground');
 }
 </style>

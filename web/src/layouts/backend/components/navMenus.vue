@@ -1,8 +1,8 @@
 <template>
-    <div class="nav-menus" :class="layoutConfig.layoutMode">
+    <div class="nav-menus" :class="configStore.layout.layoutMode">
         <router-link class="h100" target="_blank" :title="t('home')" to="/">
             <div class="nav-menu-item">
-                <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" name="el-icon-Monitor" size="18" />
+                <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" name="el-icon-Monitor" size="18" />
             </div>
         </router-link>
         <el-dropdown
@@ -15,23 +15,23 @@
             :hide-on-click="true"
         >
             <div class="nav-menu-item pt2" :class="state.currentNavMenu == 'lang' ? 'hover' : ''">
-                <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" name="local-lang" size="18" />
+                <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" name="local-lang" size="18" />
             </div>
             <template #dropdown>
                 <el-dropdown-menu class="chang-lang">
-                    <el-dropdown-item v-for="item in langArray" :key="item.name" @click="editDefaultLang(item.name)">
+                    <el-dropdown-item v-for="item in configStore.lang.langArray" :key="item.name" @click="editDefaultLang(item.name)">
                         {{ item.value }}
                     </el-dropdown-item>
                 </el-dropdown-menu>
             </template>
         </el-dropdown>
         <div @click="onFullScreen" class="nav-menu-item" :class="state.isFullScreen ? 'hover' : ''">
-            <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" v-if="state.isFullScreen" name="local-full-screen-cancel" size="18" />
-            <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" v-else name="el-icon-FullScreen" size="18" />
+            <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" v-if="state.isFullScreen" name="local-full-screen-cancel" size="18" />
+            <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" v-else name="el-icon-FullScreen" size="18" />
         </div>
         <div @click="terminal.toggle()" class="nav-menu-item pt2">
             <el-badge :is-dot="terminal.state.showDot">
-                <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" name="local-terminal" size="26" />
+                <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" name="local-terminal" size="26" />
             </el-badge>
         </div>
         <el-popover
@@ -68,7 +68,7 @@
             </div>
         </el-popover>
         <div @click="configStore.setLayout('showDrawer', true)" class="nav-menu-item">
-            <Icon :color="layoutConfig.headerBarTabColor" class="nav-menu-icon" name="fa fa-cogs" size="18" />
+            <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" name="fa fa-cogs" size="18" />
         </div>
         <Config />
         <TerminalVue />
@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from 'vue'
+import { reactive } from 'vue'
 import { editDefaultLang } from '/@/lang'
 import screenfull from 'screenfull'
 import { useConfig } from '/@/stores/config'
@@ -103,9 +103,6 @@ const state = reactive({
     currentNavMenu: '',
     showLayoutDrawer: false,
 })
-
-const langArray = computed(() => configStore.lang.langArray)
-const layoutConfig = computed(() => configStore.layout)
 
 const onCurrentNavMenu = (status: boolean, name: string) => {
     state.currentNavMenu = status ? name : ''
@@ -144,7 +141,7 @@ const onLogout = () => {
     align-items: center;
     height: 100%;
     margin-left: auto;
-    background-color: v-bind('layoutConfig.headerBarBackground');
+    background-color: v-bind('configStore.layout.headerBarBackground');
     overflow: hidden;
     .nav-menu-item {
         height: 100%;
@@ -169,7 +166,7 @@ const onLogout = () => {
         align-items: center;
         cursor: pointer;
         user-select: none;
-        color: v-bind('layoutConfig.headerBarTabColor');
+        color: v-bind('configStore.layout.headerBarTabColor');
     }
     .admin-name {
         padding-left: 6px;
@@ -178,7 +175,7 @@ const onLogout = () => {
     .admin-info:hover,
     .nav-menu-item.hover,
     .admin-info.hover {
-        background: v-bind('layoutConfig.headerBarHoverBackground');
+        background: v-bind('configStore.layout.headerBarHoverBackground');
     }
 }
 .chang-lang :deep(.el-dropdown-menu__item) {

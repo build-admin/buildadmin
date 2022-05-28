@@ -1,13 +1,13 @@
 <template>
     <div class="layout-logo">
-        <img v-if="!layoutConfig.menuCollapse" class="logo-img" src="~assets/logo.png" alt="logo" />
-        <div v-if="!layoutConfig.menuCollapse" :style="{ color: layoutConfig.menuActiveColor }" class="website-name">BuildAdmin</div>
+        <img v-if="!config.layout.menuCollapse" class="logo-img" src="~assets/logo.png" alt="logo" />
+        <div v-if="!config.layout.menuCollapse" :style="{ color: config.layout.menuActiveColor }" class="website-name">BuildAdmin</div>
         <Icon
-            v-if="layoutConfig.layoutMode != 'Streamline'"
+            v-if="config.layout.layoutMode != 'Streamline'"
             @click="onMenuCollapse"
-            :name="layoutConfig.menuCollapse ? 'fa fa-indent' : 'fa fa-dedent'"
-            :class="layoutConfig.menuCollapse ? 'unfold' : ''"
-            :color="layoutConfig.menuActiveColor"
+            :name="config.layout.menuCollapse ? 'fa fa-indent' : 'fa fa-dedent'"
+            :class="config.layout.menuCollapse ? 'unfold' : ''"
+            :color="config.layout.menuActiveColor"
             size="18"
             class="fold"
         />
@@ -15,19 +15,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useConfig } from '/@/stores/config'
 import { closeShade } from '/@/utils/pageShade'
 
 const config = useConfig()
-const layoutConfig = computed(() => config.layout)
 
 const onMenuCollapse = function () {
-    if (layoutConfig.value.shrink && !layoutConfig.value.menuCollapse) {
+    if (config.layout.shrink && !config.layout.menuCollapse) {
         closeShade()
     }
 
-    config.setLayout('menuCollapse', !layoutConfig.value.menuCollapse)
+    config.setLayout('menuCollapse', !config.layout.menuCollapse)
 }
 </script>
 
@@ -40,7 +38,7 @@ const onMenuCollapse = function () {
     justify-content: center;
     box-sizing: border-box;
     padding: 10px;
-    background: v-bind('layoutConfig.layoutMode != "Streamline" ? layoutConfig.menuTopBarBackground:"transparent"');
+    background: v-bind('config.layout.layoutMode != "Streamline" ? config.layout.menuTopBarBackground:"transparent"');
 }
 .logo-img {
     width: 28px;

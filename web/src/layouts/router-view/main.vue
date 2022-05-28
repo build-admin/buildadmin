@@ -2,7 +2,7 @@
     <el-main class="layout-main">
         <el-scrollbar class="layout-main-scrollbar" :style="layoutMainScrollbarStyle()" ref="mainScrollbarRef">
             <router-view v-slot="{ Component }">
-                <transition :name="layoutMainAnimation" mode="out-in">
+                <transition :name="config.layout.mainAnimation" mode="out-in">
                     <keep-alive :include="state.keepAliveComponentNameList">
                         <component :is="Component" :key="state.componentKey" />
                     </keep-alive>
@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted, watch, computed, onBeforeMount, onUnmounted, nextTick } from 'vue'
+import { reactive, onMounted, watch, onBeforeMount, onUnmounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { mainHeight as layoutMainScrollbarStyle } from '/@/utils/layout'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
@@ -34,8 +34,6 @@ const state: {
     componentKey: route.path,
     keepAliveComponentNameList: [],
 })
-
-const layoutMainAnimation = computed(() => config.layout.mainAnimation)
 
 const addKeepAliveComponentName = function (keepAliveName: string | undefined) {
     if (keepAliveName) {

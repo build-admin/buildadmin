@@ -5,7 +5,7 @@
                 <Icon name="fa fa-globe" color="var(--color-secondary)" size="28" />
                 <template #dropdown>
                     <el-dropdown-menu class="chang-lang">
-                        <el-dropdown-item v-for="item in langArray" :key="item.name" @click="editDefaultLang(item.name)">
+                        <el-dropdown-item v-for="item in config.lang.langArray" :key="item.name" @click="editDefaultLang(item.name)">
                             {{ item.value }}
                         </el-dropdown-item>
                     </el-dropdown-menu>
@@ -91,7 +91,7 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance, onMounted, onBeforeUnmount, reactive, ref, computed } from 'vue'
+import { getCurrentInstance, onMounted, onBeforeUnmount, reactive, ref } from 'vue'
 import * as pageBubble from '/@/utils/pageBubble'
 import type { ElForm } from 'element-plus'
 import { ElNotification } from 'element-plus'
@@ -196,8 +196,6 @@ onBeforeUnmount(() => {
     clearTimeout(timer)
     pageBubble.removeListeners()
 })
-
-const langArray = computed(() => config.lang.langArray)
 
 const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     if (!formEl) return

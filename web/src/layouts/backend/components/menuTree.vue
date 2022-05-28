@@ -3,7 +3,7 @@
         <template v-if="menu.children && menu.children.length > 0">
             <el-sub-menu :index="menu.path" :key="menu.path">
                 <template #title>
-                    <Icon :color="menuColor" :name="menu.icon ? menu.icon : defaultIcon" />
+                    <Icon :color="config.layout.menuColor" :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon" />
                     <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
                 </template>
                 <menu-tree :menus="menu.children"></menu-tree>
@@ -11,7 +11,7 @@
         </template>
         <template v-else>
             <el-menu-item :index="menu.path" :key="menu.path" @click="clickMenu(menu)">
-                <Icon :color="menuColor" :name="menu.icon ? menu.icon : defaultIcon" />
+                <Icon :color="config.layout.menuColor" :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon" />
                 <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
             </el-menu-item>
         </template>
@@ -31,10 +31,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     menus: () => [],
 })
-
-const defaultIcon = computed(() => config.layout.menuDefaultIcon)
-const menuColor = computed(() => config.layout.menuColor)
-const menuActiveBackground = computed(() => config.layout.menuActiveBackground)
 </script>
 
 <style scoped lang="scss">
@@ -49,6 +45,6 @@ const menuActiveBackground = computed(() => config.layout.menuActiveBackground)
     color: var(--el-menu-active-color) !important;
 }
 .el-menu-item.is-active {
-    background-color: v-bind(menuActiveBackground);
+    background-color: v-bind('config.layout.menuActiveBackground');
 }
 </style>

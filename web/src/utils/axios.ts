@@ -1,6 +1,5 @@
 import axios, { AxiosPromise, Method } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
-import { computed } from 'vue'
 import { ElLoading, LoadingOptions, ElNotification } from 'element-plus'
 import { useConfig } from '/@/stores/config'
 import { getAdminToken, removeAdminToken } from './common'
@@ -28,14 +27,13 @@ export const getUrl = (): string => {
  */
 function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loading: LoadingOptions = {}): ApiPromise | AxiosPromise {
     const config = useConfig()
-    const lang = computed(() => config.lang.defaultLang)
 
     const Axios = axios.create({
         baseURL: getUrl(),
         timeout: 1000 * 10,
         headers: {
             'Content-Type': 'application/json',
-            'think-lang': lang.value,
+            'think-lang': config.lang.defaultLang,
         },
     })
 

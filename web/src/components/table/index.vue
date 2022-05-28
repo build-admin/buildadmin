@@ -35,7 +35,7 @@
             :page-size="state.pageSize"
             :page-sizes="[10, 20, 50, 100]"
             background
-            :layout="shrink ? 'prev, next, jumper' : 'sizes, ->, prev, pager, next, jumper'"
+            :layout="config.layout.shrink ? 'prev, next, jumper' : 'sizes, ->, prev, pager, next, jumper'"
             :total="baTable.table.total"
             @size-change="onTableSizeChange"
             @current-change="onTableCurrentChange"
@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, computed, reactive, inject } from 'vue'
+import { ref, nextTick, reactive, inject } from 'vue'
 import type { ElTable } from 'element-plus'
 import Column from '/@/components/table/column/index.vue'
 import FieldRender from '/@/components/table/fieldRender/index.vue'
@@ -53,7 +53,6 @@ import type baTableClass from '/@/utils/baTable'
 
 const config = useConfig()
 const tableRef = ref<InstanceType<typeof ElTable>>()
-const shrink = computed(() => config.layout.shrink)
 const baTable = inject('baTable') as baTableClass
 
 interface Props {

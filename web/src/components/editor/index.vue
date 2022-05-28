@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
-import { onBeforeUnmount, reactive, shallowRef, onMounted, CSSProperties, computed, watch } from 'vue'
+import { onBeforeUnmount, reactive, shallowRef, onMounted, CSSProperties, watch } from 'vue'
 import { IEditorConfig, IToolbarConfig, i18nChangeLanguage } from '@wangeditor/editor'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { useConfig } from '/@/stores/config'
@@ -58,7 +58,6 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const config = useConfig()
-const lang = computed(() => config.lang.defaultLang)
 const editorRef = shallowRef()
 const emits = defineEmits<{
     (e: 'update:modelValue', value: string): void
@@ -77,7 +76,7 @@ const state: {
 })
 
 onMounted(() => {
-    i18nChangeLanguage(lang.value == 'zh-cn' ? 'zh-CN' : lang.value)
+    i18nChangeLanguage(config.lang.defaultLang == 'zh-cn' ? 'zh-CN' : config.lang.defaultLang)
     state.editorConfig.placeholder = props.placeholder
     state.editorStyle.height = props.height
     state.editorStyle['overflow-y'] = 'hidden'
