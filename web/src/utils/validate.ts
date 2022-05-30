@@ -11,7 +11,7 @@ export function validatorMobile(rule: any, mobile: string | number, callback: Fu
         return callback()
     }
     if (!/^((12[0-9])|(13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$/.test(mobile.toString())) {
-        return callback(new Error('请输入正确的手机号！'))
+        return callback(new Error('请输入正确的手机号'))
     }
     return callback()
 }
@@ -86,7 +86,7 @@ export const validatorType = {
     integer: '整数',
     float: '浮点数',
 }
-export function buildValidatorData(ruleName: string, title: string, trigger: string = 'blur', message: string = ''): FormItemRule {
+export function buildValidatorData(ruleName: string, title: string = '', trigger: string = 'blur', message: string = ''): FormItemRule {
     // 必填
     if (ruleName == 'required') {
         return {

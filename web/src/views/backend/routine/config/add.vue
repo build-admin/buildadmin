@@ -53,12 +53,11 @@
 </template>
 
 <script setup lang="ts">
-import { ElForm } from 'element-plus'
 import { ref, reactive } from 'vue'
 import FormItem from '/@/components/formItem/index.vue'
 import { inputTypes } from '/@/components/baInput'
 import { validatorType } from '/@/utils/validate'
-import type { FormItemRule } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 import { buildValidatorData } from '/@/utils/validate'
 import { postData } from '/@/api/backend/routine/config'
 
@@ -82,7 +81,7 @@ const closeForm = () => {
     emits('update:modelValue', false)
 }
 
-const formRef = ref<InstanceType<typeof ElForm>>()
+const formRef = ref<FormInstance>()
 const state: {
     inputTypes: anyObj
     labelWidth: number
@@ -116,8 +115,8 @@ key2=value2`,
     },
 })
 
-const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    name: [buildValidatorData('required', '变量名'), buildValidatorData('varName', '')],
+const rules = reactive<FormRules>({
+    name: [buildValidatorData('required', '变量名'), buildValidatorData('varName')],
     group: [buildValidatorData('required', '', 'change', '请选择分组')],
     title: [buildValidatorData('required', '标题')],
     type: [buildValidatorData('required', '', 'change', '请选择类型')],
@@ -145,7 +144,7 @@ const onTypeChange = (value: string) => {
     }
 }
 
-const onAddSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
+const onAddSubmit = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {

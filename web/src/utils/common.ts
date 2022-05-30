@@ -139,6 +139,9 @@ export const buildJsonToElTreeData = (data: any): ElTreeData[] => {
     }
 }
 
+/**
+ * 是否在后台应用内
+ */
 export const isAdminApp = () => {
     if (/^\/admin/.test(router.currentRoute.value.fullPath)) {
         return true
