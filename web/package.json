@@ -35,6 +35,7 @@
         "@types/nprogress": "~0.2.0",
         "@types/sortablejs": "~1.13.0",
         "@vitejs/plugin-vue": "~2.3.3",
+        "async-validator": "^4.1.1",
         "dotenv": "~11.0.0",
         "eslint": "~8.6.0",
         "eslint-plugin-vue": "~8.2.0",
