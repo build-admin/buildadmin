@@ -11,8 +11,20 @@ use think\facade\Event;
 
 class Backend extends Api
 {
-    protected $noNeedLogin      = [];
+    /**
+     * 无需登录的方法
+     * 访问本控制器的此方法，无需管理员登录
+     */
+    protected $noNeedLogin = [];
+
+    /**
+     * 无需鉴权的方法
+     */
     protected $noNeedPermission = [];
+
+    /**
+     * 新增/编辑时，对前端发送的字段进行排除（忽略不入库）
+     */
     protected $preExcludeFields = [];
 
     /**
@@ -57,6 +69,7 @@ class Backend extends Api
 
     /**
      * 关联查询方法名
+     * 方法应定义在模型中
      */
     protected $withJoinTable = [];
 
