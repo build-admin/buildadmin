@@ -18,7 +18,7 @@ export function directives(app: App) {
 
 /**
  * 页面按钮鉴权指令
- * @description v-auth="[name:index,add,edit,del,...]"
+ * @description v-auth="'name'"，name可以为：index,add,edit,del,...
  */
 function authDirective(app: App) {
     app.directive('auth', {
@@ -38,6 +38,10 @@ function authDirective(app: App) {
     })
 }
 
+/**
+ * 表格横向滚动指令
+ * @description v-table-lateral-drag
+ */
 function tableLateralDragDirective(app: App) {
     app.directive('tableLateralDrag', {
         created(el) {
@@ -62,7 +66,7 @@ function blurDirective(app: App) {
 
 /**
  * 缩放指令
- * @description v-zoom="[domEl]"`
+ * @description v-zoom="[domEl]"
  * @description domEl=要开启缩放的元素
  */
 function zoomDirective(app: App) {
@@ -104,7 +108,7 @@ function zoomDirective(app: App) {
 
 /**
  * 拖动指令
- * @description v-drag="[domEl,handleEl]"`
+ * @description v-drag="[domEl,handleEl]"
  * @description domEl=被拖动的元素，handleEl=在此元素内可以拖动`dom`
  */
 interface downReturn {
