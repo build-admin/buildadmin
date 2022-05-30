@@ -11,10 +11,15 @@ export const useTerminal = defineStore(
     'terminal',
     () => {
         const state: Terminal = reactive({
+            // 显示终端窗口
             show: false,
+            // 在后台终端按钮上显示一个红点
             showDot: false,
+            // 任务列表
             taskList: [],
+            // 包管理器
             packageManager: 'pnpm',
+            // 显示包管理器切换窗口
             showPackageManagerDialog: false,
         })
 
