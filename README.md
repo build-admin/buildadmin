@@ -1,17 +1,17 @@
 <br />
 <br />
-<img style="display: block;width: 150px;height: 150px;margin: 0 auto;" src="https://wonderful-code.gitee.io/images/logo.png" alt="" />
-<div style="font-size: 40px;text-align: center;">BuildAdmin</div>
-<div style="font-size: 22px;text-align: center;color: #6a8bad;">一款超赞的，集颜值、实用（WEB终端）、敏捷（CRUD代码生成）、前后分离等一身的渐进式后台系统。</div>
+<div align="center">
+    <h4>一款超赞的，集颜值、实用（WEB终端）、敏捷（CRUD代码生成）、前后分离等一身的渐进式后台系统。</h4>
+</div>
 
 <div align="center">
     <a href="https://demo.buildadmin.com/" target="_blank">预览</a> |
     <a href="https://www.buildadmin.com/" target="_blank">官网</a> |
     <a href="https://doc.buildadmin.com/" target="_blank">文档</a> |
     <a href="https://jq.qq.com/?_wv=1027&k=QwtXa14c" target="_blank">加群</a> |
-    <a href="https://wonderful-code.gitee.io/" target="_blank">文档备份</a> |
+    <a href="https://wonderful-code.gitee.io/guide/" target="_blank">视频介绍</a> |
     <a href="https://gitee.com/wonderful-code/buildadmin" target="_blank">Gitee</a> |
-    <a href="https://github.com/wonderful-code/buildadmin" target="_blank">GitHub</a>
+    <a href="https://github.com/build-admin/BuildAdmin" target="_blank">GitHub</a>
 </div>
 
 <p align="center">
@@ -38,10 +38,10 @@
     </a>
 </p>
 
-### 🌈 介绍
+#### 🌈 介绍
 基于 Vue3.x setup + ThinkPHP + TypeScript + Vite + Pinia + Element Plus + vue-router-next，自适应多端、支持CRUD代码生成、自带WEB终端、同时提供Web和Server端、内置全局数据回收站和字段级数据修改保护、自动注册路由、无限子级权限管理等，无需授权即可免费商用，希望能帮助大家实现快速开发。
 
-### 🎉 主要特性
+#### 🎉 主要特性
 - CRUD代码生成：一行命令生成管理代码，大气且实用的表格，多达22种表单组件支持，受控编辑和删除等。
 - 内置终端：我们内置了一个WEB终端以实现一些理想中的功能，在不久的未来，您不再需要执行npm install和build命令。
 - 顶级技术栈：除了基于Thinkphp6前后端分离架构外，我们的Vue3使用了Setup、状态管理使用Pinia等，流行且稳定。
@@ -53,29 +53,17 @@
 - 后续我们将持续开发各种oss、云短信等的支持，提供开箱即用的各行业完整应用。
 - 更多特性等你探索...
 
-### 🔥 快速了解
-- 什么是内置终端
-    <video width="600" id="terminal-video" controls preload="none" poster="http://vcdn.buildadmin.com/terminal.jpg">
-        <source id="mp4" src="http://vcdn.buildadmin.com/terminal.mp4" type="video/mp4" />
-        您的浏览器不支持播放mp4视频，或不支持video标签。
-    </video>
-
-- 什么是CRUD
-    <video width="600" id="crud-video" controls preload="none" poster="http://vcdn.buildadmin.com/CRUD.jpg">
-        <source id="mp4" src="http://vcdn.buildadmin.com/CRUD.mp4" type="video/mp4" />
-        您的浏览器不支持播放mp4视频，或不支持video标签。
-    </video>
-
-### 🚀 联系我们
+#### 🚀 联系我们
 - 预览 [https://demo.buildadmin.com/](https://demo.buildadmin.com/) 账户：`admin`，密码：`123456`
 - 文档 [https://doc.buildadmin.com/](https://doc.buildadmin.com/)
 - 官网 [https://www.buildadmin.com/](https://www.buildadmin.com/)
 - 加群 [687903819](https://jq.qq.com/?_wv=1027&k=QwtXa14c)
 - Gitee [Gitee仓库](https://gitee.com/wonderful-code/buildadmin)
-- GitHub [GitHub仓库](https://github.com/wonderful-code/buildadmin)
+- GitHub [GitHub仓库](https://github.com/build-admin/BuildAdmin)
 - 邮箱 1094963513@qq.com
+- 备用文档 [https://wonderful-code.gitee.io/](https://wonderful-code.gitee.io/)
 
-### 💕 特别鸣谢
+#### 💕 特别鸣谢
 感谢巨人提供肩膀，排名不分先后
 - [Thinkphp](http://www.thinkphp.cn/)
 - [FastAdmin](https://gitee.com/karson/fastadmin)
@@ -101,10 +89,10 @@
 - [Sortable](https://github.com/SortableJS/Sortable)
 - [v-code-diff](https://github.com/Shimada666/v-code-diff)
 
-### 🔐 版权信息
+#### 🔐 版权信息
 BuildAdmin 遵循`Apache2.0`开源协议发布，提供无需授权的免费使用。\
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-### 💕 支持项目
+#### 💕 支持项目
 
-请勿捐赠，如果觉得项目不错，或者已经在使用了，希望你可以去 Github 或者 Gitee 帮我点个 ⭐ Star，这将是对我们极大的鼓励与支持。
+无需捐赠，如果觉得项目不错，或者已经在使用了，希望你可以去 [Github](https://github.com/build-admin/BuildAdmin) 或者 [Gitee](https://gitee.com/wonderful-code/buildadmin) 帮我们点个 ⭐ Star，这将是对我们极大的鼓励与支持。
