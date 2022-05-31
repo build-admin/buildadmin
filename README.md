@@ -1,10 +1,7 @@
 <br />
-<br />
 <div align="center">
-    <img src="https://wonderful-code.gitee.io/images/logo-title.png" alt="" />
-    <h4>一款超赞的，集颜值、实用（WEB终端）、敏捷（CRUD代码生成）、前后分离等一身的渐进式后台系统。</h4>
-</div>
-<div align="center">
+    <img src="https://wonderful-code.gitee.io/images/readme/logo-title.png" alt="" />
+    <br />
     <a href="https://demo.buildadmin.com/" target="_blank">演示站</a> |
     <a href="https://www.buildadmin.com/" target="_blank">官网</a> |
     <a href="https://doc.buildadmin.com/" target="_blank">文档</a> |
@@ -20,7 +17,7 @@
         <img src="https://img.shields.io/badge/Vue-3.x--Setup-brightgreen" alt="vue">
     </a>
     <a href="https://element-plus.gitee.io/#/zh-CN/component/changelog" target="_blank">
-        <img src="https://img.shields.io/badge/Element--Plus-%3E2.1-blue" alt="element plus">
+        <img src="https://img.shields.io/badge/Element--Plus-%3E2.1-brightgreen" alt="element plus">
     </a>
     <a href="https://www.tslang.cn/" target="_blank">
         <img src="https://img.shields.io/badge/TypeScript-%3E4.4-blue" alt="typescript">
@@ -38,7 +35,7 @@
 
 <br>
 <div align="center">
-  <img width="92%" style="border-radius:6px;margin-top:20px;margin-bottom:20px;box-shadow: 2px 0 6px gray;" src="https://wonderful-code.gitee.io/images/readme/dashboard.png" />
+  <img src="https://wonderful-code.gitee.io/images/readme/index.gif" />
 </div>
 <br>
 
@@ -63,7 +60,7 @@
 ### 📸 项目预览
 |  |  |
 |---------------------|---------------------|
-|![登录](https://wonderful-code.gitee.io/images/readme/login.png)|![控制台](https://wonderful-code.gitee.io/images/readme/dashboard.png)|
+|![登录](https://wonderful-code.gitee.io/images/readme/login.gif)|![控制台](https://wonderful-code.gitee.io/images/readme/dashboard.png)|
 |![布局配置](https://wonderful-code.gitee.io/images/readme/layout.png)|![表格](https://wonderful-code.gitee.io/images/readme/admin.png)|
 |![表单](https://wonderful-code.gitee.io/images/readme/user.png)|![系统配置](https://wonderful-code.gitee.io/images/readme/config.png)|
 |![数据回收规则](https://wonderful-code.gitee.io/images/readme/data-recycle.png)|![数据回收日志](https://wonderful-code.gitee.io/images/readme/data-recycle-log.png)|
@@ -78,7 +75,7 @@
 - [Gitee仓库](https://gitee.com/wonderful-code/buildadmin)
 - [GitHub仓库](https://github.com/build-admin/BuildAdmin)
 - [备用文档：https://wonderful-code.gitee.io/](https://wonderful-code.gitee.io/)
-- 邮箱 1094963513@qq.com
+- [邮箱 1094963513@qq.com](mailto:1094963513@qq.com)
 
 ### 💕 特别鸣谢
 感谢巨人提供肩膀，排名不分先后
