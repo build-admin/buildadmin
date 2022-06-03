@@ -1,7 +1,7 @@
 <template>
     <div v-if="isUrl" :style="urlIconStyle" class="url-svg svg-icon icon" />
-    <svg v-else class="svg-icon icon" :style="iconStyle" aria-hidden="true">
-        <use :xlink:href="iconName" />
+    <svg v-else class="svg-icon icon" :style="iconStyle">
+        <use :href="iconName" />
     </svg>
 </template>
 
