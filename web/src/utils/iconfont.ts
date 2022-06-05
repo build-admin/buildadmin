@@ -23,7 +23,8 @@ export default function init() {
 }
 
 /*
- * 获取当前页面中从指定域名加载到的样式表，样式表未载入前无法获取
+ * 获取当前页面中从指定域名加载到的样式表内容
+ * 样式表未载入前无法获取
  */
 function getStylesFromDomain(domain: string) {
     let sheets = []
@@ -44,7 +45,6 @@ export function getLocalIconfontNames() {
     return new Promise<string[]>((resolve, reject) => {
         nextTick(() => {
             let iconfonts: string[] = []
-            const icons = elIcons as any
 
             let svgEl = document.getElementById('local-icon')
             if (svgEl?.dataset.iconName) {
@@ -54,7 +54,7 @@ export function getLocalIconfontNames() {
             if (iconfonts.length > 0) {
                 resolve(iconfonts)
             } else {
-                reject('No ElementPlus Icons')
+                reject('No Local Icons')
             }
         })
     })
@@ -123,7 +123,7 @@ export function getIconfontNames() {
 }
 
 /*
- * 获取element puls 自带的图标
+ * 获取element plus 自带的图标
  */
 export function getElementPlusIconfontNames() {
     return new Promise<string[]>((resolve, reject) => {
