@@ -5,19 +5,19 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'delete', 'comSearch']"
-            :quick-search-placeholder="'通过规则名称模糊搜索'"
+            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('security.sensitiveDataLog.Rule name') })"
             @action="baTable.onTableHeaderAction"
         >
             <el-popconfirm
                 @confirm="onRollbackAction"
                 :confirm-button-text="t('security.sensitiveDataLog.RollBACK')"
-                cancel-button-text="取消"
+                :cancel-button-text="t('Cancel')"
                 confirmButtonType="success"
-                title="确定回滚选中记录？"
+                :title="t('security.sensitiveDataLog.Are you sure you want to rollback the record?')"
             >
                 <template #reference>
                     <div class="mlr-12">
-                        <el-tooltip content="回滚选中记录到原数据表" placement="top">
+                        <el-tooltip :content="t('security.sensitiveDataLog.Rollback the selected record to the original data table')" placement="top">
                             <el-button
                                 v-blur
                                 :disabled="baTable.table.selection!.length > 0 ? false:true"
@@ -78,9 +78,9 @@ let optButtons: OptButton[] = [
         class: 'table-row-edit',
         popconfirm: {
             confirmButtonText: t('security.sensitiveDataLog.RollBACK'),
-            cancelButtonText: '取消',
+            cancelButtonText: t('Cancel'),
             confirmButtonType: 'success',
-            title: '确认要回滚记录吗？',
+            title: t('security.sensitiveDataLog.Are you sure you want to rollback the record?'),
         },
         disabledTip: false,
     },
@@ -91,19 +91,75 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-            { label: '操作管理员', prop: 'admin.nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '规则名称', prop: 'sensitive.name', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '控制器', prop: 'sensitive.controller_as', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '数据表', prop: 'data_table', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '修改行', prop: 'id_value', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '修改项', prop: 'data_comment', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '修改前', prop: 'before', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '修改后', prop: 'after', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: 'IP', prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '修改时间', prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
             {
-                label: '操作',
+                label: t('security.sensitiveDataLog.Operation administrator'),
+                prop: 'admin.nickname',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.sensitiveDataLog.Rule name'),
+                prop: 'sensitive.name',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.sensitiveDataLog.controller'),
+                prop: 'sensitive.controller_as',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.sensitiveDataLog.data sheet'),
+                prop: 'data_table',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.sensitiveDataLog.Modify line'),
+                prop: 'id_value',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.sensitiveDataLog.Modification'),
+                prop: 'data_comment',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.sensitiveDataLog.Before modification'),
+                prop: 'before',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.sensitiveDataLog.After modification'),
+                prop: 'after',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            { label: 'IP', prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
+            {
+                label: t('security.sensitiveDataLog.Modification time'),
+                prop: 'createtime',
+                align: 'center',
+                render: 'datetime',
+                sortable: 'custom',
+                operator: 'RANGE',
+                width: 160,
+            },
+            {
+                label: t('operate'),
                 align: 'center',
                 width: 120,
                 render: 'buttons',

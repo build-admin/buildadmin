@@ -27,33 +27,40 @@
                     :rules="rules"
                 >
                     <FormItem
-                        label="规则名称"
+                        :label="t('security.sensitiveData.Rule name')"
                         type="string"
                         v-model="baTable.form.items!.name"
                         prop="name"
-                        placeholder="规则名称有助于后续识别被删数据"
+                        :placeholder="t('security.sensitiveData.The rule name helps to identify the modified data later')"
                     />
                     <FormItem
-                        label="控制器"
+                        :label="t('security.sensitiveData.controller')"
                         type="select"
                         v-model="baTable.form.items!.controller"
                         prop="controller"
                         :data="{ content: baTable.form.extend!.controllerList }"
-                        placeholder="数据监听机制将监控此控制器下的修改操作"
+                        :placeholder="
+                            t('security.sensitiveData.The data listening mechanism will monitor the modification operations under this controller')
+                        "
                     />
                     <FormItem
-                        label="对应数据表"
+                        :label="t('security.sensitiveData.Corresponding data sheet')"
                         type="select"
                         v-model="baTable.form.items!.data_table"
                         prop="data_table"
                         :data="{ content: baTable.form.extend!.tableList }"
                         :input-attr="{ onChange: baTable.onTableChange }"
                     />
-                    <FormItem label="数据表主键" type="string" v-model="baTable.form.items!.primary_key" prop="primary_key" />
+                    <FormItem
+                        :label="t('security.sensitiveData.Data table primary key')"
+                        type="string"
+                        v-model="baTable.form.items!.primary_key"
+                        prop="primary_key"
+                    />
                     <hr class="form-hr" />
 
                     <FormItem
-                        label="敏感字段"
+                        :label="t('security.sensitiveData.Sensitive fields')"
                         type="selects"
                         v-model="baTable.form.items!.data_fields"
                         :key="baTable.form.extend!.fieldSelectKey"
@@ -68,25 +75,25 @@
                         :label="item.name"
                         type="string"
                         v-model="item.value"
-                        placeholder="填写字段注释有助于后续快速识别字段"
+                        :placeholder="t('security.sensitiveData.Filling in field notes helps you quickly identify fields later')"
                     />
 
                     <hr class="form-hr" />
                     <FormItem
-                        label="状态"
+                        :label="t('state')"
                         type="radio"
                         v-model="baTable.form.items!.status"
                         prop="status"
-                        :data="{ content: { '0': '禁用', '1': '启用' } }"
+                        :data="{ content: { '0': t('Disable'), '1': t('Enable') } }"
                     />
                 </el-form>
             </div>
         </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
-                <el-button @click="baTable.toggleForm('')">取消</el-button>
+                <el-button @click="baTable.toggleForm('')">{{ t('Cancel') }}</el-button>
                 <el-button v-blur :loading="baTable.form.submitLoading" @click="baTable.onSubmit(formRef)" type="primary">
-                    {{ baTable.form.operateIds && baTable.form.operateIds.length > 1 ? '保存并编辑下一项' : '保存' }}
+                    {{ baTable.form.operateIds && baTable.form.operateIds.length > 1 ? t('Save and edit next item') : t('Save') }}
                 </el-button>
             </div>
         </template>
@@ -113,11 +120,11 @@ const state: {
 })
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    name: [buildValidatorData('required', '规则名称')],
-    controller: [buildValidatorData('required', '', 'change', '请选择控制器')],
-    data_table: [buildValidatorData('required', '', 'change', '请选择数据表')],
-    primary_key: [buildValidatorData('required', '数据表主键', 'change')],
-    data_fields: [buildValidatorData('required', '', 'blur', '请选择敏感字段')],
+    name: [buildValidatorData('required', t('security.sensitiveData.Rule name'))],
+    controller: [buildValidatorData('required', '', 'change', t('Please select field', { field: t('security.sensitiveData.controller') }))],
+    data_table: [buildValidatorData('required', '', 'change', t('Please select field', { field: t('security.sensitiveData.data sheet') }))],
+    primary_key: [buildValidatorData('required', t('security.sensitiveData.Data table primary key'), 'change')],
+    data_fields: [buildValidatorData('required', '', 'blur', t('Please select field', { field: t('security.sensitiveData.Sensitive fields') }))],
 })
 
 /**

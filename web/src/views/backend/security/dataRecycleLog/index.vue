@@ -5,19 +5,19 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'delete', 'comSearch']"
-            :quick-search-placeholder="'通过规则名称模糊搜索'"
+            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('security.dataRecycleLog.Rule name') })"
             @action="baTable.onTableHeaderAction"
         >
             <el-popconfirm
                 @confirm="onRestoreAction"
-                confirm-button-text="还原"
-                cancel-button-text="取消"
+                :confirm-button-text="t('security.dataRecycleLog.restore')"
+                :cancel-button-text="t('Cancel')"
                 confirmButtonType="success"
-                title="确定还原选中记录？"
+                :title="t('security.dataRecycleLog.Are you sure to restore the selected records?')"
             >
                 <template #reference>
                     <div class="mlr-12">
-                        <el-tooltip content="还原选中记录到原数据表" placement="top">
+                        <el-tooltip :content="t('security.dataRecycleLog.Restore the selected record to the original data table')" placement="top">
                             <el-button
                                 v-blur
                                 :disabled="baTable.table.selection!.length > 0 ? false:true"
@@ -78,9 +78,9 @@ let optButtons: OptButton[] = [
         class: 'table-row-edit',
         popconfirm: {
             confirmButtonText: t('security.dataRecycleLog.restore'),
-            cancelButtonText: '取消',
+            cancelButtonText: t('Cancel'),
             confirmButtonType: 'success',
-            title: '确认要还原记录吗？',
+            title: t('security.dataRecycleLog.Are you sure to restore the selected records?'),
         },
         disabledTip: false,
     },
@@ -91,32 +91,64 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-            { label: '操作管理员', prop: 'admin.nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '回收规则名称', prop: 'recycle.name', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '控制器', prop: 'recycle.controller_as', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '数据表', prop: 'data_table', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
             {
-                label: '被删数据',
+                label: t('security.dataRecycleLog.Operation administrator'),
+                prop: 'admin.nickname',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.dataRecycleLog.Recycling rule name'),
+                prop: 'recycle.name',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.dataRecycleLog.controller'),
+                prop: 'recycle.controller_as',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.dataRecycleLog.data sheet'),
+                prop: 'data_table',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.dataRecycleLog.DeletedData'),
                 prop: 'data',
                 align: 'center',
                 operator: 'LIKE',
-                operatorPlaceholder: '任意片段模糊查询',
+                operatorPlaceholder: t('security.dataRecycleLog.Arbitrary fragment fuzzy query'),
                 'show-overflow-tooltip': true,
             },
-            { label: 'IP', prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            { label: 'IP', prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
                 show: false,
                 label: 'User Agent',
                 prop: 'useragent',
                 align: 'center',
                 operator: 'LIKE',
-                operatorPlaceholder: '模糊查询',
+                operatorPlaceholder: t('Fuzzy query'),
                 'show-overflow-tooltip': true,
             },
-            { label: '删除时间', prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
             {
-                label: '操作',
+                label: t('security.dataRecycleLog.Delete time'),
+                prop: 'createtime',
+                align: 'center',
+                render: 'datetime',
+                sortable: 'custom',
+                operator: 'RANGE',
+                width: 160,
+            },
+            {
+                label: t('operate'),
                 align: 'center',
                 width: 120,
                 render: 'buttons',
@@ -150,7 +182,9 @@ const infoButtonClick = (id: string) => {
     baTable.form.operate = 'info'
     baTable.form.loading = true
     info(id).then((res) => {
-        res.data.row.data = res.data.row.data ? [{ label: '点击展开', children: buildJsonToElTreeData(res.data.row.data) }] : []
+        res.data.row.data = res.data.row.data
+            ? [{ label: t('security.dataRecycleLog.Click to expand'), children: buildJsonToElTreeData(res.data.row.data) }]
+            : []
         baTable.form.extend!['info'] = res.data.row
         baTable.form.loading = false
     })

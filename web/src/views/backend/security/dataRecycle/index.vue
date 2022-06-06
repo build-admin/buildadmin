@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'comSearch']"
-            :quick-search-placeholder="'通过规则名模糊搜索'"
+            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('security.dataRecycle.Rule name') })"
             @action="baTable.onTableHeaderAction"
         />
 
@@ -28,7 +28,9 @@ import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const tableRef = ref()
 const formRef = ref()
 const baTable = new baTableClass(
@@ -36,23 +38,42 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-            { label: '规则名称', prop: 'name', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '控制器', prop: 'controller', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '数据表', prop: 'data_table', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '数据表主键', prop: 'primary_key', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 100 },
+            { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            { label: t('security.dataRecycle.Rule name'), prop: 'name', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
-                label: '状态',
+                label: t('security.dataRecycle.controller'),
+                prop: 'controller',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.dataRecycle.data sheet'),
+                prop: 'data_table',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('security.dataRecycle.Data table primary key'),
+                prop: 'primary_key',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+                width: 100,
+            },
+            {
+                label: t('state'),
                 prop: 'status',
                 align: 'center',
                 render: 'tag',
                 custom: { '0': 'danger', '1': 'success' },
-                replaceValue: { '0': '禁用', '1': '删除监控中' },
+                replaceValue: { '0': t('Disable'), '1': t('security.dataRecycle.Deleting monitoring') },
             },
-            { label: '更新时间', prop: 'updatetime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
-            { label: '创建时间', prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('updatetime'), prop: 'updatetime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('createtime'), prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
             {
-                label: '操作',
+                label: t('operate'),
                 align: 'center',
                 width: '130',
                 render: 'buttons',
