@@ -1,5 +1,6 @@
 import type { App } from 'vue'
 import { createI18n } from 'vue-i18n'
+import type { I18n } from 'vue-i18n'
 import { useConfig } from '/@/stores/config'
 
 /*
@@ -10,6 +11,8 @@ import { useConfig } from '/@/stores/config'
  */
 import elementZhcnLocale from 'element-plus/lib/locale/lang/zh-cn'
 import elementEnLocale from 'element-plus/lib/locale/lang/en'
+
+export var i18n: I18n<{ [x: string]: any }, unknown, unknown, false>
 
 interface assignLocale {
     [key: string]: any
@@ -48,7 +51,7 @@ export async function loadLang(app: App) {
     // 合并语言包(含element-puls、页面语言包)
     Object.assign(messages[locale], ...assignLocale[locale])
 
-    const i18n = createI18n({
+    i18n = createI18n({
         locale: locale,
         legacy: false, // 组合式api
         globalInjection: true, // 挂载$t,$d等到全局

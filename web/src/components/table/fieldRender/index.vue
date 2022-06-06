@@ -54,7 +54,7 @@
 
     <!-- url -->
     <div v-if="field.render == 'url'">
-        <el-input :model-value="fieldValue" placeholder="链接地址">
+        <el-input :model-value="fieldValue" :placeholder="t('Link address')">
             <template #append>
                 <el-button @click="typeof field.click == 'function' ? field.click(fieldValue, field) : openUrl(fieldValue, field)">
                     <Icon :color="'#606266'" name="el-icon-Position" />
@@ -116,13 +116,7 @@
                 :content="btn.title ? t(btn.title) : ''"
                 placement="top"
             >
-                <el-button
-                    v-if="btn.name == 'weigh-sort'"
-                    v-auth="'sortable'"
-                    :class="btn.class"
-                    class="table-operate move-button"
-                    :type="btn.type"
-                >
+                <el-button v-if="btn.name == 'weigh-sort'" v-auth="'sortable'" :class="btn.class" class="table-operate move-button" :type="btn.type">
                     <Icon :name="btn.icon" />
                     <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
                 </el-button>
@@ -166,7 +160,7 @@ if (props.property.indexOf('.') > -1) {
     let fieldNameArr = props.property.split('.')
     let val: any = props.row[fieldNameArr[0]]
     for (let index = 1; index < fieldNameArr.length; index++) {
-        val = val ? (val[fieldNameArr[index]] ?? ''):''
+        val = val ? val[fieldNameArr[index]] ?? '' : ''
     }
     fieldValue.value = val
 }

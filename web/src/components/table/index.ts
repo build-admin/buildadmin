@@ -1,3 +1,5 @@
+import { i18n } from '/@/lang/index'
+
 /*
  * 默认Url点击事件处理
  */
@@ -51,10 +53,10 @@ export const defaultOptButtons = (optButType: DefaultOptButType[] = ['weigh-sort
                 icon: 'fa fa-trash',
                 class: 'table-row-delete',
                 popconfirm: {
-                    confirmButtonText: '删除',
-                    cancelButtonText: '取消',
+                    confirmButtonText: i18n.global.t('delete'),
+                    cancelButtonText: i18n.global.t('Cancel'),
                     confirmButtonType: 'danger',
-                    title: '确认要删除记录吗？',
+                    title: i18n.global.t('Are you sure to delete the selected record?'),
                 },
                 disabledTip: false,
             },
@@ -74,7 +76,7 @@ export const defaultOptButtons = (optButType: DefaultOptButType[] = ['weigh-sort
  * 格式化时间戳
  */
 export const timeFormat = (dateTime: string | number | null = null, fmt = 'yyyy-mm-dd hh:MM:ss') => {
-    if (dateTime == 'none') return '无'
+    if (dateTime == 'none') return i18n.global.t('none')
     if (!dateTime) dateTime = Number(new Date())
     if (dateTime.toString().length === 10) {
         dateTime = +dateTime * 1000

@@ -46,4 +46,6 @@ export default {
     search: 'Search',
     Reset: 'Reset',
     to: 'To',
+    'Link address': 'Link address',
+    'none': 'None',
 }

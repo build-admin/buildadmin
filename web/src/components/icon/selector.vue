@@ -4,13 +4,28 @@
             <transition name="el-zoom-in-center">
                 <div class="icon-selector-box">
                     <div class="selector-header">
-                        <div class="selector-title">{{ title }}</div>
+                        <div class="selector-title">{{ title ? title : $t('iconSelector.Please select an icon') }}</div>
                         <div class="selector-tab">
-                            <span title="Element Puls 图标" @click="onChangeTab('ele')" :class="state.iconType == 'ele' ? 'active' : ''">ele</span>
-                            <span title="Font Awesome 图标" @click="onChangeTab('awe')" :class="state.iconType == 'awe' ? 'active' : ''">awe</span>
-                            <span title="阿里 Iconfont 图标" @click="onChangeTab('ali')" :class="state.iconType == 'ali' ? 'active' : ''">ali</span>
                             <span
-                                title="本地图标:/src/assets/icons中的.svg"
+                                :title="'Element Puls ' + $t('iconSelector.Icon')"
+                                @click="onChangeTab('ele')"
+                                :class="state.iconType == 'ele' ? 'active' : ''"
+                                >ele</span
+                            >
+                            <span
+                                :title="'Font Awesome ' + $t('iconSelector.Icon')"
+                                @click="onChangeTab('awe')"
+                                :class="state.iconType == 'awe' ? 'active' : ''"
+                                >awe</span
+                            >
+                            <span
+                                :title="$t('iconSelector.Ali iconcont Icon')"
+                                @click="onChangeTab('ali')"
+                                :class="state.iconType == 'ali' ? 'active' : ''"
+                                >ali</span
+                            >
+                            <span
+                                :title="$t('iconSelector.Local icon title')"
                                 @click="onChangeTab('local')"
                                 :class="state.iconType == 'local' ? 'active' : ''"
                                 >local</span
@@ -40,7 +55,7 @@
                 v-model="state.inputValue"
                 :size="size"
                 :disabled="disabled"
-                placeholder="搜索图标"
+                :placeholder="$t('search') + $t('iconSelector.Icon')"
                 ref="selectorInput"
                 @focus="onInputFocus"
                 @blur="onInputBlur"
@@ -78,7 +93,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     size: 'default',
     disabled: false,
-    title: '请选择图标',
+    title: '',
     type: 'ele',
     placement: 'bottom',
     modelValue: '',
