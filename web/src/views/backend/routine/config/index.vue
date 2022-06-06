@@ -72,6 +72,10 @@ import type { ElForm, FormItemRule } from 'element-plus'
 import AddFrom from './add.vue'
 import { routePush } from '/@/utils/router'
 import { buildValidatorData } from '/@/utils/validate'
+import { useSiteConfig } from '/@/stores/siteConfig'
+import { SiteConfig } from '/@/stores/interface'
+
+const siteConfig = useSiteConfig()
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 
@@ -146,7 +150,13 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
-            postData('edit', state.form)
+            postData('edit', state.form).then((res) => {
+                for (const key in siteConfig.$state) {
+                    if (siteConfig.$state[key as keyof SiteConfig] != state.form[key]) {
+                        siteConfig.$state[key as keyof SiteConfig] = state.form[key]
+                    }
+                }
+            })
         }
     })
 }

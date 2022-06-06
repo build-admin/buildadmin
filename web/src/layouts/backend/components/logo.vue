@@ -1,7 +1,9 @@
 <template>
     <div class="layout-logo">
         <img v-if="!config.layout.menuCollapse" class="logo-img" src="~assets/logo.png" alt="logo" />
-        <div v-if="!config.layout.menuCollapse" :style="{ color: config.layout.menuActiveColor }" class="website-name">BuildAdmin</div>
+        <div v-if="!config.layout.menuCollapse" :style="{ color: config.layout.menuActiveColor }" class="website-name">
+            {{ siteConfig.site_name }}
+        </div>
         <Icon
             v-if="config.layout.layoutMode != 'Streamline'"
             @click="onMenuCollapse"
@@ -16,9 +18,11 @@
 
 <script setup lang="ts">
 import { useConfig } from '/@/stores/config'
+import { useSiteConfig } from '/@/stores/siteConfig'
 import { closeShade } from '/@/utils/pageShade'
 
 const config = useConfig()
+const siteConfig = useSiteConfig()
 
 const onMenuCollapse = function () {
     if (config.layout.shrink && !config.layout.menuCollapse) {

@@ -25,8 +25,12 @@ class Index extends Backend
             $this->error(__('No background menu, please contact super administrator!'));
         }
         $this->success('', [
-            'adminInfo' => $adminInfo,
-            'menus'     => $menus
+            'adminInfo'  => $adminInfo,
+            'menus'      => $menus,
+            'siteConfig' => [
+                'site_name' => get_sys_config('site_name'),
+                'version'   => get_sys_config('version'),
+            ]
         ]);
     }
 

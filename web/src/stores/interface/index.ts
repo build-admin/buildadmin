@@ -81,3 +81,8 @@ export interface Terminal {
     packageManager: string
     showPackageManagerDialog: boolean
 }
+
+export interface SiteConfig {
+    site_name: string
+    version: string
+}
