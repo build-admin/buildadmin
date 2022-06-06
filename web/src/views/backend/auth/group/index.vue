@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'unfold']"
-            :quick-search-placeholder="'通过组名模糊搜索'"
+            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.group.GroupName') })"
             @action="baTable.onTableHeaderAction"
         />
 
@@ -40,20 +40,20 @@ const baTable = new baTableClass(
         dblClickNotEditColumn: [undefined],
         column: [
             { type: 'selection', align: 'center' },
-            { label: '组别名称', prop: 'name', align: 'left' },
-            { label: '权限', prop: 'rules', align: 'center' },
+            { label: t('auth.group.Group name'), prop: 'name', align: 'left' },
+            { label: t('auth.group.jurisdiction'), prop: 'rules', align: 'center' },
             {
-                label: '状态',
+                label: t('state'),
                 prop: 'status',
                 align: 'center',
                 render: 'tag',
                 custom: { '0': 'danger', '1': 'success' },
-                replaceValue: { '0': '禁用', '1': '启用' },
+                replaceValue: { '0': t('Disable'), '1': t('Enable') },
             },
-            { label: '更新时间', prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
-            { label: '创建时间', prop: 'createtime', align: 'center', width: '160', render: 'datetime' },
+            { label: t('updatetime'), prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
+            { label: t('createtime'), prop: 'createtime', align: 'center', width: '160', render: 'datetime' },
             {
-                label: '操作',
+                label: t('operate'),
                 align: 'center',
                 width: '130',
                 render: 'buttons',

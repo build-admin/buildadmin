@@ -29,6 +29,7 @@ export default {
     'Please select field': '请选择{field}',
     'Please input field': '请输入{field}',
     'Please enter the correct field': '请输入正确的{field}',
+    updatetime: '修改时间',
     createtime: '创建时间',
     'Fuzzy query': '模糊查询',
     Disable: '禁用',

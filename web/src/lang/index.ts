@@ -68,6 +68,7 @@ function getLangFileMessage(mList: any, locale: string) {
         [key: string]: any
     }
     let msg: msg = {}
+    locale = '/' + locale
     for (let path in mList) {
         if (mList[path].default) {
             //  获取文件名

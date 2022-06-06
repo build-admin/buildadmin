@@ -29,6 +29,7 @@ export default {
     'Please select field': 'Please select{field}',
     'Please input field': 'Please input{field}',
     'Please enter the correct field': 'Please enter the correct {field}',
+    updatetime: 'update Time',
     createtime: 'Create Time',
     'Fuzzy query': 'Fuzzy query',
     Disable: 'Disable',

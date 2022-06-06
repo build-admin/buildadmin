@@ -27,21 +27,25 @@
                     v-if="!baTable.form.loading"
                 >
                     <FormItem
-                        label="上级分组"
+                        :label="t('auth.group.Parent group')"
                         v-model="baTable.form.items!.pid"
                         type="remoteSelect"
                         :input-attr="{
                             params: { isTree: true },
                             field: 'name',
                             'remote-url': baTable.api.actionUrl.get('index'),
-                            placeholder: '点击选择',
+                            placeholder: t('Click Select'),
                         }"
                     />
 
-                    <el-form-item prop="name" label="分组名称">
-                        <el-input v-model="baTable.form.items!.name" type="string" placeholder="请输入分组名称"></el-input>
+                    <el-form-item prop="name" :label="t('auth.group.Group name')">
+                        <el-input
+                            v-model="baTable.form.items!.name"
+                            type="string"
+                            :placeholder="t('Please input field', { field: t('auth.group.Group name') })"
+                        ></el-input>
                     </el-form-item>
-                    <el-form-item prop="auth" label="权限">
+                    <el-form-item prop="auth" :label="t('auth.group.jurisdiction')">
                         <el-tree
                             ref="treeRef"
                             :key="state.treeKey"
@@ -53,18 +57,18 @@
                             :data="state.menuRules"
                         />
                     </el-form-item>
-                    <el-form-item label="状态">
-                        <el-radio v-model="baTable.form.items!.status" label="0" :border="true">禁用</el-radio>
-                        <el-radio v-model="baTable.form.items!.status" label="1" :border="true">启用</el-radio>
+                    <el-form-item :label="t('state')">
+                        <el-radio v-model="baTable.form.items!.status" label="0" :border="true">{{ t('Disable') }}</el-radio>
+                        <el-radio v-model="baTable.form.items!.status" label="1" :border="true">{{ t('Enable') }}</el-radio>
                     </el-form-item>
                 </el-form>
             </div>
         </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
-                <el-button @click="baTable.toggleForm('')">取消</el-button>
+                <el-button @click="baTable.toggleForm('')">{{ t('Cancel') }}</el-button>
                 <el-button v-blur :loading="baTable.form.submitLoading" @click="baTable.onSubmit(formRef)" type="primary">
-                    {{ baTable.form.operateIds && baTable.form.operateIds.length > 1 ? '保存并编辑下一项' : '保存' }}
+                    {{ baTable.form.operateIds && baTable.form.operateIds.length > 1 ? t('Save and edit next item') : t('Save') }}
                 </el-button>
             </div>
         </template>
@@ -106,7 +110,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     name: [
         {
             required: true,
-            message: '请输入分组名称',
+            message: t('Please input field', { field: t('auth.group.Group name') }),
             trigger: 'blur',
         },
     ],
@@ -115,7 +119,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
             validator: (rule: any, val: string, callback: Function) => {
                 let ids = getCheckeds()
                 if (ids.length <= 0) {
-                    return callback(new Error('请选择权限'))
+                    return callback(new Error(t('Please select field', { field: t('auth.group.jurisdiction') })))
                 }
                 return callback()
             },

@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'unfold']"
-            :quick-search-placeholder="'通过标题模糊搜索'"
+            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.menu.title') })"
             @action="baTable.onTableHeaderAction"
         />
         <!-- 表格 -->
@@ -37,22 +37,22 @@ const baTable = new baTableClass(
         dblClickNotEditColumn: [undefined, 'keepalive', 'status'],
         column: [
             { type: 'selection', align: 'center' },
-            { label: '标题', prop: 'title', align: 'left' },
-            { label: '图标', prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
-            { label: '名称', prop: 'name', align: 'center', 'show-overflow-tooltip': true },
+            { label: t('auth.menu.title'), prop: 'title', align: 'left' },
+            { label: t('auth.menu.Icon'), prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
+            { label: t('auth.menu.name'), prop: 'name', align: 'center', 'show-overflow-tooltip': true },
             {
-                label: '类型',
+                label: t('auth.menu.type'),
                 prop: 'type',
                 align: 'center',
                 render: 'tag',
                 custom: { menu: 'danger', menu_dir: 'success', button: 'info' },
                 replaceValue: { menu: t('auth.menu.type menu'), menu_dir: t('auth.menu.type menu_dir'), button: t('auth.menu.type button') },
             },
-            { label: '缓存', prop: 'keepalive', align: 'center', width: '80', render: 'switch' },
-            { label: '状态', prop: 'status', align: 'center', width: '80', render: 'switch' },
-            { label: '更新时间', prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
+            { label: t('auth.menu.cache'), prop: 'keepalive', align: 'center', width: '80', render: 'switch' },
+            { label: t('state'), prop: 'status', align: 'center', width: '80', render: 'switch' },
+            { label: t('updatetime'), prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
             {
-                label: '操作',
+                label: t('operate'),
                 align: 'center',
                 width: '130',
                 render: 'buttons',
