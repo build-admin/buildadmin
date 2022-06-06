@@ -3,7 +3,7 @@
     <img src="https://wonderful-code.gitee.io/images/readme/logo-title.png" alt="" />
     <br />
     <a href="https://demo.buildadmin.com/" target="_blank">演示站</a> |
-    <a href="https://doc.buildadmin.com/" target="_blank">文档</a> |
+    <a href="https://wonderful-code.gitee.io/" target="_blank">文档</a> |
     <a href="https://jq.qq.com/?_wv=1027&k=QwtXa14c" target="_blank">加群</a> |
     <a href="https://wonderful-code.gitee.io/guide/" target="_blank">视频介绍</a> |
     <a href="https://gitee.com/wonderful-code/buildadmin" target="_blank">Gitee仓库</a> |
@@ -70,11 +70,11 @@
 
 ### 🚀 联系我们
 - [演示站](https://demo.buildadmin.com/) 账户：`admin`，密码：`123456`（演示站数据无法修改，请下载源码安装体验全部功能）
-- [文档：https://doc.buildadmin.com/](https://doc.buildadmin.com/)
+- [文档：wonderful-code.gitee.io](https://wonderful-code.gitee.io/)
 - [加群：687903819](https://jq.qq.com/?_wv=1027&k=QwtXa14c)
 - [Gitee仓库](https://gitee.com/wonderful-code/buildadmin)
 - [GitHub仓库](https://github.com/build-admin/BuildAdmin)
-- [备用文档：https://wonderful-code.gitee.io/](https://wonderful-code.gitee.io/)
+- [备用文档：doc.buildadmin.com](https://doc.buildadmin.com/)
 - [邮箱 1094963513@qq.com](mailto:1094963513@qq.com)
 
 ### 💕 特别鸣谢
