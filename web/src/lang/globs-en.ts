@@ -1,4 +1,6 @@
 export default {
+    id: 'ID',
+    state: 'State',
     home: 'home',
     'Return to home page': 'Return to home page',
     'Back to previous page': 'Back to previous page',
@@ -27,4 +29,9 @@ export default {
     'Please select field': 'Please select{field}',
     'Please input field': 'Please input{field}',
     'Please enter the correct field': 'Please enter the correct {field}',
+    createtime: 'Create Time',
+    'Fuzzy query': 'Fuzzy query',
+    Disable: 'Disable',
+    Enable: 'Enable',
+    'Click Select': 'Click Select',
 }

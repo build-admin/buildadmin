@@ -1,4 +1,6 @@
 export default {
+    id: 'ID',
+    state: '状态',
     home: '首页',
     'Return to home page': '返回首页',
     'Back to previous page': '返回上一页',
@@ -27,4 +29,9 @@ export default {
     'Please select field': '请选择{field}',
     'Please input field': '请输入{field}',
     'Please enter the correct field': '请输入正确的{field}',
+    createtime: '创建时间',
+    'Fuzzy query': '模糊查询',
+    Disable: '禁用',
+    Enable: '启用',
+    'Click Select': '点击选择',
 }

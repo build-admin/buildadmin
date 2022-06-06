@@ -26,10 +26,22 @@
                     :rules="rules"
                     v-if="!baTable.form.loading"
                 >
-                    <FormItem label="用户名" v-model="baTable.form.items!.username" type="string" prop="username" placeholder="管理员登录名" />
-                    <FormItem label="昵称" v-model="baTable.form.items!.nickname" type="string" prop="nickname" placeholder="请输入昵称" />
                     <FormItem
-                        label="管理员分组"
+                        :label="t('auth.admin.username')"
+                        v-model="baTable.form.items!.username"
+                        type="string"
+                        prop="username"
+                        :placeholder="t('auth.admin.Administrator login')"
+                    />
+                    <FormItem
+                        :label="t('auth.admin.nickname')"
+                        v-model="baTable.form.items!.nickname"
+                        type="string"
+                        prop="nickname"
+                        :placeholder="t('Please input field', { field: t('auth.admin.nickname') })"
+                    />
+                    <FormItem
+                        :label="t('auth.admin.grouping')"
                         v-model="baTable.form.items!.group_arr"
                         type="remoteSelect"
                         :input-attr="{
@@ -37,33 +49,49 @@
                             params: { isTree: true },
                             field: 'name',
                             'remote-url': authGroup + 'index',
-                            placeholder: '点击选择',
+                            placeholder: t('Click Select'),
                         }"
                     />
-                    <FormItem label="头像" type="image" v-model="baTable.form.items!.avatar" />
-                    <FormItem label="邮箱" prop="email" v-model="baTable.form.items!.email" type="string" placeholder="请输入邮箱" />
-                    <FormItem label="手机号" prop="mobile" v-model="baTable.form.items!.mobile" type="string" placeholder="请输入手机号码" />
+                    <FormItem :label="t('auth.admin.head portrait')" type="image" v-model="baTable.form.items!.avatar" />
                     <FormItem
-                        label="密码"
+                        :label="t('auth.admin.mailbox')"
+                        prop="email"
+                        v-model="baTable.form.items!.email"
+                        type="string"
+                        :placeholder="t('Please input field', { field: t('auth.admin.mailbox') })"
+                    />
+                    <FormItem
+                        :label="t('auth.admin.mobile')"
+                        prop="mobile"
+                        v-model="baTable.form.items!.mobile"
+                        type="string"
+                        :placeholder="t('Please input field', { field: t('auth.admin.mobile') })"
+                    />
+                    <FormItem
+                        :label="t('auth.admin.Password')"
                         prop="password"
                         v-model="baTable.form.items!.password"
                         type="password"
-                        :placeholder="baTable.form.operate == 'add' ? '请输入密码' : '不修改请留空'"
+                        :placeholder="
+                            baTable.form.operate == 'add'
+                                ? t('Please input field', { field: t('auth.admin.Password') })
+                                : t('auth.admin.Please leave blank if not modified')
+                        "
                     />
-                    <el-form-item prop="motto" label="个性签名">
+                    <el-form-item prop="motto" :label="t('auth.admin.Personal signature')">
                         <el-input
                             @keyup.enter.stop=""
                             @keyup.ctrl.enter="baTable.onSubmit(formRef)"
                             v-model="baTable.form.items!.motto"
                             type="textarea"
-                            placeholder="请输入个性签名"
+                            :placeholder="t('Please input field', { field: t('auth.admin.Personal signature') })"
                         ></el-input>
                     </el-form-item>
                     <FormItem
-                        label="状态"
+                        :label="t('state')"
                         v-model="baTable.form.items!.status"
                         type="radio"
-                        :data="{ content: { '0': '禁用', '1': '启用' }, childrenAttr: { border: true } }"
+                        :data="{ content: { '0': t('Disable'), '1': t('Enable') }, childrenAttr: { border: true } }"
                     />
                 </el-form>
             </div>
@@ -97,7 +125,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     username: [
         {
             required: true,
-            message: '请输入用户名',
+            message: t('Please input field', { field: t('auth.admin.username') }),
             trigger: 'blur',
         },
         {
@@ -108,14 +136,14 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     nickname: [
         {
             required: true,
-            message: '请输入昵称',
+            message: t('Please input field', { field: t('auth.admin.nickname') }),
             trigger: 'blur',
         },
     ],
     email: [
         {
             type: 'email',
-            message: '请输入正确的邮箱',
+            message: t('Please enter the correct field', { field: t('auth.admin.mailbox') }),
             trigger: 'blur',
         },
     ],
@@ -130,7 +158,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
             validator: (rule: any, val: string, callback: Function) => {
                 if (baTable.form.operate == 'add') {
                     if (!val) {
-                        return callback(new Error('请输入密码'))
+                        return callback(new Error(t('Please input field', { field: t('auth.admin.Password') })))
                     }
                 } else {
                     if (!val) {
@@ -138,7 +166,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
                     }
                 }
                 if (!regularPassword(val)) {
-                    return callback(new Error('请输入正确的密码'))
+                    return callback(new Error(t('Please enter the correct field', { field: t('auth.admin.Password') })))
                 }
                 return callback()
             },
