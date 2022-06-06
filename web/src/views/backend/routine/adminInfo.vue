@@ -22,7 +22,7 @@
                     <div class="admin-info-base">
                         <div class="admin-nickname">{{ state.adminInfo.nickname }}</div>
                         <div class="admin-other">
-                            <div>上次登录于 {{ state.adminInfo.lastlogintime }}</div>
+                            <div>{{ t('adminInfo.Last logged in on') }} {{ state.adminInfo.lastlogintime }}</div>
                         </div>
                     </div>
                     <div class="admin-info-form">
@@ -34,40 +34,52 @@
                             ref="formRef"
                             :model="state.adminInfo"
                         >
-                            <el-form-item label="用户名">
+                            <el-form-item :label="t('adminInfo.user name')">
                                 <el-input disabled v-model="state.adminInfo.username"></el-input>
                             </el-form-item>
-                            <el-form-item label="用户昵称" prop="nickname">
-                                <el-input placeholder="请输入昵称" v-model="state.adminInfo.nickname"></el-input>
+                            <el-form-item :label="t('adminInfo.User nickname')" prop="nickname">
+                                <el-input :placeholder="t('adminInfo.Please enter a nickname')" v-model="state.adminInfo.nickname"></el-input>
                             </el-form-item>
-                            <el-form-item label="邮箱地址" prop="email">
-                                <el-input placeholder="请输入邮箱地址" v-model="state.adminInfo.email"></el-input>
+                            <el-form-item :label="t('adminInfo.e-mail address')" prop="email">
+                                <el-input
+                                    :placeholder="t('Please input field', { field: t('adminInfo.e-mail address') })"
+                                    v-model="state.adminInfo.email"
+                                ></el-input>
                             </el-form-item>
-                            <el-form-item label="手机号码" prop="mobile">
-                                <el-input placeholder="请输入手机号码" v-model="state.adminInfo.mobile"></el-input>
+                            <el-form-item :label="t('adminInfo.phone number')" prop="mobile">
+                                <el-input
+                                    :placeholder="t('Please input field', { field: t('adminInfo.phone number') })"
+                                    v-model="state.adminInfo.mobile"
+                                ></el-input>
                             </el-form-item>
-                            <el-form-item label="签名">
+                            <el-form-item :label="t('adminInfo.autograph')">
                                 <el-input
                                     @keyup.enter.stop=""
                                     @keyup.ctrl.enter="onSubmit(formRef)"
-                                    placeholder="这家伙很懒，什么也没写"
+                                    :placeholder="t('adminInfo.This guy is lazy and doesn write anything')"
                                     type="textarea"
                                     v-model="state.adminInfo.motto"
                                 ></el-input>
                             </el-form-item>
-                            <el-form-item label="新密码" prop="password">
-                                <el-input type="password" placeholder="不修改请留空" v-model="state.adminInfo.password"></el-input>
+                            <el-form-item :label="t('adminInfo.New password')" prop="password">
+                                <el-input
+                                    type="password"
+                                    :placeholder="t('adminInfo.Please leave blank if not modified')"
+                                    v-model="state.adminInfo.password"
+                                ></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" :loading="state.buttonLoading" @click="onSubmit(formRef)">保存修改</el-button>
-                                <el-button @click="onResetForm(formRef)">重置</el-button>
+                                <el-button type="primary" :loading="state.buttonLoading" @click="onSubmit(formRef)">{{
+                                    t('adminInfo.Save changes')
+                                }}</el-button>
+                                <el-button @click="onResetForm(formRef)">{{ t('Reset') }}</el-button>
                             </el-form-item>
                         </el-form>
                     </div>
                 </div>
             </el-col>
             <el-col v-loading="state.logLoading" :xs="24" :sm="24" :md="24" :lg="12">
-                <el-card header="操作日志" shadow="never">
+                <el-card :header="t('adminInfo.Operation log')" shadow="never">
                     <el-timeline>
                         <el-timeline-item v-for="item in state.log" size="large" :timestamp="timeFormat(item.createtime)">
                             {{ item.title }}
@@ -143,13 +155,15 @@ index().then((res) => {
 })
 
 const getLog = () => {
-    log(state.logFilter).then((res) => {
-        state.log = res.data.list
-        state.logTotal = res.data.total
-        state.logLoading = false
-    }).catch(() => {
-        state.logLoading = false
-    })
+    log(state.logFilter)
+        .then((res) => {
+            state.log = res.data.list
+            state.logTotal = res.data.total
+            state.logLoading = false
+        })
+        .catch(() => {
+            state.logLoading = false
+        })
 }
 
 const onLogSizeChange = (limit: number) => {
@@ -168,7 +182,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     nickname: [
         {
             required: true,
-            message: t('adminLogin.Please enter an account'),
+            message: t('Please input field', { field: t('adminInfo.User nickname') }),
             trigger: 'blur',
         },
         {
@@ -180,7 +194,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     email: [
         {
             type: 'email',
-            message: '请输入正确的邮箱地址',
+            message: t('Please input field', { field: t('adminInfo.e-mail address') }),
             trigger: 'blur',
         },
     ],

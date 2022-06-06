@@ -6,7 +6,7 @@
             <!-- 表格顶部菜单 -->
             <TableHeader
                 :buttons="['refresh', 'edit', 'delete', 'comSearch']"
-                :quick-search-placeholder="'通过原始名称模糊搜索'"
+                :quick-search-placeholder="t('quick Search Placeholder', { fields: t('routine.attachment.Original name') })"
                 @action="baTable.onTableHeaderAction"
             />
 
@@ -30,17 +30,25 @@ import { routineAttachment } from '/@/api/controllerUrls'
 import { defaultOptButtons } from '/@/components/table'
 import { previewRenderFormatter } from './index'
 import { baTableApi } from '/@/api/common'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const tableRef = ref()
 
 const baTable = new baTableClass(new baTableApi(routineAttachment), {
     column: [
         { type: 'selection', align: 'center', operator: false },
-        { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-        { label: '细目', prop: 'topic', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-        { label: '上传管理员', prop: 'admin.nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+        { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+        { label: t('routine.attachment.Breakdown'), prop: 'topic', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
         {
-            label: '大小',
+            label: t('routine.attachment.Upload administrator'),
+            prop: 'admin.nickname',
+            align: 'center',
+            operator: 'LIKE',
+            operatorPlaceholder: t('Fuzzy query'),
+        },
+        {
+            label: t('routine.attachment.size'),
             prop: 'size',
             align: 'center',
             formatter: (row: TableRow, column: TableColumn, cellValue: string, index: number) => {
@@ -52,21 +60,57 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             sortable: 'custom',
             operatorPlaceholder: 'bytes',
         },
-        { label: '类型', prop: 'mimetype', align: 'center', operator: 'LIKE', "show-overflow-tooltip": true, operatorPlaceholder: '模糊查询' },
         {
-            label: '预览',
+            label: t('routine.attachment.type'),
+            prop: 'mimetype',
+            align: 'center',
+            operator: 'LIKE',
+            'show-overflow-tooltip': true,
+            operatorPlaceholder: t('Fuzzy query'),
+        },
+        {
+            label: t('routine.attachment.preview'),
             prop: 'suffix',
             align: 'center',
             renderFormatter: previewRenderFormatter,
             render: 'image',
             operator: false,
         },
-        { label: '上传(引用)次数', prop: 'quote', align: 'center', width: 150, operator: 'RANGE', sortable: 'custom' },
-        { label: '原始名称', prop: 'name', align: 'center', 'show-overflow-tooltip': true, operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-        { label: '存储方式', prop: 'storage', align: 'center', width: 100, operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-        { label: '最后上传时间', prop: 'lastuploadtime', align: 'center', render: 'datetime', operator: 'RANGE', width: 160, sortable: 'custom' },
         {
-            label: '操作',
+            label: t('routine.attachment.Upload (Reference) times'),
+            prop: 'quote',
+            align: 'center',
+            width: 150,
+            operator: 'RANGE',
+            sortable: 'custom',
+        },
+        {
+            label: t('routine.attachment.Original name'),
+            prop: 'name',
+            align: 'center',
+            'show-overflow-tooltip': true,
+            operator: 'LIKE',
+            operatorPlaceholder: t('Fuzzy query'),
+        },
+        {
+            label: t('routine.attachment.Storage mode'),
+            prop: 'storage',
+            align: 'center',
+            width: 100,
+            operator: 'LIKE',
+            operatorPlaceholder: t('Fuzzy query'),
+        },
+        {
+            label: t('routine.attachment.Last upload time'),
+            prop: 'lastuploadtime',
+            align: 'center',
+            render: 'datetime',
+            operator: 'RANGE',
+            width: 160,
+            sortable: 'custom',
+        },
+        {
+            label: t('operate'),
             align: 'center',
             width: '100',
             render: 'buttons',

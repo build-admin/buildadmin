@@ -48,5 +48,6 @@ export default {
     Reset: '重置',
     to: '至',
     'Link address': '链接地址',
-    'none': '无',
+    none: '无',
+    weigh: '权重',
 }

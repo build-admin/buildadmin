@@ -1,7 +1,9 @@
 <template>
     <el-dialog custom-class="ba-operate-dialog" :close-on-click-modal="false" :model-value="modelValue" @close="closeForm">
         <template #title>
-            <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">增加配置项</div>
+            <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">
+                {{ t('routine.config.Add configuration item') }}
+            </div>
         </template>
         <el-scrollbar class="ba-table-form-scrollbar">
             <div class="ba-operate-form ba-add-form" :style="'width: calc(100% - ' + state.labelWidth / 2 + 'px)'">
@@ -13,12 +15,18 @@
                     :label-position="'left'"
                     :label-width="120"
                 >
-                    <FormItem label="变量名" type="string" v-model="state.addConfig.name" prop="name" />
-                    <FormItem label="变量分组" type="select" v-model="state.addConfig.group" prop="group" :data="{ content: configGroup }" />
-                    <FormItem label="变量标题" type="string" v-model="state.addConfig.title" prop="title" />
-                    <FormItem label="变量描述" type="string" v-model="state.addConfig.tip" />
+                    <FormItem :label="t('routine.config.Variable name')" type="string" v-model="state.addConfig.name" prop="name" />
                     <FormItem
-                        label="变量类型"
+                        :label="t('routine.config.Variable grouping')"
+                        type="select"
+                        v-model="state.addConfig.group"
+                        prop="group"
+                        :data="{ content: configGroup }"
+                    />
+                    <FormItem :label="t('routine.config.Variable title')" type="string" v-model="state.addConfig.title" prop="title" />
+                    <FormItem :label="t('routine.config.Variable description')" type="string" v-model="state.addConfig.tip" />
+                    <FormItem
+                        :label="t('routine.config.Variable type')"
                         type="select"
                         v-model="state.addConfig.type"
                         prop="type"
@@ -27,26 +35,34 @@
                     />
                     <FormItem
                         class="add-item-content"
-                        label="字典数据"
+                        :label="t('routine.config.Dictionary data')"
                         type="textarea"
                         v-model="state.addConfig.content"
-                        :input-attr="{ rows: 3, placeholder: '一行一个，无需引号，比如：key1=value1' }"
+                        :input-attr="{
+                            rows: 3,
+                            placeholder: t('routine.config.One line at a time, without quotation marks, for example: key1=value1'),
+                        }"
                     />
-                    <FormItem label="验证规则" type="selects" v-model="state.addConfig.rule" :data="{ content: validatorType }" />
                     <FormItem
-                        label="扩展属性"
+                        :label="t('routine.config.Validation rules')"
+                        type="selects"
+                        v-model="state.addConfig.rule"
+                        :data="{ content: validatorType }"
+                    />
+                    <FormItem
+                        :label="t('routine.config.Extended properties')"
                         type="textarea"
                         v-model="state.addConfig.extend"
-                        :input-attr="{ placeholder: '一行一个属性，无需引号，比如：class=config-item' }"
+                        :input-attr="{ placeholder: t('routine.config.One attribute per line without quotation marks') }"
                     />
-                    <FormItem label="权重" type="number" v-model.number="state.addConfig.weigh" prop="weigh" />
+                    <FormItem :label="t('weigh')" type="number" v-model.number="state.addConfig.weigh" prop="weigh" />
                 </el-form>
             </div>
         </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + state.labelWidth / 1.8 + 'px)'">
-                <el-button @click="closeForm">取消</el-button>
-                <el-button v-blur :loading="state.submitLoading" @click="onAddSubmit(formRef)" type="primary"> 添加 </el-button>
+                <el-button @click="closeForm">{{ t('Cancel') }}</el-button>
+                <el-button v-blur :loading="state.submitLoading" @click="onAddSubmit(formRef)" type="primary"> {{ t('add') }} </el-button>
             </div>
         </template>
     </el-dialog>
@@ -60,6 +76,7 @@ import { validatorType } from '/@/utils/validate'
 import type { FormInstance, FormRules } from 'element-plus'
 import { buildValidatorData } from '/@/utils/validate'
 import { postData } from '/@/api/backend/routine/config'
+import { useI18n } from 'vue-i18n'
 
 interface Props {
     modelValue: boolean
@@ -81,6 +98,7 @@ const closeForm = () => {
     emits('update:modelValue', false)
 }
 
+const { t } = useI18n()
 const formRef = ref<FormInstance>()
 const state: {
     inputTypes: anyObj
@@ -116,11 +134,11 @@ key2=value2`,
 })
 
 const rules = reactive<FormRules>({
-    name: [buildValidatorData('required', '变量名'), buildValidatorData('varName')],
-    group: [buildValidatorData('required', '', 'change', '请选择分组')],
-    title: [buildValidatorData('required', '标题')],
-    type: [buildValidatorData('required', '', 'change', '请选择类型')],
-    weigh: [buildValidatorData('integer', '数字')],
+    name: [buildValidatorData('required', t('routine.config.Variable name')), buildValidatorData('varName')],
+    group: [buildValidatorData('required', '', 'change', t('Please select field', { field: t('routine.config.Variable grouping') }))],
+    title: [buildValidatorData('required', t('routine.config.Variable title'))],
+    type: [buildValidatorData('required', '', 'change', t('Please select field', { field: t('routine.config.Variable type') }))],
+    weigh: [buildValidatorData('integer', t('routine.config.number'))],
 })
 
 const inputTypesHandle = () => {

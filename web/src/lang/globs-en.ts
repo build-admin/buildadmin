@@ -48,5 +48,6 @@ export default {
     Reset: 'Reset',
     to: 'To',
     'Link address': 'Link address',
-    'none': 'None',
+    none: 'None',
+    weigh: 'weigh',
 }

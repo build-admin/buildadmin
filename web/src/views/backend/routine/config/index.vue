@@ -36,8 +36,8 @@
                                     <el-popconfirm
                                         @confirm="onDelConfig(item)"
                                         v-if="item.allow_del"
-                                        confirmButtonText="删除"
-                                        title="确定删除配置项吗？"
+                                        :confirmButtonText="t('delete')"
+                                        :title="t('routine.config.Are you sure to delete the configuration item?')"
                                     >
                                         <template #reference>
                                             <Icon class="close-icon" size="15" name="el-icon-Close" />
@@ -45,14 +45,18 @@
                                     </el-popconfirm>
                                 </div>
                             </div>
-                            <el-button type="primary" @click="onSubmit(formRef)">提交</el-button>
+                            <el-button type="primary" @click="onSubmit(formRef)">{{ t('Save') }}</el-button>
                         </el-tab-pane>
-                        <el-tab-pane name="add_config" class="config-tab-pane config-tab-pane-add" label="添加配置项"></el-tab-pane>
+                        <el-tab-pane
+                            name="add_config"
+                            class="config-tab-pane config-tab-pane-add"
+                            :label="t('routine.config.Add configuration item')"
+                        ></el-tab-pane>
                     </el-tabs>
                 </el-form>
             </el-col>
             <el-col :xs="24" :sm="12">
-                <el-card header="快捷配置入口">
+                <el-card :header="t('routine.config.Quick configuration entry')">
                     <el-button v-for="item in state.quickEntrance" class="config_quick_entrance">
                         <div @click="routePush('', {}, item['value'])">{{ item['key'] }}</div>
                     </el-button>
@@ -74,7 +78,9 @@ import { routePush } from '/@/utils/router'
 import { buildValidatorData } from '/@/utils/validate'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { SiteConfig } from '/@/stores/interface'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const siteConfig = useSiteConfig()
 
 const formRef = ref<InstanceType<typeof ElForm>>()
