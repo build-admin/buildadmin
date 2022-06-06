@@ -6,6 +6,7 @@ import { getAdminToken, removeAdminToken } from './common'
 import router from '/@/router/index'
 import { refreshToken } from '/@/api/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
+import { i18n } from '/@/lang/index'
 
 window.requests = []
 window.tokenRefreshing = false
@@ -138,7 +139,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                 return Promise.reject(response.data)
             } else if (options.showSuccessMessage && response.data && response.data.code == 1) {
                 ElNotification({
-                    message: response.data.msg ? response.data.msg : '操作成功',
+                    message: response.data.msg ? response.data.msg : i18n.global.t('axios.Operation successful'),
                     type: 'success',
                 })
             }
@@ -163,56 +164,57 @@ export default createAxios
  */
 function httpErrorStatusHandle(error: any) {
     // 处理被取消的请求
-    if (axios.isCancel(error)) return console.error('因为请求重复被自动取消：' + error.message)
+    if (axios.isCancel(error)) return console.error(i18n.global.t('axios.Automatic cancellation due to duplicate request:') + error.message)
     let message = ''
     if (error && error.response) {
         switch (error.response.status) {
             case 302:
-                message = '接口重定向了！'
+                message = i18n.global.t('axios.Interface redirected!')
                 break
             case 400:
-                message = '参数不正确！'
+                message = i18n.global.t('axios.Incorrect parameter!')
                 break
             case 401:
-                message = '您未登录，或者登录已经超时，请先登录！'
+                message = i18n.global.t('axios.You are not logged in, or the login has timed out. Please log in first!')
                 break
             case 403:
-                message = '您没有权限操作！'
+                message = i18n.global.t('axios.You do not have permission to operate!')
                 break
             case 404:
-                message = `请求地址出错: ${error.response.config.url}`
+                message = i18n.global.t('axios.Error requesting address:') + error.response.config.url
                 break
             case 408:
-                message = '请求超时！'
+                message = i18n.global.t('axios.Request timed out!')
                 break
             case 409:
-                message = '系统已存在相同数据！'
+                message = i18n.global.t('axios.The same data already exists in the system!')
                 break
             case 500:
-                message = '服务器内部错误！'
+                message = i18n.global.t('axios.Server internal error!')
                 break
             case 501:
-                message = '服务未实现！'
+                message = i18n.global.t('axios.Service not implemented!')
                 break
             case 502:
-                message = '网关错误！'
+                message = i18n.global.t('axios.Gateway error!')
                 break
             case 503:
-                message = '服务不可用！'
+                message = i18n.global.t('axios.Service unavailable!')
                 break
             case 504:
-                message = '服务暂时无法访问，请稍后再试！'
+                message = i18n.global.t('axios.The service is temporarily unavailable. Please try again later!')
                 break
             case 505:
-                message = 'HTTP版本不受支持！'
+                message = i18n.global.t('axios.HTTP version is not supported!')
                 break
             default:
-                message = '异常问题，请联系网站管理员！'
+                message = i18n.global.t('axios.Abnormal problem, please contact the website administrator!')
                 break
         }
     }
-    if (error.message.includes('timeout')) message = '网络请求超时！'
-    if (error.message.includes('Network')) message = window.navigator.onLine ? '服务端异常！' : '您断网了！'
+    if (error.message.includes('timeout')) message = i18n.global.t('axios.Network request timeout!')
+    if (error.message.includes('Network'))
+        message = window.navigator.onLine ? i18n.global.t('axios.Server exception!') : i18n.global.t('axios.You are disconnected!')
 
     ElNotification({
         type: 'error',

@@ -18,7 +18,6 @@
     </template>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useConfig } from '/@/stores/config'
 import type { viewMenu } from '/@/stores/interface'
 import { clickMenu } from '/@/utils/router'

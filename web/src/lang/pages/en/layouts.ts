@@ -27,4 +27,6 @@ export default {
     'Are you sure you want to restore all configurations to the default values?':
         'Are you sure you want to restore all configurations to the default values?',
     'Restore default': 'Restore default',
+    'personal data': 'personal data',
+    'cancellation': 'cancellation',
 }

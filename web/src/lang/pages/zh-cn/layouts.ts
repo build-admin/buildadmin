@@ -26,4 +26,6 @@ export default {
     'Top bar menu active item text color': '顶栏菜单激活项文字色',
     'Are you sure you want to restore all configurations to the default values?': '确定要恢复全部配置到默认值吗？',
     'Restore default': '恢复默认',
+    'personal data': '个人资料',
+    'cancellation': '注销',
 }

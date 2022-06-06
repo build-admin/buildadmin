@@ -26,7 +26,13 @@
             </template>
         </el-dropdown>
         <div @click="onFullScreen" class="nav-menu-item" :class="state.isFullScreen ? 'hover' : ''">
-            <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" v-if="state.isFullScreen" name="local-full-screen-cancel" size="18" />
+            <Icon
+                :color="configStore.layout.headerBarTabColor"
+                class="nav-menu-icon"
+                v-if="state.isFullScreen"
+                name="local-full-screen-cancel"
+                size="18"
+            />
             <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" v-else name="el-icon-FullScreen" size="18" />
         </div>
         <div @click="terminal.toggle()" class="nav-menu-item pt2">
@@ -62,8 +68,8 @@
                     </div>
                 </div>
                 <div class="admin-info-footer">
-                    <el-button @click="onAdminInfo" type="primary" plain>个人资料</el-button>
-                    <el-button @click="onLogout" type="danger" plain>注销</el-button>
+                    <el-button @click="onAdminInfo" type="primary" plain>{{ t('layouts.personal data') }}</el-button>
+                    <el-button @click="onLogout" type="danger" plain>{{ t('layouts.cancellation') }}</el-button>
                 </div>
             </div>
         </el-popover>
