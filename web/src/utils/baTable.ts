@@ -7,6 +7,7 @@ import { findIndexRow } from '/@/components/table'
 import { ElNotification, ElForm } from 'element-plus'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import _ from 'lodash'
+import { i18n } from '/@/lang/index'
 
 export default class baTable {
     public api
@@ -418,7 +419,7 @@ export default class baTable {
                     this.onTableHeaderAction('refresh', {})
                     ElNotification({
                         type: 'error',
-                        message: '移动位置超出了可移动范围!',
+                        message: i18n.global.t('utils.The moving position is beyond the movable range!'),
                     })
                     return
                 }

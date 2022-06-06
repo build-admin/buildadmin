@@ -5,6 +5,7 @@ import { ElNotification } from 'element-plus'
 import { useNavTabs } from '../stores/navTabs'
 import { adminBaseRoute } from '/@/router/static'
 import _ from 'lodash'
+import { i18n } from '/@/lang/index'
 
 export const clickMenu = (menu: viewMenu) => {
     switch (menu.type) {
@@ -20,7 +21,7 @@ export const clickMenu = (menu: viewMenu) => {
 
         default:
             ElNotification({
-                message: '导航失败，菜单类型无法识别！',
+                message: i18n.global.t('utils.Navigation failed, the menu type is unrecognized!'),
                 type: 'error',
             })
             break
@@ -38,18 +39,18 @@ export const routePush = async (name: string = '', params: anyObj = {}, path: st
         const failure = await router.push(name ? { name: name, params: params } : { path: path })
         if (isNavigationFailure(failure, NavigationFailureType.aborted)) {
             ElNotification({
-                message: '导航失败，导航守卫拦截！',
+                message: i18n.global.t('utils.Navigation failed, navigation guard intercepted!'),
                 type: 'error',
             })
         } else if (isNavigationFailure(failure, NavigationFailureType.duplicated)) {
             ElNotification({
-                message: '导航失败，已在导航目标位置！',
+                message: i18n.global.t('utils.Navigation failed, it is at the navigation target position!'),
                 type: 'warning',
             })
         }
     } catch (error) {
         ElNotification({
-            message: '导航失败，路由无效！',
+            message: i18n.global.t('utils.Navigation failed, invalid route!'),
             type: 'error',
         })
         console.error(error)
