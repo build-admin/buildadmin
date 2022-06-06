@@ -31,7 +31,7 @@
                                             type="string"
                                             v-model="baTable.comSearch.form[item.prop! + '-start']"
                                         ></el-input>
-                                        <div class="range-separator">至</div>
+                                        <div class="range-separator">{{ $t('to') }}</div>
                                         <el-input
                                             :placeholder="item.operatorPlaceholder"
                                             type="string"
@@ -72,8 +72,8 @@
                     </template>
                     <el-col :span="6">
                         <div class="com-search-col pl-20">
-                            <el-button v-blur @click="onComSearch" type="primary">搜索</el-button>
-                            <el-button @click="onResetForm()">重置</el-button>
+                            <el-button v-blur @click="onComSearch" type="primary">{{ $t('search') }}</el-button>
+                            <el-button @click="onResetForm()">{{ $t('Reset') }}</el-button>
                         </div>
                     </el-col>
                 </el-row>

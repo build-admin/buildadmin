@@ -1,5 +1,4 @@
 export default {
-    id: 'ID',
     admin_id: 'Admin ID',
     username: 'Admin Name',
     title: 'Title',
@@ -8,4 +7,7 @@ export default {
     ip: 'IP',
     useragent: 'UserAgent',
     createtime: 'Create Time',
+    'Operation administrator': 'Operation administrator',
+    'Operator IP': 'Operator IP',
+    'Request data': 'Request data',
 }

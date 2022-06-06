@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'delete', 'comSearch']"
-            :quick-search-placeholder="'通过标题模糊搜索'"
+            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.adminLog.title') })"
             @action="baTable.onTableHeaderAction"
         />
         <!-- 表格 -->
@@ -52,17 +52,31 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: t('auth.adminLog.id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-            { label: t('auth.adminLog.admin_id'), prop: 'admin_id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-            { label: t('auth.adminLog.username'), prop: 'username', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 160 },
-            { label: t('auth.adminLog.title'), prop: 'title', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            {
+                label: t('auth.adminLog.admin_id'),
+                prop: 'admin_id',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+                width: 70,
+            },
+            {
+                label: t('auth.adminLog.username'),
+                prop: 'username',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+                width: 160,
+            },
+            { label: t('auth.adminLog.title'), prop: 'title', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
                 show: false,
                 label: t('auth.adminLog.data'),
                 prop: 'data',
                 align: 'center',
                 operator: 'LIKE',
-                operatorPlaceholder: '模糊查询',
+                operatorPlaceholder: t('Fuzzy query'),
                 'show-overflow-tooltip': true,
             },
             {
@@ -70,17 +84,17 @@ const baTable = new baTableClass(
                 prop: 'url',
                 align: 'center',
                 operator: 'LIKE',
-                operatorPlaceholder: '模糊查询',
+                operatorPlaceholder: t('Fuzzy query'),
                 'show-overflow-tooltip': true,
                 render: 'url',
             },
-            { label: t('auth.adminLog.ip'), prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tag' },
+            { label: t('auth.adminLog.ip'), prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), render: 'tag' },
             {
                 label: t('auth.adminLog.useragent'),
                 prop: 'useragent',
                 align: 'center',
                 operator: 'LIKE',
-                operatorPlaceholder: '模糊查询',
+                operatorPlaceholder: t('Fuzzy query'),
                 'show-overflow-tooltip': true,
             },
             {
@@ -93,7 +107,7 @@ const baTable = new baTableClass(
                 width: 160,
             },
             {
-                label: '操作',
+                label: t('operate'),
                 align: 'center',
                 width: '100',
                 render: 'buttons',

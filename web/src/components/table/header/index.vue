@@ -4,45 +4,49 @@
 
     <!-- 操作按钮组 -->
     <div v-bind="$attrs" class="table-header">
-        <el-tooltip v-if="buttons.includes('refresh')" content="刷新" placement="top">
+        <el-tooltip v-if="buttons.includes('refresh')" :content="t('refresh')" placement="top">
             <el-button v-blur @click="onAction('refresh', { loading: true })" color="#40485b" class="table-header-operate" type="info">
                 <Icon name="fa fa-refresh" />
             </el-button>
         </el-tooltip>
-        <el-tooltip v-if="buttons.includes('add') && auth('add')" content="添加记录" placement="top">
+        <el-tooltip v-if="buttons.includes('add') && auth('add')" :content="t('add')" placement="top">
             <el-button v-blur @click="onAction('add')" class="table-header-operate" type="primary">
                 <Icon name="fa fa-plus" />
-                <span class="table-header-operate-text">添加</span>
+                <span class="table-header-operate-text">{{ t('add') }}</span>
             </el-button>
         </el-tooltip>
-        <el-tooltip v-if="buttons.includes('edit') && auth('edit')" content="编辑选中行" placement="top">
+        <el-tooltip v-if="buttons.includes('edit') && auth('edit')" :content="t('Edit selected row')" placement="top">
             <el-button v-blur @click="onAction('edit')" :disabled="!enableBatchOpt" class="table-header-operate" type="primary">
                 <Icon name="fa fa-pencil" />
-                <span class="table-header-operate-text">编辑</span>
+                <span class="table-header-operate-text">{{ t('edit') }}</span>
             </el-button>
         </el-tooltip>
         <el-popconfirm
             v-if="buttons.includes('delete') && auth('del')"
             @confirm="onAction('delete')"
-            confirm-button-text="删除"
-            cancel-button-text="取消"
+            :confirm-button-text="t('delete')"
+            :cancel-button-text="t('Cancel')"
             confirmButtonType="danger"
-            title="确定删除选中记录？"
+            :title="t('Are you sure to delete the selected record?')"
         >
             <template #reference>
                 <div class="mlr-12">
-                    <el-tooltip content="删除选中行" placement="top">
+                    <el-tooltip :content="t('Delete selected row')" placement="top">
                         <el-button v-blur :disabled="!enableBatchOpt" class="table-header-operate" type="danger">
                             <Icon name="fa fa-trash" />
-                            <span class="table-header-operate-text">删除</span>
+                            <span class="table-header-operate-text">{{ t('delete') }}</span>
                         </el-button>
                     </el-tooltip>
                 </div>
             </template>
         </el-popconfirm>
-        <el-tooltip v-if="buttons.includes('unfold')" :content="(baTable.table.expandAll ? '收缩' : '展开') + '所有子菜单'" placement="top">
+        <el-tooltip
+            v-if="buttons.includes('unfold')"
+            :content="(baTable.table.expandAll ? t('shrink') : t('open')) + t('All submenus')"
+            placement="top"
+        >
             <el-button v-blur @click="changeUnfold" class="table-header-operate" :type="baTable.table.expandAll ? 'danger' : 'warning'">
-                <span class="table-header-operate-text">{{ baTable.table.expandAll ? '收缩所有' : '展开所有' }}</span>
+                <span class="table-header-operate-text">{{ baTable.table.expandAll ? t('Shrink all') : t('Expand all') }}</span>
             </el-button>
         </el-tooltip>
 
@@ -51,7 +55,12 @@
 
         <!-- 右侧搜索框和工具按钮 -->
         <div class="table-search">
-            <el-input v-model="state.quickSearch" class="xs-hidden" @input="debounce(onSearchInput, 500)()" :placeholder="quickSearchPlaceholder" />
+            <el-input
+                v-model="state.quickSearch"
+                class="xs-hidden"
+                @input="debounce(onSearchInput, 500)()"
+                :placeholder="quickSearchPlaceholder ? quickSearchPlaceholder : t('search')"
+            />
             <el-button-group class="table-search-button-group">
                 <el-dropdown :hide-on-click="false">
                     <el-button class="table-search-button-item" color="#dcdfe6" plain>
@@ -72,7 +81,12 @@
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
-                <el-tooltip v-if="buttons.includes('comSearch')" :disabled="state.showComSearch" content="展开通用搜索" placement="top">
+                <el-tooltip
+                    v-if="buttons.includes('comSearch')"
+                    :disabled="state.showComSearch"
+                    :content="t('Expand generic search')"
+                    placement="top"
+                >
                     <el-button class="table-search-button-item" @click="state.showComSearch = !state.showComSearch" color="#dcdfe6" plain>
                         <Icon size="14" color="#303133" name="el-icon-Search" />
                     </el-button>
@@ -87,7 +101,9 @@ import { reactive, computed, inject } from 'vue'
 import { debounce, auth } from '/@/utils/common'
 import type baTableClass from '/@/utils/baTable'
 import ComSearch from '/@/components/table/comSearch/index.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const baTable = inject('baTable') as baTableClass
 
 interface Props {
@@ -98,7 +114,7 @@ const props = withDefaults(defineProps<Props>(), {
     buttons: () => {
         return ['refresh', 'add', 'edit', 'delete']
     },
-    quickSearchPlaceholder: '搜索',
+    quickSearchPlaceholder: '',
 })
 
 const state = reactive({

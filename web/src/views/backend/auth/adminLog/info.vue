@@ -7,21 +7,21 @@
         @close="baTable.toggleForm"
     >
         <template #title>
-            <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">查看详情</div>
+            <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">{{ t('info') }}</div>
         </template>
         <el-scrollbar v-loading="baTable.form.loading" class="ba-table-form-scrollbar">
             <div class="ba-operate-form" :class="'ba-' + baTable.form.operate + '-form'">
                 <el-descriptions :column="2" border>
-                    <el-descriptions-item label="ID">
+                    <el-descriptions-item :label="t('id')">
                         {{baTable.form.extend!.info.id}}
                     </el-descriptions-item>
-                    <el-descriptions-item label="操作管理员">
+                    <el-descriptions-item :label="t('auth.adminLog.Operation administrator')">
                         {{baTable.form.extend!.info.username}}
                     </el-descriptions-item>
-                    <el-descriptions-item label="标题">
+                    <el-descriptions-item :label="t('auth.adminLog.title')">
                         {{baTable.form.extend!.info.title}}
                     </el-descriptions-item>
-                    <el-descriptions-item label="操作人IP">
+                    <el-descriptions-item :label="t('auth.adminLog.Operator IP')">
                         {{baTable.form.extend!.info.ip}}
                     </el-descriptions-item>
                     <el-descriptions-item :width="120" :span="2" label="URL">
@@ -30,10 +30,10 @@
                     <el-descriptions-item :width="120" :span="2" label="User Agent">
                         {{baTable.form.extend!.info.useragent}}
                     </el-descriptions-item>
-                    <el-descriptions-item :width="120" :span="2" label="创建时间">
+                    <el-descriptions-item :width="120" :span="2" :label="t('createtime')">
                         {{ timeFormat(baTable.form.extend!.info.createtime) }}
                     </el-descriptions-item>
-                    <el-descriptions-item :width="120" :span="2" label="请求数据">
+                    <el-descriptions-item :width="120" :span="2" :label="t('auth.adminLog.Request data')">
                         <el-tree class="table-el-tree" :data="baTable.form.extend!.info.data" :props="{ label: 'label', children: 'children' }" />
                     </el-descriptions-item>
                 </el-descriptions>
