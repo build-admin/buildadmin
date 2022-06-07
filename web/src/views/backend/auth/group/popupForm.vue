@@ -53,7 +53,7 @@
                             :default-expand-all="true"
                             show-checkbox
                             node-key="id"
-                            :props="{ children: 'children', label: 'title' }"
+                            :props="{ children: 'children', label: 'title', class: treeNodeClass }"
                             :data="state.menuRules"
                         />
                     </el-form-item>
@@ -83,6 +83,7 @@ import FormItem from '/@/components/formItem/index.vue'
 import { getMenuRules } from '/@/api/backend/auth/group'
 import type { ElForm, ElTree, FormItemRule } from 'element-plus'
 import { uuid } from '/@/utils/random'
+import type Node from 'element-plus/es/components/tree/src/model/node'
 
 interface MenuRules {
     id: number
@@ -139,6 +140,17 @@ const getHalfCheckeds = () => {
     return treeRef.value!.getHalfCheckedKeys()
 }
 
+const treeNodeClass = (data: anyObj, node: Node) => {
+    if (node.isLeaf) return ''
+    let addClass = true
+    for(const key in node.childNodes) {
+        if (!node.childNodes[key].isLeaf) {
+            addClass = false
+        }
+    }
+    return addClass ? 'penultimate-node' : ''
+}
+
 defineExpose({
     getCheckeds,
     getHalfCheckeds,
@@ -165,4 +177,22 @@ watch(
 )
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.penultimate-node) {
+    .el-tree-node__children {
+        padding-left: 60px;
+        white-space: pre-wrap;
+        line-height: 12px;
+        .el-tree-node {
+            display: inline-block;
+        }
+        .el-tree-node__content {
+            padding-left: 5px !important;
+            padding-right: 5px;
+            .el-tree-node__expand-icon {
+                display: none;
+            }
+        }
+    }
+}
+</style>
