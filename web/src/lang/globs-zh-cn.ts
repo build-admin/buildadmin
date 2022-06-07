@@ -49,5 +49,6 @@ export default {
     to: '至',
     'Link address': '链接地址',
     none: '无',
+    unknown: '未知',
     weigh: '权重',
 }

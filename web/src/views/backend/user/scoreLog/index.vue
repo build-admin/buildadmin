@@ -5,12 +5,14 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'comSearch']"
-            :quick-search-placeholder="'通过用户名/用户昵称模糊搜索'"
+            :quick-search-placeholder="
+                t('quick Search Placeholder', { fields: t('user.moneyLog.User name') + '/' + t('user.moneyLog.User nickname') })
+            "
             @action="baTable.onTableHeaderAction"
         >
             <el-button v-if="!_.isEmpty(state.userInfo)" v-blur class="table-header-operate">
                 <span class="table-header-operate-text">{{
-                    state.userInfo.username + '(ID:' + state.userInfo.id + ') 积分:' + state.userInfo.score
+                    state.userInfo.username + '(ID:' + state.userInfo.id + ') ' + t('user.scoreLog.integral') + ':' + state.userInfo.score
                 }}</span>
             </el-button>
         </TableHeader>
@@ -35,7 +37,9 @@ import TableHeader from '/@/components/table/header/index.vue'
 import { baTableApi } from '/@/api/common'
 import { useRoute } from 'vue-router'
 import { add } from '/@/api/backend/user/scoreLog'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const tableRef = ref()
 const route = useRoute()
 const defalutUser = (route.query.user_id ?? '') as string
@@ -50,15 +54,15 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-            { label: '用户ID', prop: 'user_id', align: 'center', operator: '=', width: 70 },
-            { label: '用户名', prop: 'user.username', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '用户昵称', prop: 'user.nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '变更积分', prop: 'score', align: 'center', operator: 'RANGE', sortable: 'custom' },
-            { label: '变更前', prop: 'before', align: 'center', operator: 'RANGE', sortable: 'custom' },
-            { label: '变更后', prop: 'after', align: 'center', operator: 'RANGE', sortable: 'custom' },
-            { label: '备注', prop: 'memo', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', 'show-overflow-tooltip': true },
-            { label: '创建时间', prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            { label: t('user.moneyLog.User ID'), prop: 'user_id', align: 'center', operator: '=', width: 70 },
+            { label: t('user.moneyLog.User name'), prop: 'user.username', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
+            { label: t('user.moneyLog.User nickname'), prop: 'user.nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
+            { label: t('user.scoreLog.Change points'), prop: 'score', align: 'center', operator: 'RANGE', sortable: 'custom' },
+            { label: t('user.moneyLog.Before change'), prop: 'before', align: 'center', operator: 'RANGE', sortable: 'custom' },
+            { label: t('user.moneyLog.After change'), prop: 'after', align: 'center', operator: 'RANGE', sortable: 'custom' },
+            { label: t('user.moneyLog.remarks'), prop: 'memo', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), 'show-overflow-tooltip': true },
+            { label: t('createtime'), prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
         ],
         dblClickNotEditColumn: ['all'],
     },

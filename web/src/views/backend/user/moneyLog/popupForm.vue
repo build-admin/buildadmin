@@ -29,9 +29,9 @@
                     <FormItem
                         type="remoteSelect"
                         prop="user_id"
-                        label="会员ID"
+                        :label="t('user.moneyLog.User ID')"
                         v-model="baTable.form.items!.user_id"
-                        placeholder="点击选择"
+                        :placeholder="t('Click Select')"
                         :input-attr="{
                             pk: 'user.id',
                             field: 'nickname_text',
@@ -39,28 +39,33 @@
                             onChange: getAdd,
                         }"
                     />
-                    <el-form-item label="用户名">
+                    <el-form-item :label="t('user.moneyLog.User name')">
                         <el-input v-model="state.userInfo.username" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="用户昵称">
+                    <el-form-item :label="t('user.moneyLog.User nickname')">
                         <el-input v-model="state.userInfo.nickname" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="当前余额">
+                    <el-form-item :label="t('user.moneyLog.Current balance')">
                         <el-input v-model="state.userInfo.money" disabled type="number"></el-input>
                     </el-form-item>
-                    <el-form-item prop="money" label="变动数额">
-                        <el-input @input="changeMoney" v-model="baTable.form.items!.money" type="number" placeholder="请输入余额变更数额"></el-input>
+                    <el-form-item prop="money" :label="t('user.moneyLog.Change amount')">
+                        <el-input
+                            @input="changeMoney"
+                            v-model="baTable.form.items!.money"
+                            type="number"
+                            :placeholder="t('user.moneyLog.Please enter the balance change amount')"
+                        ></el-input>
                     </el-form-item>
-                    <el-form-item label="变更后余额">
+                    <el-form-item :label="t('user.moneyLog.Balance after change')">
                         <el-input v-model="state.after" type="number" disabled></el-input>
                     </el-form-item>
-                    <el-form-item prop="memo" label="备注">
+                    <el-form-item prop="memo" :label="t('user.moneyLog.remarks')">
                         <el-input
                             @keyup.enter.stop=""
                             @keyup.ctrl.enter="baTable.onSubmit(formRef)"
                             v-model="baTable.form.items!.memo"
                             type="textarea"
-                            placeholder="请输入变更备注/说明"
+                            :placeholder="t('user.moneyLog.Please enter change remarks / description')"
                         ></el-input>
                     </el-form-item>
                 </el-form>
@@ -68,9 +73,9 @@
         </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
-                <el-button @click="baTable.toggleForm('')">取消</el-button>
+                <el-button @click="baTable.toggleForm('')">{{ t('Cancel') }}</el-button>
                 <el-button v-blur :loading="baTable.form.submitLoading" @click="baTable.onSubmit(formRef)" type="primary">
-                    {{ baTable.form.operateIds!.length > 1 ? '保存并编辑下一项' : '保存' }}
+                    {{ baTable.form.operateIds!.length > 1 ? t('Save and edit next item') : t('Save') }}
                 </el-button>
             </div>
         </template>
@@ -87,18 +92,19 @@ import { userUser } from '/@/api/controllerUrls'
 import FormItem from '/@/components/formItem/index.vue'
 import type { FormItemRule } from 'element-plus'
 
+const { t } = useI18n()
 const baTable = inject('baTable') as baTableClass
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     user_id: [
         {
             required: true,
-            message: '请选择用户',
+            message: t('Please select field', { field: t('user.moneyLog.User') }),
             trigger: 'blur',
         },
         {
             validator: (rule: any, val: string, callback: Function) => {
                 if (!val || parseInt(val) <= 0) {
-                    return callback(new Error('请选择用户'))
+                    return callback(new Error(t('Please select field', { field: t('user.moneyLog.user') })))
                 }
                 return callback()
             },
@@ -108,13 +114,13 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     money: [
         {
             required: true,
-            message: '请输入正确的变更数额',
+            message: t('Please enter the correct field', { field: t('user.moneyLog.Change amount') }),
             trigger: 'blur',
         },
         {
             validator: (rule: any, val: string, callback: Function) => {
                 if (!val || parseInt(val) == 0) {
-                    return callback(new Error('请输入正确的变更数额'))
+                    return callback(new Error(t('Please enter the correct field', { field: t('user.moneyLog.Change amount') })))
                 }
                 return callback()
             },
@@ -124,13 +130,12 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     memo: [
         {
             required: true,
-            message: '请输入备注',
+            message: t('Please input field', { field: t('user.moneyLog.remarks') }),
             trigger: 'blur',
         },
     ],
 })
 
-const { t } = useI18n()
 const formRef = ref<InstanceType<typeof ElForm>>()
 
 const state: {

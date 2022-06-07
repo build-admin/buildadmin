@@ -4,4 +4,6 @@ export default {
     'Navigation failed, navigation guard intercepted!': 'Navigation failed, navigation guard intercepted!',
     'Navigation failed, it is at the navigation target position!': 'Navigation failed, it is at the navigation target position!',
     'Navigation failed, invalid route!': 'Navigation failed, invalid route!',
+    'Loading': 'Loading...',
+    'Reload': 'Reload',
 }

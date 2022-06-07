@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'comSearch']"
-            :quick-search-placeholder="'通过用户名和昵称模糊搜索'"
+            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('user.user.User name') + '/' + t('user.user.nickname') })"
             @action="baTable.onTableHeaderAction"
         />
 
@@ -27,40 +27,64 @@ import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const tableRef = ref()
 const baTable = new baTableClass(
     new baTableApi(userUser),
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-            { label: '用户名', prop: 'username', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '昵称', prop: 'nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '分组', prop: 'group.name', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tag' },
-            { label: '头像', prop: 'avatar', align: 'center', render: 'image', operator: false },
+            { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            { label: t('user.user.User name'), prop: 'username', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
+            { label: t('user.user.nickname'), prop: 'nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
-                label: '性别',
+                label: t('user.user.grouping'),
+                prop: 'group.name',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+                render: 'tag',
+            },
+            { label: t('user.user.head portrait'), prop: 'avatar', align: 'center', render: 'image', operator: false },
+            {
+                label: t('user.user.Gender'),
                 prop: 'gender',
                 align: 'center',
                 render: 'tag',
                 custom: { '0': 'info', '1': '', '2': 'success' },
-                replaceValue: { '0': '未知', '1': '男', '2': '女' },
+                replaceValue: { '0': t('unknown'), '1': t('user.user.male'), '2': t('user.user.female') },
             },
-            { label: '手机号', prop: 'mobile', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
-            { label: '最后登录IP', prop: 'lastloginip', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', render: 'tag' },
-            { label: '最后登录', prop: 'lastlogintime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
-            { label: '创建时间', prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('user.user.mobile'), prop: 'mobile', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
-                label: '状态',
+                label: t('user.user.Last login IP'),
+                prop: 'lastloginip',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+                render: 'tag',
+            },
+            {
+                label: t('user.user.Last login'),
+                prop: 'lastlogintime',
+                align: 'center',
+                render: 'datetime',
+                sortable: 'custom',
+                operator: 'RANGE',
+                width: 160,
+            },
+            { label: t('createtime'), prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            {
+                label: t('state'),
                 prop: 'status',
                 align: 'center',
                 render: 'tag',
                 custom: { disable: 'danger', enable: 'success' },
-                replaceValue: { disable: '禁用', enable: '启用' },
+                replaceValue: { disable: t('Disable'), enable: t('Enable') },
             },
             {
-                label: '操作',
+                label: t('operate'),
                 align: 'center',
                 width: '100',
                 render: 'buttons',

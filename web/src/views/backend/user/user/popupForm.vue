@@ -26,24 +26,32 @@
                     :rules="rules"
                     v-if="!baTable.form.loading"
                 >
-                    <el-form-item prop="username" label="用户名">
-                        <el-input v-model="baTable.form.items!.username" type="string" placeholder="管理员登录名"></el-input>
+                    <el-form-item prop="username" :label="t('user.user.User name')">
+                        <el-input
+                            v-model="baTable.form.items!.username"
+                            type="string"
+                            :placeholder="t('Please input field', { field: t('user.user.User name') + '(' + t('user.user.Login account') + ')' })"
+                        ></el-input>
                     </el-form-item>
-                    <el-form-item prop="nickname" label="昵称">
-                        <el-input v-model="baTable.form.items!.nickname" type="string" placeholder="请输入昵称"></el-input>
+                    <el-form-item prop="nickname" :label="t('user.user.nickname')">
+                        <el-input
+                            v-model="baTable.form.items!.nickname"
+                            type="string"
+                            :placeholder="t('Please input field', { field: t('user.user.nickname') })"
+                        ></el-input>
                     </el-form-item>
                     <FormItem
                         type="remoteSelect"
-                        label="会员分组"
+                        :label="t('user.user.grouping')"
                         v-model="baTable.form.items!.group_id"
-                        placeholder="点击选择"
+                        :placeholder="t('user.user.grouping')"
                         :input-attr="{
                             params: { isTree: true },
                             field: 'name',
                             'remote-url': userGroup + 'index',
                         }"
                     />
-                    <el-form-item label="头像">
+                    <el-form-item :label="t('user.user.head portrait')">
                         <el-upload
                             class="avatar-uploader"
                             action=""
@@ -61,68 +69,80 @@
                             </el-image>
                         </el-upload>
                     </el-form-item>
-                    <el-form-item prop="email" label="邮箱">
-                        <el-input v-model="baTable.form.items!.email" type="string" placeholder="请输入邮箱"></el-input>
+                    <el-form-item prop="email" :label="t('user.user.mailbox')">
+                        <el-input
+                            v-model="baTable.form.items!.email"
+                            type="string"
+                            :placeholder="t('Please input field', { field: t('user.user.mailbox') })"
+                        ></el-input>
                     </el-form-item>
-                    <el-form-item prop="mobile" label="手机号">
-                        <el-input v-model="baTable.form.items!.mobile" type="string" placeholder="请输入手机号码"></el-input>
+                    <el-form-item prop="mobile" :label="t('user.user.mobile')">
+                        <el-input
+                            v-model="baTable.form.items!.mobile"
+                            type="string"
+                            :placeholder="t('Please input field', { field: t('user.user.mobile') })"
+                        ></el-input>
                     </el-form-item>
-                    <el-form-item label="性别">
-                        <el-radio v-model="baTable.form.items!.gender" :label="0" :border="true">未知</el-radio>
-                        <el-radio v-model="baTable.form.items!.gender" :label="1" :border="true">男</el-radio>
-                        <el-radio v-model="baTable.form.items!.gender" :label="2" :border="true">女</el-radio>
+                    <el-form-item :label="t('user.user.Gender')">
+                        <el-radio v-model="baTable.form.items!.gender" :label="0" :border="true">{{ t('unknown') }}</el-radio>
+                        <el-radio v-model="baTable.form.items!.gender" :label="1" :border="true">{{ t('user.user.male') }}</el-radio>
+                        <el-radio v-model="baTable.form.items!.gender" :label="2" :border="true">{{ t('user.user.female') }}</el-radio>
                     </el-form-item>
-                    <el-form-item label="生日">
+                    <el-form-item :label="t('user.user.birthday')">
                         <el-date-picker
                             class="w100"
                             value-format="YYYY-MM-DD"
                             v-model="baTable.form.items!.birthday"
                             type="date"
-                            placeholder="请选择生日"
+                            :placeholder="t('Please select field', { field: t('user.user.birthday') })"
                         />
                     </el-form-item>
-                    <el-form-item v-if="baTable.form.operate == 'edit'" label="余额">
+                    <el-form-item v-if="baTable.form.operate == 'edit'" :label="t('user.user.balance')">
                         <el-input v-model="baTable.form.items!.money" readonly>
                             <template #append>
-                                <el-button @click="changeAccount('money')">调整余额</el-button>
+                                <el-button @click="changeAccount('money')">{{ t('user.user.Adjustment balance') }}</el-button>
                             </template>
                         </el-input>
                     </el-form-item>
-                    <el-form-item v-if="baTable.form.operate == 'edit'" label="积分">
+                    <el-form-item v-if="baTable.form.operate == 'edit'" :label="t('user.user.integral')">
                         <el-input v-model="baTable.form.items!.score" readonly>
                             <template #append>
-                                <el-button @click="changeAccount('score')">调整积分</el-button>
+                                <el-button @click="changeAccount('score')">{{ t('user.user.Adjust integral') }}</el-button>
                             </template>
                         </el-input>
                     </el-form-item>
-                    <el-form-item prop="password" label="密码">
+                    <el-form-item prop="password" :label="t('user.user.password')">
                         <el-input
                             v-model="baTable.form.items!.password"
                             type="password"
-                            :placeholder="baTable.form.operate == 'add' ? '请输入密码' : '不修改请留空'"
+                            :placeholder="
+                                baTable.form.operate == 'add'
+                                    ? t('Please input field', { field: t('user.user.password') })
+                                    : t('user.user.Please leave blank if not modified')
+                            "
                         ></el-input>
                     </el-form-item>
-                    <el-form-item prop="motto" label="个性签名">
+                    <el-form-item prop="motto" :label="t('user.user.Personal signature')">
                         <el-input
                             @keyup.enter.stop=""
                             @keyup.ctrl.enter="baTable.onSubmit(formRef)"
                             v-model="baTable.form.items!.motto"
                             type="textarea"
-                            placeholder="请输入个性签名"
+                            :placeholder="t('Please input field', { field: t('user.user.Personal signature') })"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item label="状态">
-                        <el-radio v-model="baTable.form.items!.status" label="disable" :border="true">禁用</el-radio>
-                        <el-radio v-model="baTable.form.items!.status" label="enable" :border="true">启用</el-radio>
+                    <el-form-item :label="t('state')">
+                        <el-radio v-model="baTable.form.items!.status" label="disable" :border="true">{{ t('Disable') }}</el-radio>
+                        <el-radio v-model="baTable.form.items!.status" label="enable" :border="true">{{ t('Enable') }}</el-radio>
                     </el-form-item>
                 </el-form>
             </div>
         </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
-                <el-button @click="baTable.toggleForm('')">取消</el-button>
+                <el-button @click="baTable.toggleForm('')">{{ t('Cancel') }}</el-button>
                 <el-button v-blur :loading="baTable.form.submitLoading" @click="baTable.onSubmit(formRef)" type="primary">
-                    {{ baTable.form.operateIds && baTable.form.operateIds.length > 1 ? '保存并编辑下一项' : '保存' }}
+                    {{ baTable.form.operateIds && baTable.form.operateIds.length > 1 ? t('Save and edit next item') : t('Save') }}
                 </el-button>
             </div>
         </template>
@@ -149,7 +169,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     username: [
         {
             required: true,
-            message: '请输入用户名',
+            message: t('Please input field', { field: t('user.user.User name') }),
             trigger: 'blur',
         },
         {
@@ -160,14 +180,14 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     nickname: [
         {
             required: true,
-            message: '请输入昵称',
+            message: t('Please input field', { field: t('user.user.nickname') }),
             trigger: 'blur',
         },
     ],
     email: [
         {
             type: 'email',
-            message: '请输入正确的邮箱',
+            message: t('Please enter the correct field', { field: t('user.user.mailbox') }),
             trigger: 'blur',
         },
     ],
@@ -182,7 +202,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
             validator: (rule: any, val: string, callback: Function) => {
                 if (baTable.form.operate == 'add') {
                     if (!val) {
-                        return callback(new Error('请输入密码'))
+                        return callback(new Error(t('Please input field', { field: t('user.user.password') })))
                     }
                 } else {
                     if (!val) {
@@ -190,7 +210,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
                     }
                 }
                 if (!regularPassword(val)) {
-                    return callback(new Error('请输入正确的密码'))
+                    return callback(new Error(t('Please enter the correct field', { field: t('user.user.password') })))
                 }
                 return callback()
             },

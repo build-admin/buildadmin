@@ -258,7 +258,7 @@ INSERT INTO `__PREFIX__menu_rule` VALUES ('28', '27', 'button', '查看', 'user/
 INSERT INTO `__PREFIX__menu_rule` VALUES ('29', '27', 'button', '添加', 'user/group/add', '', '', null, '', '', '0', 'none', '', '93', '1', '1648065864', '1647806112');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('30', '27', 'button', '编辑', 'user/group/edit', '', '', null, '', '', '0', 'none', '', '93', '1', '1648065864', '1647806129');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('31', '27', 'button', '删除', 'user/group/del', '', '', null, '', '', '0', 'none', '', '93', '1', '1648065864', '1647806112');
-INSERT INTO `__PREFIX__menu_rule` VALUES ('32', '21', 'menu', '会员规则管理', 'user/rule', 'user/rule', 'fa fa-th-list', 'tab', '', '/src/views/backend/user/rule/index.vue', '1', 'none', '', '92', '1', '1648067247', '1648051207');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('32', '21', 'menu', '会员规则管理', 'user/rule', 'user/rule', 'fa fa-th-list', 'tab', '', '/src/views/backend/user/rule/index.vue', '1', 'none', '', '92', '0', '1648067247', '1648051207');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('33', '32', 'button', '查看', 'user/rule/index', '', '', null, '', '', '0', 'none', '', '92', '1', '1648065864', '1647806112');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('34', '32', 'button', '添加', 'user/rule/add', '', '', null, '', '', '0', 'none', '', '92', '1', '1648065864', '1647806112');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('35', '32', 'button', '编辑', 'user/rule/edit', '', '', null, '', '', '0', 'none', '', '92', '1', '1648065864', '1647806129');

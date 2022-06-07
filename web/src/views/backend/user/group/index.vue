@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'comSearch']"
-            :quick-search-placeholder="'通过组名模糊搜索'"
+            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('user.group.GroupName') })"
             @action="baTable.onTableHeaderAction"
         />
 
@@ -27,7 +27,9 @@ import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const tableRef = ref()
 const formRef = ref()
 const baTable = new baTableClass(
@@ -35,20 +37,20 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询', width: 70 },
-            { label: '组别名称', prop: 'name', align: 'center', operator: 'LIKE', operatorPlaceholder: '模糊查询' },
+            { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            { label: t('user.group.Group name'), prop: 'name', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
-                label: '状态',
+                label: t('state'),
                 prop: 'status',
                 align: 'center',
                 render: 'tag',
                 custom: { '0': 'danger', '1': 'success' },
-                replaceValue: { '0': '禁用', '1': '启用' },
+                replaceValue: { '0': t('Disable'), '1': t('Enable') },
             },
-            { label: '更新时间', prop: 'updatetime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
-            { label: '创建时间', prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('updatetime'), prop: 'updatetime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('createtime'), prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
             {
-                label: '操作',
+                label: t('operate'),
                 align: 'center',
                 width: '130',
                 render: 'buttons',
