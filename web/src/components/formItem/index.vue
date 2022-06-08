@@ -51,18 +51,52 @@ export default defineComponent({
             emit('update:modelValue', value)
         }
 
+        let blockHelp: string = ''
+        if (props.attr && props.attr['block-help']) {
+            blockHelp = props.attr['block-help']
+            delete props.attr['block-help']
+        }
+
         // el-form-item 的默认插槽,生成一个baInput
         const defaultSlot = () => {
-            return createVNode(BaInput, {
+            let inputNode = createVNode(BaInput, {
                 type: props.type,
                 attr: { placeholder: props.placeholder, ...props.inputAttr },
                 data: props.data,
                 modelValue: props.modelValue,
                 'onUpdate:modelValue': onValueUpdate,
             })
+
+            if (blockHelp) {
+                return [
+                    inputNode,
+                    createVNode(
+                        'div',
+                        {
+                            class: 'block-help',
+                        },
+                        blockHelp
+                    ),
+                ]
+            }
+            return inputNode
         }
 
-        let noNeedLabelSlot = ['string', 'password', 'number', 'textarea', 'datetime', 'year', 'date', 'time', 'select', 'selects', 'remoteSelect', 'city', 'icon'] // 不带独立label输入框
+        let noNeedLabelSlot = [
+            'string',
+            'password',
+            'number',
+            'textarea',
+            'datetime',
+            'year',
+            'date',
+            'time',
+            'select',
+            'selects',
+            'remoteSelect',
+            'city',
+            'icon',
+        ] // 不带独立label输入框
         let needLabelSlot = ['radio', 'checkbox', 'switch', 'array', 'image', 'images', 'file', 'files', 'editor'] // 需要独立label的输入框
         if (noNeedLabelSlot.includes(props.type)) {
             return () =>
