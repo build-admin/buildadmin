@@ -11,8 +11,9 @@ dist-ssr
 /public/storage/*
 .DS_Store
 composer.lock
+pnpm-lock.yaml
+package-lock.json
 /.env
-/web/package-lock.json
 
 # Log files
 *.log
