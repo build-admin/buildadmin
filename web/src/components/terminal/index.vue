@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-bind="$attrs" v-model="terminal.state.show" :title="t('terminal.Terminal') + ' - ' + terminal.state.packageManager" custom-class="ba-terminal-dialog" :append-to-body="true">
+    <el-dialog v-bind="$attrs" v-model="terminal.state.show" :title="t('terminal.Terminal')" custom-class="ba-terminal-dialog" :append-to-body="true">
         <el-timeline v-if="terminal.state.taskList.length">
             <el-timeline-item
                 v-for="(item, idx) in terminal.state.taskList"
@@ -75,20 +75,32 @@
         <el-empty v-else :image-size="80" :description="t('terminal.No mission yet')" />
 
         <el-button-group>
-            <el-button class="terminal-menu-item" v-blur @click="terminal.addTaskPM('test-install', false)">{{ t('terminal.Test command') }}</el-button>
-            <el-button class="terminal-menu-item" v-blur @click="terminal.addTaskPM('web-install')">{{
+            <el-button class="terminal-menu-item" icon="el-icon-MagicStick" v-blur @click="terminal.addTaskPM('test-install', false)">{{
+                t('terminal.Test command')
+            }}</el-button>
+            <el-button class="terminal-menu-item" icon="el-icon-Download" v-blur @click="terminal.addTaskPM('web-install')">{{
                 t('terminal.Install dependent packages')
             }}</el-button>
-            <el-button class="terminal-menu-item" v-blur @click="webBuild()">{{ t('terminal.Republish') }}</el-button>
-            <el-button class="terminal-menu-item" v-blur @click="terminal.addTask('version-view.npm', false)">npm -v</el-button>
-            <el-button class="terminal-menu-item" v-blur @click="terminal.togglePackageManagerDialog(true)">{{ t('terminal.Switch package manager') }}</el-button>
-            <el-button class="terminal-menu-item" v-blur @click="terminal.clearSuccessTask()">{{ t('terminal.Clean up task list') }}</el-button>
+            <el-button class="terminal-menu-item" icon="el-icon-Sell" v-blur @click="webBuild()">{{ t('terminal.Republish') }}</el-button>
+            <el-button v-if="!state.menuExpand" class="terminal-menu-item" icon="el-icon-Expand" v-blur @click="state.menuExpand = true"></el-button>
+            <template v-else>
+                <el-button class="terminal-menu-item" icon="el-icon-Delete" v-blur @click="terminal.clearSuccessTask()">{{
+                    t('terminal.Clean up task list')
+                }}</el-button>
+                <el-button class="terminal-menu-item" icon="el-icon-Switch" v-blur @click="terminal.togglePackageManagerDialog(true)"
+                    >{{ t('terminal.Package manager') }} {{ terminal.state.packageManager.toUpperCase() }}</el-button
+                >
+                <el-button class="terminal-menu-item" icon="el-icon-Tools" v-blur @click="terminal.toggleConfigDialog()">{{
+                    t('terminal.Terminal settings')
+                }}</el-button>
+            </template>
         </el-button-group>
+        <el-alert v-if="state.terminalWarning" :title="state.terminalWarning" type="warning" />
     </el-dialog>
 
     <el-dialog
         @close="terminal.togglePackageManagerDialog(false)"
-        v-model="terminal.state.showPackageManagerDialog"
+        :model-value="terminal.state.showPackageManagerDialog"
         custom-class="ba-terminal-dialog"
         :title="t('terminal.Please select package manager')"
         center
@@ -107,17 +119,92 @@
             </div>
         </template>
     </el-dialog>
+
+    <el-dialog
+        @close="terminal.toggleConfigDialog(false)"
+        :model-value="terminal.state.showConfig"
+        custom-class="ba-terminal-dialog"
+        :title="t('terminal.Terminal settings')"
+    >
+        <el-form label-position="top">
+            <FormItem
+                :label="t('terminal.Install service port')"
+                v-model.number="state.port"
+                type="number"
+                :input-attr="{ onChange: onChangePort }"
+                :placeholder="
+                    t('terminal.The port number to start the installation service (this port needs to be opened for external network access)')
+                "
+            />
+            <FormItem
+                :label="t('terminal.Installation service startup command')"
+                v-model="startCommand"
+                type="string"
+                :input-attr="{ disabled: true }"
+                :attr="{ 'block-help': t('terminal.Please execute this command to start the service (add Su under Linux)') }"
+            />
+            <FormItem
+                :label="t('terminal.Installation service URL')"
+                v-model="serviceURL"
+                type="string"
+                :input-attr="{ disabled: true }"
+                :attr="{ 'block-help': t('terminal.Please access the site through the installation service URL (except in debug mode)') }"
+            />
+        </el-form>
+        <FormItem
+            :label="t('terminal.Clean up successful tasks when starting a new task')"
+            :model-value="terminal.state.automaticCleanupTask"
+            type="radio"
+            :data="{ content: { '0': t('Disable'), '1': t('Enable') }, childrenAttr: { border: true } }"
+            :input-attr="{ onChange: terminal.changeAutomaticCleanupTask }"
+        />
+        <div class="config-buttons">
+            <el-button @click="terminal.toggleConfigDialog(false)">{{ t('terminal.Back to terminal') }}</el-button>
+        </div>
+    </el-dialog>
 </template>
 
 <script setup lang="ts">
+import { reactive, computed, watch, onMounted } from 'vue'
 import { useTerminal } from '/@/stores/terminal'
 import { useI18n } from 'vue-i18n'
 import { taskStatus } from './constant'
 import { ElMessageBox } from 'element-plus'
-import { postChangePackageManager } from '/@/api/common'
+import { postChangeTerminalConfig } from '/@/api/common'
+import FormItem from '/@/components/formItem/index.vue'
+import { getUrlPort } from '/@/utils/axios'
 
 const { t } = useI18n()
 const terminal = useTerminal()
+
+const state = reactive({
+    terminalWarning: '',
+    port: terminal.state.port,
+    menuExpand: document.documentElement.clientWidth > 1840 ? true : false,
+})
+
+const startCommand = computed(() => (terminal.state.port == 8000 ? 'php think run' : 'php think run -p ' + terminal.state.port))
+const serviceURL = computed(
+    () => 'http://localhost:' + terminal.state.port + ' ' + t('terminal.or') + ' http://' + t('terminal.Site domain name') + ':' + terminal.state.port
+)
+
+/**
+ * 发送网络请求修改端口号
+ */
+const onChangePort = (val: number) => {
+    postChangeTerminalConfig({ port: val })
+        .then((res) => {
+            if (res.code == 1) {
+                terminal.changePort(val)
+                checkPort()
+            } else {
+                state.port = terminal.state.port
+            }
+        })
+        .catch(() => {
+            state.port = terminal.state.port
+        })
+}
 
 const getTaskStatus = (status: number) => {
     let statusText = t('terminal.unknown')
@@ -165,13 +252,39 @@ const webBuild = () => {
 }
 
 const changePackageManager = (val: string) => {
-    postChangePackageManager(val).then((res) => {
+    postChangeTerminalConfig({ manager: val }).then((res) => {
         if (res.code == 1) {
-            terminal.changePackageManager(res.data.manager)
+            terminal.changePackageManager(val)
         }
     })
     terminal.togglePackageManagerDialog(false)
 }
+
+const setTerminalWarning = (warning: string) => {
+    state.terminalWarning = warning
+}
+
+const checkPort = () => {
+    if (parseInt(getUrlPort()) != terminal.state.port) {
+        setTerminalWarning(t('terminal.The current terminal is not running under the installation service, and some commands may not be executed'))
+    } else {
+        setTerminalWarning('')
+    }
+}
+
+watch(
+    () => terminal.state.port,
+    (newVal) => {
+        if (newVal != state.port) {
+            state.port = newVal
+            checkPort()
+        }
+    }
+)
+
+onMounted(() => {
+    checkPort()
+})
 </script>
 
 <style scoped lang="scss">
@@ -236,6 +349,13 @@ const changePackageManager = (val: string) => {
 }
 .terminal-menu-item {
     margin-bottom: 10px;
+}
+.config-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-top: 20px;
+    padding-right: 20px;
 }
 </style>
 

@@ -57,15 +57,12 @@ class Ajax extends Backend
         $this->success('', ['pk' => $tablePk]);
     }
 
-    public function changePackageManager()
+    public function changeTerminalConfig()
     {
-        $newPackageManager = $this->request->post('manager', 'none');
-        if (CommandExec::instance(false)->changePackageManager($newPackageManager)) {
-            $this->success('', [
-                'manager' => $newPackageManager
-            ]);
+        if (CommandExec::instance(false)->changeTerminalConfig()) {
+            $this->success('');
         } else {
-            $this->error(__('Failed to switch package manager. Please modify the configuration file manually:%s', ['根目录/config/buildadmin.php']));
+            $this->error(__('Failed to modify the terminal configuration. Please modify the configuration file manually:%s', ['/config/buildadmin.php']));
         }
     }
 }

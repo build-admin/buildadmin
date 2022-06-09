@@ -133,5 +133,7 @@ declare global {
         'show-message'?: boolean
         'inline-message'?: boolean
         size?: 'large' | 'default' | 'small'
+        style?: CSSProperties
+        'block-help'?: string
     }
 }

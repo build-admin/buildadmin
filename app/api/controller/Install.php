@@ -100,8 +100,8 @@ class Install extends Api
             }
         }
 
-        $newPackageManager = request()->post('manager', 'none');
-        if (CommandExec::instance(false)->changePackageManager($newPackageManager)) {
+        $newPackageManager = request()->post('manager', Config::get('buildadmin.npm_package_manager'));
+        if (CommandExec::instance(false)->changeTerminalConfig()) {
             $this->success('', [
                 'manager' => $newPackageManager
             ]);

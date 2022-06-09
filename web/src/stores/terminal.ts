@@ -21,6 +21,12 @@ export const useTerminal = defineStore(
             packageManager: 'pnpm',
             // 显示包管理器切换窗口
             showPackageManagerDialog: false,
+            // 显示终端设置窗口
+            showConfig: false,
+            // 开始任务时自动清理已完成任务
+            automaticCleanupTask: '1',
+            // 安装服务端口
+            port: 8000,
         })
 
         function init() {
@@ -42,6 +48,11 @@ export const useTerminal = defineStore(
             state.showDot = val
         }
 
+        function toggleConfigDialog(val: boolean = !state.showConfig) {
+            toggle(!val)
+            state.showConfig = val
+        }
+
         function togglePackageManagerDialog(val: boolean = !state.showPackageManagerDialog) {
             toggle(!val)
             state.showPackageManagerDialog = val
@@ -49,6 +60,14 @@ export const useTerminal = defineStore(
 
         function changePackageManager(val: string) {
             state.packageManager = val
+        }
+
+        function changePort(port: number) {
+            state.port = port
+        }
+
+        function changeAutomaticCleanupTask(val: '0' | '1') {
+            state.automaticCleanupTask = val
         }
 
         function setTaskStatus(idx: number, status: number) {
@@ -96,7 +115,9 @@ export const useTerminal = defineStore(
             })
 
             // 清理任务列表
-            clearSuccessTask()
+            if (parseInt(state.automaticCleanupTask) === 1) {
+                clearSuccessTask()
+            }
 
             startTask()
         }
@@ -238,12 +259,16 @@ export const useTerminal = defineStore(
             retryTask,
             clearSuccessTask,
             togglePackageManagerDialog,
+            toggleConfigDialog,
             changePackageManager,
+            changePort,
+            changeAutomaticCleanupTask,
         }
     },
     {
         persist: {
             key: STORE_TERMINAL,
+            paths: ['state.showDot', 'state.taskList', 'state.automaticCleanupTask'],
         },
     }
 )

@@ -219,7 +219,7 @@ class CommandExec
         } elseif ($name == 'cnpm') {
             return strpos(strtolower($output), 'all packages installed') !== false;
         } elseif ($name == 'pnpm') {
-            $preg = "/Progress: resolved ([0-9]*), reused ([0-9]*), downloaded ([0-9]*), added ([0-9]*), done/i";
+            $preg  = "/Progress: resolved ([0-9]*), reused ([0-9]*), downloaded ([0-9]*), added ([0-9]*), done/i";
             $preg2 = "/Lockfile is up-to-date, resolution step is skipped/i";
             return preg_match($preg, $output) || preg_match($preg2, $output);
         } elseif ($name == 'yarn') {
@@ -324,14 +324,21 @@ class CommandExec
         }
     }
 
-    public function changePackageManager($packageManager = 'none')
+    public function changeTerminalConfig($config = [])
     {
-        $newPackageManager = request()->post('manager', $packageManager);
-
         // 不保存在数据库中，因为切换包管理器时，数据库资料可能还未配置
-        $oldPackageManager  = Config::get('buildadmin.npm_package_manager');
+        $oldPort           = Config::get('buildadmin.install_service_port');
+        $oldPackageManager = Config::get('buildadmin.npm_package_manager');
+        $newPort           = request()->post('port', $config['port'] ?? $oldPort);
+        $newPackageManager = request()->post('manager', $config['manager'] ?? $oldPackageManager);
+
+        if ($oldPort == $newPort && $oldPackageManager == $newPackageManager) {
+            return true;
+        }
+
         $buildConfigFile    = config_path() . self::$buildConfigFileName;
         $buildConfigContent = @file_get_contents($buildConfigFile);
+        $buildConfigContent = preg_replace("/'install_service_port'(\s+)=>(\s+)'{$oldPort}'/", "'install_service_port'\$1=>\$2'{$newPort}'", $buildConfigContent);
         $buildConfigContent = preg_replace("/'npm_package_manager'(\s+)=>(\s+)'{$oldPackageManager}'/", "'npm_package_manager'\$1=>\$2'{$newPackageManager}'", $buildConfigContent);
         $result             = @file_put_contents($buildConfigFile, $buildConfigContent);
         return (bool)$result;

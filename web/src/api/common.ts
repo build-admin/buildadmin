@@ -12,7 +12,7 @@ export const adminBuildSuffixSvgUrl = '/index.php/admin/ajax/buildSuffixSvg'
 export const adminAreaUrl = '/index.php/admin/ajax/area'
 export const getTablePkUrl = '/index.php/admin/ajax/getTablePk'
 export const terminalUrl = '/index.php/admin/install/terminal'
-export const changePackageManagerUrl = '/index.php/admin/ajax/changePackageManager'
+export const changeTerminalConfigUrl = '/index.php/admin/ajax/changeTerminalConfig'
 
 // 公共
 export const captchaUrl = '/index.php/api/common/captcha'
@@ -77,16 +77,19 @@ export function buildTerminalUrl(commandKey: string, outputExtend: string) {
 }
 
 /**
- * 请求切换包管理器
+ * 请求修改终端配置
  */
-export function postChangePackageManager(val: string):ApiPromise {
-    return createAxios({
-        url: changePackageManagerUrl,
-        method: 'POST',
-        data: {
-            manager: val,
+export function postChangeTerminalConfig(data: { manager?: string; port?: number }): ApiPromise {
+    return createAxios(
+        {
+            url: changeTerminalConfigUrl,
+            method: 'POST',
+            data: data,
+        },
+        {
+            loading: true,
         }
-    }) as ApiPromise
+    ) as ApiPromise
 }
 
 /**

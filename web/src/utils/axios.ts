@@ -21,6 +21,11 @@ export const getUrl = (): string => {
     return value == 'getCurrentDomain' ? window.location.protocol + '//' + window.location.host : value
 }
 
+export const getUrlPort = (): string => {
+    let url = getUrl()
+    return new URL(url).port
+}
+
 /*
  * 创建Axios
  * 默认开启`reductDataFormat(简洁响应)`,返回类型为`ApiPromise`

@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
+import { useTerminal } from '/@/stores/terminal'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { useRoute } from 'vue-router'
 import Default from '/@/layouts/container/default.vue'
@@ -18,16 +19,16 @@ import router from '/@/router/index'
 import { adminBaseRoute } from '/@/router/static'
 import { BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
 
+const terminal = useTerminal()
 const navTabs = useNavTabs()
 const config = useConfig()
 const route = useRoute()
 const siteConfig = useSiteConfig()
 
 index().then((res) => {
-
-    if (res.data.siteConfig) {
-        siteConfig.$state = res.data.siteConfig
-    }
+    siteConfig.$state = res.data.siteConfig
+    terminal.changePort(res.data.terminal.install_service_port)
+    terminal.changePackageManager(res.data.terminal.npm_package_manager)
 
     if (res.data.menus) {
         let menuRule = handleAdminRoute(res.data.menus)

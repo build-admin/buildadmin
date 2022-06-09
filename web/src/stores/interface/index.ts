@@ -80,6 +80,9 @@ export interface Terminal {
     taskList: TaskItem[]
     packageManager: string
     showPackageManagerDialog: boolean
+    showConfig: boolean
+    automaticCleanupTask: string
+    port: number
 }
 
 export interface SiteConfig {

@@ -14,6 +14,8 @@ return [
     'auto_sort_eq_weight'  => false,
     // npm包管理器
     'npm_package_manager'  => 'pnpm',
+    // 安装服务端口
+    'install_service_port' => '8000',
     // 允许执行的命令
     'allowed_commands'     => [
         'install-package-manager' => [

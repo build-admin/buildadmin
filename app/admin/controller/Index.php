@@ -30,6 +30,10 @@ class Index extends Backend
             'siteConfig' => [
                 'site_name' => get_sys_config('site_name'),
                 'version'   => get_sys_config('version'),
+            ],
+            'terminal'   => [
+                'install_service_port' => Config::get('buildadmin.install_service_port'),
+                'npm_package_manager'  => Config::get('buildadmin.npm_package_manager'),
             ]
         ]);
     }
