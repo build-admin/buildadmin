@@ -129,7 +129,7 @@
         <el-form label-position="top">
             <FormItem
                 :label="t('terminal.Install service port')"
-                v-model.number="state.port"
+                v-model="state.port"
                 type="number"
                 :input-attr="{ onChange: onChangePort }"
                 :placeholder="
@@ -183,15 +183,19 @@ const state = reactive({
     menuExpand: document.documentElement.clientWidth > 1840 ? true : false,
 })
 
-const startCommand = computed(() => (terminal.state.port == 8000 ? 'php think run' : 'php think run -p ' + terminal.state.port))
-const serviceURL = computed(
-    () => 'http://localhost:' + terminal.state.port + ' ' + t('terminal.or') + ' http://' + t('terminal.Site domain name') + ':' + terminal.state.port
-)
+const startCommand = computed(() => {
+    let tempPort = terminal.state.port == '' ? '80' : terminal.state.port
+    return tempPort == '8000' ? 'php think run' : 'php think run -p ' + tempPort
+})
+const serviceURL = computed(() => {
+    let tempPort = terminal.state.port == '' ? '' : ':' + terminal.state.port
+    return 'http://localhost' + tempPort + ' ' + t('terminal.or') + ' http://' + t('terminal.Site domain name') + tempPort
+})
 
 /**
  * 发送网络请求修改端口号
  */
-const onChangePort = (val: number) => {
+const onChangePort = (val: string) => {
     postChangeTerminalConfig({ port: val })
         .then((res) => {
             if (res.code == 1) {
@@ -265,7 +269,7 @@ const setTerminalWarning = (warning: string) => {
 }
 
 const checkPort = () => {
-    if (parseInt(getUrlPort()) != terminal.state.port) {
+    if (getUrlPort() != terminal.state.port) {
         setTerminalWarning(t('terminal.The current terminal is not running under the installation service, and some commands may not be executed'))
     } else {
         setTerminalWarning('')

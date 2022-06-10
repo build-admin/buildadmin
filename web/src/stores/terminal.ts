@@ -26,7 +26,7 @@ export const useTerminal = defineStore(
             // 开始任务时自动清理已完成任务
             automaticCleanupTask: '1',
             // 安装服务端口
-            port: 8000,
+            port: '8000',
         })
 
         function init() {
@@ -62,7 +62,7 @@ export const useTerminal = defineStore(
             state.packageManager = val
         }
 
-        function changePort(port: number) {
+        function changePort(port: string) {
             state.port = port
         }
 

@@ -79,7 +79,7 @@ export function buildTerminalUrl(commandKey: string, outputExtend: string) {
 /**
  * 请求修改终端配置
  */
-export function postChangeTerminalConfig(data: { manager?: string; port?: number }): ApiPromise {
+export function postChangeTerminalConfig(data: { manager?: string; port?: string }): ApiPromise {
     return createAxios(
         {
             url: changeTerminalConfigUrl,

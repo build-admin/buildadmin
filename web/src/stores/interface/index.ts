@@ -82,7 +82,7 @@ export interface Terminal {
     showPackageManagerDialog: boolean
     showConfig: boolean
     automaticCleanupTask: string
-    port: number
+    port: string
 }
 
 export interface SiteConfig {
