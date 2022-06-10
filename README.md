@@ -40,8 +40,8 @@
 </div>
 <br>
 
-### 🌈 介绍
-基于 Vue3.x setup + ThinkPHP6 + TypeScript + Vite + Pinia + Element Plus + vue-router-next，自适应多端、支持CRUD代码生成、自带WEB终端、同时提供Web和Server端、内置全局数据回收站和字段级数据修改保护、自动注册路由、无限子级权限管理等，无需授权即可免费商用，希望能帮助大家实现快速开发。
+### 介绍
+🌈 基于 Vue3.x setup + ThinkPHP6 + TypeScript + Vite + Pinia + Element Plus + vue-router-next，自适应多端、支持CRUD代码生成、自带WEB终端、同时提供Web和Server端、内置全局数据回收站和字段级数据修改保护、自动注册路由、无限子级权限管理等，无需授权即可免费商用，希望能帮助大家实现快速开发。
 
 ### 主要特性
 **🚀 CRUD代码生成：**
@@ -71,10 +71,10 @@
 **💖 其他杂项：**
 角色组/管理员/管理员日志、 会员/会员组/会员余额、积分日志、系统配置/控制台/附件管理/个人资料管理等等、更多特性等你探索...
 
-### 💫 安装使用
-我们提供了完善的文档，对于熟悉`ThinkPHP`和`Vue`的用户，请使用大佬版：[快速上手](https://wonderful-code.gitee.io/guide/install/start.html) ，对于新人朋友，我们额外准备了各个操作系统的从零开始套餐：[Windows从零到一](https://wonderful-code.gitee.io/guide/install/windows.html) | [Linux从零到一](https://wonderful-code.gitee.io/guide/install/linux-bt.html) | [MacBook安装引导](https://wonderful-code.gitee.io/guide/install/macBook.html)
+### 安装使用
+💫 我们提供了完善的文档，对于熟悉`ThinkPHP`和`Vue`的用户，请使用大佬版：[快速上手](https://wonderful-code.gitee.io/guide/install/start.html) ，对于新人朋友，我们额外准备了各个操作系统的从零开始套餐：[Windows从零到一](https://wonderful-code.gitee.io/guide/install/windows.html) | [Linux从零到一](https://wonderful-code.gitee.io/guide/install/linux-bt.html) | [MacBook安装引导](https://wonderful-code.gitee.io/guide/install/macBook.html)
 
-### 🚀 联系我们
+### 联系我们
 - [演示站](https://demo.buildadmin.com/) 账户：`admin`，密码：`123456`（演示站数据无法修改，请下载源码安装体验全部功能）
 - [文档：wonderful-code.gitee.io](https://wonderful-code.gitee.io/)
 - [加群：687903819](https://jq.qq.com/?_wv=1027&k=QwtXa14c)
@@ -83,7 +83,7 @@
 - [备用文档：doc.buildadmin.com](https://doc.buildadmin.com/)
 - [邮箱 1094963513@qq.com](mailto:1094963513@qq.com)
 
-### 📸 项目预览
+### 项目预览
 |  |  |
 |---------------------|---------------------|
 |![登录](https://wonderful-code.gitee.io/images/readme/login.gif)|![控制台](https://wonderful-code.gitee.io/images/readme/dashboard.png)|
@@ -93,8 +93,8 @@
 |![敏感数据](https://wonderful-code.gitee.io/images/readme/sensitive-data.png)|![菜单](https://wonderful-code.gitee.io/images/readme/menu.png)|
 |![单栏布局](https://wonderful-code.gitee.io/images/readme/layout-3.png)|![经典布局](https://wonderful-code.gitee.io/images/readme/layout-2.png)|
 
-### 💕 特别鸣谢
-感谢巨人提供肩膀，排名不分先后
+### 特别鸣谢
+💕 感谢巨人提供肩膀，排名不分先后
 - [Thinkphp](http://www.thinkphp.cn/)
 - [FastAdmin](https://gitee.com/karson/fastadmin)
 - [Vue](https://github.com/vuejs/core)
@@ -119,10 +119,9 @@
 - [Sortable](https://github.com/SortableJS/Sortable)
 - [v-code-diff](https://github.com/Shimada666/v-code-diff)
 
-### 🔐 版权信息
-BuildAdmin 遵循`Apache2.0`开源协议发布，提供无需授权的免费使用。\
+### 版权信息
+🔐 BuildAdmin 遵循`Apache2.0`开源协议发布，提供无需授权的免费使用。\
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-### 💕 支持项目
-
-无需捐赠，如果觉得项目不错，或者已经在使用了，希望你可以去 [Github](https://github.com/build-admin/BuildAdmin) 或者 [Gitee](https://gitee.com/wonderful-code/buildadmin) 帮我们点个 ⭐ Star，这将是对我们极大的鼓励与支持。
+### 支持项目
+💕 无需捐赠，如果觉得项目不错，或者已经在使用了，希望你可以去 [Github](https://github.com/build-admin/BuildAdmin) 或者 [Gitee](https://gitee.com/wonderful-code/buildadmin) 帮我们点个 ⭐ Star，这将是对我们极大的鼓励与支持。
