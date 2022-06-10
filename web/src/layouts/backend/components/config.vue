@@ -1,6 +1,6 @@
 <template>
     <div class="layout-config-drawer">
-        <el-drawer v-model="configStore.layout.showDrawer" :title="t('layouts.Layout configuration')" size="310px" @close="onCloseDrawer">
+        <el-drawer :model-value="configStore.layout.showDrawer" :title="t('layouts.Layout configuration')" size="310px" @close="onCloseDrawer">
             <el-scrollbar class="layout-mode-style-scrollbar">
                 <el-form ref="formRef" :model="configStore.layout">
                     <div class="layout-mode-styles-box">
@@ -63,7 +63,7 @@
                             <el-form-item :label="t('layouts.Background page switching animation')">
                                 <el-select
                                     @change="onCommitState($event, 'mainAnimation')"
-                                    v-model="configStore.layout.mainAnimation"
+                                    :model-value="configStore.layout.mainAnimation"
                                     :placeholder="t('layouts.Please select an animation name')"
                                 >
                                     <el-option label="slide-right" value="slide-right"></el-option>
@@ -80,44 +80,58 @@
                         <el-divider border-style="dashed">{{ t('layouts.sidebar') }}</el-divider>
                         <div class="layout-config-aside">
                             <el-form-item :label="t('layouts.Side menu bar background color')">
-                                <el-color-picker @change="onCommitState($event, 'menuBackground')" v-model="configStore.layout.menuBackground" />
+                                <el-color-picker @change="onCommitState($event, 'menuBackground')" :model-value="configStore.layout.menuBackground" />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu text color')">
-                                <el-color-picker @change="onCommitState($event, 'menuColor')" v-model="configStore.layout.menuColor" />
+                                <el-color-picker @change="onCommitState($event, 'menuColor')" :model-value="configStore.layout.menuColor" />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu active item background color')">
                                 <el-color-picker
                                     @change="onCommitState($event, 'menuActiveBackground')"
-                                    v-model="configStore.layout.menuActiveBackground"
+                                    :model-value="configStore.layout.menuActiveBackground"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu active item text color')">
-                                <el-color-picker @change="onCommitState($event, 'menuActiveColor')" v-model="configStore.layout.menuActiveColor" />
+                                <el-color-picker
+                                    @change="onCommitState($event, 'menuActiveColor')"
+                                    :model-value="configStore.layout.menuActiveColor"
+                                />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Show side menu top bar (logo bar)')">
-                                <el-switch @change="onCommitState($event, 'menuShowTopBar')" v-model="configStore.layout.menuShowTopBar"></el-switch>
+                                <el-switch
+                                    @change="onCommitState($event, 'menuShowTopBar')"
+                                    :model-value="configStore.layout.menuShowTopBar"
+                                ></el-switch>
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu top bar background color')">
                                 <el-color-picker
                                     @change="onCommitState($event, 'menuTopBarBackground')"
-                                    v-model="configStore.layout.menuTopBarBackground"
+                                    :model-value="configStore.layout.menuTopBarBackground"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu width (when expanded)')">
-                                <el-input @input="onCommitState($event, 'menuWidth')" type="number" :step="10" v-model="configStore.layout.menuWidth">
+                                <el-input
+                                    @input="onCommitState($event, 'menuWidth')"
+                                    type="number"
+                                    :step="10"
+                                    :model-value="configStore.layout.menuWidth"
+                                >
                                     <template #append>px</template>
                                 </el-input>
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu default icon')">
-                                <selector @change="onCommitMenuDefaultIcon($event, 'menuDefaultIcon')" v-model="configStore.layout.menuDefaultIcon" />
+                                <selector
+                                    @change="onCommitMenuDefaultIcon($event, 'menuDefaultIcon')"
+                                    :model-value="configStore.layout.menuDefaultIcon"
+                                />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu horizontal collapse')">
-                                <el-switch @change="onCommitState($event, 'menuCollapse')" v-model="configStore.layout.menuCollapse"></el-switch>
+                                <el-switch @change="onCommitState($event, 'menuCollapse')" :model-value="configStore.layout.menuCollapse"></el-switch>
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu accordion')">
                                 <el-switch
                                     @change="onCommitState($event, 'menuUniqueOpened')"
-                                    v-model="configStore.layout.menuUniqueOpened"
+                                    :model-value="configStore.layout.menuUniqueOpened"
                                 ></el-switch>
                             </el-form-item>
                         </div>
@@ -127,31 +141,31 @@
                             <el-form-item :label="t('layouts.Top bar background color')">
                                 <el-color-picker
                                     @change="onCommitState($event, 'headerBarBackground')"
-                                    v-model="configStore.layout.headerBarBackground"
+                                    :model-value="configStore.layout.headerBarBackground"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Top bar text color')">
                                 <el-color-picker
                                     @change="onCommitState($event, 'headerBarTabColor')"
-                                    v-model="configStore.layout.headerBarTabColor"
+                                    :model-value="configStore.layout.headerBarTabColor"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Background color when hovering over the top bar')">
                                 <el-color-picker
                                     @change="onCommitState($event, 'headerBarHoverBackground')"
-                                    v-model="configStore.layout.headerBarHoverBackground"
+                                    :model-value="configStore.layout.headerBarHoverBackground"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Top bar menu active item background color')">
                                 <el-color-picker
                                     @change="onCommitState($event, 'headerBarTabActiveBackground')"
-                                    v-model="configStore.layout.headerBarTabActiveBackground"
+                                    :model-value="configStore.layout.headerBarTabActiveBackground"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Top bar menu active item text color')">
                                 <el-color-picker
                                     @change="onCommitState($event, 'headerBarTabActiveColor')"
-                                    v-model="configStore.layout.headerBarTabActiveColor"
+                                    :model-value="configStore.layout.headerBarTabActiveColor"
                                 />
                             </el-form-item>
                         </div>
