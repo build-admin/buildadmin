@@ -13,6 +13,7 @@ dist-ssr
 composer.lock
 pnpm-lock.yaml
 package-lock.json
+yarn.lock
 /.env
 
 # Log files
