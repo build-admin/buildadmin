@@ -142,6 +142,7 @@ class CommandExec
         $this->outputExtend = request()->param('extend');
         $command            = $this->getCommand(request()->param('command'));
 
+        $this->beforeExecution();
         $this->outputFlag('link-success');
         $this->output('> ' . $command, false);
         if (ob_get_level() == 0) ob_start();
@@ -152,6 +153,20 @@ class CommandExec
         }
         pclose($handle);
         $this->outputFlag('exec-completed');
+    }
+
+    /**
+     * 命令执行前进行一些操作
+     */
+    private function beforeExecution()
+    {
+        if ($this->currentCommandKey == 'test-install.pnpm') {
+            $pnpmLockFile = root_path() . 'public' . DIRECTORY_SEPARATOR . 'npm-install-test' . DIRECTORY_SEPARATOR . 'pnpm-lock.yaml';
+            @unlink($pnpmLockFile);
+        } elseif ($this->currentCommandKey == 'web-install.pnpm') {
+            $pnpmLockFile = root_path() . 'web' . DIRECTORY_SEPARATOR . 'pnpm-lock.yaml';
+            @unlink($pnpmLockFile);
+        }
     }
 
     /**
