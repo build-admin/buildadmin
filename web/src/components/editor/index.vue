@@ -116,6 +116,7 @@ watch(
 <style scoped lang="scss">
 .ba-editor {
     border: 1px solid var(--color-sub-3);
+    z-index: 9999;
 }
 .wangeditor-toolbar {
     border-bottom: 1px solid var(--color-sub-3);
