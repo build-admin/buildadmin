@@ -1,6 +1,6 @@
 <template>
     <el-dialog custom-class="ba-operate-dialog" :close-on-click-modal="false" :model-value="modelValue" @close="closeForm">
-        <template #title>
+        <template #header>
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">
                 {{ t('routine.config.Add configuration item') }}
             </div>

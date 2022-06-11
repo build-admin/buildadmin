@@ -5,7 +5,7 @@
         :model-value="baTable.form.operate ? true : false"
         @close="baTable.toggleForm"
     >
-        <template #title>
+        <template #header>
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">{{ t('info') }}</div>
         </template>
         <el-scrollbar v-loading="baTable.form.loading" class="ba-table-form-scrollbar">

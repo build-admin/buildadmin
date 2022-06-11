@@ -12,7 +12,7 @@
             >
                 <el-card>
                     <div>
-                        <el-tag :type="(getTaskStatus(item.status)['statusType'] as '')">{{ getTaskStatus(item.status)['statusText'] }}</el-tag>
+                        <el-tag :type="getTaskStatus(item.status)['statusType']">{{ getTaskStatus(item.status)['statusText'] }}</el-tag>
                         <el-tag
                             class="block-on-failure-tag"
                             v-if="(item.status == taskStatus.Failed || item.status == taskStatus.Unknown) && item.blockOnFailure"
@@ -169,7 +169,7 @@ import { reactive, computed, watch, onMounted } from 'vue'
 import { useTerminal } from '/@/stores/terminal'
 import { useI18n } from 'vue-i18n'
 import { taskStatus } from './constant'
-import { ElMessageBox } from 'element-plus'
+import { ElMessageBox, TimelineItemProps } from 'element-plus'
 import { postChangeTerminalConfig } from '/@/api/common'
 import FormItem from '/@/components/formItem/index.vue'
 import { getUrlPort } from '/@/utils/axios'
@@ -212,7 +212,7 @@ const onChangePort = (val: string) => {
 
 const getTaskStatus = (status: number) => {
     let statusText = t('terminal.unknown')
-    let statusType = ''
+    let statusType: TimelineItemProps['type'] = 'info'
     switch (status) {
         case taskStatus.Waiting:
             statusText = t('terminal.Waiting for execution')

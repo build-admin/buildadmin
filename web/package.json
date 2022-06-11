@@ -8,14 +8,14 @@
         "lint-fix": "eslint --fix --ext .js --ext .jsx --ext .vue src/"
     },
     "dependencies": {
-        "@element-plus/icons-vue": "~1.1.4",
+        "@element-plus/icons-vue": "~2.0.4",
         "@vueuse/core": "~7.5.3",
         "@wangeditor/editor": "~5.0.1",
         "@wangeditor/editor-for-vue": "~5.1.10",
         "axios": "~0.26.0",
         "countup.js": "~2.0.8",
         "echarts": "~5.2.2",
-        "element-plus": "~2.1.10",
+        "element-plus": "~2.2.5",
         "esno": "~0.14.1",
         "lodash": "~4.17.21",
         "mitt": "~3.0.0",
@@ -42,7 +42,7 @@
         "prettier": "~2.5.1",
         "sass": "~1.47.0",
         "typescript": "~4.4.4",
-        "vite": "~2.9.8",
+        "vite": "~2.9.12",
         "vue-eslint-parser": "~8.0.1"
     }
 }
