@@ -187,7 +187,7 @@ export default class baTable {
     }
 
     onSubmit = (formEl: InstanceType<typeof ElForm> | undefined = undefined) => {
-        if (this.runBefore('onSubmit', { operate: this.form.operate!, items: this.form.items! }) === false) return
+        if (this.runBefore('onSubmit', { formEl: formEl, operate: this.form.operate!, items: this.form.items! }) === false) return
 
         for (const key in this.form.items) {
             if (this.form.items[key] === null) {
