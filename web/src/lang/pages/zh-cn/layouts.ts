@@ -7,7 +7,7 @@ export default {
     'overall situation': '全局',
     'Background page switching animation': '后台页面切换动画',
     'Please select an animation name': '请选择动画名称',
-    'sidebar': '侧边栏',
+    sidebar: '侧边栏',
     'Side menu bar background color': '侧边菜单栏背景色',
     'Side menu text color': '侧边菜单文字颜色',
     'Side menu active item background color': '侧边菜单激活项背景色',
@@ -27,5 +27,5 @@ export default {
     'Are you sure you want to restore all configurations to the default values?': '确定要恢复全部配置到默认值吗？',
     'Restore default': '恢复默认',
     'personal data': '个人资料',
-    'cancellation': '注销',
+    cancellation: '注销',
 }

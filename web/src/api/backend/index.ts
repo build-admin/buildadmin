@@ -10,7 +10,7 @@ export function index() {
     })
 }
 
-export function login(method: 'get' | 'post', params: object = {}):ApiPromise {
+export function login(method: 'get' | 'post', params: object = {}): ApiPromise {
     return createAxios({
         url: controllerUrl + 'login',
         data: params,
@@ -24,6 +24,6 @@ export function logout() {
         method: 'POST',
         data: {
             refresh_token: getAdminToken('refresh'),
-        }
+        },
     })
 }

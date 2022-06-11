@@ -5,7 +5,7 @@ export default {
     'Please enter the correct name': '请输入正确的名称',
     'Content cannot be empty': '内容不能为空',
     Required: '必填',
-    'mobile': '手机号',
+    mobile: '手机号',
     'Account name': '账户名',
     password: '密码',
     'Variable name': '变量名',

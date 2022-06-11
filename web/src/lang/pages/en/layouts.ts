@@ -7,7 +7,7 @@ export default {
     'overall situation': 'overall situation',
     'Background page switching animation': 'page switching animation',
     'Please select an animation name': 'Please select an animation name',
-    'sidebar': 'sidebar',
+    sidebar: 'sidebar',
     'Side menu bar background color': 'Side menu bar background color',
     'Side menu text color': 'Side menu text color',
     'Side menu active item background color': 'Side menu active item background color',
@@ -28,5 +28,5 @@ export default {
         'Are you sure you want to restore all configurations to the default values?',
     'Restore default': 'Restore default',
     'personal data': 'personal data',
-    'cancellation': 'cancellation',
+    cancellation: 'cancellation',
 }

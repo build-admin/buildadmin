@@ -58,9 +58,12 @@ const onDelArrayItem = (idx: number) => {
     state.value.splice(idx, 1)
 }
 
-watch(() => props.modelValue, (newVal) => {
-    state.value = newVal
-})
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        state.value = newVal
+    }
+)
 </script>
 
 <style scoped lang="scss">

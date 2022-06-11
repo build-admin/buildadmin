@@ -6,7 +6,7 @@ export default {
     Gender: 'Gender',
     male: 'male',
     female: 'female',
-    'mobile': 'Mobile',
+    mobile: 'Mobile',
     'Last login IP': 'Last login IP',
     'Last login': 'Last login',
     mailbox: 'mailbox',

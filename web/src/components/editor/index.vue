@@ -105,9 +105,12 @@ defineExpose({
     getRef,
 })
 
-watch(() => props.modelValue, (newVal) => {
-    state.value = newVal
-})
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        state.value = newVal
+    }
+)
 </script>
 
 <style scoped lang="scss">

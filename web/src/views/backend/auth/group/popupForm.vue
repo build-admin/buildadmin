@@ -143,7 +143,7 @@ const getHalfCheckeds = () => {
 const treeNodeClass = (data: anyObj, node: Node) => {
     if (node.isLeaf) return ''
     let addClass = true
-    for(const key in node.childNodes) {
+    for (const key in node.childNodes) {
         if (!node.childNodes[key].isLeaf) {
             addClass = false
         }

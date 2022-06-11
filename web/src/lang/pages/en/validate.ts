@@ -5,7 +5,7 @@ export default {
     'Please enter the correct name': 'Please enter the correct name',
     'Content cannot be empty': 'Content cannot be empty',
     Required: 'Required',
-    'mobile': 'mobile',
+    mobile: 'mobile',
     'Account name': 'Account name',
     password: 'password',
     'Variable name': 'Variable name',

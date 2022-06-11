@@ -6,7 +6,7 @@ export default {
     Gender: '性别',
     male: '男',
     female: '女',
-    'mobile': '手机号',
+    mobile: '手机号',
     'Last login IP': '最后登录IP',
     'Last login': '最后登录',
     mailbox: '邮箱',

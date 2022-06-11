@@ -1,8 +1,5 @@
 <template>
-    <el-aside
-        v-if="!navTabs.state.tabFullScreen"
-        :class="'layout-aside-' + config.layout.layoutMode + ' ' + (config.layout.shrink ? 'shrink' : '')"
-    >
+    <el-aside v-if="!navTabs.state.tabFullScreen" :class="'layout-aside-' + config.layout.layoutMode + ' ' + (config.layout.shrink ? 'shrink' : '')">
         <Logo v-if="config.layout.menuShowTopBar" />
         <MenuVertical />
     </el-aside>

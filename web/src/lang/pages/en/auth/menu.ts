@@ -29,12 +29,12 @@ export default {
     'It will be registered as the web side routing name and used as the server side API authentication':
         'It will be registered as the web side routing name and used as the server side API authentication',
     'Please enter the URL address of the link or iframe': 'Please enter the URL address of the link or iframe',
-    "English name, which does not need to start with `/admin`, such as auth/menu":
-        "English name, which does not need to start with `/admin`, such as auth/menu",
+    'English name, which does not need to start with `/admin`, such as auth/menu':
+        'English name, which does not need to start with `/admin`, such as auth/menu',
     'Web side component path, please start with /src, such as: /src/views/backend/dashboard':
         'Web side component path, please start with /src, such as: /src/views/backend/dashboard.vue',
-    "The web side routing path (path) does not need to start with `/admin`, such as auth/menu":
-        "The web side routing path (path) does not need to start with `/admin`, such as auth/menu",
+    'The web side routing path (path) does not need to start with `/admin`, such as auth/menu':
+        'The web side routing path (path) does not need to start with `/admin`, such as auth/menu',
     'Use in controller `get_ route_ Remark()` function, which can obtain the value of this field for your own use, such as the banner file of the console':
         'Use in controller `get_ route_ Remark()` function, which can obtain the value of this field for your own use, such as the banner file of the dashboard',
     'extend Title':
