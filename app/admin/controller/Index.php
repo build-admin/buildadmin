@@ -75,9 +75,11 @@ class Index extends Backend
                 $this->error($validate->getError());
             }
 
-            $captchaObj = new Captcha();
-            if (!$captchaObj->check($data['captcha'], $data['captchaId'])) {
-                $this->error(__('Please enter the correct verification code'));
+            if ($captchaSwitch) {
+                $captchaObj = new Captcha();
+                if (!$captchaObj->check($data['captcha'], $data['captchaId'])) {
+                    $this->error(__('Please enter the correct verification code'));
+                }
             }
 
             AdminLog::setTitle(__('Login'));
