@@ -12,25 +12,25 @@
 <br />
 <p align="center">
     <a href="https://www.thinkphp.cn/" target="_blank">
-        <img src="https://img.shields.io/badge/ThinkPHP-%3E6.0-brightgreen" alt="vue">
+        <img src="https://img.shields.io/badge/ThinkPHP-%3E6.0-brightgreen?color=91aac3&labelColor=439EFD" alt="vue">
     </a>
     <a href="https://v3.vuejs.org/" target="_blank">
-        <img src="https://img.shields.io/badge/Vue-3.x--Setup-brightgreen" alt="vue">
+        <img src="https://img.shields.io/badge/Vue-%3E3.x-brightgreen?color=91aac3&labelColor=439EFD" alt="vue">
     </a>
     <a href="https://element-plus.gitee.io/#/zh-CN/component/changelog" target="_blank">
-        <img src="https://img.shields.io/badge/Element--Plus-%3E2.1-brightgreen" alt="element plus">
+        <img src="https://img.shields.io/badge/Element--Plus-%3E2.2-brightgreen?color=91aac3&labelColor=439EFD" alt="element plus">
     </a>
     <a href="https://www.tslang.cn/" target="_blank">
-        <img src="https://img.shields.io/badge/TypeScript-%3E4.4-blue" alt="typescript">
+        <img src="https://img.shields.io/badge/TypeScript-%3E4.4-blue?color=91aac3&labelColor=439EFD" alt="typescript">
     </a>
     <a href="https://vitejs.dev/" target="_blank">
-        <img src="https://img.shields.io/badge/Vite-%3E2.0-blue" alt="vite">
+        <img src="https://img.shields.io/badge/Vite-%3E2.9-blue?color=91aac3&labelColor=439EFD" alt="vite">
     </a>
-    <a href="https://vitejs.dev/" target="_blank">
-        <img src="https://img.shields.io/badge/Pinia-%3E2.0-blue" alt="vite">
+    <a href="https://pinia.vuejs.org/" target="_blank">
+        <img src="https://img.shields.io/badge/Pinia-%3E2.0-blue?color=91aac3&labelColor=439EFD" alt="vite">
     </a>
     <a href="https://gitee.com/wonderful-code/buildadmin/blob/master/LICENSE" target="_blank">
-        <img src="https://img.shields.io/badge/license-Apache2.0-blue" alt="license">
+        <img src="https://img.shields.io/badge/Apache2.0-license-blue?color=91aac3&labelColor=439EFD" alt="license">
     </a>
 </p>
 
@@ -55,6 +55,9 @@
 
 **🌴 数据回收与反悔：**
 内置全局数据回收站，并且提供字段级数据修改记录和修改对比，随时回滚和还原，安全且无感。
+
+**🔀 前后端分离：**
+`web`文件夹内包含：**干净**(不含后端代码)、**完整**(所有前端代码文件均在此内) 的前端代码文件，对前端开发者友好，且我们正在开发`package.json`自动维护以及积分制的`模板与案例市场`功能，作为纯前端开发者，您可以将BAdmin当做学习与资源的社群，本系统可为您准备好案例和模板等所需要的环境，而您只需专注于学习或工作，**不需要会任何后端代码！**（邀您：[和我们一起](https://jq.qq.com/?_wv=1027&k=QwtXa14c) ）
 
 **✨ 高颜值：**
 提供三种布局模式，其中默认布局使用无边框设计风格，它并没有强行填满屏幕的每一个缝然后使用边框线进行分隔，所有的功能版块，都像是悬浮在屏幕上的，同时又将屏幕空间及其合理的利用了。
