@@ -221,8 +221,8 @@ const onAvatarBeforeUpload = (file: any) => {
                 id: state.adminInfo.id,
                 avatar: res.data.file.url,
             }).then(() => {
-                adminInfoStore.avatar = res.data.file.fullurl
-                state.adminInfo.avatar = res.data.file.fullurl
+                adminInfoStore.avatar = res.data.file.full_url
+                state.adminInfo.avatar = res.data.file.full_url
             })
         }
     })

@@ -19,6 +19,8 @@ import { onBeforeUnmount, reactive, shallowRef, onMounted, CSSProperties, watch 
 import { IEditorConfig, IToolbarConfig, i18nChangeLanguage } from '@wangeditor/editor'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { useConfig } from '/@/stores/config'
+import { fileUpload } from '/@/api/common'
+import NProgress from 'nprogress'
 
 interface Props {
     // 编辑区高度
@@ -35,6 +37,9 @@ interface Props {
     // 整体的style
     style?: CSSProperties
 }
+
+type VideoInsertFnType = (url: string) => void
+type ImgInsertFnType = (url: string, alt: string, href: string) => void
 
 const props = withDefaults(defineProps<Props>(), {
     height: '320px',
@@ -78,6 +83,49 @@ const state: {
 onMounted(() => {
     i18nChangeLanguage(config.lang.defaultLang == 'zh-cn' ? 'zh-CN' : config.lang.defaultLang)
     state.editorConfig.placeholder = props.placeholder
+
+    // 图片上传配置
+    state.editorConfig.MENU_CONF = {}
+    state.editorConfig.MENU_CONF['uploadImage'] = {
+        fieldName: 'file',
+        maxFileSize: 10 * 1024 * 1024, // 10M
+        onProgress(progress: number) {
+            NProgress.inc()
+        },
+        async customUpload(file: File, insertFn: ImgInsertFnType) {
+            NProgress.configure({ showSpinner: true })
+            NProgress.start()
+            let fd = new FormData()
+            fd.append('file', file)
+            fileUpload(fd).then((res) => {
+                if (res.code == 1) {
+                    insertFn(res.data.file.full_url, res.data.file.name, res.data.file.full_url)
+                }
+                NProgress.done()
+            })
+        },
+    }
+
+    // 视频上传配置
+    state.editorConfig.MENU_CONF['uploadVideo'] = {
+        fieldName: 'file',
+        onProgress(progress: number) {
+            NProgress.inc()
+        },
+        async customUpload(file: File, insertFn: VideoInsertFnType) {
+            NProgress.configure({ showSpinner: true })
+            NProgress.start()
+            let fd = new FormData()
+            fd.append('file', file)
+            fileUpload(fd).then((res) => {
+                if (res.code == 1) {
+                    insertFn(res.data.file.full_url)
+                }
+                NProgress.done()
+            })
+        },
+    }
+
     state.editorStyle.height = props.height
     state.editorStyle['overflow-y'] = 'hidden'
     state.mounted = true
