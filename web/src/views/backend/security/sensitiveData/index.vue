@@ -106,7 +106,7 @@ const baTable = new sensitiveDataClass(
 provide('baTable', baTable)
 
 onMounted(() => {
-    baTable.form.extend = Object.assign(baTable.form.extend, {
+    baTable.form.extend = Object.assign({}, baTable.form.extend, {
         parentRef: formRef.value,
     })
     baTable.table.ref = tableRef.value

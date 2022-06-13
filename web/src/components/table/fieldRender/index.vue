@@ -13,8 +13,8 @@
     />
 
     <!-- image -->
-    <div v-if="field.render == 'image'" class="ba-render-image">
-        <el-image v-if="fieldValue" :preview-teleported="true" :preview-src-list="[fieldValue]" :src="fieldValue"></el-image>
+    <div v-if="field.render == 'image' && fieldValue" class="ba-render-image">
+        <el-image :preview-teleported="true" :preview-src-list="[fieldValue]" :src="fieldValue"></el-image>
     </div>
 
     <!-- images -->
@@ -32,7 +32,7 @@
     </div>
 
     <!-- tag -->
-    <div v-if="field.render == 'tag'">
+    <div v-if="field.render == 'tag' && fieldValue">
         <el-tag :type="getTagType(fieldValue, field.custom)" :effect="field.effect ?? 'light'" :size="field.size ?? 'default'">{{
             field.replaceValue ? field.replaceValue[fieldValue] : fieldValue
         }}</el-tag>
@@ -53,7 +53,7 @@
     </div>
 
     <!-- url -->
-    <div v-if="field.render == 'url'">
+    <div v-if="field.render == 'url' && fieldValue">
         <el-input :model-value="fieldValue" :placeholder="t('Link address')">
             <template #append>
                 <el-button @click="typeof field.click == 'function' ? field.click(fieldValue, field) : openUrl(fieldValue, field)">
