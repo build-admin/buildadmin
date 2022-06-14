@@ -33,12 +33,16 @@
         <img src="https://img.shields.io/badge/Apache2.0-license-blue?color=91aac3&labelColor=439EFD" alt="license">
     </a>
 </p>
-exchange2.0
+
 <br>
 <div align="center">
   <img src="https://wonderful-code.gitee.io/images/readme/index.gif" />
 </div>
 <br>
+
+
+## exchange2.0
+<br/>
 
 ### 介绍
 🌈 基于 Vue3.x setup + ThinkPHP6 + TypeScript + Vite + Pinia + Element Plus + vue-router-next，自适应多端、支持CRUD代码生成、自带WEB终端、同时提供Web和Server端、内置全局数据回收站和字段级数据修改保护、自动注册路由、无限子级权限管理等，无需授权即可免费商用，希望能帮助大家实现快速开发。
