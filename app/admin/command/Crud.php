@@ -1418,10 +1418,6 @@ class Crud extends Command
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'setTime', [
                 'field' => $fieldName
             ]);
-        } elseif ($inputType == 'year') {
-            $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'getYear', [
-                'field' => $fieldName
-            ]);
         } elseif ($inputType == 'editor') {
             $modelSetAttrArr[] = $this->stub->getReplacedStub('modelAttr' . DIRECTORY_SEPARATOR . 'getEditor', [
                 'field' => $fieldName

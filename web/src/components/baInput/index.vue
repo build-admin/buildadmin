@@ -203,7 +203,22 @@ export default defineComponent({
                 },
             ],
             ['datetime', datetime],
-            ['year', datetime],
+            [
+                'year',
+                () => {
+                    return () => {
+                        const valueComputed = computed(() => (!props.modelValue ? null : '' + props.modelValue))
+                        return createVNode(resolveComponent('el-date-picker'), {
+                            class: 'w100',
+                            type: props.type,
+                            'value-format': 'YYYY',
+                            ...props.attr,
+                            modelValue: valueComputed.value,
+                            'onUpdate:modelValue': onValueUpdate,
+                        })
+                    }
+                },
+            ],
             ['date', datetime],
             [
                 'time',
