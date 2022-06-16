@@ -644,6 +644,9 @@ export default defineComponent({
                                 onRemove: () => {
                                     onValueUpdate('')
                                 },
+                                onPreview: (uploadFile: UploadFile) => {
+                                    window.open(uploadFile.url)
+                                },
                                 ...props.attr,
                             },
                             () => {
@@ -779,6 +782,13 @@ export default defineComponent({
                                     }
                                     fullUrls = newFullUrls
                                     onValueUpdate(getFullUrls())
+                                },
+                                onPreview: (file: UploadFileExt) => {
+                                    for (const key in fullUrls) {
+                                        if (fullUrls[key].urlKey == file.urlKey) {
+                                            return window.open(fullUrls[key].fullUrl)
+                                        }
+                                    }
                                 },
                                 ...props.attr,
                             },
