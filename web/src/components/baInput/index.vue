@@ -37,6 +37,7 @@ export default defineComponent({
         },
         // 双向绑定值
         modelValue: {
+            type: null,
             required: true,
         },
         // 输入框的附加属性
@@ -113,19 +114,31 @@ export default defineComponent({
                     })
                 )
             }
-            return () =>
-                createVNode(
+            return () => {
+                const valueComputed = computed(() => {
+                    if (props.type == 'select') {
+                        return '' + props.modelValue
+                    } else {
+                        let modelValueArr: anyObj = []
+                        for (const key in props.modelValue) {
+                            modelValueArr[key] = '' + props.modelValue[key]
+                        }
+                        return modelValueArr
+                    }
+                })
+                return createVNode(
                     resolveComponent('el-select'),
                     {
                         class: 'w100',
                         multiple: props.type == 'select' ? false : true,
                         clearable: true,
                         ...props.attr,
-                        modelValue: props.modelValue,
+                        modelValue: valueComputed.value,
                         'onUpdate:modelValue': onValueUpdate,
                     },
                     () => vNode
                 )
+            }
         }
         // datetime
         const datetime = () => {
