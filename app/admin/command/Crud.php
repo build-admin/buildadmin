@@ -83,7 +83,7 @@ class Crud extends Command
             'value'  => 'switch',
         ],
         [
-            'column_type' => ['tinyint(1)', 'char(1)'],
+            'column_type' => ['tinyint(1)', 'char(1)', 'tinyint(1) unsigned'],
             'suffix'      => ['switch', 'toggle'],
             'value'       => 'switch',
         ],
@@ -180,6 +180,16 @@ class Crud extends Command
             'suffix' => ['icon'],
             'value'  => 'icon',
         ],
+        // 单选框
+        [
+            'type'  => ['enum'],
+            'value' => 'radio',
+        ],
+        [
+            'column_type' => ['tinyint(1)', 'char(1)', 'tinyint(1) unsigned'],
+            'suffix'      => ['status', 'state'],
+            'value'       => 'radio',
+        ],
         // 数字输入框
         [
             'type'  => ['bigint', 'int', 'mediumint', 'smallint', 'tinyint', 'decimal', 'double', 'float'],
@@ -188,11 +198,6 @@ class Crud extends Command
         [
             'suffix' => ['number', 'int', 'num'],
             'value'  => 'number',
-        ],
-        // 单选框
-        [
-            'type'  => ['enum'],
-            'value' => 'radio',
         ],
     ];
 
