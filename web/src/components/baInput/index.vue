@@ -87,16 +87,28 @@ export default defineComponent({
                     )
                 )
             }
-            return () =>
-                createVNode(
+            return () => {
+                const valueComputed = computed(() => {
+                    if (props.type == 'radio') {
+                        return '' + props.modelValue
+                    } else {
+                        let modelValueArr: anyObj = []
+                        for (const key in props.modelValue) {
+                            modelValueArr[key] = '' + props.modelValue[key]
+                        }
+                        return modelValueArr
+                    }
+                })
+                return createVNode(
                     resolveComponent('el-' + props.type + '-group'),
                     {
                         ...props.attr,
-                        modelValue: props.modelValue,
+                        modelValue: valueComputed.value,
                         'onUpdate:modelValue': onValueUpdate,
                     },
                     () => vNode
                 )
+            }
         }
         // select selects
         const select = () => {
