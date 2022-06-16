@@ -34,13 +34,13 @@ class Config extends Backend
             $list[$item['key']]['name']  = $item['key'];
             $list[$item['key']]['title'] = __($item['value']);
 
-            $newConfigGroup[$item['key']] = $item['value'];
+            $newConfigGroup[$item['key']] = $list[$item['key']]['title'];
         }
 
         $this->success('', [
             'list'          => $list,
             'remark'        => get_route_remark(),
-            'configGroup'   => $newConfigGroup,
+            'configGroup'   => $newConfigGroup ?? [],
             'quickEntrance' => get_sys_config('config_quick_entrance'),
         ]);
     }

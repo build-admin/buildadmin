@@ -15,4 +15,5 @@ return [
     'smtp pass'             => 'SMTP 密码',
     'smtp verification'     => 'SMTP 验证方式',
     'smtp sender mail'      => 'SMTP 发件人邮箱',
+    'Variable name'         => '变量名',
 ];

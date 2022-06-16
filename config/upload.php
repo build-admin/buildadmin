@@ -5,7 +5,7 @@
 
 return [
     // 上传Url
-    'url'      => 'api/common/upload',
+    'url'      => 'api/ajax/upload',
     // cdn地址
     'cdn'      => '',
     // 文件保存格式化方法

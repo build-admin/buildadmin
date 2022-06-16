@@ -303,6 +303,7 @@ INSERT INTO `__PREFIX__menu_rule` VALUES ('73', '71', 'button', '添加', 'secur
 INSERT INTO `__PREFIX__menu_rule` VALUES ('74', '71', 'button', '编辑', 'security/sensitiveData/edit', '', '', null, '', '', '0', 'none', '', '81', '1', '1648065864', '1647806129');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('75', '71', 'button', '删除', 'security/sensitiveData/del', '', '', null, '', '', '0', 'none', '', '81', '1', '1648065864', '1647806112');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('76', '0', 'menu', 'BuildAdmin', 'buildadmin/buildadmin', 'buildadmin', 'local-logo', 'link', 'https://doc.buildadmin.com', '', '0', 'none', '', '0', '0', '1651926977', '1648947396');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('77', '45', 'button', '添加', 'routine/config/add', '', '', null, '', '', '0', 'none', '', '88', '1', '1655375826', '1655375812');
 COMMIT;
 
 -- ----------------------------

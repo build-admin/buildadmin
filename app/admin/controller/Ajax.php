@@ -8,6 +8,7 @@ use think\exception\FileException;
 use app\common\library\Upload;
 use app\common\controller\Backend;
 use think\facade\Db;
+use app\admin\model\AdminLog;
 
 class Ajax extends Backend
 {
@@ -20,6 +21,7 @@ class Ajax extends Backend
 
     public function upload()
     {
+        AdminLog::setTitle(__('upload'));
         $file = $this->request->file('file');
         try {
             $upload     = new Upload($file);
@@ -58,6 +60,7 @@ class Ajax extends Backend
 
     public function changeTerminalConfig()
     {
+        AdminLog::setTitle(__('changeTerminalConfig'));
         if (CommandExec::instance(false)->changeTerminalConfig()) {
             $this->success('');
         } else {
