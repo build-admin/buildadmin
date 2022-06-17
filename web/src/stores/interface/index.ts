@@ -55,6 +55,17 @@ export interface AdminInfo {
     refreshToken: string
 }
 
+export interface UserInfo {
+    id: number
+    username: string
+    nickname: string
+    avatar: string
+    lastlogintime: string
+    lastloginip: string
+    token: string
+    refreshToken: string
+}
+
 export interface TaskItem {
     // 任务唯一标识
     uuid: string

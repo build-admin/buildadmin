@@ -20,3 +20,6 @@ export const BEFORE_RESIZE_LAYOUT = 'beforeResizeLayout'
 
 // 站点配置
 export const SITE_CONFIG = 'siteConfig'
+
+// 会员资料
+export const USER_INFO = 'userInfo'

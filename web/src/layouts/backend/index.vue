@@ -7,6 +7,7 @@ import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 import { useTerminal } from '/@/stores/terminal'
 import { useSiteConfig } from '/@/stores/siteConfig'
+import { useAdminInfo } from '/@/stores/adminInfo'
 import { useRoute } from 'vue-router'
 import Default from '/@/layouts/backend/container/default.vue'
 import Classic from '/@/layouts/backend/container/classic.vue'
@@ -24,32 +25,51 @@ const navTabs = useNavTabs()
 const config = useConfig()
 const route = useRoute()
 const siteConfig = useSiteConfig()
+const adminInfo = useAdminInfo()
 
-index().then((res) => {
-    siteConfig.$state = res.data.siteConfig
-    terminal.changePort(res.data.terminal.install_service_port)
-    terminal.changePackageManager(res.data.terminal.npm_package_manager)
+onMounted(() => {
+    if (!adminInfo.token) return router.push({ name: 'adminLogin' })
 
-    if (res.data.menus) {
-        let menuRule = handleAdminRoute(res.data.menus)
-        // 更新vuex中的路由菜单数据
-        navTabs.setTabsViewRoutes(menuRule)
-
-        // 预跳转到上次路径
-        if (route.query && route.query.url && route.query.url != adminBaseRoute.path) {
-            // 检查路径是否有权限
-            let menuPaths = getMenuPaths(menuRule)
-            if (menuPaths.indexOf(route.query.url as string) !== -1) {
-                let query = JSON.parse(route.query.query as string)
-                router.push({ path: route.query.url as string, query: Object.keys(query).length ? query : {} })
-                return
-            }
-        }
-
-        // 跳转到第一个菜单
-        pushFirstRoute()
-    }
+    init()
+    onSetNavTabsMinWidth()
+    window.addEventListener('resize', onSetNavTabsMinWidth)
 })
+onBeforeMount(() => {
+    onAdaptiveLayout()
+    window.addEventListener('resize', onAdaptiveLayout)
+})
+onUnmounted(() => {
+    window.removeEventListener('resize', onAdaptiveLayout)
+    window.removeEventListener('resize', onSetNavTabsMinWidth)
+})
+
+const init = () => {
+    index().then((res) => {
+        siteConfig.$state = res.data.siteConfig
+        terminal.changePort(res.data.terminal.install_service_port)
+        terminal.changePackageManager(res.data.terminal.npm_package_manager)
+
+        if (res.data.menus) {
+            let menuRule = handleAdminRoute(res.data.menus)
+            // 更新vuex中的路由菜单数据
+            navTabs.setTabsViewRoutes(menuRule)
+
+            // 预跳转到上次路径
+            if (route.query && route.query.url && route.query.url != adminBaseRoute.path) {
+                // 检查路径是否有权限
+                let menuPaths = getMenuPaths(menuRule)
+                if (menuPaths.indexOf(route.query.url as string) !== -1) {
+                    let query = JSON.parse(route.query.query as string)
+                    router.push({ path: route.query.url as string, query: Object.keys(query).length ? query : {} })
+                    return
+                }
+            }
+
+            // 跳转到第一个菜单
+            pushFirstRoute()
+        }
+    })
+}
 
 const onAdaptiveLayout = () => {
     let defaultBeforeResizeLayout = {
@@ -84,19 +104,6 @@ const onSetNavTabsMinWidth = () => {
     const minWidth = navBar.offsetWidth - (navMenus.offsetWidth + 20)
     navTabs.style.width = minWidth.toString() + 'px'
 }
-
-onMounted(() => {
-    onSetNavTabsMinWidth()
-    window.addEventListener('resize', onSetNavTabsMinWidth)
-})
-onBeforeMount(() => {
-    onAdaptiveLayout()
-    window.addEventListener('resize', onAdaptiveLayout)
-})
-onUnmounted(() => {
-    window.removeEventListener('resize', onAdaptiveLayout)
-    window.removeEventListener('resize', onSetNavTabsMinWidth)
-})
 </script>
 
 <!-- 只有在 components 选项中的组件可以被动态组件使用-->
