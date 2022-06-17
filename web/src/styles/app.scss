@@ -80,6 +80,7 @@ body,
 .ba-operate-dialog {
     min-width: 400px;
     overflow: hidden;
+    border-radius: var(--el-border-radius-base);
 }
 .ba-operate-dialog .el-dialog__header {
     padding-bottom: 16px;
