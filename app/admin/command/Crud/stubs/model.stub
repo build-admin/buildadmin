@@ -6,7 +6,7 @@ use think\Model;
 
 /**
  * {%modelName%}
- * @controllerUrl '{%fullBaseName%}'
+ * @controllerUrl '{%controllerUrlVarName%}'
  */
 class {%modelName%} extends Model
 {{%modelConnection%}

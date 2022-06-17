@@ -358,7 +358,7 @@ class Crud extends Command
 
     protected function configure()
     {
-        $this->setName('crud')->setDescription('Build CRUD controller and model from table');
+        $this->setName('crud')->setDescription('Build CRUD code controller and model, and views from table');
         foreach ($this->options as $option) {
             $this->addOption($option['name'], $option['shortcut'], $option['mode'], $option['description'], $option['default']);
         }
@@ -513,20 +513,25 @@ class Crud extends Command
 
         // 处理基础文件名，取消所有下划线并转换为小写
         $baseNameArr  = $controllerArr;
-        $fullBaseName = implode('', $controllerArr);
         $baseFileName = parse_name(array_pop($baseNameArr), 0);
         array_push($baseNameArr, $baseFileName);
         $controllerBaseName = strtolower(implode(DIRECTORY_SEPARATOR, $baseNameArr));
-        $controllerUrl      = $originControllerUrl = implode('/', $baseNameArr);
-        $controllerUrl      = '/index.php/admin/' . preg_replace("/\//", '.', $controllerUrl, 1) . '/';
 
         // 视图文件
-        $viewArr          = $controllerArr;
-        $lastValue        = array_pop($viewArr);
-        $viewArr[]        = parse_name($lastValue, 1, false);
-        $viewPath         = implode(DIRECTORY_SEPARATOR, $viewArr);
-        $viewDir          = $webViewsPath . $viewPath . DIRECTORY_SEPARATOR;
-        $this->langPrefix = implode('.', $viewArr) . '.';
+        $viewArr = $controllerArr;
+        foreach ($viewArr as $index => $item) {
+            $viewArr[$index] = parse_name($item, 1, false);
+        }
+        $viewPath             = implode(DIRECTORY_SEPARATOR, $viewArr);
+        $viewDir              = $webViewsPath . $viewPath . DIRECTORY_SEPARATOR;
+        $this->langPrefix     = implode('.', $viewArr) . '.';
+        $controllerUrl        = $originControllerUrl = implode('/', $viewArr);
+        $controllerUrl        = '/index.php/admin/' . preg_replace("/\//", '.', $controllerUrl) . '/';
+        $controllerUrlVarName = '';
+        foreach ($viewArr as $item) {
+            $controllerUrlVarName .= parse_name($item, 1, true);
+        }
+        $controllerUrlVarName = lcfirst($controllerUrlVarName);
 
         // 最终将生成的文件路径
         $formFile  = $viewDir . 'popupForm.vue';
@@ -908,7 +913,7 @@ class Crud extends Command
             $controllerAttrList['defaultSortField'] = implode(',', $defaultOrder);
 
             // 添加Url到controllerUrls.ts
-            $appendUrl                 = "export const {$fullBaseName} = '{$controllerUrl}'";
+            $appendUrl                 = "export const {$controllerUrlVarName} = '{$controllerUrl}'";
             $webControllerUrlsContents = @file_get_contents($webControllerUrls);
             if (strpos($webControllerUrlsContents, $appendUrl) === false) {
                 @file_put_contents($webControllerUrls, $appendUrl . "\n", FILE_APPEND);
@@ -917,7 +922,7 @@ class Crud extends Command
             // 组装index.vue
             $indexVue = $this->stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'index', [
                 'tablePk'               => $priKey,
-                'fullBaseName'          => $fullBaseName,
+                'controllerUrlVarName'  => $controllerUrlVarName,
                 'originControllerUrl'   => $originControllerUrl,
                 'tableColumnList'       => $tableColumnList,
                 'dblClickNotEditColumn' => $dblClickNotEditColumn,
@@ -950,7 +955,7 @@ class Crud extends Command
             $modelData                      = [
                 'modelNamespace'          => $modelNamespace,
                 'modelName'               => $modelName,
-                'fullBaseName'            => $fullBaseName,
+                'controllerUrlVarName'    => $controllerUrlVarName,
                 'modelConnection'         => $db == 'mysql' ? '' : "\n\tprotected \$connection = '{$db}';",
                 'modelTableType'          => $modelTableType,
                 'modelTableTypeName'      => $modelTableTypeName,

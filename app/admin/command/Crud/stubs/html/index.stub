@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { ref, provide, onMounted } from 'vue'
 import baTableClass from '/@/utils/baTable'
-import { {%fullBaseName%} } from '/@/api/controllerUrls'
+import { {%controllerUrlVarName%} } from '/@/api/controllerUrls'
 import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
 import { useI18n } from 'vue-i18n'
@@ -33,7 +33,7 @@ const { t } = useI18n()
 const tableRef = ref()
 const optButtons = defaultOptButtons({%optButtons%})
 const baTable = new baTableClass(
-    new baTableApi({%fullBaseName%}),
+    new baTableApi({%controllerUrlVarName%}),
     {
         pk: '{%tablePk%}',
         column: [

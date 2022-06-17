@@ -75,14 +75,12 @@ function getLangFileMessage(mList: any, locale: string) {
             let pathName = path.slice(path.lastIndexOf(locale) + (locale.length + 1), path.lastIndexOf('.'))
             if (pathName.indexOf('/') > 0) {
                 let pathNameTmp = pathName.split('/')
-                for (const key in pathNameTmp) {
-                    if (typeof msg[pathNameTmp[key]] === 'undefined') {
-                        msg[pathNameTmp[key]] = []
-                    }
-                }
                 if (pathNameTmp.length == 2) {
+                    if (msg[pathNameTmp[0]] === undefined) msg[pathNameTmp[0]] = []
                     msg[pathNameTmp[0]][pathNameTmp[1]] = handleMsglist(mList[path].default)
                 } else if (pathNameTmp.length == 3) {
+                    if (msg[pathNameTmp[0]] === undefined) msg[pathNameTmp[0]] = []
+                    if (msg[pathNameTmp[0]][pathNameTmp[1]] === undefined) msg[pathNameTmp[0]][pathNameTmp[1]] = []
                     msg[pathNameTmp[0]][pathNameTmp[1]][pathNameTmp[2]] = handleMsglist(mList[path].default)
                 } else {
                     msg[pathName] = handleMsglist(mList[path].default)
