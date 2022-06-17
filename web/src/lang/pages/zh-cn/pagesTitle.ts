@@ -7,4 +7,6 @@ export default {
     noTitle: '无标题',
     'Embedded iframe': '内嵌 Iframe',
     adminMainLoading: '加载中...',
+    User: '会员中心',
+    userLogin: '会员登录',
 }

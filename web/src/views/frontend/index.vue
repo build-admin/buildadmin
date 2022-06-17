@@ -6,16 +6,17 @@
                     <img src="~assets/logo.png" />
                     <span>{{ state.data.site_name }}</span>
                 </div>
-                <!-- <div class="header-link">
-                    <Icon name="el-icon-User" size="16" color="#ffffff" />
+                <div class="header-link">
+                    <Icon name="el-icon-UserFilled" size="16" color="#e9e9eb" />
                     <span>会员中心</span>
-                </div> -->
+                </div>
             </el-header>
             <el-main class="main">
                 <div class="main-container">
                     <div class="main-left">
                         <div class="main-title">{{ state.data.site_name }}</div>
                         <div class="main-content">伟大的艺术品不必追随潮流，他本身就能引领潮流。 -- 乔布斯</div>
+                        <el-button @click="$router.push('/user')" color="#FFFFFF" size="large">会员中心</el-button>
                     </div>
                     <div class="main-right">
                         <img :src="indexCover" alt="" />
@@ -88,9 +89,10 @@ index().then((res) => {
         .header-link {
             display: flex;
             align-items: center;
+            line-height: var(--el-header-height);
             height: var(--el-header-height);
             font-size: var(--el-font-size-medium);
-            color: var(--color-basic-white);
+            color: var(--color-sub-1);
             cursor: pointer;
             span {
                 padding-left: 2px;
@@ -117,6 +119,7 @@ index().then((res) => {
                 }
                 .main-content {
                     padding-top: 20px;
+                    padding-bottom: 40px;
                     font-size: var(--el-font-size-large);
                 }
             }

@@ -1,27 +1,38 @@
-/*
- * 静态路由
- */
 import { RouteRecordRaw } from 'vue-router'
 
 const pageTitle = (name: string): string => {
     return `pagesTitle.${name}`
 }
 
+/*
+ * 静态路由
+ */
 const staticRoutes: Array<RouteRecordRaw> = [
     {
+        // 首页
         path: '/',
         name: '/',
         component: () => import('/@/views/frontend/index.vue'),
         meta: {
-            title: pageTitle('home'), // 首页
+            title: pageTitle('home'),
         },
     },
     {
+        // 管理员登录页
         path: '/admin/login',
         name: 'adminLogin',
         component: () => import('/@/views/backend/login.vue'),
         meta: {
-            title: pageTitle('adminLogin'), // 管理员登录页
+            title: pageTitle('adminLogin'),
+        },
+    },
+    {
+        // 会员登录页
+        path: '/user/login',
+        name: 'userLogin',
+        component: () => import('/@/views/frontend/user/login.vue'),
+        meta: {
+            title: pageTitle('userLogin'),
         },
     },
     {
@@ -29,6 +40,7 @@ const staticRoutes: Array<RouteRecordRaw> = [
         redirect: '/404',
     },
     {
+        // 404
         path: '/404',
         name: 'notFound',
         component: () => import('/@/views/common/error/404.vue'),
@@ -44,16 +56,19 @@ const staticRoutes: Array<RouteRecordRaw> = [
         },
     },
     {
+        // 无权限访问
         path: '/401',
         name: 'noPower',
         component: () => import('/@/views/common/error/401.vue'),
         meta: {
-            title: pageTitle('noPower'), // 无权限访问
+            title: pageTitle('noPower'),
         },
     },
 ]
 
-// 后台基础路由和静态路由
+/*
+ * 后台基础静态路由
+ */
 const adminBaseRoute: RouteRecordRaw = {
     path: '/admin',
     name: 'admin',
@@ -74,7 +89,7 @@ const adminBaseRoute: RouteRecordRaw = {
         {
             path: 'iframe/:url',
             name: 'layoutIframe',
-            component: () => import('/@/layouts/router-view/iframe.vue'),
+            component: () => import('/@/layouts/common/router-view/iframe.vue'),
             meta: {
                 title: pageTitle('Embedded iframe'),
             },
@@ -82,6 +97,19 @@ const adminBaseRoute: RouteRecordRaw = {
     ],
 }
 
-staticRoutes.push(adminBaseRoute)
+/*
+ * 会员中心基础静态路由
+ */
+const userBaseRoute: RouteRecordRaw = {
+    path: '/user',
+    name: 'user',
+    component: () => import('/@/layouts/frontend/user.vue'),
+    meta: {
+        title: pageTitle('User'),
+    },
+}
 
-export { staticRoutes, adminBaseRoute }
+staticRoutes.push(adminBaseRoute)
+staticRoutes.push(userBaseRoute)
+
+export { staticRoutes, adminBaseRoute, userBaseRoute }

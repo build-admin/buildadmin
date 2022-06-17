@@ -10,10 +10,10 @@
 </template>
 
 <script setup lang="ts">
-import Aside from '../backend/components/aside.vue'
-import Header from '../backend/components/header.vue'
-import Main from '/@/layouts/router-view/main.vue'
-import CloseFullScreen from '../backend/components/closeFullScreen.vue'
+import Aside from '/@/layouts/backend/components/aside.vue'
+import Header from '/@/layouts/backend/components/header.vue'
+import Main from '/@/layouts/backend/router-view/main.vue'
+import CloseFullScreen from '/@/layouts/backend/components/closeFullScreen.vue'
 import { useNavTabs } from '/@/stores/navTabs'
 const navTabs = useNavTabs()
 </script>
