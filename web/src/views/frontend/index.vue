@@ -4,7 +4,7 @@
             <el-header class="header">
                 <div class="header-logo">
                     <img src="~assets/logo.png" />
-                    <span>{{ state.data.site_name }}</span>
+                    <span>{{ siteConfig.site_name }}</span>
                 </div>
                 <div class="header-link">
                     <Icon name="el-icon-UserFilled" size="16" color="#e9e9eb" />
@@ -14,7 +14,7 @@
             <el-main class="main">
                 <div class="main-container">
                     <div class="main-left">
-                        <div class="main-title">{{ state.data.site_name }}</div>
+                        <div class="main-title">{{ siteConfig.site_name }}</div>
                         <div class="main-content">伟大的艺术品不必追随潮流，他本身就能引领潮流。 -- 乔布斯</div>
                         <el-button @click="$router.push('/user')" color="#FFFFFF" size="large">会员中心</el-button>
                     </div>
@@ -25,7 +25,7 @@
             </el-main>
             <el-footer class="footer">
                 <div>
-                    Copyright @ 2020~2022 {{ state.data.site_name }} 版权所有 <a href="http://beian.miit.gov.cn/">{{ state.data.record_number }}</a>
+                    Copyright @ 2020~2022 {{ siteConfig.site_name }} 版权所有 <a href="http://beian.miit.gov.cn/">{{ siteConfig.record_number }}</a>
                 </div>
             </el-footer>
         </el-container>
@@ -33,25 +33,16 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
 import indexCover from '/@/assets/index/index-cover.svg'
 import { index } from '/@/api/frontend/index'
 import { setTitle } from '/@/utils/common'
+import { useSiteConfig } from '/@/stores/siteConfig'
 
-const state: {
-    data: {
-        site_name: string
-        record_number?: string
-    }
-} = reactive({
-    data: {
-        site_name: '',
-    },
-})
+const siteConfig = useSiteConfig()
 
 index().then((res) => {
-    state.data = res.data
-    setTitle(state.data.site_name)
+    setTitle(res.data.site.site_name)
+    siteConfig.$state = res.data.site
 })
 </script>
 

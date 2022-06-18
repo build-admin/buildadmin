@@ -98,5 +98,6 @@ export interface Terminal {
 
 export interface SiteConfig {
     site_name: string
+    record_number?: string
     version: string
 }
