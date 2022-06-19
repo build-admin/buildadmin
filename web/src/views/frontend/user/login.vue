@@ -209,6 +209,7 @@ import { buildCaptchaUrl } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import { useI18n } from 'vue-i18n'
 import { buildValidatorData, validatorAccount } from '/@/utils/validate'
+import { login, logout } from '/@/api/frontend/user/index'
 import type { ElForm, FormItemRule } from 'element-plus'
 
 const { t } = useI18n()
@@ -284,7 +285,9 @@ const onChangeCaptcha = () => {
 const onSubmit = (formRef: InstanceType<typeof ElForm> | undefined = undefined) => {
     formRef!.validate((valid) => {
         if (valid) {
+            login(state.form).then((res) => {
 
+            })
         }
     })
 }

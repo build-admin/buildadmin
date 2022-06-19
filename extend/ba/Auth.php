@@ -237,12 +237,21 @@ class Auth
             return $groups[$uid];
         }
 
-        $userGroups = Db::name($this->config['auth_group_access'])
-            ->alias('aga')
-            ->join($this->config['auth_group'] . ' ag', 'aga.group_id = ag.id', 'LEFT')
-            ->field('aga.uid,aga.group_id,ag.id,ag.pid,ag.name,ag.rules')
-            ->where("aga.uid='{$uid}' and ag.status='1'")
-            ->select();
+        if ($this->config['auth_group_access']) {
+            $userGroups = Db::name($this->config['auth_group_access'])
+                ->alias('aga')
+                ->join($this->config['auth_group'] . ' ag', 'aga.group_id = ag.id', 'LEFT')
+                ->field('aga.uid,aga.group_id,ag.id,ag.pid,ag.name,ag.rules')
+                ->where("aga.uid='{$uid}' and ag.status='1'")
+                ->select();
+        } else {
+            $userGroups = Db::name('user')
+                ->alias('u')
+                ->join($this->config['auth_group'] . ' ag', 'u.group_id = ag.id', 'LEFT')
+                ->field('u.id as uid,u.group_id,ag.id,ag.name,ag.rules')
+                ->where("u.id='{$uid}' and ag.status='1'")
+                ->select();
+        }
 
         $groups[$uid] = $userGroups ?: [];
         return $groups[$uid];

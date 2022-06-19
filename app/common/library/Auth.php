@@ -1,16 +1,17 @@
 <?php
 
-namespace app\admin\library;
+namespace app\common\library;
 
-use app\admin\model\Admin;
 use ba\Random;
 use think\Exception;
-use think\facade\Config;
-use app\common\facade\Token;
 use think\facade\Db;
+use think\facade\Config;
+use app\common\model\User;
+use app\common\facade\Token;
+use think\facade\Validate;
 
 /**
- * 管理员权限类
+ * 公共权限类（会员权限类）
  */
 class Auth extends \ba\Auth
 {
@@ -18,38 +19,48 @@ class Auth extends \ba\Auth
      * @var bool 是否登录
      */
     protected $logined = false;
+
     /**
      * @var string 错误消息
      */
     protected $error = '';
+
     /**
-     * @var Admin Model实例
+     * @var User Model实例
      */
     protected $model = null;
+
     /**
      * @var string 令牌
      */
     protected $token = '';
+
     /**
      * @var string 刷新令牌
      */
     protected $refreshToken = '';
+
     /**
      * @var int 令牌默认有效期
      */
     protected $keeptime = 86400;
+
     /**
      * @var string[] 允许输出的字段
      */
-    protected $allowFields = ['id', 'username', 'nickname', 'avatar', 'lastlogintime'];
+    protected $allowFields = ['id', 'username', 'nickname', 'avatar', 'lastlogintime', 'lastloginip'];
 
     public function __construct()
     {
-        parent::__construct();
+        parent::__construct([
+            'auth_group'        => 'user_group', // 用户组数据表名
+            'auth_group_access' => '', // 用户-用户组关系表（关系字段）
+            'user_rule'         => 'menu_rule', // 权限规则表
+        ]);
     }
 
     /**
-     * 魔术方法-管理员信息字段
+     * 魔术方法-会员信息字段
      * @param $name
      * @return null|string 字段信息
      */
@@ -76,13 +87,13 @@ class Auth extends \ba\Auth
             return false;
         }
         $userId = intval($tokenData['user_id']);
-        if ($userId > 0) {
-            $this->model = Admin::where('id', $userId)->find();
+        if ($tokenData['type'] == 'user' && $userId > 0) {
+            $this->model = User::where('id', $userId)->find();
             if (!$this->model) {
                 $this->setError('Account not exist');
                 return false;
             }
-            if ($this->model['status'] != '1') {
+            if ($this->model['status'] != 'enable') {
                 $this->setError('Account disabled');
                 return false;
             }
@@ -104,17 +115,32 @@ class Auth extends \ba\Auth
      */
     public function login($username, $password, $keeptime = false)
     {
-        $this->model = Admin::where('username', $username)->find();
+        // 判断账户类型
+        $accountType = false;
+        $validate    = Validate::rule([
+            'mobile'   => 'mobile',
+            'email'    => 'email',
+            'username' => 'regex:^[a-zA-Z][a-zA-Z0-9_]{2,15}$',
+        ]);
+        if ($validate->check(['mobile' => $username])) $accountType = 'mobile';
+        if ($validate->check(['email' => $username])) $accountType = 'email';
+        if ($validate->check(['username' => $username])) $accountType = 'username';
+        if (!$accountType) {
+            $this->setError('Account is incorrect');
+            return false;
+        }
+
+        $this->model = User::where($accountType, $username)->find();
         if (!$this->model) {
-            $this->setError('Username is incorrect');
+            $this->setError('Account is incorrect');
             return false;
         }
-        if ($this->model['status'] == '0') {
-            $this->setError('Administrator disabled');
+        if ($this->model['status'] == 'disable') {
+            $this->setError('Account disabled');
             return false;
         }
-        $adminLoginRetry = Config::get('buildadmin.admin_login_retry');
-        if ($adminLoginRetry && $this->model->loginfailure >= $adminLoginRetry && time() - $this->model->lastlogintime < 86400) {
+        $userLoginRetry = Config::get('buildadmin.user_login_retry');
+        if ($userLoginRetry && $this->model->loginfailure >= $userLoginRetry && time() - $this->model->lastlogintime < 86400) {
             $this->setError('Please try again after 1 day');
             return false;
         }
@@ -132,20 +158,10 @@ class Auth extends \ba\Auth
     }
 
     /**
-     * 设置刷新Token
-     * @param int $keeptime
-     */
-    public function setRefreshToken($keeptime = 0)
-    {
-        $this->refreshToken = Random::uuid();
-        Token::set($this->refreshToken, 'admin-refresh', $this->model->id, $keeptime);
-    }
-
-    /**
-     * 管理员登录成功
+     * 登录成功
      * @return bool
      */
-    public function loginSuccessful()
+    public function loginSuccessful(): bool
     {
         if (!$this->model) {
             return false;
@@ -160,7 +176,7 @@ class Auth extends \ba\Auth
 
             if (!$this->token) {
                 $this->token = Random::uuid();
-                Token::set($this->token, 'admin', $this->model->id, $this->keeptime);
+                Token::set($this->token, 'user', $this->model->id, $this->keeptime);
             }
             Db::commit();
         } catch (Exception $e) {
@@ -172,10 +188,10 @@ class Auth extends \ba\Auth
     }
 
     /**
-     * 管理员登录失败
+     * 登录失败
      * @return bool
      */
-    public function loginFailed()
+    public function loginFailed(): bool
     {
         if (!$this->model) {
             return false;
@@ -225,16 +241,16 @@ class Auth extends \ba\Auth
     }
 
     /**
-     * 获取管理员模型
+     * 获取会员模型
      * @return null
      */
-    public function getAdmin()
+    public function getUser()
     {
         return $this->model;
     }
 
     /**
-     * 获取管理员Token
+     * 获取会员Token
      * @return string
      */
     public function getToken()
@@ -243,7 +259,17 @@ class Auth extends \ba\Auth
     }
 
     /**
-     * 获取管理员刷新Token
+     * 设置刷新Token
+     * @param int $keeptime
+     */
+    public function setRefreshToken($keeptime = 0)
+    {
+        $this->refreshToken = Random::uuid();
+        Token::set($this->refreshToken, 'user-refresh', $this->model->id, $keeptime);
+    }
+
+    /**
+     * 获取会员刷新Token
      * @return string
      */
     public function getRefreshToken()
@@ -252,10 +278,10 @@ class Auth extends \ba\Auth
     }
 
     /**
-     * 获取管理员信息 - 只输出允许输出的字段
+     * 获取会员信息 - 只输出允许输出的字段
      * @return array
      */
-    public function getInfo()
+    public function getUserInfo()
     {
         if (!$this->model) {
             return [];
@@ -299,11 +325,6 @@ class Auth extends \ba\Auth
         return parent::check($name, $uid ?: $this->id, $relation, $mode);
     }
 
-    public function getGroups($uid = null)
-    {
-        return parent::getGroups($uid ?: $this->id);
-    }
-
     public function getRuleList($uid = null)
     {
         return parent::getRuleList($uid ?: $this->id);
@@ -319,7 +340,7 @@ class Auth extends \ba\Auth
         return parent::getMenus($uid ?: $this->id);
     }
 
-    public function isSuperAdmin()
+    public function isSuperUser()
     {
         return in_array('*', $this->getRuleIds());
     }

@@ -31,17 +31,9 @@ class User extends Model
     public function resetPassword($uid, $newPassword)
     {
         $salt   = Random::build('alnum', 16);
-        $passwd = self::encryptPassword($newPassword, $salt);
+        $passwd = encrypt_password($newPassword, $salt);
         $ret    = $this->where(['id' => $uid])->update(['password' => $passwd, 'salt' => $salt]);
         return $ret;
-    }
-
-    /**
-     * 加密密码
-     */
-    public static function encryptPassword($password, $salt = '', $encrypt = 'md5')
-    {
-        return $encrypt($encrypt($password) . $salt);
     }
 
     public function group()

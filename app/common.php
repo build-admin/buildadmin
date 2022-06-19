@@ -138,6 +138,35 @@ if (!function_exists('full_url')) {
     }
 }
 
+if (!function_exists('encrypt_password')) {
+    /**
+     * 加密密码
+     */
+    function encrypt_password($password, $salt = '', $encrypt = 'md5')
+    {
+        return $encrypt($encrypt($password) . $salt);
+    }
+}
+
+if (!function_exists('action_in_arr')) {
+    /**
+     * 检测一个方法是否在传递的数组内
+     * @return bool
+     */
+    function action_in_arr($arr = [])
+    {
+        $arr = is_array($arr) ? $arr : explode(',', $arr);
+        if (!$arr) {
+            return false;
+        }
+        $arr = array_map('strtolower', $arr);
+        if (in_array(strtolower(request()->action()), $arr) || in_array('*', $arr)) {
+            return true;
+        }
+        return false;
+    }
+}
+
 if (!function_exists('build_suffix_svg')) {
     /**
      * 构建文件后缀的svg图片

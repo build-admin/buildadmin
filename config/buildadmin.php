@@ -8,6 +8,8 @@ return [
     'cors_request_domain'  => 'localhost,127.0.0.1',
     // 是否开启管理员登录验证码
     'admin_login_captcha'  => true,
+    // 会员登录失败可重试次数,false则无限
+    'user_login_retry' => 10,
     // 管理员登录失败可重试次数,false则无限
     'admin_login_retry'    => 10,
     // 表格拖拽排序时,两个权重相等则自动重新整理;控制器类中也有此项（作为单控制器自定义配置）

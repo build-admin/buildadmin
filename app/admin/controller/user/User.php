@@ -37,7 +37,7 @@ class User extends Backend
             }
 
             $salt   = Random::build('alnum', 16);
-            $passwd = $this->model->encryptPassword($data['password'], $salt);
+            $passwd = encrypt_password($data['password'], $salt);
 
             $data   = $this->excludeFields($data);
             $result = false;

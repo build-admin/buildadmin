@@ -98,14 +98,14 @@ class Backend extends Api
         $this->auth = Auth::instance();
         $routePath  = $this->app->request->controllerPath . '/' . $this->request->action(true);
         $token      = $this->request->server('HTTP_BATOKEN', $this->request->request('batoken', Cookie::get('batoken') ?: false));
-        if (!$this->auth->actionInArr($this->noNeedLogin)) {
+        if (!action_in_arr($this->noNeedLogin)) {
             $this->auth->init($token);
             if (!$this->auth->isLogin()) {
                 $this->error(__('Please login first'), [
                     'routeName' => 'adminLogin'
                 ], 302);
             }
-            if (!$this->auth->actionInArr($this->noNeedPermission)) {
+            if (!action_in_arr($this->noNeedPermission)) {
                 if (!$this->auth->check($routePath)) {
                     $this->error(__('You have no permission'), [
                         'routeName' => 'admin'
