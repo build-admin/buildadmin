@@ -85,13 +85,15 @@ index().then((res) => {
     }
     :deep(.frontend-header-menu) {
         background: transparent;
-        .el-menu-item {
+        .el-menu-item,
+        .el-sub-menu .el-sub-menu__title {
             color: var(--color-basic-white);
             &.is-active {
                 color: var(--color-basic-white) !important;
             }
             &:hover {
                 background-color: transparent;
+                color: var(--el-menu-hover-text-color);
             }
         }
     }
