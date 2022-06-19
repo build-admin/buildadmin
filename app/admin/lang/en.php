@@ -27,4 +27,11 @@ return [
     'The uploaded file is too large (%sMiB), Maximum file size:%sMiB'                     => 'The uploaded file is too large (%sMiB), Maximum file size:%sMiB',
     'No files have been uploaded or the file size exceeds the upload limit of the server' => 'No files have been uploaded or the file size exceeds the upload limit of the server',
     'Unknown'                                                                             => 'Unknown',
+    'Account not exist'                                                                   => 'Account not exist',
+    'Account disabled'                                                                    => 'Account disabled',
+    'Token login failed'                                                                  => 'Token login failed',
+    'Username is incorrect'                                                               => 'Username is incorrect',
+    'Please try again after 1 day'                                                        => 'Please try again after 1 day',
+    'Password is incorrect'                                                               => 'Password is incorrect',
+    'You are not logged in'                                                               => 'You are not logged in',
 ];

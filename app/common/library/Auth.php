@@ -126,13 +126,13 @@ class Auth extends \ba\Auth
         if ($validate->check(['email' => $username])) $accountType = 'email';
         if ($validate->check(['username' => $username])) $accountType = 'username';
         if (!$accountType) {
-            $this->setError('Account is incorrect');
+            $this->setError('Account not exist');
             return false;
         }
 
         $this->model = User::where($accountType, $username)->find();
         if (!$this->model) {
-            $this->setError('Account is incorrect');
+            $this->setError('Account not exist');
             return false;
         }
         if ($this->model['status'] == 'disable') {

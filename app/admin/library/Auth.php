@@ -110,7 +110,7 @@ class Auth extends \ba\Auth
             return false;
         }
         if ($this->model['status'] == '0') {
-            $this->setError('Administrator disabled');
+            $this->setError('Account disabled');
             return false;
         }
         $adminLoginRetry = Config::get('buildadmin.admin_login_retry');

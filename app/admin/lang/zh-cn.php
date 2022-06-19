@@ -27,4 +27,13 @@ return [
     'The uploaded file is too large (%sMiB), Maximum file size:%sMiB'                     => '上传的文件太大(%sM)，最大文件大小：%sM',
     'No files have been uploaded or the file size exceeds the upload limit of the server' => '没有文件被上传或文件大小超出服务器上传限制！',
     'Unknown'                                                                             => '未知',
+    // 权限类语言包-s
+    'Account not exist'                                                                   => '帐户不存在',
+    'Account disabled'                                                                    => '帐户已禁用',
+    'Token login failed'                                                                  => '令牌登录失败',
+    'Username is incorrect'                                                               => '用户名不正确',
+    'Please try again after 1 day'                                                        => '登录失败次数超限，请在1天后再试',
+    'Password is incorrect'                                                               => '密码不正确',
+    'You are not logged in'                                                               => '你没有登录',
+    // 权限类语言包-e
 ];
