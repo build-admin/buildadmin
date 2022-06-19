@@ -7,8 +7,8 @@
                     <span class="hidden-xs-only">{{ siteConfig.site_name }}</span>
                 </div>
                 <el-menu :default-active="state.activeMenu" class="frontend-header-menu" mode="horizontal" :ellipsis="false">
-                    <el-menu-item v-blur index="index">首页</el-menu-item>
-                    <el-menu-item v-blur index="user">会员中心</el-menu-item>
+                    <el-menu-item v-blur index="index">{{ $t('index.index') }}</el-menu-item>
+                    <el-menu-item v-blur index="user">{{ $t('index.Member Center') }}</el-menu-item>
                 </el-menu>
             </el-col>
         </el-row>
@@ -29,7 +29,7 @@ const router = useRouter()
 const siteConfig = useSiteConfig()
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .header {
     background-color: #fff;
     box-shadow: 0px 0px 8px rgba(0 0 0 / 8%);

@@ -6,7 +6,13 @@
                 <el-row justify="center">
                     <el-col :span="16" :xs="24">
                         <div class="login-box">
-                            <div class="login-title">{{ state.form.tab == 'register' ? '注册' : '登录' }}到{{ siteConfig.site_name }}</div>
+                            <div class="login-title">
+                                {{
+                                    (state.form.tab == 'register' ? t('user.user.register') : t('user.user.Sign in')) +
+                                    t('user.user.reach') +
+                                    siteConfig.site_name
+                                }}
+                            </div>
                             <el-form>
                                 <el-form-item v-if="state.form.tab == 'register'" prop="email">
                                     <el-input v-model="state.form.email" placeholder="请输入邮箱" :clearable="true" size="large">
@@ -162,7 +168,9 @@ import Footer from '/@/layouts/frontend/components/footer.vue'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { buildCaptchaUrl } from '/@/api/common'
 import { uuid } from '/@/utils/random'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const siteConfig = useSiteConfig()
 const state = reactive({
     form: {

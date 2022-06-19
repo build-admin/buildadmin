@@ -1,34 +1,23 @@
 <template>
-    <div class="container">
-        <el-container>
-            <el-header class="header">
-                <div class="header-logo">
-                    <img src="~assets/logo.png" />
-                    <span>{{ siteConfig.site_name }}</span>
-                </div>
-                <div class="header-link">
-                    <Icon name="el-icon-UserFilled" size="16" color="#e9e9eb" />
-                    <span>会员中心</span>
-                </div>
-            </el-header>
+    <div>
+        <Header />
+        <el-container class="container">
             <el-main class="main">
                 <div class="main-container">
                     <div class="main-left">
                         <div class="main-title">{{ siteConfig.site_name }}</div>
-                        <div class="main-content">伟大的艺术品不必追随潮流，他本身就能引领潮流。 -- 乔布斯</div>
-                        <el-button @click="$router.push('/user')" color="#FFFFFF" size="large">会员中心</el-button>
+                        <div class="main-content">
+                            {{ $t('index.Steve Jobs') }}
+                        </div>
+                        <el-button @click="$router.push('/user')" color="#FFFFFF" size="large">{{ $t('index.Member Center') }}</el-button>
                     </div>
                     <div class="main-right">
                         <img :src="indexCover" alt="" />
                     </div>
                 </div>
             </el-main>
-            <el-footer class="footer">
-                <div>
-                    Copyright @ 2020~2022 {{ siteConfig.site_name }} 版权所有 <a href="http://beian.miit.gov.cn/">{{ siteConfig.record_number }}</a>
-                </div>
-            </el-footer>
         </el-container>
+        <Footer />
     </div>
 </template>
 
@@ -37,6 +26,8 @@ import indexCover from '/@/assets/index/index-cover.svg'
 import { index } from '/@/api/frontend/index'
 import { setTitle } from '/@/utils/common'
 import { useSiteConfig } from '/@/stores/siteConfig'
+import Header from '/@/layouts/frontend/components/header.vue'
+import Footer from '/@/layouts/frontend/components/footer.vue'
 
 const siteConfig = useSiteConfig()
 
@@ -52,54 +43,13 @@ index().then((res) => {
     height: 100vh;
     background: url(/@/assets/bg.jpg) repeat;
     color: var(--color-basic-white);
-    .header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 60%;
-        margin: 0 auto;
-        padding: 0;
-        .header-logo {
-            display: flex;
-            height: 60px;
-            align-items: center;
-            cursor: pointer;
-            img {
-                height: 34px;
-                width: 34px;
-            }
-            span {
-                padding-left: 4px;
-                font-size: var(--el-font-size-extra-large);
-                font-weight: bold;
-                &:hover {
-                    color: var(--color-info-sub-1);
-                }
-            }
-        }
-        .header-link {
-            display: flex;
-            align-items: center;
-            line-height: var(--el-header-height);
-            height: var(--el-header-height);
-            font-size: var(--el-font-size-medium);
-            color: var(--color-sub-1);
-            cursor: pointer;
-            span {
-                padding-left: 2px;
-            }
-            &:hover {
-                color: var(--color-info-sub-1);
-            }
-        }
-    }
     .main {
         height: calc(100vh - 120px);
         padding: 0;
         .main-container {
             display: flex;
             height: 100%;
-            width: 60%;
+            width: 64%;
             margin: 0 auto;
             align-items: center;
             justify-content: space-between;
@@ -121,24 +71,37 @@ index().then((res) => {
             }
         }
     }
-    .footer {
-        width: 60%;
-        margin: 0 auto;
-        padding: 0;
-        color: var(--color-secondary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        a {
-            color: var(--color-secondary);
+}
+.header {
+    background-color: transparent;
+    box-shadow: none;
+    position: fixed;
+    width: 100%;
+    :deep(.header-logo) {
+        span {
+            padding-left: 4px;
+            color: var(--color-basic-white);
+        }
+    }
+    :deep(.frontend-header-menu) {
+        background: transparent;
+        .el-menu-item {
+            color: var(--color-basic-white);
+            &.is-active {
+                color: var(--color-basic-white) !important;
+            }
+            &:hover {
+                background-color: transparent;
+            }
         }
     }
 }
+.footer {
+    color: var(--color-secondary);
+    background-color: transparent;
+}
 
 @media screen and (max-width: 1024px) {
-    .header {
-        width: 90% !important;
-    }
     .main-container {
         width: 90% !important;
         flex-wrap: wrap;
@@ -147,9 +110,6 @@ index().then((res) => {
         .main-right {
             padding-top: 50px;
         }
-    }
-    .footer {
-        width: 90% !important;
     }
 }
 @media screen and (max-width: 375px) {
