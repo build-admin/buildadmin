@@ -2,10 +2,17 @@
 
 namespace app\api\controller;
 
-use app\common\controller\Api;
+use app\common\controller\Frontend;
 
-class Index extends Api
+class Index extends Frontend
 {
+    protected $noNeedLogin = ['index'];
+
+    public function initialize()
+    {
+        parent::initialize();
+    }
+
     public function index()
     {
         $this->success('', [

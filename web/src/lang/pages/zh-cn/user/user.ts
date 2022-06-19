@@ -1,5 +1,6 @@
 export default {
     'User name': '用户名',
+    account: '用户名/邮箱/手机号',
     nickname: '昵称',
     grouping: '分组',
     'head portrait': '头像',
@@ -22,8 +23,8 @@ export default {
     reach: '到',
     send: '发送',
     second: '确定',
+    login: '登录',
     register: '注册',
-    'Sign in': '登录',
     'Verification Code': '验证码',
     'Forgot your password?': '忘记密码？',
     'Back to login': '回到登录',
@@ -33,4 +34,6 @@ export default {
     'Via email': '通过邮箱',
     'Via mobile number': '通过手机号',
     'New password': '新密码',
+    'Remember me': '记住我',
+    'Account name': '账户',
 }

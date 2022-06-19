@@ -7,24 +7,32 @@
                     <el-col :span="16" :xs="24">
                         <div class="login-box">
                             <div class="login-title">
-                                {{
-                                    (state.form.tab == 'register' ? t('user.user.register') : t('user.user.Sign in')) +
-                                    t('user.user.reach') +
-                                    siteConfig.site_name
-                                }}
+                                {{ t('user.user.' + state.form.tab) + t('user.user.reach') + siteConfig.site_name }}
                             </div>
-                            <el-form>
+                            <el-form ref="formRef" :rules="rules" :model="state.form">
+                                <!-- 注册邮箱 -->
                                 <el-form-item v-if="state.form.tab == 'register'" prop="email">
-                                    <el-input v-model="state.form.email" placeholder="请输入邮箱" :clearable="true" size="large">
+                                    <el-input
+                                        v-model="state.form.email"
+                                        :placeholder="t('Please input field', { field: t('user.user.mailbox') })"
+                                        :clearable="true"
+                                        size="large"
+                                    >
                                         <template #prefix>
                                             <Icon name="fa fa-envelope" size="16" color="var(--el-input-icon-color)" />
                                         </template>
                                     </el-input>
                                 </el-form-item>
+
+                                <!-- 登录注册用户名 -->
                                 <el-form-item prop="username">
                                     <el-input
                                         v-model="state.form.username"
-                                        :placeholder="state.form.tab == 'register' ? '请输入用户名' : '请输入用户名/邮箱/手机号'"
+                                        :placeholder="
+                                            state.form.tab == 'register'
+                                                ? t('Please input field', { field: t('user.user.User name') })
+                                                : t('Please input field', { field: t('user.user.account') })
+                                        "
                                         :clearable="true"
                                         size="large"
                                     >
@@ -33,21 +41,37 @@
                                         </template>
                                     </el-input>
                                 </el-form-item>
+
+                                <!-- 登录注册密码 -->
                                 <el-form-item prop="password">
-                                    <el-input v-model="state.form.password" placeholder="请输入账户密码" type="password" show-password size="large">
+                                    <el-input
+                                        v-model="state.form.password"
+                                        :placeholder="t('Please input field', { field: t('user.user.password') })"
+                                        type="password"
+                                        show-password
+                                        size="large"
+                                    >
                                         <template #prefix>
                                             <Icon name="fa fa-unlock-alt" size="16" color="var(--el-input-icon-color)" />
                                         </template>
                                     </el-input>
                                 </el-form-item>
+
+                                <!-- 注册手机号 -->
                                 <el-form-item v-if="state.form.tab == 'register'" prop="mobile">
-                                    <el-input v-model="state.form.mobile" placeholder="请输入手机号" :clearable="true" size="large">
+                                    <el-input
+                                        v-model="state.form.mobile"
+                                        :placeholder="t('Please input field', { field: t('user.user.mobile') })"
+                                        :clearable="true"
+                                        size="large"
+                                    >
                                         <template #prefix>
                                             <Icon name="fa fa-tablet" size="16" color="var(--el-input-icon-color)" />
                                         </template>
                                     </el-input>
                                 </el-form-item>
 
+                                <!-- 登录注册验证码 -->
                                 <el-form-item prop="captcha">
                                     <el-row class="w100">
                                         <el-col :span="16">
@@ -55,7 +79,7 @@
                                                 v-model="state.form.captcha"
                                                 clearable
                                                 autocomplete="off"
-                                                :placeholder="'请输入验证码'"
+                                                :placeholder="t('Please input field', { field: t('user.user.Verification Code') })"
                                                 size="large"
                                             >
                                                 <template #prefix>
@@ -75,12 +99,14 @@
                                 </el-form-item>
 
                                 <div v-if="state.form.tab != 'register'" class="form-footer">
-                                    <el-checkbox v-model="state.form.keep" label="记住我" size="default"></el-checkbox>
-                                    <div @click="state.showRetrievePasswordDialog = true" class="forgot-password">忘记密码？</div>
+                                    <el-checkbox v-model="state.form.keep" :label="t('user.user.Remember me')" size="default"></el-checkbox>
+                                    <div @click="state.showRetrievePasswordDialog = true" class="forgot-password">
+                                        {{ t('user.user.Forgot your password?') }}
+                                    </div>
                                 </div>
                                 <el-form-item class="form-buttons">
-                                    <el-button :loading="state.formLoading" round type="primary" size="large">
-                                        {{ state.form.tab == 'register' ? '注册' : '登录' }}
+                                    <el-button @click="onSubmit(formRef)" :loading="state.formLoading" round type="primary" size="large">
+                                        {{ t('user.user.' + state.form.tab) }}
                                     </el-button>
                                     <el-button
                                         v-if="state.form.tab == 'register'"
@@ -89,11 +115,11 @@
                                         plain
                                         type="info"
                                         size="large"
-                                        >回到登录</el-button
+                                        >{{ t('user.user.Back to login') }}</el-button
                                     >
-                                    <el-button v-else @click="state.form.tab = 'register'" round plain type="info" size="large"
-                                        >还没有账户？点击注册</el-button
-                                    >
+                                    <el-button v-else @click="state.form.tab = 'register'" round plain type="info" size="large">
+                                        {{ t('user.user.No account yet? Click Register') }}
+                                    </el-button>
                                 </el-form-item>
                             </el-form>
                         </div>
@@ -107,22 +133,26 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
             v-model="state.showRetrievePasswordDialog"
-            title="找回密码"
+            :title="t('user.user.Retrieve password')"
             :width="state.dialogWidth + '%'"
             :draggable="true"
         >
             <div class="retrieve-password-form">
-                <el-form :model="state.retrievePasswordForm" :label-width="100">
-                    <el-form-item prop="type" label="找回方式">
+                <el-form ref="retrieveFormRef" :rules="retrieveRules" :model="state.retrievePasswordForm" :label-width="100">
+                    <el-form-item :label="t('user.user.Retrieval method')">
                         <el-radio-group v-model="state.retrievePasswordForm.type">
-                            <el-radio label="email" border>通过邮箱</el-radio>
-                            <el-radio label="mobile" disabled border>通过手机号</el-radio>
+                            <el-radio label="email" border>{{ t('user.user.Via email') }}</el-radio>
+                            <el-radio label="mobile" disabled border>{{ t('user.user.Via mobile number') }}</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item prop="account" :label="state.retrievePasswordForm.type == 'email' ? '邮箱' : '手机号'">
+                    <el-form-item prop="account" :label="state.retrievePasswordForm.type == 'email' ? t('user.user.mailbox') : t('user.user.mobile')">
                         <el-input
                             v-model="state.retrievePasswordForm.account"
-                            :placeholder="'请输入' + (state.retrievePasswordForm.type == 'email' ? '邮箱' : '手机号')"
+                            :placeholder="
+                                t('Please input field', {
+                                    field: state.retrievePasswordForm.type == 'email' ? t('user.user.mailbox') : t('user.user.mobile'),
+                                })
+                            "
                             :clearable="true"
                         >
                             <template #prefix>
@@ -130,30 +160,39 @@
                             </template>
                         </el-input>
                     </el-form-item>
-                    <el-form-item prop="captcha" label="验证码">
+                    <el-form-item prop="captcha" :label="t('user.user.Verification Code')">
                         <el-row class="w100">
                             <el-col :span="16">
-                                <el-input v-model="state.retrievePasswordForm.captcha" placeholder="请输入验证码" autocomplete="off" clearable>
+                                <el-input
+                                    v-model="state.retrievePasswordForm.captcha"
+                                    :placeholder="t('Please input field', { field: t('user.user.Verification Code') })"
+                                    autocomplete="off"
+                                    clearable
+                                >
                                     <template #prefix>
                                         <Icon name="fa fa-ellipsis-h" size="16" color="var(--el-input-icon-color)" />
                                     </template>
                                 </el-input>
                             </el-col>
                             <el-col class="captcha-box" :span="8">
-                                <el-button type="primary">发送</el-button>
+                                <el-button type="primary">{{ t('user.user.send') }}</el-button>
                             </el-col>
                         </el-row>
                     </el-form-item>
-                    <el-form-item label="新密码">
-                        <el-input v-model="state.retrievePasswordForm.password" placeholder="请输入新密码" show-password :clearable="true">
+                    <el-form-item prop="password" :label="t('user.user.New password')">
+                        <el-input
+                            v-model="state.retrievePasswordForm.password"
+                            :placeholder="t('Please input field', { field: t('user.user.New password') })"
+                            show-password
+                        >
                             <template #prefix>
                                 <Icon name="fa fa-unlock-alt" size="16" color="var(--el-input-icon-color)" />
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary">确定</el-button>
-                        <el-button @click="state.showRetrievePasswordDialog = false">取消</el-button>
+                        <el-button @click="onSubmitRetrieve(retrieveFormRef)" type="primary">{{ t('user.user.second') }}</el-button>
+                        <el-button @click="state.showRetrievePasswordDialog = false">{{ t('Cancel') }}</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -162,16 +201,20 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted, onUnmounted } from 'vue'
+import { reactive, onMounted, onUnmounted, ref } from 'vue'
 import Header from '/@/layouts/frontend/components/header.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { buildCaptchaUrl } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import { useI18n } from 'vue-i18n'
+import { buildValidatorData, validatorAccount } from '/@/utils/validate'
+import type { ElForm, FormItemRule } from 'element-plus'
 
 const { t } = useI18n()
 const siteConfig = useSiteConfig()
+const formRef = ref<InstanceType<typeof ElForm>>()
+const retrieveFormRef = ref<InstanceType<typeof ElForm>>()
 const state = reactive({
     form: {
         tab: 'login',
@@ -195,6 +238,32 @@ const state = reactive({
     dialogWidth: 36,
 })
 
+const rules: Partial<Record<string, FormItemRule[]>> = reactive({
+    email: [buildValidatorData('required', t('user.user.mailbox')), buildValidatorData('email', t('user.user.mailbox'))],
+    username: [
+        buildValidatorData('required', t('user.user.User name')),
+        {
+            validator: (rule: any, val: string, callback: Function) => {
+                if (state.form.tab == 'register') {
+                    return validatorAccount(rule, val, callback)
+                } else {
+                    callback()
+                }
+            },
+            trigger: 'blur',
+        },
+    ],
+    password: [buildValidatorData('required', t('user.user.password')), buildValidatorData('password')],
+    mobile: [buildValidatorData('required', t('user.user.mobile')), buildValidatorData('mobile')],
+    captcha: [buildValidatorData('required', t('user.user.Verification Code'))],
+})
+
+const retrieveRules: Partial<Record<string, FormItemRule[]>> = reactive({
+    account: [buildValidatorData('required', t('user.user.Account name'))],
+    captcha: [buildValidatorData('required', t('user.user.Verification Code'))],
+    password: [buildValidatorData('required', t('user.user.password')), buildValidatorData('password')],
+})
+
 const resize = () => {
     let clientWidth = document.documentElement.clientWidth
     let width = 36
@@ -211,6 +280,20 @@ const resize = () => {
 const onChangeCaptcha = () => {
     state.form.captcha = ''
     state.captchaId = uuid()
+}
+const onSubmit = (formRef: InstanceType<typeof ElForm> | undefined = undefined) => {
+    formRef!.validate((valid) => {
+        if (valid) {
+
+        }
+    })
+}
+const onSubmitRetrieve = (formRef: InstanceType<typeof ElForm> | undefined = undefined) => {
+    formRef!.validate((valid) => {
+        if (valid) {
+
+        }
+    })
 }
 onMounted(() => {
     resize()
@@ -232,6 +315,7 @@ onUnmounted(() => {
     text-align: center;
     font-size: var(--el-font-size-large);
     line-height: 100px;
+    user-select: none;
 }
 :deep(.el-input--large) .el-input__wrapper {
     padding: 4px 15px;
