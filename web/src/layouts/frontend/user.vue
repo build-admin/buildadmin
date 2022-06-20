@@ -4,6 +4,7 @@
 import { onMounted } from 'vue'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useRouter } from 'vue-router'
+import { index } from '/@/api/frontend/user/index'
 
 const router = useRouter()
 const userInfo = useUserInfo()
@@ -11,7 +12,9 @@ const userInfo = useUserInfo()
 onMounted(() => {
     if (!userInfo.token) return router.push({ name: 'userLogin' })
 
-    // 请求会员中心
+    index().then((res) => {
+
+    })
 })
 </script>
 

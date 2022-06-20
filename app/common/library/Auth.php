@@ -56,7 +56,7 @@ class Auth extends \ba\Auth
         parent::__construct([
             'auth_group'        => 'user_group', // 用户组数据表名
             'auth_group_access' => '', // 用户-用户组关系表（关系字段）
-            'user_rule'         => 'menu_rule', // 权限规则表
+            'auth_rule'         => 'user_rule', // 权限规则表
         ]);
     }
 

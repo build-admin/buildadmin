@@ -44,6 +44,11 @@ class Common extends Api
             Token::delete($baToken);
             Token::set($newToken, 'admin', $refreshToken['user_id'], 86400);
         } elseif ($refreshToken['type'] == 'user-refresh') {
+            $baUserToken = $this->request->server('HTTP_BA_USER_TOKEN', $this->request->request('ba-user-token', ''));
+            if (!$baUserToken) {
+                $this->error(__('Invalid token'));
+            }
+            Token::delete($baUserToken);
             Token::set($newToken, 'user', $refreshToken['user_id'], 86400);
         }
 

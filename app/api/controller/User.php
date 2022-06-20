@@ -18,7 +18,23 @@ class User extends Frontend
 
     public function index()
     {
+        $userInfo = $this->auth->getUserInfo();
+        $menus    = $this->auth->getMenus();
+        if (!$menus) {
+            $this->error(__('No action available, please contact the administrator~'));
+        }
 
+        $userMenus = [];
+        foreach ($menus as $menu) {
+            if ($menu['name'] == 'api/user') {
+                $userMenus = $menu;
+                break;
+            }
+        }
+        $this->success('', [
+            'userInfo' => $userInfo,
+            'menus'    => $userMenus,
+        ]);
     }
 
     /**

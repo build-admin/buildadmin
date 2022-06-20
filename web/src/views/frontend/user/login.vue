@@ -100,9 +100,9 @@
 
                                 <div v-if="state.form.tab != 'register'" class="form-footer">
                                     <el-checkbox v-model="state.form.keep" :label="t('user.user.Remember me')" size="default"></el-checkbox>
-                                    <div @click="state.showRetrievePasswordDialog = true" class="forgot-password">
+                                    <!-- <div @click="state.showRetrievePasswordDialog = true" class="forgot-password">
                                         {{ t('user.user.Forgot your password?') }}
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <el-form-item class="form-buttons">
                                     <el-button @click="onSubmit(formRef)" :loading="state.formLoading" round type="primary" size="large">
@@ -191,8 +191,8 @@
                         </el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button @click="onSubmitRetrieve(retrieveFormRef)" type="primary">{{ t('user.user.second') }}</el-button>
                         <el-button @click="state.showRetrievePasswordDialog = false">{{ t('Cancel') }}</el-button>
+                        <el-button @click="onSubmitRetrieve(retrieveFormRef)" type="primary">{{ t('user.user.second') }}</el-button>
                     </el-form-item>
                 </el-form>
             </div>

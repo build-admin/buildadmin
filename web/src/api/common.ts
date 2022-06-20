@@ -1,5 +1,5 @@
 import createAxios from '/@/utils/axios'
-import { getAdminToken, isAdminApp } from '/@/utils/common'
+import { getAdminToken, getUserToken, isAdminApp } from '/@/utils/common'
 import { getUrl } from '/@/utils/axios'
 
 /*
@@ -125,7 +125,7 @@ export function refreshToken(): ApiPromise {
         url: refreshTokenUrl,
         method: 'POST',
         data: {
-            refresh_token: getAdminToken('refresh'),
+            refresh_token: isAdminApp() ? getAdminToken('refresh') : getUserToken('refresh'),
         },
     }) as ApiPromise
 }

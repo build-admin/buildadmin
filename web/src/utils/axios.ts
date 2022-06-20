@@ -2,9 +2,10 @@ import axios, { AxiosPromise, Method } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 import { ElLoading, LoadingOptions, ElNotification } from 'element-plus'
 import { useConfig } from '/@/stores/config'
-import { getAdminToken, removeAdminToken } from './common'
+import { getAdminToken, removeAdminToken, getUserToken, removeUserToken, isAdminApp } from './common'
 import router from '/@/router/index'
 import { refreshToken } from '/@/api/common'
+import { useUserInfo } from '/@/stores/userInfo'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { i18n } from '/@/lang/index'
 
@@ -69,10 +70,11 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             }
 
             // 自动携带token
-            let token = getAdminToken('auth')
-            if (token) {
-                // 因为Apache不使用Authorization
-                if (config.headers) config.headers.batoken = token
+            if (config.headers) {
+                let token = getAdminToken('auth')
+                if (token) config.headers.batoken = token
+                let userToken = getUserToken('auth')
+                if (userToken) config.headers['ba-user-token'] = userToken
             }
 
             return config
@@ -94,25 +96,43 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                         window.tokenRefreshing = true
                         return refreshToken()
                             .then((res) => {
-                                const adminInfo = useAdminInfo()
                                 if (res.data.type == 'admin-refresh') {
+                                    const adminInfo = useAdminInfo()
                                     adminInfo.token = res.data.token
                                     response.headers.batoken = `${res.data.token}`
-                                    window.requests.forEach((cb) => cb(res.data.token))
-                                    window.requests = []
-                                    return Axios(response.config)
+                                    window.requests.forEach((cb) => cb(res.data.token, 'admin-refresh'))
+                                } else if (res.data.type == 'user-refresh') {
+                                    const userInfo = useUserInfo()
+                                    userInfo.token = res.data.token
+                                    response.headers['ba-user-token'] = `${res.data.token}`
+                                    window.requests.forEach((cb) => cb(res.data.token, 'user-refresh'))
                                 }
+                                window.requests = []
+                                return Axios(response.config)
                             })
                             .catch((err) => {
-                                removeAdminToken()
-                                if (router.currentRoute.value.name != 'adminLogin') {
-                                    router.push({ name: 'adminLogin' })
-                                    return Promise.reject(err)
+                                if (isAdminApp()) {
+                                    removeAdminToken()
+                                    if (router.currentRoute.value.name != 'adminLogin') {
+                                        router.push({ name: 'adminLogin' })
+                                        return Promise.reject(err)
+                                    } else {
+                                        response.headers.batoken = ''
+                                        window.requests.forEach((cb) => cb('', 'admin-refresh'))
+                                        window.requests = []
+                                        return Axios(response.config)
+                                    }
                                 } else {
-                                    response.headers.batoken = ''
-                                    window.requests.forEach((cb) => cb(''))
-                                    window.requests = []
-                                    return Axios(response.config)
+                                    removeUserToken()
+                                    if (router.currentRoute.value.name != 'userLogin') {
+                                        router.push({ name: 'userLogin' })
+                                        return Promise.reject(err)
+                                    } else {
+                                        response.headers['ba-user-token'] = ''
+                                        window.requests.forEach((cb) => cb('', 'user-refresh'))
+                                        window.requests = []
+                                        return Axios(response.config)
+                                    }
                                 }
                             })
                             .finally(() => {
@@ -121,8 +141,12 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                     } else {
                         return new Promise((resolve) => {
                             // 用函数形式将 resolve 存入，等待刷新后再执行
-                            window.requests.push((token: string) => {
-                                response.headers.batoken = `${token}`
+                            window.requests.push((token: string, type: string) => {
+                                if (type == 'admin-refresh') {
+                                    response.headers.batoken = `${token}`
+                                } else {
+                                    response.headers['ba-user-token'] = `${token}`
+                                }
                                 resolve(Axios(response.config))
                             })
                         })
@@ -270,7 +294,14 @@ function removePending(config: AxiosRequestConfig) {
 function getPendingKey(config: AxiosRequestConfig) {
     let { url, method, params, data, headers } = config
     if (typeof data === 'string') data = JSON.parse(data) // response里面返回的config.data是个字符串对象
-    return [url, method, headers && headers.batoken ? headers.batoken : '', JSON.stringify(params), JSON.stringify(data)].join('&')
+    return [
+        url,
+        method,
+        headers && headers.batoken ? headers.batoken : '',
+        headers && headers['ba-user-token'] ? headers['ba-user-token'] : '',
+        JSON.stringify(params),
+        JSON.stringify(data),
+    ].join('&')
 }
 
 export function requestPayload(method: Method, data: anyObj) {
