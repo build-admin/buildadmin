@@ -8,4 +8,5 @@ return [
     'Please try again after 1 day'       => '登录失败次数超限，请在1天后再试',
     'Password is incorrect'              => '密码不正确',
     'You are not logged in'              => '你没有登录',
+    'Unknown operation'                  => '未知操作',
 ];

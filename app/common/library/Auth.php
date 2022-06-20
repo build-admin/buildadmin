@@ -5,6 +5,7 @@ namespace app\common\library;
 use ba\Random;
 use think\Exception;
 use think\facade\Db;
+use think\facade\Event;
 use think\facade\Config;
 use app\common\model\User;
 use app\common\facade\Token;
@@ -70,7 +71,7 @@ class Auth extends \ba\Auth
     }
 
     /**
-     * 根据Token初始化管理员登录态
+     * 根据Token初始化会员登录态
      * @param $token
      * @return bool
      */
@@ -107,13 +108,74 @@ class Auth extends \ba\Auth
     }
 
     /**
-     * 管理员登录
-     * @param      $username
-     * @param      $password
-     * @param bool $keeptime
+     * 会员注册
+     * @param string $username
+     * @param string $password
+     * @param string $mobile
+     * @param string $email
+     * @param int    $group
+     * @param array  $extend
      * @return bool
      */
-    public function login($username, $password, $keeptime = false)
+    public function register(string $username, string $password, string $mobile = '', string $email = '', int $group = 1, array $extend = []): bool
+    {
+        $validate = Validate::rule([
+            'mobile'   => 'mobile|unique:user',
+            'email'    => 'email|unique:user',
+            'username' => 'regex:^[a-zA-Z][a-zA-Z0-9_]{2,15}$|unique:user',
+            'password' => 'regex:^[a-zA-Z0-9_]{6,32}$',
+        ]);
+        $params   = [
+            'username' => $username,
+            'password' => $password,
+            'mobile'   => $mobile,
+            'email'    => $email,
+        ];
+        if (!$validate->check($params)) {
+            $this->setError('Registration parameter error');
+            return false;
+        }
+
+        $ip   = request()->ip();
+        $time = time();
+        $salt = Random::build('alnum', 16);
+        $data = [
+            'password'      => encrypt_password($password, $salt),
+            'group_id'      => $group,
+            'nickname'      => preg_match("/^1[3-9]{1}\d{9}$/", $username) ? substr_replace($username, '****', 3, 4) : $username,
+            'joinip'        => $ip,
+            'jointime'      => $time,
+            'lastloginip'   => $ip,
+            'lastlogintime' => $time,
+            'salt'          => $salt,
+            'status'        => 'enable',
+        ];
+        $data = array_merge($params, $data);
+        $data = array_merge($data, $extend);
+        Db::startTrans();
+        try {
+            User::create($data);
+            $this->model = User::where('username', $username)->find();
+            $this->token = Random::uuid();
+            Token::set($this->token, 'user', $this->model->id, $this->keeptime);
+            Event::trigger('user_register_successed');
+            Db::commit();
+        } catch (Exception $e) {
+            $this->setError($e->getMessage());
+            Db::rollback();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 会员登录
+     * @param string $username
+     * @param string $password
+     * @param bool   $keeptime
+     * @return bool
+     */
+    public function login(string $username, string $password, bool $keeptime): bool
     {
         // 判断账户类型
         $accountType = false;

@@ -9,7 +9,7 @@
                             <div class="login-title">
                                 {{ t('user.user.' + state.form.tab) + t('user.user.reach') + siteConfig.site_name }}
                             </div>
-                            <el-form ref="formRef" :rules="rules" :model="state.form">
+                            <el-form ref="formRef" @keyup.enter="onSubmit(formRef)" :rules="rules" :model="state.form">
                                 <!-- 注册邮箱 -->
                                 <el-form-item v-if="state.form.tab == 'register'" prop="email">
                                     <el-input
@@ -91,7 +91,7 @@
                                             <img
                                                 @click="onChangeCaptcha"
                                                 class="captcha-img"
-                                                :src="buildCaptchaUrl() + '?id=' + state.captchaId"
+                                                :src="buildCaptchaUrl() + '?id=' + state.form.captchaId"
                                                 alt=""
                                             />
                                         </el-col>
@@ -209,10 +209,14 @@ import { buildCaptchaUrl } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import { useI18n } from 'vue-i18n'
 import { buildValidatorData, validatorAccount } from '/@/utils/validate'
-import { login, logout } from '/@/api/frontend/user/index'
+import { checkIn } from '/@/api/frontend/user/index'
+import { useUserInfo } from '/@/stores/userInfo'
+import { useRouter } from 'vue-router'
 import type { ElForm, FormItemRule } from 'element-plus'
 
 const { t } = useI18n()
+const router = useRouter()
+const userInfo = useUserInfo()
 const siteConfig = useSiteConfig()
 const formRef = ref<InstanceType<typeof ElForm>>()
 const retrieveFormRef = ref<InstanceType<typeof ElForm>>()
@@ -225,10 +229,10 @@ const state = reactive({
         password: '',
         captcha: '',
         keep: false,
+        captchaId: uuid(),
     },
     formLoading: false,
     showCaptcha: false,
-    captchaId: uuid(),
     showRetrievePasswordDialog: false,
     retrievePasswordForm: {
         type: 'email',
@@ -280,14 +284,24 @@ const resize = () => {
 
 const onChangeCaptcha = () => {
     state.form.captcha = ''
-    state.captchaId = uuid()
+    state.form.captchaId = uuid()
 }
 const onSubmit = (formRef: InstanceType<typeof ElForm> | undefined = undefined) => {
     formRef!.validate((valid) => {
         if (valid) {
-            login(state.form).then((res) => {
-
-            })
+            state.formLoading = true
+            checkIn(state.form)
+                .then((res) => {
+                    state.formLoading = false
+                    userInfo.$state = res.data.userinfo
+                    router.push({ name: res.data.routeName })
+                })
+                .catch((err) => {
+                    state.formLoading = false
+                    onChangeCaptcha()
+                })
+        } else {
+            onChangeCaptcha()
         }
     })
 }
