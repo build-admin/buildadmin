@@ -11,6 +11,8 @@ class User extends Frontend
 {
     protected $noNeedLogin = ['checkIn'];
 
+    protected $noNeedPermission = ['index'];
+
     public function initialize()
     {
         parent::initialize();
@@ -26,9 +28,8 @@ class User extends Frontend
 
         $userMenus = [];
         foreach ($menus as $menu) {
-            if ($menu['name'] == 'api/user') {
-                $userMenus = $menu;
-                break;
+            if ($menu['type'] == 'menu_dir') {
+                $userMenus[] = $menu;
             }
         }
         $this->success('', [

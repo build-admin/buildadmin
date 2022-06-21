@@ -40,9 +40,15 @@ export interface NavTabs {
     activeIndex: number
     activeRoute: viewMenu | null
     tabsView: Array<viewMenu>
-    tabFullScreen: Boolean
+    tabFullScreen: boolean
     tabsViewRoutes: Array<viewMenu>
     authNode: Map<string, string[]>
+}
+
+export interface MemberCenter {
+    activeRoute: viewMenu | null
+    viewRoutes: Array<viewMenu>
+    showHeadline: boolean
 }
 
 export interface AdminInfo {
@@ -59,9 +65,17 @@ export interface UserInfo {
     id: number
     username: string
     nickname: string
+    email: string
+    mobile: string
+    gender: number
+    birthday: string
+    money: number
+    score: number
     avatar: string
     lastlogintime: string
     lastloginip: string
+    jointime: string
+    motto: string
     token: string
     refreshToken: string
 }

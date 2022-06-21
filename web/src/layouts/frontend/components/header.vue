@@ -58,6 +58,9 @@ switch (route.name) {
     background-color: #fff;
     box-shadow: 0px 0px 8px rgba(0 0 0 / 8%);
 }
+.el-header {
+    padding: 0;
+}
 .header-row {
     display: flex;
 }
@@ -90,5 +93,10 @@ switch (route.name) {
 .el-menu--horizontal > :deep(.el-sub-menu) .el-sub-menu__title,
 .el-menu--horizontal > .el-menu-item.is-active {
     border-bottom: none;
+}
+@media only screen and (max-width: 768px) {
+    .header-logo {
+        padding-left: 10px;
+    }
 }
 </style>

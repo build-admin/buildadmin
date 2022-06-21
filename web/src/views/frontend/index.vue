@@ -49,7 +49,7 @@ index().then((res) => {
         .main-container {
             display: flex;
             height: 100%;
-            width: 64%;
+            width: 66%;
             margin: 0 auto;
             align-items: center;
             justify-content: space-between;
