@@ -51,7 +51,7 @@ const init = () => {
 
         if (res.data.menus) {
             let menuRule = handleAdminRoute(res.data.menus)
-            // 更新vuex中的路由菜单数据
+            // 更新stores中的路由菜单数据
             navTabs.setTabsViewRoutes(menuRule)
 
             // 预跳转到上次路径

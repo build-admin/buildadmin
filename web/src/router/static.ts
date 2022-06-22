@@ -100,7 +100,7 @@ const adminBaseRoute: RouteRecordRaw = {
 /*
  * 会员中心基础静态路由
  */
-const userBaseRoute: RouteRecordRaw = {
+const memberCenterBaseRoute: RouteRecordRaw = {
     path: '/user',
     name: 'user',
     component: () => import('/@/layouts/frontend/user.vue'),
@@ -110,6 +110,6 @@ const userBaseRoute: RouteRecordRaw = {
 }
 
 staticRoutes.push(adminBaseRoute)
-staticRoutes.push(userBaseRoute)
+staticRoutes.push(memberCenterBaseRoute)
 
-export { staticRoutes, adminBaseRoute, userBaseRoute }
+export { staticRoutes, adminBaseRoute, memberCenterBaseRoute }

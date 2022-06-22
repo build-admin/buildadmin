@@ -49,6 +49,7 @@ export interface MemberCenter {
     activeRoute: viewMenu | null
     viewRoutes: Array<viewMenu>
     showHeadline: boolean
+    authNode: Map<string, string[]>
 }
 
 export interface AdminInfo {

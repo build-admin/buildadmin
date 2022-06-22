@@ -3,7 +3,8 @@ import { viewMenu } from '../stores/interface'
 import { isNavigationFailure, NavigationFailureType } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { useNavTabs } from '../stores/navTabs'
-import { adminBaseRoute } from '/@/router/static'
+import { useMemberCenter } from '../stores/memberCenter'
+import { adminBaseRoute, memberCenterBaseRoute } from '/@/router/static'
 import _ from 'lodash'
 import { i18n } from '/@/lang/index'
 
@@ -74,6 +75,16 @@ export const pushFirstRoute = () => {
 }
 
 /**
+ * 处理会员中心的路由
+ */
+export const handleMemberCenterRoute = (routes: any) => {
+    const viewsComponent = import.meta.globEager('/src/views/frontend/**/*.vue')
+    addRouteAll(viewsComponent, routes, memberCenterBaseRoute.name as string)
+    let menuMemberCenterBaseRoute = '/' + (memberCenterBaseRoute.name as string) + '/'
+    return handleMenuRule(_.cloneDeep(routes), menuMemberCenterBaseRoute, menuMemberCenterBaseRoute)
+}
+
+/**
  * 处理后台的路由
  */
 export const handleAdminRoute = (routes: any) => {
@@ -103,7 +114,7 @@ export const getMenuPaths = (menus: any): any[] => {
 /**
  * 后台菜单处理
  */
-const handleMenuRule = (routes: any, pathPrefix = '/', parent = '/') => {
+const handleMenuRule = (routes: any, pathPrefix = '/', parent = '/', module = 'admin') => {
     let menuRule = []
     let authNode = []
     for (const key in routes) {
@@ -136,8 +147,13 @@ const handleMenuRule = (routes: any, pathPrefix = '/', parent = '/') => {
         }
     }
     if (authNode.length) {
-        const navTabs = useNavTabs()
-        navTabs.setAuthNode(parent, authNode)
+        if (module == 'admin') {
+            const navTabs = useNavTabs()
+            navTabs.setAuthNode(parent, authNode)
+        } else if (module == 'user') {
+            const memberCenter = useMemberCenter()
+            memberCenter.setAuthNode(parent, authNode)
+        }
     }
     return menuRule
 }

@@ -5,7 +5,7 @@
             <el-row justify="center">
                 <el-col class="user-layouts" :span="16" :xs="24">
                     <Aside />
-                    <el-main>Main</el-main>
+                    <Main />
                 </el-col>
             </el-row>
             <Footer />
@@ -22,6 +22,8 @@ import { index } from '/@/api/frontend/user/index'
 import Header from '/@/layouts/frontend/components/header.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
 import Aside from '/@/layouts/frontend/components/aside.vue'
+import Main from '/@/layouts/frontend/components/main.vue'
+import { handleMemberCenterRoute } from '/@/utils/router'
 
 const router = useRouter()
 const userInfo = useUserInfo()
@@ -32,8 +34,11 @@ onMounted(() => {
 
     index().then((res) => {
         userInfo.$state = res.data.userInfo
-        memberCenter.state.viewRoutes = res.data.menus
-        memberCenter.state.showHeadline = res.data.menus.length > 1 ? true : false
+        if (res.data.menus) {
+            let menuRule = handleMemberCenterRoute(res.data.menus)
+            memberCenter.setViewRoutes(menuRule)
+            memberCenter.setShowHeadline(res.data.menus.length > 1 ? true : false)
+        }
 
         // 注册路由
         // 选中第一个菜单

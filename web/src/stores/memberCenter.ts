@@ -10,7 +10,34 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         viewRoutes: [],
         // 是否显示一级菜单标题(当有多个一级菜单分组时显示)
         showHeadline: false,
+        // 权限节点
+        authNode: new Map(),
     })
 
-    return { state }
+    const setAuthNode = (key: string, data: string[]) => {
+        state.authNode.set(key, data)
+    }
+
+    const setViewRoutes = (data: viewMenu[]): void => {
+        state.viewRoutes = encodeRoutesURI(data)
+    }
+
+    const setShowHeadline = (show: boolean): void => {
+        state.showHeadline = show
+    }
+
+    return { state, setAuthNode, setViewRoutes, setShowHeadline }
 })
+
+function encodeRoutesURI(data: viewMenu[]): viewMenu[] {
+    for (const key in data) {
+        if (data[key].type == 'iframe') {
+            data[key].path = '/user/iframe/' + encodeURIComponent(data[key].path)
+        }
+
+        if (data[key].children) {
+            data[key].children = encodeRoutesURI(data[key].children as viewMenu[])
+        }
+    }
+    return data
+}
