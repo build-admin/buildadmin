@@ -9,9 +9,12 @@ import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { index } from '/@/api/frontend/user/index'
-import { handleMemberCenterRoute, getMenuPaths, pushFirstRoute } from '/@/utils/router'
+import { handleMemberCenterRoute, getMenuPaths, getFirstRoute } from '/@/utils/router'
 import { memberCenterBaseRoute } from '/@/router/static'
+import { ElNotification } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const userInfo = useUserInfo()
@@ -39,7 +42,15 @@ onMounted(() => {
             }
 
             // 跳转到第一个菜单
-            pushFirstRoute(memberCenter.state.viewRoutes)
+            let firstRoute = getFirstRoute(memberCenter.state.viewRoutes)
+            if (firstRoute) {
+                memberCenter.activateMenu(firstRoute)
+            } else {
+                ElNotification({
+                    type: 'error',
+                    message: t('No route found to jump~'),
+                })
+            }
         }
     })
 })

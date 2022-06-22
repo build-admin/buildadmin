@@ -8,10 +8,18 @@
     </el-main>
 </template>
 
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <style scoped lang="scss">
-
+.layout-container .layout-main {
+    padding: 0 !important;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+.layout-main-scrollbar {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
 </style>

@@ -30,7 +30,7 @@ import type { ContextMenuItem, ContextmenuItemClickEmitArg } from '/@/components
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import Contextmenu from '/@/components/contextmenu/index.vue'
 import horizontalScroll from '/@/utils/horizontalScroll'
-import { pushFirstRoute } from '/@/utils/router'
+import { getFirstRoute, routePush } from '/@/utils/router'
 
 const route = useRoute()
 const router = useRouter()
@@ -117,6 +117,12 @@ const closeTab = (route: viewMenu) => {
     contextmenuRef.value.onHideContextmenu()
 }
 
+const closeAllTab = () => {
+    navTabs.closeTabs(false)
+    let firstRoute = getFirstRoute(navTabs.state.tabsViewRoutes)
+    if (firstRoute) routePush(firstRoute.name)
+}
+
 const onContextmenuItem = async (item: ContextmenuItemClickEmitArg) => {
     const { name, menu } = item
     switch (name) {
@@ -134,8 +140,7 @@ const onContextmenuItem = async (item: ContextmenuItemClickEmitArg) => {
             }
             break
         case 'closeAll':
-            navTabs.closeTabs(false)
-            pushFirstRoute()
+            closeAllTab()
             break
         case 'fullScreen':
             if (route.path !== menu?.path) {

@@ -51,4 +51,5 @@ export default {
     none: '无',
     unknown: '未知',
     weigh: '权重',
+    'No route found to jump~': '没有找到可以跳转的路由~',
 }

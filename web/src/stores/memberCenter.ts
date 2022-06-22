@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { viewMenu, MemberCenter } from '/@/stores/interface/index'
-import { clickMenu } from '/@/utils/router'
+import router from '/@/router/index'
 
 export const useMemberCenter = defineStore('memberCenter', () => {
     const state: MemberCenter = reactive({
@@ -31,7 +31,7 @@ export const useMemberCenter = defineStore('memberCenter', () => {
 
     const activateMenu = (menu: viewMenu) => {
         state.activeRoute = menu
-        clickMenu(menu)
+        router.push({ name: menu.name })
     }
 
     return { state, setAuthNode, setViewRoutes, setShowHeadline, activateMenu }

@@ -51,4 +51,5 @@ export default {
     none: 'None',
     unknown: 'Unknown',
     weigh: 'weigh',
+    'No route found to jump~': 'No route found to jump~',
 }

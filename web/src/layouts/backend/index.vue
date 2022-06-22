@@ -15,7 +15,7 @@ import Streamline from '/@/layouts/backend/container/streamline.vue'
 import { onMounted, onBeforeMount, onUnmounted } from 'vue'
 import { Session } from '/@/utils/storage'
 import { index } from '/@/api/backend'
-import { handleAdminRoute, getMenuPaths, pushFirstRoute } from '/@/utils/router'
+import { handleAdminRoute, getMenuPaths, getFirstRoute, routePush } from '/@/utils/router'
 import router from '/@/router/index'
 import { adminBaseRoute } from '/@/router/static'
 import { BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
@@ -66,7 +66,8 @@ const init = () => {
             }
 
             // 跳转到第一个菜单
-            pushFirstRoute(navTabs.state.tabsViewRoutes)
+            let firstRoute = getFirstRoute(navTabs.state.tabsViewRoutes)
+            if (firstRoute) routePush(firstRoute.name)
         }
     })
 }

@@ -4,6 +4,7 @@ import * as elIcons from '@element-plus/icons-vue'
 import router from '/@/router/index'
 import Icon from '/@/components/icon/index.vue'
 import { useNavTabs } from '/@/stores/navTabs'
+import { useMemberCenter } from '/@/stores/memberCenter'
 import { ElForm } from 'element-plus'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { useUserInfo } from '/@/stores/userInfo'
@@ -46,10 +47,13 @@ export function loadJs(url: string): void {
  */
 export function setTitleFromRoute(t: any = null) {
     const navTabs = useNavTabs()
+    const memberCenter = useMemberCenter()
     nextTick(() => {
         var webTitle: string = ''
         if (navTabs.state.activeRoute) {
             webTitle = navTabs.state.activeRoute.title
+        } else if (memberCenter.state.activeRoute) {
+            webTitle = memberCenter.state.activeRoute.title
         } else {
             webTitle =
                 t && router.currentRoute.value.meta.title ? t(router.currentRoute.value.meta.title) : (router.currentRoute.value.meta.title as string)
