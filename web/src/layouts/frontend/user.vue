@@ -67,8 +67,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.frontend-footer-brother {
-    min-height: calc(100vh - 120px);
-}
-</style>
+<style scoped lang="scss"></style>
