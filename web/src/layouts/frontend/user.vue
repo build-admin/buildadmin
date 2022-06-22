@@ -1,30 +1,18 @@
 <template>
-    <div>
-        <el-container class="is-vertical">
-            <Header />
-            <el-row justify="center">
-                <el-col class="user-layouts" :span="16" :xs="24">
-                    <Aside />
-                    <Main />
-                </el-col>
-            </el-row>
-            <Footer />
-        </el-container>
-    </div>
+    <component :is="memberCenter.state.layoutMode"></component>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useUserInfo } from '/@/stores/userInfo'
+import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { index } from '/@/api/frontend/user/index'
-import Header from '/@/layouts/frontend/components/header.vue'
-import Footer from '/@/layouts/frontend/components/footer.vue'
-import Aside from '/@/layouts/frontend/components/aside.vue'
-import Main from '/@/layouts/frontend/components/main.vue'
-import { handleMemberCenterRoute } from '/@/utils/router'
+import { handleMemberCenterRoute, getMenuPaths, pushFirstRoute } from '/@/utils/router'
+import { memberCenterBaseRoute } from '/@/router/static'
 
+const route = useRoute()
 const router = useRouter()
 const userInfo = useUserInfo()
 const memberCenter = useMemberCenter()
@@ -38,17 +26,31 @@ onMounted(() => {
             let menuRule = handleMemberCenterRoute(res.data.menus)
             memberCenter.setViewRoutes(menuRule)
             memberCenter.setShowHeadline(res.data.menus.length > 1 ? true : false)
-        }
 
-        // 注册路由
-        // 选中第一个菜单
+            // 预跳转到上次路径
+            if (route.query && route.query.url && route.query.url != memberCenterBaseRoute.path) {
+                // 检查路径是否有权限
+                let menuPaths = getMenuPaths(menuRule)
+                if (menuPaths.indexOf(route.query.url as string) !== -1) {
+                    let query = JSON.parse(route.query.query as string)
+                    router.push({ path: route.query.url as string, query: Object.keys(query).length ? query : {} })
+                    return
+                }
+            }
+
+            // 跳转到第一个菜单
+            pushFirstRoute(memberCenter.state.viewRoutes)
+        }
     })
 })
 </script>
 
-<style scoped lang="scss">
-.user-layouts {
-    display: flex;
-    padding-top: 15px;
+<!-- 只有在 components 选项中的组件可以被动态组件使用-->
+<script lang="ts">
+import Default from '/@/layouts/frontend/container/default.vue'
+export default {
+    components: { Default },
 }
-</style>
+</script>
+
+<style scoped lang="scss"></style>

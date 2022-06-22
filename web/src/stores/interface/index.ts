@@ -46,6 +46,7 @@ export interface NavTabs {
 }
 
 export interface MemberCenter {
+    layoutMode: string
     activeRoute: viewMenu | null
     viewRoutes: Array<viewMenu>
     showHeadline: boolean

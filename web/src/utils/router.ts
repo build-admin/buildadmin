@@ -58,20 +58,26 @@ export const routePush = async (name: string = '', params: anyObj = {}, path: st
     }
 }
 
-export const pushFirstRoute = () => {
-    const navTabs = useNavTabs()
+export const pushFirstRoute = (viewRoutes: viewMenu[]) => {
     let routerNames = []
     let routers = router.getRoutes()
     for (const key in routers) {
         if (routers[key].name) routerNames.push(routers[key].name)
     }
-    for (const key in navTabs.state.tabsViewRoutes) {
-        if (navTabs.state.tabsViewRoutes[key].type != 'menu_dir' && routerNames.indexOf(navTabs.state.tabsViewRoutes[key].name) !== -1) {
-            router.push({ name: navTabs.state.tabsViewRoutes[key].name })
+    let find = false
+    for (const key in viewRoutes) {
+        if (viewRoutes[key].type != 'menu_dir' && routerNames.indexOf(viewRoutes[key].name) !== -1) {
+            router.push({ name: viewRoutes[key].name })
             return true
+        } else if (viewRoutes[key].children?.length) {
+            find = pushFirstRoute(viewRoutes[key].children!)
         }
     }
-    router.go(0)
+    if (!find) {
+        router.go(0)
+        return false
+    }
+    return true
 }
 
 /**

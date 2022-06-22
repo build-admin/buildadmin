@@ -4,11 +4,11 @@
             <img class="user-avatar" :src="userInfo.avatar" alt="" />
             <p class="username">{{ userInfo.nickname }}</p>
             <el-button-group>
-                <el-button v-blur class="userinfo-button-item" :title="'积分 ' + userInfo.score" size="default" plain>
-                    <span>积分 {{ userInfo.score }}</span>
+                <el-button v-blur class="userinfo-button-item" :title="$t('user.user.integral') + ' ' + userInfo.score" size="default" plain>
+                    <span>{{ $t('user.user.integral') + ' ' + userInfo.score }}</span>
                 </el-button>
-                <el-button v-blur class="userinfo-button-item" :title="'余额' + userInfo.money" size="default" plain>
-                    <span>余额 {{ userInfo.money }}</span>
+                <el-button v-blur class="userinfo-button-item" :title="$t('user.user.balance') + ' ' + userInfo.money" size="default" plain>
+                    <span>{{ $t('user.user.balance') + ' ' + userInfo.money }}</span>
                 </el-button>
             </el-button-group>
         </div>
@@ -16,7 +16,12 @@
         <div class="user-menus">
             <template v-for="(item, idx) in memberCenter.state.viewRoutes">
                 <div v-if="memberCenter.state.showHeadline" class="user-menu-max-title">{{ item.title }}</div>
-                <div v-for="menu in item.children" class="user-menu-item">
+                <div
+                    v-for="menu in item.children"
+                    @click="memberCenter.activateMenu(menu)"
+                    class="user-menu-item"
+                    :class="memberCenter.state.activeRoute?.name == menu.name ? 'active' : ''"
+                >
                     <Icon :name="menu.icon" size="16" color="var(--color-secondary)" />
                     <span>{{ menu.title }}</span>
                 </div>
@@ -26,11 +31,9 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useMemberCenter } from '/@/stores/memberCenter'
 
-const router = useRouter()
 const userInfo = useUserInfo()
 const memberCenter = useMemberCenter()
 </script>

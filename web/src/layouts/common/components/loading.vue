@@ -18,7 +18,7 @@ import router from '/@/router/index'
 let timer: NodeJS.Timer
 
 const state = reactive({
-    maximumWait: 1000 * 10,
+    maximumWait: 1000 * 6,
     showReload: false,
 })
 

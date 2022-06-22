@@ -6,7 +6,7 @@ export default {
     noPower: 'No access',
     noTitle: 'no title',
     'Embedded iframe': 'Embedded iframe',
-    adminMainLoading: 'Loading...',
+    Loading: 'Loading...',
     User: 'Member Center',
     userLogin: 'User Login',
 }

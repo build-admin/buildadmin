@@ -56,6 +56,13 @@ const staticRoutes: Array<RouteRecordRaw> = [
         },
     },
     {
+        // 会员中心找不到页面了
+        path: '/user:path(.*)*',
+        redirect: (to) => {
+            return { name: 'userMainLoading', query: { url: to.path, query: JSON.stringify(to.query) } }
+        },
+    },
+    {
         // 无权限访问
         path: '/401',
         name: 'noPower',
@@ -81,9 +88,9 @@ const adminBaseRoute: RouteRecordRaw = {
         {
             path: 'loading',
             name: 'adminMainLoading',
-            component: () => import('/@/views/backend/loading.vue'),
+            component: () => import('/@/layouts/common/components/loading.vue'),
             meta: {
-                title: pageTitle('adminMainLoading'),
+                title: pageTitle('Loading'),
             },
         },
         {
@@ -104,9 +111,28 @@ const memberCenterBaseRoute: RouteRecordRaw = {
     path: '/user',
     name: 'user',
     component: () => import('/@/layouts/frontend/user.vue'),
+    redirect: '/user/loading',
     meta: {
         title: pageTitle('User'),
     },
+    children: [
+        {
+            path: 'loading',
+            name: 'userMainLoading',
+            component: () => import('/@/layouts/common/components/loading.vue'),
+            meta: {
+                title: pageTitle('Loading'),
+            },
+        },
+        {
+            path: 'iframe/:url',
+            name: 'layoutIframe',
+            component: () => import('/@/layouts/common/router-view/iframe.vue'),
+            meta: {
+                title: pageTitle('Embedded iframe'),
+            },
+        },
+    ],
 }
 
 staticRoutes.push(adminBaseRoute)

@@ -66,7 +66,7 @@ const init = () => {
             }
 
             // 跳转到第一个菜单
-            pushFirstRoute()
+            pushFirstRoute(navTabs.state.tabsViewRoutes)
         }
     })
 }

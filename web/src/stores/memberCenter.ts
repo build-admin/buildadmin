@@ -1,9 +1,12 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { viewMenu, MemberCenter } from '/@/stores/interface/index'
+import { clickMenu } from '/@/utils/router'
 
 export const useMemberCenter = defineStore('memberCenter', () => {
     const state: MemberCenter = reactive({
+        // 布局模式
+        layoutMode: 'Default',
         // 当前激活菜单
         activeRoute: null,
         // 从后台加载到的菜单
@@ -26,7 +29,12 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         state.showHeadline = show
     }
 
-    return { state, setAuthNode, setViewRoutes, setShowHeadline }
+    const activateMenu = (menu: viewMenu) => {
+        state.activeRoute = menu
+        clickMenu(menu)
+    }
+
+    return { state, setAuthNode, setViewRoutes, setShowHeadline, activateMenu }
 })
 
 function encodeRoutesURI(data: viewMenu[]): viewMenu[] {
