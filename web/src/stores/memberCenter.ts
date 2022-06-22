@@ -2,6 +2,7 @@ import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { viewMenu, MemberCenter } from '/@/stores/interface/index'
 import router from '/@/router/index'
+import { RouteLocationNormalized } from 'vue-router'
 
 export const useMemberCenter = defineStore('memberCenter', () => {
     const state: MemberCenter = reactive({
@@ -29,12 +30,16 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         state.showHeadline = show
     }
 
+    const setActiveRoute = (route: RouteLocationNormalized | viewMenu) => {
+        state.activeRoute = route
+    }
+
     const activateMenu = (menu: viewMenu) => {
         state.activeRoute = menu
         router.push({ name: menu.name })
     }
 
-    return { state, setAuthNode, setViewRoutes, setShowHeadline, activateMenu }
+    return { state, setAuthNode, setViewRoutes, setShowHeadline, activateMenu, setActiveRoute }
 })
 
 function encodeRoutesURI(data: viewMenu[]): viewMenu[] {

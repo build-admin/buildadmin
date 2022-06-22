@@ -1,5 +1,6 @@
 // 变量名对应含义请在 /stores/* 里边找
 import type { Component } from 'vue'
+import { RouteLocationNormalized } from 'vue-router'
 
 export interface Layout {
     showDrawer: boolean
@@ -47,7 +48,7 @@ export interface NavTabs {
 
 export interface MemberCenter {
     layoutMode: string
-    activeRoute: viewMenu | null
+    activeRoute: viewMenu | RouteLocationNormalized | null
     viewRoutes: Array<viewMenu>
     showHeadline: boolean
     authNode: Map<string, string[]>

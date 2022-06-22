@@ -5,20 +5,23 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useUserInfo } from '/@/stores/userInfo'
-import { useRoute } from 'vue-router'
-import { useRouter } from 'vue-router'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { index } from '/@/api/frontend/user/index'
 import { handleMemberCenterRoute, getMenuPaths, getFirstRoute } from '/@/utils/router'
 import { memberCenterBaseRoute } from '/@/router/static'
 import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const userInfo = useUserInfo()
 const memberCenter = useMemberCenter()
+
+onBeforeRouteUpdate((to) => {
+    memberCenter.setActiveRoute(to)
+})
 
 onMounted(() => {
     if (!userInfo.token) return router.push({ name: 'userLogin' })
