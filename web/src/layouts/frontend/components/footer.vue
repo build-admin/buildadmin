@@ -15,9 +15,7 @@ const siteConfig = useSiteConfig()
 
 <style scoped lang="scss">
 .footer {
-    position: fixed;
     display: flex;
-    bottom: 0;
     width: 100%;
     justify-content: center;
     align-items: center;

@@ -1,5 +1,6 @@
 import { CSSProperties } from 'vue'
 import { useNavTabs } from '/@/stores/navTabs'
+import { isAdminApp } from '/@/utils/common'
 
 /**
  * main高度
@@ -7,11 +8,14 @@ import { useNavTabs } from '/@/stores/navTabs'
  * @returns CSSProperties
  */
 export function mainHeight(extra: number = 0): CSSProperties {
-    const navTabs = useNavTabs()
-
     let height = extra
-    if (!navTabs.state.tabFullScreen) {
-        height += 75
+    if (isAdminApp()) {
+        const navTabs = useNavTabs()
+        if (!navTabs.state.tabFullScreen) {
+            height += 75
+        }
+    } else {
+        height += 60
     }
     return {
         height: 'calc(100vh - ' + height.toString() + 'px)',

@@ -101,6 +101,8 @@ index().then((res) => {
 .footer {
     color: var(--color-secondary);
     background-color: transparent;
+    position: fixed;
+    bottom: 0;
 }
 
 @media screen and (max-width: 1024px) {

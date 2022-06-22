@@ -2,7 +2,7 @@
     <div class="login">
         <el-container class="is-vertical">
             <Header />
-            <el-main>
+            <el-main class="frontend-footer-brother">
                 <el-row justify="center">
                     <el-col :span="16" :xs="24">
                         <div class="login-box">

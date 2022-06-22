@@ -53,7 +53,7 @@ export function setTitleFromRoute(t: any = null) {
         if (navTabs.state.activeRoute) {
             webTitle = navTabs.state.activeRoute.title
         } else if (memberCenter.state.activeRoute) {
-            webTitle = memberCenter.state.activeRoute.title
+            webTitle = router.currentRoute.value.meta.title as string
         } else {
             webTitle =
                 t && router.currentRoute.value.meta.title ? t(router.currentRoute.value.meta.title) : (router.currentRoute.value.meta.title as string)

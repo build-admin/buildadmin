@@ -1,25 +1,21 @@
 <template>
     <el-main class="layout-main">
-        <el-scrollbar class="layout-main-scrollbar" ref="mainScrollbarRef">
-            <router-view v-slot="{ Component }">
-                <component :is="Component" :key="Component" />
-            </router-view>
-        </el-scrollbar>
+        <router-view v-slot="{ Component }">
+            <transition :name="config.layout.mainAnimation" mode="out-in">
+                <component :is="Component" />
+            </transition>
+        </router-view>
     </el-main>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useConfig } from '/@/stores/config'
+
+const config = useConfig()
+</script>
 
 <style scoped lang="scss">
-.layout-container .layout-main {
+.layout-main {
     padding: 0 !important;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-}
-.layout-main-scrollbar {
-    width: 100%;
-    position: relative;
-    overflow: hidden;
 }
 </style>
