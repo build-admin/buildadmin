@@ -39,6 +39,19 @@ export function postProfile(params: anyObj) {
     )
 }
 
+export function changePassword(params: anyObj): ApiPromise {
+    return createAxios(
+        {
+            url: accountUrl + 'changePassword',
+            method: 'POST',
+            data: params,
+        },
+        {
+            showSuccessMessage: true,
+        }
+    ) as ApiPromise
+}
+
 export function logout() {
     return createAxios({
         url: controllerUrl + 'logout',

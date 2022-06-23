@@ -21,7 +21,8 @@ class Account extends Validate
      * 验证场景
      */
     protected $scene = [
-        'edit' => ['avatar', 'nickname', 'birthday'],
+        'edit'           => ['avatar', 'nickname', 'birthday'],
+        'changePassword' => ['password'],
     ];
 
     public function __construct()

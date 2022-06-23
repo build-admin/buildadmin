@@ -44,4 +44,7 @@ export default {
     'Growth statistics': 'Growth statistics',
     'Change Password': 'Change Password',
     'User nickname': 'User nickname',
+    'Old password': 'Old password',
+    'Confirm new password': 'Confirm new password',
+    'The duplicate password does not match the new password': 'The duplicate password does not match the new password',
 }

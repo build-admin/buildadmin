@@ -220,6 +220,19 @@ class Auth extends \ba\Auth
     }
 
     /**
+     * 检查旧密码是否正确
+     * @return bool
+     */
+    public function checkPassword($password)
+    {
+        if ($this->model->password != encrypt_password($password, $this->model->salt)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * 登录成功
      * @return bool
      */

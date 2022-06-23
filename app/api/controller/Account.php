@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use ba\Date;
+use ba\Random;
 use think\facade\Db;
 use app\common\controller\Frontend;
 use think\db\exception\PDOException;
@@ -49,7 +50,7 @@ class Account extends Frontend
         if ($this->request->isPost()) {
             $data = $this->request->only(['avatar', 'nickname', 'gender', 'birthday', 'motto']);
             if (!$data['birthday']) $data['birthday'] = null;
-            
+
             Db::startTrans();
             try {
                 $validate = new AccountValidate();
@@ -65,6 +66,34 @@ class Account extends Frontend
             }
 
             $this->success(__('Data updated successfully~'));
+        }
+    }
+
+    public function changePassword()
+    {
+        if ($this->request->isPost()) {
+            $params = $this->request->only(['oldPassword', 'newPassword']);
+
+            if (!$this->auth->checkPassword($params['oldPassword'])) {
+                $this->error(__('Old password error'));
+            }
+
+            Db::startTrans();
+            try {
+                $validate = new AccountValidate();
+                $validate->scene('changePassword')->check(['password' => $params['newPassword']]);
+                $this->auth->getUser()->resetPassword($this->auth->id, $params['newPassword']);
+                Db::commit();
+            } catch (ValidateException $e) {
+                Db::rollback();
+                $this->error($e->getMessage());
+            } catch (PDOException $e) {
+                Db::rollback();
+                $this->error($e->getMessage());
+            }
+
+            $this->auth->logout();
+            $this->success(__('Password has been changed, please login again~'));
         }
     }
 
