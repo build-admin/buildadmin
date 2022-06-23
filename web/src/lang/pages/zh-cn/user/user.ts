@@ -5,6 +5,7 @@ export default {
     grouping: '分组',
     'head portrait': '头像',
     Gender: '性别',
+    secrecy: '保密',
     male: '男',
     female: '女',
     mobile: '手机号',
@@ -41,4 +42,6 @@ export default {
     'Account information': '账户信息',
     'personal data': '个人资料',
     'Growth statistics': '增长统计',
+    'Change Password': '修改密码',
+    'User nickname': '用户昵称',
 }

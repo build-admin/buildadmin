@@ -5,9 +5,19 @@ namespace app\api\controller;
 use ba\Date;
 use think\facade\Db;
 use app\common\controller\Frontend;
+use think\db\exception\PDOException;
+use think\exception\ValidateException;
+use app\api\validate\Account as AccountValidate;
 
 class Account extends Frontend
 {
+
+    protected $model = null;
+
+    public function initialize()
+    {
+        parent::initialize();
+    }
 
     public function overview()
     {
@@ -32,6 +42,30 @@ class Account extends Frontend
             'score' => $score,
             'money' => $money,
         ]);
+    }
+
+    public function profile()
+    {
+        if ($this->request->isPost()) {
+            $data = $this->request->only(['avatar', 'nickname', 'gender', 'birthday', 'motto']);
+            if (!$data['birthday']) $data['birthday'] = null;
+            
+            Db::startTrans();
+            try {
+                $validate = new AccountValidate();
+                $validate->scene('edit')->check($data);
+                $this->auth->getUser()->where('id', $this->auth->id)->update($data);
+                Db::commit();
+            } catch (ValidateException $e) {
+                Db::rollback();
+                $this->error($e->getMessage());
+            } catch (PDOException $e) {
+                Db::rollback();
+                $this->error($e->getMessage());
+            }
+
+            $this->success(__('Data updated successfully~'));
+        }
     }
 
 }

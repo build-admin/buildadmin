@@ -8,7 +8,7 @@
                 </div>
                 <el-menu :default-active="state.activeMenu" class="frontend-header-menu" mode="horizontal" :ellipsis="false">
                     <el-menu-item @click="router.push({ name: '/' })" v-blur index="index">{{ $t('index.index') }}</el-menu-item>
-                    <el-menu-item @click="router.push({ name: 'userLogin' })" v-blur index="user">{{ $t('index.Member Center') }}</el-menu-item>
+                    <el-menu-item @click="router.push({ name: 'user' })" v-blur index="user">{{ $t('index.Member Center') }}</el-menu-item>
                     <el-sub-menu v-blur index="switch-language">
                         <template #title>{{ $t('index.language') }}</template>
                         <el-menu-item

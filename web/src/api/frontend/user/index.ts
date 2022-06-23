@@ -26,6 +26,19 @@ export function overview() {
     })
 }
 
+export function postProfile(params: anyObj) {
+    return createAxios(
+        {
+            url: accountUrl + 'profile',
+            method: 'POST',
+            data: params,
+        },
+        {
+            showSuccessMessage: true,
+        }
+    )
+}
+
 export function logout() {
     return createAxios({
         url: controllerUrl + 'logout',

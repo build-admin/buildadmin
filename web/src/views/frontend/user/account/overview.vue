@@ -167,16 +167,10 @@ onBeforeMount(() => {
 </script>
 
 <style scoped lang="scss">
-.user-views {
-    padding-left: 15px;
-    .user-views-card {
-        margin-bottom: 15px;
-    }
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .overview-userinfo {
     display: flex;

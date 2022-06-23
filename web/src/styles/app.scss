@@ -155,11 +155,17 @@ body,
 }
 /* 页面切换动画-e */
 
-/* 前台-实现绝对底部元素的兄弟元素专用类-s */
+/* 会员中心相关-s */
 .frontend-footer-brother {
     min-height: calc(100vh - 120px);
 }
-/* 前台-绝对底部元素的兄弟元素-e */
+.user-views {
+    padding-left: 15px;
+    .user-views-card {
+        margin-bottom: 15px;
+    }
+}
+/* 会员中心-e */
 
 /* 自适应-s */
 @media screen and (max-width: 768px) {

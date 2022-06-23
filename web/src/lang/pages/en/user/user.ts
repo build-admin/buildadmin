@@ -5,6 +5,7 @@ export default {
     grouping: 'Group',
     'head portrait': 'head portrait',
     Gender: 'Gender',
+    secrecy: 'Secrecy',
     male: 'male',
     female: 'female',
     mobile: 'Mobile',
@@ -41,4 +42,6 @@ export default {
     'Account information': 'Account information',
     'personal data': 'personal data',
     'Growth statistics': 'Growth statistics',
+    'Change Password': 'Change Password',
+    'User nickname': 'User nickname',
 }
