@@ -73,8 +73,8 @@ index().then((res) => {
     }
 }
 .header {
-    background-color: transparent;
-    box-shadow: none;
+    background-color: transparent !important;
+    box-shadow: none !important;
     position: fixed;
     width: 100%;
     :deep(.header-logo) {
@@ -100,7 +100,7 @@ index().then((res) => {
 }
 .footer {
     color: var(--color-secondary);
-    background-color: transparent;
+    background-color: transparent !important;
     position: fixed;
     bottom: 0;
 }

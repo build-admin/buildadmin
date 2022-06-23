@@ -199,7 +199,7 @@ class Auth
         }
         foreach ($this->rules as $key => $rule) {
             $rules[$rule['id']] = strtolower($rule['name']);
-            if ($rule['keepalive']) {
+            if (isset($rule['keepalive']) && $rule['keepalive']) {
                 $this->rules[$key]['keepAlive'] = $rule['name'];
             }
             unset($this->rules[$key]['keepalive']);
