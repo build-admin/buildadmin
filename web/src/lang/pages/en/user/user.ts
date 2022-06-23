@@ -48,4 +48,5 @@ export default {
     'Confirm new password': 'Confirm new password',
     'The duplicate password does not match the new password': 'The duplicate password does not match the new password',
     'Logout login': 'Logout login',
+    'Please enter your current password': 'Please enter your current password',
 }

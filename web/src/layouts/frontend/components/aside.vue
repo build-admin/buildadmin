@@ -7,10 +7,24 @@
             </div>
             <p class="username">{{ userInfo.nickname }}</p>
             <el-button-group>
-                <el-button v-blur class="userinfo-button-item" :title="$t('user.user.integral') + ' ' + userInfo.score" size="default" plain>
+                <el-button
+                    @click="$router.push({ name: 'account/integral' })"
+                    v-blur
+                    class="userinfo-button-item"
+                    :title="$t('user.user.integral') + ' ' + userInfo.score"
+                    size="default"
+                    plain
+                >
                     <span>{{ $t('user.user.integral') + ' ' + userInfo.score }}</span>
                 </el-button>
-                <el-button v-blur class="userinfo-button-item" :title="$t('user.user.balance') + ' ' + userInfo.money" size="default" plain>
+                <el-button
+                    @click="$router.push({ name: 'account/balance' })"
+                    v-blur
+                    class="userinfo-button-item"
+                    :title="$t('user.user.balance') + ' ' + userInfo.money"
+                    size="default"
+                    plain
+                >
                     <span>{{ $t('user.user.balance') + ' ' + userInfo.money }}</span>
                 </el-button>
             </el-button-group>

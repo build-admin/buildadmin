@@ -37,9 +37,13 @@
                     <div class="welcome-words">{{ userInfo.nickname + $t('utils.comma') + getGreet() }}</div>
                     <el-row class="data-item">
                         <el-col :span="4">{{ $t('user.user.integral') }}</el-col>
-                        <el-col :span="8">{{ userInfo.score }}</el-col>
+                        <el-col :span="8">
+                            <el-link @click="router.push({ name: 'account/integral' })" type="primary">{{ userInfo.score }}</el-link>
+                        </el-col>
                         <el-col :span="4">{{ $t('user.user.balance') }}</el-col>
-                        <el-col :span="8">{{ userInfo.money }}</el-col>
+                        <el-col :span="8">
+                            <el-link @click="router.push({ name: 'account/balance' })" type="primary">{{ userInfo.money }}</el-link>
+                        </el-col>
                     </el-row>
                     <el-row class="data-item">
                         <el-col :span="4">{{ $t('user.user.Last login') }}</el-col>

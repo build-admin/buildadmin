@@ -9,6 +9,7 @@
                         v-model="state.form.oldPassword"
                         prop="oldPassword"
                         :input-attr="{ 'show-password': true }"
+                        :placeholder="t('user.user.Please enter your current password')"
                     />
                     <FormItem
                         :label="t('user.user.New password')"
@@ -16,6 +17,7 @@
                         v-model="state.form.newPassword"
                         prop="newPassword"
                         :input-attr="{ 'show-password': true }"
+                        :placeholder="t('Please input field', { field: t('user.user.New password') })"
                     />
                     <FormItem
                         :label="t('user.user.Confirm new password')"
@@ -25,6 +27,7 @@
                         :input-attr="{
                             'show-password': true,
                         }"
+                        :placeholder="t('Please input field', { field: t('user.user.Confirm new password') })"
                     />
                     <el-form-item class="submit-buttons">
                         <el-button @click="onResetForm(formRef)">{{ $t('Reset') }}</el-button>
