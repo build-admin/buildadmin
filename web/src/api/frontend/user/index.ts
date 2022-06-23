@@ -74,12 +74,12 @@ export function getIntegralLog(page: number, pageSize: number): ApiPromise {
     }) as ApiPromise
 }
 
-export function logout() {
+export function postLogout(): ApiPromise {
     return createAxios({
         url: controllerUrl + 'logout',
         method: 'POST',
         data: {
             refresh_token: getUserToken('refresh'),
         },
-    })
+    }) as ApiPromise
 }

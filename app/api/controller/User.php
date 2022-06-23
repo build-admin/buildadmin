@@ -3,13 +3,14 @@
 namespace app\api\controller;
 
 use ba\Captcha;
+use app\common\facade\Token;
 use app\common\controller\Frontend;
 use think\exception\ValidateException;
 use app\api\validate\User as UserValidate;
 
 class User extends Frontend
 {
-    protected $noNeedLogin = ['checkIn'];
+    protected $noNeedLogin = ['checkIn', 'logout'];
 
     protected $noNeedPermission = ['index'];
 
@@ -84,6 +85,16 @@ class User extends Frontend
                 $msg = $msg ? $msg : __('Check in failed, please try again or contact the website administrator~');
                 $this->error($msg);
             }
+        }
+    }
+
+    public function logout()
+    {
+        if ($this->request->isPost()) {
+            $refreshToken = $this->request->post('refresh_token', '');
+            if ($refreshToken) Token::delete((string)$refreshToken);
+            $this->auth->logout();
+            $this->success();
         }
     }
 }

@@ -47,4 +47,5 @@ export default {
     'Old password': 'Old password',
     'Confirm new password': 'Confirm new password',
     'The duplicate password does not match the new password': 'The duplicate password does not match the new password',
+    'Logout login': 'Logout login',
 }
