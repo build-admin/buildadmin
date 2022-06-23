@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'unfold']"
-            :quick-search-placeholder="'通过用户名和昵称模糊搜索'"
+            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.menu.Rule title') })"
             @action="baTable.onTableHeaderAction"
         />
 
@@ -37,22 +37,26 @@ const baTable = new baTableClass(
         expandAll: true,
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: '标题', prop: 'title', align: 'left' },
-            { label: '图标', prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
-            { label: '名称', prop: 'name', align: 'center', 'show-overflow-tooltip': true },
+            { label: t('auth.menu.title'), prop: 'title', align: 'left' },
+            { label: t('auth.menu.Icon'), prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
+            { label: t('auth.menu.name'), prop: 'name', align: 'center', 'show-overflow-tooltip': true },
             {
-                label: '类型',
+                label: t('auth.menu.type'),
                 prop: 'type',
                 align: 'center',
                 render: 'tag',
                 custom: { menu: 'danger', menu_dir: 'success', route: 'info' },
-                replaceValue: { menu: '会员中心菜单', menu_dir: '会员中心菜单目录', route: '普通路由' },
+                replaceValue: {
+                    menu: t('user.rule.Member center menu items'),
+                    menu_dir: t('user.rule.Member center menu contents'),
+                    route: t('user.rule.Normal routing'),
+                },
             },
-            { label: '状态', prop: 'status', align: 'center', width: '80', render: 'switch' },
-            { label: '更新时间', prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
-            { label: '创建时间', prop: 'createtime', align: 'center', width: '160', render: 'datetime' },
+            { label: t('state'), prop: 'status', align: 'center', width: '80', render: 'switch' },
+            { label: t('updatetime'), prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
+            { label: t('createtime'), prop: 'createtime', align: 'center', width: '160', render: 'datetime' },
             {
-                label: '操作',
+                label: t('operate'),
                 align: 'center',
                 width: '130',
                 render: 'buttons',

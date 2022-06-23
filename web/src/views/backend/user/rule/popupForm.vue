@@ -30,87 +30,119 @@
                     <FormItem
                         type="remoteSelect"
                         prop="pid"
-                        label="上级菜单规则"
+                        :label="t('auth.menu.Superior menu rule')"
                         v-model="baTable.form.items!.pid"
-                        placeholder="点击选择"
+                        :placeholder="t('Click Select')"
                         :input-attr="{
                             params: { isTree: true },
                             field: 'title',
                             'remote-url': baTable.api.actionUrl.get('index'),
                         }"
                     />
-                    <el-form-item label="规则类型">
-                        <el-radio class="ba-el-radio" v-model="baTable.form.items!.type" label="route" :border="true">普通路由</el-radio>
-                        <el-radio class="ba-el-radio" v-model="baTable.form.items!.type" label="menu_dir" :border="true">会员中心菜单目录</el-radio>
-                        <el-radio class="ba-el-radio" v-model="baTable.form.items!.type" label="menu" :border="true">会员中心菜单项</el-radio>
+                    <el-form-item :label="t('auth.menu.Rule type')">
+                        <el-radio class="ba-el-radio" v-model="baTable.form.items!.type" label="route" :border="true">{{
+                            t('user.rule.Normal routing')
+                        }}</el-radio>
+                        <el-radio class="ba-el-radio" v-model="baTable.form.items!.type" label="menu_dir" :border="true">{{
+                            t('user.rule.Member center menu contents')
+                        }}</el-radio>
+                        <el-radio class="ba-el-radio" v-model="baTable.form.items!.type" label="menu" :border="true">{{
+                            t('user.rule.Member center menu items')
+                        }}</el-radio>
                     </el-form-item>
-                    <el-form-item prop="title" label="规则标题">
-                        <el-input v-model="baTable.form.items!.title" type="string" placeholder="请输入菜单规则标题"></el-input>
+                    <el-form-item prop="title" :label="t('auth.menu.Rule title')">
+                        <el-input
+                            v-model="baTable.form.items!.title"
+                            type="string"
+                            :placeholder="t('Please input field', { field: t('auth.menu.Rule title') })"
+                        ></el-input>
                     </el-form-item>
-                    <el-form-item prop="name" label="规则名称">
-                        <el-input v-model="baTable.form.items!.name" type="string" placeholder="英文名称"></el-input>
-                        <div class="block-help">将注册为web端路由名称，同时作为server端API验权使用</div>
+                    <el-form-item prop="name" :label="t('auth.menu.Rule name')">
+                        <el-input v-model="baTable.form.items!.name" type="string" :placeholder="t('user.rule.English name')"></el-input>
+                        <div class="block-help">
+                            {{ t('auth.menu.It will be registered as the web side routing name and used as the server side API authentication') }}
+                        </div>
                     </el-form-item>
-                    <el-form-item v-if="baTable.form.items!.type != 'button'" label="路由路径">
-                        <el-input v-model="baTable.form.items!.path" type="string" placeholder="web端路由路径(path)"></el-input>
+                    <el-form-item v-if="baTable.form.items!.type != 'button'" :label="t('auth.menu.Routing path')">
+                        <el-input v-model="baTable.form.items!.path" type="string" :placeholder="t('user.rule.Web side routing path')"></el-input>
                     </el-form-item>
                     <FormItem
                         v-if="baTable.form.items!.type != 'button'"
                         type="icon"
-                        label="规则图标"
+                        :label="t('auth.menu.Rule Icon')"
                         v-model="baTable.form.items!.icon"
                         :input-attr="{ 'show-icon-name': true }"
                     />
-                    <el-form-item v-if="baTable.form.items!.type == 'menu'" label="菜单类型">
-                        <el-radio v-model="baTable.form.items!.menu_type" label="tab" :border="true">选项卡</el-radio>
-                        <el-radio v-model="baTable.form.items!.menu_type" label="link" :border="true">链接(站外)</el-radio>
+                    <el-form-item v-if="baTable.form.items!.type == 'menu'" :label="t('auth.menu.Menu type')">
+                        <el-radio v-model="baTable.form.items!.menu_type" label="tab" :border="true">{{ t('auth.menu.Menu type tab') }}</el-radio>
+                        <el-radio v-model="baTable.form.items!.menu_type" label="link" :border="true">{{
+                            t('auth.menu.Menu type link (offsite)')
+                        }}</el-radio>
                         <el-radio v-model="baTable.form.items!.menu_type" label="iframe" :border="true">Iframe</el-radio>
                     </el-form-item>
-                    <el-form-item prop="url" v-if="baTable.form.items!.menu_type != 'tab'" label="链接地址">
-                        <el-input v-model="baTable.form.items!.url" type="string" placeholder="请输入链接或Iframe的URL地址"></el-input>
+                    <el-form-item prop="url" v-if="baTable.form.items!.menu_type != 'tab'" :label="t('auth.menu.Link address')">
+                        <el-input
+                            v-model="baTable.form.items!.url"
+                            type="string"
+                            :placeholder="t('auth.menu.Please enter the URL address of the link or iframe')"
+                        ></el-input>
                     </el-form-item>
-                    <el-form-item v-if="baTable.form.items!.type == 'menu' && baTable.form.items!.menu_type == 'tab'" label="组件路径">
+                    <el-form-item
+                        v-if="baTable.form.items!.type == 'menu' && baTable.form.items!.menu_type == 'tab'"
+                        :label="t('auth.menu.Component path')"
+                    >
                         <el-input
                             v-model="baTable.form.items!.component"
                             type="string"
-                            placeholder="web端组件路径，请以/src开头，如:/src/views/backend/dashboard.vue"
+                            :placeholder="t('user.rule.For example, if you add account/overview as a route only')"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item v-if="baTable.form.items!.type == 'menu' && baTable.form.items!.menu_type == 'tab'" label="扩展属性">
-                        <el-select class="w100" v-model="baTable.form.items!.extend" placeholder="请选择扩展属性">
-                            <el-option label="无" value="none"></el-option>
-                            <el-option label="只添加为路由" value="add_rules_only"></el-option>
-                            <el-option label="只添加为菜单" value="add_menu_only"></el-option>
+                    <el-form-item
+                        v-if="baTable.form.items!.type == 'menu' && baTable.form.items!.menu_type == 'tab'"
+                        :label="t('auth.menu.Extended properties')"
+                    >
+                        <el-select
+                            class="w100"
+                            v-model="baTable.form.items!.extend"
+                            :placeholder="t('Please select field', { field: t('auth.menu.Extended properties') })"
+                        >
+                            <el-option :label="t('auth.menu.none')" value="none"></el-option>
+                            <el-option :label="t('auth.menu.Add as route only')" value="add_rules_only"></el-option>
+                            <el-option :label="t('auth.menu.Add as menu only')" value="add_menu_only"></el-option>
                         </el-select>
                         <div class="block-help">
-                            比如将`auth/menu`只添加为路由，那么可以另外将`auth/menu`、`auth/menu/:a`、`auth/menu/:b/:c`只添加为菜单
+                            {{ t('user.rule.Web side component path, please start with /src, such as: /src/views/frontend/index') }}
                         </div>
                     </el-form-item>
-                    <el-form-item label="规则备注">
+                    <el-form-item :label="t('auth.menu.Rule comments')">
                         <el-input
                             @keyup.enter.stop=""
                             @keyup.ctrl.enter="baTable.onSubmit(formRef)"
                             v-model="baTable.form.items!.remark"
                             type="textarea"
                             :autosize="{ minRows: 2, maxRows: 5 }"
-                            placeholder="请输入规则备注"
+                            :placeholder="t('Please input field', { field: t('auth.menu.Rule comments') })"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item label="规则权重">
-                        <el-input v-model="baTable.form.items!.weigh" type="number" placeholder="请输入菜单规则权重(排序依据)"></el-input>
+                    <el-form-item :label="t('auth.menu.Rule weight')">
+                        <el-input
+                            v-model="baTable.form.items!.weigh"
+                            type="number"
+                            :placeholder="t('auth.menu.Please enter the weight of menu rule (sort by)')"
+                        ></el-input>
                     </el-form-item>
-                    <el-form-item label="状态">
-                        <el-radio v-model="baTable.form.items!.status" label="0" :border="true">禁用</el-radio>
-                        <el-radio v-model="baTable.form.items!.status" label="1" :border="true">启用</el-radio>
+                    <el-form-item :label="t('state')">
+                        <el-radio v-model="baTable.form.items!.status" label="0" :border="true">{{ t('Disable') }}</el-radio>
+                        <el-radio v-model="baTable.form.items!.status" label="1" :border="true">{{ t('Enable') }}</el-radio>
                     </el-form-item>
                 </el-form>
             </div>
         </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
-                <el-button @click="baTable.toggleForm('')">取消</el-button>
+                <el-button @click="baTable.toggleForm('')">{{ t('Cancel') }}</el-button>
                 <el-button v-blur :loading="baTable.form.submitLoading" @click="baTable.onSubmit(formRef)" type="primary">
-                    {{ baTable.form.operateIds && baTable.form.operateIds.length > 1 ? '保存并编辑下一项' : '保存' }}
+                    {{ baTable.form.operateIds && baTable.form.operateIds.length > 1 ? t('Save and edit next item') : t('Save') }}
                 </el-button>
             </div>
         </template>
@@ -133,7 +165,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     title: [
         {
             required: true,
-            message: '请输入规则标题',
+            message: t('Please input field', { field: t('auth.menu.Rule title') }),
             trigger: 'blur',
         },
     ],
@@ -144,7 +176,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
                     return callback()
                 }
                 if (parseInt(val) == parseInt(baTable.form.items!.id)) {
-                    return callback(new Error('上级菜单规则不能是规则本身'))
+                    return callback(new Error(t('auth.menu.The superior menu rule cannot be the rule itself')))
                 }
                 return callback()
             },
@@ -154,14 +186,14 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     name: [
         {
             required: true,
-            message: '请输入规则名称',
+            message: t('Please input field', { field: t('auth.menu.Rule name') }),
             trigger: 'blur',
         },
     ],
     url: [
         {
             type: 'url',
-            message: '请输入正确的Url',
+            message: t('auth.menu.Please enter the correct URL'),
             trigger: 'blur',
         },
     ],
