@@ -52,6 +52,28 @@ export function changePassword(params: anyObj): ApiPromise {
     ) as ApiPromise
 }
 
+export function getBalanceLog(page: number, pageSize: number): ApiPromise {
+    return createAxios({
+        url: accountUrl + 'balance',
+        method: 'GET',
+        params: {
+            page: page,
+            limit: pageSize,
+        },
+    }) as ApiPromise
+}
+
+export function getIntegralLog(page: number, pageSize: number): ApiPromise {
+    return createAxios({
+        url: accountUrl + 'integral',
+        method: 'GET',
+        params: {
+            page: page,
+            limit: pageSize,
+        },
+    }) as ApiPromise
+}
+
 export function logout() {
     return createAxios({
         url: controllerUrl + 'logout',

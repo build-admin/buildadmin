@@ -16,6 +16,8 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         showHeadline: false,
         // 权限节点
         authNode: new Map(),
+        // 收缩布局
+        shrink: false,
     })
 
     const setAuthNode = (key: string, data: string[]) => {
@@ -39,7 +41,11 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         router.push({ name: menu.name })
     }
 
-    return { state, setAuthNode, setViewRoutes, setShowHeadline, activateMenu, setActiveRoute }
+    const setShrink = (shrink: boolean) => {
+        state.shrink = shrink
+    }
+
+    return { state, setAuthNode, setViewRoutes, setShowHeadline, activateMenu, setActiveRoute, setShrink }
 })
 
 function encodeRoutesURI(data: viewMenu[]): viewMenu[] {

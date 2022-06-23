@@ -3,8 +3,9 @@
 namespace app\api\controller;
 
 use ba\Date;
-use ba\Random;
 use think\facade\Db;
+use app\api\model\UserScoreLog;
+use app\api\model\UserMoneyLog;
 use app\common\controller\Frontend;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
@@ -95,6 +96,34 @@ class Account extends Frontend
             $this->auth->logout();
             $this->success(__('Password has been changed, please login again~'));
         }
+    }
+
+    public function integral()
+    {
+        $limit         = $this->request->request('limit');
+        $integralModel = new UserScoreLog();
+        $res           = $integralModel->where('user_id', $this->auth->id)
+            ->order('createtime desc')
+            ->paginate($limit);
+
+        $this->success('', [
+            'list'  => $res->items(),
+            'total' => $res->total(),
+        ]);
+    }
+
+    public function balance()
+    {
+        $limit      = $this->request->request('limit');
+        $moneyModel = new UserMoneyLog();
+        $res        = $moneyModel->where('user_id', $this->auth->id)
+            ->order('createtime desc')
+            ->paginate($limit);
+
+        $this->success('', [
+            'list'  => $res->items(),
+            'total' => $res->total(),
+        ]);
     }
 
 }

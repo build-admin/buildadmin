@@ -56,6 +56,12 @@ onMounted(() => {
             }
         }
     })
+
+    if (document.body.clientWidth < 1024) {
+        memberCenter.setShrink(true)
+    } else {
+        memberCenter.setShrink(false)
+    }
 })
 </script>
 

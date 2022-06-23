@@ -52,6 +52,7 @@ export interface MemberCenter {
     viewRoutes: Array<viewMenu>
     showHeadline: boolean
     authNode: Map<string, string[]>
+    shrink: boolean
 }
 
 export interface AdminInfo {
