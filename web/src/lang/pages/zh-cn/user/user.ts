@@ -36,4 +36,9 @@ export default {
     'New password': '新密码',
     'Remember me': '记住我',
     'Account name': '账户',
+    'Filled in': '已填写',
+    'Not filled in': '未填写',
+    'Account information': '账户信息',
+    'personal data': '个人资料',
+    'Growth statistics': '增长统计',
 }

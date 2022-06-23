@@ -6,4 +6,13 @@ export default {
     'Navigation failed, invalid route!': 'Navigation failed, invalid route!',
     Loading: 'Loading...',
     Reload: 'Reload',
+    comma: ',',
+    'welcome back': 'Welcome back!',
+    'Late at night, pay attention to your body!': 'Late at night, pay attention to your body!',
+    'good morning!': 'good morning!',
+    'Good morning!': 'Good morning!',
+    'Good noon!': 'Good noon!',
+    'good afternoon': 'good afternoon.',
+    'Good evening': 'Good evening',
+    'Hello!': 'Hello!',
 }

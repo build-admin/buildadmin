@@ -36,4 +36,9 @@ export default {
     'New password': 'New password',
     'Remember me': 'Remember me',
     'Account name': 'Account name',
+    'Filled in': 'Filled in ',
+    'Not filled in': 'Not filled in ',
+    'Account information': 'Account information',
+    'personal data': 'personal data',
+    'Growth statistics': 'Growth statistics',
 }

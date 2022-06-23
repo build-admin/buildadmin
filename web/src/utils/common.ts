@@ -8,6 +8,7 @@ import { useMemberCenter } from '/@/stores/memberCenter'
 import { ElForm } from 'element-plus'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { useUserInfo } from '/@/stores/userInfo'
+import { i18n } from '../lang'
 
 export function registerIcons(app: App) {
     /*
@@ -181,4 +182,27 @@ export const auth = (name: string) => {
         }
     }
     return false
+}
+
+export const getGreet = () => {
+    const now = new Date()
+    const hour = now.getHours()
+    let greet = ''
+
+    if (hour < 5) {
+        greet = i18n.global.t('utils.Late at night, pay attention to your body!')
+    } else if (hour < 9) {
+        greet = i18n.global.t('utils.good morning!') + i18n.global.t('utils.welcome back')
+    } else if (hour < 12) {
+        greet = i18n.global.t('utils.Good morning!') + i18n.global.t('utils.welcome back')
+    } else if (hour < 14) {
+        greet = i18n.global.t('utils.Good noon!') + i18n.global.t('utils.welcome back')
+    } else if (hour < 18) {
+        greet = i18n.global.t('utils.good afternoon') + i18n.global.t('utils.welcome back')
+    } else if (hour < 24) {
+        greet = i18n.global.t('utils.Good evening') + i18n.global.t('utils.welcome back')
+    } else {
+        greet = i18n.global.t('utils.Hello!') + i18n.global.t('utils.welcome back')
+    }
+    return greet
 }

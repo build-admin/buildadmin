@@ -6,4 +6,13 @@ export default {
     'Navigation failed, invalid route!': '导航失败，路由无效！',
     Loading: '加载中...',
     Reload: '重新加载',
+    comma: '，',
+    'welcome back': '欢迎回来！',
+    'Late at night, pay attention to your body!': '夜深了，注意身体哦！',
+    'good morning!': '早上好！',
+    'Good morning!': '上午好！',
+    'Good noon!': '中午好！',
+    'good afternoon': '下午好！',
+    'Good evening': '晚上好！',
+    'Hello!': '您好！',
 }

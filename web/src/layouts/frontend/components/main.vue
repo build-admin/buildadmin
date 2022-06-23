@@ -17,5 +17,6 @@ const config = useConfig()
 <style scoped lang="scss">
 .layout-main {
     padding: 0 !important;
+    overflow-x: hidden;
 }
 </style>

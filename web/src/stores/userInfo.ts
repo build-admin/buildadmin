@@ -28,6 +28,18 @@ export const useUserInfo = defineStore('userInfo', {
             this.token = ''
             this.refreshToken = ''
         },
+        getGenderIcon() {
+            let icon = { name: 'fa fa-transgender-alt', color: 'var(--color-info)' }
+            switch (this.gender) {
+                case 1:
+                    icon = { name: 'fa fa-mars-stroke-v', color: 'var(--color-primary)' }
+                    break
+                case 2:
+                    icon = { name: 'fa fa-mars-stroke', color: 'var(--color-danger)' }
+                    break
+            }
+            return icon
+        },
     },
     persist: {
         key: USER_INFO,

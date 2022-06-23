@@ -6,7 +6,7 @@
                     <div class="welcome suspension">
                         <img class="welcome-img" :src="headerSvg" alt="" />
                         <div class="welcome-text">
-                            <div class="welcome-title">{{ adminInfo.nickname }}{{ t('dashboard.comma') + state.greetings }}</div>
+                            <div class="welcome-title">{{ adminInfo.nickname + t('utils.comma') + getGreet() }}</div>
                             <div class="welcome-note">{{ state.remark }}</div>
                         </div>
                     </div>
@@ -356,6 +356,7 @@ import { useI18n } from 'vue-i18n'
 import { Local } from '/@/utils/storage'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { WORKING_TIME } from '/@/stores/constant/cacheKey'
+import { getGreet } from '/@/utils/common'
 import 'element-plus/theme-chalk/display.css'
 var workTimer: NodeJS.Timer
 
@@ -367,13 +368,11 @@ const chartRefs = useTemplateRefsList<HTMLDivElement>()
 
 const state: {
     charts: any[]
-    greetings: string
     remark: string
     workingTimeFormat: string
     pauseWork: boolean
 } = reactive({
     charts: [],
-    greetings: t('dashboard.Hello'),
     remark: 'dashboard.Loading',
     workingTimeFormat: '',
     pauseWork: false,
@@ -678,29 +677,6 @@ const echartsResize = () => {
     })
 }
 
-const greetingsFun = () => {
-    const now = new Date()
-    const hour = now.getHours()
-    let greetings = ''
-    if (hour < 5) {
-        greetings = t('dashboard.Late at night, pay attention to your body!')
-    } else if (hour < 9) {
-        greetings = t('dashboard.good morning!') + t('dashboard.welcome back')
-    } else if (hour < 12) {
-        greetings = t('dashboard.Good morning!') + t('dashboard.welcome back')
-    } else if (hour < 14) {
-        greetings = t('dashboard.Good noon!') + t('dashboard.welcome back')
-    } else if (hour < 18) {
-        greetings = t('dashboard.good afternoon') + t('dashboard.welcome back')
-    } else if (hour < 24) {
-        greetings = t('dashboard.Good evening') + t('dashboard.welcome back')
-    } else {
-        greetings = t('dashboard.Hello!') + t('dashboard.welcome back')
-    }
-
-    state.greetings = greetings
-}
-
 const onChangeWorkState = () => {
     const time = parseInt((new Date().getTime() / 1000).toString())
     const workingTime = Local.get(WORKING_TIME)
@@ -799,7 +775,6 @@ onActivated(() => {
 onMounted(() => {
     startWork()
     initCountUp()
-    greetingsFun()
     initUserGrowthChart()
     initFileGrowthChart()
     initUserSourceChart()

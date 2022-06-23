@@ -1,7 +1,10 @@
 <template>
     <el-aside class="ba-user-layouts">
         <div class="userinfo">
-            <img class="user-avatar" :src="userInfo.avatar" alt="" />
+            <div class="user-avatar-box">
+                <img class="user-avatar" :src="userInfo.avatar" alt="" />
+                <Icon class="user-avatar-gender" :name="userInfo.getGenderIcon()['name']" size="14" :color="userInfo.getGenderIcon()['color']" />
+            </div>
             <p class="username">{{ userInfo.nickname }}</p>
             <el-button-group>
                 <el-button v-blur class="userinfo-button-item" :title="$t('user.user.integral') + ' ' + userInfo.score" size="default" plain>
@@ -59,10 +62,26 @@ const memberCenter = useMemberCenter()
     font-size: var(--el-font-size-large);
     font-weight: bold;
 }
+.user-avatar-box {
+    position: relative;
+}
 .user-avatar {
     display: block;
     width: 100px;
     border-radius: 50%;
+}
+.user-avatar-gender {
+    position: absolute;
+    bottom: 0px;
+    right: 10px;
+    height: 22px;
+    width: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 50%;
+    box-shadow: var(--el-box-shadow);
 }
 .userinfo-button-item {
     font-size: var(--el-font-size-small);
