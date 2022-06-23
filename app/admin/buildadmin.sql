@@ -258,7 +258,7 @@ INSERT INTO `__PREFIX__menu_rule` VALUES ('28', '27', 'button', '查看', 'user/
 INSERT INTO `__PREFIX__menu_rule` VALUES ('29', '27', 'button', '添加', 'user/group/add', '', '', null, '', '', '0', 'none', '', '93', '1', '1648065864', '1647806112');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('30', '27', 'button', '编辑', 'user/group/edit', '', '', null, '', '', '0', 'none', '', '93', '1', '1648065864', '1647806129');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('31', '27', 'button', '删除', 'user/group/del', '', '', null, '', '', '0', 'none', '', '93', '1', '1648065864', '1647806112');
-INSERT INTO `__PREFIX__menu_rule` VALUES ('32', '21', 'menu', '会员规则管理', 'user/rule', 'user/rule', 'fa fa-th-list', 'tab', '', '/src/views/backend/user/rule/index.vue', '1', 'none', '', '92', '0', '1648067247', '1648051207');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('32', '21', 'menu', '会员规则管理', 'user/rule', 'user/rule', 'fa fa-th-list', 'tab', '', '/src/views/backend/user/rule/index.vue', '1', 'none', '', '92', '1', '1648067247', '1648051207');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('33', '32', 'button', '查看', 'user/rule/index', '', '', null, '', '', '0', 'none', '', '92', '1', '1648065864', '1647806112');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('34', '32', 'button', '添加', 'user/rule/add', '', '', null, '', '', '0', 'none', '', '92', '1', '1648065864', '1647806112');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('35', '32', 'button', '编辑', 'user/rule/edit', '', '', null, '', '', '0', 'none', '', '92', '1', '1648065864', '1647806129');
@@ -528,7 +528,6 @@ CREATE TABLE `__PREFIX__user_rule` (
     `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Url',
     `component` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '组件路径',
     `extend` enum('none','add_rules_only','add_menu_only') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'none' COMMENT '扩展属性:none=无,add_rules_only=只添加为路由,add_menu_only=只添加为菜单',
-    `keepalive` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '缓存:0=禁用,1=启用',
     `remark` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '备注',
     `weigh` int(10) NOT NULL DEFAULT '0' COMMENT '权重(排序)',
     `status` enum('1','0') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1' COMMENT '状态:0=禁用,1=启用',
@@ -543,7 +542,13 @@ CREATE TABLE `__PREFIX__user_rule` (
 -- Records of __PREFIX__user_rule
 -- ----------------------------
 BEGIN;
-INSERT INTO `__PREFIX__user_rule` VALUES ('1', '0', 'route', '首页', 'index', 'index', '', 'tab', '', '', 'none', '0', '', '999', '1', '1652007072', '1648156017');
+INSERT INTO `__PREFIX__user_rule` VALUES ('1', '0', 'route', '前台', 'api', 'api', 'el-icon-HomeFilled', 'tab', '', '', 'none', '', '99', '1', '1655867308', '1648156017');
+INSERT INTO `__PREFIX__user_rule` VALUES ('2', '0', 'menu_dir', '我的账户', 'account', 'account', 'fa fa-user-circle', 'tab', '', '', 'none', '', '98', '1', '1655970295', '1648156017');
+INSERT INTO `__PREFIX__user_rule` VALUES ('3', '2', 'menu', '账户概览', 'account/overview', 'account/overview', 'fa fa-home', 'tab', '', '/src/views/frontend/user/account/overview.vue', 'none', '', '99', '1', '1655879438', '1655820267');
+INSERT INTO `__PREFIX__user_rule` VALUES ('4', '2', 'menu', '个人资料', 'account/profile', 'account/profile', 'fa fa-user-circle-o', 'tab', '', '/src/views/frontend/user/account/profile.vue', 'none', '', '98', '1', '1655972096', '1655820365');
+INSERT INTO `__PREFIX__user_rule` VALUES ('5', '2', 'menu', '修改密码', 'account/changePassword', 'account/changePassword', 'fa fa-shield', 'tab', '', '/src/views/frontend/user/account/changePassword.vue', 'none', '', '97', '1', '1655980365', '1655820461');
+INSERT INTO `__PREFIX__user_rule` VALUES ('6', '2', 'menu', '积分记录', 'account/integral', 'account/integral', 'fa fa-tag', 'tab', '', '/src/views/frontend/user/account/integral.vue', 'none', '', '96', '1', '1655985356', '1655820507');
+INSERT INTO `__PREFIX__user_rule` VALUES ('7', '2', 'menu', '余额记录', 'account/balance', 'account/balance', 'fa fa-money', 'tab', '', '/src/views/frontend/user/account/balance.vue', 'none', '', '95', '1', '1655985373', '1655820593');
 COMMIT;
 
 -- ----------------------------

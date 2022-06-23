@@ -48,7 +48,6 @@ const baTable = new baTableClass(
                 custom: { menu: 'danger', menu_dir: 'success', route: 'info' },
                 replaceValue: { menu: '会员中心菜单', menu_dir: '会员中心菜单目录', route: '普通路由' },
             },
-            { label: '缓存', prop: 'keepalive', align: 'center', width: '80', render: 'switch' },
             { label: '状态', prop: 'status', align: 'center', width: '80', render: 'switch' },
             { label: '更新时间', prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
             { label: '创建时间', prop: 'createtime', align: 'center', width: '160', render: 'datetime' },
