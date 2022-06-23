@@ -16,7 +16,7 @@
                     <div class="log-change-time">{{ $t('user.moneyLog.Change time') + '：' + timeFormat(item.createtime) }}</div>
                 </div>
             </div>
-            <div class="log-footer">
+            <div v-if="state.total > 0" class="log-footer">
                 <el-pagination
                     :currentPage="state.currentPage"
                     :page-size="state.pageSize"
@@ -28,6 +28,7 @@
                     @current-change="onTableCurrentChange"
                 ></el-pagination>
             </div>
+            <el-empty v-else />
         </el-card>
     </div>
 </template>

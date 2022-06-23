@@ -23,7 +23,7 @@ class Account extends Frontend
 
     public function overview()
     {
-        $sevenDays = Date::unixtime('day', -7);
+        $sevenDays = Date::unixtime('day', -6);
         $score     = $money = $days = [];
         for ($i = 0; $i < 7; $i++) {
             $days[$i]    = date("Y-m-d", $sevenDays + ($i * 86400));

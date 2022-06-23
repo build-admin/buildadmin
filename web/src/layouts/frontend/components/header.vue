@@ -122,6 +122,7 @@ const logout = () => {
     width: 16px;
     height: 16px;
     margin-right: 4px;
+    border-radius: 50%;
 }
 .el-menu--horizontal > .el-menu-item,
 .el-menu--horizontal > :deep(.el-sub-menu) .el-sub-menu__title,
