@@ -12,7 +12,7 @@ use app\admin\model\AdminLog;
 
 class Index extends Backend
 {
-    protected $noNeedLogin      = ['test', 'login'];
+    protected $noNeedLogin      = ['logout', 'login'];
     protected $noNeedPermission = ['index'];
 
     public function index()
