@@ -15,4 +15,6 @@ export default {
     'good afternoon': '下午好！',
     'Good evening': '晚上好！',
     'Hello!': '您好！',
+    open: '开启',
+    close: '关闭',
 }

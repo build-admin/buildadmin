@@ -15,4 +15,6 @@ export default {
     'good afternoon': 'good afternoon.',
     'Good evening': 'Good evening',
     'Hello!': 'Hello!',
+    open: 'open',
+    close: 'close',
 }

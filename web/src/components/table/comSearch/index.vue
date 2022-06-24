@@ -59,6 +59,15 @@
                                         >
                                             <el-option v-for="(opt, okey) in item.replaceValue" :key="item.prop! + okey" :label="opt" :value="okey" />
                                         </el-select>
+                                        <el-select
+                                            :placeholder="item.operatorPlaceholder"
+                                            v-else-if="item.render == 'switch'"
+                                            v-model="baTable.comSearch.form[item.prop!]"
+                                            :clearable="true"
+                                        >
+                                            <el-option :label="$t('utils.open')" value="1" />
+                                            <el-option :label="$t('utils.close')" value="0" />
+                                        </el-select>
                                         <el-input
                                             :placeholder="item.operatorPlaceholder"
                                             v-else
