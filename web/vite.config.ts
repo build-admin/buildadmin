@@ -11,6 +11,8 @@ const pathResolve = (dir: string): any => {
 // https://vitejs.cn/config/
 const viteConfig = ({ mode }: ConfigEnv): UserConfig => {
     const { VITE_PORT, VITE_OPEN, VITE_BASE_PATH, VITE_OUT_DIR } = loadEnv(mode)
+    // 如需启用开发环境下的跨域代理，请解除下面的注释，请注意：跨域代理不会被打包进生产环境！
+    // const { VITE_PORT, VITE_OPEN, VITE_BASE_PATH, VITE_OUT_DIR, VITE_PROXY_URL } = loadEnv(mode)
 
     const alias: Record<string, string> = {
         '/@': pathResolve('./src/'),
@@ -27,6 +29,14 @@ const viteConfig = ({ mode }: ConfigEnv): UserConfig => {
             host: '0.0.0.0',
             port: VITE_PORT,
             open: VITE_OPEN,
+            // 如需启用开发环境下的跨域代理，请解除下面的注释，请注意：跨域代理不会被打包进生产环境！
+            // proxy: {
+            //     '/api': {
+            //         target: VITE_PROXY_URL,
+            //         changeOrigin: true,
+            //         rewrite: path => path.replace(/^\/api/, '')
+            //     }
+            // }
         },
         build: {
             sourcemap: false,
