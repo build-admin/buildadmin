@@ -62,7 +62,7 @@
                 :placeholder="quickSearchPlaceholder ? quickSearchPlaceholder : t('search')"
             />
             <el-button-group class="table-search-button-group">
-                <el-dropdown :hide-on-click="false">
+                <el-dropdown :max-height="380" :hide-on-click="false">
                     <el-button class="table-search-button-item" color="#dcdfe6" plain>
                         <Icon size="14" color="#303133" name="el-icon-Grid" />
                     </el-button>
@@ -140,7 +140,7 @@ const onSearchInput = () => {
     emits('action', 'quick-search', { keyword: state.quickSearch })
 }
 
-const onChangeShowColumn = (value: boolean, field: string) => {
+const onChangeShowColumn = (value: string | number | boolean, field: string) => {
     emits('action', 'change-show-column', { field: field, value: value })
 }
 </script>
@@ -194,5 +194,9 @@ const onChangeShowColumn = (value: boolean, field: string) => {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
     }
+}
+.el-button-group>.el-dropdown>.el-button {
+    border-radius: var(--el-border-radius-base);
+    border-left-color: var(--el-button-border-color);
 }
 </style>
