@@ -52,6 +52,7 @@ class Config extends Backend
     public function edit($id = null)
     {
         if ($this->request->isPost()) {
+            $this->modelValidate = false;
             $data = $this->request->post();
             if (!$data) {
                 $this->error(__('Parameter %s can not be empty', ['']));
