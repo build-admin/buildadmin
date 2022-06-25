@@ -7,6 +7,8 @@ export interface ViteEnv {
     VITE_BASE_PATH: string
     VITE_OUT_DIR: string
     VITE_AXIOS_BASE_URL: string
+    // 如需启用开发环境下的跨域代理，请解除下面的注释，请注意：跨域代理不会被打包进生产环境！
+    // VITE_PROXY_URL: string
 }
 
 export function isOnline(mode: string): boolean {
