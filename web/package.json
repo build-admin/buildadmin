@@ -10,8 +10,8 @@
     "dependencies": {
         "@element-plus/icons-vue": "~2.0.4",
         "@vueuse/core": "~7.5.3",
-        "@wangeditor/editor": "~5.0.1",
-        "@wangeditor/editor-for-vue": "~5.1.10",
+        "@wangeditor/editor": "~5.1.1",
+        "@wangeditor/editor-for-vue": "~5.1.12",
         "axios": "~0.26.0",
         "countup.js": "~2.0.8",
         "echarts": "~5.2.2",
