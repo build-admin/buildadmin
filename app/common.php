@@ -85,16 +85,36 @@ if (!function_exists('__')) {
 }
 
 if (!function_exists('get_sys_config')) {
-    function get_sys_config($name = '')
+    /**
+     * 获取站点的系统配置，不传递参数则获取所有配置项
+     * @param string $name   变量名
+     * @param string $group  变量分组，传递此参数来获取某个分组的所有配置项
+     * @param bool   $reduct 是否开启简洁模式，简洁模式下，获取多项配置时只返回配置的键值对
+     * @return string | array
+     */
+    function get_sys_config($name = '', $group = '', $reduct = true)
     {
+        $config = false;
         if ($name) {
+            // 直接使用->value('value')不能使用到模型的类型格式化
             $config = \app\admin\model\Config::where('name', $name)->find();
-            if ($config) {
-                return $config['value'];
-            }
+            if ($config) $config = $config['value'];
         } else {
-            return \app\admin\model\Config::order('weigh desc')->select()->toArray();
+            if ($group) {
+                $temp = \app\admin\model\Config::where('group', $group)->select()->toArray();
+            } else {
+                $temp = \app\admin\model\Config::order('weigh desc')->select()->toArray();
+            }
+            if ($reduct) {
+                $config = [];
+                foreach ($temp as $item) {
+                    $config[$item['name']] = $item['value'];
+                }
+            } else {
+                $config = $temp;
+            }
         }
+        return $config;
     }
 }
 

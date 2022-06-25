@@ -14,4 +14,10 @@ export default {
     'One attribute per line without quotation marks': 'One attribute per line without quotation marks, for example: class=config-item',
     weight: 'weight',
     number: 'number',
+    'Please enter the recipient email address': 'Please enter the recipient email address',
+    'Test mail sending': 'Test mail sending',
+    'send out': 'send out',
+    'Please enter the correct email address': 'Please enter the correct email address',
+    Sending: 'Sending',
+    'Please enter the correct mail configuration': 'Please enter the correct mail configuration',
 }

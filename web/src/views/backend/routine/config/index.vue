@@ -45,6 +45,9 @@
                                     </el-popconfirm>
                                 </div>
                             </div>
+                            <div v-if="group.name == 'mail'" class="send-test-mail">
+                                <el-button @click="onTestSendMail()">{{ t('routine.config.Test mail sending') }}</el-button>
+                            </div>
                             <el-button type="primary" @click="onSubmit(formRef)">{{ t('Save') }}</el-button>
                         </el-tab-pane>
                         <el-tab-pane
@@ -71,8 +74,8 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import FormItem from '/@/components/formItem/index.vue'
-import { index, postData, del } from '/@/api/backend/routine/config'
-import type { ElForm, FormItemRule } from 'element-plus'
+import { index, postData, del, postSendTestMail } from '/@/api/backend/routine/config'
+import { ElForm, FormItemRule, ElMessageBox, ElNotification } from 'element-plus'
 import AddFrom from './add.vue'
 import { routePush } from '/@/utils/router'
 import { buildValidatorData } from '/@/utils/validate'
@@ -173,6 +176,38 @@ const onDelConfig = (config: anyObj) => {
     })
 }
 
+const onTestSendMail = () => {
+    if (!state.form.smtp_server || !state.form.smtp_port || !state.form.smtp_user || !state.form.smtp_pass || !state.form.smtp_sender_mail) {
+        ElNotification({
+            type: 'error',
+            message: t('routine.config.Please enter the correct mail configuration'),
+        })
+        return false
+    }
+
+    ElMessageBox.prompt(t('routine.config.Please enter the recipient email address'), t('routine.config.Test mail sending'), {
+        confirmButtonText: t('routine.config.send out'),
+        cancelButtonText: t('Cancel'),
+        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+        inputErrorMessage: t('routine.config.Please enter the correct email address'),
+        beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+                instance.confirmButtonLoading = true
+                instance.confirmButtonText = t('routine.config.Sending')
+                postSendTestMail(state.form, instance.inputValue)
+                    .then((res) => {
+                        done()
+                    })
+                    .catch((err) => {
+                        done()
+                    })
+            } else {
+                done()
+            }
+        },
+    })
+}
+
 onMounted(() => {
     getIndex()
 })
@@ -186,6 +221,9 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.send-test-mail {
+    padding-bottom: 20px;
+}
 .el-tabs--border-card {
     border: none;
     box-shadow: var(--el-box-shadow-light);

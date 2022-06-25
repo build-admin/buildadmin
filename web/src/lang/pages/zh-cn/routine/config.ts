@@ -14,4 +14,10 @@ export default {
     'One attribute per line without quotation marks': '一行一个属性，无需引号，比如：class=config-item',
     weight: '权重',
     number: '数字',
+    'Please enter the recipient email address': '请输入接受者邮箱地址',
+    'Test mail sending': '测试邮件发送',
+    'send out': '发送',
+    'Please enter the correct email address': '请输入正确的电子邮箱地址',
+    Sending: '发送中...',
+    'Please enter the correct mail configuration': '请输入正确的邮件配置',
 }

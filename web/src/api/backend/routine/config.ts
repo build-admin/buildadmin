@@ -41,3 +41,16 @@ export function del(ids: string[]) {
         }
     )
 }
+
+export function postSendTestMail(data: anyObj, mail: string) {
+    return createAxios(
+        {
+            url: controllerUrl + 'sendTestMail',
+            method: 'POST',
+            data: Object.assign({}, data, { testMail: mail }),
+        },
+        {
+            showSuccessMessage: true,
+        }
+    )
+}
