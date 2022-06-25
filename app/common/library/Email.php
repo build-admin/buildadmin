@@ -37,15 +37,23 @@ class Email extends PHPMailer
         $this->setLanguage($this->options['lang'], root_path() . 'vendor' . DIRECTORY_SEPARATOR . 'phpmailer' . DIRECTORY_SEPARATOR . 'phpmailer' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR);
         $this->CharSet = $this->options['charset'];
 
-        $sysMailConfig    = get_sys_config('', 'mail');
-        $this->Host       = $sysMailConfig['smtp_server'];
-        $this->SMTPAuth   = true;
-        $this->Username   = $sysMailConfig['smtp_user'];
-        $this->Password   = $sysMailConfig['smtp_pass'];
-        $this->SMTPSecure = $sysMailConfig['smtp_verification'] == 'SSL' ? self::ENCRYPTION_SMTPS : self::ENCRYPTION_STARTTLS;
-        $this->Port       = $sysMailConfig['smtp_port'];
+        $sysMailConfig = get_sys_config('', 'mail');
+        $configured    = true;
+        foreach ($sysMailConfig as $item) {
+            if (!$item) {
+                $configured = false;
+            }
+        }
+        if ($configured) {
+            $this->Host       = $sysMailConfig['smtp_server'];
+            $this->SMTPAuth   = true;
+            $this->Username   = $sysMailConfig['smtp_user'];
+            $this->Password   = $sysMailConfig['smtp_pass'];
+            $this->SMTPSecure = $sysMailConfig['smtp_verification'] == 'SSL' ? self::ENCRYPTION_SMTPS : self::ENCRYPTION_STARTTLS;
+            $this->Port       = $sysMailConfig['smtp_port'];
 
-        $this->setFrom($sysMailConfig['smtp_sender_mail'], $sysMailConfig['smtp_user']);
+            $this->setFrom($sysMailConfig['smtp_sender_mail'], $sysMailConfig['smtp_user']);
+        }
     }
 
     public function setSubject($subject)

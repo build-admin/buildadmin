@@ -191,7 +191,7 @@ INSERT INTO `__PREFIX__config` VALUES ('7', 'smtp_server', 'mail', 'smtp server'
 INSERT INTO `__PREFIX__config` VALUES ('8', 'smtp_port', 'mail', 'smtp port', '', 'string', '465', null, '', '', '0', '0');
 INSERT INTO `__PREFIX__config` VALUES ('9', 'smtp_user', 'mail', 'smtp user', '', 'string', '', null, '', '', '0', '0');
 INSERT INTO `__PREFIX__config` VALUES ('10', 'smtp_pass', 'mail', 'smtp pass', '', 'string', '', null, '', '', '0', '0');
-INSERT INTO `__PREFIX__config` VALUES ('11', 'smtp_verification', 'mail', 'smtp verification', '', 'select', 'TLS', '{\"SSL\":\"SSL\",\"TLS\":\"TLS\"}', '', '', '0', '0');
+INSERT INTO `__PREFIX__config` VALUES ('11', 'smtp_verification', 'mail', 'smtp verification', '', 'select', 'SSL', '{\"SSL\":\"SSL\",\"TLS\":\"TLS\"}', '', '', '0', '0');
 INSERT INTO `__PREFIX__config` VALUES ('12', 'smtp_sender_mail', 'mail', 'smtp sender mail', '', 'string', '', null, 'email', '', '0', '0');
 INSERT INTO `__PREFIX__config` VALUES ('13', 'config_quick_entrance', 'config_quick_entrance', 'Config Quick entrance', '', 'array', '[{\"key\":\"\\u6570\\u636e\\u56de\\u6536\\u89c4\\u5219\\u914d\\u7f6e\",\"value\":\"\\/admin\\/security\\/dataRecycle\"},{\"key\":\"\\u654f\\u611f\\u6570\\u636e\\u89c4\\u5219\\u914d\\u7f6e\",\"value\":\"\\/admin\\/security\\/sensitiveData\"}]', null, '', '', '0', '0');
 COMMIT;
