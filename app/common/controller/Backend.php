@@ -4,7 +4,6 @@ namespace app\common\controller;
 
 use app\admin\library\Auth;
 use think\db\exception\PDOException;
-use think\facade\Config;
 use think\facade\Cookie;
 use think\facade\Db;
 use think\facade\Event;

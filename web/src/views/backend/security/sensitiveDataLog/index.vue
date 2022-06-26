@@ -14,6 +14,7 @@
                 :cancel-button-text="t('Cancel')"
                 confirmButtonType="success"
                 :title="t('security.sensitiveDataLog.Are you sure you want to rollback the record?')"
+                :disabled="baTable.table.selection!.length > 0 ? false:true"
             >
                 <template #reference>
                     <div class="mlr-12">

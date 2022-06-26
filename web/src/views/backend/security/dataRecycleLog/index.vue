@@ -14,6 +14,7 @@
                 :cancel-button-text="t('Cancel')"
                 confirmButtonType="success"
                 :title="t('security.dataRecycleLog.Are you sure to restore the selected records?')"
+                :disabled="baTable.table.selection!.length > 0 ? false:true"
             >
                 <template #reference>
                     <div class="mlr-12">

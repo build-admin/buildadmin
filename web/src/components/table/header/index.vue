@@ -28,6 +28,7 @@
             :cancel-button-text="t('Cancel')"
             confirmButtonType="danger"
             :title="t('Are you sure to delete the selected record?')"
+            :disabled="!enableBatchOpt"
         >
             <template #reference>
                 <div class="mlr-12">
@@ -195,7 +196,7 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
         border-bottom-right-radius: 0;
     }
 }
-.el-button-group>.el-dropdown>.el-button {
+.el-button-group > .el-dropdown > .el-button {
     border-radius: var(--el-border-radius-base);
     border-left-color: var(--el-button-border-color);
 }
