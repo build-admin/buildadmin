@@ -327,10 +327,10 @@ CREATE TABLE `__PREFIX__security_data_recycle` (
 -- Records of __PREFIX__security_data_recycle
 -- ----------------------------
 BEGIN;
-INSERT INTO `__PREFIX__security_data_recycle` VALUES ('1', '管理员', 'auth/Admin.php', '', '__PREFIX__admin', 'id', '1', '1648958789', '1648958789');
+INSERT INTO `__PREFIX__security_data_recycle` VALUES ('1', '管理员', 'auth/Admin.php', 'auth/admin', '__PREFIX__admin', 'id', '1', '1648958789', '1648958789');
 INSERT INTO `__PREFIX__security_data_recycle` VALUES ('2', '管理员日志', 'auth/AdminLog.php', 'auth/adminlog', '__PREFIX__admin_log', 'id', '1', '1648967082', '1648958964');
-INSERT INTO `__PREFIX__security_data_recycle` VALUES ('3', '菜单规则', 'auth/Menu.php', '', '__PREFIX__menu_rule', 'id', '1', '1648959494', '1648959494');
-INSERT INTO `__PREFIX__security_data_recycle` VALUES ('4', '系统配置项', 'routine/Config.php', '', '__PREFIX__config', 'id', '1', '1648959518', '1648959510');
+INSERT INTO `__PREFIX__security_data_recycle` VALUES ('3', '菜单规则', 'auth/Menu.php', 'auth/menu', '__PREFIX__menu_rule', 'id', '1', '1648959494', '1648959494');
+INSERT INTO `__PREFIX__security_data_recycle` VALUES ('4', '系统配置项', 'routine/Config.php', 'routine/config', '__PREFIX__config', 'id', '1', '1648959518', '1648959510');
 INSERT INTO `__PREFIX__security_data_recycle` VALUES ('5', '会员', 'user/User.php', 'user/user', '__PREFIX__user', 'id', '1', '1649097966', '1648959540');
 INSERT INTO `__PREFIX__security_data_recycle` VALUES ('6', '数据回收规则', 'security/DataRecycle.php', 'security/datarecycle', '__PREFIX__security_data_recycle', 'id', '1', '1648965759', '1648959655');
 COMMIT;
