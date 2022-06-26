@@ -5,10 +5,12 @@ namespace app\api\controller;
 use think\Exception;
 use think\exception\FileException;
 use app\common\library\Upload;
-use app\common\controller\Api;
+use app\common\controller\Frontend;
 
-class Ajax extends Api
+class Ajax extends Frontend
 {
+    protected $noNeedLogin = ['area', 'buildSuffixSvg'];
+
     public function initialize()
     {
         parent::initialize();
@@ -18,9 +20,8 @@ class Ajax extends Api
     {
         $file = $this->request->file('file');
         try {
-            $upload                = new Upload($file);
-            $attachment            = $upload->upload(null, 0, 0);
-            $attachment['fullurl'] = full_url($attachment['url']);
+            $upload     = new Upload($file);
+            $attachment = $upload->upload(null, 0, $this->auth->id);
             unset($attachment['createtime'], $attachment['quote']);
         } catch (Exception | FileException $e) {
             $this->error($e->getMessage());

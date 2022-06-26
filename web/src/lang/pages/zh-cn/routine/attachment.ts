@@ -2,6 +2,7 @@ export default {
     'Original name': '原始名称',
     Breakdown: '细目',
     'Upload administrator': '上传管理员',
+    'Upload user': '上传会员',
     size: '大小',
     type: '类型',
     preview: '预览',

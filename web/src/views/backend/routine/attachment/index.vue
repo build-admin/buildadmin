@@ -48,6 +48,13 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             operatorPlaceholder: t('Fuzzy query'),
         },
         {
+            label: t('routine.attachment.Upload user'),
+            prop: 'user.nickname',
+            align: 'center',
+            operator: 'LIKE',
+            operatorPlaceholder: t('Fuzzy query'),
+        },
+        {
             label: t('routine.attachment.size'),
             prop: 'size',
             align: 'center',

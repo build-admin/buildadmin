@@ -11,7 +11,7 @@ class Attachment extends Backend
 
     protected $quickSearchField = 'name';
 
-    protected $withJoinTable = ['admin'];
+    protected $withJoinTable = ['admin', 'user'];
 
     public function initialize()
     {
