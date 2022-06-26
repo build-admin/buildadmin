@@ -4,7 +4,7 @@ import * as elIcons from '@element-plus/icons-vue'
 
 const cssUrls: Array<string> = [
     '//at.alicdn.com/t/font_3135462_5axiswmtpj.css', // 示例链接，建议替换
-    '//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',
+    '//cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
 ]
 const jsUrls: Array<string> = []
 
@@ -67,7 +67,7 @@ export function getAwesomeIconfontNames() {
     return new Promise<string[]>((resolve, reject) => {
         nextTick(() => {
             let iconfonts = []
-            let sheets = getStylesFromDomain('netdna.bootstrapcdn.com/font-awesome/')
+            let sheets = getStylesFromDomain('cdn.bootcdn.net/ajax/libs/font-awesome/')
             for (const key in sheets) {
                 let rules: any = sheets[key].cssRules
                 for (const k in rules) {
