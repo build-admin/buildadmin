@@ -17,4 +17,5 @@ export default {
     'Hello!': 'Hello!',
     open: 'open',
     close: 'close',
+    'Clean up system cache': 'Clean up system cache',
 }

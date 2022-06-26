@@ -18,7 +18,7 @@
                 <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" name="local-lang" size="18" />
             </div>
             <template #dropdown>
-                <el-dropdown-menu class="chang-lang">
+                <el-dropdown-menu class="dropdown-menu-box">
                     <el-dropdown-item v-for="item in configStore.lang.langArray" :key="item.name" @click="editDefaultLang(item.name)">
                         {{ item.value }}
                     </el-dropdown-item>
@@ -40,6 +40,24 @@
                 <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" name="local-terminal" size="26" />
             </el-badge>
         </div>
+        <el-dropdown
+            @visible-change="onCurrentNavMenu($event, 'clear')"
+            class="h100"
+            size="large"
+            :hide-timeout="50"
+            placement="bottom"
+            trigger="click"
+            :hide-on-click="true"
+        >
+            <div class="nav-menu-item" :class="state.currentNavMenu == 'clear' ? 'hover' : ''">
+                <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" name="el-icon-Delete" size="18" />
+            </div>
+            <template #dropdown>
+                <el-dropdown-menu class="dropdown-menu-box">
+                    <el-dropdown-item @click="onClearCache('tp')">{{ t('utils.Clean up system cache') }}</el-dropdown-item>
+                </el-dropdown-menu>
+            </template>
+        </el-dropdown>
         <el-popover
             @show="onCurrentNavMenu(true, 'adminInfo')"
             @hide="onCurrentNavMenu(false, 'adminInfo')"
@@ -96,6 +114,7 @@ import { ADMIN_INFO } from '/@/stores/constant/cacheKey'
 import router from '/@/router'
 import { routePush } from '/@/utils/router'
 import { logout } from '/@/api/backend/index'
+import { postClearCache } from '/@/api/common'
 import TerminalVue from '/@/components/terminal/index.vue'
 
 const { t } = useI18n()
@@ -134,6 +153,10 @@ const onLogout = () => {
         Local.remove(ADMIN_INFO)
         router.go(0)
     })
+}
+
+const onClearCache = (type: string) => {
+    postClearCache(type).then((res) => {})
 }
 </script>
 
@@ -184,7 +207,7 @@ const onLogout = () => {
         background: v-bind('configStore.layout.headerBarHoverBackground');
     }
 }
-.chang-lang :deep(.el-dropdown-menu__item) {
+.dropdown-menu-box :deep(.el-dropdown-menu__item) {
     justify-content: center;
 }
 .admin-info-base {

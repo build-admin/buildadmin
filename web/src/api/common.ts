@@ -13,6 +13,7 @@ export const adminAreaUrl = '/index.php/admin/ajax/area'
 export const getTablePkUrl = '/index.php/admin/ajax/getTablePk'
 export const terminalUrl = '/index.php/admin/install/terminal'
 export const changeTerminalConfigUrl = '/index.php/admin/ajax/changeTerminalConfig'
+export const clearCacheUrl = '/index.php/admin/ajax/clearCache'
 
 // 公共
 export const captchaUrl = '/index.php/api/common/captcha'
@@ -67,6 +68,24 @@ export function getArea(values: number[]) {
         method: 'GET',
         params: params,
     })
+}
+
+/*
+ * 缓存清理接口
+ */
+export function postClearCache(type: string) {
+    return createAxios(
+        {
+            url: clearCacheUrl,
+            method: 'POST',
+            data: {
+                type: type,
+            },
+        },
+        {
+            showSuccessMessage: true,
+        }
+    )
 }
 
 /**

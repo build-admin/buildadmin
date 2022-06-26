@@ -7,6 +7,7 @@ use think\Exception;
 use think\exception\FileException;
 use app\common\library\Upload;
 use app\common\controller\Backend;
+use think\facade\Cache;
 use think\facade\Db;
 use app\admin\model\AdminLog;
 
@@ -66,5 +67,16 @@ class Ajax extends Backend
         } else {
             $this->error(__('Failed to modify the terminal configuration. Please modify the configuration file manually:%s', ['/config/buildadmin.php']));
         }
+    }
+
+    public function clearCache()
+    {
+        $type = $this->request->post('type');
+        if ($type == 'tp') {
+            Cache::clear();
+        } else {
+            $this->error(__('Parameter error'));
+        }
+        $this->success(__('Cache cleaned~'));
     }
 }

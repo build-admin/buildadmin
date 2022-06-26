@@ -36,4 +36,5 @@ return [
     'Password is incorrect'                                                               => '密码不正确',
     'You are not logged in'                                                               => '你没有登录',
     // 权限类语言包-e
+    'Cache cleaned~'                                                                      => '缓存已清理，请刷新后台~',
 ];

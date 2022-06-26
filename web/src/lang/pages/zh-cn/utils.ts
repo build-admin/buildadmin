@@ -17,4 +17,5 @@ export default {
     'Hello!': '您好！',
     open: '开启',
     close: '关闭',
+    'Clean up system cache': '清理系统缓存',
 }
