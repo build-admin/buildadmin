@@ -6,7 +6,6 @@ use think\Exception;
 use think\exception\FileException;
 use app\common\library\Upload;
 use app\common\controller\Api;
-use think\facade\Db;
 
 class Ajax extends Api
 {

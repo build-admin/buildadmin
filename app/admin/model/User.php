@@ -23,6 +23,16 @@ class User extends Model
         return full_url($value, true, Config::get('buildadmin.default_avatar'));
     }
 
+    public function getMoneyAttr($value)
+    {
+        return bcdiv($value, 100, 2);
+    }
+
+    public function setMoneyAttr($value)
+    {
+        return bcmul($value, 100, 2);
+    }
+
     /**
      * 重置用户密码
      * @param int    $uid         用户ID

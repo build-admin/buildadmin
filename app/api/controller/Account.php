@@ -4,8 +4,8 @@ namespace app\api\controller;
 
 use ba\Date;
 use think\facade\Db;
-use app\api\model\UserScoreLog;
-use app\api\model\UserMoneyLog;
+use app\common\model\UserScoreLog;
+use app\common\model\UserMoneyLog;
 use app\common\controller\Frontend;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
@@ -29,14 +29,14 @@ class Account extends Frontend
             $days[$i]    = date("Y-m-d", $sevenDays + ($i * 86400));
             $tempToday0  = strtotime($days[$i]);
             $temptoday24 = strtotime('+1 day', $tempToday0) - 1;
-            $score[$i]   = Db::name('user_score_log')
-                ->where('user_id', $this->auth->id)
+            $score[$i]   = UserScoreLog::where('user_id', $this->auth->id)
                 ->where('createtime', 'BETWEEN', $tempToday0 . ',' . $temptoday24)
                 ->sum('score');
-            $money[$i]   = Db::name('user_money_log')
-                ->where('user_id', $this->auth->id)
+
+            $userMoneyTemp = UserMoneyLog::where('user_id', $this->auth->id)
                 ->where('createtime', 'BETWEEN', $tempToday0 . ',' . $temptoday24)
                 ->sum('money');
+            $money[$i]     = bcdiv($userMoneyTemp, 100, 2);
         }
 
         $this->success('', [

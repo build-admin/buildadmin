@@ -119,7 +119,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
         },
         {
             validator: (rule: any, val: string, callback: Function) => {
-                if (!val || parseInt(val) == 0) {
+                if (!val || parseFloat(val) == 0) {
                     return callback(new Error(t('Please enter the correct field', { field: t('user.moneyLog.Change amount') })))
                 }
                 return callback()
@@ -162,7 +162,7 @@ const changeMoney = (value: string) => {
         return
     }
     let newValue = value == '' ? 0 : parseFloat(value)
-    state.after = parseFloat(state.userInfo.money) + newValue
+    state.after = parseFloat((parseFloat(state.userInfo.money) + newValue).toFixed(2))
 }
 
 // 打开表单时刷新用户数据

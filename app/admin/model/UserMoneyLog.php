@@ -45,6 +45,36 @@ class UserMoneyLog extends model
         return false;
     }
 
+    public function getMoneyAttr($value)
+    {
+        return bcdiv($value, 100, 2);
+    }
+
+    public function setMoneyAttr($value)
+    {
+        return bcmul($value, 100, 2);
+    }
+
+    public function getBeforeAttr($value)
+    {
+        return bcdiv($value, 100, 2);
+    }
+
+    public function setBeforeAttr($value)
+    {
+        return bcmul($value, 100, 2);
+    }
+
+    public function getAfterAttr($value)
+    {
+        return bcdiv($value, 100, 2);
+    }
+
+    public function setAfterAttr($value)
+    {
+        return bcmul($value, 100, 2);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
