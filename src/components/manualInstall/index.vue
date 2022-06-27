@@ -16,7 +16,7 @@
             </div>
             <div class="content-item">
                 <div>4、{{ t('Execute command') }}</div>
-                <div class="command">npm run build:online</div>
+                <div class="command">npm run build</div>
                 <div @click="goUrl('https://wonderful-code.gitee.io/guide/install/npmBuildFail.html')" class="block-help link">
                     {{ t('Execution failed?') }}
                 </div>
