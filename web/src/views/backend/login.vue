@@ -26,7 +26,7 @@
                         <el-form @keyup.enter="onSubmit(formRef)" ref="formRef" :rules="rules" size="large" :model="form">
                             <el-form-item prop="username">
                                 <el-input
-                                    ref="username"
+                                    ref="usernameRef"
                                     type="text"
                                     clearable
                                     v-model="form.username"
@@ -39,7 +39,7 @@
                             </el-form-item>
                             <el-form-item prop="password">
                                 <el-input
-                                    ref="password"
+                                    ref="passwordRef"
                                     v-model="form.password"
                                     type="password"
                                     :placeholder="t('adminLogin.Please input a password')"
@@ -54,7 +54,7 @@
                                 <el-row class="w100" :gutter="15">
                                     <el-col :span="16">
                                         <el-input
-                                            ref="captcha"
+                                            ref="captchaRef"
                                             type="text"
                                             :placeholder="t('adminLogin.Please enter the verification code')"
                                             v-model="form.captcha"
@@ -91,9 +91,9 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance, onMounted, onBeforeUnmount, reactive, ref } from 'vue'
+import { onMounted, onBeforeUnmount, reactive, ref, nextTick } from 'vue'
 import * as pageBubble from '/@/utils/pageBubble'
-import type { ElForm } from 'element-plus'
+import type { ElForm, ElInput } from 'element-plus'
 import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { editDefaultLang } from '/@/lang/index'
@@ -120,6 +120,9 @@ const onChangeCaptcha = () => {
 }
 
 const formRef = ref<InstanceType<typeof ElForm>>()
+const usernameRef = ref<InstanceType<typeof ElInput>>()
+const passwordRef = ref<InstanceType<typeof ElInput>>()
+const captchaRef = ref<InstanceType<typeof ElInput>>()
 const form = reactive({
     username: '',
     password: '',
@@ -170,22 +173,27 @@ const rules = reactive({
     ],
 })
 
+const focusInput = () => {
+    if (form.username === '') {
+        usernameRef.value!.focus()
+    } else if (form.password === '') {
+        passwordRef.value!.focus()
+    } else if (form.captcha === '') {
+        captchaRef.value!.focus()
+    }
+}
+
 onMounted(() => {
     timer = setTimeout(() => {
         pageBubble.init()
     }, 1000)
-    const vm: any = getCurrentInstance()
-    if (form.username === '') {
-        vm.ctx.$refs.username.focus()
-    } else if (form.password === '') {
-        vm.ctx.$refs.password.focus()
-    } else if (form.captcha === '') {
-        vm.ctx.$refs.captcha.focus()
-    }
 
     login('get')
         .then((res) => {
             state.showCaptcha = res.data.captcha
+            nextTick(() => {
+                focusInput()
+            })
         })
         .catch((err) => {
             console.log(err)
