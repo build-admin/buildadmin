@@ -64,8 +64,8 @@
                 <el-select class="w100" v-model="state.startForm.packageManager">
                     <el-option label="npm" value="npm"></el-option>
                     <el-option label="cnpm" value="cnpm"></el-option>
-                    <el-option label="pnpm" value="pnpm"></el-option>
-                    <el-option label="yarn" value="yarn"></el-option>
+                    <el-option :label="'pnpm' + t('recommend')" value="pnpm"></el-option>
+                    <el-option :label="'yarn' + t('recommend')" value="yarn"></el-option>
                     <el-option label="ni" value="ni"></el-option>
                     <el-option :label="t('I want to execute the command manually')" value="none"></el-option>
                 </el-select>

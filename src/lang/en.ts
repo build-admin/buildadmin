@@ -36,6 +36,7 @@ export default {
     'set-npm-registry': 'Set NPM source',
     'Set NPM source': 'Set NPM source',
     'Use current source': 'Use current source',
+    'recommend': '(Recommend)',
     TaoBao: 'TaoBao',
     'Click to test': 'Click to test',
     'Can execute': 'Can execute',

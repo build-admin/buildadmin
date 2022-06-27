@@ -36,6 +36,7 @@ export default {
     'set-npm-registry': '设置NPM源',
     'Set NPM source': '设置NPM源',
     'Use current source': '使用当前源',
+    'recommend': '（推荐）',
     TaoBao: '淘宝',
     'Click to test': '点击进行测试',
     'Can execute': '可以执行',
