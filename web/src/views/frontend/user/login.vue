@@ -213,7 +213,9 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button @click="state.showRetrievePasswordDialog = false">{{ t('Cancel') }}</el-button>
-                        <el-button @click="onSubmitRetrieve(retrieveFormRef)" type="primary">{{ t('user.user.second') }}</el-button>
+                        <el-button :loading="state.submitRetrieveLoading" @click="onSubmitRetrieve(retrieveFormRef)" type="primary">{{
+                            t('user.user.second')
+                        }}</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -267,6 +269,7 @@ interface State {
     dialogWidth: number
     accountVerificationType: string[]
     codeSendCountdown: number
+    submitRetrieveLoading: boolean
     sendRetrieveCaptchaLoading: boolean
 }
 
@@ -293,6 +296,7 @@ const state: State = reactive({
     dialogWidth: 36,
     accountVerificationType: [],
     codeSendCountdown: 0,
+    submitRetrieveLoading: false,
     sendRetrieveCaptchaLoading: false,
 })
 
@@ -361,14 +365,20 @@ const onSubmit = (formRef: InstanceType<typeof ElForm> | undefined = undefined) 
 const onSubmitRetrieve = (formRef: InstanceType<typeof ElForm> | undefined = undefined) => {
     formRef!.validate((valid) => {
         if (valid) {
-            retrievePassword(state.retrievePasswordForm).then((res) => {
-                if (res.code == 1) {
-                    state.showRetrievePasswordDialog = false
-                    onChangeCaptcha()
-                    endTiming()
-                    onResetForm(formRef)
-                }
-            })
+            state.submitRetrieveLoading = true
+            retrievePassword(state.retrievePasswordForm)
+                .then((res) => {
+                    state.submitRetrieveLoading = false
+                    if (res.code == 1) {
+                        state.showRetrievePasswordDialog = false
+                        onChangeCaptcha()
+                        endTiming()
+                        onResetForm(formRef)
+                    }
+                })
+                .catch(() => {
+                    state.submitRetrieveLoading = false
+                })
         }
     })
 }
