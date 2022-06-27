@@ -53,7 +53,7 @@
                                         ></el-date-picker>
                                         <el-select
                                             :placeholder="item.operatorPlaceholder"
-                                            v-else-if="item.render == 'tag'"
+                                            v-else-if="item.render == 'tag' && item.replaceValue"
                                             v-model="baTable.comSearch.form[item.prop!]"
                                             :clearable="true"
                                         >
