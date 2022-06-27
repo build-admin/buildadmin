@@ -3,16 +3,21 @@
 namespace app\api\controller;
 
 use ba\Date;
+use ba\Captcha;
 use think\facade\Db;
+use app\common\model\User;
 use app\common\model\UserScoreLog;
 use app\common\model\UserMoneyLog;
 use app\common\controller\Frontend;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
 use app\api\validate\Account as AccountValidate;
+use app\common\library\Email;
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 class Account extends Frontend
 {
+    protected $noNeedLogin = ['sendRetrievePasswordCode', 'retrievePassword'];
 
     protected $model = null;
 
@@ -126,4 +131,70 @@ class Account extends Frontend
         ]);
     }
 
+    public function sendRetrievePasswordCode()
+    {
+        $data = $this->request->only(['type', 'account']);
+
+        if ($data['type'] == 'email') {
+            $user = User::where('email', $data['account'])->find();
+        } else {
+            $user = User::where('mobile', $data['account'])->find();
+        }
+        if (!$user) {
+            $this->error(__('Account does not exist~'));
+        }
+
+        // 生成一个验证码
+        $captcha = new Captcha();
+        $code    = $captcha->create($data['account'] . $user->id);
+
+        if ($data['type'] == 'email') {
+            $mail = new Email();
+            try {
+                $mail->isSMTP();
+                $mail->addAddress($data['account']);
+                $mail->isHTML(true);
+                $mail->setSubject(__('Retrieve password verification') . '-' . get_sys_config('site_name'));
+                $mail->Body = __('Your verification code is: %s', [$code]);
+                $mail->send();
+            } catch (PHPMailerException $e) {
+                $this->error($mail->ErrorInfo);
+            }
+
+            $this->success(__('Mail sent successfully~'));
+        } else {
+            $this->error(__('Unknown operation'));
+        }
+    }
+
+    public function retrievePassword()
+    {
+        $params = $this->request->only(['type', 'account', 'captcha', 'password']);
+        try {
+            $validate = new AccountValidate();
+            $validate->scene('retrievePassword')->check($params);
+        } catch (ValidateException $e) {
+            $this->error($e->getMessage());
+        }
+
+        if ($params['type'] == 'email') {
+            $user = User::where('email', $params['account'])->find();
+        } else {
+            $user = User::where('mobile', $params['account'])->find();
+        }
+        if (!$user) {
+            $this->error(__('Account does not exist~'));
+        }
+
+        $captchaObj = new Captcha();
+        if (!$captchaObj->check($params['captcha'], $params['account'] . $user->id)) {
+            $this->error(__('Please enter the correct verification code'));
+        }
+
+        if ($user->resetPassword($user->id, $params['password'])) {
+            $this->success(__('Password has been changed~'));
+        } else {
+            $this->error(__('Failed to modify password, please try again later~'));
+        }
+    }
 }

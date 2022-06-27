@@ -139,7 +139,52 @@ class Captcha
     }
 
     /**
-     * 输出验证码并把验证码的值保存的Mysql中
+     * 创建一个验证码（非图形）
+     * @access public
+     * @param string $id      验证码标识
+     * @param string $captcha 验证码，不传递则自动生成
+     * @return string 生成的验证码
+     */
+    public function create($id, $captcha = false)
+    {
+        $nowTime     = time();
+        $key         = $this->authcode($this->seKey, $id);
+        $captchaTemp = Db::name('captcha')->where('key', $key)->find();
+        if ($captchaTemp) {
+            // 重复的为同一标识创建验证码
+            Db::name('captcha')->where('key', $key)->delete();
+        }
+        $captcha = $this->generate($captcha);
+        $code    = $this->authcode($captcha, $id);
+        Db::name('captcha')
+            ->insert([
+                'key'        => $key,
+                'code'       => $code,
+                'captcha'    => $captcha,
+                'createtime' => $nowTime,
+                'expiretime' => $nowTime + $this->expire
+            ]);
+        return $captcha;
+    }
+
+    private function generate($captcha = false)
+    {
+        $code = []; // 验证码
+        if ($this->useZh) {
+            // 中文验证码
+            for ($i = 0; $i < $this->length; $i++) {
+                $code[$i] = $captcha ? $captcha[$i] : iconv_substr($this->zhSet, floor(mt_rand(0, mb_strlen($this->zhSet, 'utf-8') - 1)), 1, 'utf-8');
+            }
+        } else {
+            for ($i = 0; $i < $this->length; $i++) {
+                $code[$i] = $captcha ? $captcha[$i] : $this->codeSet[mt_rand(0, strlen($this->codeSet) - 1)];
+            }
+        }
+        return $captcha ? $captcha : strtoupper(implode('', $code));
+    }
+
+    /**
+     * 输出图形验证码并把验证码的值保存的Mysql中
      * @access public
      * @param string $id 要生成验证码的标识
      * @return \think\Response

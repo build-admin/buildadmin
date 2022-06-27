@@ -86,6 +86,10 @@ class User extends Frontend
                 $this->error($msg);
             }
         }
+
+        $this->success('', [
+            'accountVerificationType' => get_account_verification_type()
+        ]);
     }
 
     public function logout()

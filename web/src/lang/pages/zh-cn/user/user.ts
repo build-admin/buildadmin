@@ -49,4 +49,5 @@ export default {
     'The duplicate password does not match the new password': '重复密码与新密码不相符',
     'Logout login': '注销登录',
     'Please enter your current password': '请输入现在的密码',
+    seconds: '秒',
 }

@@ -100,9 +100,13 @@
 
                                 <div v-if="state.form.tab != 'register'" class="form-footer">
                                     <el-checkbox v-model="state.form.keep" :label="t('user.user.Remember me')" size="default"></el-checkbox>
-                                    <!-- <div @click="state.showRetrievePasswordDialog = true" class="forgot-password">
+                                    <div
+                                        v-if="state.accountVerificationType.length > 0"
+                                        @click="state.showRetrievePasswordDialog = true"
+                                        class="forgot-password"
+                                    >
                                         {{ t('user.user.Forgot your password?') }}
-                                    </div> -->
+                                    </div>
                                 </div>
                                 <el-form-item class="form-buttons">
                                     <el-button @click="onSubmit(formRef)" :loading="state.formLoading" round type="primary" size="large">
@@ -138,11 +142,21 @@
             :draggable="true"
         >
             <div class="retrieve-password-form">
-                <el-form ref="retrieveFormRef" :rules="retrieveRules" :model="state.retrievePasswordForm" :label-width="100">
+                <el-form
+                    ref="retrieveFormRef"
+                    @keyup.enter="onSubmitRetrieve(retrieveFormRef)"
+                    :rules="retrieveRules"
+                    :model="state.retrievePasswordForm"
+                    :label-width="100"
+                >
                     <el-form-item :label="t('user.user.Retrieval method')">
                         <el-radio-group v-model="state.retrievePasswordForm.type">
-                            <el-radio label="email" border>{{ t('user.user.Via email') }}</el-radio>
-                            <el-radio label="mobile" disabled border>{{ t('user.user.Via mobile number') }}</el-radio>
+                            <el-radio label="email" :disabled="!state.accountVerificationType.includes('email')" border>{{
+                                t('user.user.Via email')
+                            }}</el-radio>
+                            <el-radio label="mobile" :disabled="!state.accountVerificationType.includes('mobile')" border>{{
+                                t('user.user.Via mobile number')
+                            }}</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item prop="account" :label="state.retrievePasswordForm.type == 'email' ? t('user.user.mailbox') : t('user.user.mobile')">
@@ -167,7 +181,6 @@
                                     v-model="state.retrievePasswordForm.captcha"
                                     :placeholder="t('Please input field', { field: t('user.user.Verification Code') })"
                                     autocomplete="off"
-                                    clearable
                                 >
                                     <template #prefix>
                                         <Icon name="fa fa-ellipsis-h" size="16" color="var(--el-input-icon-color)" />
@@ -175,7 +188,15 @@
                                 </el-input>
                             </el-col>
                             <el-col class="captcha-box" :span="8">
-                                <el-button type="primary">{{ t('user.user.send') }}</el-button>
+                                <el-button
+                                    @click="sendRetrieveCaptcha(retrieveFormRef)"
+                                    :loading="state.sendRetrieveCaptchaLoading"
+                                    :disabled="state.codeSendCountdown <= 0 ? false : true"
+                                    type="primary"
+                                    >{{
+                                        state.codeSendCountdown <= 0 ? t('user.user.send') : state.codeSendCountdown + t('user.user.seconds')
+                                    }}</el-button
+                                >
                             </el-col>
                         </el-row>
                     </el-form-item>
@@ -209,10 +230,12 @@ import { buildCaptchaUrl } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import { useI18n } from 'vue-i18n'
 import { buildValidatorData, validatorAccount } from '/@/utils/validate'
-import { checkIn } from '/@/api/frontend/user/index'
+import { checkIn, sendRetrievePasswordCode, retrievePassword } from '/@/api/frontend/user/index'
+import { onResetForm } from '/@/utils/common'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useRouter } from 'vue-router'
 import type { ElForm, FormItemRule } from 'element-plus'
+var timer: NodeJS.Timer
 
 const { t } = useI18n()
 const router = useRouter()
@@ -220,7 +243,34 @@ const userInfo = useUserInfo()
 const siteConfig = useSiteConfig()
 const formRef = ref<InstanceType<typeof ElForm>>()
 const retrieveFormRef = ref<InstanceType<typeof ElForm>>()
-const state = reactive({
+
+interface State {
+    form: {
+        tab: 'login' | 'register'
+        email: string
+        mobile: string
+        username: string
+        password: string
+        captcha: string
+        keep: boolean
+        captchaId: string
+    }
+    formLoading: boolean
+    showCaptcha: boolean
+    showRetrievePasswordDialog: boolean
+    retrievePasswordForm: {
+        type: 'email' | 'mobile'
+        account: string
+        captcha: string
+        password: string
+    }
+    dialogWidth: number
+    accountVerificationType: string[]
+    codeSendCountdown: number
+    sendRetrieveCaptchaLoading: boolean
+}
+
+const state: State = reactive({
     form: {
         tab: 'login',
         email: '',
@@ -241,6 +291,9 @@ const state = reactive({
         password: '',
     },
     dialogWidth: 36,
+    accountVerificationType: [],
+    codeSendCountdown: 0,
+    sendRetrieveCaptchaLoading: false,
 })
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
@@ -290,7 +343,7 @@ const onSubmit = (formRef: InstanceType<typeof ElForm> | undefined = undefined) 
     formRef!.validate((valid) => {
         if (valid) {
             state.formLoading = true
-            checkIn(state.form)
+            checkIn('post', state.form)
                 .then((res) => {
                     state.formLoading = false
                     userInfo.$state = res.data.userinfo
@@ -308,16 +361,63 @@ const onSubmit = (formRef: InstanceType<typeof ElForm> | undefined = undefined) 
 const onSubmitRetrieve = (formRef: InstanceType<typeof ElForm> | undefined = undefined) => {
     formRef!.validate((valid) => {
         if (valid) {
-
+            retrievePassword(state.retrievePasswordForm).then((res) => {
+                if (res.code == 1) {
+                    state.showRetrievePasswordDialog = false
+                    onChangeCaptcha()
+                    endTiming()
+                    onResetForm(formRef)
+                }
+            })
         }
     })
 }
+const sendRetrieveCaptcha = (formRef: InstanceType<typeof ElForm> | undefined = undefined) => {
+    if (state.codeSendCountdown > 0) return
+    formRef!.validateField('account').then((valid) => {
+        if (valid) {
+            state.sendRetrieveCaptchaLoading = true
+            sendRetrievePasswordCode(state.retrievePasswordForm.type, state.retrievePasswordForm.account)
+                .then((res) => {
+                    state.sendRetrieveCaptchaLoading = false
+                    if (res.code == 1) {
+                        startTiming(60)
+                    }
+                })
+                .catch(() => {
+                    state.sendRetrieveCaptchaLoading = false
+                })
+        }
+    })
+}
+
+const startTiming = (seconds: number) => {
+    state.codeSendCountdown = seconds
+    timer = setInterval(() => {
+        state.codeSendCountdown--
+        if (state.codeSendCountdown <= 0) {
+            endTiming()
+        }
+    }, 1000)
+}
+const endTiming = () => {
+    state.codeSendCountdown = 0
+    clearInterval(timer)
+}
+
 onMounted(() => {
     resize()
     window.addEventListener('resize', resize)
+
+    checkIn('get').then((res) => {
+        state.accountVerificationType = res.data.accountVerificationType
+        state.retrievePasswordForm.type = res.data.accountVerificationType.length > 0 ? res.data.accountVerificationType[0] : ''
+    })
 })
 onUnmounted(() => {
     window.removeEventListener('resize', resize)
+    state.codeSendCountdown = 0
+    endTiming()
 })
 </script>
 

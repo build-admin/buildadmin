@@ -15,14 +15,17 @@ class Account extends Validate
         'email'    => 'require|email|unique:user',
         'mobile'   => 'require|mobile|unique:user',
         'password' => 'require|regex:^[a-zA-Z0-9_]{6,32}$',
+        'account'  => 'require',
+        'captcha'  => 'require',
     ];
 
     /**
      * 验证场景
      */
     protected $scene = [
-        'edit'           => ['avatar', 'nickname', 'birthday'],
-        'changePassword' => ['password'],
+        'edit'             => ['avatar', 'nickname', 'birthday'],
+        'changePassword'   => ['password'],
+        'retrievePassword' => ['account', 'captcha', 'password'],
     ];
 
     public function __construct()

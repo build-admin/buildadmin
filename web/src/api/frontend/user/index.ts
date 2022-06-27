@@ -11,11 +11,11 @@ export function index() {
     })
 }
 
-export function checkIn(params: object = {}): ApiPromise {
+export function checkIn(method: 'get' | 'post', params: object = {}): ApiPromise {
     return createAxios({
         url: controllerUrl + 'checkIn',
         data: params,
-        method: 'POST',
+        method: method,
     }) as ApiPromise
 }
 
@@ -82,4 +82,33 @@ export function postLogout(): ApiPromise {
             refresh_token: getUserToken('refresh'),
         },
     }) as ApiPromise
+}
+
+export function sendRetrievePasswordCode(type: string, account: string): ApiPromise {
+    return createAxios(
+        {
+            url: accountUrl + 'sendRetrievePasswordCode',
+            method: 'POST',
+            data: {
+                type: type,
+                account: account,
+            },
+        },
+        {
+            showSuccessMessage: true,
+        }
+    ) as ApiPromise
+}
+
+export function retrievePassword(params: anyObj): ApiPromise {
+    return createAxios(
+        {
+            url: accountUrl + 'retrievePassword',
+            method: 'POST',
+            data: params,
+        },
+        {
+            showSuccessMessage: true,
+        }
+    ) as ApiPromise
 }
