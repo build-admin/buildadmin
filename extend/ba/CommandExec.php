@@ -287,6 +287,16 @@ class CommandExec
             if (preg_match($preg, $output)) {
                 $this->outputFlag('exec-success');
             }
+        } elseif (isset($commandKeyArr[0]) && $commandKeyArr[0] == 'set-registry') {
+            $urls   = [
+                'npm'    => 'https://registry.npmjs.org/',
+                'taobao' => 'https://registry.npm.taobao.org/',
+                'rednpm' => 'http://registry.mirror.cqupt.edu.cn/',
+            ];
+            $output = json_decode($output, true);
+            if (in_array($commandKeyArr[1], array_keys($urls)) && $output['data'] == $urls[$commandKeyArr[1]]) {
+                $this->outputFlag('exec-success');
+            }
         }
     }
 
