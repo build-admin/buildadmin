@@ -59,6 +59,7 @@ export interface CheckState {
     startForm: {
         lang: string
         packageManager: string
+        setNpmRegistry: string
     }
 }
 

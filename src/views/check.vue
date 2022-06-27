@@ -73,6 +73,14 @@
                     {{ t('The system has a Web terminal. Please select an installed or your favorite NPM package manager') }}
                 </div>
             </el-form-item>
+            <el-form-item :label="t('Set NPM source')">
+                <el-radio-group v-model="state.startForm.setNpmRegistry" class="ml-4">
+                    <el-radio label="none" size="large">{{ t('Use current source') }}</el-radio>
+                    <el-radio label="taobao" size="large">{{ t('TaoBao') }}</el-radio>
+                    <el-radio label="npm" size="large">NPM</el-radio>
+                    <el-radio label="rednpm" size="large">RedNPM</el-radio>
+                </el-radio-group>
+            </el-form-item>
         </el-form>
         <template #footer>
             <el-button @click="startInstall" type="primary" size="large" round>
@@ -123,6 +131,7 @@ const state: CheckState = reactive({
     startForm: {
         lang: locale.value,
         packageManager: terminal.state.packageManager,
+        setNpmRegistry: 'taobao',
     },
 })
 
@@ -231,9 +240,50 @@ const envNpmCheck = () => {
         state.envCheckData = Object.assign({}, state.envCheckData, res.data.data)
 
         if (res.data.data.npm_package_manager.state == 'ok') {
+            setNpmRegistry()
             addCheckNpmInstall()
         }
     })
+}
+
+/**
+ * 设置源
+ */
+const setNpmRegistry = () => {
+    if (state.startForm.setNpmRegistry != 'none') {
+        let exist = false
+        for (const key in terminal.state.taskList) {
+            if (
+                terminal.state.taskList[key].command == 'set-registry.' + state.startForm.setNpmRegistry &&
+                terminal.state.taskList[key].status == taskStatus.Success
+            ) {
+                exist = true
+                break
+            }
+        }
+        if (!exist) {
+            terminal.addTask('set-registry.' + state.startForm.setNpmRegistry, false, (res: number) => {
+                if (res == taskStatus.Failed) {
+                    let npmInstall = {
+                        'set-npm-registry': {
+                            describe: t('Command execution failed'),
+                            state: 'fail',
+                            link: [
+                                {
+                                    // 如何解决
+                                    name: t('How to solve'),
+                                    title: t('Click to see how to solve it'),
+                                    type: 'faq',
+                                    url: 'https://wonderful-code.gitee.io/guide/install/setNpmRegistryFail.html',
+                                },
+                            ],
+                        },
+                    }
+                    state.envCheckData = Object.assign({}, state.envCheckData, npmInstall)
+                }
+            })
+        }
+    }
 }
 
 /**
