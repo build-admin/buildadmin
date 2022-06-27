@@ -4,7 +4,6 @@
     "scripts": {
         "dev": "vite --force",
         "build": "vite build && esno ./src/utils/build.ts",
-        "build:online": "vite build --mode online && esno ./src/utils/build.ts",
         "lint-fix": "eslint --fix --ext .js --ext .jsx --ext .vue src/"
     },
     "dependencies": {

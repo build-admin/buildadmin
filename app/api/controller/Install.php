@@ -41,7 +41,7 @@ class Install extends Api
     /**
      * 自动构建的前端文件的 outDir 相对于根目录
      */
-    static $distDir = 'dist';
+    static $distDir = 'web' . DIRECTORY_SEPARATOR . 'dist';
 
     /**
      * 需要的依赖版本

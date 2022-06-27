@@ -48,11 +48,11 @@ return [
             'ni'   => 'cd ../web && ni install',
         ],
         'web-build'               => [
-            'npm'  => 'cd ../web && npm run build:online',
-            'cnpm' => 'cd ../web && cnpm run build:online',
-            'yarn' => 'cd ../web && yarn run build:online',
-            'pnpm' => 'cd ../web && pnpm run build:online',
-            'ni'   => 'cd ../web && nr build:online',
+            'npm'  => 'cd ../web && npm run build',
+            'cnpm' => 'cd ../web && cnpm run build',
+            'yarn' => 'cd ../web && yarn run build',
+            'pnpm' => 'cd ../web && pnpm run build',
+            'ni'   => 'cd ../web && nr build',
         ],
         'set-registry'            => [
             'npm'    => 'npm config set registry https://registry.npmjs.org/ && npm config get registry',

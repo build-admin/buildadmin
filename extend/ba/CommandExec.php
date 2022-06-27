@@ -58,7 +58,7 @@ class CommandExec
     /**
      * 自动构建的前端文件的 outDir（相对于根目录）
      */
-    protected $distDir = 'dist';
+    protected $distDir = 'web' . DIRECTORY_SEPARATOR . 'dist';
 
     /**
      * 构造函数

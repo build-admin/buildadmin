@@ -10,16 +10,12 @@ export interface ViteEnv {
     VITE_PROXY_URL: string
 }
 
-export function isOnline(mode: string): boolean {
-    return mode === 'online'
-}
-
 export function isDev(mode: string): boolean {
     return mode === 'development'
 }
 
 export function isProd(mode: string | undefined): boolean {
-    return mode === 'production' || mode === 'online'
+    return mode === 'production'
 }
 
 // Read all environment variable configuration files to process.env
