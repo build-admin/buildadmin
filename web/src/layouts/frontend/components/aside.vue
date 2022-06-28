@@ -1,7 +1,7 @@
 <template>
     <el-aside class="ba-user-layouts">
         <div class="userinfo">
-            <div class="user-avatar-box">
+            <div @click="$router.push({ name: 'account/profile' })" class="user-avatar-box">
                 <img class="user-avatar" :src="userInfo.avatar" alt="" />
                 <Icon class="user-avatar-gender" :name="userInfo.getGenderIcon()['name']" size="14" :color="userInfo.getGenderIcon()['color']" />
             </div>
@@ -78,6 +78,7 @@ const memberCenter = useMemberCenter()
 }
 .user-avatar-box {
     position: relative;
+    cursor: pointer;
 }
 .user-avatar {
     display: block;
