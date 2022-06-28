@@ -28,7 +28,7 @@ import 'element-plus/theme-chalk/display.css'
     padding-top: 15px;
     align-items: flex-start;
 }
-@media screen and (max-width: 991px) {
+@media screen and (max-width: 768px) {
     .user-layouts {
         padding-top: 0px;
     }

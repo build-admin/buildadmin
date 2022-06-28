@@ -46,10 +46,10 @@
                         </el-col>
                     </el-row>
                     <el-row class="data-item">
-                        <el-col :span="4">{{ $t('user.user.Last login') }}</el-col>
-                        <el-col :span="8">{{ timeFormat(userInfo.lastlogintime) }}</el-col>
-                        <el-col :span="4">{{ $t('user.user.Last login IP') }}</el-col>
-                        <el-col :span="8">{{ userInfo.lastloginip }}</el-col>
+                        <el-col class="lastlogin title" :span="4">{{ $t('user.user.Last login') }}</el-col>
+                        <el-col class="lastlogin value" :span="8">{{ timeFormat(userInfo.lastlogintime) }}</el-col>
+                        <el-col class="lastip" :span="4">{{ $t('user.user.Last login IP') }}</el-col>
+                        <el-col class="lastip" :span="8">{{ userInfo.lastloginip }}</el-col>
                     </el-row>
                 </div>
             </div>
@@ -229,6 +229,8 @@ onBeforeMount(() => {
         padding: 20px 0;
     }
     .data-item {
+        display: flex;
+        align-items: center;
         font-size: var(--el-font-size-base);
         padding: 3px 0;
     }
@@ -236,5 +238,48 @@ onBeforeMount(() => {
 .account-growth {
     width: 100%;
     height: 300px;
+}
+@media screen and (max-width: 992px) {
+    .user-data {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+    .overview-userinfo .welcome-words {
+        padding-top: 0;
+    }
+    .user-avatar {
+        display: none;
+    }
+}
+@media screen and (max-width: 1280px) and (min-width: 992px) {
+    .lastip {
+        display: none;
+    }
+    .lastlogin.title {
+        width: 42%;
+        max-width: 42%;
+        flex: 0 0 42%;
+    }
+    .lastlogin.value {
+        width: 58%;
+        max-width: 58%;
+        flex: 0 0 58%;
+    }
+}
+@media screen and (max-width: 460px) {
+    .lastip {
+        display: none;
+    }
+    .lastlogin.title {
+        width: 42%;
+        max-width: 42%;
+        flex: 0 0 42%;
+    }
+    .lastlogin.value {
+        width: 58%;
+        max-width: 58%;
+        flex: 0 0 58%;
+    }
 }
 </style>

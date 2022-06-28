@@ -106,6 +106,7 @@ const onSubmit = (formEl: FormInstance | undefined) => {
 <style scoped lang="scss">
 .change-password {
     width: 360px;
+    max-width: 100%;
 }
 .submit-buttons :deep(.el-form-item__content) {
     justify-content: flex-end;
