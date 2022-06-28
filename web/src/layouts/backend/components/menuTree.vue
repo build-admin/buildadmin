@@ -40,7 +40,7 @@ const props = withDefaults(defineProps<Props>(), {
     width: 24px;
     text-align: center;
 }
-.is-active>.icon {
+.is-active > .icon {
     color: var(--el-menu-active-color) !important;
 }
 .el-menu-item.is-active {
