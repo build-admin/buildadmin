@@ -156,7 +156,7 @@ defineExpose({
 watch(
     () => props.modelValue,
     (newVal) => {
-        state.value = newVal
+        state.value = newVal == '' ? '<p></p>' : newVal
     }
 )
 </script>
