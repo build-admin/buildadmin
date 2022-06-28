@@ -47,7 +47,7 @@ onMounted(() => {
             // 跳转到第一个菜单
             let firstRoute = getFirstRoute(memberCenter.state.viewRoutes)
             if (firstRoute) {
-                memberCenter.activateMenu(firstRoute)
+                router.push({ name: firstRoute.name })
             } else {
                 ElNotification({
                     type: 'error',

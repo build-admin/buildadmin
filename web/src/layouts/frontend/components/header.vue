@@ -2,9 +2,12 @@
     <el-header class="header">
         <el-row justify="center">
             <el-col class="header-row" :span="16" :xs="24">
-                <div @click="router.push({ name: '/' })" class="header-logo">
+                <div :class="userInfo.id > 0 ? 'hidden-sm-and-down' : ''" @click="router.push({ name: '/' })" class="header-logo">
                     <img src="~assets/logo.png" />
                     <span class="hidden-xs-only">{{ siteConfig.site_name }}</span>
+                </div>
+                <div v-if="userInfo.id > 0" @click="memberCenter.toggleMenuExpand(true)" class="user-menus-expand hidden-md-and-up">
+                    <Icon name="fa fa-indent" color="var(--color-primary)" size="20" />
                 </div>
                 <el-menu :default-active="state.activeMenu" class="frontend-header-menu" mode="horizontal" :ellipsis="false">
                     <el-menu-item @click="router.push({ name: '/' })" v-blur index="index">{{ $t('index.index') }}</el-menu-item>
@@ -32,6 +35,9 @@
                 </el-menu>
             </el-col>
         </el-row>
+        <el-drawer custom-class="aside-drawer" v-model="memberCenter.state.menuExpand" :with-header="false" direction="ltr" size="50%">
+            <Aside />
+        </el-drawer>
     </el-header>
 </template>
 
@@ -42,11 +48,14 @@ import { useRouter } from 'vue-router'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { useConfig } from '/@/stores/config'
+import { useMemberCenter } from '/@/stores/memberCenter'
 import { editDefaultLang } from '/@/lang/index'
 import { postLogout } from '/@/api/frontend/user/index'
 import 'element-plus/theme-chalk/display.css'
 import { Local } from '/@/utils/storage'
 import { USER_INFO } from '/@/stores/constant/cacheKey'
+import Aside from '/@/layouts/frontend/components/aside.vue'
+import 'element-plus/theme-chalk/display.css'
 
 const state = reactive({
     activeMenu: '',
@@ -57,6 +66,7 @@ const userInfo = useUserInfo()
 const router = useRouter()
 const config = useConfig()
 const siteConfig = useSiteConfig()
+const memberCenter = useMemberCenter()
 
 switch (route.name) {
     case '/':
@@ -87,6 +97,12 @@ const logout = () => {
 }
 .header-row {
     display: flex;
+}
+.user-menus-expand {
+    display: flex;
+    height: 60px;
+    align-items: center;
+    justify-content: center;
 }
 .header-logo {
     display: flex;
@@ -129,9 +145,22 @@ const logout = () => {
 .el-menu--horizontal > .el-menu-item.is-active {
     border-bottom: none;
 }
+:deep(.aside-drawer) {
+    .el-drawer__body {
+        padding: 0;
+    }
+}
 @media only screen and (max-width: 768px) {
     .header-logo {
         padding-left: 10px;
+    }
+    .user-menus-expand {
+        padding-left: 20px;
+    }
+}
+@media screen and (max-width: 425px) {
+    :deep(.aside-drawer) {
+        width: 70% !important;
     }
 }
 </style>

@@ -1,14 +1,14 @@
 <template>
     <el-aside class="ba-user-layouts">
         <div class="userinfo">
-            <div @click="$router.push({ name: 'account/profile' })" class="user-avatar-box">
+            <div @click="routerPush('account/profile')" class="user-avatar-box">
                 <img class="user-avatar" :src="userInfo.avatar" alt="" />
                 <Icon class="user-avatar-gender" :name="userInfo.getGenderIcon()['name']" size="14" :color="userInfo.getGenderIcon()['color']" />
             </div>
             <p class="username">{{ userInfo.nickname }}</p>
             <el-button-group>
                 <el-button
-                    @click="$router.push({ name: 'account/integral' })"
+                    @click="routerPush('account/integral')"
                     v-blur
                     class="userinfo-button-item"
                     :title="$t('user.user.integral') + ' ' + userInfo.score"
@@ -18,7 +18,7 @@
                     <span>{{ $t('user.user.integral') + ' ' + userInfo.score }}</span>
                 </el-button>
                 <el-button
-                    @click="$router.push({ name: 'account/balance' })"
+                    @click="routerPush('account/balance')"
                     v-blur
                     class="userinfo-button-item"
                     :title="$t('user.user.balance') + ' ' + userInfo.money"
@@ -35,7 +35,7 @@
                 <div v-if="memberCenter.state.showHeadline" class="user-menu-max-title">{{ item.title }}</div>
                 <div
                     v-for="menu in item.children"
-                    @click="memberCenter.activateMenu(menu)"
+                    @click="routerPush(menu.name!)"
                     class="user-menu-item"
                     :class="memberCenter.state.activeRoute?.name == menu.name ? 'active' : ''"
                 >
@@ -48,11 +48,20 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useMemberCenter } from '/@/stores/memberCenter'
 
+const router = useRouter()
 const userInfo = useUserInfo()
 const memberCenter = useMemberCenter()
+
+const routerPush = (routeName: string) => {
+    if (document.body.clientWidth < 992) {
+        memberCenter.toggleMenuExpand(false)
+    }
+    router.push({ name: routeName })
+}
 </script>
 
 <style scoped lang="scss">
@@ -131,5 +140,12 @@ const memberCenter = useMemberCenter()
         color: var(--color-primary) !important;
     }
     background-color: var(--color-bg-1);
+}
+@media screen and (max-width: 991px) {
+    .ba-user-layouts {
+        width: 100%;
+        background-color: var(--color-basic-white);
+        box-shadow: none;
+    }
 }
 </style>

@@ -18,6 +18,8 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         authNode: new Map(),
         // 收缩布局
         shrink: false,
+        // 菜单展开（小屏设备）
+        menuExpand: false,
     })
 
     const setAuthNode = (key: string, data: string[]) => {
@@ -36,16 +38,15 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         state.activeRoute = route
     }
 
-    const activateMenu = (menu: viewMenu) => {
-        state.activeRoute = menu
-        router.push({ name: menu.name })
-    }
-
     const setShrink = (shrink: boolean) => {
         state.shrink = shrink
     }
 
-    return { state, setAuthNode, setViewRoutes, setShowHeadline, activateMenu, setActiveRoute, setShrink }
+    const toggleMenuExpand = (expand: boolean = !state.menuExpand) => {
+        state.menuExpand = expand
+    }
+
+    return { state, setAuthNode, setViewRoutes, setShowHeadline, setActiveRoute, setShrink, toggleMenuExpand }
 })
 
 function encodeRoutesURI(data: viewMenu[]): viewMenu[] {

@@ -37,7 +37,7 @@ if (isAdminApp() && navTabs.state.tabsViewRoutes) {
     if (firstRoute) routePush(firstRoute.name)
 } else if (memberCenter.state.viewRoutes) {
     let firstRoute = getFirstRoute(memberCenter.state.viewRoutes)
-    if (firstRoute) memberCenter.activateMenu(firstRoute)
+    if (firstRoute) router.push({ name: firstRoute.name })
 }
 
 timer = setTimeout(() => {

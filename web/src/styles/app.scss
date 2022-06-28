@@ -179,4 +179,9 @@ body,
         padding-right: 0;
     }
 }
+@media screen and (max-width: 991px) {
+    .user-views {
+        padding: 0;
+    }
+}
 /* 自适应-e */

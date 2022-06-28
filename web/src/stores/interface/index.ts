@@ -53,6 +53,7 @@ export interface MemberCenter {
     showHeadline: boolean
     authNode: Map<string, string[]>
     shrink: boolean
+    menuExpand: boolean
 }
 
 export interface AdminInfo {
