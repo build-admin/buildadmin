@@ -192,6 +192,7 @@ const onLabelNeed = (link: CheckLink) => {
                         pm: terminal.state.packageManager,
                     },
                 })
+                setNpmRegistry()
                 addCheckNpmInstall()
             }
         })

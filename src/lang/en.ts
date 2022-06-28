@@ -63,7 +63,7 @@ export default {
     'Move the built file to the specified location of the system': 'Move the built file to the specified location of the system',
     'Click to try to automatically move the build file': 'Click to try to automatically move the build file',
     'The build output directory is: site': 'The build output directory is: site',
-    'root directory / dist': 'root directory/dist',
+    'root directory / dist': 'root directory/web/dist',
     'You can delete the build output directory directly': 'You can delete the build output directory directly',
     'Getting full path of root directory / Web': 'Getting full path of root directory/web',
     'Moving automatically': 'Moving automatically',
@@ -73,7 +73,7 @@ export default {
     'Please move 3': 'file in the build output directory to the',
     'Please move 4': 'directory of the root directory',
     'During construction, all files in the output directory will be overwritten, so the system is designed to build in the root directory first, and then move to the public directory to prevent other files in the public from being overwritten':
-        'During construction, all files in the output directory will be overwritten, so the system is designed to build in the root directory first, and then move to the public directory to prevent other files in the public from being overwritten',
+        'During the construction process, all files in the output directory will be overwritten. Therefore, the system is designed to build first and then move to the public directory to prevent other files in the public directory from being overwritten',
     'Thanks for using buildadmin': 'Thanks for using BuildAdmin',
     'Background URL': 'Background URL',
     'Access foreground': 'Access foreground',
@@ -146,4 +146,5 @@ export default {
     'None - manual execution': 'None - manual execution',
     'Previous step': 'Previous step',
     'Hide index.html?': 'Hide index.html?',
+    'Sorry, some operations could not be completed automatically You need to manually complete the outstanding matters according to the following guidance':'Sorry, some operations could not be completed automatically You need to manually complete the outstanding matters according to the following guidance',
 }

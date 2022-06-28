@@ -2,6 +2,14 @@
     <div class="container">
         <div class="title">{{ t('Unfinished matters manually') }}</div>
         <div class="content">
+            <el-alert
+                :title="
+                    t(
+                        'Sorry, some operations could not be completed automatically You need to manually complete the outstanding matters according to the following guidance'
+                    )
+                "
+                type="error"
+            />
             <div class="content-item">1、{{ t('Open terminal (windows PowerShell)') }}</div>
             <div class="content-item">
                 <div>2、{{ t('Execute command') }}</div>
@@ -123,7 +131,7 @@ getManualInstall().then((res) => {
             background-color: #f5f5f5;
             word-break: break-all;
             font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
-            margin-bottom: 15px;
+            margin: 15px 0;
             .command {
                 line-height: 2;
                 font-weight: bold;
