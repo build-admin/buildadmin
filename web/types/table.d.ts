@@ -112,6 +112,8 @@ declare global {
         icon: string
         popconfirm?: any
         disabledTip?: boolean
+        // 按钮是否显示，请返回布尔值
+        display?: (row: TableRow, field: TableColumn) => boolean
     }
 
     /* 表格行 */

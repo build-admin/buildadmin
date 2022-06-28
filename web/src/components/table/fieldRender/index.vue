@@ -74,60 +74,75 @@
     <!-- 按钮组 -->
     <div v-if="field.render == 'buttons' && field.buttons">
         <template v-for="(btn, idx) in field.buttons">
-            <el-tooltip
-                v-if="btn.render == 'tipButton'"
-                :disabled="btn.title ? false : true"
-                :content="btn.title ? t(btn.title) : ''"
-                placement="top"
-            >
-                <el-button
-                    v-if="btn.name == 'edit'"
-                    v-auth="'edit'"
-                    v-blur
-                    @click="onButtonClick(btn.name)"
-                    :class="btn.class"
-                    class="table-operate"
-                    :type="btn.type"
+            <template v-if="btn.display ? btn.display(row, field) : true">
+                <el-tooltip
+                    v-if="btn.render == 'tipButton'"
+                    :disabled="btn.title ? false : true"
+                    :content="btn.title ? t(btn.title) : ''"
+                    placement="top"
                 >
-                    <Icon :name="btn.icon" />
-                    <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
-                </el-button>
-                <el-button v-else v-blur @click="onButtonClick(btn.name)" :class="btn.class" class="table-operate" :type="btn.type">
-                    <Icon :name="btn.icon" />
-                    <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
-                </el-button>
-            </el-tooltip>
-            <el-popconfirm v-if="btn.render == 'confirmButton'" v-bind="btn.popconfirm" @confirm="onButtonClick(btn.name)">
-                <template #reference>
-                    <div class="ml-6">
-                        <el-tooltip :disabled="btn.title ? false : true" :content="btn.title ? t(btn.title) : ''" placement="top">
-                            <el-button v-if="btn.name == 'delete'" v-auth="'del'" v-blur :class="btn.class" class="table-operate" :type="btn.type">
-                                <Icon :name="btn.icon" />
-                                <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
-                            </el-button>
-                            <el-button v-else v-blur :class="btn.class" class="table-operate" :type="btn.type">
-                                <Icon :name="btn.icon" />
-                                <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
-                            </el-button>
-                        </el-tooltip>
-                    </div>
-                </template>
-            </el-popconfirm>
-            <el-tooltip
-                v-if="btn.render == 'moveButton'"
-                :disabled="btn.title && !btn.disabledTip ? false : true"
-                :content="btn.title ? t(btn.title) : ''"
-                placement="top"
-            >
-                <el-button v-if="btn.name == 'weigh-sort'" v-auth="'sortable'" :class="btn.class" class="table-operate move-button" :type="btn.type">
-                    <Icon :name="btn.icon" />
-                    <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
-                </el-button>
-                <el-button v-else v-blur :class="btn.class" class="table-operate move-button" :type="btn.type">
-                    <Icon :name="btn.icon" />
-                    <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
-                </el-button>
-            </el-tooltip>
+                    <el-button
+                        v-if="btn.name == 'edit'"
+                        v-auth="'edit'"
+                        v-blur
+                        @click="onButtonClick(btn.name)"
+                        :class="btn.class"
+                        class="table-operate"
+                        :type="btn.type"
+                    >
+                        <Icon :name="btn.icon" />
+                        <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                    </el-button>
+                    <el-button v-else v-blur @click="onButtonClick(btn.name)" :class="btn.class" class="table-operate" :type="btn.type">
+                        <Icon :name="btn.icon" />
+                        <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                    </el-button>
+                </el-tooltip>
+                <el-popconfirm v-if="btn.render == 'confirmButton'" v-bind="btn.popconfirm" @confirm="onButtonClick(btn.name)">
+                    <template #reference>
+                        <div class="ml-6">
+                            <el-tooltip :disabled="btn.title ? false : true" :content="btn.title ? t(btn.title) : ''" placement="top">
+                                <el-button
+                                    v-if="btn.name == 'delete'"
+                                    v-auth="'del'"
+                                    v-blur
+                                    :class="btn.class"
+                                    class="table-operate"
+                                    :type="btn.type"
+                                >
+                                    <Icon :name="btn.icon" />
+                                    <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                                </el-button>
+                                <el-button v-else v-blur :class="btn.class" class="table-operate" :type="btn.type">
+                                    <Icon :name="btn.icon" />
+                                    <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                                </el-button>
+                            </el-tooltip>
+                        </div>
+                    </template>
+                </el-popconfirm>
+                <el-tooltip
+                    v-if="btn.render == 'moveButton'"
+                    :disabled="btn.title && !btn.disabledTip ? false : true"
+                    :content="btn.title ? t(btn.title) : ''"
+                    placement="top"
+                >
+                    <el-button
+                        v-if="btn.name == 'weigh-sort'"
+                        v-auth="'sortable'"
+                        :class="btn.class"
+                        class="table-operate move-button"
+                        :type="btn.type"
+                    >
+                        <Icon :name="btn.icon" />
+                        <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                    </el-button>
+                    <el-button v-else v-blur :class="btn.class" class="table-operate move-button" :type="btn.type">
+                        <Icon :name="btn.icon" />
+                        <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                    </el-button>
+                </el-tooltip>
+            </template>
         </template>
     </div>
 </template>
