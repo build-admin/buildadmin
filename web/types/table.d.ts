@@ -70,7 +70,7 @@ declare global {
     interface TableColumn extends ElTableColumn {
         // 是否显示
         show?: boolean
-        // 渲染为:icon|switch|image|images|tag|url|datetime|buttons
+        // 渲染为:icon|switch|image|images|tag|url|datetime|buttons|customTemplate
         render?: string
         // 操作按钮组
         buttons?: OptButton[]
@@ -80,6 +80,8 @@ declare global {
         size?: TagProps['size']
         // 自定义数据:比如渲染为Tag时,可以指定不同值时的Tag的Type属性 { open: 'success', close: 'info' }
         custom?: any
+        // 谨慎使用：自定义渲染模板，方法可返回html内容，请确保返回内容是xss安全的
+        customTemplate?: (row: TableRow, field: TableColumn, value: any) => string
         // 渲染为链接时,链接的打开方式
         target?: aTarget
         // 渲染为:a|buttons的点击事件
@@ -90,8 +92,8 @@ declare global {
         default?: any
         // 值替换数据,如{open: '开'}
         replaceValue?: any
-        // 自定义渲染方式时,渲染时对值的预处理方法
-        renderFormatter?: Function
+        // 使用了 render 属性时,渲染前对字段值的预处理方法，请返回新值
+        renderFormatter?: (row: TableRow, field: TableColumn, value: any) => any
         // 通用搜索操作符,默认值为=,false禁用此字段通用搜索,支持的操作符见下定义
         operator?: boolean | OperatorStr
         // 通用搜索框的placeholder

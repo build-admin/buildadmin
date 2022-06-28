@@ -68,6 +68,9 @@
         {{ timeFormat(fieldValue, field.timeFormat ?? undefined) }}
     </div>
 
+    <!-- customTemplate 自定义模板 -->
+    <div v-if="field.render == 'customTemplate'" v-html="field.customTemplate ? field.customTemplate(row, field, fieldValue) : ''"></div>
+
     <!-- 按钮组 -->
     <div v-if="field.render == 'buttons' && field.buttons">
         <template v-for="(btn, idx) in field.buttons">
