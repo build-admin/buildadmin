@@ -23,6 +23,7 @@ import { genFileId, ElButton } from 'element-plus'
 import type { UploadInstance, UploadRawFile, UploadFile } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import Editor from '/@/components/editor/index.vue'
+import _ from 'lodash'
 
 export default defineComponent({
     name: 'baInput',
@@ -174,6 +175,16 @@ export default defineComponent({
                     modelValue: props.modelValue,
                     'onUpdate:modelValue': onValueUpdate,
                 })
+        }
+
+        // 图片/文件上传时添加请求额外数据
+        const formDataAppend = (fd: FormData, data: anyObj = {}) => {
+            if (data && !_.isEmpty(data)) {
+                for (const key in data) {
+                    fd.append(key, data[key])
+                }
+            }
+            return fd
         }
 
         const buildFun = new Map([
@@ -395,6 +406,7 @@ export default defineComponent({
                                     if (!file || !file.raw) return
                                     let fd = new FormData()
                                     fd.append('file', file.raw!)
+                                    fd = formDataAppend(fd, props.attr.data)
                                     fileUpload(fd).then((res) => {
                                         if (res.code == 1) {
                                             state.lastFullUrl = res.data.file.full_url
@@ -529,6 +541,7 @@ export default defineComponent({
                                     if (!file || !file.raw) return
                                     let fd = new FormData()
                                     fd.append('file', file.raw!)
+                                    fd = formDataAppend(fd, props.attr.data)
                                     fileUpload(fd).then((res) => {
                                         if (res.code == 1) {
                                             urlKey++
@@ -633,6 +646,7 @@ export default defineComponent({
                                     if (!file || !file.raw) return
                                     let fd = new FormData()
                                     fd.append('file', file.raw!)
+                                    fd = formDataAppend(fd, props.attr.data)
                                     fileUpload(fd).then((res) => {
                                         if (res.code == 1) {
                                             lastFullUrl.value = res.data.file.full_url
@@ -754,6 +768,7 @@ export default defineComponent({
                                     if (!file || !file.raw) return
                                     let fd = new FormData()
                                     fd.append('file', file.raw!)
+                                    fd = formDataAppend(fd, props.attr.data)
                                     fileUpload(fd).then((res) => {
                                         if (res.code == 1) {
                                             urlKey++
