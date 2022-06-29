@@ -11,7 +11,7 @@
                 </div>
                 <el-menu :default-active="state.activeMenu" class="frontend-header-menu" mode="horizontal" :ellipsis="false">
                     <el-menu-item @click="router.push({ name: '/' })" v-blur index="index">{{ $t('index.index') }}</el-menu-item>
-                    <el-sub-menu v-if="userInfo.id" v-blur @click="router.push({ name: 'user' })" index="user">
+                    <el-sub-menu v-if="userInfo.id" v-blur index="user">
                         <template #title>
                             <div class="header-user-box">
                                 <img class="header-user-avatar" :src="userInfo.avatar" alt="" />
