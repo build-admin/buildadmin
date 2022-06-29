@@ -87,7 +87,7 @@ const userInfo = useUserInfo()
 const formRef = ref<FormInstance>()
 const state = reactive({
     formSubmitLoading: false,
-    form: { ...userInfo },
+    form: userInfo.$state,
     rules: {
         avatar: [buildValidatorData('required', '', 'blur', t('Please select field', { field: t('user.user.head portrait') }))],
         nickname: [buildValidatorData('required', t('user.user.nickname'))],
