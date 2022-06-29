@@ -159,7 +159,7 @@ export const buildJsonToElTreeData = (data: any): ElTreeData[] => {
  * 是否在后台应用内
  */
 export const isAdminApp = () => {
-    if (/^\/admin/.test(router.currentRoute.value.fullPath)) {
+    if (/^\/admin/.test(router.currentRoute.value.fullPath) || window.location.hash.indexOf('#/admin') === 0) {
         return true
     }
     return false
