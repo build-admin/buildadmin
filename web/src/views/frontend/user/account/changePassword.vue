@@ -47,11 +47,11 @@ import { buildValidatorData } from '/@/utils/validate'
 import { changePassword } from '/@/api/frontend/user/index'
 import { useI18n } from 'vue-i18n'
 import FormItem from '/@/components/formItem/index.vue'
-import { useRouter } from 'vue-router'
+import { useUserInfo } from '/@/stores/userInfo'
 
 const { t } = useI18n()
 
-const router = useRouter()
+const userInfo = useUserInfo()
 const formRef = ref<FormInstance>()
 const state = reactive({
     formSubmitLoading: false,
@@ -92,7 +92,7 @@ const onSubmit = (formEl: FormInstance | undefined) => {
                 .then((res) => {
                     state.formSubmitLoading = false
                     if (res.code == 1) {
-                        router.push({ name: 'userLogin' })
+                        userInfo.logout()
                     }
                 })
                 .catch(() => {

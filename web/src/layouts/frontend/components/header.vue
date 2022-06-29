@@ -19,7 +19,7 @@
                             </div>
                         </template>
                         <el-menu-item @click="router.push({ name: 'user' })" v-blur index="user-index">{{ $t('index.Member Center') }}</el-menu-item>
-                        <el-menu-item @click="logout()" v-blur index="user-logout">{{ $t('user.user.Logout login') }}</el-menu-item>
+                        <el-menu-item @click="userInfo.logout()" v-blur index="user-logout">{{ $t('user.user.Logout login') }}</el-menu-item>
                     </el-sub-menu>
                     <el-menu-item v-else @click="router.push({ name: 'user' })" v-blur index="user">{{ $t('index.Member Center') }}</el-menu-item>
                     <el-sub-menu v-blur index="switch-language">
@@ -50,10 +50,7 @@ import { useSiteConfig } from '/@/stores/siteConfig'
 import { useConfig } from '/@/stores/config'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { editDefaultLang } from '/@/lang/index'
-import { postLogout } from '/@/api/frontend/user/index'
 import 'element-plus/theme-chalk/display.css'
-import { Local } from '/@/utils/storage'
-import { USER_INFO } from '/@/stores/constant/cacheKey'
 import Aside from '/@/layouts/frontend/components/aside.vue'
 import 'element-plus/theme-chalk/display.css'
 
@@ -75,15 +72,6 @@ switch (route.name) {
     case 'userLogin':
         state.activeMenu = 'user'
         break
-}
-
-const logout = () => {
-    postLogout().then((res) => {
-        if (res.code == 1) {
-            Local.remove(USER_INFO)
-            router.go(0)
-        }
-    })
 }
 </script>
 
