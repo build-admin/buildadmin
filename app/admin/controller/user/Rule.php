@@ -66,7 +66,7 @@ class Rule extends Backend
     public function select()
     {
         $isTree = $this->request->param('isTree');
-        $data   = $this->getRule();
+        $data   = $this->getRule([['status', '=', '1']]);
 
         if ($isTree && !$this->keyword) {
             $data = $this->tree->assembleTree($this->tree->getTreeArray($data, 'title'));
@@ -76,9 +76,8 @@ class Rule extends Backend
         ]);
     }
 
-    public function getRule()
+    public function getRule($where = [])
     {
-        $where = [];
         if ($this->keyword) {
             $keyword = explode(' ', $this->keyword);
             foreach ($keyword as $item) {

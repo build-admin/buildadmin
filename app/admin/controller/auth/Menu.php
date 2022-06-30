@@ -69,7 +69,7 @@ class Menu extends Backend
     public function select()
     {
         $isTree = $this->request->param('isTree');
-        $data   = $this->getMenus(false);
+        $data   = $this->getMenus([['type', 'in', ['menu_dir', 'menu']], ['status', '=', '1']]);
 
         if ($isTree && !$this->keyword) {
             $data = $this->tree->assembleTree($this->tree->getTreeArray($data, 'title'));
@@ -79,23 +79,19 @@ class Menu extends Backend
         ]);
     }
 
-    protected function getMenus($getButton = true)
+    protected function getMenus($where = [])
     {
-        $rules = $this->getRuleList($getButton);
+        $rules = $this->getRuleList($where);
         return $this->tree->assembleChild($rules);
     }
 
-    protected function getRuleList($getButton = true)
+    protected function getRuleList($where = [])
     {
         $ids = $this->auth->getRuleIds();
 
-        $where = [];
         // 如果没有 * 则只获取用户拥有的规则
         if (!in_array('*', $ids)) {
             $where[] = ['id', 'in', $ids];
-        }
-        if (!$getButton) {
-            $where[] = ['type', 'in', ['menu_dir', 'menu']];
         }
 
         if ($this->keyword) {
