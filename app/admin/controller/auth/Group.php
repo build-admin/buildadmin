@@ -207,7 +207,7 @@ class Group extends Backend
 
     public function select()
     {
-        $data = $this->getGroups();
+        $data = $this->getGroups([['status', '=', 1]]);
 
         if ($this->assembleTree) {
             $data = $this->tree->assembleTree($this->tree->getTreeArray($data, 'name'));
@@ -217,12 +217,11 @@ class Group extends Backend
         ]);
     }
 
-    public function getGroups()
+    public function getGroups($where = [])
     {
         $pk      = $this->model->getPk();
         $initKey = $this->request->get("initKey/s", $pk);
 
-        $where = [];
         if ($this->keyword) {
             $keyword = explode(' ', $this->keyword);
             foreach ($keyword as $item) {
