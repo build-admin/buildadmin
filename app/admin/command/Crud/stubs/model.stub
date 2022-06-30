@@ -9,7 +9,7 @@ use think\Model;
  * @controllerUrl '{%controllerUrlVarName%}'
  */
 class {%modelName%} extends Model
-{{%modelConnection%}
+{{%modelConnection%}{%priKey%}
     // 表名
     protected ${%modelTableType%} = '{%modelTableTypeName%}';
 

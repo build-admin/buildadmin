@@ -963,6 +963,7 @@ class Crud extends Command
                 'createTime'              => in_array($this->createTimeField, $fieldArr) ? "'{$this->createTimeField}'" : 'false',
                 'updateTime'              => in_array($this->updateTimeField, $fieldArr) ? "'{$this->updateTimeField}'" : 'false',
                 'modeAfterInsert'         => '',
+                'priKey'                  => $priKey == 'id' ? '' : "\n\t// 表主键\n\t" . 'protected $pk = ' . "'{$priKey}';\n\t",
             ];
             $controllerData['tableComment'] = $tableComment;
 
