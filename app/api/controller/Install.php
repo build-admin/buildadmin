@@ -482,18 +482,20 @@ class Install extends Api
         // 写入.env-example文件
         $envFile        = root_path() . '.env-example';
         $envFileContent = @file_get_contents($envFile);
-        $envFileContent .= "\n" . '[DATABASE]' . "\n";
-        $envFileContent .= 'TYPE = mysql' . "\n";
-        $envFileContent .= 'HOSTNAME = ' . $param['hostname'] . "\n";
-        $envFileContent .= 'DATABASE = ' . $param['database'] . "\n";
-        $envFileContent .= 'USERNAME = ' . $param['username'] . "\n";
-        $envFileContent .= 'PASSWORD = ' . $param['password'] . "\n";
-        $envFileContent .= 'HOSTPORT = ' . $param['hostport'] . "\n";
-        $envFileContent .= 'CHARSET = utf8' . "\n";
-        $envFileContent .= 'DEBUG = true' . "\n";
-        $result         = @file_put_contents($envFile, $envFileContent);
-        if (!$result) {
-            $this->error(__('File has no write permission:%s', ['/' . $envFile]));
+        if ($envFileContent && stripos($envFileContent, '[DATABASE]') === false) {
+            $envFileContent .= "\n" . '[DATABASE]' . "\n";
+            $envFileContent .= 'TYPE = mysql' . "\n";
+            $envFileContent .= 'HOSTNAME = ' . $param['hostname'] . "\n";
+            $envFileContent .= 'DATABASE = ' . $param['database'] . "\n";
+            $envFileContent .= 'USERNAME = ' . $param['username'] . "\n";
+            $envFileContent .= 'PASSWORD = ' . $param['password'] . "\n";
+            $envFileContent .= 'HOSTPORT = ' . $param['hostport'] . "\n";
+            $envFileContent .= 'CHARSET = utf8' . "\n";
+            $envFileContent .= 'DEBUG = true' . "\n";
+            $result         = @file_put_contents($envFile, $envFileContent);
+            if (!$result) {
+                $this->error(__('File has no write permission:%s', ['/' . $envFile]));
+            }
         }
 
         // 设置新的Token随机密钥key
