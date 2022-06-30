@@ -5,6 +5,7 @@
         :close-on-click-modal="false"
         :model-value="baTable.form.operate ? true : false"
         @close="baTable.toggleForm"
+        :destroy-on-close="true"
     >
         <template #header>
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">

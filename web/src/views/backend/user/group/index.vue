@@ -28,6 +28,8 @@ import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
 import { useI18n } from 'vue-i18n'
+import { ElForm } from 'element-plus'
+import { cloneDeep } from 'lodash'
 
 const { t } = useI18n()
 const tableRef = ref()
@@ -67,9 +69,49 @@ const baTable = new baTableClass(
     },
     {
         // 提交前
-        onSubmit: () => {
-            baTable.form.items!.rules = formRef.value.getCheckeds()
-            baTable.form.items!.half_rules = formRef.value.getHalfCheckeds()
+        onSubmit: (params: { formEl: InstanceType<typeof ElForm> }) => {
+            var items = cloneDeep(baTable.form.items!)
+            items.rules = formRef.value.getCheckeds()
+            items.half_rules = formRef.value.getHalfCheckeds()
+
+            for (const key in items) {
+                if (items[key] === null) {
+                    delete items[key]
+                }
+            }
+
+            // 表单验证通过后执行的api请求操作
+            let submitCallback = () => {
+                baTable.form.submitLoading = true
+                baTable.api
+                    .postData(baTable.form.operate!, items)
+                    .then((res) => {
+                        baTable.onTableHeaderAction('refresh', {})
+                        baTable.form.submitLoading = false
+                        baTable.form.operateIds?.shift()
+                        if (baTable.form.operateIds?.length! > 0) {
+                            baTable.toggleForm('edit', baTable.form.operateIds)
+                        } else {
+                            baTable.toggleForm()
+                        }
+                        baTable.runAfter('onSubmit', { res })
+                    })
+                    .catch((err) => {
+                        baTable.form.submitLoading = false
+                    })
+            }
+
+            if (params.formEl) {
+                baTable.form.ref = params.formEl
+                params.formEl.validate((valid) => {
+                    if (valid) {
+                        submitCallback()
+                    }
+                })
+            } else {
+                submitCallback()
+            }
+            return false
         },
     }
 )
