@@ -5,6 +5,7 @@
                 <el-row>
                     <template v-for="(item, idx) in baTable.table.column">
                         <template v-if="item.operator !== false">
+                            <!-- 时间范围 -->
                             <el-col v-if="item.render == 'datetime' && (item.operator == 'RANGE' || item.operator == 'NOT RANGE')" :span="12">
                                 <div class="com-search-col">
                                     <div class="com-search-col-label w16">{{ item.label }}</div>
@@ -25,6 +26,7 @@
                             <el-col v-else :span="6">
                                 <div class="com-search-col">
                                     <div class="com-search-col-label">{{ item.label }}</div>
+                                    <!-- 数字范围 -->
                                     <div v-if="item.operator == 'RANGE' || item.operator == 'NOT RANGE'" class="com-search-col-input-range">
                                         <el-input
                                             :placeholder="item.operatorPlaceholder"
@@ -38,10 +40,12 @@
                                             v-model="baTable.comSearch.form[item.prop! + '-end']"
                                         ></el-input>
                                     </div>
+                                    <!-- 是否 [NOT] NULL -->
                                     <div v-else-if="item.operator == 'NULL' || item.operator == 'NOT NULL'" class="com-search-col-input">
                                         <el-checkbox v-model="baTable.comSearch.form[item.prop!]" :label="item.operator" size="large"></el-checkbox>
                                     </div>
                                     <div v-else-if="item.operator" class="com-search-col-input">
+                                        <!-- 时间筛选 -->
                                         <el-date-picker
                                             class="datetime-picker"
                                             v-if="item.render == 'datetime'"
@@ -51,6 +55,8 @@
                                             :placeholder="item.operatorPlaceholder"
                                             :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:new Date()"
                                         ></el-date-picker>
+
+                                        <!-- tag -->
                                         <el-select
                                             :placeholder="item.operatorPlaceholder"
                                             v-else-if="item.render == 'tag' && item.replaceValue"
@@ -59,15 +65,29 @@
                                         >
                                             <el-option v-for="(opt, okey) in item.replaceValue" :key="item.prop! + okey" :label="opt" :value="okey" />
                                         </el-select>
+
+                                        <!-- 开关 -->
                                         <el-select
                                             :placeholder="item.operatorPlaceholder"
                                             v-else-if="item.render == 'switch'"
                                             v-model="baTable.comSearch.form[item.prop!]"
                                             :clearable="true"
                                         >
-                                            <el-option :label="$t('utils.open')" value="1" />
-                                            <el-option :label="$t('utils.close')" value="0" />
+                                            <template v-if="!isEmpty(item.replaceValue)">
+                                                <el-option
+                                                    v-for="(opt, okey) in item.replaceValue"
+                                                    :key="item.prop! + okey"
+                                                    :label="opt"
+                                                    :value="okey"
+                                                />
+                                            </template>
+                                            <template v-else>
+                                                <el-option :label="$t('utils.open')" value="1" />
+                                                <el-option :label="$t('utils.close')" value="0" />
+                                            </template>
                                         </el-select>
+
+                                        <!-- 字符串 -->
                                         <el-input
                                             :placeholder="item.operatorPlaceholder"
                                             v-else
@@ -95,6 +115,7 @@
 import { inject } from 'vue'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import type baTableClass from '/@/utils/baTable'
+import { isEmpty } from 'lodash'
 
 const { proxy } = useCurrentInstance()
 
