@@ -21,4 +21,32 @@ class AdminLog extends Backend
         parent::initialize();
         $this->model = new AdminLogModel();
     }
+
+    /**
+     * 查看
+     */
+    public function index()
+    {
+        $this->request->filter(['strip_tags', 'trim']);
+        if ($this->request->param('select')) {
+            $this->select();
+        }
+
+        list($where, $alias, $limit, $order) = $this->queryBuilder();
+        if (!$this->auth->isSuperAdmin()) {
+            $where[] = ['admin_id', '=', $this->auth->id];
+        }
+        $res = $this->model
+            ->withJoin($this->withJoinTable, $this->withJoinType)
+            ->alias($alias)
+            ->where($where)
+            ->order($order)
+            ->paginate($limit);
+
+        $this->success('', [
+            'list'   => $res->items(),
+            'total'  => $res->total(),
+            'remark' => get_route_remark(),
+        ]);
+    }
 }

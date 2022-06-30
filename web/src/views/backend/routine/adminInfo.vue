@@ -90,7 +90,7 @@
                         :page-size="state.logPageSize"
                         :page-sizes="[12, 22, 52, 100]"
                         background
-                        :layout="config.layout.shrink ? 'prev, next, jumper' : 'sizes, ->, prev, pager, next, jumper'"
+                        layout="prev, next, jumper"
                         :total="state.logTotal"
                         @size-change="onLogSizeChange"
                         @current-change="onLogCurrentChange"
@@ -102,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { index, log, postData } from '/@/api/backend/routine/AdminInfo'
 import { ElForm, FormItemRule } from 'element-plus'
@@ -152,6 +152,16 @@ index().then((res) => {
     state.adminInfo = res.data.info
     // 重新渲染表单以记录初始值
     state.formKey = uuid()
+
+    // 管理员日志加载，加筛选防止超管读取到其他管理员的日志记录
+    state.logFilter.search = [
+        {
+            field: 'admin_id',
+            val: res.data.info.id,
+            operator: '=',
+        },
+    ]
+    getLog()
 })
 
 const getLog = () => {
@@ -248,10 +258,6 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
         }
     })
 }
-
-onMounted(() => {
-    getLog()
-})
 </script>
 
 <script lang="ts">
