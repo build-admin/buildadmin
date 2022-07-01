@@ -17,6 +17,7 @@ declare global {
         defaultOrder?: { prop: string; order: string }
         dragSortLimitField?: string
         acceptQuery?: boolean
+        showComSearch?: boolean
         extend?: anyObj
     }
 

@@ -41,6 +41,8 @@ export default class baTable {
         dragSortLimitField: 'pid',
         // 接受url的query参数并自动触发通用搜索
         acceptQuery: true,
+        // 显示公共搜索
+        showComSearch: false,
         // 扩展数据
         extend: {},
     })

@@ -1,6 +1,8 @@
 <template>
     <!-- 通用搜索 -->
-    <ComSearch v-show="buttons.includes('comSearch') && state.showComSearch" />
+    <transition name="el-zoom-in-bottom" mode="out-in">
+        <ComSearch v-show="buttons.includes('comSearch') && baTable.table.showComSearch" />
+    </transition>
 
     <!-- 操作按钮组 -->
     <div v-bind="$attrs" class="table-header">
@@ -84,11 +86,16 @@
                 </el-dropdown>
                 <el-tooltip
                     v-if="buttons.includes('comSearch')"
-                    :disabled="state.showComSearch"
+                    :disabled="baTable.table.showComSearch"
                     :content="t('Expand generic search')"
                     placement="top"
                 >
-                    <el-button class="table-search-button-item" @click="state.showComSearch = !state.showComSearch" color="#dcdfe6" plain>
+                    <el-button
+                        class="table-search-button-item"
+                        @click="baTable.table.showComSearch = !baTable.table.showComSearch"
+                        color="#dcdfe6"
+                        plain
+                    >
                         <Icon size="14" color="#303133" name="el-icon-Search" />
                     </el-button>
                 </el-tooltip>
@@ -120,7 +127,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const state = reactive({
     quickSearch: '',
-    showComSearch: false,
 })
 
 const enableBatchOpt = computed(() => (baTable.table.selection!.length > 0 ? true : false))
