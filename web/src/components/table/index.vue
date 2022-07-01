@@ -55,7 +55,7 @@ const config = useConfig()
 const tableRef = ref<InstanceType<typeof ElTable>>()
 const baTable = inject('baTable') as baTableClass
 
-interface Props {
+interface Props extends Partial<InstanceType<typeof ElTable>>{
     pagination?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
