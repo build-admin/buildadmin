@@ -1108,7 +1108,7 @@ class Crud extends Command
             Menu::create([
                 [
                     'type'      => 'menu',
-                    'title'     => $tableComment,
+                    'title'     => $tableComment ?: $table,
                     'name'      => $originControllerUrl,
                     'path'      => $originControllerUrl,
                     'menu_type' => 'tab',
