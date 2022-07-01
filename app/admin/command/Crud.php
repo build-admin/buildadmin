@@ -75,11 +75,6 @@ class Crud extends Command
      * 输入框类型的识别规则
      */
     protected $inputTypeRule = [
-        // 多选框
-        [
-            'type'  => ['set'],
-            'value' => 'checkbox',
-        ],
         // 开关组件
         [
             'type'   => ['tinyint', 'int', 'enum'],
@@ -102,10 +97,6 @@ class Crud extends Command
             'type'   => ['varchar'],
             'suffix' => ['textarea', 'multiline', 'rows'],
             'value'  => 'textarea',
-        ],
-        [
-            'type'  => ['longtext', 'text', 'mediumtext', 'smalltext', 'tinytext', 'bigtext'],
-            'value' => 'textarea',
         ],
         // Array
         [
@@ -186,22 +177,33 @@ class Crud extends Command
         ],
         // 单选框
         [
-            'type'  => ['enum'],
-            'value' => 'radio',
-        ],
-        [
             'column_type' => ['tinyint(1)', 'char(1)', 'tinyint(1) unsigned'],
             'suffix'      => ['status', 'state'],
             'value'       => 'radio',
         ],
         // 数字输入框
         [
+            'suffix' => ['number', 'int', 'num'],
+            'value'  => 'number',
+        ],
+        [
             'type'  => ['bigint', 'int', 'mediumint', 'smallint', 'tinyint', 'decimal', 'double', 'float'],
             'value' => 'number',
         ],
+        // 富文本-低权重
         [
-            'suffix' => ['number', 'int', 'num'],
-            'value'  => 'number',
+            'type'  => ['longtext', 'text', 'mediumtext', 'smalltext', 'tinytext', 'bigtext'],
+            'value' => 'textarea',
+        ],
+        // 单选框-低权重
+        [
+            'type'  => ['enum'],
+            'value' => 'radio',
+        ],
+        // 多选框
+        [
+            'type'  => ['set'],
+            'value' => 'checkbox',
         ],
     ];
 
