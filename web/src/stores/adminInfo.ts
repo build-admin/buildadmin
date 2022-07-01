@@ -12,6 +12,8 @@ export const useAdminInfo = defineStore('adminInfo', {
             lastlogintime: '',
             token: '',
             refreshToken: '',
+            // 是否是superAdmin，用于判定是否显示终端按钮等，不做任何权限判断
+            super: false,
         }
     },
     actions: {

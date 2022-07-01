@@ -48,6 +48,7 @@ const init = () => {
         siteConfig.$state = res.data.siteConfig
         terminal.changePort(res.data.terminal.install_service_port)
         terminal.changePackageManager(res.data.terminal.npm_package_manager)
+        adminInfo.super = res.data.adminInfo.super
 
         if (res.data.menus) {
             let menuRule = handleAdminRoute(res.data.menus)

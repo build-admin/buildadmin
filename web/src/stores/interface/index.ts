@@ -64,6 +64,7 @@ export interface AdminInfo {
     lastlogintime: string
     token: string
     refreshToken: string
+    super: boolean
 }
 
 export interface UserInfo {
