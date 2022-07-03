@@ -32,7 +32,7 @@
     </div>
 
     <!-- tag -->
-    <div v-if="field.render == 'tag' && fieldValue">
+    <div v-if="field.render == 'tag' && fieldValue !== ''">
         <el-tag :type="getTagType(fieldValue, field.custom)" :effect="field.effect ?? 'light'" :size="field.size ?? 'default'">{{
             field.replaceValue ? field.replaceValue[fieldValue] : fieldValue
         }}</el-tag>
@@ -46,7 +46,7 @@
             </template>
         </template>
         <template v-else>
-            <el-tag class="m-10" v-if="fieldValue" size="small" effect="light">{{
+            <el-tag class="m-10" v-if="fieldValue !== ''" size="small" effect="light">{{
                 field.replaceValue ? field.replaceValue[fieldValue] ?? fieldValue : fieldValue
             }}</el-tag>
         </template>
