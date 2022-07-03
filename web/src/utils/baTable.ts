@@ -391,7 +391,7 @@ export default class baTable {
      */
     dragSort = () => {
         let buttonsKey = getArrayKey(this.table.column, 'render', 'buttons')
-        let moveButton = getArrayKey(this.table.column[buttonsKey].buttons, 'render', 'moveButton')
+        let moveButton = getArrayKey(this.table.column[buttonsKey]?.buttons, 'render', 'moveButton')
         if (moveButton === false) {
             return
         }
