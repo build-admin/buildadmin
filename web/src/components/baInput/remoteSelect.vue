@@ -1,7 +1,7 @@
 <template>
     <el-select
+        ref="selectRef"
         @focus="onFocus"
-        @blur="onBlur"
         class="remote-select"
         :loading="state.loading"
         :filterable="true"
@@ -12,6 +12,7 @@
         @change="onChangeSelect"
         :multiple="multiple"
         :key="state.selectKey"
+        :reserve-keyword="false"
     >
         <el-option
             class="remote-select-option"
@@ -33,10 +34,12 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, onMounted } from 'vue'
+import { reactive, watch, onMounted, ref, nextTick } from 'vue'
 import { getSelectData } from '/@/api/common'
 import { uuid } from '/@/utils/random'
+import type { ElSelect } from 'element-plus'
 
+const selectRef = ref<InstanceType<typeof ElSelect> | undefined>()
 type valType = string | number | string[] | number[]
 
 interface Props {
@@ -91,6 +94,9 @@ const emits = defineEmits<{
 
 const onChangeSelect = (val: valType) => {
     emits('update:modelValue', val)
+    nextTick(() => {
+        selectRef.value?.blur()
+    })
 }
 
 const onFocus = () => {
@@ -98,14 +104,14 @@ const onFocus = () => {
         getData()
     }
 }
-const onBlur = () => {
-    if (state.keyword) {
-        state.keyword = ''
-        state.initializeData = false
-    }
-}
 
 const onLogKeyword = (q: string) => {
+    if (q == '') {
+        selectRef.value?.blur()
+        state.keyword = q
+        state.initializeData = false
+        return
+    }
     if (state.keyword != q) {
         state.keyword = q
         getData()
