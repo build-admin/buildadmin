@@ -30,6 +30,7 @@ import { defaultOptButtons } from '/@/components/table'
 import { useI18n } from 'vue-i18n'
 import { cloneDeep } from 'lodash'
 import { ElForm } from 'element-plus'
+import { getArrayKey } from '/@/utils/common'
 
 const formRef = ref()
 const tableRef = ref()
@@ -114,6 +115,21 @@ const baTable = new baTableClass(
                 submitCallback()
             }
             return false
+        },
+        // 双击编辑前
+        onTableDblclick: ({ row, column }: { row: TableRow; column: any }) => {
+            return baTable.table.extend!['adminGroup'].indexOf(row.id) === -1
+        },
+    },
+    {
+        getIndex: ({ res }: { res: ApiResponse }) => {
+            baTable.table.extend!['adminGroup'] = res.data.group
+            let buttonsKey = getArrayKey(baTable.table.column, 'render', 'buttons')
+            baTable.table.column[buttonsKey].buttons!.forEach((value, index) => {
+                value.display = (row, field) => {
+                    return res.data.group.indexOf(row.id) === -1
+                }
+            })
         },
     }
 )

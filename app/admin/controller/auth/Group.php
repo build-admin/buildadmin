@@ -60,6 +60,7 @@ class Group extends Backend
         $this->success('', [
             'list'   => $this->getGroups(),
             'remark' => get_route_remark(),
+            'group'  => Db::name('admin_group_access')->where('uid', $this->auth->id)->column('group_id'),
         ]);
     }
 
@@ -139,6 +140,11 @@ class Group extends Backend
                 $this->error(__('Parameter %s can not be empty', ['']));
             }
 
+            $adminGroup = Db::name('admin_group_access')->where('uid', $this->auth->id)->column('group_id');
+            if (in_array($data['id'], $adminGroup)) {
+                $this->error(__('You cannot modify your own management group!'));
+            }
+
             $data = $this->excludeFields($data);
             if (is_array($data['rules']) && $data['rules']) {
                 $rules      = MenuRule::select();
@@ -203,6 +209,42 @@ class Group extends Backend
         $this->success('', [
             'row' => $row
         ]);
+    }
+
+    /**
+     * 删除
+     * @param null $ids
+     */
+    public function del($ids = null)
+    {
+        if (!$this->request->isDelete() || !$ids) {
+            $this->error(__('Parameter error'));
+        }
+
+        $pk         = $this->model->getPk();
+        $data       = $this->model->where($pk, 'in', $ids)->select();
+        $adminGroup = Db::name('admin_group_access')->where('uid', $this->auth->id)->column('group_id');
+        $count      = 0;
+        Db::startTrans();
+        try {
+            foreach ($data as $v) {
+                if (!in_array($v['id'], $adminGroup)) {
+                    $count += $v->delete();
+                }
+            }
+            Db::commit();
+        } catch (PDOException $e) {
+            Db::rollback();
+            $this->error($e->getMessage());
+        } catch (Exception $e) {
+            Db::rollback();
+            $this->error($e->getMessage());
+        }
+        if ($count) {
+            $this->success(__('Deleted successfully'));
+        } else {
+            $this->error(__('No rows were deleted'));
+        }
     }
 
     public function select()
