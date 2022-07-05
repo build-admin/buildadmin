@@ -22,6 +22,21 @@
                                     :data="{ tip: item.tip, content: item.content ? item.content : {} }"
                                     :attr="Object.assign({ prop: item.name }, item.extend)"
                                 />
+                                <!-- 富文本在dialog内全屏编辑器时必须拥有很高的z-index，此处选择单独为editor设定较小的z-index -->
+                                <FormItem
+                                    v-else-if="item.type == 'editor'"
+                                    :label="item.title"
+                                    :type="item.type"
+                                    v-model="state.form[item.name]"
+                                    :input-attr="{
+                                        placeholder: item.tip,
+                                        style: {
+                                            zIndex: 99,
+                                        },
+                                    }"
+                                    :data="{ tip: item.tip }"
+                                    :attr="Object.assign({ prop: item.name }, item.extend)"
+                                />
                                 <FormItem
                                     v-else
                                     :label="item.title"
