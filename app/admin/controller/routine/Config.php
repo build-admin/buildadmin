@@ -54,6 +54,13 @@ class Config extends Backend
      */
     public function edit($id = null)
     {
+        $all = $this->model->select();
+        foreach ($all as $item) {
+            if ($item['type'] == 'editor') {
+                $this->request->filter('trim,htmlspecialchars');
+                break;
+            }
+        }
         if ($this->request->isPost()) {
             $this->modelValidate = false;
             $data                = $this->request->post();
@@ -64,7 +71,6 @@ class Config extends Backend
             $data = $this->excludeFields($data);
 
             $configValue = [];
-            $all         = $this->model->select();
             foreach ($all as $item) {
                 if (array_key_exists($item->name, $data)) {
                     $configValue[] = [

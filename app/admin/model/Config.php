@@ -51,6 +51,8 @@ class Config extends Model
             return $arr ? $arr : [];
         } elseif ($row['type'] == 'switch') {
             return (bool)$value;
+        } elseif ($row['type'] == 'editor') {
+            return !$value ? '' : htmlspecialchars_decode($value);
         } else {
             return $value ? $value : '';
         }
