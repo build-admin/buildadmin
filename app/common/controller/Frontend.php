@@ -35,13 +35,13 @@ class Frontend extends Api
             $this->auth->init($token);
             if (!$this->auth->isLogin()) {
                 $this->error(__('Please login first'), [
-                    'routeName' => 'userLogin'
+                    'routePath' => '/user/login'
                 ], 302);
             }
             if (!action_in_arr($this->noNeedPermission)) {
                 if (!$this->auth->check($routePath)) {
                     $this->error(__('You have no permission'), [
-                        'routeName' => 'user'
+                        'routePath' => '/user'
                     ], 302);
                 }
             }

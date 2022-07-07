@@ -351,7 +351,7 @@ const onSubmit = (formRef: InstanceType<typeof ElForm> | undefined = undefined) 
                 .then((res) => {
                     state.formLoading = false
                     userInfo.$state = res.data.userinfo
-                    router.push({ name: res.data.routeName })
+                    router.push({ path: res.data.routePath })
                 })
                 .catch((err) => {
                     state.formLoading = false

@@ -59,14 +59,14 @@ export const routePush = async (name: string = '', params: anyObj = {}, path: st
 }
 
 export const getFirstRoute = (viewRoutes: viewMenu[]): false | viewMenu => {
-    let routerNames = []
+    let routerPaths = []
     let routers = router.getRoutes()
     for (const key in routers) {
-        if (routers[key].name) routerNames.push(routers[key].name)
+        if (routers[key].path) routerPaths.push(routers[key].path)
     }
     let find: boolean | viewMenu = false
     for (const key in viewRoutes) {
-        if (viewRoutes[key].type != 'menu_dir' && routerNames.indexOf(viewRoutes[key].name) !== -1) {
+        if (viewRoutes[key].type != 'menu_dir' && routerPaths.indexOf(viewRoutes[key].path) !== -1) {
             return viewRoutes[key]
         } else if (viewRoutes[key].children?.length) {
             find = getFirstRoute(viewRoutes[key].children!)

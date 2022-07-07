@@ -44,7 +44,7 @@ class Index extends Backend
         // 检查登录态
         if ($this->auth->isLogin()) {
             $this->success(__('You have already logged in. There is no need to log in again~'), [
-                'routeName' => 'admin'
+                'routePath' => '/admin'
             ], 302);
         }
 
@@ -89,7 +89,7 @@ class Index extends Backend
             if ($res === true) {
                 $this->success(__('Login succeeded!'), [
                     'userinfo'  => $this->auth->getInfo(),
-                    'routeName' => 'admin'
+                    'routePath' => '/admin'
                 ]);
             } else {
                 $msg = $this->auth->getError();

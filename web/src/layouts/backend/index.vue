@@ -68,7 +68,7 @@ const init = () => {
 
             // 跳转到第一个菜单
             let firstRoute = getFirstRoute(navTabs.state.tabsViewRoutes)
-            if (firstRoute) routePush(firstRoute.name)
+            if (firstRoute) routePush('', {}, firstRoute.path)
         }
     })
 }

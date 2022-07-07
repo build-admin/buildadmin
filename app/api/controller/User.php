@@ -47,7 +47,7 @@ class User extends Frontend
         // 检查登录态
         if ($this->auth->isLogin()) {
             $this->success(__('You have already logged in. There is no need to log in again~'), [
-                'routeName' => 'user'
+                'routePath' => '/user'
             ], 302);
         }
 
@@ -78,7 +78,7 @@ class User extends Frontend
             if ($res === true) {
                 $this->success(__('Login succeeded!'), [
                     'userinfo'  => $this->auth->getUserInfo(),
-                    'routeName' => 'user'
+                    'routePath' => '/user'
                 ]);
             } else {
                 $msg = $this->auth->getError();

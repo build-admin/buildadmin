@@ -120,7 +120,7 @@ const closeTab = (route: viewMenu) => {
 const closeAllTab = () => {
     navTabs.closeTabs(false)
     let firstRoute = getFirstRoute(navTabs.state.tabsViewRoutes)
-    if (firstRoute) routePush(firstRoute.name)
+    if (firstRoute) routePush('', {}, firstRoute.path)
 }
 
 const onContextmenuItem = async (item: ContextmenuItemClickEmitArg) => {

@@ -101,13 +101,13 @@ class Backend extends Api
             $this->auth->init($token);
             if (!$this->auth->isLogin()) {
                 $this->error(__('Please login first'), [
-                    'routeName' => 'adminLogin'
+                    'routePath' => '/admin/login'
                 ], 302);
             }
             if (!action_in_arr($this->noNeedPermission)) {
                 if (!$this->auth->check($routePath)) {
                     $this->error(__('You have no permission'), [
-                        'routeName' => 'admin'
+                        'routePath' => '/admin'
                     ], 302);
                 }
             }
