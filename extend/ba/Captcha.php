@@ -280,8 +280,8 @@ class Captcha
         } else {
             for ($i = 0; $i < $this->length; $i++) {
                 $code[$i] = $captcha ? $captcha[$i] : $this->codeSet[mt_rand(0, strlen($this->codeSet) - 1)];
-                $codeNX   += mt_rand($this->fontSize * 1.2, $this->fontSize * 1.6);
-                imagettftext($this->image, $this->fontSize, mt_rand(-40, 40), $codeNX, $this->fontSize * 1.6, $this->color, $this->fontttf, $code[$i]);
+                $codeNX   += mt_rand((int)($this->fontSize * 1.2), (int)($this->fontSize * 1.6));
+                imagettftext($this->image, $this->fontSize, mt_rand(-40, 40), (int)$codeNX, (int)($this->fontSize * 1.6), (int)$this->color, $this->fontttf, $code[$i]);
             }
         }
         return $captcha ? $captcha : $code;
