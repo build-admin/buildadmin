@@ -65,6 +65,7 @@ const onCloseFullScreen = () => {
     top: 0;
     z-index: 9999998;
     height: 60px;
-    width: 100%;
+    width: 100px;
+    left: calc(50% - 50px);
 }
 </style>
