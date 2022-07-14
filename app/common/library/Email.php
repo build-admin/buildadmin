@@ -13,6 +13,11 @@ use PHPMailer\PHPMailer\Exception;
 class Email extends PHPMailer
 {
     /**
+     * 是否已在管理后台配置好邮件服务
+     */
+    public $configured = false;
+
+    /**
      * 默认配置
      */
     public $options = [
@@ -37,14 +42,14 @@ class Email extends PHPMailer
         $this->setLanguage($this->options['lang'], root_path() . 'vendor' . DIRECTORY_SEPARATOR . 'phpmailer' . DIRECTORY_SEPARATOR . 'phpmailer' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR);
         $this->CharSet = $this->options['charset'];
 
-        $sysMailConfig = get_sys_config('', 'mail');
-        $configured    = true;
+        $sysMailConfig    = get_sys_config('', 'mail');
+        $this->configured = true;
         foreach ($sysMailConfig as $item) {
             if (!$item) {
-                $configured = false;
+                $this->configured = false;
             }
         }
-        if ($configured) {
+        if ($this->configured) {
             $this->Host       = $sysMailConfig['smtp_server'];
             $this->SMTPAuth   = true;
             $this->Username   = $sysMailConfig['smtp_user'];

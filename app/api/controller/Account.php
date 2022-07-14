@@ -14,10 +14,11 @@ use think\exception\ValidateException;
 use app\api\validate\Account as AccountValidate;
 use app\common\library\Email;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
+use app\api\validate\User as UserValidate;
 
 class Account extends Frontend
 {
-    protected $noNeedLogin = ['sendRetrievePasswordCode', 'retrievePassword'];
+    protected $noNeedLogin = ['sendRetrievePasswordCode', 'sendRegisterCode', 'retrievePassword'];
 
     protected $model = null;
 
@@ -129,6 +130,44 @@ class Account extends Frontend
             'list'  => $res->items(),
             'total' => $res->total(),
         ]);
+    }
+
+    public function sendRegisterCode()
+    {
+        $data = $this->request->only(['registerType', 'email', 'mobile', 'username', 'password']);
+
+        $validate = new UserValidate();
+        try {
+            $validate->scene('send-register-code')->check($data);
+        } catch (ValidateException $e) {
+            $this->error($e->getMessage());
+        }
+
+        // 生成一个验证码
+        $captcha = new Captcha();
+        $account = $data['registerType'] == 'email' ? $data['email'] : $data['mobile'];
+        $code    = $captcha->create($account);
+
+        if ($data['registerType'] == 'email') {
+            $mail = new Email();
+            if (!$mail->configured) {
+                $this->error(__('Mail sending service unavailable'));
+            }
+            try {
+                $mail->isSMTP();
+                $mail->addAddress($account);
+                $mail->isHTML(true);
+                $mail->setSubject(__('Member registration verification') . '-' . get_sys_config('site_name'));
+                $mail->Body = __('Your verification code is: %s', [$code]);
+                $mail->send();
+            } catch (PHPMailerException $e) {
+                $this->error($mail->ErrorInfo);
+            }
+
+            $this->success(__('Mail sent successfully~'));
+        } else {
+            $this->error(__('Unknown operation'));
+        }
     }
 
     public function sendRetrievePasswordCode()

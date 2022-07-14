@@ -32,6 +32,7 @@ export default {
     'No account yet? Click Register': '还没有账户？点击注册',
     'Retrieve password': '找回密码',
     'Retrieval method': '找回方式',
+    'Registration verification method': '验证方式',
     'Via email': '通过邮箱',
     'Via mobile number': '通过手机号',
     'New password': '新密码',

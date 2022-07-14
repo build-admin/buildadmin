@@ -10,8 +10,8 @@ class User extends Validate
 
     protected $rule = [
         'username'  => 'require|regex:^[a-zA-Z][a-zA-Z0-9_]{2,15}$|unique:user',
-        'email'     => 'require|email|unique:user',
-        'mobile'    => 'require|mobile|unique:user',
+        'email'     => 'email|unique:user',
+        'mobile'    => 'mobile|unique:user',
         'password'  => 'require|regex:^[a-zA-Z0-9_]{6,32}$',
         'captcha'   => 'require',
         'captchaId' => 'require',
@@ -21,8 +21,9 @@ class User extends Validate
      * 验证场景
      */
     protected $scene = [
-        'login'    => ['password', 'captcha', 'captchaId'],
-        'register' => ['email', 'username', 'password', 'mobile', 'captcha', 'captchaId'],
+        'login'              => ['password', 'captcha', 'captchaId'],
+        'register'           => ['email', 'username', 'password', 'mobile', 'captcha'],
+        'send-register-code' => ['email', 'username', 'password', 'mobile'],
     ];
 
     public function __construct()

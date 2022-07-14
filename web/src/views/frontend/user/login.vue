@@ -10,18 +10,24 @@
                                 {{ t('user.user.' + state.form.tab) + t('user.user.reach') + siteConfig.site_name }}
                             </div>
                             <el-form ref="formRef" @keyup.enter="onSubmit(formRef)" :rules="rules" :model="state.form">
-                                <!-- 注册邮箱 -->
-                                <el-form-item v-if="state.form.tab == 'register'" prop="email">
-                                    <el-input
-                                        v-model="state.form.email"
-                                        :placeholder="t('Please input field', { field: t('user.user.mailbox') })"
-                                        :clearable="true"
-                                        size="large"
-                                    >
-                                        <template #prefix>
-                                            <Icon name="fa fa-envelope" size="16" color="var(--el-input-icon-color)" />
-                                        </template>
-                                    </el-input>
+                                <!-- 注册验证方式 -->
+                                <el-form-item v-if="state.form.tab == 'register'">
+                                    <el-radio-group size="large" v-model="state.form.registerType">
+                                        <el-radio
+                                            class="register-verification-radio"
+                                            label="email"
+                                            :disabled="!state.accountVerificationType.includes('email')"
+                                            border
+                                            >{{ t('user.user.Via email') + t('user.user.register') }}</el-radio
+                                        >
+                                        <el-radio
+                                            class="register-verification-radio"
+                                            label="mobile"
+                                            :disabled="!state.accountVerificationType.includes('mobile')"
+                                            border
+                                            >{{ t('user.user.Via mobile number') + t('user.user.register') }}</el-radio
+                                        >
+                                    </el-radio-group>
                                 </el-form-item>
 
                                 <!-- 登录注册用户名 -->
@@ -57,22 +63,8 @@
                                     </el-input>
                                 </el-form-item>
 
-                                <!-- 注册手机号 -->
-                                <el-form-item v-if="state.form.tab == 'register'" prop="mobile">
-                                    <el-input
-                                        v-model="state.form.mobile"
-                                        :placeholder="t('Please input field', { field: t('user.user.mobile') })"
-                                        :clearable="true"
-                                        size="large"
-                                    >
-                                        <template #prefix>
-                                            <Icon name="fa fa-tablet" size="16" color="var(--el-input-icon-color)" />
-                                        </template>
-                                    </el-input>
-                                </el-form-item>
-
-                                <!-- 登录注册验证码 -->
-                                <el-form-item prop="captcha">
+                                <!-- 登录验证码 -->
+                                <el-form-item v-if="state.form.tab == 'login'" prop="captcha">
                                     <el-row class="w100">
                                         <el-col :span="16">
                                             <el-input
@@ -94,6 +86,66 @@
                                                 :src="buildCaptchaUrl() + '?id=' + state.form.captchaId"
                                                 alt=""
                                             />
+                                        </el-col>
+                                    </el-row>
+                                </el-form-item>
+
+                                <!-- 注册手机号 -->
+                                <el-form-item v-if="state.form.tab == 'register' && state.form.registerType == 'mobile'" prop="mobile">
+                                    <el-input
+                                        v-model="state.form.mobile"
+                                        :placeholder="t('Please input field', { field: t('user.user.mobile') })"
+                                        :clearable="true"
+                                        size="large"
+                                    >
+                                        <template #prefix>
+                                            <Icon name="fa fa-tablet" size="16" color="var(--el-input-icon-color)" />
+                                        </template>
+                                    </el-input>
+                                </el-form-item>
+
+                                <!-- 注册邮箱 -->
+                                <el-form-item v-if="state.form.tab == 'register' && state.form.registerType == 'email'" prop="email">
+                                    <el-input
+                                        v-model="state.form.email"
+                                        :placeholder="t('Please input field', { field: t('user.user.mailbox') })"
+                                        :clearable="true"
+                                        size="large"
+                                    >
+                                        <template #prefix>
+                                            <Icon name="fa fa-envelope" size="16" color="var(--el-input-icon-color)" />
+                                        </template>
+                                    </el-input>
+                                </el-form-item>
+
+                                <!-- 注册验证码 -->
+                                <el-form-item v-if="state.form.tab == 'register'" prop="captcha">
+                                    <el-row class="w100">
+                                        <el-col :span="16">
+                                            <el-input
+                                                size="large"
+                                                v-model="state.form.captcha"
+                                                :placeholder="t('Please input field', { field: t('user.user.Verification Code') })"
+                                                autocomplete="off"
+                                            >
+                                                <template #prefix>
+                                                    <Icon name="fa fa-ellipsis-h" size="16" color="var(--el-input-icon-color)" />
+                                                </template>
+                                            </el-input>
+                                        </el-col>
+                                        <el-col class="captcha-box" :span="8">
+                                            <el-button
+                                                size="large"
+                                                @click="sendRegisterCaptcha(formRef)"
+                                                :loading="state.sendCaptchaLoading"
+                                                :disabled="state.codeSendCountdown <= 0 ? false : true"
+                                                type="primary"
+                                                >{{
+                                                    state.codeSendCountdown <= 0
+                                                        ? t('user.user.send')
+                                                        : state.codeSendCountdown + t('user.user.seconds')
+                                                }}</el-button
+                                            >
                                         </el-col>
                                     </el-row>
                                 </el-form-item>
@@ -190,7 +242,7 @@
                             <el-col class="captcha-box" :span="8">
                                 <el-button
                                     @click="sendRetrieveCaptcha(retrieveFormRef)"
-                                    :loading="state.sendRetrieveCaptchaLoading"
+                                    :loading="state.sendCaptchaLoading"
                                     :disabled="state.codeSendCountdown <= 0 ? false : true"
                                     type="primary"
                                     >{{
@@ -232,14 +284,16 @@ import { buildCaptchaUrl } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import { useI18n } from 'vue-i18n'
 import { buildValidatorData, validatorAccount } from '/@/utils/validate'
-import { checkIn, sendRetrievePasswordCode, retrievePassword } from '/@/api/frontend/user/index'
+import { checkIn, sendRetrievePasswordCode, retrievePassword, sendRegisterCode } from '/@/api/frontend/user/index'
 import { onResetForm } from '/@/utils/common'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import type { ElForm, FormItemRule } from 'element-plus'
 var timer: NodeJS.Timer
 
 const { t } = useI18n()
+const route = useRoute()
 const router = useRouter()
 const userInfo = useUserInfo()
 const siteConfig = useSiteConfig()
@@ -256,6 +310,7 @@ interface State {
         captcha: string
         keep: boolean
         captchaId: string
+        registerType: 'email' | 'mobile'
     }
     formLoading: boolean
     showCaptcha: boolean
@@ -270,7 +325,7 @@ interface State {
     accountVerificationType: string[]
     codeSendCountdown: number
     submitRetrieveLoading: boolean
-    sendRetrieveCaptchaLoading: boolean
+    sendCaptchaLoading: boolean
 }
 
 const state: State = reactive({
@@ -283,6 +338,7 @@ const state: State = reactive({
         captcha: '',
         keep: false,
         captchaId: uuid(),
+        registerType: 'email',
     },
     formLoading: false,
     showCaptcha: false,
@@ -297,7 +353,7 @@ const state: State = reactive({
     accountVerificationType: [],
     codeSendCountdown: 0,
     submitRetrieveLoading: false,
-    sendRetrieveCaptchaLoading: false,
+    sendCaptchaLoading: false,
 })
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
@@ -382,20 +438,40 @@ const onSubmitRetrieve = (formRef: InstanceType<typeof ElForm> | undefined = und
         }
     })
 }
-const sendRetrieveCaptcha = (formRef: InstanceType<typeof ElForm> | undefined = undefined) => {
+
+const sendRegisterCaptcha = (formRef: InstanceType<typeof ElForm> | undefined = undefined) => {
     if (state.codeSendCountdown > 0) return
-    formRef!.validateField('account').then((valid) => {
+    formRef!.validateField([state.form.registerType, 'username', 'password']).then((valid) => {
         if (valid) {
-            state.sendRetrieveCaptchaLoading = true
-            sendRetrievePasswordCode(state.retrievePasswordForm.type, state.retrievePasswordForm.account)
+            state.sendCaptchaLoading = true
+            sendRegisterCode(state.form)
                 .then((res) => {
-                    state.sendRetrieveCaptchaLoading = false
+                    state.sendCaptchaLoading = false
                     if (res.code == 1) {
                         startTiming(60)
                     }
                 })
                 .catch(() => {
-                    state.sendRetrieveCaptchaLoading = false
+                    state.sendCaptchaLoading = false
+                })
+        }
+    })
+}
+
+const sendRetrieveCaptcha = (formRef: InstanceType<typeof ElForm> | undefined = undefined) => {
+    if (state.codeSendCountdown > 0) return
+    formRef!.validateField('account').then((valid) => {
+        if (valid) {
+            state.sendCaptchaLoading = true
+            sendRetrievePasswordCode(state.retrievePasswordForm.type, state.retrievePasswordForm.account)
+                .then((res) => {
+                    state.sendCaptchaLoading = false
+                    if (res.code == 1) {
+                        startTiming(60)
+                    }
+                })
+                .catch(() => {
+                    state.sendCaptchaLoading = false
                 })
         }
     })
@@ -423,6 +499,8 @@ onMounted(() => {
         state.accountVerificationType = res.data.accountVerificationType
         state.retrievePasswordForm.type = res.data.accountVerificationType.length > 0 ? res.data.accountVerificationType[0] : ''
     })
+
+    if (route.query.type == 'register') state.form.tab = 'register'
 })
 onUnmounted(() => {
     window.removeEventListener('resize', resize)
@@ -457,16 +535,20 @@ onUnmounted(() => {
         margin-left: 0;
     }
 }
+.register-verification-radio {
+    margin-top: 10px;
+}
 .captcha-box {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     .captcha-img {
         width: 90%;
         margin-left: auto;
     }
     .el-button {
         width: 90%;
+        height: 100%;
     }
 }
 .form-footer {

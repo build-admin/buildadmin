@@ -52,7 +52,7 @@ class User extends Frontend
         }
 
         if ($this->request->isPost()) {
-            $params = $this->request->post(['tab', 'email', 'mobile', 'username', 'password', 'keep', 'captcha', 'captchaId']);
+            $params = $this->request->post(['tab', 'email', 'mobile', 'username', 'password', 'keep', 'captcha', 'captchaId', 'registerType']);
             if ($params['tab'] != 'login' && $params['tab'] != 'register') {
                 $this->error(__('Unknown operation'));
             }
@@ -63,15 +63,17 @@ class User extends Frontend
             } catch (ValidateException $e) {
                 $this->error($e->getMessage());
             }
-
             $captchaObj = new Captcha();
-            if (!$captchaObj->check($params['captcha'], $params['captchaId'])) {
-                $this->error(__('Please enter the correct verification code'));
-            }
 
             if ($params['tab'] == 'login') {
+                if (!$captchaObj->check($params['captcha'], $params['captchaId'])) {
+                    $this->error(__('Please enter the correct verification code'));
+                }
                 $res = $this->auth->login($params['username'], $params['password'], (bool)$params['keep']);
             } elseif ($params['tab'] == 'register') {
+                if (!$captchaObj->check($params['captcha'], $params['registerType'] == 'email' ? $params['email'] : $params['mobile'])) {
+                    $this->error(__('Please enter the correct verification code'));
+                }
                 $res = $this->auth->register($params['username'], $params['password'], $params['mobile'], $params['email']);
             }
 

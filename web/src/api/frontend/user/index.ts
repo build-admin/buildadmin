@@ -100,6 +100,19 @@ export function sendRetrievePasswordCode(type: string, account: string): ApiProm
     ) as ApiPromise
 }
 
+export function sendRegisterCode(params: anyObj): ApiPromise {
+    return createAxios(
+        {
+            url: accountUrl + 'sendRegisterCode',
+            method: 'POST',
+            data: params,
+        },
+        {
+            showSuccessMessage: true,
+        }
+    ) as ApiPromise
+}
+
 export function retrievePassword(params: anyObj): ApiPromise {
     return createAxios(
         {

@@ -1,11 +1,13 @@
 <?php
 return [
     'avatar'                                             => '头像',
+    'username'                                           => '用户名',
     'nickname'                                           => '昵称',
     'birthday'                                           => '生日',
     'email'                                              => '电子邮箱',
     'mobile'                                             => '手机号',
     'password'                                           => '密码',
+    'captcha'                                            => '验证码',
     'Old password error'                                 => '旧密码错误',
     'Data updated successfully~'                         => '资料更新成功~',
     'Please input correct password'                      => '请输入正确的密码',
@@ -13,9 +15,12 @@ return [
     'Password has been changed~'                         => '密码已修改~',
     'Password has been changed, please login again~'     => '密码已修改，请重新登录~',
     'Retrieve password verification'                     => '找回密码验证',
+    'Member registration verification'                   => '会员注册验证',
     'Your verification code is: %s'                      => '您的验证码是：%s，十分钟内有效~',
     'Mail sent successfully~'                            => '邮件发送成功~',
     'Account does not exist~'                            => '账户不存在~',
     'Failed to modify password, please try again later~' => '修改密码失败，请稍后重试~',
     'Please enter the correct verification code'         => '请输入正确的验证码',
+    '%s has been registered'                             => '%s已被注册，请直接登录~',
+    'Mail sending service unavailable'                   => '邮件发送服务不可用，请联系网站管理员进行配置~',
 ];
