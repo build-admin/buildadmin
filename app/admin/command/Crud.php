@@ -651,6 +651,7 @@ class Crud extends Command
         }
         unset($relation);
 
+        // 检查主键是否存在
         $priKey             = '';// 主键
         $relationPrimaryKey = '';// 关联主键
 
@@ -662,6 +663,16 @@ class Crud extends Command
         }
         if (!$priKey) {
             throw new Exception('Primary key not found!');
+        }
+
+        // 检查快速搜索字段是否存在
+        foreach ($this->quicksearchfield as $key => $item) {
+            if (!in_array($item, $fieldArr)) {
+                unset($this->quicksearchfield[$key]);
+            }
+        }
+        if (!$this->quicksearchfield) {
+            $this->quicksearchfield = [$priKey];
         }
 
         // 如果是关联模型
