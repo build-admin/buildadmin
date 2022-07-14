@@ -18,8 +18,5 @@ export const WORKING_TIME = 'workingTime'
 // 切换到手机端前的上次布局方式
 export const BEFORE_RESIZE_LAYOUT = 'beforeResizeLayout'
 
-// 站点配置
-export const SITE_CONFIG = 'siteConfig'
-
 // 会员资料
 export const USER_INFO = 'userInfo'

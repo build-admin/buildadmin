@@ -50,4 +50,5 @@ export default {
     'Logout login': 'Logout login',
     'Please enter your current password': 'Please enter your current password',
     seconds: 'seconds',
+    'Member center disabled': 'Member center disabled',
 }

@@ -9,7 +9,9 @@
                         <div class="main-content">
                             {{ $t('index.Steve Jobs') }}
                         </div>
-                        <el-button @click="$router.push('/user')" color="#FFFFFF" size="large">{{ $t('index.Member Center') }}</el-button>
+                        <el-button v-if="memberCenter.state.open" @click="$router.push('/user')" color="#FFFFFF" size="large">{{
+                            $t('index.Member Center')
+                        }}</el-button>
                     </div>
                     <div class="main-right">
                         <img :src="indexCover" alt="" />
@@ -23,18 +25,13 @@
 
 <script setup lang="ts">
 import indexCover from '/@/assets/index/index-cover.svg'
-import { index } from '/@/api/frontend/index'
-import { setTitle } from '/@/utils/common'
 import { useSiteConfig } from '/@/stores/siteConfig'
+import { useMemberCenter } from '/@/stores/memberCenter'
 import Header from '/@/layouts/frontend/components/header.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
 
 const siteConfig = useSiteConfig()
-
-index().then((res) => {
-    setTitle(res.data.site.site_name)
-    siteConfig.$state = res.data.site
-})
+const memberCenter = useMemberCenter()
 </script>
 
 <style scoped lang="scss">

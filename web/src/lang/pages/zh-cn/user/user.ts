@@ -51,4 +51,5 @@ export default {
     'Logout login': '注销登录',
     'Please enter your current password': '请输入现在的密码',
     seconds: '秒',
+    'Member center disabled': '会员中心已禁用，请联系网站管理员开启。',
 }

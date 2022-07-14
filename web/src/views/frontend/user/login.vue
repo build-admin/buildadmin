@@ -5,7 +5,7 @@
             <el-main class="frontend-footer-brother">
                 <el-row justify="center">
                     <el-col :span="16" :xs="24">
-                        <div class="login-box">
+                        <div v-if="memberCenter.state.open" class="login-box">
                             <div class="login-title">
                                 {{ t('user.user.' + state.form.tab) + t('user.user.reach') + siteConfig.site_name }}
                             </div>
@@ -179,6 +179,7 @@
                                 </el-form-item>
                             </el-form>
                         </div>
+                        <el-alert v-else :center="true" :title="$t('user.user.Member center disabled')" type="error" />
                     </el-col>
                 </el-row>
             </el-main>
@@ -280,6 +281,7 @@ import { reactive, onMounted, onUnmounted, ref } from 'vue'
 import Header from '/@/layouts/frontend/components/header.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
 import { useSiteConfig } from '/@/stores/siteConfig'
+import { useMemberCenter } from '/@/stores/memberCenter'
 import { buildCaptchaUrl } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import { useI18n } from 'vue-i18n'
@@ -297,6 +299,7 @@ const route = useRoute()
 const router = useRouter()
 const userInfo = useUserInfo()
 const siteConfig = useSiteConfig()
+const memberCenter = useMemberCenter()
 const formRef = ref<InstanceType<typeof ElForm>>()
 const retrieveFormRef = ref<InstanceType<typeof ElForm>>()
 

@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use ba\Captcha;
+use think\facade\Config;
 use app\common\facade\Token;
 use app\common\controller\Frontend;
 use think\exception\ValidateException;
@@ -44,6 +45,11 @@ class User extends Frontend
      */
     public function checkIn()
     {
+        $openMemberCenter = Config::get('buildadmin.open_member_center');
+        if (!$openMemberCenter) {
+            $this->error(__('Member center disabled'));
+        }
+
         // 检查登录态
         if ($this->auth->isLogin()) {
             $this->success(__('You have already logged in. There is no need to log in again~'), [

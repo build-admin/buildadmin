@@ -68,8 +68,9 @@ onMounted(() => {
 <!-- 只有在 components 选项中的组件可以被动态组件使用-->
 <script lang="ts">
 import Default from '/@/layouts/frontend/container/default.vue'
+import Disable from '/@/layouts/frontend/container/disable.vue'
 export default {
-    components: { Default },
+    components: { Default, Disable },
 }
 </script>
 

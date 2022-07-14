@@ -18,6 +18,8 @@ return [
     'npm_package_manager'  => 'pnpm',
     // 安装服务端口
     'install_service_port' => '8000',
+    // 开启前台会员中心
+    'open_member_center'   => true,
     // 允许执行的命令
     'allowed_commands'     => [
         'install-package-manager' => [

@@ -1,11 +1,12 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { viewMenu, MemberCenter } from '/@/stores/interface/index'
-import router from '/@/router/index'
 import { RouteLocationNormalized } from 'vue-router'
 
 export const useMemberCenter = defineStore('memberCenter', () => {
     const state: MemberCenter = reactive({
+        // 是否开启会员中心
+        open: false,
         // 布局模式
         layoutMode: 'Default',
         // 当前激活菜单
