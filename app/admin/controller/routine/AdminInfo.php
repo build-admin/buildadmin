@@ -59,7 +59,6 @@ class AdminInfo extends Backend
                     $validate = new $validate;
                     $validate->scene('info')->check($data);
                 } catch (ValidateException $e) {
-                    Db::rollback();
                     $this->error($e->getMessage());
                 }
             }

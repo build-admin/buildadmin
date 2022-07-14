@@ -48,8 +48,8 @@ class SensitiveData extends Backend
                 foreach ($item->data_fields as $key => $field) {
                     $fields[] = $field ? $field : $key;
                 }
+                $item->data_fields = $fields;
             }
-            $item->data_fields = $fields;
         }
 
         $this->success('', [

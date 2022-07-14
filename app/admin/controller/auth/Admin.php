@@ -46,7 +46,6 @@ class Admin extends Backend
                     $validate = new $validate;
                     $validate->scene('add')->check($data);
                 } catch (ValidateException $e) {
-                    Db::rollback();
                     $this->error($e->getMessage());
                 }
             }
@@ -115,7 +114,6 @@ class Admin extends Backend
                     $validate = new $validate;
                     $validate->scene('edit')->check($data);
                 } catch (ValidateException $e) {
-                    Db::rollback();
                     $this->error($e->getMessage());
                 }
             }
