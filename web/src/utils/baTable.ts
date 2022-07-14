@@ -141,7 +141,7 @@ export default class baTable {
         this.form.items = {}
         return this.api
             .edit({
-                id: id,
+                [this.table.pk!]: id,
             })
             .then((res) => {
                 this.form.loading = false
@@ -426,7 +426,7 @@ export default class baTable {
                     return
                 }
 
-                this.api.sortableApi(moveRow.id, replaceRow.id).then((res) => {
+                this.api.sortableApi(moveRow[this.table.pk!], replaceRow[this.table.pk!]).then((res) => {
                     this.onTableHeaderAction('refresh', {})
                 })
             },

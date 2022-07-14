@@ -107,10 +107,10 @@ trait Backend
 
     /**
      * 编辑
-     * @param null $id
      */
-    public function edit($id = null)
+    public function edit()
     {
+        $id  = $this->request->param($this->model->getPk());
         $row = $this->model->find($id);
         if (!$row) {
             $this->error(__('Record not found'));

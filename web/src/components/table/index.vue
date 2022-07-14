@@ -97,7 +97,7 @@ const onSortChange = ({ order, prop }: { order: string; prop: string }) => {
  * 实现子级同时选择和取消选中
  */
 const onSelectAll = (selection: TableRow[]) => {
-    if (isSelectAll(selection.map((row: TableRow) => row.id.toString()))) {
+    if (isSelectAll(selection.map((row: TableRow) => row[baTable.table.pk!].toString()))) {
         selection.map((row: TableRow) => {
             if (row.children) {
                 selectChildren(row.children, true)
@@ -117,7 +117,7 @@ const onSelectAll = (selection: TableRow[]) => {
 const isSelectAll = (selectIds: string[]) => {
     let data = baTable.table.data as TableRow[]
     for (const key in data) {
-        return selectIds.includes(data[key].id.toString())
+        return selectIds.includes(data[key][baTable.table.pk!].toString())
     }
     return false
 }
@@ -151,7 +151,7 @@ const toggleSelection = (row: TableRow, type: boolean) => {
 const onSelect = (selection: TableRow[], row: TableRow) => {
     if (
         selection.some((item: TableRow) => {
-            return row.id === item.id
+            return row[baTable.table.pk!] === item[baTable.table.pk!]
         })
     ) {
         if (row.children) {
