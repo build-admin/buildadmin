@@ -178,7 +178,7 @@ class Crud extends Command
         // 单选框
         [
             'column_type' => ['tinyint(1)', 'char(1)', 'tinyint(1) unsigned'],
-            'suffix'      => ['status', 'state'],
+            'suffix'      => ['status', 'state', 'type'],
             'value'       => 'radio',
         ],
         // 数字输入框
