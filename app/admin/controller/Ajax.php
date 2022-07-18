@@ -28,7 +28,7 @@ class Ajax extends Backend
             $upload     = new Upload($file);
             $attachment = $upload->upload(null, $this->auth->id);
             unset($attachment['createtime'], $attachment['quote']);
-        } catch (Exception | FileException $e) {
+        } catch (Exception|FileException $e) {
             $this->error($e->getMessage());
         }
 
@@ -54,6 +54,14 @@ class Ajax extends Backend
     {
         if (!$table) {
             $this->error(__('Parameter error'));
+        }
+        $tablePk = Db::query("SHOW TABLE STATUS LIKE '{$table}'", [], true);
+        if (!$tablePk) {
+            $table   = config('database.connections.mysql.prefix') . $table;
+            $tablePk = Db::query("SHOW TABLE STATUS LIKE '{$table}'", [], true);
+            if (!$tablePk) {
+                $this->error(__('Data table does not exist'));
+            }
         }
         $tablePk = Db::table($table)->getPk();
         $this->success('', ['pk' => $tablePk]);

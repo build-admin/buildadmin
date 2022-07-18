@@ -193,7 +193,7 @@ class SensitiveData extends Backend
             $this->error(__('Parameter error'));
         }
 
-        $tablePk = Db::table($table)->getPk();
+        $tablePk = Db::name($table)->getPk();
         $this->success('', [
             'pk'        => $tablePk,
             'fieldlist' => get_table_fields($table, true),
@@ -228,21 +228,23 @@ class SensitiveData extends Backend
         $tablePrefix     = config('database.connections.mysql.prefix');
         $outExcludeTable = [
             // 功能表
-            $tablePrefix . 'token',
-            $tablePrefix . 'captcha',
-            $tablePrefix . 'admin_group_access',
-            $tablePrefix . 'config',
+            'token',
+            'captcha',
+            'admin_group_access',
+            'config',
             // 无编辑功能
-            $tablePrefix . 'admin_log',
-            $tablePrefix . 'user_money_log',
-            $tablePrefix . 'user_score_log',
+            'admin_log',
+            'user_money_log',
+            'user_score_log',
         ];
 
         $outTables = [];
         $tables    = get_table_list();
-        foreach ($tables as $key => $table) {
+        $pattern   = '/^' . $tablePrefix . '/i';
+        foreach ($tables as $table) {
+            $table = preg_replace($pattern, '', $table);
             if (!in_array($table, $outExcludeTable)) {
-                $outTables[$key] = $table;
+                $outTables[$table] = $table;
             }
         }
         return $outTables;

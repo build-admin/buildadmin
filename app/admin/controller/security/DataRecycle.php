@@ -160,19 +160,21 @@ class DataRecycle extends Backend
         $tablePrefix     = config('database.connections.mysql.prefix');
         $outExcludeTable = [
             // 功能表
-            $tablePrefix . 'token',
-            $tablePrefix . 'captcha',
-            $tablePrefix . 'admin_group_access',
+            'token',
+            'captcha',
+            'admin_group_access',
             // 无删除功能
-            $tablePrefix . 'user_money_log',
-            $tablePrefix . 'user_score_log',
+            'user_money_log',
+            'user_score_log',
         ];
 
         $outTables = [];
         $tables    = get_table_list();
-        foreach ($tables as $key => $table) {
+        $pattern   = '/^' . $tablePrefix . '/i';
+        foreach ($tables as $table) {
+            $table = preg_replace($pattern, '', $table);
             if (!in_array($table, $outExcludeTable)) {
-                $outTables[$key] = $table;
+                $outTables[$table] = $table;
             }
         }
         return $outTables;

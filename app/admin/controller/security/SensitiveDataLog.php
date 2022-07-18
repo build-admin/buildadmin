@@ -80,7 +80,7 @@ class SensitiveDataLog extends Backend
         Db::startTrans();
         try {
             foreach ($data as $row) {
-                if (Db::table($row->data_table)->where($row->primary_key, $row->id_value)->update([
+                if (Db::name($row->data_table)->where($row->primary_key, $row->id_value)->update([
                     $row->data_field => $row->before
                 ])) {
                     $row->delete();

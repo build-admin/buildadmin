@@ -30,7 +30,7 @@ class Security
                     return true;
                 }
 
-                $recycleData    = Db::table($recycle['data_table'])
+                $recycleData    = Db::name($recycle['data_table'])
                     ->whereIn($recycle['primary_key'], $dataIds)
                     ->select()->toArray();
                 $recycleDataArr = [];
@@ -74,7 +74,7 @@ class Security
 
             $sensitiveData = $sensitiveData->toArray();
             $dataId        = $request->param('id');
-            $editData      = Db::table($sensitiveData['data_table'])
+            $editData      = Db::name($sensitiveData['data_table'])
                 ->field(array_keys($sensitiveData['data_fields']))
                 ->where($sensitiveData['primary_key'], $dataId)
                 ->find();
