@@ -165,4 +165,40 @@ class Admin extends Backend
             'row' => $row
         ]);
     }
+
+    /**
+     * 删除
+     * @param null $ids
+     */
+    public function del($ids = null)
+    {
+        if (!$this->request->isDelete() || !$ids) {
+            $this->error(__('Parameter error'));
+        }
+
+        $pk    = $this->model->getPk();
+        $data  = $this->model->where($pk, 'in', $ids)->select();
+        $count = 0;
+        Db::startTrans();
+        try {
+            foreach ($data as $v) {
+                $count += $v->delete();
+                Db::name('admin_group_access')
+                    ->where('uid', $v['id'])
+                    ->delete();
+            }
+            Db::commit();
+        } catch (PDOException $e) {
+            Db::rollback();
+            $this->error($e->getMessage());
+        } catch (Exception $e) {
+            Db::rollback();
+            $this->error($e->getMessage());
+        }
+        if ($count) {
+            $this->success(__('Deleted successfully'));
+        } else {
+            $this->error(__('No rows were deleted'));
+        }
+    }
 }
