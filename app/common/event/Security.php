@@ -50,16 +50,16 @@ class Security
                 if (!$recycleDataArr) {
                     return true;
                 }
-            } catch (PDOException $e) {
-                Log::record('[ DataSecurity ]' . var_export($e, true), 'warning');
-            } catch (Exception $e) {
-                Log::record('[ DataSecurity ]' . var_export($e, true), 'warning');
-            }
 
-            // saveAll 方法自带事务
-            $dataRecycleLogModel = new \app\admin\model\DataRecycleLog;
-            if ($dataRecycleLogModel->saveAll($recycleDataArr) === false) {
-                Log::record('[ DataSecurity ] Failed to recycle data:' . var_export($recycleDataArr, true), 'warning');
+                // saveAll 方法自带事务
+                $dataRecycleLogModel = new \app\admin\model\DataRecycleLog;
+                if ($dataRecycleLogModel->saveAll($recycleDataArr) === false) {
+                    Log::record('[ DataSecurity ] Failed to recycle data:' . var_export($recycleDataArr, true), 'warning');
+                }
+            } catch (PDOException $e) {
+                Log::record('[ DataSecurity ]' . $e->getMessage(), 'warning');
+            } catch (Exception $e) {
+                Log::record('[ DataSecurity ]' . $e->getMessage(), 'warning');
             }
             return true;
         }
@@ -112,21 +112,19 @@ class Security
                 }
             }
 
+            if (!isset($sensitiveDataLog) || !$sensitiveDataLog) {
+                return true;
+            }
+
+            $sensitiveDataLogModel = new \app\admin\model\SensitiveDataLog;
+            if ($sensitiveDataLogModel->saveAll($sensitiveDataLog) === false) {
+                Log::record('[ DataSecurity ] Sensitive data recording failed:' . var_export($sensitiveDataLog, true), 'warning');
+            }
         } catch (PDOException $e) {
-            Log::record('[ DataSecurity ]' . var_export($e, true), 'warning');
+            Log::record('[ DataSecurity ]' . $e->getMessage(), 'warning');
         } catch (Exception $e) {
-            Log::record('[ DataSecurity ]' . var_export($e, true), 'warning');
+            Log::record('[ DataSecurity ]' . $e->getMessage(), 'warning');
         }
-
-        if (!isset($sensitiveDataLog) || !$sensitiveDataLog) {
-            return true;
-        }
-
-        $sensitiveDataLogModel = new \app\admin\model\SensitiveDataLog;
-        if ($sensitiveDataLogModel->saveAll($sensitiveDataLog) === false) {
-            Log::record('[ DataSecurity ] Sensitive data recording failed:' . var_export($sensitiveDataLog, true), 'warning');
-        }
-
         return true;
     }
 }
