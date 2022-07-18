@@ -45,14 +45,11 @@ class Group extends Backend
 
                 if ($super) {
                     $data['rules'] = '*';
-                    unset($data['half_rules']);
                 } else {
-                    $data['rules']      = implode(',', $data['rules']);
-                    $data['half_rules'] = implode(',', $data['half_rules']);
+                    $data['rules'] = implode(',', $data['rules']);
                 }
             } else {
                 unset($data['rules']);
-                unset($data['half_rules']);
             }
 
             $result = false;
@@ -112,15 +109,12 @@ class Group extends Backend
                 }
 
                 if ($super) {
-                    $data['rules']      = '*';
-                    $data['half_rules'] = '';
+                    $data['rules'] = '*';
                 } else {
-                    $data['rules']      = implode(',', $data['rules']);
-                    $data['half_rules'] = implode(',', $data['half_rules']);
+                    $data['rules'] = implode(',', $data['rules']);
                 }
             } else {
                 unset($data['rules']);
-                unset($data['half_rules']);
             }
 
             $result = false;
@@ -153,15 +147,19 @@ class Group extends Backend
             }
         }
 
-        $rules           = $row->rules ? explode(',', $row->rules) : [];
-        $row->half_rules = $row->half_rules ? explode(',', $row->half_rules) : [];
-        foreach ($row->half_rules as $half_rule) {
-            $ruKey = array_search($half_rule, $rules);
-            if ($ruKey) {
+        // 读取所有pid，全部从节点数组移除，父级选择状态由子级决定
+        $pids  = UserRule::field('pid')
+            ->distinct(true)
+            ->where('id', 'in', $row->rules)
+            ->select()->toArray();
+        $rules = $row->rules ? explode(',', $row->rules) : [];
+        foreach ($pids as $item) {
+            $ruKey = array_search($item['pid'], $rules);
+            if ($ruKey !== false) {
                 unset($rules[$ruKey]);
             }
         }
-        $row->rules = $rules;
+        $row->rules = array_values($rules);
         $this->success('', [
             'row' => $row
         ]);

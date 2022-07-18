@@ -45,7 +45,6 @@ CREATE TABLE `__PREFIX__admin_group` (
     `pid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '上级分组',
     `name` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '组名',
     `rules` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '权限规则ID',
-    `half_rules` text COLLATE utf8mb4_unicode_ci COMMENT '半选中规则',
     `createtime` int(10) DEFAULT NULL COMMENT '创建时间',
     `updatetime` int(10) DEFAULT NULL COMMENT '更新时间',
     `status` enum('1','0') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1' COMMENT '状态:0=禁用,1=启用',
@@ -56,10 +55,10 @@ CREATE TABLE `__PREFIX__admin_group` (
 -- Records of __PREFIX__admin_group
 -- ----------------------------
 BEGIN;
-INSERT INTO `__PREFIX__admin_group` VALUES ('1', '0', '超级管理组', '*', '', '1645876529', '1647805864', '1');
-INSERT INTO `__PREFIX__admin_group` VALUES ('2', '1', '一级管理员', '29,45,46,47,48,50,49,2,51,32,4,54,55,56,59,58,53', '', '1645876529', '1652378857', '1');
-INSERT INTO `__PREFIX__admin_group` VALUES ('3', '2', '二级管理员', '29,45,46,47,48,50,49', '', '1645876529', '1652378879', '1');
-INSERT INTO `__PREFIX__admin_group` VALUES ('4', '3', '三级管理员', '29,2,51,32,4', '', '1645876529', '1652378889', '1');
+INSERT INTO `__PREFIX__admin_group` VALUES ('1', '0', '超级管理组', '*', '1645876529', '1647805864', '1');
+INSERT INTO `__PREFIX__admin_group` VALUES ('2', '1', '一级管理员', '29,45,46,47,48,50,49,2,51,32,4,54,55,56,59,58,53', '1645876529', '1652378857', '1');
+INSERT INTO `__PREFIX__admin_group` VALUES ('3', '2', '二级管理员', '29,45,46,47,48,50,49', '1645876529', '1652378879', '1');
+INSERT INTO `__PREFIX__admin_group` VALUES ('4', '3', '三级管理员', '29,2,51,32,4', '1645876529', '1652378889', '1');
 COMMIT;
 
 -- ----------------------------
@@ -483,7 +482,6 @@ CREATE TABLE `__PREFIX__user_group` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '组名',
     `rules` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '权限节点',
-    `half_rules` text COLLATE utf8mb4_unicode_ci COMMENT '半选中权限',
     `status` enum('1','0') COLLATE utf8mb4_unicode_ci DEFAULT '1' COMMENT '状态:0=禁用,1=启用',
     `updatetime` int(10) DEFAULT NULL COMMENT '更新时间',
     `createtime` int(10) DEFAULT NULL COMMENT '添加时间',
@@ -494,7 +492,7 @@ CREATE TABLE `__PREFIX__user_group` (
 -- Records of __PREFIX__user_group
 -- ----------------------------
 BEGIN;
-INSERT INTO `__PREFIX__user_group` VALUES ('1', '默认分组', '*', '', '1', '1648167137', '1648167095');
+INSERT INTO `__PREFIX__user_group` VALUES ('1', '默认分组', '*', '1', '1648167137', '1648167095');
 COMMIT;
 
 -- ----------------------------

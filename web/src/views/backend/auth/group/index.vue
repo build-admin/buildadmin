@@ -75,7 +75,6 @@ const baTable = new baTableClass(
             var items = cloneDeep(baTable.form.items!)
 
             items.rules = formRef.value.getCheckeds()
-            items.half_rules = formRef.value.getHalfCheckeds()
 
             for (const key in items) {
                 if (items[key] === null) {

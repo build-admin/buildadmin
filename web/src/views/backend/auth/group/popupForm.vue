@@ -137,10 +137,6 @@ const getCheckeds = () => {
     return treeRef.value!.getCheckedKeys().concat(treeRef.value!.getHalfCheckedKeys())
 }
 
-const getHalfCheckeds = () => {
-    return treeRef.value!.getHalfCheckedKeys()
-}
-
 const treeNodeClass = (data: anyObj, node: Node) => {
     if (node.isLeaf) return ''
     let addClass = true
@@ -154,7 +150,6 @@ const treeNodeClass = (data: anyObj, node: Node) => {
 
 defineExpose({
     getCheckeds,
-    getHalfCheckeds,
 })
 
 watch(
