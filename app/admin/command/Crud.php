@@ -167,7 +167,7 @@ class Crud extends Command
         ],
         // 多文件上传
         [
-            'suffix' => ['files', 'file_list'],
+            'suffix' => ['files'],
             'value'  => 'files',
         ],
         // icon选择器
