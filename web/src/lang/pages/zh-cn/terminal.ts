@@ -18,7 +18,7 @@ export default {
     'Package manager': '包管理器',
     'Please select package manager': '请选择包管理器',
     'Switch package manager title':
-        '只读WEB终端，可以在CRUD等操作后方便的执行 npm install、npm build 等命令，请在下方选择一个已安装好或您喜欢的的 NPM 包管理器',
+        '只读WEB终端，可以在CRUD等操作后方便的执行 npm install、npm build 等命令，请在下方选择一个已安装好或您喜欢的NPM包管理器',
     'I want to execute the command manually': '我想手动执行命令',
     'Do not refresh the browser': '请勿刷新浏览器',
     'Terminal settings': '终端设置',

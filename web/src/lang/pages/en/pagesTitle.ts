@@ -4,9 +4,9 @@ export default {
     adminLogin: 'Login',
     notFound: 'Page not found',
     noPower: 'No access',
-    noTitle: 'no title',
-    'Embedded iframe': 'Embedded iframe',
+    noTitle: 'No title',
+    'Embedded iframe': 'Embedded Iframe',
     Loading: 'Loading...',
     User: 'Member Center',
-    userLogin: 'User Login',
+    userLogin: 'Menber Login',
 }

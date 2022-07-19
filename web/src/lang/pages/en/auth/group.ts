@@ -1,6 +1,6 @@
 export default {
-    GroupName: 'Group name',
-    'Group name': 'Group name',
-    jurisdiction: 'jurisdiction',
-    'Parent group': 'Parent group',
+    GroupName: 'Group Name',
+    'Group name': 'Group Name',
+    jurisdiction: 'Permissions',
+    'Parent group': 'Higher group',
 }

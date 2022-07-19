@@ -9,10 +9,10 @@ export default {
     remarks: 'Remarks',
     'Current balance': 'Current balance',
     'Change amount': 'Change amount',
-    'Please enter the balance change amount': 'Please enter the balance change amount',
+    'Please enter the balance change amount': 'Please enter the balance change amount.',
     'Balance after change': 'Balance after change',
     'Please enter change remarks / description': 'Please enter change remarks / description',
     User: 'User',
     'Change time': 'Change time',
-    'Balance change record': 'Balance change record',
+    'Balance change record': 'Balance Change Record',
 }

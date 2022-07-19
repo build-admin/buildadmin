@@ -1,5 +1,5 @@
 export default {
-    GroupName: 'Group name',
-    'Group name': 'Group name',
-    jurisdiction: 'Jurisdiction',
+    GroupName: 'Group Name',
+    'Group name': 'Group Name',
+    jurisdiction: 'Permissions',
 }
