@@ -1,6 +1,6 @@
 <?php
 return [
-    'type'  => 'type',
-    'title' => 'title',
-    'name'  => 'name',
+    'type'  => 'Rule type',
+    'title' => 'Rule title',
+    'name'  => 'Rule name',
 ];

@@ -2,6 +2,6 @@
 return [
     'Failed to switch package manager. Please modify the configuration file manually:%s'            => 'Failed to switch package manager. Please modify the configuration file manually:%s',
     'Failed to modify the terminal configuration. Please modify the configuration file manually:%s' => 'Failed to modify the terminal configuration. Please modify the configuration file manually:%s',
-    'upload'                                                                                        => 'Upload',
-    'changeTerminalConfig'                                                                          => 'Modify Terminal Configuration',
+    'upload'                                                                                        => 'Upload files',
+    'changeTerminalConfig'                                                                          => 'Modify terminal configuration',
 ];

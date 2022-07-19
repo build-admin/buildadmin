@@ -1,5 +1,5 @@
 <?php
 return [
-    'Group Name Arr'                                                           => 'Group',
-    'Please use another administrator account to disable the current account!' => 'It is forbidden to use the current account,please use another administrator account!',
+    'Group Name Arr'                                                           => 'Grouping of Administrators',
+    'Please use another administrator account to disable the current account!' => 'Disable the current account, please use another administrator account!',
 ];
