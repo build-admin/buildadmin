@@ -24,7 +24,7 @@ return [
     'No files were uploaded'                                                              => 'No files were uploaded',
     'The uploaded file format is not allowed'                                             => 'The uploaded file format is not allowed',
     'The uploaded image file is not a valid image'                                        => 'The uploaded image file is not a valid image',
-    'The uploaded file is too large (%sMiB), Maximum file size:%sMiB'                     => 'The uploaded file is too large (%sM), maximum file size:%sM',
+    'The uploaded file is too large (%sMiB), Maximum file size:%sMiB'                     => 'The uploaded file is too large (%sMiB), maximum file size:%sMiB',
     'No files have been uploaded or the file size exceeds the upload limit of the server' => 'No files have been uploaded or the file size exceeds the server upload limit.',
     'Unknown'                                                                             => 'Unknown',
     'Account not exist'                                                                   => 'Account does not exist',
