@@ -14,3 +14,4 @@ return [
     'You have already logged in. There is no need to log in again~'           => 'You have already logged in, no need to log in again.',
     'Check in failed, please try again or contact the website administrator~' => 'Check in failed，please try again or contact the webmaster.',
     'Member center disabled'                                                  => 'The member centre has been disabled. Please contact the webmaster to turn it on.',
+];
