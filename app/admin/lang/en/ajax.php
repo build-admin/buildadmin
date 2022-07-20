@@ -4,4 +4,5 @@ return [
     'Failed to modify the terminal configuration. Please modify the configuration file manually:%s' => 'Failed to modify the terminal configuration. Please modify the configuration file manually:%s',
     'upload'                                                                                        => 'Upload files',
     'changeTerminalConfig'                                                                          => 'Modify terminal configuration',
+    'Data table does not exist'                                                                     => 'Data table does not exist~',
 ];

@@ -17,7 +17,7 @@ export default {
     'Adjustment balance': 'Adjust balance',
     integral: 'Integral',
     'Adjust integral': 'Adjust integral',
-    password: 'password',
+    password: 'Password',
     'Please leave blank if not modified': 'Please leave blank if not modified',
     'Personal signature': 'Personal signature',
     'Login account': 'Login account',
@@ -50,5 +50,5 @@ export default {
     'Logout login': 'Logout login',
     'Please enter your current password': 'Please enter the current password',
     seconds: 'Second',
-    'Member center disabled': 'Member center disabled',
+    'Member center disabled': 'The member center has been disabled. Please contact the webmaster to turn it on.',
 }
