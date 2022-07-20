@@ -53,6 +53,14 @@ class Config extends Model
             return (bool)$value;
         } elseif ($row['type'] == 'editor') {
             return !$value ? '' : htmlspecialchars_decode($value);
+        } elseif ($row['type'] == 'city') {
+            if ($value == '') {
+                return [];
+            }
+            if (!is_array($value)) {
+                return explode(',', $value);
+            }
+            return $value;
         } else {
             return $value ? $value : '';
         }
@@ -64,6 +72,13 @@ class Config extends Model
             return $value ? json_encode($value) : '';
         } elseif ($row['type'] == 'switch') {
             return $value ? '1' : '0';
+        } elseif ($row['type'] == 'time') {
+            return $value ? date('H:i:s', strtotime($value)) : '';
+        } elseif ($row['type'] == 'city') {
+            if ($value && is_array($value)) {
+                return implode(',', $value);
+            }
+            return $value ? $value : '';
         }
 
         return $value;

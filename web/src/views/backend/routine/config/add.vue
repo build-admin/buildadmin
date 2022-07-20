@@ -144,7 +144,9 @@ const rules = reactive<FormRules>({
 const inputTypesHandle = () => {
     let inputTypesKey: anyObj = {}
     for (const key in inputTypes) {
-        inputTypesKey[inputTypes[key]] = inputTypes[key]
+        if (inputTypes[key] != 'remoteSelect') {
+            inputTypesKey[inputTypes[key]] = inputTypes[key]
+        }
     }
     state.inputTypes = inputTypesKey
 }
