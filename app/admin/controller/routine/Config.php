@@ -6,6 +6,7 @@ use app\common\controller\Backend;
 use app\admin\model\Config as ConfigModel;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
+use think\facade\Cache;
 use think\facade\Db;
 use Exception;
 use app\common\library\Email;
@@ -94,6 +95,7 @@ class Config extends Backend
                     }
                 }
                 $result = $this->model->saveAll($configValue);
+                Cache::tag(ConfigModel::$cacheTag)->clear();
                 Db::commit();
             } catch (ValidateException $e) {
                 Db::rollback();
@@ -112,6 +114,50 @@ class Config extends Backend
             }
 
         }
+    }
+
+    public function add()
+    {
+        if ($this->request->isPost()) {
+            $data = $this->request->post();
+            if (!$data) {
+                $this->error(__('Parameter %s can not be empty', ['']));
+            }
+
+            $data   = $this->excludeFields($data);
+            $result = false;
+            Db::startTrans();
+            try {
+                // 模型验证
+                if ($this->modelValidate) {
+                    $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
+                    if (class_exists($validate)) {
+                        $validate = new $validate;
+                        if ($this->modelSceneValidate) $validate->scene('add');
+                        $validate->check($data);
+                    }
+                }
+                $result = $this->model->save($data);
+                Cache::tag(ConfigModel::$cacheTag)->clear();
+                Db::commit();
+            } catch (ValidateException $e) {
+                Db::rollback();
+                $this->error($e->getMessage());
+            } catch (PDOException $e) {
+                Db::rollback();
+                $this->error($e->getMessage());
+            } catch (Exception $e) {
+                Db::rollback();
+                $this->error($e->getMessage());
+            }
+            if ($result !== false) {
+                $this->success(__('Added successfully'));
+            } else {
+                $this->error(__('No rows were added'));
+            }
+        }
+
+        $this->error(__('Parameter error'));
     }
 
     public function sendTestMail()

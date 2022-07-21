@@ -6,6 +6,8 @@ use think\Model;
 
 class Config extends Model
 {
+    public static $cacheTag = 'sys_config';
+
     protected $append = [
         'value',
         'content',
