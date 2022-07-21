@@ -46,6 +46,7 @@ class Config extends Model
 
     public function getValueAttr($value, $row)
     {
+        if (!isset($row['type'])) return $value;
         if (in_array($row['type'], $this->jsonDecodeType)) {
             $arr = json_decode($value, true);
             return $arr ? $arr : [];
@@ -86,6 +87,7 @@ class Config extends Model
 
     public function getContentAttr($value, $row)
     {
+        if (!isset($row['type'])) return '';
         if (in_array($row['type'], $this->needContent)) {
             $arr = json_decode($value, true);
             return $arr ? $arr : [];

@@ -20,6 +20,8 @@ use app\admin\model\User as UserModel;
  */
 class Install extends Api
 {
+    protected $useSystemSettings = false;
+
     /**
      * 环境检查状态
      */

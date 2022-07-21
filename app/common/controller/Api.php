@@ -19,6 +19,12 @@ class Api extends BaseController
      */
     protected $responseType = 'json';
 
+    /**
+     * 应用站点系统设置
+     * @var bool
+     */
+    protected $useSystemSettings = true;
+
     public function __construct(App $app)
     {
         parent::__construct($app);
@@ -29,6 +35,13 @@ class Api extends BaseController
      */
     protected function initialize()
     {
+        if ($this->useSystemSettings) {
+            // ip检查
+            ip_check();
+            // 时区设定
+            set_timezone();
+        }
+
         parent::initialize();
         $this->request->filter('trim,strip_tags,htmlspecialchars');
 
