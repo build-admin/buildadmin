@@ -101,6 +101,7 @@
 - [Thinkphp](http://www.thinkphp.cn/)
 - [FastAdmin](https://gitee.com/karson/fastadmin)
 - [Vue](https://github.com/vuejs/core)
+- [vue-next-admin](https://gitee.com/lyt-top/vue-next-admin)
 - [Element Plus](https://github.com/element-plus/element-plus)
 - [TypeScript](https://github.com/microsoft/TypeScript)
 - [vue-router](https://github.com/vuejs/vue-router-next)
