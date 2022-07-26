@@ -41,7 +41,12 @@
                         <div v-if="item.type == 'br'" class="table-item-br"></div>
                         <div v-else class="table-column table-item">
                             <el-form-item :prop="item.name" class="table-label" :label="item.label">
-                                <el-input v-model="item.value" class="table-input" :type="item.type"></el-input>
+                                <el-input
+                                    :placeholder="item.placeholder ? item.placeholder : ''"
+                                    v-model="item.value"
+                                    class="table-input"
+                                    :type="item.type"
+                                ></el-input>
                             </el-form-item>
                         </div>
                     </div>
@@ -134,6 +139,7 @@ const state: ConfigState = reactive({
             value: '',
             name: 'adminpassword',
             type: 'password',
+            placeholder: t('Background login password'),
         },
         repeatadminpassword: {
             label: t('Duplicate administrator password'),
@@ -158,6 +164,9 @@ const state: ConfigState = reactive({
     databases: [],
     showInstallTips: false,
     autoJumpSeconds: 5,
+    // 失败自动重试1次，目前只用于 install 命令
+    maximumCommandFailures: 1,
+    commandFailureCount: 0,
 })
 
 const validation = {
@@ -310,7 +319,7 @@ const setGlobalError = (msg: string = '') => {
 
 const execCommand = () => {
     terminal.toggle(true)
-    terminal.addTaskPM('web-install', true, (res: number) => {
+    terminal.addTaskPM('web-install', true, (res: number, idx: number) => {
         if (res == taskStatus.Success) {
             terminal.addTaskPM('web-build', true, (res: number) => {
                 if (res == taskStatus.Success) {
@@ -322,7 +331,12 @@ const execCommand = () => {
                 }
             })
         } else if (res == taskStatus.Failed) {
-            commandFail()
+            if (state.commandFailureCount < state.maximumCommandFailures) {
+                state.commandFailureCount++
+                terminal.retryTask(idx)
+            } else {
+                commandFail()
+            }
         }
     })
 }

@@ -66,9 +66,9 @@ export const useTerminal = defineStore(
             }
             let status = state.taskList[idx].status
             if (status == taskStatus.Failed || status == taskStatus.Unknown) {
-                state.taskList[idx].callback(taskStatus.Failed)
+                state.taskList[idx].callback(taskStatus.Failed, idx)
             } else if (status == taskStatus.Success) {
-                state.taskList[idx].callback(taskStatus.Success)
+                state.taskList[idx].callback(taskStatus.Success, idx)
 
                 if (state.taskList[idx].command == 'web-build' + '.' + state.packageManager) {
                     const common = useCommon()

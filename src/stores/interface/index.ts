@@ -79,6 +79,8 @@ export interface ConfigState {
     databases: any
     showInstallTips: boolean
     autoJumpSeconds: number
+    maximumCommandFailures: number
+    commandFailureCount: number
 }
 
 export interface DatabaseData {
