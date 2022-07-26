@@ -52,7 +52,7 @@
                                     v-model="state.adminInfo.mobile"
                                 ></el-input>
                             </el-form-item>
-                            <el-form-item :label="t('adminInfo.autograph')">
+                            <el-form-item :label="t('adminInfo.autograph')" prop="motto">
                                 <el-input
                                     @keyup.enter.stop=""
                                     @keyup.ctrl.enter="onSubmit(formRef)"
