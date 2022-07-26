@@ -36,7 +36,7 @@ export default {
     'set-npm-registry': '设置NPM源',
     'Set NPM source': '设置NPM源',
     'Use current source': '使用当前源',
-    'recommend': '（推荐）',
+    recommend: '（推荐）',
     TaoBao: '淘宝',
     'Click to test': '点击进行测试',
     'Can execute': '可以执行',
@@ -143,5 +143,8 @@ export default {
     'None - manual execution': '无-手动执行',
     'Previous step': '上一步',
     'Hide index.html?': '隐藏 index.html？',
-    'Sorry, some operations could not be completed automatically You need to manually complete the outstanding matters according to the following guidance':'抱歉，一些操作未能自动完成，需要您根据以下引导手动完成未尽事宜。',
+    'Sorry, some operations could not be completed automatically You need to manually complete the outstanding matters according to the following guidance':
+        '抱歉，一些操作未能自动完成，需要您根据以下引导手动完成未尽事宜。',
+    'Need to reinstall the system?': '需重新安装系统？',
+    'Please click on me': '请点击我',
 }

@@ -36,7 +36,7 @@ export default {
     'set-npm-registry': 'Set NPM source',
     'Set NPM source': 'Set NPM source',
     'Use current source': 'Use the current source',
-    'recommend': '(Recommend)',
+    recommend: '(Recommend)',
     TaoBao: 'TaoBao',
     'Click to test': 'Click to test',
     'Can execute': 'Can be executed',
@@ -108,7 +108,8 @@ export default {
     'Duplicate passwords do not match': 'Duplicate passwords mismatch',
     'Command execution failed': 'Command execution failed',
     Installing: 'Installing',
-    'After installation, please complete the unfinished matters manually': 'Installation is complete, please complete the unfinished matters manually.',
+    'After installation, please complete the unfinished matters manually':
+        'Installation is complete, please complete the unfinished matters manually.',
     'Automatically executing the build command on the web side': 'Automatically executing the build command on the web side',
     'Installation complete': 'Installation completed',
     'The table prefix can only contain alphanumeric characters and underscores, and starts with a letter':
@@ -142,9 +143,13 @@ export default {
     'The system has a Web terminal. Please select an installed or your favorite NPM package manager':
         'The system has a Web terminal. Please select an installed or your favorite NPM package manager',
     'Start installation': 'Start installation',
-    'Setup will restart. Are you sure you want to switch package manager?': 'The install will restart. Are you sure you want to switch the package manager?',
+    'Setup will restart. Are you sure you want to switch package manager?':
+        'The install will restart. Are you sure you want to switch the package manager?',
     'None - manual execution': 'None - manual execution',
     'Previous step': 'Previous step',
     'Hide index.html?': 'Hide index.html?',
-    'Sorry, some operations could not be completed automatically You need to manually complete the outstanding matters according to the following guidance':'Sorry, some operations could not be completed automatically. You need to outstanding matters according to the following guidance manually.',
+    'Sorry, some operations could not be completed automatically You need to manually complete the outstanding matters according to the following guidance':
+        'Sorry, some operations could not be completed automatically. You need to outstanding matters according to the following guidance manually.',
+    'Need to reinstall the system?': 'Need to reinstall the system?',
+    'Please click on me': 'Please click on me',
 }

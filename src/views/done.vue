@@ -5,6 +5,9 @@
         <div class="done-box">
             <div>{{ t('Background URL') }}</div>
             <div @click="goUrl(state.adminUrl)" class="admin-url">{{ state.adminUrl }}</div>
+            <div class="reload-tips">
+                {{ t('Need to reinstall the system?') }}<span class="reload" @click="reload">{{ t('Please click on me') }}</span>
+            </div>
         </div>
         <div class="text-warning">
             <el-alert
@@ -39,6 +42,11 @@ const state = reactive({
 const goUrl = (url: string) => {
     window.open(url)
 }
+
+const reload = () => {
+    window.localStorage.clear()
+    location.reload()
+}
 </script>
 
 <style scoped lang="scss">
@@ -65,6 +73,14 @@ const goUrl = (url: string) => {
         text-align: center;
         color: #d9534f;
         font-size: 15px;
+        .reload-tips {
+            font-size: 13px;
+            color: #909399;
+            .reload {
+                cursor: pointer;
+                color: #409eff;
+            }
+        }
     }
     .admin-url {
         background-color: #fcfcfc;
@@ -72,7 +88,7 @@ const goUrl = (url: string) => {
         text-align: center;
         padding: 5px;
         border-radius: 4px;
-        margin-top: 10px;
+        margin: 10px 0;
         cursor: pointer;
         word-wrap: break-word;
         white-space: normal;
