@@ -53,6 +53,9 @@
             </div>
             <div v-if="state.showLoading" class="loading">{{ state.showLoading }}</div>
         </div>
+        <div class="reload-tips">
+            {{ t('Need to reinstall the system?') }}<span class="reload" @click="reload">{{ t('Please click on me') }}</span>
+        </div>
     </div>
 </template>
 
@@ -105,6 +108,11 @@ getManualInstall().then((res) => {
         })
     }
 })
+
+const reload = () => {
+    window.localStorage.clear()
+    location.reload()
+}
 </script>
 
 <style scoped lang="scss">
@@ -115,6 +123,16 @@ getManualInstall().then((res) => {
         text-align: center;
         font-size: 20px;
         color: #303133;
+    }
+    .reload-tips {
+        padding: 10px 0;
+        text-align: center;
+        font-size: 14px;
+        color: #909399;
+        .reload {
+            cursor: pointer;
+            color: #409eff;
+        }
     }
     .content {
         display: block;
