@@ -65,7 +65,7 @@
 
     <!-- datetime -->
     <div v-if="field.render == 'datetime'">
-        {{ timeFormat(fieldValue, field.timeFormat ?? undefined) }}
+        {{ !fieldValue ? '-' : timeFormat(fieldValue, field.timeFormat ?? undefined) }}
     </div>
 
     <!-- customTemplate 自定义模板 -->
