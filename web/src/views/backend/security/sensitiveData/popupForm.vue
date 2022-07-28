@@ -134,13 +134,13 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
 const onFieldChange = (val: string[]) => {
     let dataFields: DataFields[] = []
     for (const key in val) {
-        dataFields[key] =
-            typeof state.dataFields[key] != 'undefined'
-                ? state.dataFields[key]
-                : {
-                      name: val[key],
-                      value: baTable.form.extend!.fieldlist[val[key]] ?? '',
-                  }
+        let exist: boolean | DataFields = false
+        for (const k in state.dataFields) {
+            if (state.dataFields[k].name == val[key]) {
+                exist = state.dataFields[k]
+            }
+        }
+        dataFields[key] = exist ? exist : { name: val[key], value: baTable.form.extend!.fieldlist[val[key]] ?? '' }
     }
     state.dataFields = dataFields
 }
