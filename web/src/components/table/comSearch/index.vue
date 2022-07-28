@@ -56,15 +56,24 @@
                                             :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:new Date()"
                                         ></el-date-picker>
 
-                                        <!-- tag -->
+                                        <!-- tag、select -->
                                         <el-select
                                             :placeholder="item.operatorPlaceholder"
-                                            v-else-if="item.render == 'tag' && item.replaceValue"
+                                            v-else-if="(item.render == 'tag' || item.comSearchRender == 'select') && item.replaceValue"
                                             v-model="baTable.comSearch.form[item.prop!]"
                                             :clearable="true"
                                         >
                                             <el-option v-for="(opt, okey) in item.replaceValue" :key="item.prop! + okey" :label="opt" :value="okey" />
                                         </el-select>
+
+                                        <!-- 远程 select -->
+                                        <BaInput
+                                            v-else-if="item.comSearchRender == 'remoteSelect'"
+                                            type="remoteSelect"
+                                            v-model="baTable.comSearch.form[item.prop!]"
+                                            :attr="item.remote"
+                                            :placeholder="item.operatorPlaceholder"
+                                        />
 
                                         <!-- 开关 -->
                                         <el-select
@@ -116,6 +125,7 @@ import { inject } from 'vue'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import type baTableClass from '/@/utils/baTable'
 import { isEmpty } from 'lodash'
+import BaInput from '/@/components/baInput/index.vue'
 
 const { proxy } = useCurrentInstance()
 
