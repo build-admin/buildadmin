@@ -34,7 +34,7 @@ export class sensitiveDataClass extends baTableClass {
                     })
                 }
 
-                this.form.extend = Object.assign(this.form.extend, {
+                this.form.extend = Object.assign(this.form.extend!, {
                     tableList: res.data.tables,
                     controllerList: res.data.controllers,
                 })
@@ -53,7 +53,7 @@ export class sensitiveDataClass extends baTableClass {
 
     // 数据表改变事件
     onTableChange = (table: string) => {
-        this.form.extend = Object.assign(this.form.extend, {
+        this.form.extend = Object.assign(this.form.extend!, {
             fieldLoading: true,
             fieldlist: {},
             fieldSelect: {},
@@ -72,7 +72,7 @@ export class sensitiveDataClass extends baTableClass {
                 fieldSelect[key] = (key ? key + ' - ' : '') + res.data.fieldlist[key]
             }
 
-            this.form.extend = Object.assign(this.form.extend, {
+            this.form.extend = Object.assign(this.form.extend!, {
                 fieldLoading: false,
                 fieldlist: res.data.fieldlist,
                 fieldSelect: fieldSelect,
@@ -100,7 +100,7 @@ export class sensitiveDataClass extends baTableClass {
         } else if (operate == 'add') {
             this.form.loading = true
             add().then((res) => {
-                this.form.extend = Object.assign(this.form.extend, {
+                this.form.extend = Object.assign(this.form.extend!, {
                     tableList: res.data.tables,
                     controllerList: res.data.controllers,
                 })
