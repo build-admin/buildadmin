@@ -3,6 +3,7 @@
 namespace app\admin\library;
 
 use app\admin\model\Admin;
+use app\admin\model\AdminGroup;
 use ba\Random;
 use think\Exception;
 use think\facade\Config;
@@ -322,6 +323,77 @@ class Auth extends \ba\Auth
     public function isSuperAdmin()
     {
         return in_array('*', $this->getRuleIds());
+    }
+
+    /**
+     * 获取管理员所在分组的所有子级分组
+     * @return array
+     */
+    public function getAdminChildGroups(): array
+    {
+        $groupIds = Db::name('admin_group_access')
+            ->where('uid', $this->id)
+            ->select();
+        $children = [];
+        foreach ($groupIds as $group) {
+            $this->getGroupChildGroups($group['group_id'], $children);
+        }
+        return array_unique($children);
+    }
+
+    public function getGroupChildGroups($groupId, &$children)
+    {
+        $childrenTemp = AdminGroup::where('pid', $groupId)->where('status', '1')->select();
+        foreach ($childrenTemp as $item) {
+            $children[] = $item['id'];
+            $this->getGroupChildGroups($item['id'], $children);
+        }
+    }
+
+    /**
+     * 获取分组内的管理员
+     * @param array $groups
+     * @return array 管理员数组
+     */
+    public function getGroupAdmins(array $groups): array
+    {
+        return Db::name('admin_group_access')
+            ->where('group_id', 'in', $groups)
+            ->column('uid');
+    }
+
+    /**
+     * 获取拥有"所有权限"的分组
+     * @param string $dataLimit 数据权限
+     * @return array 分组数组
+     */
+    public function getallAuthGroups(string $dataLimit): array
+    {
+        // 当前管理员拥有的权限
+        $rules         = $this->getRuleIds();
+        $allAuthGroups = [];
+        $groups        = AdminGroup::where('status', '1')->select();
+        foreach ($groups as $group) {
+            if ($group['rules'] == '*') {
+                continue;
+            }
+            $groupRules = explode(',', $group['rules']);
+
+            // 及时break, array_diff 等没有 in_array 快
+            $all = true;
+            foreach ($groupRules as $groupRule) {
+                if (!in_array($groupRule, $rules)) {
+                    $all = false;
+                    break;
+                }
+            }
+            if ($all) {
+                if ($dataLimit == 'allAuth' || ($dataLimit == 'allAuthAndOthers' && array_diff($rules, $groupRules))) {
+                    $allAuthGroups[] = $group['id'];
+                }
+            }
+        }
+        return $allAuthGroups;
     }
 
     /**

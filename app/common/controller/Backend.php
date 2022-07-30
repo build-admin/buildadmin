@@ -78,6 +78,28 @@ class Backend extends Api
     protected $withJoinType = 'LEFT';
 
     /**
+     * 开启数据限制
+     * false=关闭
+     * personal=仅限个人
+     * allAuth=拥有某管理员所有的权限时
+     * allAuthAndOthers=拥有某管理员所有的权限并且还有其他权限时
+     * parent=上级分组中的管理员可查
+     * 指定分组中的管理员可查，比如 $dataLimit = 2;
+     * 启用请确保数据表内存在 admin_id 字段，可以查询/编辑数据的管理员为admin_id对应的管理员+数据限制所表示的管理员们
+     */
+    protected $dataLimit = false;
+
+    /**
+     * 数据限制字段
+     */
+    protected $dataLimitField = 'admin_id';
+
+    /**
+     * 数据限制开启时自动填充字段值为当前管理员id
+     */
+    protected $dataLimitFieldAutoFill = true;
+
+    /**
      * 引入traits
      * traits内实现了index、add、edit等方法
      */
@@ -250,6 +272,39 @@ class Backend extends Api
             }
         }
 
+        // 数据权限
+        $dataLimitAdminIds = $this->getDataLimitAdminIds();
+        if ($dataLimitAdminIds) {
+            $where[] = [$tableAlias . $this->dataLimitField, 'in', $dataLimitAdminIds];
+        }
+
         return [$where, $alias, $limit, $order];
+    }
+
+    protected function getDataLimitAdminIds(): array
+    {
+        if (!$this->dataLimit || $this->auth->isSuperAdmin()) {
+            return [];
+        }
+        $adminIds = [];
+        if ($this->dataLimit == 'parent') {
+            // 取得当前管理员的下级分组们
+            $parentGroups = $this->auth->getAdminChildGroups();
+            if ($parentGroups) {
+                // 取得分组内的所有管理员
+                $adminIds = $this->auth->getGroupAdmins($parentGroups);
+            }
+        } elseif (is_numeric($this->dataLimit) && $this->dataLimit > 0) {
+            // 在组内，可查看所有，不在组内，可查看自己的
+            $adminIds = $this->auth->getGroupAdmins([$this->dataLimit]);
+            return in_array($this->auth->id, $adminIds) ? [] : [$this->auth->id];
+        } elseif ($this->dataLimit == 'allAuth' || $this->dataLimit == 'allAuthAndOthers') {
+            // 取得拥有他所有权限的分组
+            $allAuthGroups = $this->auth->getallAuthGroups($this->dataLimit);
+            // 取得分组内的所有管理员
+            $adminIds = $this->auth->getGroupAdmins($allAuthGroups);
+        }
+        $adminIds[] = $this->auth->id;
+        return array_unique($adminIds);
     }
 }

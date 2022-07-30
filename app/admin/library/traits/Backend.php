@@ -70,7 +70,11 @@ trait Backend
                 $this->error(__('Parameter %s can not be empty', ['']));
             }
 
-            $data   = $this->excludeFields($data);
+            $data = $this->excludeFields($data);
+            if ($this->dataLimit && $this->dataLimitFieldAutoFill) {
+                $data[$this->dataLimitField] = $this->auth->id;
+            }
+
             $result = false;
             Db::startTrans();
             try {
@@ -114,6 +118,11 @@ trait Backend
         $row = $this->model->find($id);
         if (!$row) {
             $this->error(__('Record not found'));
+        }
+
+        $dataLimitAdminIds = $this->getDataLimitAdminIds();
+        if ($dataLimitAdminIds && !in_array($row[$this->dataLimitField], $dataLimitAdminIds)) {
+            $this->error(__('You have no permission'));
         }
 
         if ($this->request->isPost()) {
@@ -170,6 +179,11 @@ trait Backend
             $this->error(__('Parameter error'));
         }
 
+        $dataLimitAdminIds = $this->getDataLimitAdminIds();
+        if ($dataLimitAdminIds) {
+            $this->model->where($this->dataLimitField, 'in', $dataLimitAdminIds);
+        }
+
         $pk    = $this->model->getPk();
         $data  = $this->model->where($pk, 'in', $ids)->select();
         $count = 0;
@@ -200,6 +214,11 @@ trait Backend
      */
     public function sortable($id, $targetId)
     {
+        $dataLimitAdminIds = $this->getDataLimitAdminIds();
+        if ($dataLimitAdminIds) {
+            $this->model->where($this->dataLimitField, 'in', $dataLimitAdminIds);
+        }
+
         $row    = $this->model->find($id);
         $target = $this->model->find($targetId);
 
