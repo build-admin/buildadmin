@@ -100,5 +100,5 @@ return [
     // 缺省头像图片路径
     'default_avatar'       => '/static/images/avatar.png',
     // 版本号
-    'version'              => 'v1.0.2',
+    'version'              => 'v1.0.3',
 ];

@@ -1,6 +1,6 @@
 {
     "name": "build-admin",
-    "version": "0.0.1",
+    "version": "1.0.3",
     "scripts": {
         "dev": "vite --force",
         "build": "vite build && esno ./src/utils/build.ts",
