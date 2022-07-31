@@ -3,6 +3,15 @@
     <div class="container">
         <div class="table-title">{{ t('Environmental inspection') }}</div>
         <div class="table">
+            <div v-if="state.showPortErrorPrompt" class="global-warning">
+                <el-alert :closable="false" center type="error">
+                    <template #default>
+                        {{ t('Port error prompt 1') }}
+                        <a target="_blank" href="https://wonderful-code.gitee.io/guide/install/start.html">{{ t('Get started quickly') }}</a>
+                        {{ t('Port error prompt 3') }}
+                    </template>
+                </el-alert>
+            </div>
             <transition-group name="slide-bottom">
                 <div class="table-item" :class="idx" v-for="(item, idx) in state.envCheckData" :key="idx + item.describe + item.state">
                     <div class="table-label">
@@ -133,6 +142,7 @@ const state: CheckState = reactive({
         packageManager: terminal.state.packageManager,
         setNpmRegistry: 'taobao',
     },
+    showPortErrorPrompt: false,
 })
 
 const modules = import.meta.globEager('../assets/img/install/*.png')
@@ -372,9 +382,19 @@ const getAmicablePackageManager = () => {
     }
 }
 
+const getUrlPort = (): string => {
+    let value: string = import.meta.env.VITE_AXIOS_BASE_URL as string
+    value = value == 'getCurrentDomain' || !value ? window.location.protocol + '//' + window.location.host : value
+    return new URL(value).port
+}
+
 onMounted(() => {
     if (!common.state.showStartDialog) {
         startInstall()
+    }
+
+    if (getUrlPort() != '8000') {
+        state.showPortErrorPrompt = true
     }
 })
 </script>
@@ -392,6 +412,9 @@ onMounted(() => {
         max-width: 560px;
         padding: 20px;
         margin: 10px auto;
+    }
+    .global-warning {
+        margin-bottom: 10px;
     }
     .table-item {
         color: #303133;

@@ -152,4 +152,8 @@ export default {
     'Need to reinstall the system?': 'Need to reinstall the system?',
     'Please click on me': 'Please click on me',
     'Backend login password': 'Backend login password',
+    'Port error prompt 1':
+        'The current installation site port is not 8000. You may have started the installation service in the wrong way. Please refer to the',
+    'Get started quickly': ' Quick Start documentation ',
+    'Port error prompt 3': ' for installation.',
 }

@@ -148,4 +148,7 @@ export default {
     'Need to reinstall the system?': '需重新安装系统？',
     'Please click on me': '请点击我',
     'Backend login password': '后台登录密码',
+    'Port error prompt 1': '当前安装程序站点的端口不是8000，您可能以错误的方式启动了安装服务，请参考',
+    'Get started quickly': '快速上手文档',
+    'Port error prompt 3': '进行安装。',
 }

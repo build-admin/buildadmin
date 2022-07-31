@@ -61,6 +61,7 @@ export interface CheckState {
         packageManager: string
         setNpmRegistry: string
     }
+    showPortErrorPrompt: boolean
 }
 
 export interface CheckLink {
