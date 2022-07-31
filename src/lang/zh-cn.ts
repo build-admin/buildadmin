@@ -66,7 +66,7 @@ export default {
     'You can delete the build output directory directly': '您可以直接删除构建输出目录',
     'Getting full path of root directory / Web': '正在获取 根目录/web 的完整路径',
     'Moving automatically': '正在自动移动...',
-    // 避免掉使用html的警告，使用原始方式组装语言
+    // 避免掉使用html标签，使用原始方式组装语言
     'Please move 1': '请移动构建输出目录中的',
     'Please move 2': '文件夹和',
     'Please move 3': '文件到根目录的',
@@ -147,4 +147,5 @@ export default {
         '抱歉，一些操作未能自动完成，需要您根据以下引导手动完成未尽事宜。',
     'Need to reinstall the system?': '需重新安装系统？',
     'Please click on me': '请点击我',
+    'Backend login password': '后台登录密码',
 }

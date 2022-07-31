@@ -67,11 +67,10 @@ export default {
     'You can delete the build output directory directly': 'You can delete the build output directory directly',
     'Getting full path of root directory / Web': 'Getting the full path to the root directory/web',
     'Moving automatically': 'Moving automatically',
-    // Avoid the warning of using HTML and assemble the language in the original way
-    'Please move 1': 'Please move the build output directory of the',
-    'Please move 2': 'Folders and',
-    'Please move 3': 'file to the root directory of the',
-    'Please move 4': 'directory of the root directory',
+    'Please move 1': 'Please move the ',
+    'Please move 2': ' folder and ',
+    'Please move 3': ' files from the build output directory to the ',
+    'Please move 4': ' directory of the root directory.',
     'During construction, all files in the output directory will be overwritten, so the system is designed to build in the root directory first, and then move to the public directory to prevent other files in the public from being overwritten':
         'When constructing the process, all files in the output directory are overwriting, so the system is designed to build first and then move to the public directory to prevent overwriting other files in the public directory',
     'Thanks for using buildadmin': 'Thanks for using BuildAdmin',
@@ -79,9 +78,9 @@ export default {
     'Access foreground': 'Access to the foreground',
     'Access background': 'Access to the background',
     'Install Tips Title 1':
-        'The installation environment test does not completely passed, but the installation can continue, but you need to do some manual operations to see how to modify it. It is recommended that you ',
-    'Install Tips Title 2': ' install after all the tests have passed so that you can experience one of the core functions of BuildAdmin.',
-    'Back to previous page': 'Back to previous page',
+        'The installation environment test does not completely passed, but the installation can continue, and you need to do some manual operations to see how to modify it.It is recommended that you go ',
+    'Install Tips Title 2': ' and install it after all the tests have passed so that you can experience one of the core functions of BuildAdmin.',
+    'Back to previous page': 'back to previous page',
     "If you don't want to open the corresponding permission due to some security factors, please check ":
         "If you don't want to open the corresponding permission due to some security factors, please check ",
     'how installation services ensure system security': 'how installation services ensure system security',
@@ -152,4 +151,5 @@ export default {
         'Sorry, some operations could not be completed automatically. You need to outstanding matters according to the following guidance manually.',
     'Need to reinstall the system?': 'Need to reinstall the system?',
     'Please click on me': 'Please click on me',
+    'Backend login password': 'Backend login password',
 }

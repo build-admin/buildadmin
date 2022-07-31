@@ -139,7 +139,7 @@ const state: ConfigState = reactive({
             value: '',
             name: 'adminpassword',
             type: 'password',
-            placeholder: t('Background login password'),
+            placeholder: t('Backend login password'),
         },
         repeatadminpassword: {
             label: t('Duplicate administrator password'),
