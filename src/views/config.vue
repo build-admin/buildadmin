@@ -21,9 +21,9 @@
                     }}</span>
                 </div>
                 <div class="install-tips-item">
-                    {{ t("If you really can't adjust all the tests to pass, please ")
-                    }}<span class="change-route">{{ t('click to feed back to us') }}</span
-                    >{{
+                    {{ t("If you really can't adjust all the tests to pass, please ") }}
+                    <a class="change-route" href="https://jq.qq.com/?_wv=1027&k=QwtXa14c" target="_blank">{{ t('click to feed back to us') }}</a>
+                    {{
                         t(
                             ' and continue the installation. The subsequent installation program will guide you on how to manually complete the outstanding matters.'
                         )
