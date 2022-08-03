@@ -150,15 +150,21 @@ if (!function_exists('full_url')) {
      */
     function full_url($relativeUrl = false, $domain = true, $default = '')
     {
-        $relativeUrl = $relativeUrl ? $relativeUrl : $default;
-        if (!$relativeUrl) {
-            return $domain === true ? request()->domain() : $domain;
+        $cdnUrl = Config::get('buildadmin.cdn_url');
+        if ($domain === true) {
+            $domain = $cdnUrl ? $cdnUrl : request()->domain();
+        } elseif ($domain === false) {
+            $domain = '';
         }
+
+        $relativeUrl = $relativeUrl ? $relativeUrl : $default;
+        if (!$relativeUrl) return $domain;
+
         $regex = "/^((?:[a-z]+:)?\/\/|data:image\/)(.*)/i";
         if (preg_match('/^http(s)?:\/\//', $relativeUrl) || preg_match($regex, $relativeUrl) || $domain === false) {
             return $relativeUrl;
         }
-        return $domain === true ? request()->domain() . $relativeUrl : $domain . $relativeUrl;
+        return $domain . $relativeUrl;
     }
 }
 

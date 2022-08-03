@@ -99,6 +99,8 @@ return [
     'auto_write_admin_log' => true,
     // 缺省头像图片路径
     'default_avatar'       => '/static/images/avatar.png',
+    // 内容分发网络URL
+    'cdn_url'              => '',
     // 版本号
     'version'              => 'v1.0.3',
 ];

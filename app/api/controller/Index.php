@@ -21,6 +21,7 @@ class Index extends Frontend
                 'site_name'     => get_sys_config('site_name'),
                 'record_number' => get_sys_config('record_number'),
                 'version'       => get_sys_config('version'),
+                'cdn_url'       => full_url(),
             ],
             'open_member_center' => Config::get('buildadmin.open_member_center'),
         ]);
