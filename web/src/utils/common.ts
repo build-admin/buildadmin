@@ -8,7 +8,9 @@ import { useMemberCenter } from '/@/stores/memberCenter'
 import { ElForm } from 'element-plus'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { useUserInfo } from '/@/stores/userInfo'
+import { useSiteConfig } from '../stores/siteConfig'
 import { i18n } from '../lang'
+import { getUrl } from './axios'
 
 export function registerIcons(app: App) {
     /*
@@ -182,6 +184,26 @@ export const auth = (name: string) => {
         }
     }
     return false
+}
+
+/**
+ * 获取资源完整地址
+ * @param relativeUrl 资源相对地址
+ * @param domain 指定域名
+ */
+export const fullUrl = (relativeUrl: string, domain: string = '') => {
+    const siteConfig = useSiteConfig()
+    if (!domain) {
+        domain = siteConfig.cdn_url ? siteConfig.cdn_url : getUrl()
+    }
+    if (!relativeUrl) return domain
+
+    let regUrl = new RegExp(/^http(s)?:\/\//)
+    let regexImg = new RegExp(/^((?:[a-z]+:)?\/\/|data:image\/)(.*)/i)
+    if (!domain || regUrl.test(relativeUrl) || regexImg.test(relativeUrl)) {
+        return relativeUrl
+    }
+    return domain + relativeUrl
 }
 
 export const getGreet = () => {
