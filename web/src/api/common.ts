@@ -27,11 +27,12 @@ export const apiAreaUrl = '/index.php/api/ajax/area'
 /**
  * 上传文件
  */
-export function fileUpload(fd: FormData): ApiPromise {
+export function fileUpload(fd: FormData, params: anyObj = {}): ApiPromise {
     return createAxios({
         url: isAdminApp() ? adminUploadUrl : apiUploadUrl,
         method: 'POST',
         data: fd,
+        params: params,
     }) as ApiPromise
 }
 

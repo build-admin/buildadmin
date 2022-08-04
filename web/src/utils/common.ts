@@ -167,6 +167,10 @@ export const isAdminApp = () => {
     return false
 }
 
+/**
+ * 从一个文件路径中获取文件名
+ * @param path 文件路径
+ */
 export const getFileNameFromPath = (path: string) => {
     let paths = path.split('/')
     return paths[paths.length - 1]
@@ -204,6 +208,16 @@ export const fullUrl = (relativeUrl: string, domain: string = '') => {
         return relativeUrl
     }
     return domain + relativeUrl
+}
+
+export const arrayFullUrl = (relativeUrls: string | string[], domain: string = '') => {
+    if (typeof relativeUrls === 'string') {
+        relativeUrls = relativeUrls == '' ? [] : relativeUrls.split(',')
+    }
+    for (const key in relativeUrls) {
+        relativeUrls[key] = fullUrl(relativeUrls[key])
+    }
+    return relativeUrls
 }
 
 export const getGreet = () => {

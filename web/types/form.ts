@@ -93,6 +93,7 @@ declare global {
         'list-type'?: string
         'auto-upload'?: boolean
         limit?: number
+        'return-full-url'?: boolean
         // editor属性
         height?: string
         mode?: string

@@ -18,12 +18,14 @@ import RemoteSelect from '/@/components/baInput/remoteSelect.vue'
 import IconSelector from '/@/components/icon/selector.vue'
 import { getArea, fileUpload } from '/@/api/common'
 import Icon from '/@/components/icon/index.vue'
-import { getFileNameFromPath } from '/@/utils/common'
+import { fullUrl, getFileNameFromPath } from '/@/utils/common'
 import { genFileId, ElButton } from 'element-plus'
 import type { UploadInstance, UploadRawFile, UploadFile } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import Editor from '/@/components/editor/index.vue'
 import _ from 'lodash'
+import { stringToArray } from '/@/components/baInput/helper'
+import { uuid } from '/@/utils/random'
 
 export default defineComponent({
     name: 'baInput',
@@ -368,19 +370,19 @@ export default defineComponent({
                 'image',
                 () => {
                     const state = reactive({
-                        lastFullUrl: '',
+                        lastUrl: '',
                         showPreview: false,
                         previewUrl: '',
                     })
                     const upload = ref<UploadInstance>()
                     let fileList = props.modelValue
-                        ? ref([{ name: getFileNameFromPath(props.modelValue as string), url: props.modelValue }])
+                        ? ref([{ name: getFileNameFromPath(props.modelValue as string), url: fullUrl(props.modelValue) }])
                         : ref([])
                     watch(
                         () => props.modelValue,
                         (newVal) => {
-                            if (newVal != state.lastFullUrl) {
-                                fileList.value = newVal ? [{ name: getFileNameFromPath(newVal as string), url: newVal }] : []
+                            if (newVal != state.lastUrl) {
+                                fileList.value = newVal ? [{ name: getFileNameFromPath(newVal as string), url: fullUrl(newVal) }] : []
                             }
                         }
                     )
@@ -407,12 +409,17 @@ export default defineComponent({
                                     let fd = new FormData()
                                     fd.append('file', file.raw!)
                                     fd = formDataAppend(fd, props.attr.data)
-                                    fileUpload(fd).then((res) => {
-                                        if (res.code == 1) {
-                                            state.lastFullUrl = res.data.file.full_url
-                                            onValueUpdate(res.data.file.full_url)
-                                        }
-                                    })
+                                    fileUpload(fd)
+                                        .then((res) => {
+                                            if (res.code == 1) {
+                                                state.lastUrl = res.data.file.url
+                                                onValueUpdate(props.attr['return-full-url'] ? res.data.file.full_url : res.data.file.url)
+                                                file.status = 'success'
+                                            }
+                                        })
+                                        .catch((err) => {
+                                            file.status = 'fail'
+                                        })
                                 },
                                 onRemove: () => {
                                     onValueUpdate('')
@@ -459,45 +466,29 @@ export default defineComponent({
             [
                 'images',
                 () => {
-                    let urlKey = 0
                     interface UploadFileExt extends UploadFile {
-                        urlKey?: number
+                        serverUrl?: string
                     }
                     const state = reactive({
                         showPreview: false,
                         previewUrl: '',
                     })
                     const upload = ref<UploadInstance>()
-                    const stringToArray = (val: string | string[]) => {
-                        if (typeof val === 'string') {
-                            return val == '' ? [] : val.split(',')
-                        } else {
-                            return val as string[]
-                        }
-                    }
 
                     let urls: string[] = []
-                    let fileList = ref<{ name: string; url: string; urlKey: number; status?: string }[]>([]) // el-upload 的 fileList,只初始化,无需维护
-                    let fullUrls: { url?: string; fullUrl: string; urlKey: number }[] = [] // 完整的urls列表
+                    let fileList = ref<{ name: string; url: string; status?: string; serverUrl?: string }[]>([]) // el-upload 的 fileList
                     let defaultReturnType: string
 
                     const init = (modelValue: string | string[]) => {
                         urls = stringToArray(modelValue as string) // 默认值
                         fileList.value = []
-                        fullUrls = []
                         defaultReturnType = typeof modelValue === 'string' ? 'string' : 'array'
 
                         for (const key in urls) {
-                            urlKey++
                             fileList.value.push({
                                 name: getFileNameFromPath(urls[key]),
-                                url: urls[key],
-                                urlKey: urlKey,
-                            })
-                            fullUrls.push({
-                                url: urls[key],
-                                fullUrl: urls[key],
-                                urlKey: urlKey,
+                                url: fullUrl(urls[key]),
+                                serverUrl: fullUrl(urls[key]),
                             })
                         }
                     }
@@ -511,17 +502,17 @@ export default defineComponent({
                                 return init('')
                             }
                             let newValArr = stringToArray(newVal as string)
-                            if (newValArr.sort().toString() != (getFullUrls('array') as string[]).sort().toString()) {
+                            if (newValArr.sort().toString() != (getAllUrls('array') as string[]).sort().toString()) {
                                 init(newVal as string)
                             }
                         }
                     )
 
-                    // 获取当前完整图片路径的列表
-                    const getFullUrls = (returnType: string = defaultReturnType) => {
+                    // 获取当前所有图片路径的列表
+                    const getAllUrls = (returnType: string = defaultReturnType) => {
                         let urlList = []
-                        for (const key in fullUrls) {
-                            urlList.push(fullUrls[key].fullUrl)
+                        for (const key in fileList.value) {
+                            urlList.push(fileList.value[key].serverUrl)
                         }
                         return returnType === 'string' ? urlList.join(',') : urlList
                     }
@@ -537,39 +528,26 @@ export default defineComponent({
                                 'file-list': fileList.value,
                                 'auto-upload': false,
                                 accept: 'image/*',
-                                onChange: (file: UploadFile) => {
+                                multiple: true,
+                                onChange: (file: UploadFileExt) => {
                                     if (!file || !file.raw) return
                                     let fd = new FormData()
                                     fd.append('file', file.raw!)
                                     fd = formDataAppend(fd, props.attr.data)
-                                    fileUpload(fd).then((res) => {
-                                        if (res.code == 1) {
-                                            urlKey++
-                                            fullUrls.push({
-                                                fullUrl: res.data.file.full_url,
-                                                urlKey: urlKey,
-                                            })
-                                            for (const key in fileList.value) {
-                                                if (fileList.value[key].status == 'ready' && fileList.value[key].name == file.name) {
-                                                    fileList.value[key].status = 'success'
-                                                }
-                                                if (typeof fileList.value[key].urlKey === 'undefined') {
-                                                    fileList.value[key].urlKey = urlKey
-                                                }
+                                    fileUpload(fd, { uuid: uuid() })
+                                        .then((res) => {
+                                            if (res.code == 1) {
+                                                file.serverUrl = props.attr['return-full-url'] ? res.data.file.full_url : res.data.file.url
+                                                onValueUpdate(getAllUrls())
+                                                file.status = 'success'
                                             }
-                                            onValueUpdate(getFullUrls())
-                                        }
-                                    })
+                                        })
+                                        .catch((err) => {
+                                            file.status = 'fail'
+                                        })
                                 },
                                 onRemove: (file: UploadFileExt) => {
-                                    let newFullUrls = []
-                                    for (const key in fullUrls) {
-                                        if (fullUrls[key].urlKey != file.urlKey) {
-                                            newFullUrls.push(fullUrls[key])
-                                        }
-                                    }
-                                    fullUrls = newFullUrls
-                                    onValueUpdate(getFullUrls())
+                                    onValueUpdate(getAllUrls())
                                 },
                                 onPreview: (file: UploadFile) => {
                                     if (!file || !file.url) {
@@ -613,16 +591,17 @@ export default defineComponent({
             [
                 'file',
                 () => {
-                    const lastFullUrl = ref('')
                     const upload = ref<UploadInstance>()
+                    const lastUrl = ref(props.modelValue)
                     let fileList = props.modelValue
-                        ? ref([{ name: getFileNameFromPath(props.modelValue as string), url: props.modelValue }])
+                        ? ref([{ name: getFileNameFromPath(props.modelValue as string), url: fullUrl(props.modelValue) }])
                         : ref([])
                     watch(
                         () => props.modelValue,
                         (newVal) => {
-                            if (newVal != lastFullUrl.value) {
-                                fileList.value = newVal ? [{ name: getFileNameFromPath(newVal as string), url: newVal }] : []
+                            if (newVal != lastUrl.value) {
+                                fileList.value = newVal ? [{ name: getFileNameFromPath(newVal as string), url: fullUrl(newVal) }] : []
+                                lastUrl.value = newVal
                             }
                         }
                     )
@@ -647,19 +626,23 @@ export default defineComponent({
                                     let fd = new FormData()
                                     fd.append('file', file.raw!)
                                     fd = formDataAppend(fd, props.attr.data)
-                                    fileUpload(fd).then((res) => {
-                                        if (res.code == 1) {
-                                            lastFullUrl.value = res.data.file.full_url
-                                            fileList.value = [{ name: file.name, url: res.data.file.full_url }]
-                                            onValueUpdate(res.data.file.full_url)
-                                        }
-                                    })
+                                    fileUpload(fd)
+                                        .then((res) => {
+                                            if (res.code == 1) {
+                                                lastUrl.value = res.data.file.url
+                                                onValueUpdate(props.attr['return-full-url'] ? res.data.file.full_url : res.data.file.url)
+                                                file.status = 'success'
+                                            }
+                                        })
+                                        .catch((err) => {
+                                            file.status = 'fail'
+                                        })
                                 },
                                 onRemove: () => {
                                     onValueUpdate('')
                                 },
                                 onPreview: (uploadFile: UploadFile) => {
-                                    window.open(uploadFile.url)
+                                    window.open(fullUrl(lastUrl.value))
                                 },
                                 ...props.attr,
                             },
@@ -691,41 +674,25 @@ export default defineComponent({
             [
                 'files',
                 () => {
-                    let urlKey = 0
                     interface UploadFileExt extends UploadFile {
-                        urlKey?: number
+                        serverUrl?: string
                     }
                     const upload = ref<UploadInstance>()
-                    const stringToArray = (val: string | string[]) => {
-                        if (typeof val === 'string') {
-                            return val == '' ? [] : val.split(',')
-                        } else {
-                            return val as string[]
-                        }
-                    }
 
                     let urls: string[] = []
-                    let fileList = ref<{ name: string; url: string; urlKey: number; status?: string }[]>([]) // el-upload 的 fileList,只初始化,无需维护
-                    let fullUrls: { url?: string; fullUrl: string; urlKey: number }[] = [] // 完整的urls列表
+                    let fileList = ref<{ name: string; url: string; status?: string; serverUrl?: string }[]>([]) // el-upload 的 fileList
                     let defaultReturnType: string
 
                     const init = (modelValue: string | string[]) => {
                         urls = stringToArray(modelValue as string) // 默认值
                         fileList.value = []
-                        fullUrls = []
                         defaultReturnType = typeof modelValue === 'string' ? 'string' : 'array'
 
                         for (const key in urls) {
-                            urlKey++
                             fileList.value.push({
                                 name: getFileNameFromPath(urls[key]),
-                                url: urls[key],
-                                urlKey: urlKey,
-                            })
-                            fullUrls.push({
-                                url: urls[key],
-                                fullUrl: urls[key],
-                                urlKey: urlKey,
+                                url: fullUrl(urls[key]),
+                                serverUrl: fullUrl(urls[key]),
                             })
                         }
                     }
@@ -739,17 +706,17 @@ export default defineComponent({
                                 return init('')
                             }
                             let newValArr = stringToArray(newVal as string)
-                            if (newValArr.sort().toString() != (getFullUrls('array') as string[]).sort().toString()) {
+                            if (newValArr.sort().toString() != (getAllUrls('array') as string[]).sort().toString()) {
                                 init(newVal as string)
                             }
                         }
                     )
 
-                    // 获取当前完整文件路径的列表
-                    const getFullUrls = (returnType: string = defaultReturnType) => {
+                    // 获取当前所有文件路径的列表
+                    const getAllUrls = (returnType: string = defaultReturnType) => {
                         let urlList = []
-                        for (const key in fullUrls) {
-                            urlList.push(fullUrls[key].fullUrl)
+                        for (const key in fileList.value) {
+                            urlList.push(fileList.value[key].serverUrl)
                         }
                         return returnType === 'string' ? urlList.join(',') : urlList
                     }
@@ -764,46 +731,29 @@ export default defineComponent({
                                 'list-type': 'text',
                                 'file-list': fileList.value,
                                 'auto-upload': false,
-                                onChange: (file: UploadFile) => {
+                                multiple: true,
+                                onChange: (file: UploadFileExt) => {
                                     if (!file || !file.raw) return
                                     let fd = new FormData()
                                     fd.append('file', file.raw!)
                                     fd = formDataAppend(fd, props.attr.data)
-                                    fileUpload(fd).then((res) => {
-                                        if (res.code == 1) {
-                                            urlKey++
-                                            fullUrls.push({
-                                                fullUrl: res.data.file.full_url,
-                                                urlKey: urlKey,
-                                            })
-                                            for (const key in fileList.value) {
-                                                if (fileList.value[key].status == 'ready' && fileList.value[key].name == file.name) {
-                                                    fileList.value[key].status = 'success'
-                                                }
-                                                if (typeof fileList.value[key].urlKey === 'undefined') {
-                                                    fileList.value[key].urlKey = urlKey
-                                                }
+                                    fileUpload(fd, { uuid: uuid() })
+                                        .then((res) => {
+                                            if (res.code == 1) {
+                                                file.serverUrl = props.attr['return-full-url'] ? res.data.file.full_url : res.data.file.url
+                                                file.status = 'success'
+                                                onValueUpdate(getAllUrls())
                                             }
-                                            onValueUpdate(getFullUrls())
-                                        }
-                                    })
+                                        })
+                                        .catch((err) => {
+                                            file.status = 'fail'
+                                        })
                                 },
                                 onRemove: (file: UploadFileExt) => {
-                                    let newFullUrls = []
-                                    for (const key in fullUrls) {
-                                        if (fullUrls[key].urlKey != file.urlKey) {
-                                            newFullUrls.push(fullUrls[key])
-                                        }
-                                    }
-                                    fullUrls = newFullUrls
-                                    onValueUpdate(getFullUrls())
+                                    onValueUpdate(getAllUrls())
                                 },
                                 onPreview: (file: UploadFileExt) => {
-                                    for (const key in fullUrls) {
-                                        if (fullUrls[key].urlKey == file.urlKey) {
-                                            return window.open(fullUrls[key].fullUrl)
-                                        }
-                                    }
+                                    window.open(fullUrl(file.serverUrl!))
                                 },
                                 ...props.attr,
                             },

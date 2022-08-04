@@ -14,7 +14,7 @@
 
     <!-- image -->
     <div v-if="field.render == 'image' && fieldValue" class="ba-render-image">
-        <el-image :preview-teleported="true" :preview-src-list="[fieldValue]" :src="fieldValue"></el-image>
+        <el-image :preview-teleported="true" :preview-src-list="[fullUrl(fieldValue)]" :src="fullUrl(fieldValue)"></el-image>
     </div>
 
     <!-- images -->
@@ -24,9 +24,9 @@
                 v-for="(item, idx) in fieldValue"
                 :initial-index="idx"
                 :preview-teleported="true"
-                :preview-src-list="fieldValue"
+                :preview-src-list="arrayFullUrl(fieldValue)"
                 class="images-item"
-                :src="item"
+                :src="fullUrl(item)"
             ></el-image>
         </template>
     </div>
@@ -153,6 +153,7 @@ import type { TagProps } from 'element-plus'
 import { timeFormat, openUrl } from '/@/components/table'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import { useI18n } from 'vue-i18n'
+import { fullUrl, arrayFullUrl } from '/@/utils/common'
 
 const { t } = useI18n()
 const { proxy } = useCurrentInstance()
