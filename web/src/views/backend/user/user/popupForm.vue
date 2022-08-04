@@ -51,24 +51,7 @@
                             'remote-url': userGroup + 'index',
                         }"
                     />
-                    <el-form-item :label="t('user.user.head portrait')">
-                        <el-upload
-                            class="avatar-uploader"
-                            action=""
-                            :show-file-list="false"
-                            @change="onAvatarBeforeUpload"
-                            :auto-upload="false"
-                            accept="image/gif, image/jpg, image/jpeg, image/bmp, image/png, image/webp"
-                        >
-                            <el-image :src="baTable.form.items!.avatar" class="avatar">
-                                <template #error>
-                                    <div class="image-slot">
-                                        <Icon size="30" color="#c0c4cc" name="el-icon-Picture" />
-                                    </div>
-                                </template>
-                            </el-image>
-                        </el-upload>
-                    </el-form-item>
+                    <FormItem :label="t('user.user.head portrait')" type="image" v-model="baTable.form.items!.avatar" />
                     <el-form-item prop="email" :label="t('user.user.mailbox')">
                         <el-input
                             v-model="baTable.form.items!.email"
@@ -218,16 +201,6 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
         },
     ],
 })
-
-const onAvatarBeforeUpload = (file: any) => {
-    let fd = new FormData()
-    fd.append('file', file.raw)
-    fileUpload(fd).then((res) => {
-        if (res.code == 1) {
-            baTable.form.items!.avatar = res.data.file.full_url
-        }
-    })
-}
 
 const changeAccount = (type: string) => {
     baTable.toggleForm()

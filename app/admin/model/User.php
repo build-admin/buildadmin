@@ -18,11 +18,6 @@ class User extends Model
     protected $createTime = 'createtime';
     protected $updateTime = 'updatetime';
 
-    public function getAvatarAttr($value)
-    {
-        return full_url($value, true, Config::get('buildadmin.default_avatar'));
-    }
-
     public function getMoneyAttr($value)
     {
         return bcdiv($value, 100, 2);
