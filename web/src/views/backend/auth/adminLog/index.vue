@@ -4,7 +4,7 @@
 
         <!-- 表格顶部菜单 -->
         <TableHeader
-            :buttons="['refresh', 'delete', 'comSearch']"
+            :buttons="['refresh', 'delete', 'comSearch', 'quickSearch', 'columnDisplay']"
             :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.adminLog.title') })"
             @action="baTable.onTableHeaderAction"
         />

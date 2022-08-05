@@ -133,7 +133,7 @@ declare global {
     }
 
     /* 表头支持的按钮 */
-    type HeaderOptButton = 'refresh' | 'add' | 'edit' | 'delete' | 'unfold' | 'recycle bin' | 'comSearch'
+    type HeaderOptButton = 'refresh' | 'add' | 'edit' | 'delete' | 'unfold' | 'recycle bin' | 'comSearch' | 'quickSearch' | 'columnDisplay'
 
     /* 通用搜索操作符支持的值 */
     type OperatorStr =

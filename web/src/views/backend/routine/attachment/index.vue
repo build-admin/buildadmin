@@ -5,7 +5,7 @@
 
             <!-- 表格顶部菜单 -->
             <TableHeader
-                :buttons="['refresh', 'edit', 'delete', 'comSearch']"
+                :buttons="['refresh', 'edit', 'delete', 'comSearch', 'quickSearch', 'columnDisplay']"
                 :quick-search-placeholder="t('quick Search Placeholder', { fields: t('routine.attachment.Original name') })"
                 @action="baTable.onTableHeaderAction"
             />

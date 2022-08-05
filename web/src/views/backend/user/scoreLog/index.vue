@@ -4,7 +4,7 @@
 
         <!-- 表格顶部菜单 -->
         <TableHeader
-            :buttons="['refresh', 'add', 'comSearch']"
+            :buttons="['refresh', 'add', 'comSearch', 'quickSearch', 'columnDisplay']"
             :quick-search-placeholder="
                 t('quick Search Placeholder', { fields: t('user.moneyLog.User name') + '/' + t('user.moneyLog.User nickname') })
             "

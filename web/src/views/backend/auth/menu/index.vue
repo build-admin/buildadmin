@@ -4,7 +4,7 @@
 
         <!-- 表格顶部菜单 -->
         <TableHeader
-            :buttons="['refresh', 'add', 'edit', 'delete', 'unfold']"
+            :buttons="['refresh', 'add', 'edit', 'delete', 'unfold', 'quickSearch', 'columnDisplay']"
             :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.menu.title') })"
             @action="baTable.onTableHeaderAction"
         />

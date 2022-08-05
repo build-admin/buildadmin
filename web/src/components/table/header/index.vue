@@ -59,14 +59,15 @@
         <!-- 右侧搜索框和工具按钮 -->
         <div class="table-search">
             <el-input
+                v-if="buttons.includes('quickSearch')"
                 v-model="state.quickSearch"
-                class="xs-hidden"
+                class="xs-hidden quick-search"
                 @input="debounce(onSearchInput, 500)()"
                 :placeholder="quickSearchPlaceholder ? quickSearchPlaceholder : t('search')"
             />
-            <el-button-group class="table-search-button-group">
-                <el-dropdown :max-height="380" :hide-on-click="false">
-                    <el-button class="table-search-button-item" color="#dcdfe6" plain>
+            <div class="table-search-button-group">
+                <el-dropdown v-if="buttons.includes('columnDisplay')" :max-height="380" :hide-on-click="false">
+                    <el-button class="table-search-button-item" :class="buttons.includes('comSearch') ? 'right-border' : ''" color="#dcdfe6" plain>
                         <Icon size="14" color="#303133" name="el-icon-Grid" />
                     </el-button>
                     <template #dropdown>
@@ -99,7 +100,7 @@
                         <Icon size="14" color="#303133" name="el-icon-Search" />
                     </el-button>
                 </el-tooltip>
-            </el-button-group>
+            </div>
         </div>
     </div>
 </template>
@@ -183,10 +184,16 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
 .table-search {
     display: flex;
     margin-left: auto;
+    .quick-search {
+        width: auto;
+    }
 }
 .table-search-button-group {
     display: flex;
     margin-left: 12px;
+    border: 1px solid var(--el-border-color);
+    border-radius: var(--el-border-radius-base);
+    overflow: hidden;
     button:focus,
     button:active {
         background-color: #ffffff;
@@ -195,15 +202,14 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
         background-color: #dcdfe6;
     }
     .table-search-button-item {
-        margin-right: -1px;
+        border: none;
+        border-radius: 0;
     }
-    .table-search-button-item:first-child {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
+    .el-button + .el-button {
+        margin: 0;
     }
-}
-.el-button-group > .el-dropdown > .el-button {
-    border-radius: var(--el-border-radius-base);
-    border-left-color: var(--el-button-border-color);
+    .right-border {
+        border-right: 1px solid var(--el-border-color);
+    }
 }
 </style>
