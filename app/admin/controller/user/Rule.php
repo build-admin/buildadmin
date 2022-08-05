@@ -3,8 +3,12 @@
 namespace app\admin\controller\user;
 
 use ba\Tree;
+use Exception;
+use think\facade\Db;
 use app\admin\model\UserRule;
 use app\common\controller\Backend;
+use think\db\exception\PDOException;
+use think\exception\ValidateException;
 
 class Rule extends Backend
 {
@@ -47,15 +51,67 @@ class Rule extends Backend
         ]);
     }
 
-    public function edit($id = null)
+    /**
+     * 编辑
+     */
+    public function edit()
     {
+        $id  = $this->request->param($this->model->getPk());
         $row = $this->model->find($id);
         if (!$row) {
             $this->error(__('Record not found'));
         }
 
+        $dataLimitAdminIds = $this->getDataLimitAdminIds();
+        if ($dataLimitAdminIds && !in_array($row[$this->dataLimitField], $dataLimitAdminIds)) {
+            $this->error(__('You have no permission'));
+        }
+
         if ($this->request->isPost()) {
-            parent::edit($id);
+            $data = $this->request->post();
+            if (!$data) {
+                $this->error(__('Parameter %s can not be empty', ['']));
+            }
+
+            $data   = $this->excludeFields($data);
+            $result = false;
+            Db::startTrans();
+            try {
+                // 模型验证
+                if ($this->modelValidate) {
+                    $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
+                    if (class_exists($validate)) {
+                        $validate = new $validate;
+                        if ($this->modelSceneValidate) $validate->scene('edit');
+                        $validate->check($data);
+                    }
+                }
+                if ($data['pid'] > 0) {
+                    // 满足意图并消除副作用
+                    $parent = $this->model->where('id', $data['pid'])->find();
+                    if ($parent['pid'] == $row['id']) {
+                        $parent->pid = 0;
+                        $parent->save();
+                    }
+                }
+                $result = $row->save($data);
+                Db::commit();
+            } catch (ValidateException $e) {
+                Db::rollback();
+                $this->error($e->getMessage());
+            } catch (PDOException $e) {
+                Db::rollback();
+                $this->error($e->getMessage());
+            } catch (Exception $e) {
+                Db::rollback();
+                $this->error($e->getMessage());
+            }
+            if ($result !== false) {
+                $this->success(__('Update successful'));
+            } else {
+                $this->error(__('No rows updated'));
+            }
+
         }
 
         $this->success('', [
