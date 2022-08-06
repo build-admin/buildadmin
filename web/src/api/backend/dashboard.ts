@@ -2,7 +2,7 @@ import createAxios from '/@/utils/axios'
 
 export function dashboard() {
     return createAxios({
-        url: '/index.php/admin/Dashboard/dashboard',
+        url: '/admin/Dashboard/dashboard',
         method: 'get',
     })
 }

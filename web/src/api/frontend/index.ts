@@ -3,7 +3,7 @@ import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { setTitle } from '/@/utils/common'
 
-const controllerUrl = '/index.php/api/index/'
+const controllerUrl = '/api/index/'
 
 export function index() {
     const siteConfig = useSiteConfig()

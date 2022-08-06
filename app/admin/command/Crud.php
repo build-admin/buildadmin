@@ -536,7 +536,7 @@ class Crud extends Command
         $viewDir              = $webViewsPath . $viewPath . DIRECTORY_SEPARATOR;
         $this->langPrefix     = implode('.', $viewArr) . '.';
         $controllerUrl        = $originControllerUrl = implode('/', $viewArr);
-        $controllerUrl        = '/index.php/admin/' . preg_replace("/\//", '.', $controllerUrl) . '/';
+        $controllerUrl        = '/admin/' . preg_replace("/\//", '.', $controllerUrl) . '/';
         $controllerUrlVarName = '';
         foreach ($viewArr as $item) {
             $controllerUrlVarName .= parse_name($item, 1, true);

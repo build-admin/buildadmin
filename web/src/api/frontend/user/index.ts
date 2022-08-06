@@ -1,8 +1,8 @@
 import createAxios from '/@/utils/axios'
 import { getUserToken } from '/@/utils/common'
 
-const controllerUrl = '/index.php/api/user/'
-const accountUrl = '/index.php/api/account/'
+const controllerUrl = '/api/user/'
+const accountUrl = '/api/account/'
 
 export function index() {
     return createAxios({

@@ -1,7 +1,7 @@
 import createAxios from '/@/utils/axios'
 import { getAdminToken } from '/@/utils/common'
 
-const controllerUrl = '/index.php/admin/index/'
+const controllerUrl = '/admin/index/'
 
 export function index() {
     return createAxios({

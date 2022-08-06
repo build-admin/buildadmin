@@ -1,7 +1,7 @@
 import createAxios from '/@/utils/axios'
 import { authAdminLog } from '/@/api/controllerUrls'
 
-const controllerUrl = '/index.php/admin/routine.AdminInfo/'
+const controllerUrl = '/admin/routine.AdminInfo/'
 export const actionUrl = new Map([
     ['index', controllerUrl + 'index'],
     ['edit', controllerUrl + 'edit'],
