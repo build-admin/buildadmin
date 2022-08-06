@@ -41,6 +41,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
         headers: {
             'Content-Type': 'application/json',
             'think-lang': config.lang.defaultLang,
+            server: true,
         },
     })
 

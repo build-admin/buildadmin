@@ -83,7 +83,7 @@
                                             <img
                                                 @click="onChangeCaptcha"
                                                 class="captcha-img"
-                                                :src="buildCaptchaUrl() + '?id=' + state.form.captchaId"
+                                                :src="buildCaptchaUrl() + '&id=' + state.form.captchaId"
                                                 alt=""
                                             />
                                         </el-col>

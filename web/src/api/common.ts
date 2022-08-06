@@ -49,7 +49,8 @@ export function buildSuffixSvgUrl(suffix: string, background: string = '') {
         getAdminToken() +
         '&suffix=' +
         suffix +
-        (background ? '&background=' + background : '')
+        (background ? '&background=' + background : '') +
+        '&server=1'
     )
 }
 
@@ -93,7 +94,7 @@ export function postClearCache(type: string) {
  * 构建命令执行窗口url
  */
 export function buildTerminalUrl(commandKey: string, outputExtend: string) {
-    return getUrl() + terminalUrl + '?command=' + commandKey + '&extend=' + outputExtend + '&batoken=' + getAdminToken()
+    return getUrl() + terminalUrl + '?command=' + commandKey + '&extend=' + outputExtend + '&batoken=' + getAdminToken() + '&server=1'
 }
 
 /**
@@ -127,7 +128,7 @@ export function getSelectData(remoteUrl: string, q: string, params: {}) {
 }
 
 export function buildCaptchaUrl() {
-    return getUrl() + captchaUrl
+    return getUrl() + captchaUrl + '?server=1'
 }
 
 export function getTablePk(table: string) {

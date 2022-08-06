@@ -27,7 +27,7 @@ class AllowCrossDomain
         'Access-Control-Allow-Credentials' => 'true',
         'Access-Control-Max-Age'           => 1800,
         'Access-Control-Allow-Methods'     => 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers'     => 'think-lang, ba-user-token, batoken, Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With',
+        'Access-Control-Allow-Headers'     => 'think-lang, server, ba-user-token, batoken, Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With',
     ];
 
     /**
@@ -35,7 +35,7 @@ class AllowCrossDomain
      * @access public
      * @param Request $request
      * @param Closure $next
-     * @param array $header
+     * @param array   $header
      * @return Response
      */
     public function handle($request, Closure $next, ?array $header = [])
@@ -44,7 +44,7 @@ class AllowCrossDomain
 
         $origin = $request->header('origin');
         if ($origin) {
-            $info         = parse_url($origin);
+            $info = parse_url($origin);
 
             // 获取跨域配置
             $corsDomain   = explode(',', Config::get('buildadmin.cors_request_domain'));
