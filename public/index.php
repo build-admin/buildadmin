@@ -16,10 +16,17 @@ namespace think;
  * 不在tp加载后判断，为了安全的使用exit()
  * 使用绝对路径，确保花里胡哨的url均能正确判定和跳转
  */
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    header("Access-Control-Allow-Credentials: true");
+    header("Access-Control-Max-Age: 86400");
+    header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: " . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
+    header("Access-Control-Allow-Origin: *");
+    exit();
+}
+
 $rootPath = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR;
-
-$server = isset($_REQUEST['server']) || isset($_SERVER['HTTP_SERVER']) || substr($_SERVER['REQUEST_URI'], 1, 9) == 'index.php';
-
+$server   = isset($_REQUEST['server']) || isset($_SERVER['HTTP_SERVER']) || substr($_SERVER['REQUEST_URI'], 1, 9) == 'index.php';
 if (!$server) {
     // 用户访问前端
 
