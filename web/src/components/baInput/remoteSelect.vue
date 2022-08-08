@@ -13,6 +13,7 @@
         :multiple="multiple"
         :key="state.selectKey"
         :reserve-keyword="false"
+        @clear="onClear"
     >
         <el-option
             class="remote-select-option"
@@ -103,6 +104,11 @@ const onFocus = () => {
     if (!state.initializeData) {
         getData()
     }
+}
+
+const onClear = () => {
+    state.keyword = ''
+    state.initializeData = false
 }
 
 const onLogKeyword = (q: string) => {
