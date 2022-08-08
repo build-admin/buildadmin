@@ -169,6 +169,35 @@ const state: ConfigState = reactive({
     commandFailureCount: 0,
 })
 
+const connectDatabase = async () => {
+    databaseData = {
+        hostname: state.formItem.hostname.value,
+        username: state.formItem.username.value,
+        password: state.formItem.password.value,
+        hostport: state.formItem.hostport.value,
+        database: state.formItem.database.value,
+    }
+    if (databaseData.hostname && databaseData.username && databaseData.hostport) {
+        state.databaseCheck = 'connecting'
+        await postTestDatabase(databaseData).then((res) => {
+            if (res.data.code == 1) {
+                state.databaseCheck = 'connect-ok'
+                state.databases = res.data.data.databases
+                if (state.formItem.database.value) validation.findDatabase(state.formItem.database.value, true, null)
+            } else {
+                state.databaseCheck = 'wait'
+                state.databases = []
+                ElMessage({
+                    type: 'error',
+                    message: res.data.msg,
+                    center: true,
+                })
+                throw new Error(res.data.msg)
+            }
+        })
+    }
+}
+
 const validation = {
     required: (rule: any, field: { value: string; label: string }, callback: any) => {
         if (field.value == '' || !field.value) {
@@ -213,31 +242,7 @@ const validation = {
         if (!flag) {
             return callback()
         }
-        databaseData = {
-            hostname: state.formItem.hostname.value,
-            username: state.formItem.username.value,
-            password: state.formItem.password.value,
-            hostport: state.formItem.hostport.value,
-            database: state.formItem.database.value,
-        }
-        if (databaseData.hostname && databaseData.username && databaseData.hostport) {
-            state.databaseCheck = 'connecting'
-            postTestDatabase(databaseData).then((res) => {
-                if (res.data.code == 1) {
-                    state.databaseCheck = 'connect-ok'
-                    state.databases = res.data.data.databases
-                    if (state.formItem.database.value) validation.findDatabase(state.formItem.database.value, true, null)
-                } else {
-                    state.databaseCheck = 'wait'
-                    state.databases = []
-                    ElMessage({
-                        type: 'error',
-                        message: res.data.msg,
-                        center: true,
-                    })
-                }
-            })
-        }
+        connectDatabase()
         return callback()
     },
     prefix: function (rule: any, field: { value: string; label: string }, callback: any) {
@@ -270,30 +275,25 @@ const validation = {
 }
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    hostname: [
-        { validator: validation.required, trigger: 'blur' },
-        { validator: validation.connect, trigger: 'blur' },
-    ],
-    username: [
-        { validator: validation.required, trigger: 'blur' },
-        { validator: validation.connect, trigger: 'blur' },
-    ],
-    password: [{ validator: validation.connect, trigger: 'blur' }],
-    hostport: [
-        { validator: validation.required, trigger: 'blur' },
-        { validator: validation.connect, trigger: 'blur' },
-    ],
+    hostname: [{ validator: validation.required, trigger: 'blur' }],
+    username: [{ validator: validation.required, trigger: 'blur' }],
+    hostport: [{ validator: validation.required, trigger: 'blur' }],
     database: [
         { validator: validation.required, trigger: 'blur' },
         { validator: validation.database, trigger: 'blur' },
     ],
-    prefix: [{ validator: validation.prefix, trigger: 'blur' }],
+    prefix: [
+        { validator: validation.connect, trigger: 'blur' },
+        { validator: validation.prefix, trigger: 'blur' },
+    ],
     adminname: [
         { validator: validation.required, trigger: 'blur' },
+        { validator: validation.connect, trigger: 'blur' },
         { validator: validation.adminname, trigger: 'blur' },
     ],
     adminpassword: [
         { validator: validation.required, trigger: 'blur' },
+        { validator: validation.connect, trigger: 'blur' },
         { validator: validation.adminpassword, trigger: 'blur' },
     ],
     repeatadminpassword: [
@@ -337,38 +337,46 @@ const execCommand = () => {
 
 const submitBaseConfig = (formEl: InstanceType<typeof ElForm> | undefined = undefined) => {
     if (!formEl) return
-    formEl.validate((valid) => {
-        if (valid) {
-            state.baseConfigSubmitState = true
-            let values = {}
-            for (const key in state.formItem) {
-                values = Object.assign(values, {
-                    [key]: state.formItem[key].value,
-                })
-            }
-
-            postBaseConfig(values)
-                .then((res) => {
-                    if (res.data.code == 1) {
-                        if (res.data.data.execution) {
-                            execCommand()
-                        } else {
-                            state.showInstallTips = false // 隐藏手动操作安装未尽事宜提示
-                            common.setStep('manualInstall') // 跳转到手动完成未尽事宜页面
-                        }
-                    } else {
-                        ElMessage({
-                            type: 'error',
-                            message: res.data.msg,
-                            center: true,
+    state.baseConfigSubmitState = true
+    connectDatabase()
+        .then(() => {
+            formEl.validate((valid) => {
+                if (valid) {
+                    let values = {}
+                    for (const key in state.formItem) {
+                        values = Object.assign(values, {
+                            [key]: state.formItem[key].value,
                         })
                     }
-                })
-                .finally(() => {
+
+                    postBaseConfig(values)
+                        .then((res) => {
+                            if (res.data.code == 1) {
+                                if (res.data.data.execution) {
+                                    execCommand()
+                                } else {
+                                    state.showInstallTips = false // 隐藏手动操作安装未尽事宜提示
+                                    common.setStep('manualInstall') // 跳转到手动完成未尽事宜页面
+                                }
+                            } else {
+                                ElMessage({
+                                    type: 'error',
+                                    message: res.data.msg,
+                                    center: true,
+                                })
+                            }
+                        })
+                        .finally(() => {
+                            state.baseConfigSubmitState = false
+                        })
+                } else {
                     state.baseConfigSubmitState = false
-                })
-        }
-    })
+                }
+            })
+        })
+        .catch((err) => {
+            state.baseConfigSubmitState = false
+        })
 }
 
 getBaseConfig().then((res) => {
