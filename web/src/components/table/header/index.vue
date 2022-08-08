@@ -65,7 +65,7 @@
                 @input="debounce(onSearchInput, 500)()"
                 :placeholder="quickSearchPlaceholder ? quickSearchPlaceholder : t('search')"
             />
-            <div class="table-search-button-group">
+            <div class="table-search-button-group" v-if="buttons.includes('columnDisplay') || buttons.includes('comSearch')">
                 <el-dropdown v-if="buttons.includes('columnDisplay')" :max-height="380" :hide-on-click="false">
                     <el-button class="table-search-button-item" :class="buttons.includes('comSearch') ? 'right-border' : ''" color="#dcdfe6" plain>
                         <Icon size="14" color="#303133" name="el-icon-Grid" />
