@@ -220,7 +220,7 @@ const validation = {
             hostport: state.formItem.hostport.value,
             database: state.formItem.database.value,
         }
-        if (databaseData.hostname && databaseData.username && databaseData.password && databaseData.hostport) {
+        if (databaseData.hostname && databaseData.username && databaseData.hostport) {
             state.databaseCheck = 'connecting'
             postTestDatabase(databaseData).then((res) => {
                 if (res.data.code == 1) {
@@ -279,7 +279,6 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
         { validator: validation.connect, trigger: 'blur' },
     ],
     password: [
-        { validator: validation.required, trigger: 'blur' },
         { validator: validation.connect, trigger: 'blur' },
     ],
     hostport: [
