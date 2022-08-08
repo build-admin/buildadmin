@@ -278,9 +278,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
         { validator: validation.required, trigger: 'blur' },
         { validator: validation.connect, trigger: 'blur' },
     ],
-    password: [
-        { validator: validation.connect, trigger: 'blur' },
-    ],
+    password: [{ validator: validation.connect, trigger: 'blur' }],
     hostport: [
         { validator: validation.required, trigger: 'blur' },
         { validator: validation.connect, trigger: 'blur' },
@@ -289,10 +287,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
         { validator: validation.required, trigger: 'blur' },
         { validator: validation.database, trigger: 'blur' },
     ],
-    prefix: [
-        { validator: validation.required, trigger: 'blur' },
-        { validator: validation.prefix, trigger: 'blur' },
-    ],
+    prefix: [{ validator: validation.prefix, trigger: 'blur' }],
     adminname: [
         { validator: validation.required, trigger: 'blur' },
         { validator: validation.adminname, trigger: 'blur' },
@@ -347,11 +342,9 @@ const submitBaseConfig = (formEl: InstanceType<typeof ElForm> | undefined = unde
             state.baseConfigSubmitState = true
             let values = {}
             for (const key in state.formItem) {
-                if (state.formItem[key].value) {
-                    values = Object.assign(values, {
-                        [key]: state.formItem[key].value,
-                    })
-                }
+                values = Object.assign(values, {
+                    [key]: state.formItem[key].value,
+                })
             }
 
             postBaseConfig(values)
