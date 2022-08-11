@@ -122,4 +122,5 @@ export interface SiteConfig {
     record_number?: string
     version: string
     cdn_url: string
+    api_url: string
 }
