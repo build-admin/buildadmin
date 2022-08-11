@@ -53,6 +53,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             showErrorMessage: true, // 是否开启接口错误信息展示,默认为true
             showCodeMessage: true, // 是否开启code不为1时的信息提示, 默认为true
             showSuccessMessage: false, // 是否开启code为1时的信息提示, 默认为false
+            anotherToken: '', // 当前请求使用另外的用户token
         },
         options
     )
@@ -74,7 +75,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             if (config.headers) {
                 let token = getAdminToken('auth')
                 if (token) config.headers.batoken = token
-                let userToken = getUserToken('auth')
+                let userToken = options.anotherToken || getUserToken('auth')
                 if (userToken) config.headers['ba-user-token'] = userToken
             }
 
@@ -334,6 +335,8 @@ interface Options {
     showCodeMessage?: boolean
     // 是否开启code为0时的信息提示, 默认为false
     showSuccessMessage?: boolean
+    // 当前请求使用另外的用户token
+    anotherToken?: string
 }
 
 /*
