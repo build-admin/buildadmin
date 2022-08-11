@@ -20,3 +20,6 @@ export const BEFORE_RESIZE_LAYOUT = 'beforeResizeLayout'
 
 // 会员资料
 export const USER_INFO = 'userInfo'
+
+// ba官网用户信息
+export const BA_ACCOUNT = 'ba_account'
