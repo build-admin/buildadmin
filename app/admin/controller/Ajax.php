@@ -10,6 +10,8 @@ use app\common\controller\Backend;
 use think\facade\Cache;
 use think\facade\Db;
 use app\admin\model\AdminLog;
+use ba\module\Manage;
+use ba\module\moduleException;
 
 class Ajax extends Backend
 {
@@ -86,5 +88,22 @@ class Ajax extends Backend
             $this->error(__('Parameter error'));
         }
         $this->success(__('Cache cleaned~'));
+    }
+
+    public function installModule()
+    {
+        $uid     = $this->request->get("uid/s", '');
+        $token   = $this->request->get("token/s", '');
+        $orderId = $this->request->get("order_id/d", 0);
+        if (!$token || !$uid) {
+            $this->error(__('Parameter error'));
+        }
+        try {
+            Manage::instance($uid)->install($token, $orderId);
+        } catch (moduleException $e) {
+            $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
+        } catch (Exception $e) {
+            $this->error(__($e->getMessage()));
+        }
     }
 }
