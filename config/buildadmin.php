@@ -103,4 +103,6 @@ return [
     'cdn_url'              => '',
     // 版本号
     'version'              => 'v1.0.3',
+    // 接口地址
+    'api_url'              => 'https://ba.buildadmin.com',
 ];
