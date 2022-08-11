@@ -86,7 +86,7 @@ class Rule extends Backend
                         $validate->check($data);
                     }
                 }
-                if ($data['pid'] > 0) {
+                if (isset($data['pid']) && $data['pid'] > 0) {
                     // 满足意图并消除副作用
                     $parent = $this->model->where('id', $data['pid'])->find();
                     if ($parent['pid'] == $row['id']) {
