@@ -27,7 +27,7 @@ class Server
         $tmpFile = $dir . $uid . ".zip";
         try {
             $client   = self::getClient();
-            $response = $client->get('/index.php/api/store/download', ['query' => array_merge(['uid' => $uid], $extend)]);
+            $response = $client->get('/api/store/download', ['query' => array_merge(['uid' => $uid], $extend)]);
             $body     = $response->getBody();
             $content  = $body->getContents();
             if (substr($content, 0, 1) === '{') {
