@@ -43,7 +43,7 @@ export function postLogout(): ApiPromise {
 
 export function buildCaptchaUrl() {
     const siteConfig = useSiteConfig()
-    return siteConfig.api_url + captchaUrl
+    return siteConfig.api_url + captchaUrl + '?server=1'
 }
 
 export function checkIn(method: 'get' | 'post', params: object = {}): ApiPromise {
