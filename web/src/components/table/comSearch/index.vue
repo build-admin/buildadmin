@@ -75,6 +75,15 @@
                                             :placeholder="item.operatorPlaceholder"
                                         />
 
+                                        <!-- 自定义组件/函数渲染 -->
+                                        <component
+                                            v-else-if="item.comSearchRender == 'customRender'"
+                                            :is="item.comSearchCustomRender"
+                                            :renderRow="item"
+                                            :renderField="item.prop!"
+                                            :renderValue="baTable.comSearch.form[item.prop!]"
+                                        />
+
                                         <!-- 开关 -->
                                         <el-select
                                             :placeholder="item.operatorPlaceholder"
