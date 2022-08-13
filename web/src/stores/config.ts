@@ -15,6 +15,8 @@ export const useConfig = defineStore(
             layoutMode: 'Default',
             // 后台主页面切换动画，可选值<slide-right|slide-left|el-fade-in-linear|el-fade-in|el-zoom-in-center|el-zoom-in-top|el-zoom-in-bottom>
             mainAnimation: 'slide-right',
+            // 是否暗黑模式
+            isDark: true,
 
             /* 侧边菜单 */
             // 侧边菜单背景色

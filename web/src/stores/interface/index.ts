@@ -7,6 +7,7 @@ export interface Layout {
     shrink: boolean
     layoutMode: string
     mainAnimation: string
+    isDark: boolean
     menuWidth: number
     menuDefaultIcon: string
     menuCollapse: boolean

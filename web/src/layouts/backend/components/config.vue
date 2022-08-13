@@ -60,6 +60,16 @@
                         </div>
                         <el-divider border-style="dashed">{{ t('layouts.overall situation') }}</el-divider>
                         <div class="layout-config-global">
+                            <el-form-item size="large" :label="t('layouts.Dark mode')">
+                                <el-switch
+                                    :model-value="configStore.layout.isDark"
+                                    :active-value="true"
+                                    :inactive-value="false"
+                                    active-icon="el-icon-Moon"
+                                    inactive-icon="el-icon-Sunny"
+                                    @change="toggleDark($event as boolean)"
+                                />
+                            </el-form-item>
                             <el-form-item :label="t('layouts.Background page switching animation')">
                                 <el-select
                                     @change="onCommitState($event, 'mainAnimation')"
@@ -194,11 +204,17 @@ import selector from '/@/components/icon/selector.vue'
 import { STORE_CONFIG, BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
 import { Local, Session } from '/@/utils/storage'
 import { useI18n } from 'vue-i18n'
+import { useDark, useToggle } from '@vueuse/core'
 
 const { t } = useI18n()
 const configStore = useConfig()
 const navTabs = useNavTabs()
 const router = useRouter()
+const toggleDark = (val: boolean) => {
+    const dark = useDark()
+    useToggle(dark)()
+    configStore.setLayout('isDark', val)
+}
 
 const onCommitState = (value: any, name: any) => {
     configStore.setLayout(name, value)
