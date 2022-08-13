@@ -1,16 +1,13 @@
 @use 'sass:map';
 @use 'mixins' as *;
-
-// 后台主体窗口左右间距
-$main-space: 16px;
-$primary-light: #3f6ad8;
+@use 'element-plus/theme-chalk/src/dark/css-vars.scss';
 
 // Background
 $bg-color: () !default;
 $bg-color: map.merge(
     (
-        '': #f5f5f5,
-        'overlay': #ffffff,
+        '': #141414,
+        'overlay': #1d1e1f,
     ),
     $bg-color
 );
@@ -19,8 +16,8 @@ $bg-color: map.merge(
 $color-sub: () !default;
 $color-sub: map.merge(
     (
-        '1': #dcdfe6,
-        '2': #ebeef5,
+        '1': #363637,
+        '2': #414243,
     ),
     $color-sub
 );
@@ -29,14 +26,12 @@ $color-sub: map.merge(
 $border-color: () !default;
 $border-color: map.merge(
     (
-        '': #f6f6f6,
+        '': #58585b,
     ),
     $border-color
 );
 
 :root {
-    @include set-css-var-value('main-space', $main-space);
-    @include set-css-var-value('color-primary-light', $primary-light);
     @include set-component-css-var('bg-color', $bg-color);
     @include set-component-css-var('color-sub', $color-sub);
     @include set-component-css-var('border-color', $border-color);
