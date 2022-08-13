@@ -13,7 +13,7 @@
                     </el-button>
                     <el-button title="已上传/安装的模块" v-blur type="primary">
                         <Icon name="fa fa-desktop" color="#ffffff" size="14" />
-                        <span class="table-header-operate-text">本地模板</span>
+                        <span class="table-header-operate-text">本地模块</span>
                     </el-button>
                 </el-button-group>
                 <el-button-group class="ml10">

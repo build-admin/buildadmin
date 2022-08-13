@@ -17,14 +17,14 @@
                     <span>{{ $t('user.user.balance') + ' ' + baAccount.money }}</span>
                 </p>
                 <div class="userinfo-buttons">
-                    <el-button v-blur size="default" type="primary">我的模板</el-button>
+                    <el-button v-blur size="default" type="primary">我的模块</el-button>
                     <el-button @click="baAccount.logout()" v-blur size="default" type="warning">注销登录</el-button>
                 </div>
             </div>
         </template>
         <template v-else>
             <div class="ba-login">
-                <h3 class="ba-title">登录到 BuildAdmin 模板市场</h3>
+                <h3 class="ba-title">登录到 BuildAdmin 模块市场</h3>
                 <el-form
                     @keyup.enter="onBaAccountSubmit(baAccountFormRef)"
                     ref="baAccountFormRef"
