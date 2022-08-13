@@ -176,7 +176,7 @@ onMounted(() => {
 .nav-tabs {
     overflow-x: auto;
     overflow-y: hidden;
-    margin-right: var(--main-space);
+    margin-right: var(--ba-main-space);
     scrollbar-width: none;
 
     &::-webkit-scrollbar {

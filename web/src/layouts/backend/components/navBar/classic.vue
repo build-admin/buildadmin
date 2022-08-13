@@ -73,6 +73,6 @@ const onMenuCollapse = () => {
 }
 .unfold {
     align-self: center;
-    padding-left: var(--main-space);
+    padding-left: var(--ba-main-space);
 }
 </style>

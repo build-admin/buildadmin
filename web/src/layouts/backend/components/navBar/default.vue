@@ -17,7 +17,7 @@ const config = useConfig()
 .nav-bar {
     display: flex;
     height: 50px;
-    margin: 20px var(--main-space) 0 var(--main-space);
+    margin: 20px var(--ba-main-space) 0 var(--ba-main-space);
     :deep(.nav-tabs) {
         display: flex;
         height: 100%;
