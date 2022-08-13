@@ -27,7 +27,7 @@ export default function init() {
  * 样式表未载入前无法获取
  */
 function getStylesFromDomain(domain: string) {
-    let sheets = []
+    const sheets = []
     const styles: StyleSheetList = document.styleSheets
     for (const key in styles) {
         if (styles[key].href && (styles[key].href as string).indexOf(domain) > -1) {
@@ -46,7 +46,7 @@ export function getLocalIconfontNames() {
         nextTick(() => {
             let iconfonts: string[] = []
 
-            let svgEl = document.getElementById('local-icon')
+            const svgEl = document.getElementById('local-icon')
             if (svgEl?.dataset.iconName) {
                 iconfonts = (svgEl?.dataset.iconName as string).split(',')
             }
@@ -66,14 +66,14 @@ export function getLocalIconfontNames() {
 export function getAwesomeIconfontNames() {
     return new Promise<string[]>((resolve, reject) => {
         nextTick(() => {
-            let iconfonts = []
-            let sheets = getStylesFromDomain('cdn.bootcdn.net/ajax/libs/font-awesome/')
+            const iconfonts = []
+            const sheets = getStylesFromDomain('cdn.bootcdn.net/ajax/libs/font-awesome/')
             for (const key in sheets) {
-                let rules: any = sheets[key].cssRules
+                const rules: any = sheets[key].cssRules
                 for (const k in rules) {
                     if (rules[k].selectorText && /^\.fa-(.*)::before$/g.test(rules[k].selectorText)) {
                         if (rules[k].selectorText.indexOf(', ') > -1) {
-                            let iconNames = rules[k].selectorText.split(', ')
+                            const iconNames = rules[k].selectorText.split(', ')
                             /*
                             // 含图标别名
                             for (const i_k in iconNames) {
@@ -102,10 +102,10 @@ export function getAwesomeIconfontNames() {
 export function getIconfontNames() {
     return new Promise<string[]>((resolve, reject) => {
         nextTick(() => {
-            let iconfonts = []
-            let sheets = getStylesFromDomain('at.alicdn.com')
+            const iconfonts = []
+            const sheets = getStylesFromDomain('at.alicdn.com')
             for (const key in sheets) {
-                let rules: any = sheets[key].cssRules
+                const rules: any = sheets[key].cssRules
                 for (const k in rules) {
                     if (rules[k].selectorText && /^\.icon-(.*)::before$/g.test(rules[k].selectorText)) {
                         iconfonts.push(`${rules[k].selectorText.substring(1, rules[k].selectorText.length).replace(/\:\:before/gi, '')}`)
@@ -128,7 +128,7 @@ export function getIconfontNames() {
 export function getElementPlusIconfontNames() {
     return new Promise<string[]>((resolve, reject) => {
         nextTick(() => {
-            let iconfonts = []
+            const iconfonts = []
             const icons = elIcons as any
             for (const i in icons) {
                 iconfonts.push(`el-icon-${icons[i].name}`)

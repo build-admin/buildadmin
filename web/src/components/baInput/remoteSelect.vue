@@ -143,7 +143,7 @@ const getData = (initValue: valType = '') => {
             state.loading = false
             state.initializeData = initializeData
         })
-        .catch((err) => {
+        .catch(() => {
             state.loading = false
         })
 }
@@ -158,7 +158,7 @@ const initDefaultValue = () => {
         // number[]转string[]确保默认值能够选中
         if (typeof state.value === 'object') {
             for (const key in state.value as string[]) {
-                ;(state.value as string[])[key] = (state.value as number[])[key].toString()
+                state.value[key] = state.value[key].toString()
             }
         } else if (typeof state.value === 'number') {
             state.value = state.value.toString()

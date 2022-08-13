@@ -81,7 +81,7 @@
             <el-col v-loading="state.logLoading" :xs="24" :sm="24" :md="24" :lg="12">
                 <el-card :header="t('adminInfo.Operation log')" shadow="never">
                     <el-timeline>
-                        <el-timeline-item v-for="item in state.log" size="large" :timestamp="timeFormat(item.createtime)">
+                        <el-timeline-item v-for="(item, idx) in state.log" :key="idx" size="large" :timestamp="timeFormat(item.createtime)">
                             {{ item.title }}
                         </el-timeline-item>
                     </el-timeline>
@@ -112,11 +112,9 @@ import { validatorMobile, validatorPassword } from '/@/utils/validate'
 import { fileUpload } from '/@/api/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { timeFormat } from '/@/components/table'
-import { useConfig } from '/@/stores/config'
 
 const { t } = useI18n()
 const formRef = ref<InstanceType<typeof ElForm>>()
-const config = useConfig()
 
 const adminInfoStore = useAdminInfo()
 

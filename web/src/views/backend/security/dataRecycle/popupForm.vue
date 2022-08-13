@@ -38,7 +38,7 @@
                         type="select"
                         v-model="baTable.form.items!.controller"
                         prop="controller"
-                        :data="{ content: formData.controllerList }"
+                        :data="{ content: props.formData.controllerList }"
                         :placeholder="t('security.dataRecycle.The data collection mechanism will monitor delete operations under this controller')"
                     />
                     <FormItem
@@ -46,7 +46,7 @@
                         type="select"
                         v-model="baTable.form.items!.data_table"
                         prop="data_table"
-                        :data="{ content: formData.tableList }"
+                        :data="{ content: props.formData.tableList }"
                         :input-attr="{ onChange: onTableChange }"
                     />
                     <FormItem
@@ -91,6 +91,7 @@ interface Props {
         controllerList?: anyObj
     }
 }
+
 const props = withDefaults(defineProps<Props>(), {
     formData: () => {
         return {}

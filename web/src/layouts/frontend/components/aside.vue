@@ -31,10 +31,11 @@
         </div>
 
         <div class="user-menus">
-            <template v-for="(item, idx) in memberCenter.state.viewRoutes">
+            <template v-for="(item, idx) in memberCenter.state.viewRoutes" :key="idx">
                 <div v-if="memberCenter.state.showHeadline" class="user-menu-max-title">{{ item.title }}</div>
                 <div
-                    v-for="menu in item.children"
+                    v-for="(menu, index) in item.children"
+                    :key="index"
                     @click="routerPush(menu.name!)"
                     class="user-menu-item"
                     :class="memberCenter.state.activeRoute?.name == menu.name ? 'active' : ''"

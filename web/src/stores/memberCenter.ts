@@ -43,7 +43,7 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         state.shrink = shrink
     }
 
-    const toggleMenuExpand = (expand: boolean = !state.menuExpand) => {
+    const toggleMenuExpand = (expand = !state.menuExpand) => {
         state.menuExpand = expand
     }
 

@@ -32,8 +32,8 @@ export const init = function (): void {
 
     // create particles
     bubble.circles = []
-    for (let x: number = 0; x < bubble.width * 0.5; x++) {
-        var c = new Circle()
+    for (let x = 0; x < bubble.width * 0.5; x++) {
+        const c = new Circle()
         bubble.circles.push(c)
     }
     animate()
@@ -55,7 +55,7 @@ function resize() {
 function animate() {
     if (bubble.animate) {
         bubble.ctx.clearRect(0, 0, bubble.width, bubble.height)
-        for (var i in bubble.circles) {
+        for (const i in bubble.circles) {
             bubble.circles[i].draw()
         }
     }

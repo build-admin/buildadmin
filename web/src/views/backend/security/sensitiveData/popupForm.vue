@@ -71,7 +71,8 @@
                     />
 
                     <FormItem
-                        v-for="item in state.dataFields"
+                        v-for="(item, idx) in state.dataFields"
+                        :key="idx"
                         :label="item.name"
                         type="string"
                         v-model="item.value"

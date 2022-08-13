@@ -135,7 +135,6 @@
 <script setup lang="ts">
 import { ref, reactive, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { fileUpload } from '/@/api/common'
 import type baTableClass from '/@/utils/baTable'
 import { regularPassword, validatorAccount, validatorMobile } from '/@/utils/validate'
 import type { ElForm, FormItemRule } from 'element-plus'

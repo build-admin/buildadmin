@@ -89,7 +89,7 @@ onMounted(() => {
     state.editorConfig.MENU_CONF['uploadImage'] = {
         fieldName: 'file',
         maxFileSize: 10 * 1024 * 1024, // 10M
-        onProgress(progress: number) {
+        onProgress() {
             NProgress.inc()
         },
         async customUpload(file: File, insertFn: ImgInsertFnType) {
@@ -109,7 +109,7 @@ onMounted(() => {
     // 视频上传配置
     state.editorConfig.MENU_CONF['uploadVideo'] = {
         fieldName: 'file',
-        onProgress(progress: number) {
+        onProgress() {
             NProgress.inc()
         },
         async customUpload(file: File, insertFn: VideoInsertFnType) {

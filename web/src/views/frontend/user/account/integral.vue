@@ -8,7 +8,7 @@
                 </div>
             </template>
             <div v-loading="state.pageLoading" class="logs">
-                <div class="log-item" v-for="(item, idx) in state.logs">
+                <div class="log-item" v-for="(item, idx) in state.logs" :key="idx">
                     <div class="log-title">{{ item.memo }}</div>
                     <div v-if="item.score > 0" class="log-change-amount increase">{{ $t('user.scoreLog.integral') + '：+' + item.score }}</div>
                     <div v-else class="log-change-amount reduce">{{ $t('user.scoreLog.integral') + '：' + item.score }}</div>

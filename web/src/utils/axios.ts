@@ -23,7 +23,7 @@ export const getUrl = (): string => {
 }
 
 export const getUrlPort = (): string => {
-    let url = getUrl()
+    const url = getUrl()
     return new URL(url).port
 }
 
@@ -72,9 +72,9 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
 
             // 自动携带token
             if (config.headers) {
-                let token = getAdminToken('auth')
+                const token = getAdminToken('auth')
                 if (token) config.headers.batoken = token
-                let userToken = getUserToken('auth')
+                const userToken = getUserToken('auth')
                 if (userToken) config.headers['ba-user-token'] = userToken
             }
 
@@ -293,7 +293,8 @@ function removePending(config: AxiosRequestConfig) {
  * 生成每个请求的唯一key
  */
 function getPendingKey(config: AxiosRequestConfig) {
-    let { url, method, params, data, headers } = config
+    let { data } = config
+    const { url, method, params, headers } = config
     if (typeof data === 'string') data = JSON.parse(data) // response里面返回的config.data是个字符串对象
     return [
         url,

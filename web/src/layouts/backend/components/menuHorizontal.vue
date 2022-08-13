@@ -61,7 +61,7 @@ const state = reactive({
 })
 
 const menus = computed(() => {
-    state.menuKey = uuid()
+    state.menuKey = uuid() // eslint-disable-line
     return navTabs.state.tabsViewRoutes
 })
 

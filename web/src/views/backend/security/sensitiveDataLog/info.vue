@@ -12,37 +12,41 @@
             <div class="ba-operate-form" :class="'ba-' + baTable.form.operate + '-form'">
                 <el-descriptions v-if="!_.isEmpty(baTable.form.extend!.info)" :column="2" border>
                     <el-descriptions-item :label="t('id')">
-                        {{baTable.form.extend!.info.id}}
+                        {{ baTable.form.extend!.info.id }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Operation administrator')">
-                        {{baTable.form.extend!.info.admin?.nickname + '('+baTable.form.extend!.info.admin?.username+')'}}
+                        {{ baTable.form.extend!.info.admin?.nickname +
+                                '(' + baTable.form.extend!.info.admin?.username + ')'
+                        }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Rule name')">
-                        {{baTable.form.extend!.info.sensitive?.name}}
+                        {{ baTable.form.extend!.info.sensitive?.name }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.data sheet')">
-                        {{baTable.form.extend!.info.data_table}}
+                        {{ baTable.form.extend!.info.data_table }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Modification time')">
-                        {{timeFormat(baTable.form.extend!.info.createtime)}}
+                        {{ timeFormat(baTable.form.extend!.info.createtime) }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Operator IP')">
-                        {{baTable.form.extend!.info.ip}}
+                        {{ baTable.form.extend!.info.ip }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Data table primary key')">
-                        {{baTable.form.extend!.info.primary_key + '=' + baTable.form.extend!.info.id_value}}
+                        {{ baTable.form.extend!.info.primary_key + '=' + baTable.form.extend!.info.id_value }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Modified item')">
-                        {{baTable.form.extend!.info.data_field + (baTable.form.extend!.info.data_comment ? '('+baTable.form.extend!.info.data_comment+')':'')}}
+                        {{ baTable.form.extend!.info.data_field + (baTable.form.extend!.info.data_comment ?
+                                '(' + baTable.form.extend!.info.data_comment + ')' : '')
+                        }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Before modification')" label-class-name="color-red">
-                        {{baTable.form.extend!.info.before}}
+                        {{ baTable.form.extend!.info.before }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.After modification')" label-class-name="color-red">
-                        {{baTable.form.extend!.info.after}}
+                        {{ baTable.form.extend!.info.after }}
                     </el-descriptions-item>
                     <el-descriptions-item :width="120" :span="2" label="User Agent">
-                        {{baTable.form.extend!.info.useragent}}
+                        {{ baTable.form.extend!.info.useragent }}
                     </el-descriptions-item>
                 </el-descriptions>
                 <div class="diff-box">
@@ -84,7 +88,7 @@ const onRollback = (id: string) => {
         cancelButtonText: t('Cancel'),
     })
         .then(() => {
-            rollback([id]).then((res) => {
+            rollback([id]).then(() => {
                 baTable.toggleForm()
                 baTable.onTableHeaderAction('refresh', {})
             })

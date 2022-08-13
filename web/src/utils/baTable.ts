@@ -170,7 +170,7 @@ export default class baTable {
      * @param operate 操作:add=添加,edit=编辑
      * @param operateIds 被操作项的数组:add=[],edit=[1,2,...]
      */
-    toggleForm = (operate: string = '', operateIds: string[] = []) => {
+    toggleForm = (operate = '', operateIds: string[] = []) => {
         if (this.runBefore('toggleForm', { operate, operateIds }) === false) return
         if (this.form.ref) {
             this.form.ref.resetFields()
@@ -198,7 +198,7 @@ export default class baTable {
         }
 
         // 表单验证通过后执行的api请求操作
-        let submitCallback = () => {
+        const submitCallback = () => {
             this.form.submitLoading = true
             this.api
                 .postData(this.form.operate!, this.form.items!)
@@ -206,14 +206,14 @@ export default class baTable {
                     this.onTableHeaderAction('refresh', {})
                     this.form.submitLoading = false
                     this.form.operateIds?.shift()
-                    if (this.form.operateIds?.length! > 0) {
+                    if (this.form.operateIds!.length > 0) {
                         this.toggleForm('edit', this.form.operateIds)
                     } else {
                         this.toggleForm()
                     }
                     this.runAfter('onSubmit', { res })
                 })
-                .catch((err) => {
+                .catch(() => {
                     this.form.submitLoading = false
                 })
         }
@@ -232,7 +232,7 @@ export default class baTable {
 
     /* 获取表格选择项的id数组 */
     getSelectionIds() {
-        let ids: string[] = []
+        const ids: string[] = []
         for (const key in this.table.selection) {
             ids.push(this.table.selection[key as any][this.table.pk!])
         }
@@ -290,7 +290,7 @@ export default class baTable {
             ],
         ])
 
-        let action = actionFun.get(event) || actionFun.get('default')
+        const action = actionFun.get(event) || actionFun.get('default')
         action!.call(this)
         return this.runAfter('onTableAction', { event, data })
     }
@@ -349,7 +349,7 @@ export default class baTable {
             [
                 'change-show-column',
                 () => {
-                    let columnKey = getArrayKey(this.table.column, 'prop', data.field)
+                    const columnKey = getArrayKey(this.table.column, 'prop', data.field)
                     this.table.column[columnKey].show = data.value
                 },
             ],
@@ -361,7 +361,7 @@ export default class baTable {
             ],
         ])
 
-        let action = actionFun.get(event) || actionFun.get('default')
+        const action = actionFun.get(event) || actionFun.get('default')
         action!.call(this)
         return this.runAfter('onTableHeaderAction', { event, data })
     }
@@ -378,7 +378,7 @@ export default class baTable {
                 return
             }
 
-            let defaultOrder = this.table.defaultOrder.prop + ',' + this.table.defaultOrder.order
+            const defaultOrder = this.table.defaultOrder.prop + ',' + this.table.defaultOrder.order
             if (this.table.filter && this.table.filter.order != defaultOrder) {
                 this.table.filter.order = defaultOrder
                 this.table.ref.getRef()?.sort(this.table.defaultOrder.prop, this.table.defaultOrder.order == 'desc' ? 'descending' : 'ascending')
@@ -390,8 +390,8 @@ export default class baTable {
      * 表格拖动排序
      */
     dragSort = () => {
-        let buttonsKey = getArrayKey(this.table.column, 'render', 'buttons')
-        let moveButton = getArrayKey(this.table.column[buttonsKey]?.buttons, 'render', 'moveButton')
+        const buttonsKey = getArrayKey(this.table.column, 'render', 'buttons')
+        const moveButton = getArrayKey(this.table.column[buttonsKey]?.buttons, 'render', 'moveButton')
         if (moveButton === false) {
             return
         }
@@ -400,8 +400,8 @@ export default class baTable {
             return
         }
 
-        let el = this.table.ref.getRef().$el.querySelector('.el-table__body-wrapper .el-table__body tbody')
-        var sortable = Sortable.create(el, {
+        const el = this.table.ref.getRef().$el.querySelector('.el-table__body-wrapper .el-table__body tbody')
+        Sortable.create(el, {
             animation: 200,
             handle: '.table-row-weigh-sort',
             ghostClass: 'ba-table-row',
@@ -415,8 +415,8 @@ export default class baTable {
                     this.table.column[buttonsKey].buttons![key as any].disabledTip = false
                 }
                 // 找到对应行id
-                let moveRow = findIndexRow(this.table.data!, evt.oldIndex!) as TableRow
-                let replaceRow = findIndexRow(this.table.data!, evt.newIndex!) as TableRow
+                const moveRow = findIndexRow(this.table.data!, evt.oldIndex!) as TableRow
+                const replaceRow = findIndexRow(this.table.data!, evt.newIndex!) as TableRow
                 if (this.table.dragSortLimitField && moveRow[this.table.dragSortLimitField] != replaceRow[this.table.dragSortLimitField]) {
                     this.onTableHeaderAction('refresh', {})
                     ElNotification({
@@ -426,7 +426,7 @@ export default class baTable {
                     return
                 }
 
-                this.api.sortableApi(moveRow[this.table.pk!], replaceRow[this.table.pk!]).then((res) => {
+                this.api.sortableApi(moveRow[this.table.pk!], replaceRow[this.table.pk!]).then(() => {
                     this.onTableHeaderAction('refresh', {})
                 })
             },
@@ -509,7 +509,7 @@ export default class baTable {
      * 通用搜索初始化
      */
     initComSearch = (query: anyObj = {}) => {
-        let form: anyObj = {}
+        const form: anyObj = {}
 
         if (this.table.column.length <= 0) {
             return
@@ -520,7 +520,7 @@ export default class baTable {
             if (field[key].operator === false) {
                 continue
             }
-            let prop = field[key].prop
+            const prop = field[key].prop
             if (typeof field[key].operator == 'undefined') {
                 field[key].operator = '='
             }
@@ -537,9 +537,9 @@ export default class baTable {
 
                 // 初始化来自query中的默认值
                 if (this.table.acceptQuery && typeof query[prop] != 'undefined') {
-                    let queryProp = (query[prop] as string) ?? ''
+                    const queryProp = (query[prop] as string) ?? ''
                     if (field[key].operator == 'RANGE' || field[key].operator == 'NOT RANGE') {
-                        let range = queryProp.split(',')
+                        const range = queryProp.split(',')
                         if (field[key].render == 'datetime') {
                             if (range && range.length >= 2) {
                                 form[prop + '-default'] = [new Date(range[0]), new Date(range[1])]
@@ -566,9 +566,9 @@ export default class baTable {
 
         // 接受query再搜索
         if (this.table.acceptQuery) {
-            let comSearchData: comSearchData[] = []
+            const comSearchData: comSearchData[] = []
             for (const key in query) {
-                let fieldDataTemp = this.comSearch.fieldData.get(key)
+                const fieldDataTemp = this.comSearch.fieldData.get(key)
                 comSearchData.push({
                     field: key,
                     val: query[key] as string,

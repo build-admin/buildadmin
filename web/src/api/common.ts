@@ -41,7 +41,7 @@ export function fileUpload(fd: FormData, params: anyObj = {}): ApiPromise {
  * @param suffix 后缀名
  * @param background 背景色,如:rgb(255,255,255)
  */
-export function buildSuffixSvgUrl(suffix: string, background: string = '') {
+export function buildSuffixSvgUrl(suffix: string, background = '') {
     return (
         getUrl() +
         (isAdminApp() ? adminBuildSuffixSvgUrl : apiBuildSuffixSvgUrl) +
@@ -58,7 +58,7 @@ export function buildSuffixSvgUrl(suffix: string, background: string = '') {
  * 获取地区数据
  */
 export function getArea(values: number[]) {
-    let params: { province?: number; city?: number } = {}
+    const params: { province?: number; city?: number } = {}
     if (values[0]) {
         params.province = values[0]
     }

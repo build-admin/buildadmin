@@ -4,7 +4,7 @@
             <el-col :span="10" class="ba-array-key">键名</el-col>
             <el-col :span="10" class="ba-array-value">键值</el-col>
         </el-row>
-        <el-row class="ba-array-item" v-for="(item, idx) in state.value" :gutter="10">
+        <el-row class="ba-array-item" v-for="(item, idx) in state.value" :gutter="10" :key="idx">
             <el-col :span="10">
                 <el-input v-model="item.key"></el-input>
             </el-col>

@@ -54,6 +54,7 @@ export default defineComponent({
             default: () => {},
         },
     },
+    emits: ['update:modelValue'],
     setup(props, { emit }) {
         const onValueUpdate = (value: modelValueTypes) => {
             emit('update:modelValue', value)
@@ -204,7 +205,7 @@ export default defineComponent({
                             return props.modelValue
                         } else {
                             let valueTmp = parseInt(props.modelValue as string)
-                            return valueTmp === NaN || valueTmp <= 0 ? false : true
+                            return isNaN(valueTmp) || valueTmp <= 0 ? false : true
                         }
                     })
                     return () =>
@@ -417,7 +418,7 @@ export default defineComponent({
                                                 file.status = 'success'
                                             }
                                         })
-                                        .catch((err) => {
+                                        .catch(() => {
                                             file.status = 'fail'
                                         })
                                 },
@@ -542,11 +543,11 @@ export default defineComponent({
                                                 file.status = 'success'
                                             }
                                         })
-                                        .catch((err) => {
+                                        .catch(() => {
                                             file.status = 'fail'
                                         })
                                 },
-                                onRemove: (file: UploadFileExt) => {
+                                onRemove: () => {
                                     onValueUpdate(getAllUrls())
                                 },
                                 onPreview: (file: UploadFile) => {
@@ -634,14 +635,14 @@ export default defineComponent({
                                                 file.status = 'success'
                                             }
                                         })
-                                        .catch((err) => {
+                                        .catch(() => {
                                             file.status = 'fail'
                                         })
                                 },
                                 onRemove: () => {
                                     onValueUpdate('')
                                 },
-                                onPreview: (uploadFile: UploadFile) => {
+                                onPreview: () => {
                                     window.open(fullUrl(lastUrl.value))
                                 },
                                 ...props.attr,
@@ -745,11 +746,11 @@ export default defineComponent({
                                                 onValueUpdate(getAllUrls())
                                             }
                                         })
-                                        .catch((err) => {
+                                        .catch(() => {
                                             file.status = 'fail'
                                         })
                                 },
-                                onRemove: (file: UploadFileExt) => {
+                                onRemove: () => {
                                     onValueUpdate(getAllUrls())
                                 },
                                 onPreview: (file: UploadFileExt) => {

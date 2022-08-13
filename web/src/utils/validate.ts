@@ -87,7 +87,7 @@ export const validatorType = {
     integer: i18n.global.t('validate.integer'),
     float: i18n.global.t('validate.Floating point number'),
 }
-export function buildValidatorData(ruleName: string, title: string = '', trigger: string = 'blur', message: string = ''): FormItemRule {
+export function buildValidatorData(ruleName: string, title = '', trigger = 'blur', message = ''): FormItemRule {
     // 必填
     if (ruleName == 'required') {
         return {
@@ -98,7 +98,7 @@ export function buildValidatorData(ruleName: string, title: string = '', trigger
     }
 
     // 常见类型
-    let validatorType = ['number', 'integer', 'float', 'date', 'url', 'email']
+    const validatorType = ['number', 'integer', 'float', 'date', 'url', 'email']
     if (validatorType.includes(ruleName)) {
         return {
             type: ruleName as RuleType,
@@ -108,7 +108,7 @@ export function buildValidatorData(ruleName: string, title: string = '', trigger
     }
 
     // 自定义验证方法
-    let validatorCustomFun: anyObj = {
+    const validatorCustomFun: anyObj = {
         mobile: validatorMobile,
         account: validatorAccount,
         password: validatorPassword,

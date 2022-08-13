@@ -37,23 +37,23 @@ export const useTerminal = defineStore(
             }
         }
 
-        function toggle(val: boolean = !state.show) {
+        function toggle(val = !state.show) {
             state.show = val
             if (val) {
                 toggleDot(false)
             }
         }
 
-        function toggleDot(val: boolean = !state.showDot) {
+        function toggleDot(val = !state.showDot) {
             state.showDot = val
         }
 
-        function toggleConfigDialog(val: boolean = !state.showConfig) {
+        function toggleConfigDialog(val = !state.showConfig) {
             toggle(!val)
             state.showConfig = val
         }
 
-        function togglePackageManagerDialog(val: boolean = !state.showPackageManagerDialog) {
+        function togglePackageManagerDialog(val = !state.showPackageManagerDialog) {
             toggle(!val)
             state.showPackageManagerDialog = val
         }
@@ -81,7 +81,7 @@ export const useTerminal = defineStore(
             if (typeof state.taskList[idx].callback != 'function') {
                 return
             }
-            let status = state.taskList[idx].status
+            const status = state.taskList[idx].status
             if (status == taskStatus.Failed || status == taskStatus.Unknown) {
                 state.taskList[idx].callback(taskStatus.Failed)
             } else if (status == taskStatus.Success) {
@@ -89,7 +89,7 @@ export const useTerminal = defineStore(
             }
         }
 
-        function setTaskShowMessage(idx: number, val: boolean = !state.taskList[idx].showMessage) {
+        function setTaskShowMessage(idx: number, val = !state.taskList[idx].showMessage) {
             state.taskList[idx].showMessage = val
         }
 
@@ -101,7 +101,7 @@ export const useTerminal = defineStore(
             })
         }
 
-        function addTask(command: string, blockOnFailure: boolean = true, callback: Function = () => {}) {
+        function addTask(command: string, blockOnFailure = true, callback: Function = () => {}) {
             if (!state.show) toggleDot(true)
             state.taskList = state.taskList.concat({
                 uuid: uuid(),
@@ -122,7 +122,7 @@ export const useTerminal = defineStore(
             startTask()
         }
 
-        function addTaskPM(command: string, blockOnFailure: boolean = true, callback: Function = () => {}) {
+        function addTaskPM(command: string, blockOnFailure = true, callback: Function = () => {}) {
             addTask(command + '.' + state.packageManager, blockOnFailure, callback)
         }
 
@@ -165,12 +165,12 @@ export const useTerminal = defineStore(
         function startEventSource(taskKey: number) {
             window.eventSource = new EventSource(buildTerminalUrl(state.taskList[taskKey].command, state.taskList[taskKey].uuid))
             window.eventSource.onmessage = function (e) {
-                let data = JSON.parse(e.data)
+                const data = JSON.parse(e.data)
                 if (!data || !data.data) {
                     return
                 }
 
-                let taskIdx = findTaskIdxFromUuid(data.extend)
+                const taskIdx = findTaskIdxFromUuid(data.extend)
                 if (taskIdx === false) {
                     return
                 }
@@ -195,9 +195,9 @@ export const useTerminal = defineStore(
                     addTaskMessage(taskIdx, data.data)
                 }
             }
-            window.eventSource.onerror = function (e) {
+            window.eventSource.onerror = function () {
                 window.eventSource.close()
-                let taskIdx = findTaskIdxFromGuess(taskKey)
+                const taskIdx = findTaskIdxFromGuess(taskKey)
                 if (taskIdx === false) return
                 setTaskStatus(taskIdx, taskStatus.Failed)
                 taskCompleted(taskIdx)
@@ -225,7 +225,7 @@ export const useTerminal = defineStore(
 
         function findTaskIdxFromGuess(idx: number) {
             if (!state.taskList[idx]) {
-                let taskKey: number = -1
+                let taskKey = -1
                 for (const key in state.taskList) {
                     if (state.taskList[key].status == taskStatus.Connecting || state.taskList[key].status == taskStatus.Executing) {
                         taskKey = parseInt(key)
@@ -238,7 +238,7 @@ export const useTerminal = defineStore(
         }
 
         function execMessageScrollbarKeep(uuid: string) {
-            let execMessageEl = document.querySelector('.exec-message-' + uuid) as Element
+            const execMessageEl = document.querySelector('.exec-message-' + uuid) as Element
             if (execMessageEl && execMessageEl.scrollHeight) {
                 execMessageEl.scrollTop = execMessageEl.scrollHeight
             }

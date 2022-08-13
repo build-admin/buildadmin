@@ -40,7 +40,7 @@ export function loadCss(url: string): void {
 
 /* 加载网络js文件 */
 export function loadJs(url: string): void {
-    let link = document.createElement('script')
+    const link = document.createElement('script')
     link.src = url
     document.body.appendChild(link)
 }
@@ -52,7 +52,7 @@ export function setTitleFromRoute(t: any = null) {
     const navTabs = useNavTabs()
     const memberCenter = useMemberCenter()
     nextTick(() => {
-        var webTitle: string = ''
+        let webTitle = ''
         if (navTabs.state.activeRoute) {
             webTitle = navTabs.state.activeRoute.title
         } else if (memberCenter.state.activeRoute) {
@@ -144,7 +144,7 @@ export const onResetForm = (formEl: InstanceType<typeof ElForm> | undefined) => 
  */
 export const buildJsonToElTreeData = (data: any): ElTreeData[] => {
     if (typeof data == 'object') {
-        let childrens = []
+        const childrens = []
         for (const key in data) {
             childrens.push({
                 label: key + ': ' + data[key],
@@ -172,7 +172,7 @@ export const isAdminApp = () => {
  * @param path 文件路径
  */
 export const getFileNameFromPath = (path: string) => {
-    let paths = path.split('/')
+    const paths = path.split('/')
     return paths[paths.length - 1]
 }
 
@@ -195,27 +195,27 @@ export const auth = (name: string) => {
  * @param relativeUrl 资源相对地址
  * @param domain 指定域名
  */
-export const fullUrl = (relativeUrl: string, domain: string = '') => {
+export const fullUrl = (relativeUrl: string, domain = '') => {
     const siteConfig = useSiteConfig()
     if (!domain) {
         domain = siteConfig.cdn_url ? siteConfig.cdn_url : getUrl()
     }
     if (!relativeUrl) return domain
 
-    let regUrl = new RegExp(/^http(s)?:\/\//)
-    let regexImg = new RegExp(/^((?:[a-z]+:)?\/\/|data:image\/)(.*)/i)
+    const regUrl = new RegExp(/^http(s)?:\/\//)
+    const regexImg = new RegExp(/^((?:[a-z]+:)?\/\/|data:image\/)(.*)/i)
     if (!domain || regUrl.test(relativeUrl) || regexImg.test(relativeUrl)) {
         return relativeUrl
     }
     return domain + relativeUrl
 }
 
-export const arrayFullUrl = (relativeUrls: string | string[], domain: string = '') => {
+export const arrayFullUrl = (relativeUrls: string | string[], domain = '') => {
     if (typeof relativeUrls === 'string') {
         relativeUrls = relativeUrls == '' ? [] : relativeUrls.split(',')
     }
     for (const key in relativeUrls) {
-        relativeUrls[key] = fullUrl(relativeUrls[key])
+        relativeUrls[key] = fullUrl(relativeUrls[key], domain)
     }
     return relativeUrls
 }

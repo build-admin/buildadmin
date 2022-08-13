@@ -16,7 +16,7 @@
         @row-dblclick="baTable.onTableDblclick"
         v-bind="$attrs"
     >
-        <template v-for="(item, key) in baTable.table.column">
+        <template v-for="(item, key) in baTable.table.column" :key="key">
             <Column v-if="item.show !== false" :attr="item">
                 <template v-if="item.render" #default="scope">
                     <FieldRender
@@ -29,7 +29,7 @@
             </Column>
         </template>
     </el-table>
-    <div v-if="pagination" class="table-pagination">
+    <div v-if="props.pagination" class="table-pagination">
         <el-pagination
             :currentPage="state.currentPage"
             :page-size="state.pageSize"

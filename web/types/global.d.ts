@@ -37,4 +37,4 @@ interface ApiResponse<T = any> {
     time: number
 }
 
-interface ApiPromise<T = any> extends Promise<ApiResponse<T>> {}
+type ApiPromise<T = any> = Promise<ApiResponse<T>>

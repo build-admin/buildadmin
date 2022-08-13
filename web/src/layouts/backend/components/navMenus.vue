@@ -157,7 +157,7 @@ const onLogout = () => {
 }
 
 const onClearCache = (type: string) => {
-    postClearCache(type).then((res) => {})
+    postClearCache(type).then(() => {})
 }
 </script>
 

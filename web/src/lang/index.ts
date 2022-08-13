@@ -12,7 +12,7 @@ import { useConfig } from '/@/stores/config'
 import elementZhcnLocale from 'element-plus/lib/locale/lang/zh-cn'
 import elementEnLocale from 'element-plus/lib/locale/lang/en'
 
-export var i18n: I18n<{ [x: string]: any }, unknown, unknown, false>
+export let i18n: I18n<{ [x: string]: any }, unknown, unknown, false>
 
 interface assignLocale {
     [key: string]: any
@@ -67,14 +67,14 @@ function getLangFileMessage(mList: any, locale: string) {
     interface msg {
         [key: string]: any
     }
-    let msg: msg = {}
+    const msg: msg = {}
     locale = '/' + locale
-    for (let path in mList) {
+    for (const path in mList) {
         if (mList[path].default) {
             //  获取文件名
-            let pathName = path.slice(path.lastIndexOf(locale) + (locale.length + 1), path.lastIndexOf('.'))
+            const pathName = path.slice(path.lastIndexOf(locale) + (locale.length + 1), path.lastIndexOf('.'))
             if (pathName.indexOf('/') > 0) {
-                let pathNameTmp = pathName.split('/')
+                const pathNameTmp = pathName.split('/')
                 if (pathNameTmp.length == 2) {
                     if (msg[pathNameTmp[0]] === undefined) msg[pathNameTmp[0]] = []
                     msg[pathNameTmp[0]][pathNameTmp[1]] = handleMsglist(mList[path].default)
@@ -94,10 +94,10 @@ function getLangFileMessage(mList: any, locale: string) {
 }
 
 function handleMsglist(mlist: anyObj) {
-    let newMlist: any = []
+    const newMlist: any = []
     for (const key in mlist) {
         if (key.indexOf('.') > 0) {
-            let keyTmp = key.split('.')
+            const keyTmp = key.split('.')
             if (typeof newMlist[keyTmp[0]] === 'undefined') {
                 newMlist[keyTmp[0]] = []
             } else {

@@ -10,7 +10,7 @@ export const Local = {
         window.localStorage.setItem(key, JSON.stringify(val))
     },
     get(key: string) {
-        let json: any = window.localStorage.getItem(key)
+        const json: any = window.localStorage.getItem(key)
         return JSON.parse(json)
     },
     remove(key: string) {
@@ -33,7 +33,7 @@ export const Session = {
         window.sessionStorage.setItem(key, JSON.stringify(val))
     },
     get(key: string) {
-        let json: any = window.sessionStorage.getItem(key)
+        const json: any = window.sessionStorage.getItem(key)
         return JSON.parse(json)
     },
     remove(key: string) {

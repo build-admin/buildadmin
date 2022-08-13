@@ -3,6 +3,7 @@
         <el-timeline v-if="terminal.state.taskList.length">
             <el-timeline-item
                 v-for="(item, idx) in terminal.state.taskList"
+                :key="idx"
                 class="task-item"
                 :class="'task-status-' + item.status"
                 :type="getTaskStatus(item.status)['statusType']"
@@ -66,7 +67,7 @@
                             class="exec-message"
                             :class="'exec-message-' + item.uuid"
                         >
-                            <div v-for="msg in item.message" class="message-item">{{ msg }}</div>
+                            <div v-for="(msg, index) in item.message" :key="index" class="message-item">{{ msg }}</div>
                         </div>
                     </template>
                 </el-card>

@@ -221,7 +221,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
                     })
                     router.push({ path: res.data.routePath })
                 })
-                .catch((err) => {
+                .catch(() => {
                     onChangeCaptcha()
                     form.loading = false
                 })

@@ -20,7 +20,7 @@ router.beforeEach((to, from, next) => {
 })
 
 // 路由加载后
-router.afterEach((to, from) => {
+router.afterEach(() => {
     if (window.existLoading) {
         loading.hide()
     }

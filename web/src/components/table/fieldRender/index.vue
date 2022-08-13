@@ -22,6 +22,7 @@
         <template v-if="Array.isArray(fieldValue) && fieldValue.length">
             <el-image
                 v-for="(item, idx) in fieldValue"
+                :key="idx"
                 :initial-index="idx"
                 :preview-teleported="true"
                 :preview-src-list="arrayFullUrl(fieldValue)"
@@ -41,7 +42,7 @@
     <!-- tags -->
     <div v-if="field.render == 'tags'">
         <template v-if="Array.isArray(fieldValue)">
-            <template v-for="tag in fieldValue">
+            <template v-for="(tag, idx) in fieldValue" :key="idx">
                 <el-tag v-if="tag" class="m-10" size="small" effect="light">{{ field.replaceValue ? field.replaceValue[tag] ?? tag : tag }}</el-tag>
             </template>
         </template>
@@ -73,7 +74,7 @@
 
     <!-- 按钮组 -->
     <div v-if="field.render == 'buttons' && field.buttons">
-        <template v-for="(btn, idx) in field.buttons">
+        <template v-for="(btn, idx) in field.buttons" :key="idx">
             <template v-if="btn.display ? btn.display(row, field) : true">
                 <el-tooltip
                     v-if="btn.render == 'tipButton'"
@@ -177,11 +178,11 @@ const props = withDefaults(defineProps<Props>(), {
 const fieldValue = ref(props.row[props.property])
 if (props.property.indexOf('.') > -1) {
     let fieldNameArr = props.property.split('.')
-    let val: any = props.row[fieldNameArr[0]]
+    let val: any = ref(props.row[fieldNameArr[0]])
     for (let index = 1; index < fieldNameArr.length; index++) {
-        val = val ? val[fieldNameArr[index]] ?? '' : ''
+        val.value = val.value ? val.value[fieldNameArr[index]] ?? '' : ''
     }
-    fieldValue.value = val
+    fieldValue.value = val.value
 }
 
 if (props.field.renderFormatter && typeof props.field.renderFormatter == 'function') {

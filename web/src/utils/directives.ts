@@ -76,18 +76,18 @@ function zoomDirective(app: App) {
 
             nextTick(() => {
                 const zoomDom = document.querySelector(binding.value) as HTMLElement
-                var zoomhandleEl = document.createElement('div')
+                const zoomhandleEl = document.createElement('div')
                 zoomhandleEl.className = 'zoom-handle'
                 zoomhandleEl.onmouseenter = () => {
                     zoomhandleEl.onmousedown = (e: MouseEvent) => {
-                        let x = e.clientX
-                        let y = e.clientY
-                        let zoomDomWidth = zoomDom.offsetWidth
-                        let zoomDomHeight = zoomDom.offsetHeight
+                        const x = e.clientX
+                        const y = e.clientY
+                        const zoomDomWidth = zoomDom.offsetWidth
+                        const zoomDomHeight = zoomDom.offsetHeight
                         document.onmousemove = (e: MouseEvent) => {
                             e.preventDefault() // 移动时禁用默认事件
-                            let w = zoomDomWidth + (e.clientX - x) * 2
-                            let h = zoomDomHeight + (e.clientY - y)
+                            const w = zoomDomWidth + (e.clientX - x) * 2
+                            const h = zoomDomHeight + (e.clientY - y)
 
                             zoomDom.style.width = `${w}px`
                             zoomDom.style.height = `${h}px`
@@ -176,7 +176,7 @@ function dragDirective(app: App) {
             }
 
             function move(e: MouseEvent | TouchEvent, type: string, obj: downReturn) {
-                let { disX, disY, minDragDomLeft, maxDragDomLeft, minDragDomTop, maxDragDomTop, styL, styT } = obj
+                const { disX, disY, minDragDomLeft, maxDragDomLeft, minDragDomTop, maxDragDomTop, styL, styT } = obj
 
                 // 通过事件委托，计算移动的距离
                 let left = type === 'pc' ? (e as MouseEvent).clientX - disX : (e as TouchEvent).touches[0].clientX - disX

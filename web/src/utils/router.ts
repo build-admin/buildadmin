@@ -35,7 +35,7 @@ export const clickMenu = (menu: viewMenu) => {
  * @param params 路由参数
  * @param path 路由path,通过path导航无法传递@param params
  */
-export const routePush = async (name: string = '', params: anyObj = {}, path: string = '') => {
+export const routePush = async (name = '', params: anyObj = {}, path = '') => {
     try {
         const failure = await router.push(name ? { name: name, params: params } : { path: path })
         if (isNavigationFailure(failure, NavigationFailureType.aborted)) {
@@ -59,8 +59,8 @@ export const routePush = async (name: string = '', params: anyObj = {}, path: st
 }
 
 export const getFirstRoute = (viewRoutes: viewMenu[]): false | viewMenu => {
-    let routerPaths = []
-    let routers = router.getRoutes()
+    const routerPaths = []
+    const routers = router.getRoutes()
     for (const key in routers) {
         if (routers[key].path) routerPaths.push(routers[key].path)
     }
@@ -82,7 +82,7 @@ export const getFirstRoute = (viewRoutes: viewMenu[]): false | viewMenu => {
 export const handleMemberCenterRoute = (routes: any) => {
     const viewsComponent = import.meta.globEager('/src/views/frontend/**/*.vue')
     addRouteAll(viewsComponent, routes, memberCenterBaseRoute.name as string)
-    let menuMemberCenterBaseRoute = '/' + (memberCenterBaseRoute.name as string) + '/'
+    const menuMemberCenterBaseRoute = '/' + (memberCenterBaseRoute.name as string) + '/'
     return handleMenuRule(_.cloneDeep(routes), menuMemberCenterBaseRoute, menuMemberCenterBaseRoute)
 }
 
@@ -92,7 +92,7 @@ export const handleMemberCenterRoute = (routes: any) => {
 export const handleAdminRoute = (routes: any) => {
     const viewsComponent = import.meta.globEager('/src/views/backend/**/*.vue')
     addRouteAll(viewsComponent, routes, adminBaseRoute.name as string)
-    let menuAdminBaseRoute = '/' + (adminBaseRoute.name as string) + '/'
+    const menuAdminBaseRoute = '/' + (adminBaseRoute.name as string) + '/'
     return handleMenuRule(_.cloneDeep(routes), menuAdminBaseRoute, menuAdminBaseRoute)
 }
 
@@ -117,8 +117,8 @@ export const getMenuPaths = (menus: any): any[] => {
  * 后台菜单处理
  */
 const handleMenuRule = (routes: any, pathPrefix = '/', parent = '/', module = 'admin') => {
-    let menuRule = []
-    let authNode = []
+    const menuRule = []
+    const authNode = []
     for (const key in routes) {
         if (routes[key].extend == 'add_rules_only') {
             continue

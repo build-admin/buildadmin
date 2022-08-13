@@ -100,10 +100,10 @@ const onSubmit = (formEl: FormInstance | undefined) => {
         if (valid) {
             state.formSubmitLoading = true
             postProfile(state.form)
-                .then((res) => {
+                .then(() => {
                     state.formSubmitLoading = false
                 })
-                .catch((err) => {
+                .catch(() => {
                     state.formSubmitLoading = false
                 })
         }

@@ -7,7 +7,7 @@ import { isAdminApp } from '/@/utils/common'
  * @param extra main高度额外减去的px数,可以实现隐藏原有的滚动条
  * @returns CSSProperties
  */
-export function mainHeight(extra: number = 0): CSSProperties {
+export function mainHeight(extra = 0): CSSProperties {
     let height = extra
     if (isAdminApp()) {
         const navTabs = useNavTabs()

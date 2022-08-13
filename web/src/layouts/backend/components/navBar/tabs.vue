@@ -162,7 +162,7 @@ const updateTab = function (newRoute: RouteLocationNormalized | viewMenu) {
     })
 }
 
-onBeforeRouteUpdate(async (to, from) => {
+onBeforeRouteUpdate(async (to) => {
     updateTab(to)
 })
 

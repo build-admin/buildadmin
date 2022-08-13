@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createVNode, defineComponent, resolveComponent, PropType } from 'vue'
+import { createVNode, defineComponent, resolveComponent, PropType, computed } from 'vue'
 import { inputTypes, modelValueTypes } from '/@/components/baInput'
 import BaInput from '/@/components/baInput/index.vue'
 
@@ -46,16 +46,15 @@ export default defineComponent({
             default: '',
         },
     },
+    emits: ['update:modelValue'],
     setup(props, { emit }) {
         const onValueUpdate = (value: modelValueTypes) => {
             emit('update:modelValue', value)
         }
 
-        let blockHelp: string = ''
-        if (props.attr && props.attr['block-help']) {
-            blockHelp = props.attr['block-help']
-            delete props.attr['block-help']
-        }
+        const blockHelp = computed(() => {
+            return props.attr && props.attr['block-help'] ? props.attr['block-help'] : ''
+        })
 
         // el-form-item 的默认插槽,生成一个baInput
         const defaultSlot = () => {
@@ -67,7 +66,7 @@ export default defineComponent({
                 'onUpdate:modelValue': onValueUpdate,
             })
 
-            if (blockHelp) {
+            if (blockHelp.value) {
                 return [
                     inputNode,
                     createVNode(
@@ -75,7 +74,7 @@ export default defineComponent({
                         {
                             class: 'block-help',
                         },
-                        blockHelp
+                        blockHelp.value
                     ),
                 ]
             }

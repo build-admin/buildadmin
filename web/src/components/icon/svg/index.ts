@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from 'fs'
 
 let idPerfix = ''
-let iconNames: string[] = []
+const iconNames: string[] = []
 const svgTitle = /<svg([^>+].*?)>/
 const clearHeightWidth = /(width|height)="([^>+].*?)"/g
 const hasViewBox = /(viewBox="[^>+].*?")/g
@@ -46,13 +46,14 @@ function findSvgFile(dir: string): string[] {
     return svgRes
 }
 
-export const svgBuilder = (path: string, perfix: string = 'local') => {
+export const svgBuilder = (path: string, perfix = 'local') => {
     if (path === '') return
     idPerfix = perfix
     const res = findSvgFile(path)
     return {
         name: 'svg-transform',
         transformIndexHtml(html: string) {
+            /* eslint-disable */
             return html.replace(
                 '<body>',
                 `
@@ -64,6 +65,7 @@ export const svgBuilder = (path: string, perfix: string = 'local') => {
                 </svg>
                 `
             )
+            /* eslint-enable */
         },
     }
 }

@@ -1,5 +1,5 @@
 <template>
-    <template v-for="menu in menus">
+    <template v-for="menu in props.menus">
         <template v-if="menu.children && menu.children.length > 0">
             <el-sub-menu :index="menu.path" :key="menu.path">
                 <template #title>

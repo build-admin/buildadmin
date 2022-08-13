@@ -63,7 +63,7 @@ export const defaultOptButtons = (optButType: DefaultOptButType[] = ['weigh-sort
         ],
     ])
 
-    let optButtons: OptButton[] = []
+    const optButtons: OptButton[] = []
     for (const key in optButType) {
         if (optButtonsPre.has(optButType[key])) {
             optButtons.push(optButtonsPre.get(optButType[key])!)
@@ -82,9 +82,9 @@ export const timeFormat = (dateTime: string | number | null = null, fmt = 'yyyy-
         dateTime = +dateTime * 1000
     }
 
-    let date = new Date(dateTime)
+    const date = new Date(dateTime)
     let ret
-    let opt: anyObj = {
+    const opt: anyObj = {
         'y+': date.getFullYear().toString(), // 年
         'm+': (date.getMonth() + 1).toString(), // 月
         'd+': date.getDate().toString(), // 日
@@ -92,7 +92,7 @@ export const timeFormat = (dateTime: string | number | null = null, fmt = 'yyyy-
         'M+': date.getMinutes().toString(), // 分
         's+': date.getSeconds().toString(), // 秒
     }
-    for (let k in opt) {
+    for (const k in opt) {
         ret = new RegExp('(' + k + ')').exec(fmt)
         if (ret) {
             fmt = fmt.replace(ret[1], ret[1].length == 1 ? opt[k] : padStart(opt[k], ret[1].length, '0'))
@@ -104,11 +104,11 @@ export const timeFormat = (dateTime: string | number | null = null, fmt = 'yyyy-
 /*
  * 字符串补位
  */
-const padStart = (str: string, maxLength: number, fillString: string = ' ') => {
+const padStart = (str: string, maxLength: number, fillString = ' ') => {
     if (str.length >= maxLength) return str
 
-    let fillLength = maxLength - str.length,
-        times = Math.ceil(fillLength / fillString.length)
+    const fillLength = maxLength - str.length
+    let times = Math.ceil(fillLength / fillString.length)
     while ((times >>= 1)) {
         fillString += fillString
         if (times === 1) {
