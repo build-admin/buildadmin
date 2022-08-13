@@ -1,4 +1,5 @@
 import type { TagProps, ButtonType, ElForm } from 'element-plus'
+import { Component, ComponentPublicInstance } from 'vue'
 import Table from '/@/components/table/index.vue'
 declare global {
     /* baTable */
@@ -19,6 +20,14 @@ declare global {
         acceptQuery?: boolean
         showComSearch?: boolean
         extend?: anyObj
+    }
+
+    interface TableRenderPublicInstance extends ComponentPublicInstance {
+        $attrs: {
+            renderValue: any
+            renderRow: TableRow
+            renderField: TableColumn
+        }
     }
 
     /* baTableForm */
@@ -71,7 +80,7 @@ declare global {
     interface TableColumn extends ElTableColumn {
         // 是否显示
         show?: boolean
-        // 渲染为:icon|switch|image|images|tag|url|datetime|buttons|customTemplate
+        // 渲染为:icon|switch|image|images|tag|url|datetime|buttons|customTemplate|customRender
         render?: string
         // 操作按钮组
         buttons?: OptButton[]
@@ -83,6 +92,8 @@ declare global {
         custom?: any
         // 谨慎使用：自定义渲染模板，方法可返回html内容，请确保返回内容是xss安全的
         customTemplate?: (row: TableRow, field: TableColumn, value: any) => string
+        // 自定义组件/函数渲染
+        customRender?: string | Component
         // 渲染为链接时,链接的打开方式
         target?: aTarget
         // 渲染为:a|buttons的点击事件
