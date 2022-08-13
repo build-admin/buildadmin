@@ -1,78 +1,44 @@
-/*
- * 全局主题颜色定义
- * 直接使用css变量而非scss变量方便动态修改
- *
- * 示例:动态修改主题色为红色
- * import { useCssVar } from '@vueuse/core'
- * const el = ref(null)
- * const color = useCssVar('--color-primary', el)
- * color.value = 'red'
- *
- * 简便写法 useCssVar('--color-primary', ref(null)).value = '64px'
- */
-$--color-white: #ffffff !default;
-$--color-primary: #409eff !default;
-$--color-primary-sub-1: mix($--color-white, $--color-primary, 10%) !default;
-$--color-primary-sub-2: mix($--color-white, $--color-primary, 20%) !default;
-$--color-primary-sub-3: mix($--color-white, $--color-primary, 30%) !default;
-$--color-primary-sub-4: mix($--color-white, $--color-primary, 40%) !default;
-$--color-primary-sub-5: mix($--color-white, $--color-primary, 50%) !default;
-$--color-primary-sub-6: mix($--color-white, $--color-primary, 60%) !default;
-$--color-primary-sub-7: mix($--color-white, $--color-primary, 70%) !default;
-$--color-primary-sub-8: mix($--color-white, $--color-primary, 80%) !default;
-$--color-primary-sub-9: mix($--color-white, $--color-primary, 90%) !default;
+@use 'sass:map';
+@use 'mixins' as *;
+
+// 后台主体窗口左右间距
+$main-space: 16px;
+$primary-light: #3f6ad8;
+
+// Background
+$bg-color: () !default;
+$bg-color: map.merge(
+    (
+        '': #f5f5f5,
+        'overlay': #ffffff,
+    ),
+    $bg-color
+);
+
+//  Color Sub
+$color-sub: () !default;
+$color-sub: map.merge(
+    (
+        '1': #dcdfe6,
+        '2': #ebeef5,
+        '3': #f2f6fc,
+    ),
+    $color-sub
+);
+
+// Border
+$border-color: () !default;
+$border-color: map.merge(
+    (
+        '': #f6f6f6,
+    ),
+    $border-color
+);
 
 :root {
-    --color-primary: #{$--color-primary}; // 主色
-    --color-basic-white: #ffffff;
-
-    /* 辅助色 */
-    --color-success: #67c23a; // Success
-    --color-warning: #e6a23c; // Warning
-    --color-danger: #f56c6c; // Danger
-    --color-info: #909399; // Info
-
-    /* 无彩色 */
-    --color-text-primary: #303133; // 主要文本
-    --color-regular: #606266; // 普通文本
-    --color-secondary: #909399; // 次要文本
-    --color-placeholder: #c0c4cc; // 占位文本
-
-    /* 主色辅助色 */
-    --color-primary-sub-0: #3f6ad8;
-    --color-primary-sub-1: #{$--color-primary-sub-1};
-    --color-primary-sub-2: #{$--color-primary-sub-2};
-    --color-primary-sub-3: #{$--color-primary-sub-3};
-    --color-primary-sub-4: #{$--color-primary-sub-4};
-    --color-primary-sub-5: #{$--color-primary-sub-5};
-    --color-primary-sub-6: #{$--color-primary-sub-6};
-    --color-primary-sub-7: #{$--color-primary-sub-7};
-    --color-primary-sub-8: #{$--color-primary-sub-8};
-    --color-primary-sub-9: #{$--color-primary-sub-9};
-
-    /* 辅助色的辅助色 */
-    // Success
-    --color-success-sub-1: #e1f3d8;
-    --color-success-sub-2: #f0f9eb;
-    // Warning
-    --color-warning-sub-1: #faecd8;
-    --color-warning-sub-2: #fdf6ec;
-    // Danger
-    --color-danger-sub-1: #fde2e2;
-    --color-danger-sub-2: #fef0f0;
-    // Info
-    --color-info-sub-1: #e9e9eb;
-    --color-info-sub-2: #f4f4f5;
-
-    /* 无彩色的辅助色 */
-    --color-sub-1: #dcdfe6; // 辅助颜色1
-    --color-sub-2: #e4e7ed; // 辅助颜色2
-    --color-sub-3: #ebeef5; // 辅助颜色3
-    --color-sub-4: #f2f6fc; // 辅助颜色4
-    --color-bg-1: #f5f5f5;
-    --color-bg-2: #fcfcfc;
-
-    /* 杂项 */
-    // 后台主体左右间距
-    --main-space: 16px;
+    @include set-css-var-value('main-space', $main-space);
+    @include set-css-var-value('color-primary-light', $primary-light);
+    @include set-component-css-var('bg-color', $bg-color);
+    @include set-component-css-var('color-sub', $color-sub);
+    @include set-component-css-var('border-color', $border-color);
 }
