@@ -8,7 +8,7 @@ import mitt from 'mitt'
 import pinia from '/@/stores/index'
 import { directives } from '/@/utils/directives'
 import 'element-plus/dist/index.css'
-import '/@/styles/base.scss'
+import '/@/styles/index.scss'
 
 async function start() {
     const app = createApp(App)
