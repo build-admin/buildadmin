@@ -1,6 +1,10 @@
 import { reactive } from 'vue'
-import { modules, info, createOrder, payOrder, postInstallTemplate } from '/@/api/backend/module'
+import { modules, info, createOrder, payOrder, postInstallModule, getInstallStateUrl } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
+import { Session } from '/@/utils/storage'
+import { INSTALL_MODULE_TEMP } from '/@/stores/constant/cacheKey'
+import { ElNotification } from 'element-plus'
+import { uuid } from '/@/utils/random'
 
 export const state: {
     tableLoading: boolean
@@ -25,9 +29,12 @@ export const state: {
         showDialog: boolean
         title: string
         loading: boolean
+        stateTitle: string
         fileConflict: any[]
         dependConflict: any[]
         uid: string
+        state: number
+        componentKey: string
     }
 } = reactive({
     tableLoading: true,
@@ -55,9 +62,12 @@ export const state: {
         showDialog: false,
         title: '',
         loading: false,
+        stateTitle: 'init',
         fileConflict: [],
         dependConflict: [],
         uid: '',
+        state: 0,
+        componentKey: uuid(),
     },
 })
 
@@ -132,8 +142,44 @@ export const onPay = (payType: number) => {
 }
 
 export const onInstall = (uid: string, id: number) => {
-    state.publicButtonLoading = true
-    postInstallTemplate(uid, id)
+    state.install.showDialog = true
+    state.install.loading = true
+    setInstallStateTitle('init')
+
+    // 安装模块可能会触发热更新或热重载造成状态丢失
+    // 存储当前模块的安装进度等状态
+    Session.set(INSTALL_MODULE_TEMP, { uid: uid, id: id })
+
+    // 获取安装状态
+    getInstallStateUrl(uid).then((res) => {
+        state.install.state = res.data.state
+        if (state.install.state === 1) {
+            ElNotification({
+                type: 'error',
+                message: '安装取消，因为模块已经存在！',
+            })
+            state.install.showDialog = false
+            state.install.loading = false
+        } else {
+            setInstallStateTitle(state.install.state === 0 ? 'download' : 'install')
+            execInstall(uid, id)
+            // 关闭其他弹窗
+            state.goodsInfo.showDialog = false
+            state.buy.showDialog = false
+            state.showBaAccount = false
+        }
+    })
+}
+
+const setInstallStateTitle = (installState: string) => {
+    state.install.stateTitle = installState
+    state.install.componentKey = uuid()
+}
+
+const execInstall = (uid: string, id: number) => {
+    console.log('请求安装')
+    return false
+    postInstallModule(uid, id)
         .then((res) => {
             // 安装成功
             // 是否增加了依赖？
@@ -150,7 +196,7 @@ export const onInstall = (uid: string, id: number) => {
             }
         })
         .finally(() => {
-            state.publicButtonLoading = false
+            state.install.loading = false
         })
 }
 

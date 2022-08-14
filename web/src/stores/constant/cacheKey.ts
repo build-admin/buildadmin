@@ -21,5 +21,8 @@ export const BEFORE_RESIZE_LAYOUT = 'beforeResizeLayout'
 // 会员资料
 export const USER_INFO = 'userInfo'
 
+// 模块安装状态临时记录
+export const INSTALL_MODULE_TEMP = 'installModuleTemp'
+
 // ba官网用户信息
 export const BA_ACCOUNT = 'ba_account'
