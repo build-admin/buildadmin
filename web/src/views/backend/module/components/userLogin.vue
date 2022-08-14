@@ -1,81 +1,81 @@
 <template>
-    <el-dialog v-model="state.showBaAccount" custom-class="ba-account-dialog" width="25%" title="会员信息">
-        <template v-if="baAccount.token">
-            <div class="userinfo">
-                <div class="user-avatar-box">
-                    <img class="user-avatar" :src="baAccount.avatar" alt="" />
-                    <Icon
-                        class="user-avatar-gender"
-                        :name="baAccount.getGenderIcon()['name']"
-                        size="14"
-                        :color="baAccount.getGenderIcon()['color']"
-                    />
+    <div>
+        <el-dialog v-model="state.showBaAccount" custom-class="ba-account-dialog" width="25%" title="会员信息">
+            <template v-if="baAccount.token">
+                <div class="userinfo">
+                    <div class="user-avatar-box">
+                        <img class="user-avatar" :src="baAccount.avatar" alt="" />
+                        <Icon
+                            class="user-avatar-gender"
+                            :name="baAccount.getGenderIcon()['name']"
+                            size="14"
+                            :color="baAccount.getGenderIcon()['color']"
+                        />
+                    </div>
+                    <p class="username">{{ baAccount.nickname }}</p>
+                    <p class="user-integral">
+                        <span>{{ $t('user.user.integral') + ' ' + baAccount.score }}</span>
+                        <span>{{ $t('user.user.balance') + ' ' + baAccount.money }}</span>
+                    </p>
+                    <div class="userinfo-buttons">
+                        <el-button v-blur size="default" type="primary">我的模块</el-button>
+                        <el-button @click="baAccount.logout()" v-blur size="default" type="warning">注销登录</el-button>
+                    </div>
                 </div>
-                <p class="username">{{ baAccount.nickname }}</p>
-                <p class="user-integral">
-                    <span>{{ $t('user.user.integral') + ' ' + baAccount.score }}</span>
-                    <span>{{ $t('user.user.balance') + ' ' + baAccount.money }}</span>
-                </p>
-                <div class="userinfo-buttons">
-                    <el-button v-blur size="default" type="primary">我的模块</el-button>
-                    <el-button @click="baAccount.logout()" v-blur size="default" type="warning">注销登录</el-button>
-                </div>
-            </div>
-        </template>
-        <template v-else>
-            <div class="ba-login">
-                <h3 class="ba-title">登录到 BuildAdmin 模块市场</h3>
-                <el-form
-                    @keyup.enter="onBaAccountSubmit(baAccountFormRef)"
-                    ref="baAccountFormRef"
-                    :rules="baAccountFormRules"
-                    class="ba-account-login-form"
-                    :model="user.form"
-                >
-                    <FormItem
-                        v-model="user.form.username"
-                        type="string"
-                        prop="username"
-                        placeholder="请输入 BuildAdmin 账户名/邮箱/手机号"
-                        :input-attr="{
-                            size: 'large',
-                        }"
-                    />
-                    <FormItem
-                        v-model="user.form.password"
-                        type="password"
-                        prop="password"
-                        placeholder="请输入 BuildAdmin 账户密码"
-                        :input-attr="{
-                            size: 'large',
-                        }"
-                    />
-                    <!-- 登录注册验证码 -->
-                    <el-form-item prop="captcha">
-                        <el-row class="w100">
-                            <el-col :span="16">
-                                <el-input v-model="user.form.captcha" size="large" clearable autocomplete="off" placeholder="请输入登录验证码">
-                                </el-input>
-                            </el-col>
-                            <el-col class="captcha-box" :span="8">
-                                <img @click="onChangeCaptcha" class="captcha-img" :src="buildCaptchaUrl() + '&id=' + user.form.captchaId" />
-                            </el-col>
-                        </el-row>
-                    </el-form-item>
-                    <el-form-item class="form-buttons">
-                        <el-button @click="onBaAccountSubmit(baAccountFormRef)" :loading="user.loading" round type="primary" size="large">
-                            登录
-                        </el-button>
-                        <a target="_blank" class="ba-account-register" href="https://ba.buildadmin.com/#/user/login?type=register">
-                            <el-button round plain type="info" size="large">
-                                没有账户？去注册
+            </template>
+            <template v-else>
+                <div class="ba-login">
+                    <h3 class="ba-title">登录到 BuildAdmin 模块市场</h3>
+                    <el-form
+                        @keyup.enter="onBaAccountSubmit(baAccountFormRef)"
+                        ref="baAccountFormRef"
+                        :rules="baAccountFormRules"
+                        class="ba-account-login-form"
+                        :model="user.form"
+                    >
+                        <FormItem
+                            v-model="user.form.username"
+                            type="string"
+                            prop="username"
+                            placeholder="请输入 BuildAdmin 账户名/邮箱/手机号"
+                            :input-attr="{
+                                size: 'large',
+                            }"
+                        />
+                        <FormItem
+                            v-model="user.form.password"
+                            type="password"
+                            prop="password"
+                            placeholder="请输入 BuildAdmin 账户密码"
+                            :input-attr="{
+                                size: 'large',
+                            }"
+                        />
+                        <!-- 登录注册验证码 -->
+                        <el-form-item prop="captcha">
+                            <el-row class="w100">
+                                <el-col :span="16">
+                                    <el-input v-model="user.form.captcha" size="large" clearable autocomplete="off" placeholder="请输入登录验证码">
+                                    </el-input>
+                                </el-col>
+                                <el-col class="captcha-box" :span="8">
+                                    <img @click="onChangeCaptcha" class="captcha-img" :src="buildCaptchaUrl() + '&id=' + user.form.captchaId" />
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item class="form-buttons">
+                            <el-button @click="onBaAccountSubmit(baAccountFormRef)" :loading="user.loading" round type="primary" size="large">
+                                登录
                             </el-button>
-                        </a>
-                    </el-form-item>
-                </el-form>
-            </div>
-        </template>
-    </el-dialog>
+                            <a target="_blank" class="ba-account-register" href="https://ba.buildadmin.com/#/user/login?type=register">
+                                <el-button round plain type="info" size="large"> 没有账户？去注册 </el-button>
+                            </a>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </template>
+        </el-dialog>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -241,4 +241,17 @@ const onChangeCaptcha = () => {
         padding-top: 20px;
     }
 }
+
+/* 会员信息弹窗-s */
+@media screen and (max-width: 1440px) {
+    :deep(.ba-account-dialog) {
+        --el-dialog-width: 40% !important;
+    }
+}
+@media screen and (max-width: 1024px) {
+    :deep(.ba-account-dialog) {
+        --el-dialog-width: 70% !important;
+    }
+}
+/* 会员信息弹窗-e */
 </style>

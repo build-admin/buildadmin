@@ -1,38 +1,42 @@
 <template>
-    <el-tabs
-        v-loading="state.tableLoading"
-        element-loading-text="加载中..."
-        v-model="state.params.activeTab"
-        type="border-card"
-        class="store-tabs"
-        @tab-change="onTabChange"
-    >
-        <el-tab-pane v-for="cat in state.category" :name="cat.id.toString()" :label="cat.name" class="store-tab-pane">
-            <template v-if="state.modules[state.params.activeTab] && state.modules[state.params.activeTab].length > 0">
-                <div class="goods" v-for="item in state.modules[state.params.activeTab]">
-                    <div @click="showInfo(item.id)" class="goods-item suspension">
-                        <el-image fit="contain" class="goods-img" :src="item.logo" />
-                        <div class="goods-footer">
-                            <div class="goods-tag" v-if="item.tags.length > 0">
-                                <el-tag v-for="tag in item.tags" :type="tag.type">{{ tag.name }}</el-tag>
-                            </div>
-                            <div class="goods-title">
-                                {{ item.title }}
-                            </div>
-                            <div class="goods-data">
-                                <span class="download-count"> <Icon name="fa fa-download" color="#c0c4cc" size="13" /> {{ item.downloads }} </span>
-                                <span class="goods-price">
-                                    <span class="original-price">{{ currency(item.original_price, item.currency_select) }}</span>
-                                    <span class="current-price">{{ currency(item.present_price, item.currency_select) }}</span>
-                                </span>
+    <div>
+        <el-tabs
+            v-loading="state.tableLoading"
+            element-loading-text="加载中..."
+            v-model="state.params.activeTab"
+            type="border-card"
+            class="store-tabs"
+            @tab-change="onTabChange"
+        >
+            <el-tab-pane v-for="cat in state.category" :name="cat.id.toString()" :label="cat.name" class="store-tab-pane">
+                <template v-if="state.modules[state.params.activeTab] && state.modules[state.params.activeTab].length > 0">
+                    <div class="goods" v-for="item in state.modules[state.params.activeTab]">
+                        <div @click="showInfo(item.id)" class="goods-item suspension">
+                            <el-image fit="contain" class="goods-img" :src="item.logo" />
+                            <div class="goods-footer">
+                                <div class="goods-tag" v-if="item.tags.length > 0">
+                                    <el-tag v-for="tag in item.tags" :type="tag.type">{{ tag.name }}</el-tag>
+                                </div>
+                                <div class="goods-title">
+                                    {{ item.title }}
+                                </div>
+                                <div class="goods-data">
+                                    <span class="download-count">
+                                        <Icon name="fa fa-download" color="#c0c4cc" size="13" /> {{ item.downloads }}
+                                    </span>
+                                    <span class="goods-price">
+                                        <span class="original-price">{{ currency(item.original_price, item.currency_select) }}</span>
+                                        <span class="current-price">{{ currency(item.present_price, item.currency_select) }}</span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </template>
-            <el-empty v-else class="template-empty" description="没有更多了..." />
-        </el-tab-pane>
-    </el-tabs>
+                </template>
+                <el-empty v-else class="template-empty" description="没有更多了..." />
+            </el-tab-pane>
+        </el-tabs>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -68,9 +72,6 @@ const onTabChange = () => {
     border-bottom-right-radius: 0;
     width: 245px;
     height: 163.33px;
-}
-.goods-tag .el-tag {
-    margin: 0 6px 6px 0;
 }
 .template-empty {
     width: 100%;
@@ -126,5 +127,9 @@ const onTabChange = () => {
 }
 .el-tabs--border-card :deep(.el-tabs__nav-wrap) {
     border-radius: var(--el-border-radius-base);
+}
+:deep(.store-tabs) .el-tabs__content {
+    padding: 10px 10px;
+    min-height: 350px;
 }
 </style>
