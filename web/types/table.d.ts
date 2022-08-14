@@ -98,8 +98,8 @@ declare global {
         target?: aTarget
         // 渲染为:a|buttons的点击事件
         click?: Function
-        // 渲染为 datetime 时的格式化方式,字母可以自由组合:y=年,m=月,d=日,h=时,M=分,s=秒
-        timeFormat?: 'yyyy-mm-dd hh:MM:ss'
+        // 渲染为 datetime 时的格式化方式,字母可以自由组合:y=年,m=月,d=日,h=时,M=分,s=秒，默认：yyyy-mm-dd hh:MM:ss
+        timeFormat?: string
         // 默认值
         default?: any
         // 值替换数据,如{open: '开'}
