@@ -90,6 +90,17 @@ class Ajax extends Backend
         $this->success(__('Cache cleaned~'));
     }
 
+    public function installState()
+    {
+        $uid = $this->request->get("uid/s", '');
+        if (!$uid) {
+            $this->error(__('Parameter error'));
+        }
+        $this->success('', [
+            'state' => Manage::instance($uid)->installState()
+        ]);
+    }
+
     public function installModule()
     {
         $uid     = $this->request->get("uid/s", '');

@@ -67,6 +67,19 @@ class Manage
         }
     }
 
+    public function installState()
+    {
+        // 模块状态:0=未安装,1=已安装,2=冲突待解决,3=依赖待安装
+        if (!is_dir($this->templateDir)) {
+            return 0;
+        }
+        $info = $this->getInfo();
+        if ($info && isset($info['state'])) {
+            return $info['state'];
+        }
+        return 0;
+    }
+
     /**
      * 安装模板或案例
      * @param string $token   用户token
