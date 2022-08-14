@@ -117,6 +117,20 @@ export const onBuy = () => {
         })
 }
 
+export const onPay = (payType: number) => {
+    state.publicButtonLoading = true
+    payOrder(state.buy.info.id, payType)
+        .then((res) => {
+            onInstall(res.data.info.uid, res.data.info.id)
+        })
+        .catch((err) => {
+            loginExpired(err)
+        })
+        .finally(() => {
+            state.publicButtonLoading = false
+        })
+}
+
 export const onInstall = (uid: string, id: number) => {
     state.publicButtonLoading = true
     postInstallTemplate(uid, id)

@@ -4,6 +4,7 @@
         <Tabs />
         <baUserLogin />
         <GoodsInfo />
+        <Buy />
     </div>
 </template>
 
@@ -15,6 +16,7 @@ import baUserLogin from './components/userLogin.vue'
 import Header from './components/header.vue'
 import Tabs from './components/tabs.vue'
 import GoodsInfo from './components/goodsInfo.vue'
+import Buy from './components/buy.vue'
 import { state, loadData, loginExpired, showInfo } from './index'
 
 const { t } = useI18n()
