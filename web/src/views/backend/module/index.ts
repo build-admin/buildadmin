@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import { modules, info, createOrder, payOrder } from '/@/api/backend/module'
+import { modules, info, createOrder, payOrder, postInstallTemplate } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
 
 export const state: {
@@ -97,6 +97,46 @@ export const showInfo = (id: number) => {
         })
         .finally(() => {
             state.goodsInfo.loading = false
+        })
+}
+
+export const onBuy = () => {
+    state.buy.showDialog = true
+    state.buy.showLoading = true
+    createOrder({
+        goods_id: state.goodsInfo.info.id,
+    })
+        .then((res) => {
+            state.buy.showLoading = false
+            state.buy.info = res.data.info
+        })
+        .catch((err) => {
+            state.buy.showDialog = false
+            state.buy.showLoading = false
+            loginExpired(err)
+        })
+}
+
+export const onInstall = (uid: string, id: number) => {
+    state.publicButtonLoading = true
+    postInstallTemplate(uid, id)
+        .then((res) => {
+            // 安装成功
+            // 是否增加了依赖？
+            // 是否需要npm build
+        })
+        .catch((err) => {
+            if (loginExpired(err)) return
+            if (err.code == -1) {
+                state.install.showDialog = true
+                state.install.uid = err.data.uid
+                state.install.title = err.data.title
+                state.install.fileConflict = err.data.fileConflict
+                state.install.dependConflict = err.data.dependConflict
+            }
+        })
+        .finally(() => {
+            state.publicButtonLoading = false
         })
 }
 

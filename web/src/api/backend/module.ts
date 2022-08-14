@@ -4,6 +4,7 @@ import { useBaAccount } from '/@/stores/baAccount'
 
 const userUrl = '/api/user/'
 const captchaUrl = '/api/common/captcha'
+const installTemplateUrl = '/admin/ajax/installTemplate'
 
 export function modules(params: anyObj = {}) {
     const siteConfig = useSiteConfig()
@@ -92,4 +93,20 @@ export function payOrder(orderId: number, payType: number): ApiPromise {
             showSuccessMessage: true,
         }
     ) as ApiPromise
+}
+
+export function postInstallTemplate(uid: string, orderId: number, extend: anyObj = {}) {
+    const baAccount = useBaAccount()
+    return createAxios({
+        url: installTemplateUrl,
+        method: 'post',
+        params: {
+            uid: uid,
+            order_id: orderId,
+            token: baAccount.token,
+        },
+        data: {
+            extend: extend,
+        },
+    }) as ApiPromise
 }
