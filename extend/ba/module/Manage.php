@@ -44,7 +44,7 @@ class Manage
     /**
      * @var string 模板根目录
      */
-    protected $templateDir = null;
+    protected $modulesDir = null;
 
     /**
      * 初始化
@@ -62,10 +62,10 @@ class Manage
 
     public function __construct(string $uid)
     {
-        $this->uid         = $uid;
-        $this->installDir  = root_path() . 'module' . DIRECTORY_SEPARATOR;
-        $this->ebakDir     = $this->installDir . 'ebak' . DIRECTORY_SEPARATOR;
-        $this->templateDir = $this->installDir . $uid . DIRECTORY_SEPARATOR;
+        $this->uid        = $uid;
+        $this->installDir = root_path() . 'modules' . DIRECTORY_SEPARATOR;
+        $this->ebakDir    = $this->installDir . 'ebak' . DIRECTORY_SEPARATOR;
+        $this->modulesDir = $this->installDir . $uid . DIRECTORY_SEPARATOR;
         if (!is_dir($this->installDir)) {
             mkdir($this->installDir, 0755, true);
         }
@@ -76,7 +76,7 @@ class Manage
 
     public function installState()
     {
-        if (!is_dir($this->templateDir)) {
+        if (!is_dir($this->modulesDir)) {
             return self::UNINSTALLED;
         }
         $info = $this->getInfo();
@@ -85,7 +85,7 @@ class Manage
         }
 
         // 目录已存在，但非正常的模块
-        return dir_is_empty($this->templateDir) ? self::UNINSTALLED : self::DIRECTORY_OCCUPIED;
+        return dir_is_empty($this->modulesDir) ? self::UNINSTALLED : self::DIRECTORY_OCCUPIED;
     }
 
     /**
@@ -99,7 +99,7 @@ class Manage
     {
         $state = $this->installState();
         if ($state == self::INSTALLED || $state == self::DIRECTORY_OCCUPIED) {
-            throw new Exception('Template already exists');
+            throw new Exception('Module already exists');
         }
 
         if ($state == self::UNINSTALLED) {
@@ -130,7 +130,7 @@ class Manage
         ]);
 
         // 导入sql
-        Server::importSql($this->templateDir);
+        Server::importSql($this->modulesDir);
 
         // 启用插件
         $this->enable();
@@ -151,13 +151,13 @@ class Manage
     public function conflictHandle()
     {
         // 文件冲突
-        $fileConflict = Server::getFileList($this->templateDir, true);
+        $fileConflict = Server::getFileList($this->modulesDir, true);
         // 依赖冲突
-        $dependConflict = Server::dependConflictCheck($this->templateDir);
+        $dependConflict = Server::dependConflictCheck($this->modulesDir);
         // 待安装依赖
-        $installDepend = Server::getDepend($this->templateDir);
+        $installDepend = Server::getDepend($this->modulesDir);
         // 待安装文件
-        $installFiles = Server::getFileList($this->templateDir);
+        $installFiles = Server::getFileList($this->modulesDir);
 
         $coverFiles   = [];// 要覆盖的文件-备份
         $discardFiles = [];// 抛弃的文件-复制时不覆盖
@@ -187,7 +187,7 @@ class Manage
                         ];
                     }
                 }
-                throw new moduleException('Template file conflicts', -1, [
+                throw new moduleException('Module file conflicts', -1, [
                     'fileConflict'   => $fileConflictTemp,
                     'dependConflict' => $dependConflictTemp,
                     'uid'            => $this->uid,
@@ -243,7 +243,7 @@ class Manage
         // 复制文件
         $overwriteDir = Server::getOverwriteDir();
         foreach ($overwriteDir as $dirItem) {
-            $baseDir = $this->templateDir . $dirItem;
+            $baseDir = $this->modulesDir . $dirItem;
             $destDir = root_path() . $dirItem;
             if (!is_dir($baseDir)) {
                 continue;
@@ -270,15 +270,15 @@ class Manage
 
     public function checkPackage(): bool
     {
-        if (!is_dir($this->templateDir)) {
-            throw new Exception('Template package file does not exist');
+        if (!is_dir($this->modulesDir)) {
+            throw new Exception('Module package file does not exist');
         }
         $info     = $this->getInfo();
         $infoKeys = ['uid', 'title', 'intro', 'author', 'version', 'state'];
         foreach ($infoKeys as $value) {
             if (!array_key_exists($value, $info)) {
-                deldir($this->templateDir);
-                throw new Exception('Basic configuration of the template is incomplete');
+                deldir($this->modulesDir);
+                throw new Exception('Basic configuration of the Module is incomplete');
             }
         }
         return true;
@@ -286,7 +286,7 @@ class Manage
 
     public function getInfo()
     {
-        return Server::getIni($this->templateDir);
+        return Server::getIni($this->modulesDir);
     }
 
     public function setInfo(array $kv = [], array $arr = []): bool
@@ -296,9 +296,9 @@ class Manage
             foreach ($kv as $k => $v) {
                 $info[$k] = $v;
             }
-            return Server::setIni($this->templateDir, $info);
+            return Server::setIni($this->modulesDir, $info);
         } elseif ($arr) {
-            return Server::setIni($this->templateDir, $arr);
+            return Server::setIni($this->modulesDir, $arr);
         }
         throw new Exception('Parameter error');
     }

@@ -33,7 +33,7 @@
                         </div>
                     </div>
                 </template>
-                <el-empty v-else class="template-empty" description="没有更多了..." />
+                <el-empty v-else class="modules-empty" description="没有更多了..." />
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -73,7 +73,7 @@ const onTabChange = () => {
     width: 245px;
     height: 163.33px;
 }
-.template-empty {
+.modules-empty {
     width: 100%;
 }
 .goods-footer {

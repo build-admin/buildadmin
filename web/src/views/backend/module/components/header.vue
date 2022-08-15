@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-alert class="ba-table-alert" v-if="state.remark" :title="state.remark" type="info" show-icon />
-        <div class="template-header">
+        <div class="modules-header">
             <div class="table-header-buttons">
                 <el-button :title="$t('refresh')" @click="onRefreshData" v-blur color="#40485b" type="info">
                     <Icon name="fa fa-refresh" color="#ffffff" size="14" />
@@ -63,7 +63,7 @@ const onSearchInput = () => {
 .ba-table-alert {
     border: none;
 }
-.template-header {
+.modules-header {
     display: flex;
     align-items: center;
     padding: 10px;

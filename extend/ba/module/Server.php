@@ -269,10 +269,10 @@ class Server
         }
         switch ($type) {
             case 'controller':
-                $namespace = '\\module\\' . $name . '\\controller\\' . $class;
+                $namespace = '\\modules\\' . $name . '\\controller\\' . $class;
                 break;
             default:
-                $namespace = '\\module\\' . $name . '\\' . $class;
+                $namespace = '\\modules\\' . $name . '\\' . $class;
         }
         return class_exists($namespace) ? $namespace : '';
     }
