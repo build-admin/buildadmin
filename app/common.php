@@ -71,6 +71,21 @@ if (!function_exists('deldir')) {
     }
 }
 
+if (!function_exists('dir_is_empty')) {
+    function dir_is_empty(string $dir): bool
+    {
+        $handle = opendir($dir);
+        while (false !== ($entry = readdir($handle))) {
+            if ($entry != "." && $entry != "..") {
+                closedir($handle);
+                return false;
+            }
+        }
+        closedir($handle);
+        return true;
+    }
+}
+
 if (!function_exists('__')) {
     /**
      * 语言翻译

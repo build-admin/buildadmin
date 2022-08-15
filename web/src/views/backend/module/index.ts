@@ -153,10 +153,10 @@ export const onInstall = (uid: string, id: number) => {
     // 获取安装状态
     getInstallStateUrl(uid).then((res) => {
         state.install.state = res.data.state
-        if (state.install.state === 1) {
+        if (state.install.state === 1 || state.install.state === 4) {
             ElNotification({
                 type: 'error',
-                message: '安装取消，因为模块已经存在！',
+                message: state.install.state === 1 ? '安装取消，因为模块已经存在！' : '安装取消，因为模块所需目录被占用！',
             })
             state.install.showDialog = false
             state.install.loading = false

@@ -69,7 +69,7 @@ class Manage
 
     public function installState()
     {
-        // 模块状态:0=未安装,1=已安装,2=冲突待解决,3=依赖待安装
+        // 模块状态:0=未安装,1=已安装,2=冲突待解决,3=依赖待安装,4=目录存在 && 不为空 && 不是正常的模块
         if (!is_dir($this->templateDir)) {
             return 0;
         }
@@ -77,7 +77,9 @@ class Manage
         if ($info && isset($info['state'])) {
             return $info['state'];
         }
-        return 0;
+
+        // 目录已存在，但非正常的模块
+        return dir_is_empty($this->templateDir) ? 0 : 4;
     }
 
     /**
