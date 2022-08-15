@@ -27,9 +27,12 @@ class Server
         $tmpFile = $dir . $uid . ".zip";
         try {
             $client   = self::getClient();
-            $response = $client->get('/api/store/download', ['query' => array_merge(['uid' => $uid], $extend)]);
+            $response = $client->get('/api/store/download', ['query' => array_merge(['uid' => $uid, 'server' => 1], $extend)]);
             $body     = $response->getBody();
             $content  = $body->getContents();
+            if ($content == '' || stripos($content, '<title>系统发生错误</title>') !== false) {
+                throw new moduleException('package download failed', 0);
+            }
             if (substr($content, 0, 1) === '{') {
                 $json = (array)json_decode($content, true);
                 throw new moduleException($json['msg'], $json['code'], $json['data']);

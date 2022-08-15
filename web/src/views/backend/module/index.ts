@@ -6,6 +6,15 @@ import { INSTALL_MODULE_TEMP } from '/@/stores/constant/cacheKey'
 import { ElNotification } from 'element-plus'
 import { uuid } from '/@/utils/random'
 
+export enum moduleInstallState {
+    UNINSTALLED,
+    INSTALLED,
+    WAIT_INSTALL,
+    CONFLICT_PENDING,
+    DEPENDENT_WAIT_INSTALL,
+    DIRECTORY_OCCUPIED,
+}
+
 export const state: {
     tableLoading: boolean
     remark: string
@@ -153,15 +162,15 @@ export const onInstall = (uid: string, id: number) => {
     // 获取安装状态
     getInstallStateUrl(uid).then((res) => {
         state.install.state = res.data.state
-        if (state.install.state === 1 || state.install.state === 4) {
+        if (state.install.state === moduleInstallState.INSTALLED || state.install.state === moduleInstallState.DIRECTORY_OCCUPIED) {
             ElNotification({
                 type: 'error',
-                message: state.install.state === 1 ? '安装取消，因为模块已经存在！' : '安装取消，因为模块所需目录被占用！',
+                message: state.install.state === moduleInstallState.INSTALLED ? '安装取消，因为模块已经存在！' : '安装取消，因为模块所需目录被占用！',
             })
             state.install.showDialog = false
             state.install.loading = false
         } else {
-            setInstallStateTitle(state.install.state === 0 ? 'download' : 'install')
+            setInstallStateTitle(state.install.state === moduleInstallState.UNINSTALLED ? 'download' : 'install')
             execInstall(uid, id)
             // 关闭其他弹窗
             state.goodsInfo.showDialog = false

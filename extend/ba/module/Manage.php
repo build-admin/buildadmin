@@ -14,6 +14,13 @@ use RecursiveIteratorIterator;
  */
 class Manage
 {
+    public const UNINSTALLED            = 0;
+    public const INSTALLED              = 1;
+    public const WAIT_INSTALL           = 2;
+    public const CONFLICT_PENDING       = 3;
+    public const DEPENDENT_WAIT_INSTALL = 4;
+    public const DIRECTORY_OCCUPIED     = 5;
+
     /**
      * @var Manage 对象实例
      */
@@ -69,9 +76,8 @@ class Manage
 
     public function installState()
     {
-        // 模块状态:0=未安装,1=已安装,2=冲突待解决,3=依赖待安装,4=目录存在 && 不为空 && 不是正常的模块
         if (!is_dir($this->templateDir)) {
-            return 0;
+            return self::UNINSTALLED;
         }
         $info = $this->getInfo();
         if ($info && isset($info['state'])) {
@@ -79,7 +85,7 @@ class Manage
         }
 
         // 目录已存在，但非正常的模块
-        return dir_is_empty($this->templateDir) ? 0 : 4;
+        return dir_is_empty($this->templateDir) ? self::UNINSTALLED : self::DIRECTORY_OCCUPIED;
     }
 
     /**
@@ -91,17 +97,12 @@ class Manage
      */
     public function install(string $token, int $orderId)
     {
-        $continueInstall = false;
-        if (is_dir($this->templateDir)) {
-            $info = $this->getInfo();
-            if ($info && isset($info['state']) && $info['state'] == 2) {
-                $continueInstall = true;
-            } else {
-                throw new Exception('Template already exists');
-            }
+        $state = $this->installState();
+        if ($state == self::INSTALLED || $state == self::DIRECTORY_OCCUPIED) {
+            throw new Exception('Template already exists');
         }
 
-        if (!$continueInstall) {
+        if ($state == self::UNINSTALLED) {
             if (!$orderId) {
                 throw new Exception('Order not found');
             }
@@ -125,7 +126,7 @@ class Manage
 
         // 设置为安装中状态
         $this->setInfo([
-            'state' => 2,
+            'state' => self::WAIT_INSTALL,
         ]);
 
         // 导入sql
@@ -138,9 +139,6 @@ class Manage
     public function enable()
     {
         $this->conflictHandle();
-        $this->setInfo([
-            'state' => 1,
-        ]);
 
         // 执行启用脚本
         Server::execEvent($this->uid, 'enable');
@@ -220,16 +218,21 @@ class Manage
             }
         }
 
-        foreach ($installDepend as $key => $item) {
-            if ($key == 'require') {
-                $dependObj->addComposerRequire($item, false, true);
-            } elseif ($key == 'require-dev') {
-                $dependObj->addComposerRequire($item, true, true);
-            } elseif ($key == 'dependencies') {
-                $dependObj->addNpmDependencies($item, false, true);
-            } elseif ($key == 'devDependencies') {
-                $dependObj->addNpmDependencies($item, true, true);
+        if ($installDepend) {
+            foreach ($installDepend as $key => $item) {
+                if ($key == 'require') {
+                    $dependObj->addComposerRequire($item, false, true);
+                } elseif ($key == 'require-dev') {
+                    $dependObj->addComposerRequire($item, true, true);
+                } elseif ($key == 'dependencies') {
+                    $dependObj->addNpmDependencies($item, false, true);
+                } elseif ($key == 'devDependencies') {
+                    $dependObj->addNpmDependencies($item, true, true);
+                }
             }
+            $this->setInfo([
+                'state' => self::DEPENDENT_WAIT_INSTALL,
+            ]);
         }
 
         // 备份将被覆盖的文件
@@ -274,6 +277,7 @@ class Manage
         $infoKeys = ['uid', 'title', 'intro', 'author', 'version', 'state'];
         foreach ($infoKeys as $value) {
             if (!array_key_exists($value, $info)) {
+                deldir($this->templateDir);
                 throw new Exception('Basic configuration of the template is incomplete');
             }
         }
