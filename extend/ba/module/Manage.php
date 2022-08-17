@@ -150,13 +150,10 @@ class Manage
      */
     public function conflictHandle()
     {
-        $info = $this->getInfo();
         // 文件冲突
         $fileConflict = Server::getFileList($this->modulesDir, true);
         // 依赖冲突
         $dependConflict = Server::dependConflictCheck($this->modulesDir);
-        // 待安装依赖
-        $installDepend = Server::getDepend($this->modulesDir);
         // 待安装文件
         $installFiles = Server::getFileList($this->modulesDir);
 
@@ -213,20 +210,24 @@ class Manage
                 }
             }
             if ($dependConflict && isset($extend['dependConflict'])) {
-                foreach ($installDepend as $fKey => $fItem) {
+                foreach ($dependConflict as $fKey => $fItem) {
                     foreach ($fItem as $cKey => $cItem) {
                         if (isset($extend['dependConflict'][$fKey][$cKey]) && $extend['dependConflict'][$fKey][$cKey] == 'discard') {
-                            unset($installDepend[$fKey][$cKey]);
+                            unset($dependConflict[$fKey][$cKey]);
                         }
                     }
                 }
             }
         }
 
-        if ($installDepend) {
+        if ($dependConflict) {
+            $info     = $this->getInfo();
             $npm      = false;
             $composer = false;
-            foreach ($installDepend as $key => $item) {
+            foreach ($dependConflict as $key => $item) {
+                if (!$item) {
+                    continue;
+                }
                 if ($key == 'require') {
                     $composer = true;
                     $dependObj->addComposerRequire($item, false, true);
@@ -243,12 +244,25 @@ class Manage
             }
             if ($npm) {
                 $info['npm_dependent_wait_install'] = 1;
+                $info['state']                      = self::DEPENDENT_WAIT_INSTALL;
             }
             if ($composer) {
                 $info['composer_dependent_wait_install'] = 1;
+                $info['state']                           = self::DEPENDENT_WAIT_INSTALL;
             }
-            $info['state'] = self::DEPENDENT_WAIT_INSTALL;
-            $this->setInfo([], $info);
+            if ($info['state'] != self::DEPENDENT_WAIT_INSTALL) {
+                // 无冲突
+                $this->setInfo([
+                    'state' => self::INSTALLED,
+                ]);
+            } else {
+                $this->setInfo([], $info);
+            }
+        } else {
+            // 无冲突
+            $this->setInfo([
+                'state' => self::INSTALLED,
+            ]);
         }
 
         // 备份将被覆盖的文件
