@@ -166,6 +166,26 @@ class Manage
         }
     }
 
+    public function dependentInstallComplete(string $type)
+    {
+        $info = $this->getInfo();
+        if ($info['state'] == self::DEPENDENT_WAIT_INSTALL) {
+            if ($type == 'npm') {
+                unset($info['npm_dependent_wait_install']);
+            }
+            if ($type == 'composer') {
+                unset($info['composer_dependent_wait_install']);
+            }
+            if ($type == 'all') {
+                unset($info['npm_dependent_wait_install'], $info['composer_dependent_wait_install']);
+            }
+            if (!isset($info['npm_dependent_wait_install']) && !isset($info['composer_dependent_wait_install'])) {
+                $info['state'] = self::INSTALLED;
+            }
+            $this->setInfo([], $info);
+        }
+    }
+
     /**
      * 处理依赖和文件冲突，并完成与前端的冲突处理交互
      * @throws moduleException

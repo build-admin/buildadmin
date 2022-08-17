@@ -6,6 +6,7 @@ const userUrl = '/api/user/'
 const captchaUrl = '/api/common/captcha'
 const installStateUrl = '/admin/ajax/installState'
 const installModuleUrl = '/admin/ajax/installModule'
+const dependentInstallCompleteUrl = '/admin/ajax/dependentInstallComplete'
 
 export function modules(params: anyObj = {}) {
     const siteConfig = useSiteConfig()
@@ -118,6 +119,17 @@ export function postInstallModule(uid: string, orderId: number, extend: anyObj =
         },
         data: {
             extend: extend,
+        },
+    }) as ApiPromise
+}
+
+export function dependentInstallComplete(uid: string, type: string) {
+    return createAxios({
+        url: dependentInstallCompleteUrl,
+        method: 'post',
+        params: {
+            uid: uid,
+            type: type,
         },
     }) as ApiPromise
 }

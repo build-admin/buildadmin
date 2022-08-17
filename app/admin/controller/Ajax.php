@@ -116,5 +116,24 @@ class Ajax extends Backend
         } catch (Exception $e) {
             $this->error(__($e->getMessage()));
         }
+        $this->success();
+    }
+
+    public function dependentInstallComplete()
+    {
+        $uid     = $this->request->get("uid/s", '');
+        $type    = $this->request->get("type/s", '');
+        $typeArr = ['npm', 'composer', 'all'];
+        if (!$uid || !in_array($typeArr, $type)) {
+            $this->error(__('Parameter error'));
+        }
+        try {
+            Manage::instance($uid)->dependentInstallComplete($type);
+        } catch (moduleException $e) {
+            $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
+        } catch (Exception $e) {
+            $this->error(__($e->getMessage()));
+        }
+        $this->success();
     }
 }
