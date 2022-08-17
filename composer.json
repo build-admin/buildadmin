@@ -37,7 +37,8 @@
     },
     "autoload": {
         "psr-4": {
-            "app\\": "app"
+            "app\\": "app",
+            "modules\\": "modules"
         },
         "psr-0": {
             "": "extend/"
