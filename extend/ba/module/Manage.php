@@ -150,6 +150,7 @@ class Manage
      */
     public function conflictHandle()
     {
+        $info = $this->getInfo();
         // 文件冲突
         $fileConflict = Server::getFileList($this->modulesDir, true);
         // 依赖冲突
@@ -223,20 +224,31 @@ class Manage
         }
 
         if ($installDepend) {
+            $npm      = false;
+            $composer = false;
             foreach ($installDepend as $key => $item) {
                 if ($key == 'require') {
+                    $composer = true;
                     $dependObj->addComposerRequire($item, false, true);
                 } elseif ($key == 'require-dev') {
+                    $composer = true;
                     $dependObj->addComposerRequire($item, true, true);
                 } elseif ($key == 'dependencies') {
+                    $npm = true;
                     $dependObj->addNpmDependencies($item, false, true);
                 } elseif ($key == 'devDependencies') {
+                    $npm = true;
                     $dependObj->addNpmDependencies($item, true, true);
                 }
             }
-            $this->setInfo([
-                'state' => self::DEPENDENT_WAIT_INSTALL,
-            ]);
+            if ($npm) {
+                $info['npm_dependent_wait_install'] = 1;
+            }
+            if ($composer) {
+                $info['composer_dependent_wait_install'] = 1;
+            }
+            $info['state'] = self::DEPENDENT_WAIT_INSTALL;
+            $this->setInfo([], $info);
         }
 
         // 备份将被覆盖的文件
