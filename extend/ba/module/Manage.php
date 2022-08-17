@@ -142,6 +142,28 @@ class Manage
 
         // 执行启用脚本
         Server::execEvent($this->uid, 'enable');
+
+        $info = $this->getInfo();
+        if ($info['state'] == self::DEPENDENT_WAIT_INSTALL) {
+            $waitInstall = [];
+            if (isset($info['composer_dependent_wait_install'])) {
+                $waitInstall[] = 'composer_dependent_wait_install';
+            }
+            if (isset($info['npm_dependent_wait_install'])) {
+                $waitInstall[] = 'npm_dependent_wait_install';
+            }
+            if ($waitInstall) {
+                throw new moduleException('dependent wait install', -2, [
+                    'uid'          => $this->uid,
+                    'state'        => self::DEPENDENT_WAIT_INSTALL,
+                    'wait_install' => $waitInstall,
+                ]);
+            } else {
+                $this->setInfo([
+                    'state' => self::INSTALLED,
+                ]);
+            }
+        }
     }
 
     /**

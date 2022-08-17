@@ -186,26 +186,31 @@ const setInstallStateTitle = (installState: string) => {
     state.install.componentKey = uuid()
 }
 
-const execInstall = (uid: string, id: number) => {
-    postInstallModule(uid, id)
+export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
+    postInstallModule(uid, id, extend)
         .then((res) => {
-            // 安装成功
-            // 是否增加了依赖？
-            // 是否需要npm build
+            state.install.loading = false
         })
         .catch((err) => {
             if (loginExpired(err)) return
             // 冲突
             if (err.code == -1) {
+                state.install.loading = false
                 state.install.uid = err.data.uid
                 state.install.title = '发现冲突，请手动处理'
                 state.install.state = err.data.state
                 state.install.fileConflict = err.data.fileConflict
                 state.install.dependConflict = err.data.dependConflict
+            } else if (err.code == -2) {
+                state.install.loading = true
+                setInstallStateTitle('installDepend')
+                state.install.uid = err.data.uid
+                state.install.title = '安装依赖'
+                state.install.state = err.data.state
             }
         })
         .finally(() => {
-            state.install.loading = false
+            state.publicButtonLoading = false
         })
 }
 

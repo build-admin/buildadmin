@@ -35,15 +35,24 @@
                 </el-table-column>
             </el-table>
         </template>
-        <el-button v-blur class="install-done-button" size="large" type="primary" @click="onSubmitConflictHandle">{{ $t('Confirm') }}</el-button>
+        <el-button
+            v-blur
+            class="install-done-button"
+            :loading="state.publicButtonLoading"
+            :disabled="state.publicButtonLoading"
+            size="large"
+            type="primary"
+            @click="onSubmitConflictHandle"
+            >{{ $t('Confirm') }}</el-button
+        >
     </div>
 </template>
 
 <script setup lang="ts">
-import { state, loginExpired } from '../index'
-import { postInstallModule } from '/@/api/backend/module'
+import { state, execInstall } from '../index'
 
 const onSubmitConflictHandle = () => {
+    state.publicButtonLoading = true
     let fileConflict: anyObj = {},
         dependConflict: anyObj = {}
     for (const key in state.install.fileConflict) {
@@ -56,16 +65,10 @@ const onSubmitConflictHandle = () => {
         dependConflict[state.install.dependConflict[key].env][state.install.dependConflict[key].depend] =
             state.install.dependConflict[key]['solution']
     }
-    postInstallModule(state.install.uid, 0, {
+    execInstall(state.install.uid, 0, {
         dependConflict: dependConflict,
         fileConflict: fileConflict,
     })
-        .then((res) => {
-            console.log(res)
-        })
-        .catch((err) => {
-            loginExpired(err)
-        })
 }
 </script>
 
