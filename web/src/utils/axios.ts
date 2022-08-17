@@ -92,7 +92,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             removePending(response.config)
             options.loading && closeLoading(options) // 关闭loading
 
-            if (options.showCodeMessage && response.data && response.data.code !== 1) {
+            if (response.data && response.data.code !== 1) {
                 if (response.data.code == 409) {
                     if (!window.tokenRefreshing) {
                         window.tokenRefreshing = true
@@ -154,10 +154,12 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                         })
                     }
                 }
-                ElNotification({
-                    type: 'error',
-                    message: response.data.msg,
-                })
+                if (options.showCodeMessage) {
+                    ElNotification({
+                        type: 'error',
+                        message: response.data.msg,
+                    })
+                }
                 // 自动跳转到路由name或path，仅限server端返回302的情况
                 if (response.data.code == 302) {
                     if (response.data.data.routeName) {
