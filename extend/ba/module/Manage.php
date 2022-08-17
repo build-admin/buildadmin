@@ -187,10 +187,14 @@ class Manage
                         ];
                     }
                 }
+                $this->setInfo([
+                    'state' => self::CONFLICT_PENDING,
+                ]);
                 throw new moduleException('Module file conflicts', -1, [
                     'fileConflict'   => $fileConflictTemp,
                     'dependConflict' => $dependConflictTemp,
                     'uid'            => $this->uid,
+                    'state'          => self::CONFLICT_PENDING,
                 ]);
             }
 

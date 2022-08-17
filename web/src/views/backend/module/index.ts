@@ -154,6 +154,7 @@ export const onInstall = (uid: string, id: number) => {
     state.install.showDialog = true
     state.install.loading = true
     setInstallStateTitle('init')
+    state.install.title = '安装'
 
     // 安装模块可能会触发热更新或热重载造成状态丢失
     // 存储当前模块的安装进度等状态
@@ -186,8 +187,6 @@ const setInstallStateTitle = (installState: string) => {
 }
 
 const execInstall = (uid: string, id: number) => {
-    console.log('请求安装')
-    return false
     postInstallModule(uid, id)
         .then((res) => {
             // 安装成功
@@ -196,10 +195,11 @@ const execInstall = (uid: string, id: number) => {
         })
         .catch((err) => {
             if (loginExpired(err)) return
+            // 冲突
             if (err.code == -1) {
-                state.install.showDialog = true
                 state.install.uid = err.data.uid
-                state.install.title = err.data.title
+                state.install.title = '发现冲突，请手动处理'
+                state.install.state = err.data.state
                 state.install.fileConflict = err.data.fileConflict
                 state.install.dependConflict = err.data.dependConflict
             }
