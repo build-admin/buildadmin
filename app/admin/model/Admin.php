@@ -20,11 +20,11 @@ class Admin extends Model
     protected $autoWriteTimestamp = 'int';
 
     /**
-     * @var string 自动写人创建时间
+     * @var string 自动写入创建时间
      */
     protected $createTime = 'createtime';
     /**
-     * @var string 自动写人更新时间
+     * @var string 自动写入更新时间
      */
     protected $updateTime = 'updatetime';
 
