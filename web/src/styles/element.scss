@@ -18,14 +18,14 @@
 }
 
 .el-table {
-    --el-table-border-color: #f6f6f6;
+    --el-table-border-color: var(--ba-border-color);
 }
 
 .el-card {
     border: none;
 }
 .el-card__header {
-    border-bottom: 1px solid var(--color-sub-4);
+    border-bottom: 1px solid var(--el-border-color-extra-light);
 }
 .el-textarea__inner {
     padding: 5px 11px;

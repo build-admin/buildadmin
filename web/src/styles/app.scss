@@ -17,7 +17,7 @@ body,
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
-    background-color: var(--color-bg-1);
+    background-color: var(--ba-bg-color);
     font-size: 14px;
     overflow: hidden;
     position: relative;
@@ -68,8 +68,8 @@ body,
     border-radius: var(--el-border-radius-round);
 }
 .ba-table-alert {
-    background-color: #e8edf0 !important;
-    border: 1px solid #f6f6f6;
+    background-color: var(--el-fill-color-darker) !important;
+    border: 1px solid var(--ba-boder-color);
     border-bottom: 0;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
@@ -84,7 +84,7 @@ body,
 }
 .ba-operate-dialog .el-dialog__header {
     padding-bottom: 16px;
-    border-bottom: 1px solid var(--color-bg-1);
+    border-bottom: 1px solid var(--el-border-color-extra-light);
 }
 .ba-operate-dialog .el-dialog__body {
     padding-top: 0;
@@ -166,6 +166,12 @@ body,
     }
 }
 /* 会员中心-e */
+
+/* 暗黑模式公共样式-s */
+.ba-icon-dark {
+    color: var(--el-text-color-primary) !important;
+}
+/* 暗黑模式公共样式-e */
 
 /* 自适应-s */
 @media screen and (max-width: 768px) {

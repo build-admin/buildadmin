@@ -5,7 +5,7 @@
 $main-space: 16px;
 $primary-light: #3f6ad8;
 
-// Background
+// --ba-background
 $bg-color: () !default;
 $bg-color: map.merge(
     (
@@ -15,7 +15,7 @@ $bg-color: map.merge(
     $bg-color
 );
 
-//  Color Sub
+//  --ba-color-sub
 $color-sub: () !default;
 $color-sub: map.merge(
     (
@@ -25,7 +25,7 @@ $color-sub: map.merge(
     $color-sub
 );
 
-// Border
+// --ba-border-color
 $border-color: () !default;
 $border-color: map.merge(
     (

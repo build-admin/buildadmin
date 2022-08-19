@@ -62,12 +62,10 @@
                         <div class="layout-config-global">
                             <el-form-item size="large" :label="t('layouts.Dark mode')">
                                 <el-switch
-                                    :model-value="configStore.layout.isDark"
-                                    :active-value="true"
-                                    :inactive-value="false"
+                                    v-model="configStore.layout.isDark"
+                                    @change="switchDark($event)"
                                     active-icon="el-icon-Moon"
                                     inactive-icon="el-icon-Sunny"
-                                    @change="toggleDark($event as boolean)"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Background page switching animation')">
@@ -210,9 +208,11 @@ const { t } = useI18n()
 const configStore = useConfig()
 const navTabs = useNavTabs()
 const router = useRouter()
-const toggleDark = (val: boolean) => {
-    const dark = useDark()
-    useToggle(dark)()
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
+
+const switchDark = (val: boolean): void => {
+    toggleDark(val)
     configStore.setLayout('isDark', val)
 }
 
@@ -272,22 +272,22 @@ const restoreDefault = () => {
 .layout-mode-style {
     position: relative;
     height: 100px;
-    border: 1px solid var(--color-sub-2);
+    border: 1px solid var(--el-border-color-light);
     border-radius: var(--el-border-radius-small);
     &:hover,
     &.active {
-        border: 1px solid var(--color-primary);
+        border: 1px solid var(--el-color-primary);
     }
     .layout-mode-style-name {
         position: absolute;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--color-primary-sub-5);
+        color: var(--el-color-primary-light-5);
         border-radius: 50%;
         height: 50px;
         width: 50px;
-        border: 1px solid var(--color-primary-sub-4);
+        border: 1px solid var(--el-color-primary-light-3);
     }
     .layout-mode-style-box {
         display: flex;
@@ -303,7 +303,7 @@ const restoreDefault = () => {
         .layout-mode-style-aside {
             width: 18%;
             height: 90%;
-            background-color: var(--color-sub-3);
+            background-color: var(--el-border-color-lighter);
         }
         .layout-mode-style-container-box {
             width: 68%;
@@ -312,12 +312,12 @@ const restoreDefault = () => {
             .layout-mode-style-header {
                 width: 100%;
                 height: 10%;
-                background-color: var(--color-sub-3);
+                background-color: var(--el-border-color-lighter);
             }
             .layout-mode-style-container {
                 width: 100%;
                 height: 85%;
-                background-color: var(--color-sub-4);
+                background-color: var(--el-border-color-extra-light);
                 margin-top: 5%;
             }
         }
@@ -329,7 +329,7 @@ const restoreDefault = () => {
         .layout-mode-style-aside {
             width: 18%;
             height: 100%;
-            background-color: var(--color-sub-3);
+            background-color: var(--el-border-color-lighter);
         }
         .layout-mode-style-container-box {
             width: 82%;
@@ -337,12 +337,12 @@ const restoreDefault = () => {
             .layout-mode-style-header {
                 width: 100%;
                 height: 10%;
-                background-color: var(--color-sub-1);
+                background-color: var(--el-border-color);
             }
             .layout-mode-style-container {
                 width: 100%;
                 height: 90%;
-                background-color: var(--color-sub-4);
+                background-color: var(--el-border-color-extra-light);
             }
         }
     }
@@ -356,12 +356,12 @@ const restoreDefault = () => {
             .layout-mode-style-header {
                 width: 100%;
                 height: 10%;
-                background-color: var(--color-sub-1);
+                background-color: var(--el-border-color);
             }
             .layout-mode-style-container {
                 width: 100%;
                 height: 90%;
-                background-color: var(--color-sub-4);
+                background-color: var(--el-border-color-extra-light);
             }
         }
     }

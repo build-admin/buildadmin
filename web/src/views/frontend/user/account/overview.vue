@@ -19,7 +19,7 @@
                                 placement="right"
                                 :content="(userInfo.mobile ? $t('user.user.Filled in') : $t('user.user.Not filled in')) + $t('user.user.mobile')"
                             >
-                                <Icon name="fa fa-tablet" size="16" :color="userInfo.mobile ? 'var(--color-primary)' : 'var(--color-info)'" />
+                                <Icon name="fa fa-tablet" size="16" :color="userInfo.mobile ? 'var(--el-color-primary)' : 'var(--el-text-color-secondary)'" />
                             </el-tooltip>
                         </div>
                         <div class="avatar-icon-item">
@@ -28,7 +28,7 @@
                                 placement="right"
                                 :content="(userInfo.email ? $t('user.user.Filled in') : $t('user.user.Not filled in')) + $t('user.user.mailbox')"
                             >
-                                <Icon name="fa fa-envelope-square" size="14" :color="userInfo.email ? 'var(--color-primary)' : 'var(--color-info)'" />
+                                <Icon name="fa fa-envelope-square" size="14" :color="userInfo.email ? 'var(--el-color-primary)' : 'var(--el-text-color-secondary)'" />
                             </el-tooltip>
                         </div>
                     </div>
@@ -185,7 +185,7 @@ onBeforeMount(() => {
         width: 100px;
         padding: 0 20px;
         margin: 20px 0;
-        border-right: 1px solid var(--color-sub-2);
+        border-right: 1px solid var(--el-border-color-light);
         img {
             width: 60px;
             height: 60px;
@@ -203,12 +203,12 @@ onBeforeMount(() => {
         align-items: center;
         justify-content: center;
         padding: 3px;
-        border: 1px solid var(--color-sub-2);
+        border: 1px solid var(--el-border-color-light);
         border-radius: 50%;
         margin: 3px;
         cursor: pointer;
         &:hover {
-            border: 1px solid var(--color-primary);
+            border: 1px solid var(--el-color-primary);
         }
         .icon {
             display: flex;
@@ -224,7 +224,7 @@ onBeforeMount(() => {
         width: calc(100% - 100px);
     }
     .welcome-words {
-        color: var(--color-text-primary);
+        color: var(--el-text-color-primary);
         font-size: var(--el-font-size-medium);
         padding: 20px 0;
     }

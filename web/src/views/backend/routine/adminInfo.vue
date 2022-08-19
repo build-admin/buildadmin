@@ -267,7 +267,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .admin-info {
-    background-color: #fff;
+    background-color: var(--ba-bg-color-overlay);
     border-radius: var(--el-border-radius-base);
     border-top: 3px solid #409eff;
     .avatar-uploader {
@@ -278,14 +278,14 @@ export default defineComponent({
         margin: 60px auto 10px auto;
         border-radius: 50%;
         box-shadow: var(--el-box-shadow-light);
-        border: 1px dashed var(--color-sub-1);
+        border: 1px dashed var(--el-border-color);
         cursor: pointer;
         overflow: hidden;
         width: 110px;
         height: 110px;
     }
     .avatar-uploader:hover {
-        border-color: var(--color-primary);
+        border-color: var(--el-color-primary);
     }
     .avatar {
         width: 110px;
@@ -301,12 +301,12 @@ export default defineComponent({
     .admin-info-base {
         .admin-nickname {
             font-size: 22px;
-            color: var(--color-text-primary);
+            color: var(--el-text-color-primary);
             text-align: center;
             padding: 8px 0;
         }
         .admin-other {
-            color: var(--color-regular);
+            color: var(--el-text-color-regular);
             font-size: 14px;
             text-align: center;
             line-height: 20px;

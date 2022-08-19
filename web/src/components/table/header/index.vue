@@ -73,7 +73,7 @@
                         color="#dcdfe6"
                         plain
                     >
-                        <Icon size="14" color="#303133" name="el-icon-Grid" />
+                        <Icon size="14" class="table-button-icon" name="el-icon-Grid" />
                     </el-button>
                     <template #dropdown>
                         <el-dropdown-menu>
@@ -102,7 +102,7 @@
                         color="#dcdfe6"
                         plain
                     >
-                        <Icon size="14" color="#303133" name="el-icon-Search" />
+                        <Icon size="14" class="table-button-icon" name="el-icon-Search" />
                     </el-button>
                 </el-tooltip>
             </div>
@@ -159,6 +159,8 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
 </script>
 
 <style scoped lang="scss">
+@import '/@/styles/dark/mixins.scss';
+
 .table-header {
     position: relative;
     overflow: hidden;
@@ -167,8 +169,8 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
     align-items: center;
     width: 100%;
     max-width: 100%;
-    background-color: #ffffff;
-    border: 1px solid #f6f6f6;
+    background-color: var(--el-fill-color-blank);
+    border: 1px solid var(--ba-border-color);
     border-bottom: none;
     padding: 13px 15px;
     font-size: 14px;
@@ -179,7 +181,13 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
         font-size: 14px !important;
         color: #ffffff !important;
     }
+    .el-button.is-disabled {
+        .icon {
+            color: var(--el-button-disabled-text-color) !important;
+        }
+    }
 }
+
 .mlr-12 {
     margin-left: 12px;
 }
@@ -201,10 +209,10 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
     overflow: hidden;
     button:focus,
     button:active {
-        background-color: #ffffff;
+        background-color: var(--el-color-info-dark-2);
     }
     button:hover {
-        background-color: #dcdfe6;
+        background-color: var(--el-color-info-light-7);
     }
     .table-search-button-item {
         border: none;
@@ -217,4 +225,6 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
         border-right: 1px solid var(--el-border-color);
     }
 }
+
+@include header-index-dark;
 </style>

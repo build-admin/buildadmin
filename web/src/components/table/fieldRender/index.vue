@@ -1,6 +1,6 @@
 <template>
     <!-- Icon -->
-    <Icon v-if="field.render == 'icon'" :name="fieldValue ? fieldValue : field.default ?? ''" />
+    <Icon class="ba-icon-dark" v-if="field.render == 'icon'" :name="fieldValue ? fieldValue : field.default ?? ''" />
 
     <!-- switch -->
     <el-switch

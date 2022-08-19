@@ -1,0 +1,158 @@
+// html.dark {}
+// @import '/@/styles/dark/mixins.scss';
+@mixin d($selector) {
+    html.dark {
+        #{$selector} {
+            @content;
+        }
+    }
+}
+
+// Logo
+@mixin logo-dark {
+    @include d('.layout-logo') {
+        background-color: var(--ba-bg-color-overlay);
+    }
+}
+
+// 默认 & 经典
+@mixin menuVertival-dark {
+    @include d('.layouts-menu-vertical') {
+        --el-menu-bg-color: var(--ba-bg-color-overlay);
+        --el-menu-text-color: var(--el-text-color-regular);
+        --el-menu-active-color: var(--el-color-primary);
+    }
+}
+
+// 单栏
+@mixin menuHorizontal-dark {
+    @include d('.menu-horizontal') {
+        --el-menu-bg-color: var(--ba-bg-color-overlay);
+        --el-menu-text-color: var(--el-text-color-regular);
+        --el-menu-active-color: var(--el-color-primary);
+    }
+    @include d('.el-menu-item.is-active') {
+        background-color: var(--ba-bg-color);
+    }
+    @include d('.menu-horizontal-logo') {
+        &:hover {
+            background-color: var(--ba-bg-color);
+        }
+    }
+}
+
+// menuTree
+@mixin menuTree-dark {
+    @include d('.el-menu-item.is-active') {
+        background-color: var(--ba-bg-color-overlay);
+    }
+}
+
+// navMenus
+@mixin navMenus-dark {
+    @include d('.nav-menus') {
+        background-color: var(--ba-bg-color-overlay);
+        .nav-menu-item {
+            .nav-menu-icon {
+                color: var(--el-text-color-regular);
+                &:hover {
+                    color: var(--el-text-color);
+                }
+            }
+        }
+        .admin-info {
+            color: var(--el-text-color-regular);
+        }
+        .nav-menu-item:hover,
+        .admin-info:hover,
+        .nav-menu-item.hover,
+        .admin-info.hover {
+            background: var(--el-fill-color-dark);
+        }
+    }
+}
+
+// default
+@mixin default-dark {
+    @include d('.nav-bar') {
+        :deep(.nav-tabs) {
+            .ba-nav-tab {
+                color: var(--el-text-color-regular);
+                .close-icon:hover {
+                    background: var(--el-color-danger-light-5);
+                }
+                &.active {
+                    color: var(--el-text-color-primary);
+                    opacity: 0.9;
+                }
+                &:hover {
+                    opacity: 1;
+                }
+            }
+            .nav-tabs-active-box {
+                background-color: var(--ba-bg-color-overlay);
+            }
+        }
+    }
+}
+
+// classic
+@mixin classic-dark {
+    @include d('.nav-bar') {
+        background-color: var(--ba-bg-color-overlay);
+        :deep(.nav-tabs) {
+            .ba-nav-tab {
+                color: var(--el-text-color-regular);
+                .close-icon:hover {
+                    background: var(--el-color-danger-light-5);
+                }
+                &.active {
+                    color: var(--el-text-color-primary);
+                }
+                &:hover {
+                    background: var(--el-fill-color);
+                }
+            }
+            .nav-tabs-active-box {
+                background: var(--ba-bg-color);
+            }
+        }
+    }
+}
+
+// dashboard.vue
+@mixin dashboard-dark {
+    @include d('.welcome') {
+        background-color: var(--ba-bg-color-overlay);
+    }
+    @include d('.small-panel') {
+        background-color: var(--ba-bg-color-overlay);
+        .small-panel-content {
+            color: var(--el-text-color-regular);
+        }
+    }
+    @include d('.new-user-item') {
+        .new-user-base {
+            color: var(--el-text-color-regular);
+        }
+    }
+}
+
+// header/index.vue
+@mixin header-index-dark {
+    @include d('.table-search-button-group') {
+        button:focus,
+        button:active {
+            background-color: var(--el-color-info-dark-2);
+        }
+        button:hover {
+            background-color: var(--el-color-info-light-7);
+        }
+        button {
+            background-color: #898a8d;
+            el-icon {
+                color: white !important;
+            }
+        }
+    }
+}

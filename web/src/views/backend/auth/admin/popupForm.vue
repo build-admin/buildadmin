@@ -184,14 +184,14 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     position: relative;
     border-radius: var(--el-border-radius-small);
     box-shadow: var(--el-box-shadow-light);
-    border: 1px dashed var(--color-sub-1);
+    border: 1px dashed var(--el-border-color);
     cursor: pointer;
     overflow: hidden;
     width: 110px;
     height: 110px;
 }
 .avatar-uploader:hover {
-    border-color: var(--color-primary);
+    border-color: var(--el-color-primary);
 }
 .avatar {
     width: 110px;

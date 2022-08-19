@@ -1,5 +1,5 @@
 @use 'sass:map';
-@use 'mixins' as *;
+@use '../mixins.scss' as *;
 @use 'element-plus/theme-chalk/src/dark/css-vars.scss';
 
 // Background
@@ -31,7 +31,7 @@ $border-color: map.merge(
     $border-color
 );
 
-:root {
+html.dark {
     @include set-component-css-var('bg-color', $bg-color);
     @include set-component-css-var('color-sub', $color-sub);
     @include set-component-css-var('border-color', $border-color);

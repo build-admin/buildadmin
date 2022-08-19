@@ -245,7 +245,7 @@ export default defineComponent({
     border-radius: var(--el-border-radius-base);
 }
 .el-tabs--border-card :deep(.el-tabs__header) {
-    background-color: var(--color-bg-1);
+    background-color: var(--ba-bg-color);
     border-bottom: none;
     border-top-left-radius: var(--el-border-radius-base);
     border-top-right-radius: var(--el-border-radius-base);
@@ -263,7 +263,7 @@ export default defineComponent({
     line-height: 40px;
     border: none;
     padding-left: 20px;
-    background-color: #f5f5f5;
+    background-color: var(--ba-bg-color-overlay);
 }
 .config-tab-pane {
     padding: 5px;
@@ -281,7 +281,7 @@ export default defineComponent({
         opacity: 0;
         flex: 3;
         font-size: 13px;
-        color: var(--color-placeholder);
+        color: var(--el-text-color-disabled);
         padding-left: 20px;
     }
     .del-config-form-item {
@@ -298,7 +298,7 @@ export default defineComponent({
         }
         .close-icon {
             display: block;
-            color: var(--color-placeholder) !important;
+            color: var(--el-text-color-disabled) !important;
         }
     }
 }

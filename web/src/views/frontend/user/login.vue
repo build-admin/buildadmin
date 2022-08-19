@@ -558,7 +558,7 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     .forgot-password {
-        color: var(--color-primary-sub-0);
+        color: var(--ba-color-primary-light);
         margin-left: auto;
         user-select: none;
         cursor: pointer;

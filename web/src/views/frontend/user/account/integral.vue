@@ -93,10 +93,10 @@ onMounted(() => {
     padding-top: 0;
 }
 .right-title {
-    color: var(--color-secondary);
+    color: var(--el-text-color-secondary);
 }
 .log-item {
-    border-bottom: 1px solid var(--color-bg-1);
+    border-bottom: 1px solid #f5f5f5;
     padding: 15px 0;
     div {
         padding: 4px 0;
@@ -106,15 +106,15 @@ onMounted(() => {
     font-size: var(--el-font-size-medium);
 }
 .log-change-amount.increase {
-    color: var(--color-success);
+    color: var(--el-color-success);
 }
 .log-change-amount.reduce {
-    color: var(--color-danger);
+    color: var(--el-color-danger);
 }
 .log-after,
 .log-change-time {
     font-size: var(--el-font-size-small);
-    color: var(--color-secondary);
+    color: var(--el-text-color-secondary);
 }
 .log-footer {
     padding-top: 20px;

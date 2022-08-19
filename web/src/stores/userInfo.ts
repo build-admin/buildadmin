@@ -32,13 +32,13 @@ export const useUserInfo = defineStore('userInfo', {
             this.refreshToken = ''
         },
         getGenderIcon() {
-            let icon = { name: 'fa fa-transgender-alt', color: 'var(--color-info)' }
+            let icon = { name: 'fa fa-transgender-alt', color: 'var(--el-text-color-secondary)' }
             switch (this.gender) {
                 case 1:
-                    icon = { name: 'fa fa-mars-stroke-v', color: 'var(--color-primary)' }
+                    icon = { name: 'fa fa-mars-stroke-v', color: 'var(--el-color-primary)' }
                     break
                 case 2:
-                    icon = { name: 'fa fa-mars-stroke', color: 'var(--color-danger)' }
+                    icon = { name: 'fa fa-mars-stroke', color: 'var(--el-color-danger)' }
                     break
             }
             return icon
