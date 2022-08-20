@@ -958,7 +958,7 @@ class Crud extends Command
             if ($importControllerUrls) {
                 $importPackages .= "import { " . implode(',', array_keys($importControllerUrls)) . " } from '/@/api/controllerUrls'\n";
             }
-            $formDialogBig = $formDialogBig ? "\n\t\twidth='50%'" : '';
+            $formDialogBig = $formDialogBig ? "\n" . Stub::tab(2) . "width='50%'" : '';
             $formVue       = $this->stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'form', [
                 'formItem'       => $formFieldList ? $formFieldList : '',
                 'importPackages' => $importPackages,
@@ -977,14 +977,14 @@ class Crud extends Command
                 'modelNamespace'          => $modelNamespace,
                 'modelName'               => $modelName,
                 'controllerUrlVarName'    => $controllerUrlVarName,
-                'modelConnection'         => $db == 'mysql' ? '' : "\n\tprotected \$connection = '{$db}';",
+                'modelConnection'         => $db == 'mysql' ? '' : "\n" . Stub::tab() . "protected \$connection = '{$db}';",
                 'modelTableType'          => $modelTableType,
                 'modelTableTypeName'      => $modelTableTypeName,
                 'modelAutoWriteTimestamp' => in_array($this->createTimeField, $fieldArr) || in_array($this->updateTimeField, $fieldArr) ? "'int'" : 'false',
                 'createTime'              => in_array($this->createTimeField, $fieldArr) ? "'{$this->createTimeField}'" : 'false',
                 'updateTime'              => in_array($this->updateTimeField, $fieldArr) ? "'{$this->updateTimeField}'" : 'false',
                 'modeAfterInsert'         => '',
-                'priKey'                  => $priKey == 'id' ? '' : "\n\t// 表主键\n\t" . 'protected $pk = ' . "'{$priKey}';\n\t",
+                'priKey'                  => $priKey == 'id' ? '' : "\n" . Stub::tab() . "// 表主键\n" . Stub::tab() . 'protected $pk = ' . "'{$priKey}';\n" . Stub::tab(),
             ];
             $controllerData['tableComment'] = $tableComment;
 
@@ -1021,7 +1021,7 @@ class Crud extends Command
                     }
                 }
 
-                $controllerData['relationVisibleFieldList'] = $relationVisibleFieldList ? implode("\n\t\t", $relationVisibleFieldList) : '';
+                $controllerData['relationVisibleFieldList'] = $relationVisibleFieldList ? implode("\n" . Stub::tab(2), $relationVisibleFieldList) : '';
                 $controllerAttrList['withJoinTable']        = $relationWithList;
 
                 // 需要重写index方法
@@ -1044,9 +1044,9 @@ class Crud extends Command
             $controllerAttr = '';
             foreach ($controllerAttrList as $key => $item) {
                 if (is_array($item)) {
-                    $controllerAttr .= "\n\tprotected \${$key} = ['" . implode("', '", $item) . "'];\n";
+                    $controllerAttr .= "\n" . Stub::tab() . "protected \${$key} = ['" . implode("', '", $item) . "'];\n";
                 } else {
-                    $controllerAttr .= "\n\tprotected \${$key} = '$item';\n";
+                    $controllerAttr .= "\n" . Stub::tab() . "protected \${$key} = '$item';\n";
                 }
             }
             $controllerData['controllerAttr'] = $controllerAttr;

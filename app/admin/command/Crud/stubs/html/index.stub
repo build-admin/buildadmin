@@ -59,10 +59,10 @@ onMounted(() => {
 </script>
 
 <script lang="ts">
-    import { defineComponent } from 'vue'
-    export default defineComponent({
-        name: '{%originControllerUrl%}',
-    })
+import { defineComponent } from 'vue'
+export default defineComponent({
+    name: '{%originControllerUrl%}',
+})
 </script>
 
 <style scoped lang="scss"></style>

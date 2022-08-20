@@ -102,14 +102,14 @@ class Stub
         $maxStrLang = 0;
         foreach ($modelFieldType as $key => $item) {
             $strLang    = strlen($key);
-            $maxStrLang = $strLang > $maxStrLang ? $strLang : $maxStrLang;
+            $maxStrLang = max($strLang, $maxStrLang);
         }
 
         $str = "";
         foreach ($modelFieldType as $key => $item) {
-            $str .= "\t\t'{$key}'" . str_pad('=>', ($maxStrLang - strlen($key) + 3), ' ', STR_PAD_LEFT) . " '{$item}',\n";
+            $str .= self::tab(2) . "'{$key}'" . str_pad('=>', ($maxStrLang - strlen($key) + 3), ' ', STR_PAD_LEFT) . " '{$item}',\n";
         }
-        return "\n\tprotected \$type = [\n" . rtrim($str, "\n") . "\n\t];";
+        return "\n" . self::tab() . "protected \$type = [\n" . rtrim($str, "\n") . "\n" . self::tab() . "];";
     }
 
     public static function buildTableColumnKey($key, $item)
@@ -153,7 +153,7 @@ class Stub
         foreach ($formFieldList as &$item) {
             if (in_array($item['type'], self::$formItemType)) {
                 // FormItem
-                $fieldHtml .= "\t\t\t\t<FormItem";
+                $fieldHtml .= self::tab(4) . "<FormItem";
                 foreach ($item as $key => $attr) {
                     if (is_array($attr)) {
                         $fieldHtml .= ' ' . $key . '="' . self::getJsonFromArray($attr) . '"';
@@ -175,7 +175,7 @@ class Stub
             foreach ($formItemRule as $item) {
                 $rulesArrHtml .= $item . ', ';
             }
-            $rulesHtml .= "\t" . $key . ': [' . rtrim($rulesArrHtml, ', ') . "],\n";
+            $rulesHtml .= self::tab() . $key . ': [' . rtrim($rulesArrHtml, ', ') . "],\n";
         }
         $formItemRules = $rulesHtml ? "\n" . $rulesHtml : '';
     }
@@ -226,7 +226,7 @@ class Stub
             ];
             $defaultOrderStub = self::getJsonFromArray($defaultOrderStub);
             if ($defaultOrderStub) {
-                $defaultOrderStub = "\n\t\tdefaultOrder: " . $defaultOrderStub . ',';
+                $defaultOrderStub = "\n" . self::tab(2) . "defaultOrder: " . $defaultOrderStub . ',';
                 return $defaultOrderStub;
             }
         }
@@ -247,7 +247,7 @@ class Stub
         if (isset($langList['en']) && $langList['en']) {
             $enLangTs = '';
             foreach ($langList['en'] as $key => $item) {
-                $enLangTs .= "\t" . '"' . $key . '": "' . $item . "\",\n";
+                $enLangTs .= self::tab() . '"' . $key . '": "' . $item . "\",\n";
             }
             $enLangTs = "export default {\n" . $enLangTs . "}";
             self::writeToFile($webLangEnFile, $enLangTs);
@@ -256,7 +256,7 @@ class Stub
         if (isset($langList['zh-cn']) && $langList['zh-cn']) {
             $zhCnLangTs = '';
             foreach ($langList['zh-cn'] as $key => $item) {
-                $zhCnLangTs .= "\t" . '"' . $key . '": "' . $item . "\",\n";
+                $zhCnLangTs .= self::tab() . '"' . $key . '": "' . $item . "\",\n";
             }
             $zhCnLangTs = "export default {\n" . $zhCnLangTs . "}";
             self::writeToFile($webLangZhCnFile, $zhCnLangTs);
@@ -274,10 +274,10 @@ class Stub
 
     /**
      * 获取转义编码后的值
-     * @param string $value
+     * @param string|array $value
      * @return string
      */
-    public function escape(string $value): string
+    public function escape($value): string
     {
         if (!$this->options['escapeHtml']) {
             return $value;
@@ -286,5 +286,10 @@ class Stub
             $value = json_encode($value, JSON_UNESCAPED_UNICODE);
         }
         return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', false);
+    }
+
+    public static function tab(int $num = 1): string
+    {
+        return str_pad('', 4 * $num, ' ');
     }
 }
