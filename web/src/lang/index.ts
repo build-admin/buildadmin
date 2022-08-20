@@ -94,7 +94,7 @@ function getLangFileMessage(mList: any, locale: string) {
 }
 
 function handleMsglist(mlist: anyObj) {
-    const newMlist: any = []
+    const newMlist: any = {}
     for (const key in mlist) {
         if (key.indexOf('.') > 0) {
             const keyTmp = key.split('.')
