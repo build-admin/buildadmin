@@ -1,10 +1,12 @@
 import { reactive } from 'vue'
-import { modules, info, createOrder, payOrder, postInstallModule, getInstallStateUrl } from '/@/api/backend/module'
+import { modules, info, createOrder, payOrder, postInstallModule, getInstallStateUrl, dependentInstallComplete } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
 import { Session } from '/@/utils/storage'
 import { INSTALL_MODULE_TEMP } from '/@/stores/constant/cacheKey'
 import { ElNotification } from 'element-plus'
 import { uuid } from '/@/utils/random'
+import { useTerminal } from '/@/stores/terminal'
+import { taskStatus } from '/@/components/terminal/constant'
 
 export enum moduleInstallState {
     UNINSTALLED,
@@ -207,11 +209,27 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
                 state.install.uid = err.data.uid
                 state.install.title = '安装依赖'
                 state.install.state = err.data.state
+
+                const terminal = useTerminal()
+                if (err.data.wait_install.includes('npm_dependent_wait_install')) {
+                    terminal.addTaskPM('web-install', true, (res: number) => {
+                        if (res == taskStatus.Success) {
+                            postDependentInstallComplete(state.install.uid, 'npm')
+                        }
+                    })
+                }
+                if (err.data.wait_install.includes('composer_dependent_wait_install')) {
+                    
+                }
             }
         })
         .finally(() => {
             state.publicButtonLoading = false
         })
+}
+
+export const postDependentInstallComplete = (uid: string, type: string) => {
+    dependentInstallComplete(uid, type).then((res) => {})
 }
 
 export const loginExpired = (res: ApiResponse) => {

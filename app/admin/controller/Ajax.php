@@ -124,7 +124,7 @@ class Ajax extends Backend
         $uid     = $this->request->get("uid/s", '');
         $type    = $this->request->get("type/s", '');
         $typeArr = ['npm', 'composer', 'all'];
-        if (!$uid || !in_array($typeArr, $type)) {
+        if (!$uid || !in_array($type, $typeArr)) {
             $this->error(__('Parameter error'));
         }
         try {

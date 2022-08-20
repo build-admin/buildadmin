@@ -109,18 +109,23 @@ export function getInstallStateUrl(uid: string) {
 
 export function postInstallModule(uid: string, orderId: number, extend: anyObj = {}) {
     const baAccount = useBaAccount()
-    return createAxios({
-        url: installModuleUrl,
-        method: 'post',
-        params: {
-            uid: uid,
-            order_id: orderId,
-            token: baAccount.token,
+    return createAxios(
+        {
+            url: installModuleUrl,
+            method: 'post',
+            params: {
+                uid: uid,
+                order_id: orderId,
+                token: baAccount.token,
+            },
+            data: {
+                extend: extend,
+            },
         },
-        data: {
-            extend: extend,
-        },
-    }) as ApiPromise
+        {
+            showCodeMessage: false,
+        }
+    ) as ApiPromise
 }
 
 export function dependentInstallComplete(uid: string, type: string) {
