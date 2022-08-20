@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 $rootPath = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR;
-$server   = isset($_REQUEST['server']) || isset($_SERVER['HTTP_SERVER']) || (PHP_SAPI == 'cli-server') || substr($_SERVER['REQUEST_URI'], 1, 9) == 'index.php';
+$server   = isset($_REQUEST['server']) || isset($_SERVER['HTTP_SERVER']) || substr($_SERVER['REQUEST_URI'], 1, 9) == 'index.php';
 if (!$server) {
     // 用户访问前端
 
