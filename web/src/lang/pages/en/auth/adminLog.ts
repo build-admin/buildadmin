@@ -7,7 +7,7 @@ export default {
     ip: 'IP',
     useragent: 'UserAgent',
     createtime: 'Creation Time',
-    'Operation administrator': 'Operations Administrator',
+    'Operation administrator': 'Operation administrator',
     'Operator IP': 'Operator IP',
     'Request data': 'Request Data',
 }

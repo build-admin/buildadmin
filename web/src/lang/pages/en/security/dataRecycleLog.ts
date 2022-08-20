@@ -6,7 +6,7 @@ export default {
     'Recycling rule name': 'Recycling rule name',
     'Rule name': 'Rule name',
     controller: 'Controller',
-    'data sheet': 'Data sheet',
+    'data sheet': 'Data table',
     DeletedData: 'Deleted data',
     'Arbitrary fragment fuzzy query': 'Arbitrary fragment fuzzy query',
     'Click to expand': 'Click to expand',

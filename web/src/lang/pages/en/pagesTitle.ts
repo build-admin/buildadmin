@@ -3,7 +3,7 @@ export default {
     admin: 'Admin',
     adminLogin: 'Login',
     notFound: 'Page not found',
-    noPower: 'No access',
+    noPower: 'No access permission',
     noTitle: 'No title',
     'Embedded iframe': 'Embedded Iframe',
     Loading: 'Loading...',

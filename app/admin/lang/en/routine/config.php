@@ -13,10 +13,10 @@ return [
     'smtp port'                                                                                         => 'SMTP port',
     'smtp user'                                                                                         => 'SMTP username',
     'smtp pass'                                                                                         => 'SMTP password',
-    'smtp verification'                                                                                 => 'SMTP authentication method',
+    'smtp verification'                                                                                 => 'SMTP verification mode',
     'smtp sender mail'                                                                                  => 'SMTP sender mailbox',
     'Variable name'                                                                                     => 'variable name',
     'Test mail sent successfully~'                                                                      => 'Test message sent successfully',
     'This is a test email'                                                                              => 'This is a test email',
-    'Congratulations, receiving this email means that your email service has been configured correctly' => 'Congratulations, when you receive this email, it means that your mail service is configured correctly. This is the main body of the message<b>, and HtmlL!</b>can be used in the main body.',
+    'Congratulations, receiving this email means that your email service has been configured correctly' => "Congratulations, when you receive this email, it means that your mail service is configures correctly. This is the email subject, <b>you can use HtmlL!</b> in the main body.",
 ];

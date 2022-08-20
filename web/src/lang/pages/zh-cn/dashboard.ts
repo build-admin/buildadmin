@@ -24,7 +24,7 @@ export default {
     month: '月',
     picture: '图片',
     file: '文档',
-    form: '表格',
+    table: '表格',
     'Compressed package': '压缩包',
     Baidu: '百度',
     'Direct access': '直接访问',

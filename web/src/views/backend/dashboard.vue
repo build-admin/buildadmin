@@ -289,7 +289,7 @@ const initFileGrowthChart = () => {
             indicator: [
                 { name: t('dashboard.picture') },
                 { name: t('dashboard.file') },
-                { name: t('dashboard.form') },
+                { name: t('dashboard.table') },
                 { name: t('dashboard.Compressed package') },
             ],
         },
