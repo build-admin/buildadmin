@@ -159,8 +159,6 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
 </script>
 
 <style scoped lang="scss">
-@import '/@/styles/dark/mixins.scss';
-
 .table-header {
     position: relative;
     overflow: hidden;
@@ -226,5 +224,21 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
     }
 }
 
-@include header-index-dark;
+html.dark {
+    .table-search-button-group {
+        button:focus,
+        button:active {
+            background-color: var(--el-color-info-dark-2);
+        }
+        button:hover {
+            background-color: var(--el-color-info-light-7);
+        }
+        button {
+            background-color: #898a8d;
+            el-icon {
+                color: white !important;
+            }
+        }
+    }
+}
 </style>

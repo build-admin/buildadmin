@@ -1,5 +1,5 @@
 @use 'sass:map';
-@use '../mixins.scss' as *;
+@use 'mixins.scss' as *;
 @use 'element-plus/theme-chalk/src/dark/css-vars.scss';
 
 // Background
@@ -10,16 +10,6 @@ $bg-color: map.merge(
         'overlay': #1d1e1f,
     ),
     $bg-color
-);
-
-//  Color Sub
-$color-sub: () !default;
-$color-sub: map.merge(
-    (
-        '1': #363637,
-        '2': #414243,
-    ),
-    $color-sub
 );
 
 // Border
@@ -33,6 +23,5 @@ $border-color: map.merge(
 
 html.dark {
     @include set-component-css-var('bg-color', $bg-color);
-    @include set-component-css-var('color-sub', $color-sub);
     @include set-component-css-var('border-color', $border-color);
 }

@@ -614,8 +614,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import '/@/styles/dark/mixins.scss';
-
 .welcome {
     transition: all 0.3s ease;
     background: #e1eaf9;
@@ -808,6 +806,20 @@ export default defineComponent({
         margin-bottom: 20px;
     }
 }
-
-@include dashboard-dark;
+html.dark {
+    .welcome {
+        background-color: var(--ba-bg-color-overlay); 
+    }
+    .small-panel {
+        background-color: var(--ba-bg-color-overlay);
+        .small-panel-content {
+            color: var(--el-text-color-regular);
+        }
+    }
+    .new-user-item {
+        .new-user-base {
+            color: var(--el-text-color-regular);
+        }
+    }
+}
 </style>
