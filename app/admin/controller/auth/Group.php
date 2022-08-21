@@ -211,16 +211,23 @@ class Group extends Backend
 
     /**
      * 删除
-     * @param null $ids
+     * @param array $ids
      */
-    public function del($ids = null)
+    public function del(array $ids = [])
     {
         if (!$this->request->isDelete() || !$ids) {
             $this->error(__('Parameter error'));
         }
 
-        $pk         = $this->model->getPk();
-        $data       = $this->model->where($pk, 'in', $ids)->select();
+        $pk      = $this->model->getPk();
+        $data    = $this->model->where($pk, 'in', $ids)->select();
+        $subData = $this->model->where('pid', 'in', $ids)->column('pid', 'id');
+        foreach ($subData as $key => $subDatum) {
+            if (!in_array($key, $ids)) {
+                $this->error(__('Please delete the child element first, or use batch deletion'));
+            }
+        }
+
         $adminGroup = Db::name('admin_group_access')->where('uid', $this->auth->id)->column('group_id');
         $count      = 0;
         Db::startTrans();

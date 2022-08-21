@@ -120,9 +120,9 @@ class Menu extends Backend
 
     /**
      * 删除
-     * @param null $ids
+     * @param array $ids
      */
-    public function del($ids = [])
+    public function del(array $ids = [])
     {
         if (!$this->request->isDelete() || !$ids) {
             $this->error(__('Parameter error'));

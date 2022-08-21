@@ -171,9 +171,9 @@ trait Backend
 
     /**
      * 删除
-     * @param null $ids
+     * @param array $ids
      */
-    public function del($ids = null)
+    public function del(array $ids = [])
     {
         if (!$this->request->isDelete() || !$ids) {
             $this->error(__('Parameter error'));
