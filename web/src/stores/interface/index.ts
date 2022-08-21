@@ -13,16 +13,16 @@ export interface Layout {
     menuCollapse: boolean
     menuUniqueOpened: boolean
     menuShowTopBar: boolean
-    menuBackground: string
-    menuColor: string
-    menuActiveBackground: string
-    menuActiveColor: string
-    menuTopBarBackground: string
-    headerBarTabColor: string
-    headerBarBackground: string
-    headerBarHoverBackground: string
-    headerBarTabActiveBackground: string
-    headerBarTabActiveColor: string
+    menuBackground: string[]
+    menuColor: string[]
+    menuActiveBackground: string[]
+    menuActiveColor: string[]
+    menuTopBarBackground: string[]
+    headerBarTabColor: string[]
+    headerBarBackground: string[]
+    headerBarHoverBackground: string[]
+    headerBarTabActiveBackground: string[]
+    headerBarTabActiveColor: string[]
 }
 
 export interface viewMenu {

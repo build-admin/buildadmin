@@ -1,7 +1,12 @@
 <template>
     <div class="nav-bar">
         <div v-if="config.layout.shrink && config.layout.menuCollapse" class="unfold">
-            <Icon @click="onMenuCollapse" name="fa fa-indent" :color="config.layout.menuActiveColor" size="18" />
+            <Icon
+                @click="onMenuCollapse"
+                name="fa fa-indent"
+                :color="config.getColorVal('menuActiveColor')"
+                size="18"
+            />
         </div>
         <NavTabs v-if="!config.layout.shrink" />
         <NavMenus />
@@ -29,7 +34,7 @@ const onMenuCollapse = () => {
     display: flex;
     height: 50px;
     width: 100%;
-    background-color: v-bind('config.layout.headerBarBackground');
+    background-color: v-bind('config.getColorVal("headerBarBackground")');
     :deep(.nav-tabs) {
         display: flex;
         height: 100%;
@@ -43,7 +48,7 @@ const onMenuCollapse = () => {
             z-index: 1;
             height: 100%;
             user-select: none;
-            color: v-bind('config.layout.headerBarTabColor');
+            color: v-bind('config.getColorVal("headerBarTabColor")');
             transition: all 0.2s;
             -webkit-transition: all 0.2s;
             .close-icon {
@@ -56,16 +61,16 @@ const onMenuCollapse = () => {
                 border-radius: 50%;
             }
             &.active {
-                color: v-bind('config.layout.headerBarTabActiveColor');
+                color: v-bind('config.getColorVal("headerBarTabActiveColor")');
             }
             &:hover {
-                background-color: v-bind('config.layout.headerBarHoverBackground');
+                background-color: v-bind('config.getColorVal("headerBarHoverBackground")');
             }
         }
         .nav-tabs-active-box {
             position: absolute;
             height: 50px;
-            background-color: v-bind('config.layout.headerBarTabActiveBackground');
+            background-color: v-bind('config.getColorVal("headerBarTabActiveBackground")');
             transition: all 0.2s;
             -webkit-transition: all 0.2s;
         }

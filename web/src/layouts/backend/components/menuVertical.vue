@@ -6,9 +6,6 @@
             :unique-opened="config.layout.menuUniqueOpened"
             :default-active="state.defaultActive"
             :collapse="config.layout.menuCollapse"
-            :background-color="config.layout.menuBackground"
-            :text-color="config.layout.menuColor"
-            :active-text-color="config.layout.menuActiveColor"
         >
             <MenuTree :menus="navTabs.state.tabsViewRoutes" />
         </el-menu>
@@ -74,5 +71,8 @@ onBeforeRouteUpdate((to) => {
 }
 .layouts-menu-vertical {
     border: 0;
+    --el-menu-bg-color: v-bind('config.getColorVal("menuBackground")');
+    --el-menu-text-color: v-bind('config.getColorVal("menuColor")');
+    --el-menu-active-color: v-bind('config.getColorVal("menuActiveColor")');
 }
 </style>

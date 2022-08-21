@@ -88,21 +88,27 @@
                         <el-divider border-style="dashed">{{ t('layouts.sidebar') }}</el-divider>
                         <div class="layout-config-aside">
                             <el-form-item :label="t('layouts.Side menu bar background color')">
-                                <el-color-picker @change="onCommitState($event, 'menuBackground')" :model-value="configStore.layout.menuBackground" />
+                                <el-color-picker
+                                    @change="onCommitColorState($event, 'menuBackground')"
+                                    :model-value="configStore.getColorVal('menuBackground')"
+                                />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu text color')">
-                                <el-color-picker @change="onCommitState($event, 'menuColor')" :model-value="configStore.layout.menuColor" />
+                                <el-color-picker
+                                    @change="onCommitColorState($event, 'menuColor')"
+                                    :model-value="configStore.getColorVal('menuColor')"
+                                />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu active item background color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'menuActiveBackground')"
-                                    :model-value="configStore.layout.menuActiveBackground"
+                                    @change="onCommitColorState($event, 'menuActiveBackground')"
+                                    :model-value="configStore.getColorVal('menuActiveBackground')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu active item text color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'menuActiveColor')"
-                                    :model-value="configStore.layout.menuActiveColor"
+                                    @change="onCommitColorState($event, 'menuActiveColor')"
+                                    :model-value="configStore.getColorVal('menuActiveColor')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Show side menu top bar (logo bar)')">
@@ -113,8 +119,8 @@
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu top bar background color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'menuTopBarBackground')"
-                                    :model-value="configStore.layout.menuTopBarBackground"
+                                    @change="onCommitColorState($event, 'menuTopBarBackground')"
+                                    :model-value="configStore.getColorVal('menuTopBarBackground')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu width (when expanded)')">
@@ -148,32 +154,32 @@
                         <div class="layout-config-aside">
                             <el-form-item :label="t('layouts.Top bar background color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'headerBarBackground')"
-                                    :model-value="configStore.layout.headerBarBackground"
+                                    @change="onCommitColorState($event, 'headerBarBackground')"
+                                    :model-value="configStore.getColorVal('headerBarBackground')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Top bar text color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'headerBarTabColor')"
-                                    :model-value="configStore.layout.headerBarTabColor"
+                                    @change="onCommitColorState($event, 'headerBarTabColor')"
+                                    :model-value="configStore.getColorVal('headerBarTabColor')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Background color when hovering over the top bar')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'headerBarHoverBackground')"
-                                    :model-value="configStore.layout.headerBarHoverBackground"
+                                    @change="onCommitColorState($event, 'headerBarHoverBackground')"
+                                    :model-value="configStore.getColorVal('headerBarHoverBackground')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Top bar menu active item background color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'headerBarTabActiveBackground')"
-                                    :model-value="configStore.layout.headerBarTabActiveBackground"
+                                    @change="onCommitColorState($event, 'headerBarTabActiveBackground')"
+                                    :model-value="configStore.getColorVal('headerBarTabActiveBackground')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Top bar menu active item text color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'headerBarTabActiveColor')"
-                                    :model-value="configStore.layout.headerBarTabActiveColor"
+                                    @change="onCommitColorState($event, 'headerBarTabActiveColor')"
+                                    :model-value="configStore.getColorVal('headerBarTabActiveColor')"
                                 />
                             </el-form-item>
                         </div>
@@ -203,6 +209,7 @@ import { STORE_CONFIG, BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
 import { Local, Session } from '/@/utils/storage'
 import { useI18n } from 'vue-i18n'
 import { useDark, useToggle } from '@vueuse/core'
+import { Layout } from '/@/stores/interface'
 
 const { t } = useI18n()
 const configStore = useConfig()
@@ -218,6 +225,16 @@ const switchDark = (val: boolean): void => {
 
 const onCommitState = (value: any, name: any) => {
     configStore.setLayout(name, value)
+}
+
+const onCommitColorState = (value: string, name: keyof Layout) => {
+    const colors = configStore.layout[name] as string[]
+    if (configStore.layout.isDark) {
+        colors[1] = value
+    } else {
+        colors[0] = value
+    }
+    configStore.setLayout(name, colors)
 }
 
 const setLayoutMode = (mode: string) => {
@@ -246,6 +263,7 @@ const onCloseDrawer = () => {
 const restoreDefault = () => {
     Local.remove(STORE_CONFIG)
     Session.remove(BEFORE_RESIZE_LAYOUT)
+    toggleDark(false)
     router.go(0)
 }
 </script>

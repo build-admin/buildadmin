@@ -4,21 +4,13 @@
             <Logo />
         </div>
         <el-scrollbar ref="horizontalMenusRef" class="horizontal-menus-scrollbar">
-            <el-menu
-                class="menu-horizontal"
-                mode="horizontal"
-                :default-active="state.defaultActive"
-                :background-color="config.layout.menuBackground"
-                :text-color="config.layout.menuColor"
-                :active-text-color="config.layout.menuActiveColor"
-                :key="state.menuKey"
-            >
+            <el-menu class="menu-horizontal" mode="horizontal" :default-active="state.defaultActive" :key="state.menuKey">
                 <!-- 横向菜单直接使用 <MenuTree :menus="menus" /> 会报警告 -->
                 <template v-for="menu in menus">
                     <template v-if="menu.children && menu.children.length > 0">
                         <el-sub-menu :index="menu.path" :key="menu.path">
                             <template #title>
-                                <Icon :color="config.layout.menuColor" :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon" />
+                                <Icon :color="config.getColorVal('menuColor')" :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon" />
                                 <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
                             </template>
                             <menu-tree :menus="menu.children"></menu-tree>
@@ -26,7 +18,7 @@
                     </template>
                     <template v-else>
                         <el-menu-item :index="menu.path" :key="menu.path" @click="clickMenu(menu)">
-                            <Icon :color="config.layout.menuColor" :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon" />
+                            <Icon :color="config.getColorVal('menuColor')" :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon" />
                             <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
                         </el-menu-item>
                     </template>
@@ -101,11 +93,14 @@ onBeforeRouteUpdate((to) => {
 .menu-horizontal-logo {
     width: 180px;
     &:hover {
-        background-color: v-bind('config.layout.headerBarHoverBackground');
+        background-color: v-bind('config.getColorVal("headerBarHoverBackground")');
     }
 }
 .menu-horizontal {
     border: none;
+    --el-menu-bg-color: v-bind('config.getColorVal("menuBackground")');
+    --el-menu-text-color: v-bind('config.getColorVal("menuColor")');
+    --el-menu-active-color: v-bind('config.getColorVal("menuActiveColor")');
 }
 
 .el-sub-menu .icon,
@@ -119,6 +114,6 @@ onBeforeRouteUpdate((to) => {
     color: var(--el-menu-active-color) !important;
 }
 .el-menu-item.is-active {
-    background-color: v-bind('config.layout.menuActiveBackground');
+    background-color: v-bind('config.getColorVal("menuActiveBackground")');
 }
 </style>

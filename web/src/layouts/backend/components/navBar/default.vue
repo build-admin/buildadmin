@@ -31,7 +31,7 @@ const config = useConfig()
             z-index: 1;
             user-select: none;
             opacity: 0.7;
-            color: v-bind('config.layout.headerBarTabColor');
+            color: v-bind('config.getColorVal("headerBarTabColor")');
             .close-icon {
                 padding: 2px;
                 margin: 2px 0 0 4px;
@@ -42,7 +42,7 @@ const config = useConfig()
                 border-radius: 50%;
             }
             &.active {
-                color: v-bind('config.layout.headerBarTabActiveColor');
+                color: v-bind('config.getColorVal("headerBarTabActiveColor")');
             }
             &:hover {
                 opacity: 1;
@@ -52,7 +52,7 @@ const config = useConfig()
             position: absolute;
             height: 40px;
             border-radius: var(--el-border-radius-base);
-            background-color: v-bind('config.layout.headerBarTabActiveBackground');
+            background-color: v-bind('config.getColorVal("headerBarTabActiveBackground")');
             box-shadow: var(--el-box-shadow-light);
             transition: all 0.2s;
             -webkit-transition: all 0.2s;

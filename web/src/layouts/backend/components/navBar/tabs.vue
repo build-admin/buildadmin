@@ -189,7 +189,7 @@ onMounted(() => {
         -webkit-box-shadow: none;
     }
     &::-webkit-scrollbar-track {
-        background: v-bind('config.layout.layoutMode == "Default" ? "none":"config.layout.headerBarBackground"');
+        background: v-bind('config.layout.layoutMode == "Default" ? "none":config.getColorVal("headerBarBackground")');
     }
     &:hover {
         &::-webkit-scrollbar-thumb:hover {
