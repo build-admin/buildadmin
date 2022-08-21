@@ -173,6 +173,9 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+.close-icon {
+    color: var(--el-text-color-regular);
+}
 .nav-tabs {
     overflow-x: auto;
     overflow-y: hidden;

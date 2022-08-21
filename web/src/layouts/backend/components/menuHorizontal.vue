@@ -87,8 +87,8 @@ onBeforeRouteUpdate((to) => {
     align-items: center;
     width: 100vw;
     height: 60px;
-    background-color: #ffffff;
-    border-bottom: solid 1px #e6e6e6;
+    background-color: var(--ba-bg-color-overlay);
+    border-bottom: solid 1px var(--el-border-color);
 }
 .menu-horizontal-logo {
     width: 180px;

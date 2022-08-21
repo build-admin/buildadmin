@@ -68,7 +68,7 @@ const routerPush = (routeName: string) => {
 <style scoped lang="scss">
 .ba-user-layouts {
     width: 240px;
-    background-color: var(--color-basic-white);
+    background-color: var(--el-color-white);
     box-shadow: var(--el-box-shadow-light);
 }
 .userinfo {
@@ -114,12 +114,12 @@ const routerPush = (routeName: string) => {
 }
 .user-menus {
     font-size: var(--el-font-size-base);
-    color: var(--color-regular);
+    color: var(--el-text-color-regular);
     padding-bottom: 20px;
 }
 .user-menu-max-title {
     font-size: 15px;
-    color: var(--color-secondary);
+    color: var(--el-text-color-secondary);
     padding: 5px 30px;
 }
 .user-menu-item {
@@ -134,18 +134,18 @@ const routerPush = (routeName: string) => {
 }
 .user-menu-item:hover,
 .user-menu-item.active {
-    border-left: 2px solid var(--color-primary);
+    border-left: 2px solid var(--el-color-primary);
     padding-left: 28px;
-    color: var(--color-primary);
+    color: var(--el-color-primary);
     .icon {
-        color: var(--color-primary) !important;
+        color: var(--el-color-primary) !important;
     }
-    background-color: var(--color-bg-1);
+    background-color: var(--ba-bg-color);
 }
 @media screen and (max-width: 991px) {
     .ba-user-layouts {
         width: 100%;
-        background-color: var(--color-basic-white);
+        background-color: var(--el-color-white);
         box-shadow: none;
     }
 }

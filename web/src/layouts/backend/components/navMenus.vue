@@ -182,6 +182,7 @@ const onClearCache = (type: string) => {
         cursor: pointer;
         .nav-menu-icon {
             box-sizing: content-box;
+            color: v-bind('configStore.getColorVal("headerBarTabColor")');
         }
         &:hover {
             .icon {
@@ -231,7 +232,7 @@ const onClearCache = (type: string) => {
     margin: 0 -12px -12px -12px;
     display: flex;
     justify-content: space-around;
-    background: var(--color-bg-2);
+    background: var(--el-fill-color-extra-light);
 }
 .pt2 {
     padding-top: 2px;
