@@ -95,7 +95,7 @@ const adminBaseRoute: RouteRecordRaw = {
         },
         {
             path: 'iframe/:url',
-            name: 'layoutIframe',
+            name: 'adminLayoutIframe',
             component: () => import('/@/layouts/common/router-view/iframe.vue'),
             meta: {
                 title: pageTitle('Embedded iframe'),

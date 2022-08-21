@@ -36,7 +36,7 @@
                 <div
                     v-for="(menu, index) in item.children"
                     :key="index"
-                    @click="routerPush(menu.name!)"
+                    @click="routerPush('', menu)"
                     class="user-menu-item"
                     :class="memberCenter.state.activeRoute?.name == menu.name ? 'active' : ''"
                 >
@@ -52,16 +52,22 @@
 import { useRouter } from 'vue-router'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useMemberCenter } from '/@/stores/memberCenter'
+import { viewMenu } from '/@/stores/interface';
+import { clickMenu } from '/@/utils/router'
 
 const router = useRouter()
 const userInfo = useUserInfo()
 const memberCenter = useMemberCenter()
 
-const routerPush = (routeName: string) => {
+const routerPush = (routeName = '', route?: viewMenu) => {
     if (document.body.clientWidth < 992) {
         memberCenter.toggleMenuExpand(false)
     }
-    router.push({ name: routeName })
+    if (routeName) {
+        router.push({ name: routeName })
+    } else if (route) {
+        clickMenu(route)
+    }
 }
 </script>
 
