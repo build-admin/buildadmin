@@ -119,6 +119,50 @@ class Menu extends Backend
     }
 
     /**
+     * 删除
+     * @param null $ids
+     */
+    public function del($ids = [])
+    {
+        if (!$this->request->isDelete() || !$ids) {
+            $this->error(__('Parameter error'));
+        }
+
+        $dataLimitAdminIds = $this->getDataLimitAdminIds();
+        if ($dataLimitAdminIds) {
+            $this->model->where($this->dataLimitField, 'in', $dataLimitAdminIds);
+        }
+
+        $pk      = $this->model->getPk();
+        $data    = $this->model->where($pk, 'in', $ids)->select();
+        $subData = $this->model->where('pid', 'in', $ids)->column('pid', 'id');
+        foreach ($subData as $key => $subDatum) {
+            if (!in_array($key, $ids)) {
+                $this->error(__('Please delete the child element first, or use batch deletion'));
+            }
+        }
+        $count = 0;
+        Db::startTrans();
+        try {
+            foreach ($data as $v) {
+                $count += $v->delete();
+            }
+            Db::commit();
+        } catch (PDOException $e) {
+            Db::rollback();
+            $this->error($e->getMessage());
+        } catch (Exception $e) {
+            Db::rollback();
+            $this->error($e->getMessage());
+        }
+        if ($count) {
+            $this->success(__('Deleted successfully'));
+        } else {
+            $this->error(__('No rows were deleted'));
+        }
+    }
+
+    /**
      * 重写select方法
      */
     public function select()
