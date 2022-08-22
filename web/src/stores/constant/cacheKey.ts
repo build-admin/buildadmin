@@ -6,7 +6,7 @@
 export const ADMIN_INFO = 'adminInfo'
 
 // WEB端布局配置
-export const STORE_CONFIG = 'storeConfig'
+export const STORE_CONFIG = 'storeConfig_v2'
 // 后台标签页
 export const STORE_TAB_VIEW_CONFIG = 'storeTabViewConfig'
 // 终端
