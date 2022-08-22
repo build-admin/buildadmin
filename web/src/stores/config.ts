@@ -15,18 +15,20 @@ export const useConfig = defineStore(
             layoutMode: 'Default',
             // 后台主页面切换动画，可选值<slide-right|slide-left|el-fade-in-linear|el-fade-in|el-zoom-in-center|el-zoom-in-top|el-zoom-in-bottom>
             mainAnimation: 'slide-right',
+            // 是否暗黑模式
+            isDark: false,
 
             /* 侧边菜单 */
             // 侧边菜单背景色
-            menuBackground: '#ffffff',
+            menuBackground: ['#ffffff', '#1d1e1f'],
             // 侧边菜单文字颜色
-            menuColor: '#303133',
+            menuColor: ['#303133', '#CFD3DC'],
             // 侧边菜单激活项背景色
-            menuActiveBackground: '#ffffff',
+            menuActiveBackground: ['#ffffff', '#1d1e1f'],
             // 侧边菜单激活项文字色
-            menuActiveColor: '#409eff',
+            menuActiveColor: ['#409eff', '#3375b9'],
             // 侧边菜单顶栏背景色
-            menuTopBarBackground: '#fcfcfc',
+            menuTopBarBackground: ['#fcfcfc', '#1d1e1f'],
             // 侧边菜单宽度(展开时)，单位px
             menuWidth: 260,
             // 侧边菜单项默认图标
@@ -40,15 +42,15 @@ export const useConfig = defineStore(
 
             /* 顶栏 */
             // 顶栏文字色
-            headerBarTabColor: '#000000',
+            headerBarTabColor: ['#000000', '#CFD3DC'],
             // 顶栏激活项背景色
-            headerBarTabActiveBackground: '#ffffff',
+            headerBarTabActiveBackground: ['#ffffff', '#1d1e1f'],
             // 顶栏激活项文字色
-            headerBarTabActiveColor: '#000000',
+            headerBarTabActiveColor: ['#000000', '#409EFF'],
             // 顶栏背景色
-            headerBarBackground: '#ffffff',
+            headerBarBackground: ['#ffffff', '#1d1e1f'],
             // 顶栏悬停时背景色
-            headerBarHoverBackground: '#f5f5f5',
+            headerBarHoverBackground: ['#f5f5f5', '#18222c'],
         })
 
         const lang = reactive({
@@ -79,10 +81,19 @@ export const useConfig = defineStore(
             layout.layoutMode = data
 
             // 切换布局时，如果是为默认配色方案，对菜单激活背景色重新赋值
-            if (data == 'Classic' && layout.headerBarBackground == '#ffffff' && layout.headerBarBackground == '#ffffff') {
-                layout.headerBarTabActiveBackground = '#f5f5f5'
-            } else if (data == 'Default' && layout.headerBarBackground == '#ffffff' && layout.headerBarTabActiveBackground == '#f5f5f5') {
-                layout.headerBarTabActiveBackground = '#ffffff'
+            const tempValue = layout.isDark ? { idx: 1, color: '#1d1e1f', newColor: '#141414' } : { idx: 0, color: '#ffffff', newColor: '#f5f5f5' }
+            if (
+                data == 'Classic' &&
+                layout.headerBarBackground[tempValue.idx] == tempValue.color &&
+                layout.headerBarTabActiveBackground[tempValue.idx] == tempValue.color
+            ) {
+                layout.headerBarTabActiveBackground[tempValue.idx] = tempValue.newColor
+            } else if (
+                data == 'Default' &&
+                layout.headerBarBackground[tempValue.idx] == tempValue.color &&
+                layout.headerBarTabActiveBackground[tempValue.idx] == tempValue.newColor
+            ) {
+                layout.headerBarTabActiveBackground[tempValue.idx] = tempValue.color
             }
         }
 
@@ -90,7 +101,16 @@ export const useConfig = defineStore(
             layout[name] = value as never
         }
 
-        return { layout, lang, menuWidth, setLang, setLayoutMode, setLayout }
+        const getColorVal = function (name: keyof Layout): string {
+            const colors = layout[name] as string[]
+            if (layout.isDark) {
+                return colors[1]
+            } else {
+                return colors[0]
+            }
+        }
+
+        return { layout, lang, menuWidth, setLang, setLayoutMode, setLayout, getColorVal }
     },
     {
         persist: {

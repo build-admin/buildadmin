@@ -205,7 +205,7 @@ defineExpose({
     margin-left: 6px;
 }
 .ba-data-table :deep(.table-header-cell) .cell {
-    color: var(--color-text-primary);
+    color: var(--el-text-color-primary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -214,7 +214,7 @@ defineExpose({
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
-    background-color: #ffffff;
+    background-color: var(--el-fill-color-blank);
     padding: 13px 15px;
 }
 </style>

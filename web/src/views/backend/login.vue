@@ -2,7 +2,7 @@
     <div>
         <div class="switch-language">
             <el-dropdown size="large" :hide-timeout="50" placement="bottom-end" :hide-on-click="true">
-                <Icon name="fa fa-globe" color="var(--color-secondary)" size="28" />
+                <Icon name="fa fa-globe" color="var(--el-text-color-secondary)" size="28" />
                 <template #dropdown>
                     <el-dropdown-menu class="chang-lang">
                         <el-dropdown-item v-for="item in config.lang.langArray" :key="item.name" @click="editDefaultLang(item.name)">

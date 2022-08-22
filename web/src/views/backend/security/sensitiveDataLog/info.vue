@@ -99,7 +99,7 @@ const onRollback = (id: string) => {
 
 <style scoped lang="scss">
 :deep(.color-red) {
-    color: var(--color-danger) !important;
+    color: var(--el-color-danger) !important;
 }
 .table-el-tree {
     :deep(.el-tree-node) {

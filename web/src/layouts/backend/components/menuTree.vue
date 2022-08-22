@@ -3,7 +3,10 @@
         <template v-if="menu.children && menu.children.length > 0">
             <el-sub-menu :index="menu.path" :key="menu.path">
                 <template #title>
-                    <Icon :color="config.layout.menuColor" :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon" />
+                    <Icon
+                        :color="config.getColorVal('menuColor')"
+                        :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon"
+                    />
                     <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
                 </template>
                 <menu-tree :menus="menu.children"></menu-tree>
@@ -11,7 +14,10 @@
         </template>
         <template v-else>
             <el-menu-item :index="menu.path" :key="menu.path" @click="clickMenu(menu)">
-                <Icon :color="config.layout.menuColor" :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon" />
+                <Icon
+                    :color="config.getColorVal('menuColor')"
+                    :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon"
+                />
                 <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
             </el-menu-item>
         </template>
@@ -44,6 +50,6 @@ const props = withDefaults(defineProps<Props>(), {
     color: var(--el-menu-active-color) !important;
 }
 .el-menu-item.is-active {
-    background-color: v-bind('config.layout.menuActiveBackground');
+    background-color: v-bind('config.getColorVal("menuActiveBackground")');
 }
 </style>

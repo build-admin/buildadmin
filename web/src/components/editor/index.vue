@@ -163,7 +163,7 @@ watch(
 
 <style scoped lang="scss">
 .ba-editor {
-    border: 1px solid var(--color-sub-3);
+    border: 1px solid var(--el-border-color-lighter);
     z-index: 9999;
     :deep(.w-e-scroll) {
         scrollbar-width: none;
@@ -184,6 +184,6 @@ watch(
     }
 }
 .wangeditor-toolbar {
-    border-bottom: 1px solid var(--color-sub-3);
+    border-bottom: 1px solid var(--el-border-color-lighter);
 }
 </style>

@@ -7,21 +7,22 @@ export interface Layout {
     shrink: boolean
     layoutMode: string
     mainAnimation: string
+    isDark: boolean
     menuWidth: number
     menuDefaultIcon: string
     menuCollapse: boolean
     menuUniqueOpened: boolean
     menuShowTopBar: boolean
-    menuBackground: string
-    menuColor: string
-    menuActiveBackground: string
-    menuActiveColor: string
-    menuTopBarBackground: string
-    headerBarTabColor: string
-    headerBarBackground: string
-    headerBarHoverBackground: string
-    headerBarTabActiveBackground: string
-    headerBarTabActiveColor: string
+    menuBackground: string[]
+    menuColor: string[]
+    menuActiveBackground: string[]
+    menuActiveColor: string[]
+    menuTopBarBackground: string[]
+    headerBarTabColor: string[]
+    headerBarBackground: string[]
+    headerBarHoverBackground: string[]
+    headerBarTabActiveBackground: string[]
+    headerBarTabActiveColor: string[]
 }
 
 export interface viewMenu {

@@ -248,7 +248,7 @@ onUnmounted(() => {
         user-select: none;
         &.active,
         &:hover {
-            color: var(--color-primary);
+            color: var(--el-color-primary);
             text-decoration: underline;
         }
     }
@@ -260,15 +260,16 @@ onUnmounted(() => {
     display: inline-block;
     padding: 10px 10px 6px 10px;
     margin: 3px;
-    border: 1px solid var(--color-bg-1);
+    border: 1px solid var(--ba-border-color);
     border-radius: var(--el-border-radius-base);
     cursor: pointer;
+    font-size: 18px;
     .icon {
         height: 18px;
         width: 18px;
     }
     &:hover {
-        border: 1px solid var(--color-primary);
+        border: 1px solid var(--el-color-primary);
     }
 }
 :deep(.el-input-group__prepend) {

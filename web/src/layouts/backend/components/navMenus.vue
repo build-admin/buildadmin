@@ -2,7 +2,7 @@
     <div class="nav-menus" :class="configStore.layout.layoutMode">
         <router-link class="h100" target="_blank" :title="t('home')" to="/">
             <div class="nav-menu-item">
-                <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" name="el-icon-Monitor" size="18" />
+                <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" name="el-icon-Monitor" size="18" />
             </div>
         </router-link>
         <el-dropdown
@@ -15,7 +15,7 @@
             :hide-on-click="true"
         >
             <div class="nav-menu-item pt2" :class="state.currentNavMenu == 'lang' ? 'hover' : ''">
-                <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" name="local-lang" size="18" />
+                <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" name="local-lang" size="18" />
             </div>
             <template #dropdown>
                 <el-dropdown-menu class="dropdown-menu-box">
@@ -27,17 +27,17 @@
         </el-dropdown>
         <div @click="onFullScreen" class="nav-menu-item" :class="state.isFullScreen ? 'hover' : ''">
             <Icon
-                :color="configStore.layout.headerBarTabColor"
+                :color="configStore.getColorVal('headerBarTabColor')"
                 class="nav-menu-icon"
                 v-if="state.isFullScreen"
                 name="local-full-screen-cancel"
                 size="18"
             />
-            <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" v-else name="el-icon-FullScreen" size="18" />
+            <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" v-else name="el-icon-FullScreen" size="18" />
         </div>
         <div v-if="adminInfo.super" @click="terminal.toggle()" class="nav-menu-item pt2">
             <el-badge :is-dot="terminal.state.showDot">
-                <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" name="local-terminal" size="26" />
+                <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" name="local-terminal" size="26" />
             </el-badge>
         </div>
         <el-dropdown
@@ -51,7 +51,7 @@
             :hide-on-click="true"
         >
             <div class="nav-menu-item" :class="state.currentNavMenu == 'clear' ? 'hover' : ''">
-                <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" name="el-icon-Delete" size="18" />
+                <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" name="el-icon-Delete" size="18" />
             </div>
             <template #dropdown>
                 <el-dropdown-menu class="dropdown-menu-box">
@@ -93,7 +93,7 @@
             </div>
         </el-popover>
         <div @click="configStore.setLayout('showDrawer', true)" class="nav-menu-item">
-            <Icon :color="configStore.layout.headerBarTabColor" class="nav-menu-icon" name="fa fa-cogs" size="18" />
+            <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" name="fa fa-cogs" size="18" />
         </div>
         <Config />
         <TerminalVue />
@@ -171,7 +171,7 @@ const onClearCache = (type: string) => {
     align-items: center;
     height: 100%;
     margin-left: auto;
-    background-color: v-bind('configStore.layout.headerBarBackground');
+    background-color: v-bind('configStore.getColorVal("headerBarBackground")');
     overflow: hidden;
     .nav-menu-item {
         height: 100%;
@@ -182,6 +182,7 @@ const onClearCache = (type: string) => {
         cursor: pointer;
         .nav-menu-icon {
             box-sizing: content-box;
+            color: v-bind('configStore.getColorVal("headerBarTabColor")');
         }
         &:hover {
             .icon {
@@ -196,7 +197,7 @@ const onClearCache = (type: string) => {
         align-items: center;
         cursor: pointer;
         user-select: none;
-        color: v-bind('configStore.layout.headerBarTabColor');
+        color: v-bind('configStore.getColorVal("headerBarTabColor")');
     }
     .admin-name {
         padding-left: 6px;
@@ -205,7 +206,7 @@ const onClearCache = (type: string) => {
     .admin-info:hover,
     .nav-menu-item.hover,
     .admin-info.hover {
-        background: v-bind('configStore.layout.headerBarHoverBackground');
+        background: v-bind('configStore.getColorVal("headerBarHoverBackground")');
     }
 }
 .dropdown-menu-box :deep(.el-dropdown-menu__item) {
@@ -231,7 +232,7 @@ const onClearCache = (type: string) => {
     margin: 0 -12px -12px -12px;
     display: flex;
     justify-content: space-around;
-    background: var(--color-bg-2);
+    background: var(--el-fill-color-extra-light);
 }
 .pt2 {
     padding-top: 2px;

@@ -60,6 +60,14 @@
                         </div>
                         <el-divider border-style="dashed">{{ t('layouts.overall situation') }}</el-divider>
                         <div class="layout-config-global">
+                            <el-form-item size="large" :label="t('layouts.Dark mode')">
+                                <el-switch
+                                    v-model="configStore.layout.isDark"
+                                    @change="switchDark($event)"
+                                    active-icon="el-icon-Moon"
+                                    inactive-icon="el-icon-Sunny"
+                                />
+                            </el-form-item>
                             <el-form-item :label="t('layouts.Background page switching animation')">
                                 <el-select
                                     @change="onCommitState($event, 'mainAnimation')"
@@ -80,21 +88,27 @@
                         <el-divider border-style="dashed">{{ t('layouts.sidebar') }}</el-divider>
                         <div class="layout-config-aside">
                             <el-form-item :label="t('layouts.Side menu bar background color')">
-                                <el-color-picker @change="onCommitState($event, 'menuBackground')" :model-value="configStore.layout.menuBackground" />
+                                <el-color-picker
+                                    @change="onCommitColorState($event, 'menuBackground')"
+                                    :model-value="configStore.getColorVal('menuBackground')"
+                                />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu text color')">
-                                <el-color-picker @change="onCommitState($event, 'menuColor')" :model-value="configStore.layout.menuColor" />
+                                <el-color-picker
+                                    @change="onCommitColorState($event, 'menuColor')"
+                                    :model-value="configStore.getColorVal('menuColor')"
+                                />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu active item background color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'menuActiveBackground')"
-                                    :model-value="configStore.layout.menuActiveBackground"
+                                    @change="onCommitColorState($event, 'menuActiveBackground')"
+                                    :model-value="configStore.getColorVal('menuActiveBackground')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu active item text color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'menuActiveColor')"
-                                    :model-value="configStore.layout.menuActiveColor"
+                                    @change="onCommitColorState($event, 'menuActiveColor')"
+                                    :model-value="configStore.getColorVal('menuActiveColor')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Show side menu top bar (logo bar)')">
@@ -105,8 +119,8 @@
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu top bar background color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'menuTopBarBackground')"
-                                    :model-value="configStore.layout.menuTopBarBackground"
+                                    @change="onCommitColorState($event, 'menuTopBarBackground')"
+                                    :model-value="configStore.getColorVal('menuTopBarBackground')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu width (when expanded)')">
@@ -140,32 +154,32 @@
                         <div class="layout-config-aside">
                             <el-form-item :label="t('layouts.Top bar background color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'headerBarBackground')"
-                                    :model-value="configStore.layout.headerBarBackground"
+                                    @change="onCommitColorState($event, 'headerBarBackground')"
+                                    :model-value="configStore.getColorVal('headerBarBackground')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Top bar text color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'headerBarTabColor')"
-                                    :model-value="configStore.layout.headerBarTabColor"
+                                    @change="onCommitColorState($event, 'headerBarTabColor')"
+                                    :model-value="configStore.getColorVal('headerBarTabColor')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Background color when hovering over the top bar')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'headerBarHoverBackground')"
-                                    :model-value="configStore.layout.headerBarHoverBackground"
+                                    @change="onCommitColorState($event, 'headerBarHoverBackground')"
+                                    :model-value="configStore.getColorVal('headerBarHoverBackground')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Top bar menu active item background color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'headerBarTabActiveBackground')"
-                                    :model-value="configStore.layout.headerBarTabActiveBackground"
+                                    @change="onCommitColorState($event, 'headerBarTabActiveBackground')"
+                                    :model-value="configStore.getColorVal('headerBarTabActiveBackground')"
                                 />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Top bar menu active item text color')">
                                 <el-color-picker
-                                    @change="onCommitState($event, 'headerBarTabActiveColor')"
-                                    :model-value="configStore.layout.headerBarTabActiveColor"
+                                    @change="onCommitColorState($event, 'headerBarTabActiveColor')"
+                                    :model-value="configStore.getColorVal('headerBarTabActiveColor')"
                                 />
                             </el-form-item>
                         </div>
@@ -194,14 +208,33 @@ import selector from '/@/components/icon/selector.vue'
 import { STORE_CONFIG, BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
 import { Local, Session } from '/@/utils/storage'
 import { useI18n } from 'vue-i18n'
+import { useDark, useToggle } from '@vueuse/core'
+import { Layout } from '/@/stores/interface'
 
 const { t } = useI18n()
 const configStore = useConfig()
 const navTabs = useNavTabs()
 const router = useRouter()
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
+
+const switchDark = (val: boolean): void => {
+    toggleDark(val)
+    configStore.setLayout('isDark', val)
+}
 
 const onCommitState = (value: any, name: any) => {
     configStore.setLayout(name, value)
+}
+
+const onCommitColorState = (value: string, name: keyof Layout) => {
+    const colors = configStore.layout[name] as string[]
+    if (configStore.layout.isDark) {
+        colors[1] = value
+    } else {
+        colors[0] = value
+    }
+    configStore.setLayout(name, colors)
 }
 
 const setLayoutMode = (mode: string) => {
@@ -230,6 +263,7 @@ const onCloseDrawer = () => {
 const restoreDefault = () => {
     Local.remove(STORE_CONFIG)
     Session.remove(BEFORE_RESIZE_LAYOUT)
+    toggleDark(false)
     router.go(0)
 }
 </script>
@@ -256,22 +290,22 @@ const restoreDefault = () => {
 .layout-mode-style {
     position: relative;
     height: 100px;
-    border: 1px solid var(--color-sub-2);
+    border: 1px solid var(--el-border-color-light);
     border-radius: var(--el-border-radius-small);
     &:hover,
     &.active {
-        border: 1px solid var(--color-primary);
+        border: 1px solid var(--el-color-primary);
     }
     .layout-mode-style-name {
         position: absolute;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--color-primary-sub-5);
+        color: var(--el-color-primary-light-5);
         border-radius: 50%;
         height: 50px;
         width: 50px;
-        border: 1px solid var(--color-primary-sub-4);
+        border: 1px solid var(--el-color-primary-light-3);
     }
     .layout-mode-style-box {
         display: flex;
@@ -287,7 +321,7 @@ const restoreDefault = () => {
         .layout-mode-style-aside {
             width: 18%;
             height: 90%;
-            background-color: var(--color-sub-3);
+            background-color: var(--el-border-color-lighter);
         }
         .layout-mode-style-container-box {
             width: 68%;
@@ -296,12 +330,12 @@ const restoreDefault = () => {
             .layout-mode-style-header {
                 width: 100%;
                 height: 10%;
-                background-color: var(--color-sub-3);
+                background-color: var(--el-border-color-lighter);
             }
             .layout-mode-style-container {
                 width: 100%;
                 height: 85%;
-                background-color: var(--color-sub-4);
+                background-color: var(--el-border-color-extra-light);
                 margin-top: 5%;
             }
         }
@@ -313,7 +347,7 @@ const restoreDefault = () => {
         .layout-mode-style-aside {
             width: 18%;
             height: 100%;
-            background-color: var(--color-sub-3);
+            background-color: var(--el-border-color-lighter);
         }
         .layout-mode-style-container-box {
             width: 82%;
@@ -321,12 +355,12 @@ const restoreDefault = () => {
             .layout-mode-style-header {
                 width: 100%;
                 height: 10%;
-                background-color: var(--color-sub-1);
+                background-color: var(--el-border-color);
             }
             .layout-mode-style-container {
                 width: 100%;
                 height: 90%;
-                background-color: var(--color-sub-4);
+                background-color: var(--el-border-color-extra-light);
             }
         }
     }
@@ -340,12 +374,12 @@ const restoreDefault = () => {
             .layout-mode-style-header {
                 width: 100%;
                 height: 10%;
-                background-color: var(--color-sub-1);
+                background-color: var(--el-border-color);
             }
             .layout-mode-style-container {
                 width: 100%;
                 height: 90%;
-                background-color: var(--color-sub-4);
+                background-color: var(--el-border-color-extra-light);
             }
         }
     }

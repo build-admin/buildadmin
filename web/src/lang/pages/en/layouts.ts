@@ -29,4 +29,5 @@ export default {
     'Restore default': 'Restore default',
     'personal data': 'Personal data',
     cancellation: 'Cancellation',
+    'Dark mode': 'Dark mode',
 }

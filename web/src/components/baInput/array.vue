@@ -73,7 +73,7 @@ watch(
     align-items: center;
     justify-content: center;
     padding: 5px 0;
-    color: var(--color-secondary);
+    color: var(--el-text-color-secondary);
 }
 .ba-array-item {
     margin-bottom: 6px;

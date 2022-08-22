@@ -7,7 +7,7 @@
                     <span class="hidden-xs-only">{{ siteConfig.site_name }}</span>
                 </div>
                 <div v-if="userInfo.id > 0" @click="memberCenter.toggleMenuExpand(true)" class="user-menus-expand hidden-md-and-up">
-                    <Icon name="fa fa-indent" color="var(--color-primary)" size="20" />
+                    <Icon name="fa fa-indent" color="var(--el-color-primary)" size="20" />
                 </div>
                 <el-menu :default-active="state.activeMenu" class="frontend-header-menu" mode="horizontal" :ellipsis="false">
                     <el-menu-item @click="router.push({ name: '/' })" v-blur index="index">{{ $t('index.index') }}</el-menu-item>

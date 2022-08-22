@@ -173,10 +173,13 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+.close-icon {
+    color: var(--el-text-color-regular);
+}
 .nav-tabs {
     overflow-x: auto;
     overflow-y: hidden;
-    margin-right: var(--main-space);
+    margin-right: var(--ba-main-space);
     scrollbar-width: none;
 
     &::-webkit-scrollbar {
@@ -189,7 +192,7 @@ onMounted(() => {
         -webkit-box-shadow: none;
     }
     &::-webkit-scrollbar-track {
-        background: v-bind('config.layout.layoutMode == "Default" ? "none":"config.layout.headerBarBackground"');
+        background: v-bind('config.layout.layoutMode == "Default" ? "none":config.getColorVal("headerBarBackground")');
     }
     &:hover {
         &::-webkit-scrollbar-thumb:hover {

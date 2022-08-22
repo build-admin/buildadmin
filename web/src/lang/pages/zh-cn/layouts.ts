@@ -28,4 +28,5 @@ export default {
     'Restore default': '恢复默认',
     'personal data': '个人资料',
     cancellation: '注销',
+    'Dark mode': '暗黑模式',
 }

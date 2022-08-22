@@ -19,9 +19,9 @@ const siteConfig = useSiteConfig()
     width: 100%;
     justify-content: center;
     align-items: center;
-    background-color: var(--color-sub-1);
+    background-color: var(--el-color-info-light-7);
     a {
-        color: var(--color-secondary);
+        color: var(--el-text-color-secondary);
     }
 }
 </style>

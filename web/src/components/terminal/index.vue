@@ -331,7 +331,7 @@ onMounted(() => {
 .toggle-message-display {
     padding-top: 10px;
     font-size: 13px;
-    color: var(--color-secondary);
+    color: var(--el-text-color-secondary);
     display: flex;
     align-items: center;
     justify-content: center;

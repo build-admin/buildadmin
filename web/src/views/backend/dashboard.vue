@@ -630,12 +630,12 @@ export default defineComponent({
     .welcome-title {
         font-size: 1.5rem;
         line-height: 30px;
-        color: var(--color-primary-sub-0);
+        color: var(--ba-color-primary-light);
     }
     .welcome-note {
         padding-top: 6px;
         font-size: 15px;
-        color: var(--color-text-primary);
+        color: var(--el-text-color-primary);
     }
 }
 .working {
@@ -664,7 +664,7 @@ export default defineComponent({
         width: 100%;
         font-size: 15px;
         text-align: center;
-        color: var(--color-text-primary);
+        color: var(--el-text-color-primary);
     }
     .working-opt {
         position: absolute;
@@ -726,16 +726,16 @@ export default defineComponent({
             margin-left: auto;
         }
         .color-success {
-            color: var(--color-success);
+            color: var(--el-color-success);
         }
         .color-warning {
-            color: var(--color-warning);
+            color: var(--el-color-warning);
         }
         .color-danger {
-            color: var(--color-danger);
+            color: var(--el-color-danger);
         }
         .color-info {
-            color: var(--color-info);
+            color: var(--el-color-secondary);
         }
     }
 }
@@ -772,7 +772,7 @@ export default defineComponent({
     padding: 20px;
     margin: 10px 15px;
     box-shadow: 0 0 30px 0 rgba(82, 63, 105, 0.05);
-    background-color: #fff;
+    background-color: var(--ba-bg-color-overlay);
     .new-user-avatar {
         height: 48px;
         width: 48px;
@@ -804,6 +804,22 @@ export default defineComponent({
 @media screen and (max-width: 1200px) {
     .lg-mb-20 {
         margin-bottom: 20px;
+    }
+}
+html.dark {
+    .welcome {
+        background-color: var(--ba-bg-color-overlay); 
+    }
+    .small-panel {
+        background-color: var(--ba-bg-color-overlay);
+        .small-panel-content {
+            color: var(--el-text-color-regular);
+        }
+    }
+    .new-user-item {
+        .new-user-base {
+            color: var(--el-text-color-regular);
+        }
     }
 }
 </style>

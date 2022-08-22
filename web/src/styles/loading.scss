@@ -3,7 +3,7 @@
     height: 100%;
     position: fixed;
     z-index: 9990;
-    background-color: #f8f8f8;
+    background-color: var(--ba-bg-color);
 }
 .block-loading .block-loading-box {
     position: absolute;

@@ -39,7 +39,7 @@ const memberCenter = useMemberCenter()
     width: 100vw;
     height: 100vh;
     background: url(/@/assets/bg.jpg) repeat;
-    color: var(--color-basic-white);
+    color: var(--el-color-white);
     .main {
         height: calc(100vh - 120px);
         padding: 0;
@@ -77,16 +77,16 @@ const memberCenter = useMemberCenter()
     :deep(.header-logo) {
         span {
             padding-left: 4px;
-            color: var(--color-basic-white);
+            color: var(--el-color-white);
         }
     }
     :deep(.frontend-header-menu) {
         background: transparent;
         .el-menu-item,
         .el-sub-menu .el-sub-menu__title {
-            color: var(--color-basic-white);
+            color: var(--el-color-white);
             &.is-active {
-                color: var(--color-basic-white) !important;
+                color: var(--el-color-white) !important;
             }
             &:hover {
                 background-color: transparent;
@@ -96,7 +96,7 @@ const memberCenter = useMemberCenter()
     }
 }
 .footer {
-    color: var(--color-secondary);
+    color: var(--el-text-color-secondary);
     background-color: transparent !important;
     position: fixed;
     bottom: 0;

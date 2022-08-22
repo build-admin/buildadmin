@@ -159,7 +159,7 @@ export default defineComponent({
     .ba-form-item-label-tip {
         padding-left: 6px;
         font-size: 12px;
-        color: var(--color-secondary);
+        color: var(--el-text-color-secondary);
     }
 }
 .ba-form-item-not-support {

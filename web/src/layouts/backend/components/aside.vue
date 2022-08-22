@@ -27,7 +27,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .layout-aside-Default {
-    background: var(--color-basic-white);
+    background: var(--ba-bg-color-overlay);
     margin: 16px 0 16px 16px;
     height: calc(100vh - 32px);
     box-shadow: var(--el-box-shadow-light);
@@ -37,7 +37,7 @@ export default defineComponent({
     width: v-bind(menuWidth);
 }
 .layout-aside-Classic {
-    background: var(--color-basic-white);
+    background: var(--ba-bg-color-overlay);
     margin: 0px;
     height: 100vh;
     overflow: hidden;
