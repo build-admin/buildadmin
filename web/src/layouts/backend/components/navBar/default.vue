@@ -38,7 +38,7 @@ const config = useConfig()
             }
             .close-icon:hover {
                 background: var(--ba-color-primary-light);
-                color: var(--el-color-white);
+                color: var(--el-border-color) !important;
                 border-radius: 50%;
             }
             &.active {

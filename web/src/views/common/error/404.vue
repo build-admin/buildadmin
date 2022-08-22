@@ -62,7 +62,7 @@ onBeforeUnmount(() => {
     height: 100vh;
     width: 100vw;
     background: #0078d7;
-    color: #fff;
+    color: var(--ba-bg-color-overlay);
     .container {
         width: 50vw;
         .font-h1 {
@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
 }
 .stopcode-a {
     font-size: 16px;
-    color: #fff;
+    color: var(--ba-bg-color-overlay);
     padding-right: 16px;
 }
 

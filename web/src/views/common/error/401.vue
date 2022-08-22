@@ -31,7 +31,7 @@
     justify-content: center;
 }
 .container {
-    color: #fff;
+    color: var(--ba-bg-color-overlay);
     width: 60vw;
     display: flex;
     align-items: center;
@@ -58,7 +58,7 @@
     padding-top: 60px;
 }
 .stopcode-a {
-    color: #fff;
+    color: var(--ba-bg-color-overlay);
     text-decoration: none;
 }
 @media screen and (max-width: 768px) {

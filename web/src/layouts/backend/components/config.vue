@@ -63,7 +63,7 @@
                             <el-form-item size="large" :label="t('layouts.Dark mode')">
                                 <el-switch
                                     v-model="configStore.layout.isDark"
-                                    @change="switchDark($event)"
+                                    @change="switchDark($event as boolean)"
                                     active-icon="el-icon-Moon"
                                     inactive-icon="el-icon-Sunny"
                                 />
@@ -221,6 +221,7 @@ const toggleDark = useToggle(isDark)
 const switchDark = (val: boolean): void => {
     toggleDark(val)
     configStore.setLayout('isDark', val)
+    configStore.onSetLayoutColor()
 }
 
 const onCommitState = (value: any, name: any) => {

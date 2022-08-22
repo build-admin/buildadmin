@@ -239,7 +239,7 @@ const getTagType = (value: string, custom: any): TagProps['type'] => {
 }
 .table-operate .icon {
     font-size: 14px !important;
-    color: #ffffff !important;
+    color: var(--ba-bg-color-overlay) !important;
 }
 .move-button {
     cursor: move;

@@ -1,12 +1,7 @@
 <template>
     <div class="nav-bar">
         <div v-if="config.layout.shrink && config.layout.menuCollapse" class="unfold">
-            <Icon
-                @click="onMenuCollapse"
-                name="fa fa-indent"
-                :color="config.getColorVal('menuActiveColor')"
-                size="18"
-            />
+            <Icon @click="onMenuCollapse" name="fa fa-indent" :color="config.getColorVal('menuActiveColor')" size="18" />
         </div>
         <NavTabs v-if="!config.layout.shrink" />
         <NavMenus />
@@ -57,7 +52,7 @@ const onMenuCollapse = () => {
             }
             .close-icon:hover {
                 background: var(--ba-color-primary-light);
-                color: var(--el-color-white);
+                color: var(--el-border-color) !important;
                 border-radius: 50%;
             }
             &.active {

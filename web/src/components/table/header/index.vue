@@ -73,7 +73,7 @@
                         color="#dcdfe6"
                         plain
                     >
-                        <Icon size="14" class="table-button-icon" name="el-icon-Grid" />
+                        <Icon size="14" name="el-icon-Grid" />
                     </el-button>
                     <template #dropdown>
                         <el-dropdown-menu>
@@ -102,7 +102,7 @@
                         color="#dcdfe6"
                         plain
                     >
-                        <Icon size="14" class="table-button-icon" name="el-icon-Search" />
+                        <Icon size="14" name="el-icon-Search" />
                     </el-button>
                 </el-tooltip>
             </div>
@@ -167,7 +167,7 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
     align-items: center;
     width: 100%;
     max-width: 100%;
-    background-color: var(--el-fill-color-blank);
+    background-color: var(--ba-bg-color-overlay);
     border: 1px solid var(--ba-border-color);
     border-bottom: none;
     padding: 13px 15px;
@@ -177,7 +177,7 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
     }
     .table-header-operate .icon {
         font-size: 14px !important;
-        color: #ffffff !important;
+        color: var(--ba-bg-color-overlay) !important;
     }
     .el-button.is-disabled {
         .icon {
@@ -207,7 +207,7 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
     overflow: hidden;
     button:focus,
     button:active {
-        background-color: var(--el-color-info-dark-2);
+        background-color: var(--ba-bg-color-overlay);
     }
     button:hover {
         background-color: var(--el-color-info-light-7);

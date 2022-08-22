@@ -232,7 +232,6 @@ const onClearCache = (type: string) => {
     margin: 0 -12px -12px -12px;
     display: flex;
     justify-content: space-around;
-    background: var(--el-fill-color-extra-light);
 }
 .pt2 {
     padding-top: 2px;

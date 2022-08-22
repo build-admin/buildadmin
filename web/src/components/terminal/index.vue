@@ -299,7 +299,7 @@ onMounted(() => {
     margin-left: 10px;
 }
 .exec-message {
-    color: #fff;
+    color: var(--ba-bg-color-overlay);
     font-size: 12px;
     line-height: 16px;
     padding: 6px;
@@ -320,7 +320,7 @@ onMounted(() => {
         -webkit-box-shadow: none;
     }
     &::-webkit-scrollbar-track {
-        background: #f5f5f5;
+        background: var(--ba-bg-color);
     }
     &:hover {
         &::-webkit-scrollbar-thumb:hover {

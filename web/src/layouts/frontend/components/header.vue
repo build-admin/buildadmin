@@ -86,7 +86,7 @@ index()
 
 <style scoped lang="scss">
 .header {
-    background-color: #fff;
+    background-color: var(--ba-bg-color-overlay);
     box-shadow: 0px 0px 8px rgba(0 0 0 / 8%);
 }
 .el-header {

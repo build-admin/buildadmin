@@ -259,7 +259,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
         overflow: hidden;
         width: 430px;
         padding: 0;
-        background: #fff;
+        background: var(--ba-bg-color-overlay);
         margin-top: 130px;
     }
     .head {
@@ -279,7 +279,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
             height: 100px;
             width: 100px;
             border-radius: 50%;
-            border: 4px solid #fff;
+            border: 4px solid var(--ba-bg-color-overlay);
             top: -50px;
             right: 175px;
             z-index: 2;

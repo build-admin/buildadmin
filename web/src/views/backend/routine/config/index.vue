@@ -263,7 +263,7 @@ export default defineComponent({
     line-height: 40px;
     border: none;
     padding-left: 20px;
-    background-color: var(--ba-bg-color-overlay);
+    background-color: var(--ba-bg-color);
 }
 .config-tab-pane {
     padding: 5px;

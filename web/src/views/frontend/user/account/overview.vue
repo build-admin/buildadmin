@@ -19,7 +19,11 @@
                                 placement="right"
                                 :content="(userInfo.mobile ? $t('user.user.Filled in') : $t('user.user.Not filled in')) + $t('user.user.mobile')"
                             >
-                                <Icon name="fa fa-tablet" size="16" :color="userInfo.mobile ? 'var(--el-color-primary)' : 'var(--el-text-color-secondary)'" />
+                                <Icon
+                                    name="fa fa-tablet"
+                                    size="16"
+                                    :color="userInfo.mobile ? 'var(--el-color-primary)' : 'var(--el-text-color-secondary)'"
+                                />
                             </el-tooltip>
                         </div>
                         <div class="avatar-icon-item">
@@ -28,7 +32,11 @@
                                 placement="right"
                                 :content="(userInfo.email ? $t('user.user.Filled in') : $t('user.user.Not filled in')) + $t('user.user.mailbox')"
                             >
-                                <Icon name="fa fa-envelope-square" size="14" :color="userInfo.email ? 'var(--el-color-primary)' : 'var(--el-text-color-secondary)'" />
+                                <Icon
+                                    name="fa fa-envelope-square"
+                                    size="14"
+                                    :color="userInfo.email ? 'var(--el-color-primary)' : 'var(--el-text-color-secondary)'"
+                                />
                             </el-tooltip>
                         </div>
                     </div>
@@ -179,7 +187,7 @@ onBeforeMount(() => {
 .overview-userinfo {
     display: flex;
     width: 100%;
-    background-color: #fff;
+    background-color: var(--ba-bg-color-overlay);
     overflow: hidden;
     .user-avatar {
         width: 100px;

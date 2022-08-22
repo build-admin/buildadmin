@@ -96,7 +96,7 @@ onMounted(() => {
     color: var(--el-text-color-secondary);
 }
 .log-item {
-    border-bottom: 1px solid var(--ba-border-color);
+    border-bottom: 1px solid var(--ba-bg-color);
     padding: 15px 0;
     div {
         padding: 4px 0;

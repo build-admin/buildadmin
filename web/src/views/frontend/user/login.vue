@@ -517,7 +517,7 @@ onUnmounted(() => {
     width: 460px;
     margin: 40px auto;
     padding: 10px 60px 70px 60px;
-    background-color: #fff;
+    background-color: var(--ba-bg-color-overlay);
 }
 .login-title {
     text-align: center;

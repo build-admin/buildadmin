@@ -214,7 +214,7 @@ defineExpose({
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
-    background-color: var(--el-fill-color-blank);
+    background-color: var(--ba-bg-color-overlay);
     padding: 13px 15px;
 }
 </style>

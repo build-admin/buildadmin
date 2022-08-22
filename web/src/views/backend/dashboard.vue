@@ -673,7 +673,7 @@ export default defineComponent({
         background-color: rgba($color: #000000, $alpha: 0.3);
         padding: 10px 20px;
         border-radius: 20px;
-        color: #fff;
+        color: var(--ba-bg-color-overlay);
         transition: all 0.3s ease;
         cursor: pointer;
         opacity: 0;
@@ -735,7 +735,7 @@ export default defineComponent({
             color: var(--el-color-danger);
         }
         .color-info {
-            color: var(--el-color-secondary);
+            color: var(--el-text-color-secondary);
         }
     }
 }

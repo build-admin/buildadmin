@@ -40,7 +40,7 @@
                     class="user-menu-item"
                     :class="memberCenter.state.activeRoute?.name == menu.name ? 'active' : ''"
                 >
-                    <Icon :name="menu.icon" size="16" color="var(--color-secondary)" />
+                    <Icon :name="menu.icon" size="16" color="var(--el-text-color-secondary)" />
                     <span>{{ menu.title }}</span>
                 </div>
             </template>
@@ -110,7 +110,7 @@ const routerPush = (routeName = '', route?: viewMenu) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #fff;
+    background-color: var(--ba-bg-color-overlay);
     border-radius: 50%;
     box-shadow: var(--el-box-shadow);
 }

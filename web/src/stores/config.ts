@@ -77,9 +77,7 @@ export const useConfig = defineStore(
             lang.defaultLang = val
         }
 
-        function setLayoutMode(data: string) {
-            layout.layoutMode = data
-
+        function onSetLayoutColor(data = layout.layoutMode) {
             // 切换布局时，如果是为默认配色方案，对菜单激活背景色重新赋值
             const tempValue = layout.isDark ? { idx: 1, color: '#1d1e1f', newColor: '#141414' } : { idx: 0, color: '#ffffff', newColor: '#f5f5f5' }
             if (
@@ -97,6 +95,11 @@ export const useConfig = defineStore(
             }
         }
 
+        function setLayoutMode(data: string) {
+            layout.layoutMode = data
+            onSetLayoutColor(data)
+        }
+
         const setLayout = (name: keyof Layout, value: any) => {
             layout[name] = value as never
         }
@@ -110,7 +113,7 @@ export const useConfig = defineStore(
             }
         }
 
-        return { layout, lang, menuWidth, setLang, setLayoutMode, setLayout, getColorVal }
+        return { layout, lang, menuWidth, setLang, setLayoutMode, setLayout, getColorVal, onSetLayoutColor }
     },
     {
         persist: {
