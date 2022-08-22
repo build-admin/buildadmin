@@ -68,6 +68,7 @@ onBeforeRouteUpdate((to) => {
 <style>
 .vertical-menus-scrollbar {
     height: v-bind(verticalMenusScrollbarHeight);
+    background-color: v-bind('config.getColorVal("menuBackground")');
 }
 .layouts-menu-vertical {
     border: 0;

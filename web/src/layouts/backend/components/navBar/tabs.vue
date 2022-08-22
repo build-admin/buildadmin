@@ -173,8 +173,15 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.close-icon {
-    color: var(--el-text-color-regular);
+.dark {
+    .close-icon {
+        color: v-bind('config.getColorVal("headerBarTabColor")') !important;
+    }
+    .ba-nav-tab.active {
+        .close-icon {
+            color: v-bind('config.getColorVal("headerBarTabActiveColor")') !important;
+        }
+    }
 }
 .nav-tabs {
     overflow-x: auto;
