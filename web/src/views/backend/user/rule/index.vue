@@ -36,7 +36,7 @@ const baTable = new baTableClass(
     {
         expandAll: true,
         column: [
-            { type: 'selection', align: 'center', operator: false },
+            { type: 'selection', checkShow: false, align: 'center', operator: false },
             { label: t('auth.menu.title'), prop: 'title', align: 'left' },
             { label: t('auth.menu.Icon'), prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
             { label: t('auth.menu.name'), prop: 'name', align: 'center', 'show-overflow-tooltip': true },
@@ -58,6 +58,7 @@ const baTable = new baTableClass(
             {
                 label: t('operate'),
                 align: 'center',
+                checkShow: false,
                 width: '130',
                 render: 'buttons',
                 buttons: defaultOptButtons(),

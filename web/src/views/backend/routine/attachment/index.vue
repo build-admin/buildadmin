@@ -37,7 +37,7 @@ const tableRef = ref()
 
 const baTable = new baTableClass(new baTableApi(routineAttachment), {
     column: [
-        { type: 'selection', align: 'center', operator: false },
+        { type: 'selection', checkShow: false, align: 'center', operator: false },
         { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
         { label: t('routine.attachment.Breakdown'), prop: 'topic', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
         {
@@ -119,6 +119,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
         {
             label: t('operate'),
             align: 'center',
+            checkShow: false,
             width: '100',
             render: 'buttons',
             buttons: defaultOptButtons(['edit', 'delete']),

@@ -36,7 +36,7 @@ const baTable = new sensitiveDataClass(
     new baTableApi(securitySensitiveData),
     {
         column: [
-            { type: 'selection', align: 'center', operator: false },
+            { type: 'selection', checkShow: false, align: 'center', operator: false },
             { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
             { label: t('security.sensitiveData.Rule name'), prop: 'name', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
@@ -82,6 +82,7 @@ const baTable = new sensitiveDataClass(
             {
                 label: t('operate'),
                 align: 'center',
+                checkShow: false,
                 width: '130',
                 render: 'buttons',
                 buttons: defaultOptButtons(['edit', 'delete']),

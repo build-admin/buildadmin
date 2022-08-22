@@ -42,7 +42,7 @@ const baTable = new baTableClass(
         expandAll: true,
         dblClickNotEditColumn: [undefined],
         column: [
-            { type: 'selection', align: 'center' },
+            { type: 'selection', checkShow: false, align: 'center' },
             { label: t('auth.group.Group name'), prop: 'name', align: 'left' },
             { label: t('auth.group.jurisdiction'), prop: 'rules', align: 'center' },
             {
@@ -58,6 +58,7 @@ const baTable = new baTableClass(
             {
                 label: t('operate'),
                 align: 'center',
+                checkShow: false,
                 width: '130',
                 render: 'buttons',
                 buttons: defaultOptButtons(['edit', 'delete']),
