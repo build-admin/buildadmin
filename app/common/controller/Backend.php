@@ -100,6 +100,11 @@ class Backend extends Api
     protected $dataLimitFieldAutoFill = true;
 
     /**
+     * 列表页字段Field
+     */
+    protected $indexField = ['*'];
+
+    /**
      * 引入traits
      * traits内实现了index、add、edit等方法
      */

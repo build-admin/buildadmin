@@ -46,6 +46,7 @@ trait Backend
 
         list($where, $alias, $limit, $order) = $this->queryBuilder();
         $res = $this->model
+            ->field($this->indexField)
             ->withJoin($this->withJoinTable, $this->withJoinType)
             ->alias($alias)
             ->where($where)
