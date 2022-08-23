@@ -28,6 +28,15 @@ return [
     'visit_enable_show_rate_limit' => true,
     // 访问受限时返回的响应
     'visit_fail_response'          => function (Throttle $throttle, Request $request, int $wait_seconds) {
-        return Response::create('Please do not request frequently. Try again in ' . $wait_seconds . ' seconds.')->code(429);
+        return Response::create([
+            'code' => 0,
+            'msg'  => 'Please do not request frequently. Try again in ' . $wait_seconds . ' seconds.',
+        ], 'json')->header([
+            'Access-Control-Allow-Credentials' => 'true',
+            'Access-Control-Max-Age'           => 0,
+            'Access-Control-Allow-Methods'     => '*',
+            'Access-Control-Allow-Headers'     => '*',
+            'Access-Control-Allow-Origin'      => '*',
+        ]);
     },
 ];
