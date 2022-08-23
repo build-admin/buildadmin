@@ -15,7 +15,7 @@
                         {{ baTable.form.extend!.info.id }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.dataRecycleLog.Operation administrator')">
-                        {{ baTable.form.extend!.info.admin?.nickname + '('+baTable.form.extend!.info.admin?.username+')' }}
+                        {{ baTable.form.extend!.info.admin?.nickname + '(' + baTable.form.extend!.info.admin?.username + ')' }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.dataRecycleLog.Recycling rule name')">
                         {{ baTable.form.extend!.info.recycle?.name }}

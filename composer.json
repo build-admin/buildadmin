@@ -27,7 +27,12 @@
         "ext-mysqli": "*",
         "topthink/think-throttle": "^1.3",
         "phpmailer/phpmailer": "^6.6",
-        "symfony/http-foundation": "^2.7 || ^3.0 || ^4.0"
+        "symfony/http-foundation": "^2.7 || ^3.0 || ^4.0",
+        "ext-bcmath": "*",
+        "ext-json": "*",
+        "ext-iconv": "*",
+        "ext-gd": "*",
+        "ext-calendar": "*"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",

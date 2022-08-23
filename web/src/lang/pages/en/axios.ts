@@ -3,7 +3,8 @@ export default {
     'Automatic cancellation due to duplicate request:': 'Automatic cancellation due to duplicate requests:',
     'Interface redirected!': 'Interface redirected!',
     'Incorrect parameter!': 'Incorrect parameter!',
-    'You are not logged in, or the login has timed out. Please login first!': 'You are not logged in or your login has timed out, please login first!',
+    'You are not logged in, or the login has timed out. Please login first!':
+        'You are not logged in or your login has timed out, please login first!',
     'You do not have permission to operate!': 'You have no permission to operate!',
     'Error requesting address:': 'Error requesting address:',
     'Request timed out!': 'Request timeout!',

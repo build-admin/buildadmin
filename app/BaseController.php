@@ -20,7 +20,7 @@ abstract class BaseController
 
     /**
      * 应用实例
-     * @var \think\App
+     * @var App
      */
     protected $app;
 
@@ -87,10 +87,10 @@ abstract class BaseController
 
         // 是否批量验证
         if ($batch || $this->batchValidate) {
-            $v->batch(true);
+            $v->batch();
         }
 
-        return $v->failException(true)->check($data);
+        return $v->failException()->check($data);
     }
 
 }

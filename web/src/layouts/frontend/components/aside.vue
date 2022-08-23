@@ -52,7 +52,7 @@
 import { useRouter } from 'vue-router'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useMemberCenter } from '/@/stores/memberCenter'
-import { viewMenu } from '/@/stores/interface';
+import { viewMenu } from '/@/stores/interface'
 import { clickMenu } from '/@/utils/router'
 
 const router = useRouter()
@@ -103,7 +103,7 @@ const routerPush = (routeName = '', route?: viewMenu) => {
 }
 .user-avatar-gender {
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     right: 10px;
     height: 22px;
     width: 22px;

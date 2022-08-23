@@ -685,7 +685,7 @@ export default defineComponent({
     &:hover {
         .working-opt {
             opacity: 1;
-            top: 0px;
+            top: 0;
         }
         .working-done {
             opacity: 1;
@@ -808,7 +808,7 @@ export default defineComponent({
 }
 html.dark {
     .welcome {
-        background-color: var(--ba-bg-color-overlay); 
+        background-color: var(--ba-bg-color-overlay);
     }
     .small-panel {
         background-color: var(--ba-bg-color-overlay);

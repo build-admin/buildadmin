@@ -26,7 +26,7 @@ class Random
      * @param int    $len  长度
      * @return string
      */
-    public static function build($type = 'alnum', $len = 8)
+    public static function build(string $type = 'alnum', int $len = 8): string
     {
         switch ($type) {
             case 'alpha':
@@ -55,6 +55,7 @@ class Random
             case 'sha1':
                 return sha1(uniqid(mt_rand(), true));
         }
+        return '';
     }
 
 }

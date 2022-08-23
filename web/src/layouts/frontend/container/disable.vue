@@ -27,7 +27,7 @@ import 'element-plus/theme-chalk/display.css'
 }
 @media screen and (max-width: 768px) {
     .user-layouts {
-        padding-top: 0px;
+        padding-top: 0;
     }
 }
 </style>

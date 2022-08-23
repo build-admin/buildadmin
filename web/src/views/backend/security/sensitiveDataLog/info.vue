@@ -15,9 +15,7 @@
                         {{ baTable.form.extend!.info.id }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Operation administrator')">
-                        {{ baTable.form.extend!.info.admin?.nickname +
-                                '(' + baTable.form.extend!.info.admin?.username + ')'
-                        }}
+                        {{ baTable.form.extend!.info.admin?.nickname + '(' + baTable.form.extend!.info.admin?.username + ')' }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Rule name')">
                         {{ baTable.form.extend!.info.sensitive?.name }}
@@ -35,8 +33,9 @@
                         {{ baTable.form.extend!.info.primary_key + '=' + baTable.form.extend!.info.id_value }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Modified item')">
-                        {{ baTable.form.extend!.info.data_field + (baTable.form.extend!.info.data_comment ?
-                                '(' + baTable.form.extend!.info.data_comment + ')' : '')
+                        {{
+                            baTable.form.extend!.info.data_field +
+                            (baTable.form.extend!.info.data_comment ? '(' + baTable.form.extend!.info.data_comment + ')' : '')
                         }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Before modification')" label-class-name="color-red">

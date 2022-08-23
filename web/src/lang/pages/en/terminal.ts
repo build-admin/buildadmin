@@ -1,4 +1,4 @@
- export default {
+export default {
     Terminal: 'Terminal',
     'Command run log': 'Command Run Log',
     'No mission yet': 'There is no task yet',

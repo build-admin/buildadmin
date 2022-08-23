@@ -575,7 +575,7 @@ onUnmounted(() => {
         margin: 0 auto;
     }
     .retrieve-password-form {
-        margin-right: 0px;
+        margin-right: 0;
     }
 }
 </style>

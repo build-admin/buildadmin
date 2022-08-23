@@ -1,4 +1,5 @@
 <?php
+
 namespace app;
 
 // 应用请求对象类

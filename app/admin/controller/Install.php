@@ -12,6 +12,6 @@ class Install
 {
     public function terminal()
     {
-        CommandExec::instance(true)->terminal();
+        CommandExec::instance()->terminal();
     }
 }

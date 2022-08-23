@@ -3,7 +3,6 @@
 namespace app\admin\controller;
 
 use app\common\controller\Backend;
-use think\facade\Db;
 
 class Dashboard extends Backend
 {

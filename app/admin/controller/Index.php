@@ -94,7 +94,7 @@ class Index extends Backend
                 ]);
             } else {
                 $msg = $this->auth->getError();
-                $msg = $msg ? $msg : __('Incorrect user name or password!');
+                $msg = $msg ?: __('Incorrect user name or password!');
                 $this->error($msg);
             }
         }

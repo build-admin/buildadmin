@@ -24,8 +24,7 @@ export default {
     'Background color when hovering over the top bar': 'Top bar hover background color',
     'Top bar menu active item background color': 'Background color of the top bar activation item',
     'Top bar menu active item text color': 'Top bar menu activation item text color',
-    'Are you sure you want to restore all configurations to the default values?':
-        'Are you sure to restore all configurations to the default values?',
+    'Are you sure you want to restore all configurations to the default values?': 'Are you sure to restore all configurations to the default values?',
     'Restore default': 'Restore default',
     'personal data': 'Personal data',
     cancellation: 'Cancellation',

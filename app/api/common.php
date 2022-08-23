@@ -6,7 +6,7 @@ if (!function_exists('get_account_verification_type')) {
      * 用于：用户找回密码|用户注册
      * @return string[] email=电子邮件,mobile=手机短信验证
      */
-    function get_account_verification_type()
+    function get_account_verification_type(): array
     {
         $types = [];
 

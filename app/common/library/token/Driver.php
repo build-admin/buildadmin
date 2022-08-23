@@ -62,7 +62,7 @@ abstract class Driver
     /**
      * 返回句柄对象
      * @access public
-     * @return object
+     * @return object|null
      */
     public function handler()
     {

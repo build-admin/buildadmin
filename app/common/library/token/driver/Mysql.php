@@ -24,7 +24,7 @@ class Mysql extends Driver
      * @param array $options 参数
      * @access public
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (!empty($options)) {
             $this->options = array_merge($this->options, $options);
@@ -70,7 +70,7 @@ class Mysql extends Driver
                 return $data;
             } else {
                 // token过期-触发前端刷新token
-                $response = Response::create(['code' => 409, 'msg' => 'Token expiration'], 'json', 200);
+                $response = Response::create(['code' => 409, 'msg' => 'Token expiration'], 'json');
                 throw new HttpResponseException($response);
             }
         }

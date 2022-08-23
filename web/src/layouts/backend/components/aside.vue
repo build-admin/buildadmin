@@ -38,7 +38,7 @@ export default defineComponent({
 }
 .layout-aside-Classic {
     background: var(--ba-bg-color-overlay);
-    margin: 0px;
+    margin: 0;
     height: 100vh;
     overflow: hidden;
     transition: width 0.3s ease;

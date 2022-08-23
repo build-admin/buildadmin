@@ -83,14 +83,14 @@ class User extends Frontend
                 $res = $this->auth->register($params['username'], $params['password'], $params['mobile'], $params['email']);
             }
 
-            if ($res === true) {
+            if (isset($res) && $res === true) {
                 $this->success(__('Login succeeded!'), [
                     'userinfo'  => $this->auth->getUserInfo(),
                     'routePath' => '/user'
                 ]);
             } else {
                 $msg = $this->auth->getError();
-                $msg = $msg ? $msg : __('Check in failed, please try again or contact the website administrator~');
+                $msg = $msg ?: __('Check in failed, please try again or contact the website administrator~');
                 $this->error($msg);
             }
         }
