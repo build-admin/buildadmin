@@ -194,8 +194,6 @@ class CommandExec
     /**
      * 输出状态标记
      * @param string $flag
-     * @param string $command
-     * @param bool   $callback
      */
     public function outputFlag(string $flag)
     {
@@ -205,8 +203,7 @@ class CommandExec
     public function filterMark($str)
     {
         $preg = '/\[(.*?)m/i';
-        $str  = preg_replace($preg, '', $str);
-        return $str;
+        return preg_replace($preg, '', $str);
     }
 
     public function filterASCII($str)
@@ -225,8 +222,10 @@ class CommandExec
     /**
      * npm Install 时检测是否执行成功
      * @param string $output
+     * @param string $name
+     * @return bool|int
      */
-    public function npmInstallCallback(string $output, $name)
+    public function npmInstallCallback(string $output, string $name)
     {
         if ($name == 'npm') {
             $preg[] = "[added|removed|changed|audited] ([0-9]*) package";

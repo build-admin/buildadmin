@@ -96,13 +96,7 @@ class Rule extends Backend
                 }
                 $result = $row->save($data);
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|Exception|PDOException $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -149,10 +143,7 @@ class Rule extends Backend
                 $count += $v->delete();
             }
             Db::commit();
-        } catch (PDOException $e) {
-            Db::rollback();
-            $this->error($e->getMessage());
-        } catch (Exception $e) {
+        } catch (PDOException|Exception $e) {
             Db::rollback();
             $this->error($e->getMessage());
         }

@@ -65,13 +65,7 @@ class Group extends Backend
                 }
                 $result = $this->model->save($data);
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|Exception|PDOException $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -130,13 +124,7 @@ class Group extends Backend
                 }
                 $result = $row->save($data);
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|Exception|PDOException $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }

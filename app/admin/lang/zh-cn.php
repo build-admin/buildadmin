@@ -36,6 +36,22 @@ return [
     'Password is incorrect'                                                               => '密码不正确',
     'You are not logged in'                                                               => '你没有登录',
     // 权限类语言包-e
+    // 时间格式化-s
+    '%d second%s ago'                                                                     => '%d秒前',
+    '%d minute%s ago'                                                                     => '%d分钟前',
+    '%d hour%s ago'                                                                       => '%d小时前',
+    '%d day%s ago'                                                                        => '%d天前',
+    '%d week%s ago'                                                                       => '%d周前',
+    '%d month%s ago'                                                                      => '%d月前',
+    '%d year%s ago'                                                                       => '%d年前',
+    '%d second%s after'                                                                   => '%d秒后',
+    '%d minute%s after'                                                                   => '%d分钟后',
+    '%d hour%s after'                                                                     => '%d小时后',
+    '%d day%s after'                                                                      => '%d天后',
+    '%d week%s after'                                                                     => '%d周后',
+    '%d month%s after'                                                                    => '%d月后',
+    '%d year%s after'                                                                     => '%d年后',
+    // 时间格式化-e
     'Cache cleaned~'                                                                      => '缓存已清理，请刷新后台~',
     'Please delete the child element first, or use batch deletion'                        => '请首先删除子元素，或使用批量删除！',
 ];

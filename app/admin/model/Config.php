@@ -51,7 +51,7 @@ class Config extends Model
         if (!isset($row['type'])) return $value;
         if (in_array($row['type'], $this->jsonDecodeType)) {
             $arr = json_decode($value, true);
-            return $arr ? $arr : [];
+            return $arr ?: [];
         } elseif ($row['type'] == 'switch') {
             return (bool)$value;
         } elseif ($row['type'] == 'editor') {
@@ -65,7 +65,7 @@ class Config extends Model
             }
             return $value;
         } else {
-            return $value ? $value : '';
+            return $value ?: '';
         }
     }
 
@@ -81,7 +81,7 @@ class Config extends Model
             if ($value && is_array($value)) {
                 return implode(',', $value);
             }
-            return $value ? $value : '';
+            return $value ?: '';
         }
 
         return $value;
@@ -92,17 +92,17 @@ class Config extends Model
         if (!isset($row['type'])) return '';
         if (in_array($row['type'], $this->needContent)) {
             $arr = json_decode($value, true);
-            return $arr ? $arr : [];
+            return $arr ?: [];
         } else {
             return '';
         }
     }
 
-    public function getExtendAttr($value, $row)
+    public function getExtendAttr($value)
     {
         if ($value) {
             $arr = json_decode($value, true);
-            return $arr ? $arr : [];
+            return $arr ?: [];
         }
 
         return [];

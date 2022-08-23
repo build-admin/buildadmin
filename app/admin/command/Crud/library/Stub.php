@@ -150,7 +150,7 @@ class Stub
     public static function buildFormField(&$formFieldList)
     {
         $fieldHtml = "\n";
-        foreach ($formFieldList as &$item) {
+        foreach ($formFieldList as $item) {
             if (in_array($item['type'], self::$formItemType)) {
                 // FormItem
                 $fieldHtml .= self::tab(4) . "<FormItem";
@@ -226,8 +226,7 @@ class Stub
             ];
             $defaultOrderStub = self::getJsonFromArray($defaultOrderStub);
             if ($defaultOrderStub) {
-                $defaultOrderStub = "\n" . self::tab(2) . "defaultOrder: " . $defaultOrderStub . ',';
-                return $defaultOrderStub;
+                return "\n" . self::tab(2) . "defaultOrder: " . $defaultOrderStub . ',';
             }
         }
         return '';
@@ -290,6 +289,6 @@ class Stub
 
     public static function tab(int $num = 1): string
     {
-        return str_pad('', 4 * $num, ' ');
+        return str_pad('', 4 * $num);
     }
 }

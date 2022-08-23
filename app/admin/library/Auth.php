@@ -409,7 +409,7 @@ class Auth extends \ba\Auth
 
     /**
      * 获取错误消息
-     * @return int|mixed|string|null
+     * @return float|int|string
      */
     public function getError()
     {

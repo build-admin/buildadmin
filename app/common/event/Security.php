@@ -8,6 +8,10 @@ use think\facade\Db;
 use think\facade\Log;
 use app\admin\library\Auth;
 use think\db\exception\PDOException;
+use app\admin\model\SensitiveDataLog;
+use app\admin\model\DataRecycle;
+use app\admin\model\DataRecycleLog;
+use app\admin\model\SensitiveData;
 
 class Security
 {
@@ -23,7 +27,7 @@ class Security
         if ($action == 'del') {
             $dataIds = $request->param('ids');
             try {
-                $recycle = \app\admin\model\DataRecycle::where('status', '1')
+                $recycle = DataRecycle::where('status', '1')
                     ->where('controller_as', $request->controllerPath)
                     ->find();
                 if (!$recycle) {
@@ -52,20 +56,18 @@ class Security
                 }
 
                 // saveAll 方法自带事务
-                $dataRecycleLogModel = new \app\admin\model\DataRecycleLog;
-                if ($dataRecycleLogModel->saveAll($recycleDataArr) === false) {
+                $dataRecycleLogModel = new DataRecycleLog;
+                if (!$dataRecycleLogModel->saveAll($recycleDataArr)) {
                     Log::record('[ DataSecurity ] Failed to recycle data:' . var_export($recycleDataArr, true), 'warning');
                 }
-            } catch (PDOException $e) {
-                Log::record('[ DataSecurity ]' . $e->getMessage(), 'warning');
-            } catch (Exception $e) {
+            } catch (PDOException|Exception $e) {
                 Log::record('[ DataSecurity ]' . $e->getMessage(), 'warning');
             }
             return true;
         }
 
         try {
-            $sensitiveData = \app\admin\model\SensitiveData::where('status', '1')
+            $sensitiveData = SensitiveData::where('status', '1')
                 ->where('controller_as', $request->controllerPath)
                 ->find();
             if (!$sensitiveData) {
@@ -116,13 +118,11 @@ class Security
                 return true;
             }
 
-            $sensitiveDataLogModel = new \app\admin\model\SensitiveDataLog;
-            if ($sensitiveDataLogModel->saveAll($sensitiveDataLog) === false) {
+            $sensitiveDataLogModel = new SensitiveDataLog;
+            if (!$sensitiveDataLogModel->saveAll($sensitiveDataLog)) {
                 Log::record('[ DataSecurity ] Sensitive data recording failed:' . var_export($sensitiveDataLog, true), 'warning');
             }
-        } catch (PDOException $e) {
-            Log::record('[ DataSecurity ]' . $e->getMessage(), 'warning');
-        } catch (Exception $e) {
+        } catch (PDOException|Exception $e) {
             Log::record('[ DataSecurity ]' . $e->getMessage(), 'warning');
         }
         return true;

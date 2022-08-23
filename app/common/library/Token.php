@@ -130,10 +130,10 @@ class Token
 
     /**
      * 获取驱动配置
-     * @param string $store
-     * @param string $name
-     * @param null   $default
-     * @return array
+     * @param string      $store
+     * @param string|null $name
+     * @param null        $default
+     * @return array|string
      */
     protected function getStoreConfig(string $store, string $name = null, $default = null)
     {
@@ -141,13 +141,13 @@ class Token
             return Arr::get($config, $name, $default);
         }
 
-        throw new \InvalidArgumentException("Store [$store] not found.");
+        throw new InvalidArgumentException("Store [$store] not found.");
     }
 
     /**
      * 获取驱动类型
      * @param string $name
-     * @return array
+     * @return array|string
      */
     protected function resolveType(string $name)
     {

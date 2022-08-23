@@ -4,7 +4,6 @@ namespace app\common\library;
 
 use think\facade\Lang;
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 /**
  * 邮件类

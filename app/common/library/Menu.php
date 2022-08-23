@@ -78,7 +78,7 @@ class Menu
 
         if (!$children || $recursion) {
             $menuRule->delete();
-            self::delete($menuRule->pid, false);
+            self::delete($menuRule->pid);
         }
         return true;
     }

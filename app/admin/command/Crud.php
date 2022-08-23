@@ -2,6 +2,7 @@
 
 namespace app\admin\command;
 
+use FilesystemIterator;
 use think\Exception;
 use think\facade\Db;
 use think\facade\Lang;
@@ -14,6 +15,7 @@ use app\admin\model\MenuRule;
 use think\console\input\Option;
 use think\exception\ErrorException;
 use app\admin\command\Crud\library\Stub;
+use UnexpectedValueException;
 
 class Crud extends Command
 {
@@ -393,7 +395,7 @@ class Crud extends Command
         $controller = $this->getOption('controller');
         // 自定义模型
         $model = $this->getOption('model');
-        $model = $model ? $model : $controller;
+        $model = $model ?: $controller;
         // 验证器类
         $validate = $model;
         // 自定义显示字段
@@ -523,7 +525,7 @@ class Crud extends Command
 
         // 处理基础文件名，取消所有下划线并转换为小写
         $baseNameArr  = $controllerArr;
-        $baseFileName = parse_name(array_pop($baseNameArr), 0);
+        $baseFileName = parse_name(array_pop($baseNameArr));
         array_push($baseNameArr, $baseFileName);
         $controllerBaseName = strtolower(implode(DIRECTORY_SEPARATOR, $baseNameArr));
 
@@ -539,7 +541,7 @@ class Crud extends Command
         $controllerUrl        = '/admin/' . preg_replace("/\//", '.', $controllerUrl) . '/';
         $controllerUrlVarName = '';
         foreach ($viewArr as $item) {
-            $controllerUrlVarName .= parse_name($item, 1, true);
+            $controllerUrlVarName .= parse_name($item, 1);
         }
         $controllerUrlVarName = lcfirst($controllerUrlVarName);
 
@@ -555,7 +557,7 @@ class Crud extends Command
         $delete = $this->getOption('delete');
         if ($delete) {
             $readyFiles = [$controllerFile, $modelFile, $validateFile, $formFile, $indexFile, $webLangZhCnFile, $webLangEnFile];
-            foreach ($readyFiles as $k => $v) {
+            foreach ($readyFiles as $v) {
                 $output->warning($v);
             }
             if (!$force) {
@@ -565,7 +567,7 @@ class Crud extends Command
                     throw new Exception('Operation is aborted!');
                 }
             }
-            foreach ($readyFiles as $k => $v) {
+            foreach ($readyFiles as $v) {
                 if (file_exists($v)) {
                     unlink($v);
                 }
@@ -618,20 +620,20 @@ class Crud extends Command
         // 加载主表的列
         $columnList = $dbconnect->query($sql, [$dbname, $modelTableName]);
         $fieldArr   = [];
-        foreach ($columnList as $k => $v) {
+        foreach ($columnList as $v) {
             $fieldArr[] = $v['COLUMN_NAME'];
         }
 
         // 加载关联表的列
-        foreach ($relations as $index => &$relation) {
+        foreach ($relations as &$relation) {
             $relationColumnList = $dbconnect->query($sql, [$dbname, $relation['relationTableName']]);
 
             $relationFieldList = [];
-            foreach ($relationColumnList as $k => $v) {
+            foreach ($relationColumnList as $v) {
                 $relationFieldList[] = $v['COLUMN_NAME'];
             }
             if (!$relation['relationPrimaryKey']) {
-                foreach ($relationColumnList as $k => $v) {
+                foreach ($relationColumnList as $v) {
                     if ($v['COLUMN_KEY'] == 'PRI') {
                         $relation['relationPrimaryKey'] = $v['COLUMN_NAME'];
                         break;
@@ -652,10 +654,9 @@ class Crud extends Command
         unset($relation);
 
         // 检查主键是否存在
-        $priKey             = '';// 主键
-        $relationPrimaryKey = '';// 关联主键
+        $priKey = '';// 主键
 
-        foreach ($columnList as $k => $v) {
+        foreach ($columnList as $v) {
             if ($v['COLUMN_KEY'] == 'PRI') {
                 $priKey = $v['COLUMN_NAME'];
                 break;
@@ -676,10 +677,10 @@ class Crud extends Command
         }
 
         // 如果是关联模型
-        foreach ($relations as $index => &$relation) {
+        foreach ($relations as &$relation) {
             if ($relation['relationMode'] == 'hasone') {
-                $relationForeignKey = $relation['relationForeignKey'] ? $relation['relationForeignKey'] : $table . '_id';
-                $relationPrimaryKey = $relation['relationPrimaryKey'] ? $relation['relationPrimaryKey'] : $priKey;
+                $relationForeignKey = $relation['relationForeignKey'] ?: $table . '_id';
+                $relationPrimaryKey = $relation['relationPrimaryKey'] ?: $priKey;
 
                 if (!in_array($relationForeignKey, $relation['relationFieldList'])) {
                     throw new Exception('relation table [' . $relation['relationTableName'] . '] must be contain field [' . $relationForeignKey . ']');
@@ -688,8 +689,8 @@ class Crud extends Command
                     throw new Exception('table [' . $modelTableName . '] must be contain field [' . $relationPrimaryKey . ']');
                 }
             } else {
-                $relationForeignKey = $relation['relationForeignKey'] ? $relation['relationForeignKey'] : parse_name($relation['relationName']) . '_id';
-                $relationPrimaryKey = $relation['relationPrimaryKey'] ? $relation['relationPrimaryKey'] : $relation['relationPriKey'];
+                $relationForeignKey = $relation['relationForeignKey'] ?: parse_name($relation['relationName']) . '_id';
+                $relationPrimaryKey = $relation['relationPrimaryKey'] ?: $relation['relationPriKey'];
                 if (!in_array($relationForeignKey, $fieldArr)) {
                     throw new Exception('table [' . $modelTableName . '] must be contain field [' . $relationForeignKey . ']');
                 }
@@ -853,8 +854,8 @@ class Crud extends Command
             }
 
             // 关联表
-            foreach ($relations as $index => $relation) {
-                foreach ($relation['relationColumnList'] as $k => $v) {
+            foreach ($relations as $relation) {
+                foreach ($relation['relationColumnList'] as $v) {
                     // 不显示的字段直接过滤掉
                     if ($relation['relationFields'] && !in_array($v['COLUMN_NAME'], $relation['relationFields'])) {
                         continue;
@@ -948,7 +949,7 @@ class Crud extends Command
                 'tableColumnList'       => $tableColumnList,
                 'dblClickNotEditColumn' => $dblClickNotEditColumn,
                 'optButtons'            => $optButtons,
-                'inputDefaultItems'     => $inputDefaultItems ? $inputDefaultItems : '',
+                'inputDefaultItems'     => $inputDefaultItems ?: '',
                 'defaultOrderStub'      => $defaultOrderStub,
                 'langPrefix'            => $this->langPrefix,
             ]);
@@ -960,9 +961,9 @@ class Crud extends Command
             }
             $formDialogBig = $formDialogBig ? "\n" . Stub::tab(2) . "width='50%'" : '';
             $formVue       = $this->stub->getReplacedStub('html' . DIRECTORY_SEPARATOR . 'form', [
-                'formItem'       => $formFieldList ? $formFieldList : '',
+                'formItem'       => $formFieldList ?: '',
                 'importPackages' => $importPackages,
-                'formItemRules'  => $formItemRules ? $formItemRules : '',
+                'formItemRules'  => $formItemRules ?: '',
                 'formDialogBig'  => $formDialogBig,
             ]);
             Stub::writeToFile($formFile, $formVue);
@@ -997,7 +998,7 @@ class Crud extends Command
             // 如果使用关联模型
             if ($relations) {
                 $relationWithList = $relationMethodList = $relationVisibleFieldList = [];
-                foreach ($relations as $index => $relation) {
+                foreach ($relations as $relation) {
                     // 需要构造关联的方法
                     $relation['relationMethod'] = strtolower($relation['relationName']);
 
@@ -1005,7 +1006,7 @@ class Crud extends Command
                     $relation['relationMode'] = $relation['relationMode'] == 'hasone' ? 'hasOne' : 'belongsTo';
 
                     // 关联字段
-                    $relation['relationPrimaryKey'] = $relation['relationPrimaryKey'] ? $relation['relationPrimaryKey'] : $priKey;
+                    $relation['relationPrimaryKey'] = $relation['relationPrimaryKey'] ?: $priKey;
 
                     // 预载入的方法
                     $relationWithList[] = $relation['relationMethod'];
@@ -1065,7 +1066,7 @@ class Crud extends Command
 
             // 生成关联模型文件
             if ($relations) {
-                foreach ($relations as $i => $relation) {
+                foreach ($relations as $relation) {
                     if (!is_file($relation['relationFile'])) {
                         $relationFileContent = $this->stub->getReplacedStub('relationModel', $relation);
                         Stub::writeToFile($relation['relationFile'], $relationFileContent);
@@ -1252,7 +1253,7 @@ class Crud extends Command
             $parentDir = dirname($parseFile);
             for ($i = 0; $i < count($parseArr); $i++) {
                 try {
-                    $iterator   = new \FilesystemIterator($parentDir);
+                    $iterator   = new FilesystemIterator($parentDir);
                     $isDirEmpty = !$iterator->valid();
                     if ($isDirEmpty) {
                         rmdir($parentDir);
@@ -1260,7 +1261,7 @@ class Crud extends Command
                     } else {
                         return true;
                     }
-                } catch (\UnexpectedValueException $e) {
+                } catch (UnexpectedValueException $e) {
                     return false;
                 }
             }
@@ -1275,8 +1276,7 @@ class Crud extends Command
         $comment = str_replace('，', ',', $comment);
         if (stripos($comment, ':') !== false && stripos($comment, ',') && stripos($comment, '=') !== false) {
             [$fieldLang, $item] = explode(':', $comment);
-            $itemArr = [];
-            foreach (explode(',', $item) as $k => $v) {
+            foreach (explode(',', $item) as $v) {
                 $valArr = explode('=', $v);
                 if (count($valArr) == 2) {
                     [$key, $value] = $valArr;
@@ -1284,7 +1284,7 @@ class Crud extends Command
                 }
             }
         } else {
-            foreach ($item as $k => $v) {
+            foreach ($item as $v) {
                 $itemArr[$v] = is_numeric($v) ? $field . ' ' . $v : $v;
             }
         }
@@ -1348,7 +1348,7 @@ class Crud extends Command
             if (stripos($content, ':') !== false && stripos($content, ',') && stripos($content, '=') !== false) {
                 [$fieldLang, $item] = explode(':', $content);
                 $zhCn[$field] = $fieldLang;
-                foreach (explode(',', $item) as $k => $v) {
+                foreach (explode(',', $item) as $v) {
                     $valArr = explode('=', $v);
                     if (count($valArr) == 2) {
                         [$key, $value] = $valArr;
@@ -1359,20 +1359,14 @@ class Crud extends Command
             } else {
                 $zhCn[$field] = $content;
             }
-
-            return [
-                'en'    => $en,
-                'zh-cn' => $zhCn
-            ];
-        } else {
-            return [
-                'en'    => $en,
-                'zh-cn' => $zhCn
-            ];
         }
+        return [
+            'en'    => $en,
+            'zh-cn' => $zhCn
+        ];
     }
 
-    protected function getFieldInputType(&$v)
+    protected function getFieldInputType($v)
     {
         $inputType = 'string';
         foreach ($this->inputTypeRule as $item) {
@@ -1406,7 +1400,7 @@ class Crud extends Command
     protected function isMatchSuffix($field, $suffixArr)
     {
         $suffixArr = is_array($suffixArr) ? $suffixArr : explode(',', $suffixArr);
-        foreach ($suffixArr as $k => $v) {
+        foreach ($suffixArr as $v) {
             if (preg_match("/{$v}$/i", $field)) {
                 return true;
             }

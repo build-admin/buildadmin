@@ -3,9 +3,7 @@
 namespace app\admin\model;
 
 use think\Model;
-use app\admin\model\Admin;
 use app\admin\library\Auth;
-use app\admin\model\MenuRule;
 
 /**
  * AdminLog模型
@@ -76,22 +74,22 @@ class AdminLog extends Model
         $action     = request()->action(true);
         $path       = $controller . '/' . $action;
         if (self::$urlIgnoreRegex) {
-            foreach (self::$urlIgnoreRegex as $index => $item) {
+            foreach (self::$urlIgnoreRegex as $item) {
                 if (preg_match($item, $path)) {
                     return;
                 }
             }
         }
-        $data = $data ? $data : self::$data;
+        $data = $data ?: self::$data;
         if (!$data) {
             $data = request()->param('', null, 'trim,strip_tags,htmlspecialchars');
             $data = self::pureData($data);
         }
-        $title = $title ? $title : self::$title;
+        $title = $title ?: self::$title;
         if (!$title) {
             $controllerTitle = MenuRule::where('name', $controller)->value('title');
             $title           = MenuRule::where('name', $path)->value('title');
-            $title           = $title ? $title : __('Unknown') . '(' . $action . ')';
+            $title           = $title ?: __('Unknown') . '(' . $action . ')';
             $title           = $controllerTitle ? ($controllerTitle . '-' . $title) : $title;
         }
         self::create([

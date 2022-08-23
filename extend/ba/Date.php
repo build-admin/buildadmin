@@ -48,8 +48,7 @@ class Date
         $time_remote = new DateTime($now, $zone_remote);
         $time_local  = new DateTime($now, $zone_local);
         // Find the offset
-        $offset = $zone_remote->getOffset($time_remote) - $zone_local->getOffset($time_local);
-        return $offset;
+        return $zone_remote->getOffset($time_remote) - $zone_local->getOffset($time_local);
     }
 
     /**
@@ -61,8 +60,7 @@ class Date
      * @param int    $remote timestamp to find the span of
      * @param int    $local  timestamp to use as the baseline
      * @param string $output formatting string
-     * @return  string   when only a single output is requested
-     * @return  array    associative list of all outputs requested
+     * @return  array|string    associative list of all outputs requested|when only a single output is requested
      * @from https://github.com/kohana/ohanzee-helpers/blob/master/src/Date.php
      */
     public static function span($remote, $local = null, $output = 'years,months,weeks,days,hours,minutes,seconds')
@@ -118,8 +116,8 @@ class Date
     /**
      * 格式化 UNIX 时间戳为人易读的字符串
      *
-     * @param int    Unix 时间戳
-     * @param mixed $local 本地时间
+     * @param int   $remote Unix 时间戳
+     * @param mixed $local  本地时间
      *
      * @return    string    格式化的日期字符串
      */
@@ -143,7 +141,7 @@ class Date
                 break;
             }
         }
-        return __("%d {$name}%s ago", $count, ($count > 1 ? 's' : ''));
+        return __("%d {$name}%s ago", [$count, $count > 1 ? 's' : '']);
     }
 
     /**

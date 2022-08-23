@@ -73,10 +73,7 @@ class AdminInfo extends Backend
             try {
                 $result = $row->save($data);
                 Db::commit();
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (PDOException|Exception $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }

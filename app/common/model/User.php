@@ -22,8 +22,7 @@ class User extends Model
     {
         $salt   = Random::build('alnum', 16);
         $passwd = encrypt_password($newPassword, $salt);
-        $ret    = $this->where(['id' => $uid])->update(['password' => $passwd, 'salt' => $salt]);
-        return $ret;
+        return $this->where(['id' => $uid])->update(['password' => $passwd, 'salt' => $salt]);
     }
 
     public function getMoneyAttr($value)

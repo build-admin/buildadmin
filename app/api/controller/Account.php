@@ -64,10 +64,7 @@ class Account extends Frontend
                 $validate->scene('edit')->check($data);
                 $this->auth->getUser()->where('id', $this->auth->id)->update($data);
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
+            } catch (ValidateException|PDOException $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -91,10 +88,7 @@ class Account extends Frontend
                 $validate->scene('changePassword')->check(['password' => $params['newPassword']]);
                 $this->auth->getUser()->resetPassword($this->auth->id, $params['newPassword']);
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
+            } catch (ValidateException|PDOException $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -156,7 +150,7 @@ class Account extends Frontend
             try {
                 $mail->isSMTP();
                 $mail->addAddress($account);
-                $mail->isHTML(true);
+                $mail->isHTML();
                 $mail->setSubject(__('Member registration verification') . '-' . get_sys_config('site_name'));
                 $mail->Body = __('Your verification code is: %s', [$code]);
                 $mail->send();
@@ -192,7 +186,7 @@ class Account extends Frontend
             try {
                 $mail->isSMTP();
                 $mail->addAddress($data['account']);
-                $mail->isHTML(true);
+                $mail->isHTML();
                 $mail->setSubject(__('Retrieve password verification') . '-' . get_sys_config('site_name'));
                 $mail->Body = __('Your verification code is: %s', [$code]);
                 $mail->send();

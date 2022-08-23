@@ -51,6 +51,9 @@ class Captcha
         'reset'    => true,
     ];
 
+    /**
+     * @var \GdImage|resource|null
+     */
     private $image = null; // 验证码图片实例
     private $color = null; // 验证码字体颜色
 
@@ -180,7 +183,7 @@ class Captcha
                 $code[$i] = $captcha ? $captcha[$i] : $this->codeSet[mt_rand(0, strlen($this->codeSet) - 1)];
             }
         }
-        return $captcha ? $captcha : strtoupper(implode('', $code));
+        return $captcha ?: strtoupper(implode('', $code));
     }
 
     /**
@@ -281,10 +284,10 @@ class Captcha
             for ($i = 0; $i < $this->length; $i++) {
                 $code[$i] = $captcha ? $captcha[$i] : $this->codeSet[mt_rand(0, strlen($this->codeSet) - 1)];
                 $codeNX   += mt_rand((int)($this->fontSize * 1.2), (int)($this->fontSize * 1.6));
-                imagettftext($this->image, $this->fontSize, mt_rand(-40, 40), (int)$codeNX, (int)($this->fontSize * 1.6), (int)$this->color, $this->fontttf, $code[$i]);
+                imagettftext($this->image, $this->fontSize, mt_rand(-40, 40), $codeNX, (int)($this->fontSize * 1.6), (int)$this->color, $this->fontttf, $code[$i]);
             }
         }
-        return $captcha ? $captcha : $code;
+        return $captcha ?: $code;
     }
 
     /**
@@ -318,7 +321,7 @@ class Captcha
                 $py = $A * sin($w * $px + $f) + $b + $this->imageH / 2; // y = Asin(ωx+φ) + b
                 $i  = (int)($this->fontSize / 5);
                 while ($i > 0) {
-                    imagesetpixel($this->image, $px + $i, $py + $i, $this->color); // 这里(while)循环画像素点比imagettftext和imagestring用字体大小一次画出（不用这while循环）性能要好很多
+                    imagesetpixel($this->image, $px + $i, $py + $i, (int)$this->color); // 这里(while)循环画像素点比imagettftext和imagestring用字体大小一次画出（不用这while循环）性能要好很多
                     $i--;
                 }
             }
@@ -338,7 +341,7 @@ class Captcha
                 $py = $A * sin($w * $px + $f) + $b + $this->imageH / 2; // y = Asin(ωx+φ) + b
                 $i  = (int)($this->fontSize / 5);
                 while ($i > 0) {
-                    imagesetpixel($this->image, $px + $i, $py + $i, $this->color);
+                    imagesetpixel($this->image, $px + $i, $py + $i, (int)$this->color);
                     $i--;
                 }
             }

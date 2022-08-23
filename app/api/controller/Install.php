@@ -377,17 +377,17 @@ class Install extends Api
 
         $this->success('', [
             'npm_version'         => [
-                'describe' => $npmVersion ? $npmVersion : __('Acquisition failed'),
+                'describe' => $npmVersion ?: __('Acquisition failed'),
                 'state'    => $npmVersionCompare ? self::$ok : self::$warn,
                 'link'     => $npmVersionLink ?? [],
             ],
             'nodejs_version'      => [
-                'describe' => $nodejsVersion ? $nodejsVersion : __('Acquisition failed'),
+                'describe' => $nodejsVersion ?: __('Acquisition failed'),
                 'state'    => $nodejsVersionCompare ? self::$ok : self::$warn,
                 'link'     => $nodejsVersionLink ?? []
             ],
             'npm_package_manager' => [
-                'describe' => $pmVersion ? $pmVersion : __('Acquisition failed'),
+                'describe' => $pmVersion ?: __('Acquisition failed'),
                 'state'    => $pmVersionCompare ? self::$ok : self::$warn,
                 'link'     => $pmVersionLink ?? [],
             ]
@@ -462,10 +462,10 @@ class Install extends Api
             $connect->getPdo()->exec($sql);
         } catch (PDOException $e) {
             $errorMsg = $e->getMessage();
-            $this->error(__('Failed to install SQL execution:%s', [mb_convert_encoding($errorMsg ? $errorMsg : 'unknown', 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')]));
+            $this->error(__('Failed to install SQL execution:%s', [mb_convert_encoding($errorMsg ?: 'unknown', 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')]));
         } catch (Exception $e) {
             $errorMsg = $e->getMessage();
-            $this->error(__('Installation error:%s', [mb_convert_encoding($errorMsg ? $errorMsg : 'unknown', 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')]));
+            $this->error(__('Installation error:%s', [mb_convert_encoding($errorMsg ?: 'unknown', 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')]));
         }
 
         // 写入数据库配置文件
@@ -558,7 +558,7 @@ class Install extends Api
         if (!$result) {
             $this->error(__('File has no write permission:%s', ['public/' . self::$lockFileName]));
         }
-        $this->success('');
+        $this->success();
     }
 
     /**
@@ -638,7 +638,7 @@ class Install extends Api
             $errorMsg = $e->getMessage();
             return [
                 'code' => 0,
-                'msg'  => __('Database connection failed:%s', [mb_convert_encoding($errorMsg ? $errorMsg : 'unknown', 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')])
+                'msg'  => __('Database connection failed:%s', [mb_convert_encoding($errorMsg ?: 'unknown', 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')])
             ];
         }
 

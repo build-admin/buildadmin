@@ -43,10 +43,7 @@ class DataRecycleLog extends Backend
                 }
             }
             Db::commit();
-        } catch (PDOException $e) {
-            Db::rollback();
-            $this->error($e->getMessage());
-        } catch (Exception $e) {
+        } catch (PDOException|Exception $e) {
             Db::rollback();
             $this->error($e->getMessage());
         }

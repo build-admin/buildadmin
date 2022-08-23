@@ -34,7 +34,7 @@ class Config extends Backend
             $item['title']                  = __($item['title']);
             $list[$item['group']]['list'][] = $item;
         }
-        foreach ($configGroup as $key => $item) {
+        foreach ($configGroup as $item) {
             $list[$item['key']]['name']  = $item['key'];
             $list[$item['key']]['title'] = __($item['value']);
 
@@ -97,13 +97,7 @@ class Config extends Backend
                 $result = $this->model->saveAll($configValue);
                 Cache::tag(ConfigModel::$cacheTag)->clear();
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|Exception|PDOException $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -140,13 +134,7 @@ class Config extends Backend
                 $result = $this->model->save($data);
                 Cache::tag(ConfigModel::$cacheTag)->clear();
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|Exception|PDOException $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -176,7 +164,7 @@ class Config extends Backend
 
             $mail->isSMTP();
             $mail->addAddress($data['testMail']);
-            $mail->isHTML(true);
+            $mail->isHTML();
             $mail->setSubject(__('This is a test email') . '-' . get_sys_config('site_name'));
             $mail->Body = __('Congratulations, receiving this email means that your email service has been configured correctly');
             $mail->send();

@@ -221,8 +221,7 @@ class Auth
         foreach ($groups as $g) {
             $ids = array_merge($ids, explode(',', trim($g['rules'], ',')));
         }
-        $ids = array_unique($ids);
-        return $ids;
+        return array_unique($ids);
     }
 
     /**

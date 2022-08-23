@@ -33,7 +33,7 @@ class Ajax extends Backend
         }
 
         $this->success(__('File uploaded successfully'), [
-            'file' => $attachment
+            'file' => $attachment ?? []
         ]);
     }
 
@@ -71,7 +71,7 @@ class Ajax extends Backend
     {
         AdminLog::setTitle(__('changeTerminalConfig'));
         if (CommandExec::instance(false)->changeTerminalConfig()) {
-            $this->success('');
+            $this->success();
         } else {
             $this->error(__('Failed to modify the terminal configuration. Please modify the configuration file manually:%s', ['/config/buildadmin.php']));
         }

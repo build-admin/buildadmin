@@ -104,13 +104,7 @@ class Group extends Backend
                 }
                 $result = $this->model->save($data);
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|Exception|PDOException $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -174,13 +168,7 @@ class Group extends Backend
                 }
                 $result = $row->save($data);
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|Exception|PDOException $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -238,10 +226,7 @@ class Group extends Backend
                 }
             }
             Db::commit();
-        } catch (PDOException $e) {
-            Db::rollback();
-            $this->error($e->getMessage());
-        } catch (Exception $e) {
+        } catch (PDOException|Exception $e) {
             Db::rollback();
             $this->error($e->getMessage());
         }
@@ -257,7 +242,7 @@ class Group extends Backend
         $data = $this->getGroups([['status', '=', 1]]);
 
         if ($this->assembleTree) {
-            $data = $this->tree->assembleTree($this->tree->getTreeArray($data, 'name'));
+            $data = $this->tree->assembleTree($this->tree->getTreeArray($data));
         }
         $this->success('', [
             'options' => $data

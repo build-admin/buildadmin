@@ -10,7 +10,7 @@ use think\exception\ValidateException;
 
 /**
  * 后台控制器trait类
- * 已组合到 @var \app\common\controller\Backend 中
+ * 已导入到 @var \app\common\controller\Backend 中
  * 若需修改此类方法：请复制方法至对应控制器后进行重写
  */
 trait Backend
@@ -90,13 +90,7 @@ trait Backend
                 }
                 $result = $this->model->save($data);
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|PDOException|Exception $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -147,13 +141,7 @@ trait Backend
                 }
                 $result = $row->save($data);
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|PDOException|Exception $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -194,10 +182,7 @@ trait Backend
                 $count += $v->delete();
             }
             Db::commit();
-        } catch (PDOException $e) {
-            Db::rollback();
-            $this->error($e->getMessage());
-        } catch (Exception $e) {
+        } catch (PDOException|Exception $e) {
             Db::rollback();
             $this->error($e->getMessage());
         }
@@ -250,7 +235,7 @@ trait Backend
         $row->save();
         $target->save();
 
-        $this->success('');
+        $this->success();
     }
 
     /**

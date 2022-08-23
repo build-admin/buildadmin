@@ -2,10 +2,12 @@
 // 应用公共文件
 
 use think\facade\Db;
+use think\facade\Lang;
 use think\Response;
 use think\facade\Config;
 use app\admin\model\Config as configModel;
 use think\exception\HttpResponseException;
+use Symfony\Component\HttpFoundation\IpUtils;
 
 if (!function_exists('path_is_writable')) {
     /**
@@ -15,7 +17,7 @@ if (!function_exists('path_is_writable')) {
      */
     function path_is_writable($path): bool
     {
-        if (DIRECTORY_SEPARATOR == '/' && @ini_get('safe_mode') == false) {
+        if (DIRECTORY_SEPARATOR == '/' && !@ini_get('safe_mode')) {
             return is_writable($path);
         }
 
@@ -53,13 +55,13 @@ if (!function_exists('deldir')) {
             return false;
         }
         $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($dirname, RecursiveDirectoryIterator::SKIP_DOTS),
+            new RecursiveDirectoryIterator($dirname, FilesystemIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST
         );
 
         foreach ($files as $fileinfo) {
             if ($fileinfo->isDir()) {
-                deldir($fileinfo->getRealPath(), true);
+                deldir($fileinfo->getRealPath());
             } else {
                 @unlink($fileinfo->getRealPath());
             }
@@ -84,7 +86,7 @@ if (!function_exists('__')) {
         if (is_numeric($name) || !$name) {
             return $name;
         }
-        return \think\facade\Lang::get($name, $vars, $lang);
+        return Lang::get($name, $vars, $lang);
     }
 }
 
@@ -98,7 +100,6 @@ if (!function_exists('get_sys_config')) {
      */
     function get_sys_config($name = '', $group = '', $reduct = true)
     {
-        $config = false;
         if ($name) {
             // 直接使用->value('value')不能使用到模型的类型格式化
             $config = configModel::cache($name, null, configModel::$cacheTag)->where('name', $name)->find();
@@ -133,7 +134,7 @@ if (!function_exists('get_route_remark')) {
         $actionname     = request()->action(true);
         $path           = str_replace('.', '/', $controllername);
 
-        $remark = \think\facade\Db::name('menu_rule')
+        $remark = Db::name('menu_rule')
             ->where('name', $path)
             ->whereOr('name', $path . '/' . $actionname)
             ->value('remark');
@@ -148,16 +149,16 @@ if (!function_exists('full_url')) {
      * @param boolean $domain      是否携带域名 或者直接传入域名
      * @return string
      */
-    function full_url($relativeUrl = false, $domain = true, $default = '')
+    function full_url($relativeUrl = false, bool $domain = true, $default = '')
     {
         $cdnUrl = Config::get('buildadmin.cdn_url');
         if ($domain === true) {
-            $domain = $cdnUrl ? $cdnUrl : request()->domain();
+            $domain = $cdnUrl ?: request()->domain();
         } elseif ($domain === false) {
             $domain = '';
         }
 
-        $relativeUrl = $relativeUrl ? $relativeUrl : $default;
+        $relativeUrl = $relativeUrl ?: $default;
         if (!$relativeUrl) return $domain;
 
         $regex = "/^((?:[a-z]+:)?\/\/|data:image\/)(.*)/i";
@@ -211,9 +212,9 @@ if (!function_exists('build_suffix_svg')) {
         $hue    = $total % 360;
         [$r, $g, $b] = hsv2rgb($hue / 360, 0.3, 0.9);
 
-        $background = $background ? $background : "rgb({$r},{$g},{$b})";
+        $background = $background ?: "rgb({$r},{$g},{$b})";
 
-        $icon = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+        return '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
             <path style="fill:#E2E5E7;" d="M128,0c-17.6,0-32,14.4-32,32v448c0,17.6,14.4,32,32,32h320c17.6,0,32-14.4,32-32V128L352,0H128z"/>
             <path style="fill:#B0B7BD;" d="M384,128h96L352,0v96C352,113.6,366.4,128,384,128z"/>
             <polygon style="fill:#CAD1D8;" points="480,224 384,128 480,128 "/>
@@ -221,17 +222,15 @@ if (!function_exists('build_suffix_svg')) {
             <path style="fill:#CAD1D8;" d="M400,432H96v16h304c8.8,0,16-7.2,16-16v-16C416,424.8,408.8,432,400,432z"/>
             <g><text><tspan x="220" y="380" font-size="124" font-family="Verdana, Helvetica, Arial, sans-serif" fill="white" text-anchor="middle">' . $suffix . '</tspan></text></g>
         </svg>';
-        return $icon;
     }
 }
 
 if (!function_exists('get_area')) {
     function get_area()
     {
-        $province     = request()->get('province', '');
-        $city         = request()->get('city', '');
-        $where        = ['pid' => 0, 'level' => 1];
-        $provincelist = null;
+        $province = request()->get('province', '');
+        $city     = request()->get('city', '');
+        $where    = ['pid' => 0, 'level' => 1];
         if ($province !== '') {
             $where['pid']   = $province;
             $where['level'] = 2;
@@ -240,8 +239,7 @@ if (!function_exists('get_area')) {
                 $where['level'] = 3;
             }
         }
-        $provincelist = Db::name('area')->where($where)->field('id as value,name as label')->select();
-        return $provincelist;
+        return Db::name('area')->where($where)->field('id as value,name as label')->select();
     }
 }
 
@@ -303,7 +301,7 @@ if (!function_exists('ip_check')) {
         $ip       = is_null($ip) ? request()->ip() : $ip;
         $noAccess = get_sys_config('no_access_ip');
         $noAccess = !$noAccess ? [] : array_filter(explode("\n", str_replace("\r\n", "\n", $noAccess)));
-        if ($noAccess && \Symfony\Component\HttpFoundation\IpUtils::checkIp($ip, $noAccess)) {
+        if ($noAccess && IpUtils::checkIp($ip, $noAccess)) {
             $response = Response::create(['msg' => 'No permission request'], 'json', 403);
             throw new HttpResponseException($response);
         }

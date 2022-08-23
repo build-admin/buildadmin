@@ -15,9 +15,9 @@ class UserRule extends model
     protected $createTime = 'createtime';
     protected $updateTime = 'updatetime';
 
-    protected static function onAfterInsert($row)
+    protected static function onAfterInsert($model)
     {
-        $pk = $row->getPk();
-        $row->where($pk, $row[$pk])->update(['weigh' => $row[$pk]]);
+        $pk = $model->getPk();
+        $model->where($pk, $model[$pk])->update(['weigh' => $model[$pk]]);
     }
 }

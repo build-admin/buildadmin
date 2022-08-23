@@ -7,8 +7,8 @@ if (!function_exists('get_controller_list')) {
     {
         $controllerDir = app_path() . 'controller' . DIRECTORY_SEPARATOR;
 
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($controllerDir), \RecursiveIteratorIterator::LEAVES_ONLY
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($controllerDir), RecursiveIteratorIterator::LEAVES_ONLY
         );
 
         $controllerList = [];
@@ -28,7 +28,7 @@ if (!function_exists('get_table_list')) {
     function get_table_list()
     {
         $tableList = [];
-        $tables    = \think\facade\Db::query("SHOW TABLES");
+        $tables    = Db::query("SHOW TABLES");
 
         foreach ($tables as $table) {
             $tableList[reset($table)] = reset($table);

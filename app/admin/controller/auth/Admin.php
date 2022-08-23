@@ -9,7 +9,6 @@ use app\admin\model\Admin as AdminModel;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
 use think\facade\Db;
-use app\admin\model\AdminGroup;
 
 class Admin extends Backend
 {
@@ -71,13 +70,7 @@ class Admin extends Backend
                     Db::name('admin_group_access')->insertAll($groupAccess);
                 }
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|PDOException|Exception $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -146,10 +139,7 @@ class Admin extends Backend
             try {
                 $result = $row->save($data);
                 Db::commit();
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (PDOException|Exception $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -188,10 +178,7 @@ class Admin extends Backend
                     ->delete();
             }
             Db::commit();
-        } catch (PDOException $e) {
-            Db::rollback();
-            $this->error($e->getMessage());
-        } catch (Exception $e) {
+        } catch (PDOException|Exception $e) {
             Db::rollback();
             $this->error($e->getMessage());
         }

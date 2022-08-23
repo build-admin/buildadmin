@@ -171,8 +171,8 @@ class Upload
         } else {
             $suffix = $this->fileInfo['suffix'];
         }
-        $filename   = $filename ? $filename : ($suffix ? substr($this->fileInfo['name'], 0, strripos($this->fileInfo['name'], '.')) : $this->fileInfo['name']);
-        $sha1       = $sha1 ? $sha1 : $this->fileInfo['sha1'];
+        $filename   = $filename ?: ($suffix ? substr($this->fileInfo['name'], 0, strripos($this->fileInfo['name'], '.')) : $this->fileInfo['name']);
+        $sha1       = $sha1 ?: $this->fileInfo['sha1'];
         $replaceArr = [
             '{topic}'    => $this->topic,
             '{year}'     => date("Y"),
@@ -188,9 +188,8 @@ class Upload
             '{.suffix}'  => $suffix ? '.' . $suffix : '',
             '{filesha1}' => $sha1,
         ];
-        $saveName   = $saveName ? $saveName : $this->config['savename'];
-        $saveName   = str_replace(array_keys($replaceArr), array_values($replaceArr), $saveName);
-        return $saveName;
+        $saveName   = $saveName ?: $this->config['savename'];
+        return str_replace(array_keys($replaceArr), array_values($replaceArr), $saveName);
     }
 
     /**
@@ -209,7 +208,7 @@ class Upload
         $this->checkMimetype();
         $this->checkIsImage();
 
-        $saveName  = $saveName ? $saveName : $this->getSaveName();
+        $saveName  = $saveName ?: $this->getSaveName();
         $saveName  = '/' . ltrim($saveName, '/');
         $uploadDir = substr($saveName, 0, strripos($saveName, '/') + 1);
         $fileName  = substr($saveName, strripos($saveName, '/') + 1);

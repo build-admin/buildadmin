@@ -54,9 +54,9 @@ class Tree
         foreach ($arr as $key => $item) {
             $prefix = ($number == $total) ? self::$icon[2] : self::$icon[1];
             if ($level == 2) {
-                $arr[$key][$field] = str_pad('', 4, ' ') . $prefix . $item[$field];
+                $arr[$key][$field] = str_pad('', 4) . $prefix . $item[$field];
             } elseif ($level >= 3) {
-                $arr[$key][$field] = str_pad('', 4, ' ') . ($superiorEnd ? '' : self::$icon[0]) . str_pad('', ($level - 2) * 4, ' ') . $prefix . $item[$field];
+                $arr[$key][$field] = str_pad('', 4) . ($superiorEnd ? '' : self::$icon[0]) . str_pad('', ($level - 2) * 4) . $prefix . $item[$field];
             }
 
             if (isset($item['children']) && $item['children']) {

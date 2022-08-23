@@ -7,7 +7,6 @@ use ba\Random;
 use think\facade\Db;
 use app\common\controller\Backend;
 use app\admin\model\User as UserModel;
-use app\admin\model\UserGroup;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
 
@@ -56,13 +55,7 @@ class User extends Backend
                 $data['password'] = $passwd;
                 $result           = $this->model->save($data);
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|Exception|PDOException $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -88,7 +81,7 @@ class User extends Backend
             if ($password) {
                 $this->model->resetPassword($id, $password);
             }
-            parent::edit($id);
+            parent::edit();
         }
 
         unset($row->salt);

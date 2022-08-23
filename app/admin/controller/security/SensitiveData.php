@@ -46,7 +46,7 @@ class SensitiveData extends Backend
             if ($item->data_fields) {
                 $fields = [];
                 foreach ($item->data_fields as $key => $field) {
-                    $fields[] = $field ? $field : $key;
+                    $fields[] = $field ?: $key;
                 }
                 $item->data_fields = $fields;
             }
@@ -96,13 +96,7 @@ class SensitiveData extends Backend
 
                 $result = $this->model->save($data);
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|Exception|PDOException $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -163,13 +157,7 @@ class SensitiveData extends Backend
 
                 $result = $row->save($data);
                 Db::commit();
-            } catch (ValidateException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (PDOException $e) {
-                Db::rollback();
-                $this->error($e->getMessage());
-            } catch (Exception $e) {
+            } catch (ValidateException|Exception|PDOException $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }

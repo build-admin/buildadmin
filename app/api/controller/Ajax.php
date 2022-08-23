@@ -23,12 +23,12 @@ class Ajax extends Frontend
             $upload     = new Upload($file);
             $attachment = $upload->upload(null, 0, $this->auth->id);
             unset($attachment['createtime'], $attachment['quote']);
-        } catch (Exception | FileException $e) {
+        } catch (Exception|FileException $e) {
             $this->error($e->getMessage());
         }
 
         $this->success(__('File uploaded successfully'), [
-            'file' => $attachment
+            'file' => $attachment ?? []
         ]);
     }
 
