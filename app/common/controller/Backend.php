@@ -100,7 +100,7 @@ class Backend extends Api
     protected $dataLimitFieldAutoFill = true;
 
     /**
-     * 列表页字段Field
+     * 查看请求返回的主表字段控制
      */
     protected $indexField = ['*'];
 

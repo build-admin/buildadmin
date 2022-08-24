@@ -14,6 +14,13 @@ use think\facade\Db;
 class Group extends Backend
 {
     /**
+     * 修改、删除分组时对操作管理员进行鉴权
+     * allAuth=管理员拥有该分组所有权限时允许
+     * allAuthAndOthers=管理员拥有该分组所有权限并拥有额外权限时允许
+     */
+    protected $authMethod = 'allAuthAndOthers';
+
+    /**
      * @var AdminGroup
      */
     protected $model = null;
@@ -33,10 +40,16 @@ class Group extends Backend
      * @var array 远程select初始化传值
      */
     protected $initValue;
+
     /**
      * @var bool 是否组装Tree
      */
     protected $assembleTree;
+
+    /**
+     * 登录管理员的角色组
+     */
+    protected $adminGroups = [];
 
     public function initialize()
     {
@@ -49,6 +62,8 @@ class Group extends Backend
         $this->keyword   = $this->request->request("quick_search");
 
         $this->assembleTree = $isTree && !$this->keyword && !$this->initValue;
+
+        $this->adminGroups = Db::name('admin_group_access')->where('uid', $this->auth->id)->column('group_id');
     }
 
     public function index()
@@ -60,7 +75,7 @@ class Group extends Backend
         $this->success('', [
             'list'   => $this->getGroups(),
             'remark' => get_route_remark(),
-            'group'  => Db::name('admin_group_access')->where('uid', $this->auth->id)->column('group_id'),
+            'group'  => $this->adminGroups,
         ]);
     }
 
@@ -124,6 +139,8 @@ class Group extends Backend
         if (!$row) {
             $this->error(__('Record not found'));
         }
+
+        $this->checkAuth($id);
 
         if ($this->request->isPost()) {
             $data = $this->request->post();
@@ -207,8 +224,11 @@ class Group extends Backend
             $this->error(__('Parameter error'));
         }
 
-        $pk      = $this->model->getPk();
-        $data    = $this->model->where($pk, 'in', $ids)->select();
+        $pk   = $this->model->getPk();
+        $data = $this->model->where($pk, 'in', $ids)->select();
+        foreach ($data as $v) {
+            $this->checkAuth($v->id);
+        }
         $subData = $this->model->where('pid', 'in', $ids)->column('pid', 'id');
         foreach ($subData as $key => $subDatum) {
             if (!in_array($key, $ids)) {
@@ -265,6 +285,11 @@ class Group extends Backend
             $where[] = [$initKey, 'in', $this->initValue];
         }
 
+        if (!$this->auth->isSuperAdmin()) {
+            $authGroups = $this->auth->getallAuthGroups($this->authMethod);
+            $authGroups = array_merge($this->adminGroups, $authGroups);
+            $where[]    = ['id', 'in', $authGroups];
+        }
         $data = $this->model->where($where)->select();
         // 获取第一个权限的名称
         foreach ($data as $datum) {
@@ -283,6 +308,14 @@ class Group extends Backend
             }
         }
         return $this->assembleTree ? $this->tree->assembleChild($data) : $data;
+    }
+
+    public function checkAuth($groupId)
+    {
+        $authGroups = $this->auth->getallAuthGroups($this->authMethod);
+        if (!$this->auth->isSuperAdmin() && !in_array($groupId, $authGroups)) {
+            $this->error(__($this->authMethod == 'allAuth' ? 'You need to have all permissions of this group to operate this group~' : 'You need to have all the permissions of the group and have additional permissions before you can operate the group~'));
+        }
     }
 
 }
