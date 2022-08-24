@@ -21,6 +21,13 @@ class Admin extends Backend
 
     protected $quickSearchField = ['username', 'nickname'];
 
+    /**
+     * 开启数据限制
+     */
+    protected $dataLimit = 'allAuthAndOthers';
+
+    protected $dataLimitField = 'id';
+
     public function initialize()
     {
         parent::initialize();
@@ -89,6 +96,11 @@ class Admin extends Backend
         $row = $this->model->find($id);
         if (!$row) {
             $this->error(__('Record not found'));
+        }
+
+        $dataLimitAdminIds = $this->getDataLimitAdminIds();
+        if ($dataLimitAdminIds && !in_array($row[$this->dataLimitField], $dataLimitAdminIds)) {
+            $this->error(__('You have no permission'));
         }
 
         if ($this->request->isPost()) {
@@ -164,6 +176,11 @@ class Admin extends Backend
     {
         if (!$this->request->isDelete() || !$ids) {
             $this->error(__('Parameter error'));
+        }
+
+        $dataLimitAdminIds = $this->getDataLimitAdminIds();
+        if ($dataLimitAdminIds) {
+            $this->model->where($this->dataLimitField, 'in', $dataLimitAdminIds);
         }
 
         $pk    = $this->model->getPk();
