@@ -2,7 +2,7 @@
 
 namespace app\admin\controller;
 
-use ba\CommandExec;
+use ba\Terminal;
 use think\Exception;
 use think\exception\FileException;
 use app\common\library\Upload;
@@ -72,7 +72,7 @@ class Ajax extends Backend
     public function changeTerminalConfig()
     {
         AdminLog::setTitle(__('changeTerminalConfig'));
-        if (CommandExec::instance(false)->changeTerminalConfig()) {
+        if (Terminal::changeTerminalConfig()) {
             $this->success('');
         } else {
             $this->error(__('Failed to modify the terminal configuration. Please modify the configuration file manually:%s', ['/config/buildadmin.php']));

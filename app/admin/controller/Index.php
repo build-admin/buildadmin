@@ -35,8 +35,8 @@ class Index extends Backend
                 'api_url'   => Config::get('buildadmin.api_url'),
             ],
             'terminal'   => [
-                'install_service_port' => Config::get('buildadmin.install_service_port'),
-                'npm_package_manager'  => Config::get('buildadmin.npm_package_manager'),
+                'install_service_port' => Config::get('terminal.install_service_port'),
+                'npm_package_manager'  => Config::get('terminal.npm_package_manager'),
             ]
         ]);
     }

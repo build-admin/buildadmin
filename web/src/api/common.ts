@@ -11,7 +11,7 @@ export const adminUploadUrl = '/admin/ajax/upload'
 export const adminBuildSuffixSvgUrl = '/admin/ajax/buildSuffixSvg'
 export const adminAreaUrl = '/admin/ajax/area'
 export const getTablePkUrl = '/admin/ajax/getTablePk'
-export const terminalUrl = '/admin/install/terminal'
+export const terminalUrl = '/admin/Terminal/index'
 export const changeTerminalConfigUrl = '/admin/ajax/changeTerminalConfig'
 export const clearCacheUrl = '/admin/ajax/clearCache'
 

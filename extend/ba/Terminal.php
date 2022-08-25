@@ -69,11 +69,9 @@ class Terminal
         'link-success'   => 'command-link-success',
         // 执行成功
         'exec-success'   => 'command-exec-success',
-        // 执行失败
-        'exec-fail'      => 'command-exec-fail',
         // 执行完成
         'exec-completed' => 'command-exec-completed',
-        // 执行出错 - 不区分命令
+        // 执行出错
         'exec-error'     => 'command-exec-error',
     ];
 
@@ -204,8 +202,13 @@ class Terminal
         if ($status['running']) {
             $this->procStatus = 1;
             return true;
-        } elseif ($this->procStatus == 1) {
+        } elseif ($this->procStatus === 1) {
             $this->procStatus = 0;
+            if ($status['exitcode'] === 0) {
+                $this->outputFlag('exec-success');
+            } else {
+                $this->outputFlag('exec-error');
+            }
             return true;
         } else {
             return false;

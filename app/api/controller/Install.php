@@ -7,7 +7,7 @@ use ba\Random;
 use ba\Version;
 use app\common\controller\Api;
 use think\App;
-use ba\CommandExec;
+use ba\Terminal;
 use think\Exception;
 use think\facade\Config;
 use think\facade\Db;
@@ -89,7 +89,7 @@ class Install extends Api
             }
         }
 
-        CommandExec::instance(false)->terminal();
+        Terminal::instance()->exec(false);
     }
 
     public function changePackageManager()
@@ -102,8 +102,8 @@ class Install extends Api
             }
         }
 
-        $newPackageManager = request()->post('manager', Config::get('buildadmin.npm_package_manager'));
-        if (CommandExec::instance(false)->changeTerminalConfig()) {
+        $newPackageManager = request()->post('manager', Config::get('terminal.npm_package_manager'));
+        if (Terminal::changeTerminalConfig()) {
             $this->success('', [
                 'manager' => $newPackageManager
             ]);
@@ -567,7 +567,7 @@ class Install extends Api
      */
     private function commandExecutionCheck()
     {
-        $pm = Config::get('buildadmin.npm_package_manager');
+        $pm = Config::get('terminal.npm_package_manager');
         if ($pm == 'none') {
             return false;
         }
