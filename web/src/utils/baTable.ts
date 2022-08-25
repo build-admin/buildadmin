@@ -560,6 +560,7 @@ export default class baTable {
                 this.comSearch.fieldData.set(prop, {
                     operator: field[key].operator,
                     render: field[key].render,
+                    comSearchRender: field[key].comSearchRender,
                 })
             }
         }

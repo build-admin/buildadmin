@@ -14,11 +14,11 @@
                                             class="datetime-picker"
                                             v-model="baTable.comSearch.form[item.prop!]"
                                             :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:[new Date(), new Date()]"
-                                            type="datetimerange"
+                                            :type="item.comSearchRender == 'date' ? 'daterange' : 'datetimerange'"
                                             range-separator="To"
                                             start-placeholder="Start date"
                                             end-placeholder="End date"
-                                            value-format="YYYY-MM-DD HH:mm:ss"
+                                            :value-format="item.comSearchRender == 'date' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'"
                                         />
                                     </div>
                                 </div>
@@ -48,10 +48,10 @@
                                         <!-- 时间筛选 -->
                                         <el-date-picker
                                             class="datetime-picker"
-                                            v-if="item.render == 'datetime'"
+                                            v-if="item.render == 'datetime' || item.comSearchRender == 'date'"
                                             v-model="baTable.comSearch.form[item.prop!]"
-                                            type="datetime"
-                                            value-format="YYYY-MM-DD HH:mm:ss"
+                                            :type="item.comSearchRender == 'date' ? 'date' : 'datetime'"
+                                            :value-format="item.comSearchRender == 'date' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'"
                                             :placeholder="item.operatorPlaceholder"
                                             :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:new Date()"
                                         ></el-date-picker>
@@ -153,7 +153,11 @@ const onComSearch = () => {
             // 时间范围组件返回的是时间数组
             if (baTable.comSearch.form[key] && baTable.comSearch.form[key].length >= 2) {
                 // 数组转字符串，以实现通过url参数传递预设搜索值
-                val = baTable.comSearch.form[key][0] + ',' + baTable.comSearch.form[key][1]
+                if (fieldDataTemp.comSearchRender == 'date') {
+                    val = baTable.comSearch.form[key][0] + ' 00:00:00' + ',' + baTable.comSearch.form[key][1] + ' 23:59:59'
+                } else {
+                    val = baTable.comSearch.form[key][0] + ',' + baTable.comSearch.form[key][1]
+                }
             }
         } else if (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE') {
             // 普通的范围筛选，baTable在初始化时已准备好start和end字段

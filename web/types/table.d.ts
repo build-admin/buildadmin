@@ -111,7 +111,7 @@ declare global {
         // 通用搜索框的placeholder
         operatorPlaceholder?: string
         // 公共搜索渲染方式:上方的 render=tag|switch 时公共搜索也会渲染为下拉，数字会渲染为范围筛选，时间渲染为时间选择器等
-        comSearchRender?: 'remoteSelect' | 'select' | 'customRender'
+        comSearchRender?: 'remoteSelect' | 'select' | 'date' | 'customRender'
         // 公共搜索自定义组件/函数渲染
         comSearchCustomRender?: string | Component
         // 远程属性
