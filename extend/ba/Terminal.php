@@ -196,7 +196,7 @@ class Terminal
         $this->outputFlag('exec-completed');
     }
 
-    public function getProcStatus()
+    public function getProcStatus(): bool
     {
         $status = proc_get_status($this->process);
         if ($status['running']) {
@@ -205,7 +205,9 @@ class Terminal
         } elseif ($this->procStatus === 1) {
             $this->procStatus = 0;
             if ($status['exitcode'] === 0) {
-                $this->outputFlag('exec-success');
+                if ($this->successCallback()) {
+                    $this->outputFlag('exec-success');
+                }
             } else {
                 $this->outputFlag('exec-error');
             }
@@ -251,6 +253,29 @@ class Terminal
     public function outputCallback($data)
     {
 
+    }
+
+    /**
+     * 成功后回调
+     * @return bool
+     */
+    public function successCallback(): bool
+    {
+        if (stripos($this->commandKey, '.')) {
+            $commandKeyArr = explode('.', $this->commandKey);
+            $commandPKey   = $commandKeyArr[0] ?? '';
+        } else {
+            $commandPKey = $this->commandKey;
+        }
+
+        if ($commandPKey == 'web-build') {
+            if (self::mvDist()) {
+                return true;
+            } else {
+                $this->output('Build succeeded, but move file failed. Please operate manually.');
+            }
+        }
+        return false;
     }
 
     /**
