@@ -35,7 +35,7 @@
             :page-size="state.pageSize"
             :page-sizes="[10, 20, 50, 100]"
             background
-            :layout="config.layout.shrink ? 'prev, next, jumper' : 'sizes, ->, prev, pager, next, jumper'"
+            :layout="config.layout.shrink ? 'prev, next, jumper' : 'sizes,total, ->, prev, pager, next, jumper'"
             :total="baTable.table.total"
             @size-change="onTableSizeChange"
             @current-change="onTableCurrentChange"
