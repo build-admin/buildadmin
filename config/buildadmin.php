@@ -61,6 +61,9 @@ return [
             'taobao' => 'npm config set registry https://registry.npm.taobao.org/ && npm config get registry',
             'rednpm' => 'npm config set registry http://registry.mirror.cqupt.edu.cn/ && npm config get registry'
         ],
+        'composer'                => [
+            'update' => 'cd ../ && composer update',
+        ],
         'ping-baidu'              => 'ping baidu.com',
     ],
     'token'                => [

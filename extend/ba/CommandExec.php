@@ -19,6 +19,11 @@ class CommandExec
     protected static $instance;
 
     /**
+     * 命令执行进程句柄
+     */
+    protected $process = null;
+
+    /**
      * 配置文件名
      */
     static $buildConfigFileName = 'buildadmin.php';
@@ -136,7 +141,7 @@ class CommandExec
         header('Content-Type: text/event-stream');
         header('Cache-Control: no-cache');
 
-        ob_end_flush();
+        if (ob_get_level()) ob_end_clean();
         ob_implicit_flush(1);// 开启绝对刷新
 
         $this->outputExtend = request()->param('extend');
@@ -145,13 +150,13 @@ class CommandExec
         $this->beforeExecution();
         $this->outputFlag('link-success');
         $this->output('> ' . $command, false);
-        if (ob_get_level() == 0) ob_start();
-        $handle = popen($command . ' 2>&1', 'r');
-        while (!feof($handle)) {
-            $this->output(fgets($handle));
+        if (!ob_get_level()) ob_start();
+        $this->process = popen($command . ' 2>&1', 'r');
+        while (!feof($this->process)) {
+            $this->output(fgets($this->process));
             @ob_flush();// 刷新浏览器缓冲区
         }
-        pclose($handle);
+        pclose($this->process);
         $this->outputFlag('exec-completed');
     }
 
@@ -295,6 +300,17 @@ class CommandExec
             ];
             $output = json_decode($output, true);
             if (in_array($commandKeyArr[1], array_keys($urls)) && $output['data'] == $urls[$commandKeyArr[1]]) {
+                $this->outputFlag('exec-success');
+            }
+        } elseif ($this->currentCommandKey == 'composer.update') {
+            if (strpos($output, 'plugin which is currently not in your allow-plugins config') !== false) {
+                $this->execError('Error: interactive support is required, run the command manually.', true);
+                pclose($this->process);
+            } elseif (strpos($output, 'package suggestions were added by new dependencies, use `composer suggest` to see details.')) {
+                $this->outputFlag('exec-success');
+            } elseif (strpos(strtolower($output), 'nothing to install, update or remove')) {
+                $this->outputFlag('exec-success');
+            } elseif (strpos(strtolower($output), 'generating autoload files')) {
                 $this->outputFlag('exec-success');
             }
         }
