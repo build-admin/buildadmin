@@ -204,6 +204,7 @@ class Terminal
             return true;
         } elseif ($this->procStatus === 1) {
             $this->procStatus = 0;
+            $this->output('exitcode: ' . $status['exitcode']);
             if ($status['exitcode'] === 0) {
                 if ($this->successCallback()) {
                     $this->outputFlag('exec-success');
@@ -269,13 +270,12 @@ class Terminal
         }
 
         if ($commandPKey == 'web-build') {
-            if (self::mvDist()) {
-                return true;
-            } else {
+            if (!self::mvDist()) {
                 $this->output('Build succeeded, but move file failed. Please operate manually.');
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     /**
