@@ -38,11 +38,15 @@
                             'remote-url': baTable.api.actionUrl.get('index'),
                         }"
                     />
-                    <el-form-item :label="t('auth.menu.Rule type')">
-                        <el-radio v-model="baTable.form.items!.type" label="menu_dir" :border="true">{{ t('auth.menu.type menu_dir') }}</el-radio>
-                        <el-radio v-model="baTable.form.items!.type" label="menu" :border="true">{{ t('auth.menu.type menu') }}</el-radio>
-                        <el-radio v-model="baTable.form.items!.type" label="button" :border="true">{{ t('auth.menu.type button') }}</el-radio>
-                    </el-form-item>
+                    <FormItem
+                        :label="t('auth.menu.Rule type')"
+                        v-model="baTable.form.items!.type"
+                        type="radio"
+                        :data="{
+                            content: { menu_dir: t('auth.menu.type menu_dir'), menu: t('auth.menu.type menu'), button: t('auth.menu.type button') },
+                            childrenAttr: { border: true },
+                        }"
+                    />
                     <el-form-item prop="title" :label="t('auth.menu.Rule title')">
                         <el-input
                             v-model="baTable.form.items!.title"
@@ -74,13 +78,16 @@
                         v-model="baTable.form.items!.icon"
                         :input-attr="{ 'show-icon-name': true }"
                     />
-                    <el-form-item v-if="baTable.form.items!.type == 'menu'" :label="t('auth.menu.Menu type')">
-                        <el-radio v-model="baTable.form.items!.menu_type" label="tab" :border="true">{{ t('auth.menu.Menu type tab') }}</el-radio>
-                        <el-radio v-model="baTable.form.items!.menu_type" label="link" :border="true">{{
-                            t('auth.menu.Menu type link (offsite)')
-                        }}</el-radio>
-                        <el-radio v-model="baTable.form.items!.menu_type" label="iframe" :border="true">Iframe</el-radio>
-                    </el-form-item>
+                    <FormItem
+                        v-if="baTable.form.items!.type == 'menu'"
+                        :label="t('auth.menu.Menu type')"
+                        v-model="baTable.form.items!.menu_type"
+                        type="radio"
+                        :data="{
+                            content: { tab: t('auth.menu.Menu type tab'), link: t('auth.menu.Menu type link (offsite)'), iframe: 'Iframe' },
+                            childrenAttr: { border: true },
+                        }"
+                    />
                     <el-form-item prop="url" v-if="baTable.form.items!.menu_type != 'tab'" :label="t('auth.menu.Link address')">
                         <el-input
                             v-model="baTable.form.items!.url"
@@ -134,14 +141,24 @@
                             :placeholder="t('auth.menu.Please enter the weight of menu rule (sort by)')"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item :label="t('auth.menu.cache')">
-                        <el-radio v-model="baTable.form.items!.keepalive" :label="0" :border="true">{{ t('Disable') }}</el-radio>
-                        <el-radio v-model="baTable.form.items!.keepalive" :label="1" :border="true">{{ t('Enable') }}</el-radio>
-                    </el-form-item>
-                    <el-form-item :label="t('state')">
-                        <el-radio v-model="baTable.form.items!.status" label="0" :border="true">{{ t('Disable') }}</el-radio>
-                        <el-radio v-model="baTable.form.items!.status" label="1" :border="true">{{ t('Enable') }}</el-radio>
-                    </el-form-item>
+                    <FormItem
+                        :label="t('auth.menu.cache')"
+                        v-model="baTable.form.items!.keepalive"
+                        type="radio"
+                        :data="{
+                            content: { 0: t('Disable'), 1: t('Enable') },
+                            childrenAttr: { border: true },
+                        }"
+                    />
+                    <FormItem
+                        :label="t('state')"
+                        v-model="baTable.form.items!.status"
+                        type="radio"
+                        :data="{
+                            content: { '0': t('Disable'), '1': t('Enable') },
+                            childrenAttr: { border: true },
+                        }"
+                    />
                 </el-form>
             </div>
         </el-scrollbar>

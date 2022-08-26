@@ -46,10 +46,12 @@
                             :data="state.menuRules"
                         />
                     </el-form-item>
-                    <el-form-item :label="t('state')">
-                        <el-radio v-model="baTable.form.items!.status" label="0" :border="true">{{ t('Disable') }}</el-radio>
-                        <el-radio v-model="baTable.form.items!.status" label="1" :border="true">{{ t('Enable') }}</el-radio>
-                    </el-form-item>
+                    <FormItem
+                        :label="t('state')"
+                        v-model="baTable.form.items!.status"
+                        type="radio"
+                        :data="{ content: { '0': t('Disable'), '1': t('Enable') }, childrenAttr: { border: true } }"
+                    />
                 </el-form>
             </div>
         </el-scrollbar>
@@ -71,6 +73,7 @@ import type baTableClass from '/@/utils/baTable'
 import { getUserRules } from '/@/api/backend/user/group'
 import type { ElForm, ElTree, FormItemRule } from 'element-plus'
 import { uuid } from '/@/utils/random'
+import FormItem from '/@/components/formItem/index.vue'
 import type Node from 'element-plus/es/components/tree/src/model/node'
 
 interface MenuRules {

@@ -66,11 +66,15 @@
                             :placeholder="t('Please input field', { field: t('user.user.mobile') })"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item :label="t('user.user.Gender')">
-                        <el-radio v-model="baTable.form.items!.gender" :label="0" :border="true">{{ t('unknown') }}</el-radio>
-                        <el-radio v-model="baTable.form.items!.gender" :label="1" :border="true">{{ t('user.user.male') }}</el-radio>
-                        <el-radio v-model="baTable.form.items!.gender" :label="2" :border="true">{{ t('user.user.female') }}</el-radio>
-                    </el-form-item>
+                    <FormItem
+                        :label="t('user.user.Gender')"
+                        v-model="baTable.form.items!.gender"
+                        type="radio"
+                        :data="{
+                            content: { 0: t('unknown'), 1: t('user.user.male'), 2: t('user.user.female') },
+                            childrenAttr: { border: true },
+                        }"
+                    />
                     <el-form-item :label="t('user.user.birthday')">
                         <el-date-picker
                             class="w100"
@@ -114,10 +118,12 @@
                             :placeholder="t('Please input field', { field: t('user.user.Personal signature') })"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item :label="t('state')">
-                        <el-radio v-model="baTable.form.items!.status" label="disable" :border="true">{{ t('Disable') }}</el-radio>
-                        <el-radio v-model="baTable.form.items!.status" label="enable" :border="true">{{ t('Enable') }}</el-radio>
-                    </el-form-item>
+                    <FormItem
+                        :label="t('state')"
+                        v-model="baTable.form.items!.status"
+                        type="radio"
+                        :data="{ content: { disable: t('Disable'), enable: t('Enable') }, childrenAttr: { border: true } }"
+                    />
                 </el-form>
             </div>
         </el-scrollbar>
