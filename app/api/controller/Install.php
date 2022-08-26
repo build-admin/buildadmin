@@ -73,7 +73,6 @@ class Install extends Api
     public function __construct(App $app)
     {
         parent::__construct($app);
-        set_time_limit(120);
     }
 
     /**
@@ -143,7 +142,7 @@ class Install extends Api
         }
         // php版本-end
 
-        // 数据库配置文件-start
+        // 配置文件-start
         $dbConfigFile     = config_path() . self::$dbConfigFileName;
         $configIsWritable = path_is_writable(config_path()) && path_is_writable($dbConfigFile);
         if (!$configIsWritable) {
@@ -157,7 +156,7 @@ class Install extends Api
                 ]
             ];
         }
-        // 数据库配置文件-end
+        // 配置文件-end
 
         // public-start
         $publicIsWritable = path_is_writable(public_path());
@@ -173,12 +172,12 @@ class Install extends Api
         }
         // public-end
 
-        // Mysqli-start
-        $phpMysqli = extension_loaded('mysqli') && extension_loaded("PDO");
-        if (!$phpMysqli) {
-            $phpMysqliLink = [
+        // PDO-start
+        $phpPdo = extension_loaded("PDO");
+        if (!$phpPdo) {
+            $phpPdoLink = [
                 [
-                    'name' => __('Mysqli and PDO extensions need to be installed'),
+                    'name' => __('PDO extensions need to be installed'),
                     'type' => 'text'
                 ],
                 [
@@ -189,15 +188,15 @@ class Install extends Api
                 ]
             ];
         }
-        // Mysqli-end
+        // PDO-end
 
-        // popen-start
-        $phpPopen = function_exists('popen') && function_exists('pclose');
-        if (!$phpPopen) {
-            $phpPopenLink = [
+        // proc_open
+        $phpProc = function_exists('proc_open') && function_exists('proc_close');
+        if (!$phpProc) {
+            $phpProcLink = [
                 [
                     'name'  => __('View reason'),
-                    'title' => __('Popen and Pclose functions in PHP Ini is disabled'),
+                    'title' => __('proc_open or proc_close functions in PHP Ini is disabled'),
                     'type'  => 'faq',
                     'url'   => 'https://wonderful-code.gitee.io/guide/install/disablement.html'
                 ],
@@ -215,33 +214,7 @@ class Install extends Api
                 ],
             ];
         }
-        // popen-end
-
-        // 文件操作-start
-        $phpFileOperation = function_exists('feof') && function_exists('fgets');
-        if (!$phpFileOperation) {
-            $phpFileOperationLink = [
-                [
-                    'name'  => __('View reason'),
-                    'title' => __('Feof and fgets functions in PHP Ini is disabled'),
-                    'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/fileOperation.html'
-                ],
-                [
-                    'name'  => __('How to modify'),
-                    'title' => __('Click to view how to modify'),
-                    'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/fileOperation.html'
-                ],
-                [
-                    'name'  => __('Security assurance?'),
-                    'title' => __('Using the installation service correctly will not cause any potential security problems. Click to view the details'),
-                    'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/senior.html'
-                ],
-            ];
-        }
-        // 文件操作-end
+        // proc_open-end
 
         $this->success('', [
             'php_version'        => [
@@ -259,20 +232,15 @@ class Install extends Api
                 'state'    => $publicIsWritable ? self::$ok : self::$fail,
                 'link'     => $publicIsWritableLink ?? []
             ],
-            'php-mysqli'         => [
-                'describe' => $phpMysqli ? __('already installed') : __('Not installed'),
-                'state'    => $phpMysqli ? self::$ok : self::$fail,
-                'link'     => $phpMysqliLink ?? []
+            'php_pdo'            => [
+                'describe' => $phpPdo ? __('already installed') : __('Not installed'),
+                'state'    => $phpPdo ? self::$ok : self::$fail,
+                'link'     => $phpPdoLink ?? []
             ],
-            'php_popen'          => [
-                'describe' => $phpPopen ? __('Allow execution') : __('disabled'),
-                'state'    => $phpPopen ? self::$ok : self::$warn,
-                'link'     => $phpPopenLink ?? []
-            ],
-            'php_file_operation' => [
-                'describe' => $phpFileOperation ? __('Allow operation') : __('disabled'),
-                'state'    => $phpFileOperation ? self::$ok : self::$warn,
-                'link'     => $phpFileOperationLink ?? []
+            'php_proc'           => [
+                'describe' => $phpProc ? __('Allow execution') : __('disabled'),
+                'state'    => $phpProc ? self::$ok : self::$warn,
+                'link'     => $phpProcLink ?? []
             ],
         ]);
     }
@@ -565,14 +533,13 @@ class Install extends Api
      * 获取命令执行检查的结果
      * @return bool 是否拥有执行命令的条件
      */
-    private function commandExecutionCheck()
+    private function commandExecutionCheck(): bool
     {
         $pm = Config::get('terminal.npm_package_manager');
         if ($pm == 'none') {
             return false;
         }
-        $check['phpPopen']             = function_exists('popen') && function_exists('pclose');
-        $check['phpFileOperation']     = function_exists('feof') && function_exists('fgets');
+        $check['phpPopen']             = function_exists('proc_open') && function_exists('proc_close');
         $check['npmVersionCompare']    = Version::compare(self::$needDependentVersion['npm'], Version::getVersion('npm'));
         $check['pmVersionCompare']     = Version::compare(self::$needDependentVersion[$pm], Version::getVersion($pm));
         $check['nodejsVersionCompare'] = Version::compare(self::$needDependentVersion['node'], Version::getVersion('node'));
@@ -603,7 +570,7 @@ class Install extends Api
             $this->error(__('No built front-end file found, please rebuild manually!'));
         }
 
-        if (CommandExec::instance(false)->mvDist()) {
+        if (Terminal::mvDist()) {
             $this->success();
         } else {
             $this->error(__('Failed to move the front-end file, please move it manually!'));
