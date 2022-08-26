@@ -93,8 +93,8 @@ export function postClearCache(type: string) {
 /**
  * 构建命令执行窗口url
  */
-export function buildTerminalUrl(commandKey: string, outputExtend: string) {
-    return getUrl() + terminalUrl + '?command=' + commandKey + '&extend=' + outputExtend + '&batoken=' + getAdminToken() + '&server=1'
+export function buildTerminalUrl(commandKey: string, uuid: string, extend: string) {
+    return getUrl() + terminalUrl + '?command=' + commandKey + '&uuid=' + uuid + '&extend=' + extend + '&batoken=' + getAdminToken() + '&server=1'
 }
 
 /**

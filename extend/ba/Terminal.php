@@ -41,10 +41,14 @@ class Terminal
     protected $procStatus = null;
 
     /**
-     * 结果输出扩展
-     * 每次命令执行有输出时,同时携带扩展数据
+     * 命令在前台的uuid
      */
-    protected $outputExtend = null;
+    protected $uuid = null;
+
+    /**
+     * 扩展信息
+     */
+    protected $extend = null;
 
     /**
      * 命令执行输出文件
@@ -91,7 +95,8 @@ class Terminal
      */
     public function __construct()
     {
-        $this->outputExtend = request()->param('extend');
+        $this->uuid   = request()->param('uuid');
+        $this->extend = request()->param('extend');
 
         // 初始化日志文件
         $outputDir        = root_path() . 'runtime' . DIRECTORY_SEPARATOR . 'terminal';
@@ -228,7 +233,8 @@ class Terminal
         $data = self::outputFilter($data);
         $data = [
             'data'   => $data,
-            'extend' => $this->outputExtend,
+            'uuid'   => $this->uuid,
+            'extend' => $this->extend,
             'key'    => $this->commandKey,
         ];
         $data = json_encode($data, JSON_UNESCAPED_UNICODE);
