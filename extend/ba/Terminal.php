@@ -12,6 +12,7 @@
 namespace ba;
 
 use think\Response;
+use ba\module\Manage;
 use think\facade\Config;
 use think\facade\Cookie;
 use app\admin\library\Auth;
@@ -279,6 +280,16 @@ class Terminal
             if (!self::mvDist()) {
                 $this->output('Build succeeded, but move file failed. Please operate manually.');
                 return false;
+            }
+        } elseif ($commandPKey == 'web-install' && $this->extend) {
+            [$type, $value] = explode(':', $this->extend);
+            if ($type == 'module-install' && $value) {
+                Manage::instance($value)->dependentInstallComplete('npm');
+            }
+        } elseif ($commandPKey == 'composer' && $this->extend) {
+            [$type, $value] = explode(':', $this->extend);
+            if ($type == 'module-install' && $value) {
+                Manage::instance($value)->dependentInstallComplete('composer');
             }
         }
         return true;

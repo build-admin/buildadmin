@@ -212,24 +212,16 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
 
                 const terminal = useTerminal()
                 if (err.data.wait_install.includes('npm_dependent_wait_install')) {
-                    terminal.addTaskPM('web-install', true, 'module-install:' + err.data.uid, (res: number) => {
-                        if (res == taskStatus.Success) {
-                            postDependentInstallComplete(state.install.uid, 'npm')
-                        }
-                    })
+                    terminal.addTaskPM('web-install', true, 'module-install:' + err.data.uid)
                 }
                 if (err.data.wait_install.includes('composer_dependent_wait_install')) {
-                    
+                    terminal.addTaskPM('composer.update', true, 'module-install:' + err.data.uid)
                 }
             }
         })
         .finally(() => {
             state.publicButtonLoading = false
         })
-}
-
-export const postDependentInstallComplete = (uid: string, type: string) => {
-    dependentInstallComplete(uid, type).then((res) => {})
 }
 
 export const loginExpired = (res: ApiResponse) => {
