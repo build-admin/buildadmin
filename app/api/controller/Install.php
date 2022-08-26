@@ -191,7 +191,7 @@ class Install extends Api
         // PDO-end
 
         // proc_open
-        $phpProc = function_exists('proc_open') && function_exists('proc_close');
+        $phpProc = function_exists('proc_open') && function_exists('proc_close') && function_exists('proc_get_status');
         if (!$phpProc) {
             $phpProcLink = [
                 [
