@@ -6,6 +6,8 @@ import { timeFormat } from '/@/components/table'
 import { buildTerminalUrl } from '/@/api/common'
 import { uuid } from '../utils/random'
 import { taskStatus } from '/@/components/terminal/constant'
+import { ElNotification } from 'element-plus'
+import { i18n } from '/@/lang/index'
 
 export const useTerminal = defineStore(
     'terminal',
@@ -118,6 +120,19 @@ export const useTerminal = defineStore(
             // 清理任务列表
             if (parseInt(state.automaticCleanupTask) === 1) {
                 clearSuccessTask()
+            }
+
+            // 检查是否有已经失败的任务
+            if (state.show === false) {
+                for (const key in state.taskList) {
+                    if (state.taskList[key].status == taskStatus.Failed || state.taskList[key].status == taskStatus.Unknown) {
+                        ElNotification({
+                            type: 'error',
+                            message: i18n.global.t('terminal.Newly added tasks will never start because they are blocked by failed tasks'),
+                        })
+                        break
+                    }
+                }
             }
 
             startTask()

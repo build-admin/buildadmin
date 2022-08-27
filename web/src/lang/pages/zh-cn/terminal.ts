@@ -35,4 +35,5 @@ export default {
     'Site domain name': '站点域名',
     'The current terminal is not running under the installation service, and some commands may not be executed':
         '当前终端未运行于安装服务下，部分命令可能无法执行。',
+    'Newly added tasks will never start because they are blocked by failed tasks': '新添加的任务永远不会开始，因为被失败的任务阻塞！（WEB终端）',
 }
