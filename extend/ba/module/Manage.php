@@ -133,12 +133,12 @@ class Manage
         Server::importSql($this->modulesDir);
 
         // 启用插件
-        $this->enable();
+        $this->enable('install');
     }
 
-    public function enable()
+    public function enable(string $trigger)
     {
-        $this->conflictHandle();
+        $this->conflictHandle($trigger);
 
         // 执行启用脚本
         Server::execEvent($this->uid, 'enable');
@@ -190,7 +190,7 @@ class Manage
      * 处理依赖和文件冲突，并完成与前端的冲突处理交互
      * @throws moduleException
      */
-    public function conflictHandle()
+    public function conflictHandle(string $trigger)
     {
         // 文件冲突
         $fileConflict = Server::getFileList($this->modulesDir, true);
@@ -309,7 +309,8 @@ class Manage
 
         // 备份将被覆盖的文件
         if ($coverFiles) {
-            Server::createZip($coverFiles, $this->ebakDir . $this->uid . '-cover-' . date('YmdHis') . '.zip');
+            $ebakZip = $trigger == 'install' ? $this->ebakDir . $this->uid . '-install.zip' : $this->ebakDir . $this->uid . '-cover-' . date('YmdHis') . '.zip';
+            Server::createZip($coverFiles, $ebakZip);
         }
 
         // 复制文件
