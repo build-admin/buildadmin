@@ -1,7 +1,8 @@
 <template>
     <div class="install-done">
         <div class="install-done-title">
-            恭喜，模块安装已完成{{ state.install.state == moduleInstallState.DEPENDENT_WAIT_INSTALL ? ' - 但有新增依赖' : '。' }}
+            <span v-if="state.install.state == moduleInstallState.INSTALLED">恭喜，模块安装已完成。</span>
+            <span v-else>恭喜，模块的代码已经准备好了。</span>
         </div>
         <div class="install-tis-box">
             <div v-if="state.install.state == moduleInstallState.DEPENDENT_WAIT_INSTALL" class="depend-box">
@@ -12,9 +13,10 @@
                         <span class="span-a" @click="showTerminal">查看进度</span>
                     </div>
                     <div v-if="state.install.dependInstallState == 'success'" class="color-green">依赖已安装完成~</div>
-                    <div v-if="state.install.dependInstallState == 'fail'" class="color-green">
+                    <div v-if="state.install.dependInstallState == 'fail'" class="exec-fail color-red">
                         依赖安装失败，请点击终端重试按钮，您也可以查看<el-link
-                            type="success"
+                            target="_blank"
+                            type="primary"
                             href="https://wonderful-code.gitee.io/guide/install/manualOperation.html"
                             >手动完成未尽事宜</el-link
                         >
@@ -112,6 +114,9 @@ const onSubmitInstallDone = () => {
 }
 .install-form :deep(.ba-input-item-radio) {
     margin-bottom: 0;
+}
+.exec-fail {
+    display: flex;
 }
 .color-red {
     color: var(--el-color-danger);
