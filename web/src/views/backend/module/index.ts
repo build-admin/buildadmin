@@ -192,6 +192,12 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
     postInstallModule(uid, id, extend)
         .then((res) => {
             state.install.loading = false
+            state.install.showDialog = false
+            ElNotification({
+                type: 'success',
+                message: '模块安装成功，请清理系统和浏览器缓存并刷新页面。',
+            })
+            Session.remove(INSTALL_MODULE_TEMP)
         })
         .catch((err) => {
             if (loginExpired(err)) return
