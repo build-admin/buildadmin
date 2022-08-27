@@ -46,6 +46,8 @@ export const state: {
         uid: string
         state: number
         componentKey: string
+        waitInstallDepend: anyObj
+        dependInstallState: 'executing' | 'success' | 'fail'
     }
 } = reactive({
     tableLoading: true,
@@ -79,6 +81,8 @@ export const state: {
         uid: '',
         state: 0,
         componentKey: uuid(),
+        waitInstallDepend: {},
+        dependInstallState: 'executing',
     },
 })
 
@@ -190,44 +194,61 @@ const setInstallStateTitle = (installState: string) => {
 
 export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
     postInstallModule(uid, id, extend)
-        .then((res) => {
-            state.install.loading = false
-            state.install.showDialog = false
-            ElNotification({
-                type: 'success',
-                message: '模块安装成功，请清理系统和浏览器缓存并刷新页面。',
-            })
+        .then(() => {
+            state.install.uid = uid
+            state.install.title = '安装完成'
+            state.install.state = moduleInstallState.INSTALLED
             Session.remove(INSTALL_MODULE_TEMP)
         })
         .catch((err) => {
             if (loginExpired(err)) return
             // 冲突
             if (err.code == -1) {
-                state.install.loading = false
                 state.install.uid = err.data.uid
                 state.install.title = '发现冲突，请手动处理'
                 state.install.state = err.data.state
                 state.install.fileConflict = err.data.fileConflict
                 state.install.dependConflict = err.data.dependConflict
             } else if (err.code == -2) {
-                state.install.loading = true
-                setInstallStateTitle('installDepend')
                 state.install.uid = err.data.uid
-                state.install.title = '安装依赖'
-                state.install.state = err.data.state
+                state.install.title = '依赖待安装'
+                state.install.state = moduleInstallState.DEPENDENT_WAIT_INSTALL
+                state.install.waitInstallDepend = err.data.wait_install
+                state.install.dependInstallState = 'executing'
+                Session.remove(INSTALL_MODULE_TEMP)
 
                 const terminal = useTerminal()
                 if (err.data.wait_install.includes('npm_dependent_wait_install')) {
-                    terminal.addTaskPM('web-install', true, 'module-install:' + err.data.uid)
+                    terminal.addTaskPM('web-install', true, 'module-install:' + err.data.uid, (res: number) => {
+                        terminalTaskExecComplete(res, 'npm_dependent_wait_install')
+                    })
                 }
                 if (err.data.wait_install.includes('composer_dependent_wait_install')) {
-                    terminal.addTaskPM('composer.update', true, 'module-install:' + err.data.uid)
+                    terminal.addTask('composer.update', true, 'module-install:' + err.data.uid, (res: number) => {
+                        terminalTaskExecComplete(res, 'composer_dependent_wait_install')
+                    })
                 }
             }
         })
         .finally(() => {
+            state.install.loading = false
             state.publicButtonLoading = false
         })
+}
+
+const terminalTaskExecComplete = (res: number, type: string) => {
+    if (res == taskStatus.Success) {
+        state.install.waitInstallDepend = state.install.waitInstallDepend.filter((depend: string) => {
+            return depend != type
+        })
+        if (state.install.waitInstallDepend.length == 0) {
+            state.install.dependInstallState = 'success'
+        }
+    } else {
+        const terminal = useTerminal()
+        terminal.toggle(true)
+        state.install.dependInstallState = 'fail'
+    }
 }
 
 export const loginExpired = (res: ApiResponse) => {

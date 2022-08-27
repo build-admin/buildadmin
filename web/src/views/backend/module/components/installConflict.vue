@@ -1,5 +1,5 @@
 <template>
-    <div class="installConflict">
+    <div class="install-conflict">
         <template v-if="state.install.fileConflict.length > 0">
             <div class="install-title">文件冲突</div>
             <el-table :data="state.install.fileConflict" stripe border style="width: 100%">
@@ -77,11 +77,5 @@ const onSubmitConflictHandle = () => {
     font-size: var(--el-font-size-large);
     text-align: center;
     padding: 20px;
-}
-.install-done-button {
-    display: block;
-    margin: 0 auto;
-    margin-top: 20px;
-    width: 120px;
 }
 </style>
