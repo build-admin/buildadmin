@@ -192,12 +192,11 @@ class Manage
      */
     public function conflictHandle(string $trigger)
     {
-        // 文件冲突
-        $fileConflict = Server::getFileList($this->modulesDir, true);
-        // 依赖冲突
-        $dependConflict = Server::dependConflictCheck($this->modulesDir);
-        // 待安装文件
-        $installFiles = Server::getFileList($this->modulesDir);
+
+        $fileConflict   = Server::getFileList($this->modulesDir, true);// 文件冲突
+        $dependConflict = Server::dependConflictCheck($this->modulesDir);// 依赖冲突
+        $installFiles   = Server::getFileList($this->modulesDir);// 待安装文件
+        $depends        = Server::getDepend($this->modulesDir);// 待安装依赖
 
         $coverFiles   = [];// 要覆盖的文件-备份
         $discardFiles = [];// 抛弃的文件-复制时不覆盖
@@ -252,21 +251,45 @@ class Manage
                 }
             }
             if ($dependConflict && isset($extend['dependConflict'])) {
-                foreach ($dependConflict as $fKey => $fItem) {
+                foreach ($depends as $fKey => $fItem) {
                     foreach ($fItem as $cKey => $cItem) {
-                        if (isset($extend['dependConflict'][$fKey][$cKey]) && $extend['dependConflict'][$fKey][$cKey] == 'discard') {
-                            unset($dependConflict[$fKey][$cKey]);
+                        if (isset($extend['dependConflict'][$fKey][$cKey])) {
+                            if ($extend['dependConflict'][$fKey][$cKey] == 'discard') {
+                                unset($depends[$fKey][$cKey]);
+                            }
                         }
                     }
                 }
             }
         }
 
-        if ($dependConflict) {
+        // 如果有依赖更新，增加要备份的文件
+        if ($depends) {
+            foreach ($depends as $key => $item) {
+                if (!$item) {
+                    continue;
+                }
+                if ($key == 'require' || $key == 'require-dev') {
+                    $coverFiles[] = 'composer.json';
+                    continue;
+                }
+                if ($key == 'dependencies' || $key == 'devDependencies') {
+                    $coverFiles[] = 'web' . DIRECTORY_SEPARATOR . 'package.json';
+                }
+            }
+        }
+
+        // 备份将被覆盖的文件
+        if ($coverFiles) {
+            $ebakZip = $trigger == 'install' ? $this->ebakDir . $this->uid . '-install.zip' : $this->ebakDir . $this->uid . '-cover-' . date('YmdHis') . '.zip';
+            Server::createZip($coverFiles, $ebakZip);
+        }
+
+        if ($depends) {
             $info     = $this->getInfo();
             $npm      = false;
             $composer = false;
-            foreach ($dependConflict as $key => $item) {
+            foreach ($depends as $key => $item) {
                 if (!$item) {
                     continue;
                 }
@@ -305,12 +328,6 @@ class Manage
             $this->setInfo([
                 'state' => self::INSTALLED,
             ]);
-        }
-
-        // 备份将被覆盖的文件
-        if ($coverFiles) {
-            $ebakZip = $trigger == 'install' ? $this->ebakDir . $this->uid . '-install.zip' : $this->ebakDir . $this->uid . '-cover-' . date('YmdHis') . '.zip';
-            Server::createZip($coverFiles, $ebakZip);
         }
 
         // 复制文件
