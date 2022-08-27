@@ -214,6 +214,9 @@ class Terminal
             if ($status['exitcode'] === 0) {
                 if ($this->successCallback()) {
                     $this->outputFlag('exec-success');
+                } else {
+                    $this->output('Error: Command execution succeeded, but callback execution failed');
+                    $this->outputFlag('exec-error');
                 }
             } else {
                 $this->outputFlag('exec-error');
