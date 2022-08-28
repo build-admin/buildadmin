@@ -2,11 +2,17 @@ import createAxios from '/@/utils/axios'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { useBaAccount } from '/@/stores/baAccount'
 
-const userUrl = '/api/user/'
+const userControllerUrl = '/api/user/'
 const captchaUrl = '/api/common/captcha'
-const installStateUrl = '/admin/module/installState'
-const installModuleUrl = '/admin/module/installModule'
-const dependentInstallCompleteUrl = '/admin/module/dependentInstallComplete'
+const moduleControllerUrl = '/admin/module/'
+
+export function index(params: anyObj = {}) {
+    return createAxios({
+        url: moduleControllerUrl + 'index',
+        method: 'get',
+        params: params,
+    })
+}
 
 export function modules(params: anyObj = {}) {
     const siteConfig = useSiteConfig()
@@ -36,7 +42,7 @@ export function postLogout(): ApiPromise {
     const siteConfig = useSiteConfig()
     const baAccount = useBaAccount()
     return createAxios({
-        url: siteConfig.api_url + userUrl + 'logout',
+        url: siteConfig.api_url + userControllerUrl + 'logout',
         method: 'POST',
         data: {
             refresh_token: baAccount.refreshToken,
@@ -53,7 +59,7 @@ export function checkIn(method: 'get' | 'post', params: object = {}): ApiPromise
     const siteConfig = useSiteConfig()
     return createAxios(
         {
-            url: siteConfig.api_url + userUrl + 'checkIn',
+            url: siteConfig.api_url + userControllerUrl + 'checkIn',
             data: params,
             method: method,
         },
@@ -99,7 +105,7 @@ export function payOrder(orderId: number, payType: number): ApiPromise {
 
 export function getInstallStateUrl(uid: string) {
     return createAxios({
-        url: installStateUrl,
+        url: moduleControllerUrl + 'installState',
         method: 'get',
         params: {
             uid: uid,
@@ -111,7 +117,7 @@ export function postInstallModule(uid: string, orderId: number, extend: anyObj =
     const baAccount = useBaAccount()
     return createAxios(
         {
-            url: installModuleUrl,
+            url: moduleControllerUrl + 'installModule',
             method: 'post',
             params: {
                 uid: uid,
@@ -130,7 +136,7 @@ export function postInstallModule(uid: string, orderId: number, extend: anyObj =
 
 export function dependentInstallComplete(uid: string, type: string) {
     return createAxios({
-        url: dependentInstallCompleteUrl,
+        url: moduleControllerUrl + 'dependentInstallComplete',
         method: 'post',
         params: {
             uid: uid,

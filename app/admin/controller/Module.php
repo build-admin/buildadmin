@@ -6,10 +6,36 @@ use think\Exception;
 use ba\module\Manage;
 use ba\module\moduleException;
 use app\common\controller\Backend;
+use FilesystemIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class Module extends Backend
 {
     protected $noNeedPermission = ['*'];
+
+    public function index()
+    {
+        // 已安装的模块
+        $installedModule = [];
+        $excludedDirs    = ['ebak'];
+        $moduleDir       = root_path() . 'modules' . DIRECTORY_SEPARATOR;
+        foreach (
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($moduleDir, FilesystemIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::CATCH_GET_CHILD
+            ) as $item
+        ) {
+            $dirName = $iterator->getSubPathName();
+            if (!in_array($dirName, $excludedDirs)) {
+                $installedModule[] = Manage::instance($dirName)->getInfo();
+            }
+        }
+
+        $this->success('', [
+            'installedModule' => $installedModule
+        ]);
+    }
 
     public function installState()
     {
