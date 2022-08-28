@@ -4,9 +4,9 @@ import { useBaAccount } from '/@/stores/baAccount'
 
 const userUrl = '/api/user/'
 const captchaUrl = '/api/common/captcha'
-const installStateUrl = '/admin/ajax/installState'
-const installModuleUrl = '/admin/ajax/installModule'
-const dependentInstallCompleteUrl = '/admin/ajax/dependentInstallComplete'
+const installStateUrl = '/admin/module/installState'
+const installModuleUrl = '/admin/module/installModule'
+const dependentInstallCompleteUrl = '/admin/module/dependentInstallComplete'
 
 export function modules(params: anyObj = {}) {
     const siteConfig = useSiteConfig()
