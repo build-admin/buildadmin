@@ -21,6 +21,7 @@ export const state: {
     tableLoading: boolean
     remark: string
     modules: anyObj
+    modulesEbak: anyObj
     category: anyObj
     params: anyObj
     goodsInfo: {
@@ -49,6 +50,7 @@ export const state: {
         waitInstallDepend: anyObj
         dependInstallState: 'executing' | 'success' | 'fail'
     }
+    onlyLocal: boolean
     loadIndex: boolean
     installedModule: {
         uid: string
@@ -61,6 +63,7 @@ export const state: {
     tableLoading: true,
     remark: '',
     modules: [],
+    modulesEbak: [],
     category: [],
     params: {
         quickSearch: '',
@@ -92,15 +95,13 @@ export const state: {
         waitInstallDepend: {},
         dependInstallState: 'executing',
     },
+    onlyLocal: false,
     loadIndex: false,
     installedModule: [],
     installedModuleUids: [],
 })
 
 export const loadData = () => {
-    if (typeof state.modules[state.params.activeTab] != 'undefined') {
-        return
-    }
     state.tableLoading = true
     if (!state.loadIndex) {
         loadIndex().then(() => {
@@ -126,6 +127,11 @@ const loadIndex = () => {
 }
 
 const getModules = () => {
+    if (typeof state.modulesEbak[state.params.activeTab] != 'undefined') {
+        state.modules[state.params.activeTab] = modulesOnlyLocalHandle(state.modulesEbak[state.params.activeTab])
+        state.tableLoading = false
+        return
+    }
     let params: anyObj = {}
     for (const key in state.params) {
         if (state.params[key] != '') {
@@ -135,7 +141,7 @@ const getModules = () => {
     modules(params)
         .then((res) => {
             state.remark = res.data.remark
-            state.modules[params.activeTab] = res.data.rows.map((item: anyObj) => {
+            state.modulesEbak[params.activeTab] = res.data.rows.map((item: anyObj) => {
                 const idx = state.installedModuleUids.indexOf(item.uid)
                 if (idx !== -1) {
                     item.state = state.installedModule[idx].state
@@ -147,11 +153,19 @@ const getModules = () => {
                 }
                 return item
             })
+            state.modules[params.activeTab] = modulesOnlyLocalHandle(state.modulesEbak[params.activeTab])
             state.category = res.data.category
         })
         .finally(() => {
             state.tableLoading = false
         })
+}
+
+const modulesOnlyLocalHandle = (modules: anyObj) => {
+    if (!state.onlyLocal) return modules
+    return modules.filter((item: anyObj) => {
+        return item.state > moduleInstallState.UNINSTALLED
+    })
 }
 
 export const showInfo = (id: number) => {

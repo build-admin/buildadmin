@@ -11,7 +11,7 @@
                         <Icon name="fa fa-upload" color="#ffffff" size="14" />
                         <span class="table-header-operate-text">上传安装</span>
                     </el-button>
-                    <el-button title="已上传/安装的模块" v-blur type="primary">
+                    <el-button @click="localModules" :class="state.onlyLocal ? 'local-active' : ''" title="已上传/安装的模块" v-blur type="primary">
                         <Icon name="fa fa-desktop" color="#ffffff" size="14" />
                         <span class="table-header-operate-text">本地模块</span>
                     </el-button>
@@ -51,6 +51,11 @@ const onRefreshData = () => {
     loadData()
 }
 
+const localModules = () => {
+    state.onlyLocal = !state.onlyLocal
+    loadData()
+}
+
 const onSearchInput = () => {
     state.modules[state.params.activeTab] = undefined
     loadData()
@@ -79,5 +84,9 @@ const onSearchInput = () => {
 }
 .table-search {
     margin-left: auto;
+}
+.local-active {
+    border-color: var(--el-button-active-border-color);
+    background-color: var(--el-button-active-bg-color);
 }
 </style>
