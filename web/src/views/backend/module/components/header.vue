@@ -45,8 +45,8 @@ import { debounce } from '/@/utils/common'
 
 const onRefreshData = () => {
     state.loadIndex = false
-    for (const key in state.modules) {
-        state.modules[key] = undefined
+    for (const key in state.modulesEbak) {
+        state.modulesEbak[key] = undefined
     }
     loadData()
 }
@@ -57,7 +57,7 @@ const localModules = () => {
 }
 
 const onSearchInput = () => {
-    state.modules[state.params.activeTab] = undefined
+    state.modulesEbak[state.params.activeTab] = undefined
     loadData()
 }
 </script>
