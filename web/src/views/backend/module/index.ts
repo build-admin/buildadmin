@@ -159,6 +159,13 @@ export const showInfo = (id: number) => {
     state.goodsInfo.loading = true
     info({ id: id })
         .then((res) => {
+            const idx = state.installedModuleUids.indexOf(res.data.info.uid)
+            if (idx !== -1) {
+                res.data.info.state = state.installedModule[idx].state
+                res.data.info.version = state.installedModule[idx].version
+            } else {
+                res.data.info.state = 0
+            }
             state.goodsInfo.info = res.data.info
         })
         .catch((err) => {

@@ -53,8 +53,8 @@
                                 <template #dropdown>
                                     <el-dropdown-menu>
                                         <el-dropdown-item
-                                            @click="openUrl(demo.link)"
                                             v-for="demo in state.goodsInfo.info.demo"
+                                            @click="openDemo(demo.link, demo.image ? false : true)"
                                             class="basic-button-dropdown-item"
                                         >
                                             <el-popover
@@ -77,18 +77,36 @@
                                     </el-dropdown-menu>
                                 </template>
                             </el-dropdown>
-                            <el-button @click="onBuy" v-if="!state.goodsInfo.info.purchased" v-blur class="basic-button-item" type="danger"
+                            <el-button v-if="!state.goodsInfo.info.purchased" @click="onBuy" v-blur class="basic-button-item" type="danger"
                                 >立即购买</el-button
                             >
-                            <el-button
-                                @click="onInstall(state.goodsInfo.info.uid, state.goodsInfo.info.purchased)"
-                                :loading="state.publicButtonLoading"
-                                v-else
-                                v-blur
-                                class="basic-button-item"
-                                type="success"
-                                >立即安装</el-button
-                            >
+                            <template v-else>
+                                <el-button
+                                    v-if="installButtonText['Install now'].includes(state.goodsInfo.info.state)"
+                                    @click="onInstall(state.goodsInfo.info.uid, state.goodsInfo.info.purchased)"
+                                    :loading="state.publicButtonLoading"
+                                    v-blur
+                                    class="basic-button-item"
+                                    type="success"
+                                    >立即安装</el-button
+                                >
+                                <el-button
+                                    v-if="installButtonText['continue installation'].includes(state.goodsInfo.info.state)"
+                                    @click="onInstall(state.goodsInfo.info.uid, state.goodsInfo.info.purchased)"
+                                    :loading="state.publicButtonLoading"
+                                    v-blur
+                                    class="basic-button-item"
+                                    type="success"
+                                    >继续安装</el-button
+                                >
+                                <el-button
+                                    v-if="installButtonText['already installed'].includes(state.goodsInfo.info.state)"
+                                    v-blur
+                                    :disabled="true"
+                                    class="basic-button-item"
+                                    >已安装 v{{ state.goodsInfo.info.version }}</el-button
+                                >
+                            </template>
                         </div>
                     </div>
                     <div v-if="!isEmpty(state.goodsInfo.info.developer)" class="goods-developer">
@@ -132,11 +150,18 @@
 </template>
 
 <script setup lang="ts">
-import { state, showInfo, currency, onBuy, onInstall } from '../index'
+import { state, moduleInstallState, showInfo, currency, onBuy, onInstall } from '../index'
 import { timeFormat } from '/@/components/table'
 import { isEmpty } from 'lodash'
 
-const openUrl = (url: string) => {
+const installButtonText = {
+    'Install now': [moduleInstallState.UNINSTALLED, moduleInstallState.WAIT_INSTALL],
+    'continue installation': [moduleInstallState.CONFLICT_PENDING, moduleInstallState.DEPENDENT_WAIT_INSTALL],
+    'already installed': [moduleInstallState.INSTALLED],
+}
+
+const openDemo = (url: string, open: boolean) => {
+    if (!open) return
     if (!url) return
     window.open(url)
 }
@@ -243,6 +268,7 @@ const openUrl = (url: string) => {
             }
             .recommend-goods-logo {
                 width: 34px;
+                border-radius: var(--el-border-radius-base);
             }
             .recommend-goods-title {
                 flex: 1;
