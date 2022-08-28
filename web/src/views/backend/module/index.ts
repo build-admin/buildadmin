@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import { modules, info, createOrder, payOrder, postInstallModule, getInstallStateUrl, dependentInstallComplete } from '/@/api/backend/module'
+import { index, modules, info, createOrder, payOrder, postInstallModule, getInstallStateUrl, dependentInstallComplete } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
 import { Session } from '/@/utils/storage'
 import { INSTALL_MODULE_TEMP } from '/@/stores/constant/cacheKey'
@@ -49,6 +49,14 @@ export const state: {
         waitInstallDepend: anyObj
         dependInstallState: 'executing' | 'success' | 'fail'
     }
+    loadIndex: boolean
+    installedModule: {
+        uid: string
+        state: number
+        version: string
+        website: string
+    }[]
+    installedModuleUids: number[]
 } = reactive({
     tableLoading: true,
     remark: '',
@@ -84,6 +92,9 @@ export const state: {
         waitInstallDepend: {},
         dependInstallState: 'executing',
     },
+    loadIndex: false,
+    installedModule: [],
+    installedModuleUids: [],
 })
 
 export const loadData = () => {
@@ -91,6 +102,30 @@ export const loadData = () => {
         return
     }
     state.tableLoading = true
+    if (!state.loadIndex) {
+        loadIndex().then(() => {
+            getModules()
+        })
+    } else {
+        getModules()
+    }
+}
+
+const loadIndex = () => {
+    return index().then((res) => {
+        state.loadIndex = true
+        state.installedModule = res.data.installedModule
+        let installedModuleUids = []
+        if (res.data.installedModule) {
+            for (const key in res.data.installedModule) {
+                installedModuleUids.push(res.data.installedModule[key].uid)
+            }
+            state.installedModuleUids = installedModuleUids
+        }
+    })
+}
+
+const getModules = () => {
     let params: anyObj = {}
     for (const key in state.params) {
         if (state.params[key] != '') {
@@ -100,7 +135,17 @@ export const loadData = () => {
     modules(params)
         .then((res) => {
             state.remark = res.data.remark
-            state.modules[params.activeTab] = res.data.rows
+            state.modules[params.activeTab] = res.data.rows.map((item: anyObj) => {
+                const idx = state.installedModuleUids.indexOf(item.uid)
+                if (idx !== -1) {
+                    item.state = state.installedModule[idx].state
+                    item.version = state.installedModule[idx].version
+                    item.website = state.installedModule[idx].website
+                } else {
+                    item.state = 0
+                }
+                return item
+            })
             state.category = res.data.category
         })
         .finally(() => {

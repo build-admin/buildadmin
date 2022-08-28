@@ -44,6 +44,7 @@ import { state, loadData } from '../index'
 import { debounce } from '/@/utils/common'
 
 const onRefreshData = () => {
+    state.loadIndex = false
     for (const key in state.modules) {
         state.modules[key] = undefined
     }
