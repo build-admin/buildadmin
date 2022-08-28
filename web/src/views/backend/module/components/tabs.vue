@@ -24,10 +24,13 @@
                                     <span class="download-count">
                                         <Icon name="fa fa-download" color="#c0c4cc" size="13" /> {{ item.downloads }}
                                     </span>
-                                    <span class="goods-price">
+                                    <span v-if="item.state === moduleInstallState.UNINSTALLED" class="goods-price">
                                         <span class="original-price">{{ currency(item.original_price, item.currency_select) }}</span>
                                         <span class="current-price">{{ currency(item.present_price, item.currency_select) }}</span>
                                     </span>
+                                    <div v-else class="goods-price">
+                                        <el-tag effect="dark" :type="item.stateTag.type">{{ item.stateTag.text }}</el-tag>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -40,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { state, loadData, currency, showInfo } from '../index'
+import { state, loadData, currency, showInfo, moduleInstallState } from '../index'
 
 const onTabChange = () => {
     loadData()

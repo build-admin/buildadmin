@@ -141,6 +141,7 @@ const getModules = () => {
                     item.state = state.installedModule[idx].state
                     item.version = state.installedModule[idx].version
                     item.website = state.installedModule[idx].website
+                    item.stateTag = moduleState(item.state)
                 } else {
                     item.state = 0
                 }
@@ -311,5 +312,35 @@ export const currency = (price: number, val: number) => {
         return parseInt(price.toString()) + '积分'
     } else {
         return '￥' + price
+    }
+}
+
+export const moduleState = (state: number) => {
+    switch (state) {
+        case moduleInstallState.INSTALLED:
+            return {
+                type: '',
+                text: '已安装',
+            }
+        case moduleInstallState.WAIT_INSTALL:
+            return {
+                type: 'success',
+                text: '等待安装',
+            }
+        case moduleInstallState.CONFLICT_PENDING:
+            return {
+                type: 'danger',
+                text: '冲突待处理',
+            }
+        case moduleInstallState.DEPENDENT_WAIT_INSTALL:
+            return {
+                type: 'warning',
+                text: '依赖待安装',
+            }
+        default:
+            return {
+                type: 'info',
+                text: '未知',
+            }
     }
 }
