@@ -20,15 +20,17 @@ class Module extends Backend
         $installedModule = [];
         $excludedDirs    = ['ebak'];
         $moduleDir       = root_path() . 'modules' . DIRECTORY_SEPARATOR;
-        foreach (
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($moduleDir, FilesystemIterator::SKIP_DOTS),
-                RecursiveIteratorIterator::CATCH_GET_CHILD
-            ) as $item
-        ) {
-            $dirName = $iterator->getSubPathName();
-            if (!in_array($dirName, $excludedDirs)) {
-                $installedModule[] = Manage::instance($dirName)->getInfo();
+        if (is_dir($moduleDir)) {
+            foreach (
+                $iterator = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($moduleDir, FilesystemIterator::SKIP_DOTS),
+                    RecursiveIteratorIterator::CATCH_GET_CHILD
+                ) as $item
+            ) {
+                $dirName = $iterator->getSubPathName();
+                if (!in_array($dirName, $excludedDirs)) {
+                    $installedModule[] = Manage::instance($dirName)->getInfo();
+                }
             }
         }
 
