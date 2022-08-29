@@ -40,16 +40,8 @@
 </template>
 
 <script setup lang="ts">
-import { state, loadData } from '../index'
+import { state, loadData, onRefreshData } from '../index'
 import { debounce } from '/@/utils/common'
-
-const onRefreshData = () => {
-    state.loadIndex = false
-    for (const key in state.modulesEbak) {
-        state.modulesEbak[key] = undefined
-    }
-    loadData()
-}
 
 const localModules = () => {
     state.onlyLocal = !state.onlyLocal

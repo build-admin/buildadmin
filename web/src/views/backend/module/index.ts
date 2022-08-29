@@ -169,6 +169,14 @@ const modulesOnlyLocalHandle = (modules: anyObj) => {
     })
 }
 
+export const onRefreshData = () => {
+    state.loadIndex = false
+    for (const key in state.modulesEbak) {
+        state.modulesEbak[key] = undefined
+    }
+    loadData()
+}
+
 export const showInfo = (id: number) => {
     state.goodsInfo.showDialog = true
     state.goodsInfo.loading = true
@@ -283,7 +291,6 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
             state.install.uid = uid
             state.install.title = '安装完成'
             state.install.state = moduleInstallState.INSTALLED
-            Session.remove(INSTALL_MODULE_TEMP)
         })
         .catch((err) => {
             if (loginExpired(err)) return
@@ -325,6 +332,7 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
         .finally(() => {
             state.install.loading = false
             state.publicButtonLoading = false
+            onRefreshData()
         })
 }
 
