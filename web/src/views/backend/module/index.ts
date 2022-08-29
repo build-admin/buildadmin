@@ -60,6 +60,7 @@ export const state: {
         website: string
     }[]
     installedModuleUids: number[]
+    waitFullReload: boolean
 } = reactive({
     tableLoading: true,
     remark: '',
@@ -100,6 +101,7 @@ export const state: {
     loadIndex: false,
     installedModule: [],
     installedModuleUids: [],
+    waitFullReload: false,
 })
 
 export const loadData = () => {
@@ -242,7 +244,7 @@ export const onInstall = (uid: string, id: number) => {
     // 存储当前模块的安装进度等状态
     Session.set(INSTALL_MODULE_TEMP, { uid: uid, id: id })
 
-    // 发生了热重载
+    // 是否发生了热重载
     const viteFullReload = Session.get(VITE_FULL_RELOAD)
 
     // 获取安装状态
@@ -250,11 +252,9 @@ export const onInstall = (uid: string, id: number) => {
         state.install.state = res.data.state
 
         if (state.install.state === moduleInstallState.INSTALLED && viteFullReload) {
-            state.install.uid = uid
             state.install.title = '安装完成'
             setInstallLoadingStateTitle(false)
-            Session.remove(INSTALL_MODULE_TEMP)
-            Session.remove(VITE_FULL_RELOAD)
+            clearTempStorage()
             return
         }
 
@@ -272,7 +272,7 @@ export const onInstall = (uid: string, id: number) => {
             })
             state.install.showDialog = false
             setInstallLoadingStateTitle(false)
-            Session.remove(INSTALL_MODULE_TEMP)
+            clearTempStorage()
         } else {
             setInstallLoadingStateTitle(state.install.state === moduleInstallState.UNINSTALLED ? 'download' : 'install')
             execInstall(uid, id)
@@ -290,11 +290,12 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
 
     postInstallModule(uid, id, extend)
         .then((res) => {
-            state.install.uid = uid
             state.install.title = '安装完成'
             state.install.state = moduleInstallState.INSTALLED
             if (parseInt(res.data.fullreload) === 0 || viteFullReload) {
-                Session.remove(INSTALL_MODULE_TEMP)
+                clearTempStorage()
+            } else {
+                state.waitFullReload = true
             }
         })
         .catch((err) => {
@@ -313,6 +314,7 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
                 state.install.waitInstallDepend = err.data.wait_install
                 state.install.dependInstallState = 'executing'
                 if (extend.type && extend.type == 'conflictHandle' && parseInt(err.data.fullreload) === 1) {
+                    state.waitFullReload = true
                     return
                 }
                 if (parseInt(err.data.fullreload) === 0 || viteFullReload) {
@@ -327,8 +329,9 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
                             terminalTaskExecComplete(res, 'composer_dependent_wait_install')
                         })
                     }
-                    Session.remove(INSTALL_MODULE_TEMP)
-                    Session.remove(VITE_FULL_RELOAD)
+                    clearTempStorage()
+                } else {
+                    state.waitFullReload = true
                 }
             } else if (err.code == 0) {
                 ElNotification({
@@ -336,7 +339,7 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
                     message: err.msg,
                 })
                 state.install.showDialog = false
-                Session.remove(INSTALL_MODULE_TEMP)
+                clearTempStorage()
             }
         })
         .finally(() => {
@@ -370,6 +373,11 @@ const setInstallLoadingStateTitle = (installState: string | false) => {
     state.install.loading = true
     state.install.stateTitle = installState
     state.install.componentKey = uuid()
+}
+
+const clearTempStorage = () => {
+    Session.remove(INSTALL_MODULE_TEMP)
+    Session.remove(VITE_FULL_RELOAD)
 }
 
 export const loginExpired = (res: ApiResponse) => {

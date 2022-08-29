@@ -18,8 +18,21 @@
                 ></div>
                 <InstallConflict v-if="state.install.state == moduleInstallState.CONFLICT_PENDING" />
                 <InstallDone
-                    v-if="state.install.state == moduleInstallState.INSTALLED || state.install.state == moduleInstallState.DEPENDENT_WAIT_INSTALL"
+                    v-if="
+                        !state.waitFullReload &&
+                        (state.install.state == moduleInstallState.INSTALLED || state.install.state == moduleInstallState.DEPENDENT_WAIT_INSTALL)
+                    "
                 />
+                <div v-if="state.waitFullReload" class="install-wait-full-reload">
+                    <div v-loading="true" element-loading-text="WEB文件已更新，等待热重载..." class="wait-full-reload-loading"></div>
+                    <div class="full-reload-tips">
+                        若您未在
+                        <el-link target="_blank" type="primary" href="https://wonderful-code.gitee.io/guide/other/developerMustSee.html#开发环境">
+                            开发环境
+                        </el-link>
+                        下，请<el-link type="primary" @click="nonDevMode">点击我</el-link>继续完成安装
+                    </div>
+                </div>
             </el-scrollbar>
         </el-dialog>
     </div>
@@ -31,10 +44,18 @@ import { INSTALL_MODULE_TEMP } from '/@/stores/constant/cacheKey'
 import InstallConflict from '/@/views/backend/module/components/installConflict.vue'
 import InstallDone from '/@/views/backend/module/components/installDone.vue'
 import { Session } from '/@/utils/storage'
+import { VITE_FULL_RELOAD } from '/@/stores/constant/cacheKey'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const installModuleTemp = Session.get(INSTALL_MODULE_TEMP)
 if (installModuleTemp) {
     onInstall(installModuleTemp.uid, installModuleTemp.id)
+}
+
+const nonDevMode = () => {
+    Session.set(VITE_FULL_RELOAD, true)
+    router.go(0)
 }
 </script>
 
@@ -44,6 +65,17 @@ if (installModuleTemp) {
 }
 .install-loading {
     height: 500px;
+}
+.install-wait-full-reload {
+    height: 500px;
+    .wait-full-reload-loading {
+        height: 250px;
+    }
+    .full-reload-tips {
+        display: flex;
+        justify-content: center;
+        color: var(--el-color-warning);
+    }
 }
 :deep(.install-done-button) {
     display: block;

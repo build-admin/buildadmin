@@ -121,7 +121,7 @@ class Manage
             // 删除下载的zip
             @unlink($zipFile);
 
-            // 设置为安装中状态
+            // 设置为待安装状态
             $this->setInfo([
                 'state' => self::WAIT_INSTALL,
             ]);
@@ -141,65 +141,23 @@ class Manage
 
     public function enable(string $trigger)
     {
-        $info = $this->getInfo();
-        if ($info['state'] == self::WAIT_INSTALL || $info['state'] == self::CONFLICT_PENDING) {
-            $this->conflictHandle($trigger);
-            $info = $this->getInfo();
-        }
+        $this->conflictHandle($trigger);
+        $this->dependUpdateHandle();
 
         // 执行启用脚本
         Server::execEvent($this->uid, 'enable');
-
-        if ($info['state'] == self::DEPENDENT_WAIT_INSTALL) {
-            $waitInstall = [];
-            if (isset($info['composer_dependent_wait_install'])) {
-                $waitInstall[] = 'composer_dependent_wait_install';
-            }
-            if (isset($info['npm_dependent_wait_install'])) {
-                $waitInstall[] = 'npm_dependent_wait_install';
-            }
-            if ($waitInstall) {
-                throw new moduleException('dependent wait install', -2, [
-                    'uid'          => $this->uid,
-                    'state'        => self::DEPENDENT_WAIT_INSTALL,
-                    'wait_install' => $waitInstall,
-                    'fullreload'   => $info['fullreload'],
-                ]);
-            } else {
-                $this->setInfo([
-                    'state' => self::INSTALLED,
-                ]);
-            }
-        }
-    }
-
-    public function dependentInstallComplete(string $type)
-    {
-        $info = $this->getInfo();
-        if ($info['state'] == self::DEPENDENT_WAIT_INSTALL) {
-            if ($type == 'npm') {
-                unset($info['npm_dependent_wait_install']);
-            }
-            if ($type == 'composer') {
-                unset($info['composer_dependent_wait_install']);
-            }
-            if ($type == 'all') {
-                unset($info['npm_dependent_wait_install'], $info['composer_dependent_wait_install']);
-            }
-            if (!isset($info['npm_dependent_wait_install']) && !isset($info['composer_dependent_wait_install'])) {
-                $info['state'] = self::INSTALLED;
-            }
-            $this->setInfo([], $info);
-        }
     }
 
     /**
      * 处理依赖和文件冲突，并完成与前端的冲突处理交互
-     * @throws moduleException
+     * @throws moduleException|Exception
      */
-    public function conflictHandle(string $trigger)
+    public function conflictHandle(string $trigger): bool
     {
-
+        $info = $this->getInfo();
+        if ($info['state'] != self::WAIT_INSTALL && $info['state'] != self::CONFLICT_PENDING) {
+            return false;
+        }
         $fileConflict   = Server::getFileList($this->modulesDir, true);// 文件冲突
         $dependConflict = Server::dependConflictCheck($this->modulesDir);// 依赖冲突
         $installFiles   = Server::getFileList($this->modulesDir);// 待安装文件
@@ -293,7 +251,6 @@ class Manage
         }
 
         if ($depends) {
-            $info     = $this->getInfo();
             $npm      = false;
             $composer = false;
             foreach ($depends as $key => $item) {
@@ -362,6 +319,53 @@ class Manage
                     }
                 }
             }
+        }
+        return true;
+    }
+
+    public function dependUpdateHandle()
+    {
+        $info = $this->getInfo();
+        if ($info['state'] == self::DEPENDENT_WAIT_INSTALL) {
+            $waitInstall = [];
+            if (isset($info['composer_dependent_wait_install'])) {
+                $waitInstall[] = 'composer_dependent_wait_install';
+            }
+            if (isset($info['npm_dependent_wait_install'])) {
+                $waitInstall[] = 'npm_dependent_wait_install';
+            }
+            if ($waitInstall) {
+                throw new moduleException('dependent wait install', -2, [
+                    'uid'          => $this->uid,
+                    'state'        => self::DEPENDENT_WAIT_INSTALL,
+                    'wait_install' => $waitInstall,
+                    'fullreload'   => $info['fullreload'],
+                ]);
+            } else {
+                $this->setInfo([
+                    'state' => self::INSTALLED,
+                ]);
+            }
+        }
+    }
+
+    public function dependentInstallComplete(string $type)
+    {
+        $info = $this->getInfo();
+        if ($info['state'] == self::DEPENDENT_WAIT_INSTALL) {
+            if ($type == 'npm') {
+                unset($info['npm_dependent_wait_install']);
+            }
+            if ($type == 'composer') {
+                unset($info['composer_dependent_wait_install']);
+            }
+            if ($type == 'all') {
+                unset($info['npm_dependent_wait_install'], $info['composer_dependent_wait_install']);
+            }
+            if (!isset($info['npm_dependent_wait_install']) && !isset($info['composer_dependent_wait_install'])) {
+                $info['state'] = self::INSTALLED;
+            }
+            $this->setInfo([], $info);
         }
     }
 
