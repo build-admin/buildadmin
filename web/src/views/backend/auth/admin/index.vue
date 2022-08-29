@@ -35,7 +35,7 @@ const baTable = new baTableClass(
     new baTableApi(authAdmin),
     {
         column: [
-            { type: 'selection', checkShow: false, align: 'center', operator: false },
+            { type: 'selection', align: 'center', operator: false },
             { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
             { label: t('auth.admin.username'), prop: 'username', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             { label: t('auth.admin.nickname'), prop: 'nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
@@ -64,7 +64,6 @@ const baTable = new baTableClass(
             {
                 label: t('operate'),
                 align: 'center',
-                checkShow: false,
                 width: '100',
                 render: 'buttons',
                 buttons: defaultOptButtons(['edit', 'delete']),

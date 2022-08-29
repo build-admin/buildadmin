@@ -36,7 +36,7 @@ const baTable = new baTableClass(
     {
         expandAll: true,
         column: [
-            { type: 'selection', checkShow: false, align: 'center', operator: false },
+            { type: 'selection', align: 'center', operator: false },
             { label: t('auth.menu.title'), prop: 'title', align: 'left' },
             { label: t('auth.menu.Icon'), prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
             { label: t('auth.menu.name'), prop: 'name', align: 'center', 'show-overflow-tooltip': true },
@@ -55,14 +55,7 @@ const baTable = new baTableClass(
             { label: t('state'), prop: 'status', align: 'center', width: '80', render: 'switch' },
             { label: t('updatetime'), prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
             { label: t('createtime'), prop: 'createtime', align: 'center', width: '160', render: 'datetime' },
-            {
-                label: t('operate'),
-                align: 'center',
-                checkShow: false,
-                width: '130',
-                render: 'buttons',
-                buttons: defaultOptButtons(),
-            },
+            { label: t('operate'), align: 'center', width: '130', render: 'buttons', buttons: defaultOptButtons() },
         ],
         dblClickNotEditColumn: [undefined, 'status'],
     },

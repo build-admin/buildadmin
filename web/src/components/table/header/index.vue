@@ -89,6 +89,7 @@
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
+                    
                 </el-dropdown>
                 <el-tooltip
                     v-if="props.buttons.includes('comSearch')"
@@ -138,7 +139,7 @@ const state = reactive({
 const columnDisplay = computed(() => {
     let columnDisplayArr = []
     for (let item of baTable.table.column) {
-        if (item.checkShow !== false)  columnDisplayArr.push(item)
+        item.type === 'selection' || item.render === 'buttons' || item.enableColumnDisplayControl === false ? '' : columnDisplayArr.push(item)
     }
     return columnDisplayArr
 })

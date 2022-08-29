@@ -42,7 +42,7 @@ const baTable = new baTableClass(
         expandAll: true,
         dblClickNotEditColumn: [undefined],
         column: [
-            { type: 'selection', checkShow: false, align: 'center' },
+            { type: 'selection', align: 'center' },
             { label: t('auth.group.Group name'), prop: 'name', align: 'left' },
             { label: t('auth.group.jurisdiction'), prop: 'rules', align: 'center' },
             {
@@ -55,14 +55,7 @@ const baTable = new baTableClass(
             },
             { label: t('updatetime'), prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
             { label: t('createtime'), prop: 'createtime', align: 'center', width: '160', render: 'datetime' },
-            {
-                label: t('operate'),
-                align: 'center',
-                checkShow: false,
-                width: '130',
-                render: 'buttons',
-                buttons: defaultOptButtons(['edit', 'delete']),
-            },
+            { label: t('operate'), align: 'center', width: '130', render: 'buttons', buttons: defaultOptButtons(['edit', 'delete']) },
         ],
     },
     {
