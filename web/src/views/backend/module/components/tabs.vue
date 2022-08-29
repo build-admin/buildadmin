@@ -43,7 +43,8 @@
 </template>
 
 <script setup lang="ts">
-import { state, loadData, currency, showInfo, moduleInstallState } from '../index'
+import { state, loadData, currency, showInfo } from '../index'
+import { moduleInstallState } from '../types'
 
 const onTabChange = () => {
     loadData()

@@ -7,61 +7,9 @@ import { ElNotification } from 'element-plus'
 import { uuid } from '/@/utils/random'
 import { useTerminal } from '/@/stores/terminal'
 import { taskStatus } from '/@/components/terminal/constant'
+import { moduleInstallState, moduleState } from './types'
 
-export enum moduleInstallState {
-    UNINSTALLED,
-    INSTALLED,
-    WAIT_INSTALL,
-    CONFLICT_PENDING,
-    DEPENDENT_WAIT_INSTALL,
-    DIRECTORY_OCCUPIED,
-    DISABLE,
-}
-
-export const state: {
-    tableLoading: boolean
-    remark: string
-    modules: anyObj
-    modulesEbak: anyObj
-    category: anyObj
-    params: anyObj
-    goodsInfo: {
-        showDialog: boolean
-        info: anyObj
-        loading: boolean
-    }
-    showBaAccount: boolean
-    buy: {
-        showLoading: boolean
-        showDialog: boolean
-        info: anyObj
-        agreement: boolean
-    }
-    publicButtonLoading: boolean
-    install: {
-        showDialog: boolean
-        title: string
-        loading: boolean
-        stateTitle: string
-        fileConflict: any[]
-        dependConflict: any[]
-        uid: string
-        state: number
-        componentKey: string
-        waitInstallDepend: anyObj
-        dependInstallState: 'executing' | 'success' | 'fail'
-    }
-    onlyLocal: boolean
-    loadIndex: boolean
-    installedModule: {
-        uid: string
-        state: number
-        version: string
-        website: string
-    }[]
-    installedModuleUids: number[]
-    waitFullReload: boolean
-} = reactive({
+export const state: moduleState = reactive({
     tableLoading: true,
     remark: '',
     modules: [],
@@ -150,7 +98,7 @@ const getModules = () => {
                     item.state = state.installedModule[idx].state
                     item.version = state.installedModule[idx].version
                     item.website = state.installedModule[idx].website
-                    item.stateTag = moduleState(item.state)
+                    item.stateTag = moduleStatus(item.state)
                 } else {
                     item.state = 0
                 }
@@ -398,7 +346,7 @@ export const currency = (price: number, val: number) => {
     }
 }
 
-export const moduleState = (state: number) => {
+export const moduleStatus = (state: number) => {
     switch (state) {
         case moduleInstallState.INSTALLED:
             return {

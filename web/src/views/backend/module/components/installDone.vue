@@ -52,7 +52,8 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { state, moduleInstallState } from '../index'
+import { state } from '../index'
+import { moduleInstallState } from '../types'
 import { useTerminal } from '/@/stores/terminal'
 import FormItem from '/@/components/formItem/index.vue'
 import { taskStatus } from '/@/components/terminal/constant'

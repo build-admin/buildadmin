@@ -170,7 +170,8 @@
 </template>
 
 <script setup lang="ts">
-import { state, moduleInstallState, showInfo, currency, onBuy, onInstall } from '../index'
+import { state, showInfo, currency, onBuy, onInstall } from '../index'
+import { moduleInstallState } from '../types'
 import { timeFormat } from '/@/components/table'
 import { isEmpty } from 'lodash'
 
