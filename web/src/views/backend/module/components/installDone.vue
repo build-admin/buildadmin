@@ -41,7 +41,7 @@
         <el-button
             v-blur
             class="install-done-button"
-            :disabled="state.install.dependInstallState == 'success' || state.install.state == moduleInstallState.INSTALLED ? false : true"
+            :disabled="state.install.dependInstallState != 'executing' || state.install.state == moduleInstallState.INSTALLED ? false : true"
             size="large"
             type="primary"
             @click="onSubmitInstallDone"

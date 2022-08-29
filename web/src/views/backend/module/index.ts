@@ -2,7 +2,7 @@ import { reactive } from 'vue'
 import { index, modules, info, createOrder, payOrder, postInstallModule, getInstallStateUrl, dependentInstallComplete } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
 import { Session } from '/@/utils/storage'
-import { INSTALL_MODULE_TEMP } from '/@/stores/constant/cacheKey'
+import { INSTALL_MODULE_TEMP, VITE_FULL_RELOAD } from '/@/stores/constant/cacheKey'
 import { ElNotification } from 'element-plus'
 import { uuid } from '/@/utils/random'
 import { useTerminal } from '/@/stores/terminal'
@@ -233,32 +233,36 @@ export const onPay = (payType: number) => {
         })
 }
 
-export const onInstall = (uid: string, id: number, type: 'manual' | 'sessionStorage' = 'manual') => {
+export const onInstall = (uid: string, id: number) => {
     state.install.showDialog = true
-    state.install.loading = true
-    setInstallStateTitle('init')
+    setInstallLoadingStateTitle('init')
     state.install.title = '安装'
 
     // 安装模块可能会触发热更新或热重载造成状态丢失
     // 存储当前模块的安装进度等状态
     Session.set(INSTALL_MODULE_TEMP, { uid: uid, id: id })
 
+    // 发生了热重载
+    const viteFullReload = Session.get(VITE_FULL_RELOAD)
+
     // 获取安装状态
     getInstallStateUrl(uid).then((res) => {
         state.install.state = res.data.state
+
+        if (state.install.state === moduleInstallState.INSTALLED && viteFullReload) {
+            state.install.uid = uid
+            state.install.title = '安装完成'
+            setInstallLoadingStateTitle(false)
+            Session.remove(INSTALL_MODULE_TEMP)
+            Session.remove(VITE_FULL_RELOAD)
+            return
+        }
+
         if (
             state.install.state === moduleInstallState.INSTALLED ||
             state.install.state === moduleInstallState.DISABLE ||
             state.install.state === moduleInstallState.DIRECTORY_OCCUPIED
         ) {
-            if (type == 'sessionStorage' && state.install.state === moduleInstallState.INSTALLED) {
-                state.install.loading = false
-                state.install.uid = uid
-                state.install.title = '安装完成'
-                state.install.state = moduleInstallState.INSTALLED
-                Session.remove(INSTALL_MODULE_TEMP)
-                return
-            }
             ElNotification({
                 type: 'error',
                 message:
@@ -267,11 +271,12 @@ export const onInstall = (uid: string, id: number, type: 'manual' | 'sessionStor
                         : '安装取消，因为模块所需目录被占用！',
             })
             state.install.showDialog = false
-            state.install.loading = false
+            setInstallLoadingStateTitle(false)
             Session.remove(INSTALL_MODULE_TEMP)
         } else {
-            setInstallStateTitle(state.install.state === moduleInstallState.UNINSTALLED ? 'download' : 'install')
+            setInstallLoadingStateTitle(state.install.state === moduleInstallState.UNINSTALLED ? 'download' : 'install')
             execInstall(uid, id)
+
             // 关闭其他弹窗
             state.goodsInfo.showDialog = false
             state.buy.showDialog = false
@@ -280,17 +285,17 @@ export const onInstall = (uid: string, id: number, type: 'manual' | 'sessionStor
     })
 }
 
-const setInstallStateTitle = (installState: string) => {
-    state.install.stateTitle = installState
-    state.install.componentKey = uuid()
-}
-
 export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
+    const viteFullReload = Session.get(VITE_FULL_RELOAD)
+
     postInstallModule(uid, id, extend)
-        .then(() => {
+        .then((res) => {
             state.install.uid = uid
             state.install.title = '安装完成'
             state.install.state = moduleInstallState.INSTALLED
+            if (parseInt(res.data.fullreload) === 0 || viteFullReload) {
+                Session.remove(INSTALL_MODULE_TEMP)
+            }
         })
         .catch((err) => {
             if (loginExpired(err)) return
@@ -307,18 +312,23 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
                 state.install.state = moduleInstallState.DEPENDENT_WAIT_INSTALL
                 state.install.waitInstallDepend = err.data.wait_install
                 state.install.dependInstallState = 'executing'
-                Session.remove(INSTALL_MODULE_TEMP)
-
-                const terminal = useTerminal()
-                if (err.data.wait_install.includes('npm_dependent_wait_install')) {
-                    terminal.addTaskPM('web-install', true, 'module-install:' + err.data.uid, (res: number) => {
-                        terminalTaskExecComplete(res, 'npm_dependent_wait_install')
-                    })
+                if (extend.type && extend.type == 'conflictHandle' && parseInt(err.data.fullreload) === 1) {
+                    return
                 }
-                if (err.data.wait_install.includes('composer_dependent_wait_install')) {
-                    terminal.addTask('composer.update', true, 'module-install:' + err.data.uid, (res: number) => {
-                        terminalTaskExecComplete(res, 'composer_dependent_wait_install')
-                    })
+                if (parseInt(err.data.fullreload) === 0 || viteFullReload) {
+                    const terminal = useTerminal()
+                    if (err.data.wait_install.includes('npm_dependent_wait_install')) {
+                        terminal.addTaskPM('web-install', true, 'module-install:' + err.data.uid, (res: number) => {
+                            terminalTaskExecComplete(res, 'npm_dependent_wait_install')
+                        })
+                    }
+                    if (err.data.wait_install.includes('composer_dependent_wait_install')) {
+                        terminal.addTask('composer.update', true, 'module-install:' + err.data.uid, (res: number) => {
+                            terminalTaskExecComplete(res, 'composer_dependent_wait_install')
+                        })
+                    }
+                    Session.remove(INSTALL_MODULE_TEMP)
+                    Session.remove(VITE_FULL_RELOAD)
                 }
             } else if (err.code == 0) {
                 ElNotification({
@@ -330,7 +340,7 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
             }
         })
         .finally(() => {
-            state.install.loading = false
+            setInstallLoadingStateTitle(false)
             state.publicButtonLoading = false
             onRefreshData()
         })
@@ -349,6 +359,17 @@ const terminalTaskExecComplete = (res: number, type: string) => {
         terminal.toggle(true)
         state.install.dependInstallState = 'fail'
     }
+    onRefreshData()
+}
+
+const setInstallLoadingStateTitle = (installState: string | false) => {
+    if (installState === false) {
+        state.install.loading = false
+        return
+    }
+    state.install.loading = true
+    state.install.stateTitle = installState
+    state.install.componentKey = uuid()
 }
 
 export const loginExpired = (res: ApiResponse) => {

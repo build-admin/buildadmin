@@ -24,5 +24,8 @@ export const USER_INFO = 'userInfo'
 // 模块安装状态临时记录
 export const INSTALL_MODULE_TEMP = 'installModuleTemp'
 
+// 是否触发了vite热重载的临时记录
+export const VITE_FULL_RELOAD = 'viteFullReload'
+
 // ba官网用户信息
 export const BA_ACCOUNT = 'ba_account'

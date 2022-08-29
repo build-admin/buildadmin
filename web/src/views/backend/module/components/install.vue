@@ -34,7 +34,7 @@ import { Session } from '/@/utils/storage'
 
 const installModuleTemp = Session.get(INSTALL_MODULE_TEMP)
 if (installModuleTemp) {
-    onInstall(installModuleTemp.uid, installModuleTemp.id, 'sessionStorage')
+    onInstall(installModuleTemp.uid, installModuleTemp.id)
 }
 </script>
 

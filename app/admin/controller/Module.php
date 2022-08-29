@@ -59,14 +59,17 @@ class Module extends Backend
         if (!$token || !$uid) {
             $this->error(__('Parameter error'));
         }
+        $res = [];
         try {
-            Manage::instance($uid)->install($token, $orderId);
+            $res = Manage::instance($uid)->install($token, $orderId);
         } catch (moduleException $e) {
             $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
         } catch (Exception $e) {
             $this->error(__($e->getMessage()));
         }
-        $this->success();
+        $this->success('', [
+            'data' => $res,
+        ]);
     }
 
     public function dependentInstallComplete()

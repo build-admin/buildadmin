@@ -68,6 +68,7 @@ const onSubmitConflictHandle = () => {
     execInstall(state.install.uid, 0, {
         dependConflict: dependConflict,
         fileConflict: fileConflict,
+        type: 'conflictHandle',
     })
 }
 </script>

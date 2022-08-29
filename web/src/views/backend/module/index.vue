@@ -20,12 +20,19 @@ import GoodsInfo from './components/goodsInfo.vue'
 import Buy from './components/buy.vue'
 import Install from './components/install.vue'
 import { state, loadData, loginExpired, showInfo } from './index'
+import { Session } from '/@/utils/storage'
+import { VITE_FULL_RELOAD } from '/@/stores/constant/cacheKey'
 
 const { t } = useI18n()
 const baAccount = useBaAccount()
 
 onMounted(() => {
     loadData()
+    if (import.meta.hot) {
+        import.meta.hot.on('vite:beforeFullReload', () => {
+            Session.set(VITE_FULL_RELOAD, true)
+        })
+    }
 })
 </script>
 

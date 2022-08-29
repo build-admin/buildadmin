@@ -120,31 +120,36 @@ class Manage
 
             // 删除下载的zip
             @unlink($zipFile);
+
+            // 设置为安装中状态
+            $this->setInfo([
+                'state' => self::WAIT_INSTALL,
+            ]);
         }
 
         // 检查是否完整
         $this->checkPackage();
-
-        // 设置为安装中状态
-        $this->setInfo([
-            'state' => self::WAIT_INSTALL,
-        ]);
 
         // 导入sql
         Server::importSql($this->modulesDir);
 
         // 启用插件
         $this->enable('install');
+
+        return $this->getInfo();
     }
 
     public function enable(string $trigger)
     {
-        $this->conflictHandle($trigger);
+        $info = $this->getInfo();
+        if ($info['state'] == self::WAIT_INSTALL || $info['state'] == self::CONFLICT_PENDING) {
+            $this->conflictHandle($trigger);
+            $info = $this->getInfo();
+        }
 
         // 执行启用脚本
         Server::execEvent($this->uid, 'enable');
 
-        $info = $this->getInfo();
         if ($info['state'] == self::DEPENDENT_WAIT_INSTALL) {
             $waitInstall = [];
             if (isset($info['composer_dependent_wait_install'])) {
@@ -158,6 +163,7 @@ class Manage
                     'uid'          => $this->uid,
                     'state'        => self::DEPENDENT_WAIT_INSTALL,
                     'wait_install' => $waitInstall,
+                    'fullreload'   => $info['fullreload'],
                 ]);
             } else {
                 $this->setInfo([
