@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use ba\module\Server;
 use think\Exception;
 use ba\module\Manage;
 use ba\module\moduleException;
@@ -29,7 +30,7 @@ class Module extends Backend
             ) {
                 $dirName = $iterator->getSubPathName();
                 if (!in_array($dirName, $excludedDirs)) {
-                    $installedModule[] = Manage::instance($dirName)->getInfo();
+                    $installedModule[] = Server::getIni($moduleDir . $dirName . DIRECTORY_SEPARATOR);
                 }
             }
         }
