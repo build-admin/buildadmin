@@ -16,7 +16,7 @@
                             <span>
                                 理解并同意《
                                 <a href="https://wonderful-code.gitee.io/senior/other/templateAgreement.html" target="_blank">
-                                    模板案例购买和使用协议
+                                    模块购买和使用协议
                                 </a>
                                 》
                             </span>

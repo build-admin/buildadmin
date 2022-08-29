@@ -29,12 +29,12 @@
                             <div class="basic-item-title">发布时间</div>
                             <div class="basic-item-content">{{ timeFormat(state.goodsInfo.info.createtime) }}</div>
                         </div>
-                        <div class="basic-item">
+                        <div v-if="!installButtonState.stateSwitch.includes(state.goodsInfo.info.state)" class="basic-item">
                             <div class="basic-item-title">下载次数</div>
                             <div class="basic-item-content">{{ state.goodsInfo.info.downloads }}</div>
                         </div>
                         <div v-if="state.goodsInfo.info.category" class="basic-item">
-                            <div class="basic-item-title">模板分类</div>
+                            <div class="basic-item-title">模块分类</div>
                             <div class="basic-item-content">{{ state.goodsInfo.info.category.name }}</div>
                         </div>
                         <div class="basic-item">
@@ -44,8 +44,18 @@
                                 <span v-else>无</span>
                             </div>
                         </div>
+                        <div v-if="installButtonState.stateSwitch.includes(state.goodsInfo.info.state)" class="basic-item">
+                            <div class="basic-item-title">模块状态</div>
+                            <div class="basic-item-content"><el-switch v-model="state.goodsInfo.info.enable" /></div>
+                        </div>
                         <div class="basic-buttons">
-                            <el-dropdown v-if="state.goodsInfo.info.demo && state.goodsInfo.info.demo.length > 0">
+                            <el-dropdown
+                                v-if="
+                                    (!state.goodsInfo.info.purchased || installButtonState.InstallNow.includes(state.goodsInfo.info.state)) &&
+                                    state.goodsInfo.info.demo &&
+                                    state.goodsInfo.info.demo.length > 0
+                                "
+                            >
                                 <el-button class="basic-button-demo" type="primary">
                                     <span class="basic-button-dropdown-span">查看演示</span>
                                     <Icon color="#ffffff" size="16" name="el-icon-ArrowDown" />
@@ -82,7 +92,7 @@
                             >
                             <template v-else>
                                 <el-button
-                                    v-if="installButtonText['Install now'].includes(state.goodsInfo.info.state)"
+                                    v-if="installButtonState.InstallNow.includes(state.goodsInfo.info.state)"
                                     @click="onInstall(state.goodsInfo.info.uid, state.goodsInfo.info.purchased)"
                                     :loading="state.publicButtonLoading"
                                     v-blur
@@ -91,21 +101,31 @@
                                     >立即安装</el-button
                                 >
                                 <el-button
-                                    v-if="installButtonText['continue installation'].includes(state.goodsInfo.info.state)"
+                                    v-if="installButtonState.continueInstallation.includes(state.goodsInfo.info.state)"
                                     @click="onInstall(state.goodsInfo.info.uid, state.goodsInfo.info.purchased)"
                                     :loading="state.publicButtonLoading"
                                     v-blur
                                     class="basic-button-item"
                                     type="success"
-                                    >继续安装</el-button
                                 >
+                                    继续安装
+                                </el-button>
                                 <el-button
-                                    v-if="installButtonText['already installed'].includes(state.goodsInfo.info.state)"
+                                    v-if="installButtonState.alreadyInstalled.includes(state.goodsInfo.info.state)"
                                     v-blur
                                     :disabled="true"
                                     class="basic-button-item"
-                                    >已安装 v{{ state.goodsInfo.info.version }}</el-button
                                 >
+                                    已安装 v{{ state.goodsInfo.info.version }}
+                                </el-button>
+                                <el-button
+                                    v-if="installButtonState.stateSwitch.includes(state.goodsInfo.info.state)"
+                                    v-blur
+                                    class="basic-button-item"
+                                    type="danger"
+                                >
+                                    卸载
+                                </el-button>
                             </template>
                         </div>
                     </div>
@@ -154,10 +174,16 @@ import { state, moduleInstallState, showInfo, currency, onBuy, onInstall } from 
 import { timeFormat } from '/@/components/table'
 import { isEmpty } from 'lodash'
 
-const installButtonText = {
-    'Install now': [moduleInstallState.UNINSTALLED, moduleInstallState.WAIT_INSTALL],
-    'continue installation': [moduleInstallState.CONFLICT_PENDING, moduleInstallState.DEPENDENT_WAIT_INSTALL],
-    'already installed': [moduleInstallState.INSTALLED],
+const installButtonState = {
+    InstallNow: [moduleInstallState.UNINSTALLED, moduleInstallState.WAIT_INSTALL],
+    continueInstallation: [moduleInstallState.CONFLICT_PENDING, moduleInstallState.DEPENDENT_WAIT_INSTALL],
+    alreadyInstalled: [moduleInstallState.INSTALLED],
+    stateSwitch: [
+        moduleInstallState.INSTALLED,
+        moduleInstallState.CONFLICT_PENDING,
+        moduleInstallState.DEPENDENT_WAIT_INSTALL,
+        moduleInstallState.DISABLE,
+    ],
 }
 
 const openDemo = (url: string, open: boolean) => {
@@ -200,6 +226,7 @@ const openDemo = (url: string, open: boolean) => {
         padding: 0 10px;
         .basic-item {
             display: flex;
+            align-items: center;
             padding: 5px 0;
             .basic-item-title {
                 font-size: var(--el-font-size-base);

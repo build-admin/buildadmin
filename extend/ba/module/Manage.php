@@ -20,6 +20,7 @@ class Manage
     public const CONFLICT_PENDING       = 3;
     public const DEPENDENT_WAIT_INSTALL = 4;
     public const DIRECTORY_OCCUPIED     = 5;
+    public const DISABLE                = 6;
 
     /**
      * @var Manage 对象实例
@@ -98,7 +99,7 @@ class Manage
     public function install(string $token, int $orderId)
     {
         $state = $this->installState();
-        if ($state == self::INSTALLED || $state == self::DIRECTORY_OCCUPIED) {
+        if ($state == self::INSTALLED || $state == self::DIRECTORY_OCCUPIED || $state == self::DISABLE) {
             throw new Exception('Module already exists');
         }
 

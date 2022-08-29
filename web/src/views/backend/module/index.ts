@@ -15,6 +15,7 @@ export enum moduleInstallState {
     CONFLICT_PENDING,
     DEPENDENT_WAIT_INSTALL,
     DIRECTORY_OCCUPIED,
+    DISABLE,
 }
 
 export const state: {
@@ -177,6 +178,7 @@ export const showInfo = (id: number) => {
             if (idx !== -1) {
                 res.data.info.state = state.installedModule[idx].state
                 res.data.info.version = state.installedModule[idx].version
+                res.data.info.enable = res.data.info.state === moduleInstallState.DISABLE ? false : true
             } else {
                 res.data.info.state = 0
             }
@@ -236,10 +238,17 @@ export const onInstall = (uid: string, id: number) => {
     // 获取安装状态
     getInstallStateUrl(uid).then((res) => {
         state.install.state = res.data.state
-        if (state.install.state === moduleInstallState.INSTALLED || state.install.state === moduleInstallState.DIRECTORY_OCCUPIED) {
+        if (
+            state.install.state === moduleInstallState.INSTALLED ||
+            state.install.state === moduleInstallState.DISABLE ||
+            state.install.state === moduleInstallState.DIRECTORY_OCCUPIED
+        ) {
             ElNotification({
                 type: 'error',
-                message: state.install.state === moduleInstallState.INSTALLED ? '安装取消，因为模块已经存在！' : '安装取消，因为模块所需目录被占用！',
+                message:
+                    state.install.state === moduleInstallState.INSTALLED || state.install.state === moduleInstallState.DISABLE
+                        ? '安装取消，因为模块已经存在！'
+                        : '安装取消，因为模块所需目录被占用！',
             })
             state.install.showDialog = false
             state.install.loading = false
@@ -357,6 +366,11 @@ export const moduleState = (state: number) => {
             return {
                 type: 'warning',
                 text: '依赖待安装',
+            }
+        case moduleInstallState.DISABLE:
+            return {
+                type: 'warning',
+                text: '禁用',
             }
         default:
             return {
