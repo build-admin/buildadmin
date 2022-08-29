@@ -225,7 +225,7 @@ export const onPay = (payType: number) => {
         })
 }
 
-export const onInstall = (uid: string, id: number) => {
+export const onInstall = (uid: string, id: number, type: 'manual' | 'sessionStorage' = 'manual') => {
     state.install.showDialog = true
     state.install.loading = true
     setInstallStateTitle('init')
@@ -243,6 +243,14 @@ export const onInstall = (uid: string, id: number) => {
             state.install.state === moduleInstallState.DISABLE ||
             state.install.state === moduleInstallState.DIRECTORY_OCCUPIED
         ) {
+            if (type == 'sessionStorage' && state.install.state === moduleInstallState.INSTALLED) {
+                state.install.loading = false
+                state.install.uid = uid
+                state.install.title = '安装完成'
+                state.install.state = moduleInstallState.INSTALLED
+                Session.remove(INSTALL_MODULE_TEMP)
+                return
+            }
             ElNotification({
                 type: 'error',
                 message:
@@ -252,6 +260,7 @@ export const onInstall = (uid: string, id: number) => {
             })
             state.install.showDialog = false
             state.install.loading = false
+            Session.remove(INSTALL_MODULE_TEMP)
         } else {
             setInstallStateTitle(state.install.state === moduleInstallState.UNINSTALLED ? 'download' : 'install')
             execInstall(uid, id)
@@ -304,6 +313,13 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
                         terminalTaskExecComplete(res, 'composer_dependent_wait_install')
                     })
                 }
+            } else if (err.code == 0) {
+                ElNotification({
+                    type: 'error',
+                    message: err.msg,
+                })
+                state.install.showDialog = false
+                Session.remove(INSTALL_MODULE_TEMP)
             }
         })
         .finally(() => {
