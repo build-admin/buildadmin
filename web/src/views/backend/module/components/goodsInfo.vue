@@ -288,7 +288,7 @@ const openDemo = (url: string, open: boolean) => {
         .recommend-goods-item {
             display: flex;
             align-items: center;
-            margin-top: 2px;
+            margin: 8px 0;
             cursor: pointer;
             padding: 2px;
             &:hover {
