@@ -240,7 +240,7 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
         .then((res) => {
             state.install.title = '安装完成'
             state.install.state = moduleInstallState.INSTALLED
-            if (parseInt(res.data.fullreload) === 0 || viteFullReload) {
+            if (parseInt(res.data.data.fullreload) === 0 || viteFullReload) {
                 clearTempStorage()
             } else {
                 state.waitFullReload = true
