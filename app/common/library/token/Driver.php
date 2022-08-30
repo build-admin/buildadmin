@@ -30,19 +30,21 @@ abstract class Driver
 
     /**
      * 获取 token 的数据
-     * @param string $token Token
+     * @param string $token               Token
+     * @param bool   $expirationException 过期直接抛出异常
      * @return array
      */
-    abstract function get(string $token): array;
+    abstract function get(string $token, bool $expirationException = true): array;
 
     /**
      * 检查token是否有效
      * @param string $token
      * @param string $type
      * @param int    $user_id
+     * @param bool   $expirationException
      * @return bool
      */
-    abstract function check(string $token, string $type, int $user_id): bool;
+    abstract function check(string $token, string $type, int $user_id, bool $expirationException = true): bool;
 
     /**
      * 删除一个token

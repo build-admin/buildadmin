@@ -46,40 +46,37 @@ class Mysql extends Driver
         $token      = $this->getEncryptedToken($token);
         $this->handler->insert(['token' => $token, 'type' => $type, 'user_id' => $user_id, 'createtime' => time(), 'expiretime' => $expiretime]);
 
-        // 每隔24小时清理一次过期缓存
+        // 每隔48小时清理一次过期缓存
         $time                 = time();
         $lastCacheCleanupTime = Cache::get('last_cache_cleanup_time');
-        if (!$lastCacheCleanupTime || $lastCacheCleanupTime < $time - 86400) {
+        if (!$lastCacheCleanupTime || $lastCacheCleanupTime < $time - 172800) {
             Cache::set('last_cache_cleanup_time', $time);
             $this->handler->where('expiretime', '<', time())->where('expiretime', '>', 0)->delete();
         }
         return true;
     }
 
-    public function get(string $token): array
+    public function get(string $token, bool $expirationException = true): array
     {
         $data = $this->handler->where('token', $this->getEncryptedToken($token))->find();
-        if ($data) {
-            if (!$data['expiretime'] || $data['expiretime'] > time()) {
-                // 返回未加密的token给客户端使用
-                $data['token'] = $token;
-                //返回剩余有效时间
-                $data['expires_in'] = $this->getExpiredIn($data['expiretime']);
-                return $data;
-            } elseif ($data['type'] == 'admin-refresh' || $data['type'] == 'user-refresh') {
-                return $data;
-            } else {
-                // token过期-触发前端刷新token
-                $response = Response::create(['code' => 409, 'msg' => 'Token expiration'], 'json');
-                throw new HttpResponseException($response);
-            }
+        if (!$data) {
+            return [];
         }
-        return [];
+        // 返回未加密的token给客户端使用
+        $data['token'] = $token;
+        // 返回剩余有效时间
+        $data['expires_in'] = $this->getExpiredIn($data['expiretime'] ?? 0);
+        if ($data['expiretime'] && $data['expiretime'] <= time() && $expirationException) {
+            // token过期-触发前端刷新token
+            $response = Response::create(['code' => 409, 'msg' => 'Token expiration', 'data' => $data], 'json');
+            throw new HttpResponseException($response);
+        }
+        return $data;
     }
 
-    public function check(string $token, string $type, int $user_id): bool
+    public function check(string $token, string $type, int $user_id, bool $expirationException = true): bool
     {
-        $data = $this->get($token);
+        $data = $this->get($token, $expirationException);
         return $data && $data['type'] == $type && $data['user_id'] == $user_id;
     }
 

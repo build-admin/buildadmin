@@ -3,6 +3,8 @@
 namespace app\common\library\token\driver;
 
 use app\common\library\token\Driver;
+use think\exception\HttpResponseException;
+use think\Response;
 
 /**
  * @see Driver
@@ -14,13 +16,13 @@ class Redis extends Driver
      * @var array
      */
     protected $options = [];
-    
+
     /**
      * 构造函数
      * @param array $options 参数
      * @access public
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (!extension_loaded('redis')) {
             throw new \BadFunctionCallException('未安装redis扩展');
@@ -39,69 +41,94 @@ class Redis extends Driver
             $this->handler->auth($this->options['password']);
         }
 
-        if (0 != $this->options['select']) {
+        if (false !== $this->options['select']) {
             $this->handler->select($this->options['select']);
         }
     }
 
-    public function set(string $token, string $type, int $user_id, int $expire = 0): bool
+    public function set(string $token, string $type, int $user_id, int $expire = null): bool
     {
-        if (!$expire) {
+        if (is_null($expire)) {
             $expire = $this->options['expire'];
         }
-        $key = $this->getEncryptedToken($token);
-        $value =  $user_id.'-'.$type;
+        $expiretime = $expire !== 0 ? time() + $expire : 0;
+        $token      = $this->getEncryptedToken($token);
+        $tokenInfo  = [
+            'token'      => $token,
+            'type'       => $type,
+            'user_id'    => $user_id,
+            'createtime' => time(),
+            'expiretime' => $expiretime,
+        ];
+        $tokenInfo  = json_encode($tokenInfo, JSON_UNESCAPED_UNICODE);
         if ($expire) {
-            $result = $this->handler->setex($key, $expire, $value);
+            if ($type == 'admin' || $type == 'user') {
+                // 增加 redis中的 token 过期时间，以免 token 过期自动刷新永远无法触发
+                $expire *= 2;
+            }
+            $result = $this->handler->setex($token, $expire, $tokenInfo);
         } else {
-            $result = $this->handler->set($key, $value);
+            $result = $this->handler->set($token, $tokenInfo);
         }
-        //写入会员关联的token,删除时用
-        $this->handler->sAdd($this->options['persistent'].$user_id, $key);
-        return true;
-    }
-
-    public function get(string $token): array
-    {
-        $key = $this->getEncryptedToken($token);
-        $value = $this->handler->get($key);
-        if (is_null($value) || false === $value) {
-            return [];
-        }
-        //获取有效期
-        $expire = $this->handler->ttl($key);
-        $expire = $expire < 0 ? 365 * 86400 : $expire;
-        $expiretime = time() + $expire;
-        $value = explode('-',$value)[0];
-        //解决使用redis方式储存token时api接口Token刷新与检测因expires_in拼写错误报错的BUG
-        $result = ['token' => $token, 'user_id' => $value, 'expiretime' => $expiretime, 'expires_in' => $expire];
+        $this->handler->sAdd($this->getUserKey($user_id), $token);
         return $result;
     }
 
-    public function check(string $token, string $type, int $user_id): bool
+    public function get(string $token, bool $expirationException = true): array
     {
-        $data = $this->handler->hget($token,$type);
-        return $data && $data == $user_id;
+        $key  = $this->getEncryptedToken($token);
+        $data = $this->handler->get($key);
+        if (is_null($data) || false === $data) {
+            return [];
+        }
+        $data = json_decode($data, true);
+        // 返回未加密的token给客户端使用
+        $data['token'] = $token;
+        // 过期时间
+        $data['expires_in'] = $this->getExpiredIn($data['expiretime'] ?? 0);
+
+        if ($data['expiretime'] && $data['expiretime'] <= time() && $expirationException) {
+            // token过期-触发前端刷新token
+            $response = Response::create(['code' => 409, 'msg' => 'Token expiration', 'data' => $data], 'json');
+            throw new HttpResponseException($response);
+        }
+        return $data;
+    }
+
+    public function check(string $token, string $type, int $user_id, bool $expirationException = true): bool
+    {
+        $data = $this->get($token, $expirationException);
+        return $data && $data['type'] == $type && $data['user_id'] == $user_id;
     }
 
     public function delete(string $token): bool
     {
-        $data = $this->get($token);
+        $data = $this->get($token, false);
         if ($data) {
-            $key = $this->getEncryptedToken($token);
+            $key     = $this->getEncryptedToken($token);
             $user_id = $data['user_id'];
             $this->handler->del($key);
-            $this->handler->sRem($this->options['persistent'].$user_id, $key);
+            $this->handler->sRem($this->getUserKey($user_id), $key);
         }
         return true;
     }
 
     public function clear(string $type, int $user_id): bool
     {
-        $keys = $this->handler->sMembers($this->options['persistent'].$user_id);
-        $this->handler->del($this->options['persistent'].$user_id);
+        $keys = $this->handler->sMembers($this->getUserKey($user_id));
+        $this->handler->del($this->getUserKey($user_id));
         $this->handler->del($keys);
         return true;
+    }
+
+    /**
+     * 获取会员的key
+     * @param $user_id
+     * @return string
+     */
+    protected function getUserKey($user_id): string
+    {
+        return $this->options['userprefix'] . $user_id;
     }
 
 }

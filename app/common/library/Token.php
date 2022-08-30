@@ -170,11 +170,12 @@ class Token
     /**
      * 获取token
      * @param string $token
+     * @param bool   $expirationException
      * @return array
      */
-    public function get(string $token): array
+    public function get(string $token, bool $expirationException = true): array
     {
-        return $this->getDriver()->get($token);
+        return $this->getDriver()->get($token, $expirationException);
     }
 
     /**
@@ -182,11 +183,12 @@ class Token
      * @param string $token
      * @param string $type
      * @param int    $user_id
+     * @param bool   $expirationException
      * @return bool
      */
-    public function check(string $token, string $type, int $user_id): bool
+    public function check(string $token, string $type, int $user_id, bool $expirationException = true): bool
     {
-        return $this->getDriver()->check($token, $type, $user_id);
+        return $this->getDriver()->check($token, $type, $user_id, $expirationException);
     }
 
     /**
