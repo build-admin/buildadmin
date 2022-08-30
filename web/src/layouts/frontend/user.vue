@@ -27,6 +27,7 @@ onMounted(() => {
     if (!userInfo.token) return router.push({ name: 'userLogin' })
 
     index().then((res) => {
+        res.data.userInfo.refreshToken = userInfo.refreshToken
         userInfo.$state = res.data.userInfo
         if (res.data.menus) {
             let menuRule = handleMemberCenterRoute(res.data.menus)
