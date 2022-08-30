@@ -89,7 +89,6 @@
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
-                    
                 </el-dropdown>
                 <el-tooltip
                     v-if="props.buttons.includes('comSearch')"
