@@ -80,6 +80,8 @@ declare global {
     interface TableColumn extends ElTableColumn {
         // 是否显示
         show?: boolean
+        // 是否在下拉菜单的复选框显示 默认为true显示
+        enableColumnDisplayControl?: boolean
         // 渲染为:icon|switch|image|images|tag|url|datetime|buttons|customTemplate|customRender
         render?: 'icon' | 'switch' | 'image' | 'images' | 'tag' | 'tags' | 'url' | 'datetime' | 'buttons' | 'customTemplate' | 'customRender'
         // 操作按钮组

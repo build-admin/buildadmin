@@ -55,13 +55,7 @@ const baTable = new baTableClass(
             },
             { label: t('updatetime'), prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
             { label: t('createtime'), prop: 'createtime', align: 'center', width: '160', render: 'datetime' },
-            {
-                label: t('operate'),
-                align: 'center',
-                width: '130',
-                render: 'buttons',
-                buttons: defaultOptButtons(['edit', 'delete']),
-            },
+            { label: t('operate'), align: 'center', width: '130', render: 'buttons', buttons: defaultOptButtons(['edit', 'delete']) },
         ],
     },
     {
