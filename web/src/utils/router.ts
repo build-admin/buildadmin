@@ -182,23 +182,23 @@ export const addRouteAll = (viewsComponent: Record<string, { [key: string]: any 
  * 动态添加路由
  */
 export const addRouteItem = (viewsComponent: Record<string, { [key: string]: any }>, route: any, parentName: string) => {
+    const routeBaseInfo = {
+        path: parentName ? route.path : '/' + route.path,
+        name: route.name,
+        component: viewsComponent[route.component].default,
+        meta: {
+            title: route.title,
+            extend: route.extend,
+            icon: route.icon,
+            keepalive: route.keepalive,
+            menu_type: route.menu_type,
+            type: route.type,
+            url: route.url,
+        },
+    }
     if (parentName) {
-        router.addRoute(parentName, {
-            path: route.path,
-            name: route.name,
-            component: viewsComponent[route.component].default,
-            meta: {
-                title: route.title,
-            },
-        })
+        router.addRoute(parentName, routeBaseInfo)
     } else {
-        router.addRoute({
-            path: '/' + route.path,
-            name: route.name,
-            component: viewsComponent[route.component].default,
-            meta: {
-                title: route.title,
-            },
-        })
+        router.addRoute(routeBaseInfo)
     }
 }
