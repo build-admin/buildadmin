@@ -45,10 +45,10 @@ onUnmounted(() => {
 
 const init = () => {
     index().then((res) => {
-        siteConfig.$state = res.data.siteConfig
+        siteConfig.dataFill(res.data.siteConfig)
         terminal.changePort(res.data.terminal.install_service_port)
         terminal.changePackageManager(res.data.terminal.npm_package_manager)
-        adminInfo.super = res.data.adminInfo.super
+        adminInfo.setSuper(res.data.adminInfo.super)
 
         if (res.data.menus) {
             let menuRule = handleAdminRoute(res.data.menus)

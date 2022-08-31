@@ -6,8 +6,6 @@ import Icon from '/@/components/icon/index.vue'
 import { useNavTabs } from '/@/stores/navTabs'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { ElForm } from 'element-plus'
-import { useAdminInfo } from '/@/stores/adminInfo'
-import { useUserInfo } from '/@/stores/userInfo'
 import { useSiteConfig } from '../stores/siteConfig'
 import { i18n } from '../lang'
 import { getUrl } from './axios'
@@ -76,26 +74,6 @@ export function setTitle(title: string) {
  */
 export function isExternal(path: string) {
     return /^(https?|ftp|mailto|tel):/.test(path)
-}
-
-export function getAdminToken(type: 'auth' | 'refresh' = 'auth') {
-    const adminInfo = useAdminInfo()
-    return type == 'auth' ? adminInfo.token : adminInfo.refreshToken
-}
-
-export function removeAdminToken() {
-    const adminInfo = useAdminInfo()
-    adminInfo.removeToken()
-}
-
-export function getUserToken(type: 'auth' | 'refresh' = 'auth') {
-    const userInfo = useUserInfo()
-    return type == 'auth' ? userInfo.token : userInfo.refreshToken
-}
-
-export function removeUserToken() {
-    const userInfo = useUserInfo()
-    userInfo.removeToken()
 }
 
 /**

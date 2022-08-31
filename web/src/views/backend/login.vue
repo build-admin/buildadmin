@@ -214,7 +214,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
             login('post', form)
                 .then((res) => {
                     form.loading = false
-                    adminInfo.$state = res.data.userinfo
+                    adminInfo.dataFill(res.data.userinfo)
                     ElNotification({
                         message: res.msg,
                         type: 'success',

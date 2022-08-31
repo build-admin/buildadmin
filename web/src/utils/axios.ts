@@ -2,7 +2,7 @@ import axios, { AxiosPromise, Method } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 import { ElLoading, LoadingOptions, ElNotification } from 'element-plus'
 import { useConfig } from '/@/stores/config'
-import { getAdminToken, removeAdminToken, getUserToken, removeUserToken, isAdminApp } from './common'
+import { isAdminApp } from './common'
 import router from '/@/router/index'
 import { refreshToken } from '/@/api/common'
 import { useUserInfo } from '/@/stores/userInfo'
@@ -34,6 +34,8 @@ export const getUrlPort = (): string => {
  */
 function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loading: LoadingOptions = {}): ApiPromise | AxiosPromise {
     const config = useConfig()
+    const adminInfo = useAdminInfo()
+    const userInfo = useUserInfo()
 
     const Axios = axios.create({
         baseURL: getUrl(),
@@ -72,9 +74,9 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
 
             // 自动携带token
             if (config.headers) {
-                const token = getAdminToken('auth')
+                const token = adminInfo.getToken()
                 if (token) config.headers.batoken = token
-                const userToken = getUserToken('auth')
+                const userToken = userInfo.getToken()
                 if (userToken) config.headers['ba-user-token'] = userToken
             }
 
@@ -98,13 +100,11 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                         return refreshToken()
                             .then((res) => {
                                 if (res.data.type == 'admin-refresh') {
-                                    const adminInfo = useAdminInfo()
-                                    adminInfo.token = res.data.token
+                                    adminInfo.setToken(res.data.token, 'token')
                                     response.headers.batoken = `${res.data.token}`
                                     window.requests.forEach((cb) => cb(res.data.token, 'admin-refresh'))
                                 } else if (res.data.type == 'user-refresh') {
-                                    const userInfo = useUserInfo()
-                                    userInfo.token = res.data.token
+                                    userInfo.setToken(res.data.token, 'token')
                                     response.headers['ba-user-token'] = `${res.data.token}`
                                     window.requests.forEach((cb) => cb(res.data.token, 'user-refresh'))
                                 }
@@ -113,7 +113,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                             })
                             .catch((err) => {
                                 if (isAdminApp()) {
-                                    removeAdminToken()
+                                    adminInfo.removeToken()
                                     if (router.currentRoute.value.name != 'adminLogin') {
                                         router.push({ name: 'adminLogin' })
                                         return Promise.reject(err)
@@ -124,7 +124,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                                         return Axios(response.config)
                                     }
                                 } else {
-                                    removeUserToken()
+                                    userInfo.removeToken()
                                     if (router.currentRoute.value.name != 'userLogin') {
                                         router.push({ name: 'userLogin' })
                                         return Promise.reject(err)

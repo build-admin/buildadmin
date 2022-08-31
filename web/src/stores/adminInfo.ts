@@ -17,9 +17,21 @@ export const useAdminInfo = defineStore('adminInfo', {
         }
     },
     actions: {
+        dataFill(state: AdminInfo) {
+            this.$state = state
+        },
         removeToken() {
             this.token = ''
             this.refreshToken = ''
+        },
+        setToken(token: string, type: 'token' | 'refreshToken') {
+            this[type] = token
+        },
+        getToken(type: 'auth' | 'refresh' = 'auth') {
+            return type === 'auth' ? this.token : this.refreshToken
+        },
+        setSuper(val: boolean) {
+            this.super = val
         },
     },
     persist: {

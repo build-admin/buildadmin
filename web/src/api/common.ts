@@ -1,6 +1,8 @@
 import createAxios from '/@/utils/axios'
-import { getAdminToken, getUserToken, isAdminApp } from '/@/utils/common'
+import { isAdminApp } from '/@/utils/common'
 import { getUrl } from '/@/utils/axios'
+import { useAdminInfo } from '/@/stores/adminInfo'
+import { useUserInfo } from '/@/stores/userInfo'
 
 /*
  * 公共请求函数和Url定义
@@ -42,11 +44,12 @@ export function fileUpload(fd: FormData, params: anyObj = {}): ApiPromise {
  * @param background 背景色,如:rgb(255,255,255)
  */
 export function buildSuffixSvgUrl(suffix: string, background = '') {
+    const adminInfo = useAdminInfo()
     return (
         getUrl() +
         (isAdminApp() ? adminBuildSuffixSvgUrl : apiBuildSuffixSvgUrl) +
         '?batoken=' +
-        getAdminToken() +
+        adminInfo.getToken() +
         '&suffix=' +
         suffix +
         (background ? '&background=' + background : '') +
@@ -94,7 +97,8 @@ export function postClearCache(type: string) {
  * 构建命令执行窗口url
  */
 export function buildTerminalUrl(commandKey: string, outputExtend: string) {
-    return getUrl() + terminalUrl + '?command=' + commandKey + '&extend=' + outputExtend + '&batoken=' + getAdminToken() + '&server=1'
+    const adminInfo = useAdminInfo()
+    return getUrl() + terminalUrl + '?command=' + commandKey + '&extend=' + outputExtend + '&batoken=' + adminInfo.getToken() + '&server=1'
 }
 
 /**
@@ -142,11 +146,13 @@ export function getTablePk(table: string) {
 }
 
 export function refreshToken(): ApiPromise {
+    const adminInfo = useAdminInfo()
+    const userInfo = useUserInfo()
     return createAxios({
         url: refreshTokenUrl,
         method: 'POST',
         data: {
-            refresh_token: isAdminApp() ? getAdminToken('refresh') : getUserToken('refresh'),
+            refresh_token: isAdminApp() ? adminInfo.getToken('refresh') : userInfo.getToken('refresh'),
         },
     }) as ApiPromise
 }

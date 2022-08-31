@@ -1,5 +1,5 @@
 import createAxios from '/@/utils/axios'
-import { getAdminToken } from '/@/utils/common'
+import { useAdminInfo } from '/@/stores/adminInfo'
 
 const controllerUrl = '/admin/index/'
 
@@ -19,11 +19,12 @@ export function login(method: 'get' | 'post', params: object = {}): ApiPromise {
 }
 
 export function logout() {
+    const adminInfo = useAdminInfo()
     return createAxios({
         url: controllerUrl + 'logout',
         method: 'POST',
         data: {
-            refresh_token: getAdminToken('refresh'),
+            refresh_token: adminInfo.getToken('refresh'),
         },
     })
 }

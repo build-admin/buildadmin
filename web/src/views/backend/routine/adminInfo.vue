@@ -229,7 +229,7 @@ const onAvatarBeforeUpload = (file: any) => {
                 id: state.adminInfo.id,
                 avatar: res.data.file.url,
             }).then(() => {
-                adminInfoStore.avatar = res.data.file.full_url
+                adminInfoStore.dataFill({ ...adminInfoStore.$state, avatar: res.data.file.full_url })
                 state.adminInfo.avatar = res.data.file.full_url
             })
         }
@@ -247,7 +247,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
             state.buttonLoading = true
             postData(data)
                 .then(() => {
-                    adminInfoStore.nickname = state.adminInfo.nickname
+                    adminInfoStore.dataFill({ ...adminInfoStore.$state, nickname: state.adminInfo.nickname })
                     state.buttonLoading = false
                 })
                 .catch(() => {

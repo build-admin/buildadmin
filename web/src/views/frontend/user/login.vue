@@ -409,7 +409,7 @@ const onSubmit = (formRef: InstanceType<typeof ElForm> | undefined = undefined) 
             checkIn('post', state.form)
                 .then((res) => {
                     state.formLoading = false
-                    userInfo.$state = res.data.userinfo
+                    userInfo.dataFill(res.data.userinfo)
                     router.push({ path: res.data.routePath })
                 })
                 .catch(() => {

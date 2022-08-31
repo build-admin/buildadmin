@@ -1,5 +1,5 @@
 import createAxios from '/@/utils/axios'
-import { getUserToken } from '/@/utils/common'
+import { useUserInfo } from '/@/stores/userInfo'
 
 const controllerUrl = '/api/user/'
 const accountUrl = '/api/account/'
@@ -75,11 +75,12 @@ export function getIntegralLog(page: number, pageSize: number): ApiPromise {
 }
 
 export function postLogout(): ApiPromise {
+    const userInfo = useUserInfo()
     return createAxios({
         url: controllerUrl + 'logout',
         method: 'POST',
         data: {
-            refresh_token: getUserToken('refresh'),
+            refresh_token: userInfo.getToken('refresh'),
         },
     }) as ApiPromise
 }

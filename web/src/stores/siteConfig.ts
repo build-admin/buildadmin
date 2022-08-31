@@ -10,4 +10,9 @@ export const useSiteConfig = defineStore('siteConfig', {
             cdn_url: '',
         }
     },
+    actions: {
+        dataFill(state: SiteConfig) {
+            this.$state = state
+        },
+    },
 })

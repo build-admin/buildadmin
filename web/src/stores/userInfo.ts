@@ -31,6 +31,15 @@ export const useUserInfo = defineStore('userInfo', {
             this.token = ''
             this.refreshToken = ''
         },
+        dataFill(state: UserInfo) {
+            this.$state = state
+        },
+        setToken(token: string, type: 'token' | 'refreshToken') {
+            this[type] = token
+        },
+        getToken(type: 'auth' | 'refresh' = 'auth') {
+            return type === 'auth' ? this.token : this.refreshToken
+        },
         getGenderIcon() {
             let icon = { name: 'fa fa-transgender-alt', color: 'var(--el-text-color-secondary)' }
             switch (this.gender) {

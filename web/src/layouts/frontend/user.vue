@@ -28,7 +28,7 @@ onMounted(() => {
 
     index().then((res) => {
         res.data.userInfo.refreshToken = userInfo.refreshToken
-        userInfo.$state = res.data.userInfo
+        userInfo.dataFill(res.data.userInfo)
         if (res.data.menus) {
             let menuRule = handleMemberCenterRoute(res.data.menus)
             memberCenter.setViewRoutes(menuRule)

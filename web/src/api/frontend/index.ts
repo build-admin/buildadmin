@@ -9,7 +9,7 @@ export function index() {
     const siteConfig = useSiteConfig()
     const memberCenter = useMemberCenter()
 
-    if (siteConfig.$state.site_name) {
+    if (siteConfig.site_name) {
         return
     }
 
@@ -18,8 +18,8 @@ export function index() {
         method: 'get',
     }).then((res) => {
         setTitle(res.data.site.site_name)
-        siteConfig.$state = res.data.site
-        memberCenter.state.open = res.data.open_member_center
-        if (!res.data.open_member_center) memberCenter.state.layoutMode = 'Disable'
+        siteConfig.dataFill(res.data.site)
+        memberCenter.setStatus(res.data.open_member_center)
+        if (!res.data.open_member_center) memberCenter.setLayoutMode('Disable')
     })
 }

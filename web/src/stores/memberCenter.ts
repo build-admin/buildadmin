@@ -43,11 +43,19 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         state.shrink = shrink
     }
 
+    const setStatus = (status: boolean) => {
+        state.open = status
+    }
+
+    const setLayoutMode = (mode: string) => {
+        state.layoutMode = mode
+    }
+
     const toggleMenuExpand = (expand = !state.menuExpand) => {
         state.menuExpand = expand
     }
 
-    return { state, setAuthNode, setViewRoutes, setShowHeadline, setActiveRoute, setShrink, toggleMenuExpand }
+    return { state, setAuthNode, setViewRoutes, setShowHeadline, setActiveRoute, setShrink, setStatus, setLayoutMode, toggleMenuExpand }
 })
 
 function encodeRoutesURI(data: viewMenu[]): viewMenu[] {
