@@ -47,15 +47,15 @@ const addKeepAliveComponentName = function (keepAliveName: string | undefined) {
 
 onBeforeMount(() => {
     proxy.eventBus.on('onTabViewRefresh', (menu: viewMenu) => {
-        state.keepAliveComponentNameList = state.keepAliveComponentNameList.filter((name: string) => menu.keepAlive !== name)
+        state.keepAliveComponentNameList = state.keepAliveComponentNameList.filter((name: string) => menu.keepalive !== name)
         state.componentKey = ''
         nextTick(() => {
             state.componentKey = menu.path
-            addKeepAliveComponentName(menu.keepAlive)
+            addKeepAliveComponentName(menu.keepalive)
         })
     })
     proxy.eventBus.on('onTabViewClose', (menu: viewMenu) => {
-        state.keepAliveComponentNameList = state.keepAliveComponentNameList.filter((name: string) => menu.keepAlive !== name)
+        state.keepAliveComponentNameList = state.keepAliveComponentNameList.filter((name: string) => menu.keepalive !== name)
     })
 })
 
@@ -65,15 +65,15 @@ onUnmounted(() => {
 })
 
 onMounted(() => {
-    // 确保刷新页面时也能正确取得当前路由 keepAlive 参数
-    addKeepAliveComponentName(navTabs.state.activeRoute?.keepAlive)
+    // 确保刷新页面时也能正确取得当前路由 keepalive 参数
+    addKeepAliveComponentName(navTabs.state.activeRoute?.keepalive)
 })
 
 watch(
     () => route.path,
     () => {
         state.componentKey = route.path
-        addKeepAliveComponentName(navTabs.state.activeRoute?.keepAlive)
+        addKeepAliveComponentName(navTabs.state.activeRoute?.keepalive)
     }
 )
 </script>

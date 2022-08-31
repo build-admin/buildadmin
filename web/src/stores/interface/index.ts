@@ -31,7 +31,7 @@ export interface viewMenu {
     name?: string
     type?: string
     icon?: string
-    keepAlive?: string
+    keepalive?: string
     query?: anyObj
     params?: anyObj
     children?: viewMenu[]
