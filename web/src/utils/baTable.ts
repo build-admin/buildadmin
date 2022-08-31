@@ -191,11 +191,9 @@ export default class baTable {
     onSubmit = (formEl: InstanceType<typeof ElForm> | undefined = undefined) => {
         if (this.runBefore('onSubmit', { formEl: formEl, operate: this.form.operate!, items: this.form.items! }) === false) return
 
-        for (const key in this.form.items) {
-            if (this.form.items[key] === null) {
-                delete this.form.items[key]
-            }
-        }
+        this.form.items = this.form.items!.filter((item: anyObj) => {
+            return item !== null
+        })
 
         // 表单验证通过后执行的api请求操作
         const submitCallback = () => {
@@ -233,9 +231,9 @@ export default class baTable {
     /* 获取表格选择项的id数组 */
     getSelectionIds() {
         const ids: string[] = []
-        for (const key in this.table.selection) {
-            ids.push(this.table.selection[key as any][this.table.pk!])
-        }
+        this.table.selection?.forEach((item) => {
+            ids.push(item[this.table.pk!])
+        })
         return ids
     }
 
@@ -406,14 +404,14 @@ export default class baTable {
             handle: '.table-row-weigh-sort',
             ghostClass: 'ba-table-row',
             onStart: () => {
-                for (const key in this.table.column[buttonsKey].buttons) {
-                    this.table.column[buttonsKey].buttons![key as any].disabledTip = true
-                }
+                this.table.column[buttonsKey].buttons?.forEach((item) => {
+                    item.disabledTip = true
+                })
             },
             onEnd: (evt: Sortable.SortableEvent) => {
-                for (const key in this.table.column[buttonsKey].buttons) {
-                    this.table.column[buttonsKey].buttons![key as any].disabledTip = false
-                }
+                this.table.column[buttonsKey].buttons?.forEach((item) => {
+                    item.disabledTip = false
+                })
                 // 找到对应行id
                 const moveRow = findIndexRow(this.table.data!, evt.oldIndex!) as TableRow
                 const replaceRow = findIndexRow(this.table.data!, evt.newIndex!) as TableRow
