@@ -191,8 +191,10 @@ export default class baTable {
     onSubmit = (formEl: InstanceType<typeof ElForm> | undefined = undefined) => {
         if (this.runBefore('onSubmit', { formEl: formEl, operate: this.form.operate!, items: this.form.items! }) === false) return
 
-        this.form.items = this.form.items!.filter((item: anyObj) => {
-            return item !== null
+        Object.keys(this.form.items!).forEach((item) => {
+            if (this.form.items![item] === null) {
+                delete this.form.items![item]
+            }
         })
 
         // 表单验证通过后执行的api请求操作
