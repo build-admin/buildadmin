@@ -3,6 +3,7 @@
 namespace app\common\library;
 
 use ba\Random;
+use \think\File;
 use think\Exception;
 use think\facade\Config;
 use think\file\UploadedFile;
@@ -195,10 +196,12 @@ class Upload
     /**
      * 上传文件
      * @param null $saveName
+     * @param int  $adminId
+     * @param int  $userId
      * @return array
      * @throws Exception
      */
-    public function upload($saveName = null, $adminId = 0, $userId = 0)
+    public function upload($saveName = null, int $adminId = 0, int $userId = 0): array
     {
         if (empty($this->file)) {
             throw new Exception(__('No files have been uploaded or the file size exceeds the upload limit of the server'));
@@ -207,15 +210,6 @@ class Upload
         $this->checkSize();
         $this->checkMimetype();
         $this->checkIsImage();
-
-        $saveName  = $saveName ?: $this->getSaveName();
-        $saveName  = '/' . ltrim($saveName, '/');
-        $uploadDir = substr($saveName, 0, strripos($saveName, '/') + 1);
-        $fileName  = substr($saveName, strripos($saveName, '/') + 1);
-
-        $destDir = root_path() . 'public' . str_replace('/', DIRECTORY_SEPARATOR, $uploadDir);
-
-        $this->file->move($destDir, $fileName);
 
         $params = [
             'topic'    => $this->topic,
@@ -240,8 +234,21 @@ class Upload
                 ['topic', '=', $params['topic']],
                 ['storage', '=', $params['storage']],
             ])->find();
+        } else {
+            $this->move($saveName);
         }
 
         return $attachment->toArray();
+    }
+
+    public function move($saveName = null): File
+    {
+        $saveName  = $saveName ?: $this->getSaveName();
+        $saveName  = '/' . ltrim($saveName, '/');
+        $uploadDir = substr($saveName, 0, strripos($saveName, '/') + 1);
+        $fileName  = substr($saveName, strripos($saveName, '/') + 1);
+        $destDir   = root_path() . 'public' . str_replace('/', DIRECTORY_SEPARATOR, $uploadDir);
+
+        return $this->file->move($destDir, $fileName);
     }
 }
