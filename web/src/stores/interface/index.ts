@@ -1,6 +1,5 @@
 // 变量名对应含义请在 /stores/* 里边找
-import type { Component } from 'vue'
-import { RouteLocationNormalized } from 'vue-router'
+import { RouteRecordRaw, RouteLocationNormalized } from 'vue-router'
 
 export interface Layout {
     showDrawer: boolean
@@ -25,33 +24,20 @@ export interface Layout {
     headerBarTabActiveColor: string[]
 }
 
-export interface viewMenu {
-    title: string
-    path: string
-    name?: string
-    type?: string
-    icon?: string
-    keepalive?: string
-    query?: anyObj
-    params?: anyObj
-    children?: viewMenu[]
-    component?: Component
-}
-
 export interface NavTabs {
     activeIndex: number
-    activeRoute: viewMenu | null
-    tabsView: Array<viewMenu>
+    activeRoute: RouteLocationNormalized | null
+    tabsView: RouteLocationNormalized[]
     tabFullScreen: boolean
-    tabsViewRoutes: Array<viewMenu>
+    tabsViewRoutes: RouteRecordRaw[]
     authNode: Map<string, string[]>
 }
 
 export interface MemberCenter {
     open: boolean
     layoutMode: string
-    activeRoute: viewMenu | RouteLocationNormalized | null
-    viewRoutes: Array<viewMenu>
+    activeRoute: RouteRecordRaw | RouteLocationNormalized | null
+    viewRoutes: RouteRecordRaw[]
     showHeadline: boolean
     authNode: Map<string, string[]>
     shrink: boolean

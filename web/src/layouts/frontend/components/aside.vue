@@ -32,7 +32,7 @@
 
         <div class="user-menus">
             <template v-for="(item, idx) in memberCenter.state.viewRoutes" :key="idx">
-                <div v-if="memberCenter.state.showHeadline" class="user-menu-max-title">{{ item.title }}</div>
+                <div v-if="memberCenter.state.showHeadline" class="user-menu-max-title">{{ item.meta?.title }}</div>
                 <div
                     v-for="(menu, index) in item.children"
                     :key="index"
@@ -40,8 +40,8 @@
                     class="user-menu-item"
                     :class="memberCenter.state.activeRoute?.name == menu.name ? 'active' : ''"
                 >
-                    <Icon :name="menu.icon" size="16" color="var(--el-text-color-secondary)" />
-                    <span>{{ menu.title }}</span>
+                    <Icon :name="menu.meta?.icon" size="16" color="var(--el-text-color-secondary)" />
+                    <span>{{ menu.meta?.title }}</span>
                 </div>
             </template>
         </div>
@@ -49,17 +49,16 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRouter, RouteRecordRaw } from 'vue-router'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useMemberCenter } from '/@/stores/memberCenter'
-import { viewMenu } from '/@/stores/interface'
 import { clickMenu } from '/@/utils/router'
 
 const router = useRouter()
 const userInfo = useUserInfo()
 const memberCenter = useMemberCenter()
 
-const routerPush = (routeName = '', route?: viewMenu) => {
+const routerPush = (routeName = '', route?: RouteRecordRaw) => {
     if (document.body.clientWidth < 992) {
         memberCenter.toggleMenuExpand(false)
     }

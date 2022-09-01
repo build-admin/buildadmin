@@ -1,8 +1,10 @@
+import _ from 'lodash'
 import { reactive } from 'vue'
+import { i18n } from '../lang'
 import { defineStore } from 'pinia'
 import { STORE_TAB_VIEW_CONFIG } from '/@/stores/constant/cacheKey'
-import { viewMenu, NavTabs } from '/@/stores/interface/index'
-import { RouteLocationNormalized } from 'vue-router'
+import { NavTabs } from '/@/stores/interface/index'
+import { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 
 export const useNavTabs = defineStore(
     'navTabs',
@@ -22,36 +24,35 @@ export const useNavTabs = defineStore(
             authNode: new Map(),
         })
 
-        function addTab(route: RouteLocationNormalized | viewMenu) {
+        function addTab(route: RouteLocationNormalized) {
+            if (!route.meta.addtab) return
             for (const key in state.tabsView) {
                 if (state.tabsView[key].path === route.path) {
-                    state.tabsView[key].params = route.params ?? {}
-                    state.tabsView[key].query = route.query ?? {}
+                    state.tabsView[key].params = !_.isEmpty(route.params) ? route.params : state.tabsView[key].params
+                    state.tabsView[key].query = !_.isEmpty(route.query) ? route.query : state.tabsView[key].query
                     return
                 }
             }
-
-            const currentRoute = findMenu(state.tabsViewRoutes, route.path)
-            if (!currentRoute) return
-            currentRoute!.params = route.params ?? {}
-            currentRoute!.query = route.query ?? {}
-            state.tabsView.push(
-                Object.assign({}, currentRoute, {
-                    title: currentRoute.title || 'pagesTitle.noTitle',
-                })
-            )
+            if (typeof route.meta.title == 'string') {
+                route.meta.title = route.meta.title.indexOf('pagesTitle.') === -1 ? route.meta.title : i18n.global.t(route.meta.title)
+            }
+            state.tabsView.push(route)
         }
 
-        function closeTab(route: viewMenu) {
+        function closeTab(route: RouteLocationNormalized) {
             state.tabsView.map((v, k) => {
                 if (v.path == route.path) {
                     state.tabsView.splice(k, 1)
+                    return
                 }
             })
         }
 
-        // 关闭多个标签, retainMenu 代表需要保留的标签,否则关闭全部标签
-        const closeTabs = (retainMenu: viewMenu | false = false): void => {
+        /**
+         * 关闭多个标签
+         * @param retainMenu 需要保留的标签，否则关闭全部标签
+         */
+        const closeTabs = (retainMenu: RouteLocationNormalized | false = false) => {
             if (retainMenu) {
                 state.tabsView = [retainMenu]
             } else {
@@ -59,18 +60,16 @@ export const useNavTabs = defineStore(
             }
         }
 
-        const setActiveRoute = (route: RouteLocationNormalized | viewMenu): void => {
-            const currentRoute = findMenu(state.tabsViewRoutes, route.path)
-            if (!currentRoute) return
-            const currentRouteIndex: number = state.tabsView.findIndex((item: viewMenu) => {
+        const setActiveRoute = (route: RouteLocationNormalized): void => {
+            const currentRouteIndex: number = state.tabsView.findIndex((item: RouteLocationNormalized) => {
                 return item.path === route.path
             })
             if (currentRouteIndex === -1) return
-            state.activeRoute = currentRoute
+            state.activeRoute = route
             state.activeIndex = currentRouteIndex
         }
 
-        const setTabsViewRoutes = (data: viewMenu[]): void => {
+        const setTabsViewRoutes = (data: RouteRecordRaw[]): void => {
             state.tabsViewRoutes = encodeRoutesURI(data)
         }
 
@@ -92,28 +91,18 @@ export const useNavTabs = defineStore(
     }
 )
 
-// 在菜单集合中递归查找 path 的数据
-export function findMenu(tabsViewRoutes: viewMenu[], path: string): viewMenu | undefined {
-    for (const key in tabsViewRoutes) {
-        if (tabsViewRoutes[key].path == path) {
-            return tabsViewRoutes[key]
-        } else if (tabsViewRoutes[key].children) {
-            const done = findMenu(tabsViewRoutes[key].children as viewMenu[], path)
-            if (done) return done
-        }
-    }
-}
-
-// 对iframe的url进行编码
-function encodeRoutesURI(data: viewMenu[]): viewMenu[] {
-    for (const key in data) {
-        if (data[key].type == 'iframe') {
-            data[key].path = '/admin/iframe/' + encodeURIComponent(data[key].path)
+/**
+ * 对iframe的url进行编码
+ */
+function encodeRoutesURI(data: RouteRecordRaw[]) {
+    data.forEach((item) => {
+        if (item.meta?.type == 'iframe') {
+            item.path = '/admin/iframe/' + encodeURIComponent(item.path)
         }
 
-        if (data[key].children) {
-            data[key].children = encodeRoutesURI(data[key].children as viewMenu[])
+        if (item.children && item.children.length) {
+            item.children = encodeRoutesURI(item.children)
         }
-    }
+    })
     return data
 }

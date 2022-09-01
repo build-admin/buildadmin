@@ -51,7 +51,7 @@ export function setTitleFromRoute() {
     }
     nextTick(() => {
         let webTitle = ''
-        if ((router.currentRoute.value.meta.title as string).indexOf('pagesTitle') === -1) {
+        if ((router.currentRoute.value.meta.title as string).indexOf('pagesTitle.') === -1) {
             webTitle = router.currentRoute.value.meta.title as string
         } else {
             webTitle = i18n.global.t(router.currentRoute.value.meta.title as string)

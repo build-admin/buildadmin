@@ -3,29 +3,29 @@
         <template v-if="menu.children && menu.children.length > 0">
             <el-sub-menu :index="menu.path" :key="menu.path">
                 <template #title>
-                    <Icon :color="config.getColorVal('menuColor')" :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon" />
-                    <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
+                    <Icon :color="config.getColorVal('menuColor')" :name="menu.meta?.icon ? menu.meta?.icon : config.layout.menuDefaultIcon" />
+                    <span>{{ menu.meta?.title ? menu.meta?.title : $t('noTitle') }}</span>
                 </template>
                 <menu-tree :menus="menu.children"></menu-tree>
             </el-sub-menu>
         </template>
         <template v-else>
             <el-menu-item :index="menu.path" :key="menu.path" @click="clickMenu(menu)">
-                <Icon :color="config.getColorVal('menuColor')" :name="menu.icon ? menu.icon : config.layout.menuDefaultIcon" />
-                <span>{{ menu.title ? menu.title : $t('noTitle') }}</span>
+                <Icon :color="config.getColorVal('menuColor')" :name="menu.meta?.icon ? menu.meta?.icon : config.layout.menuDefaultIcon" />
+                <span>{{ menu.meta?.title ? menu.meta?.title : $t('noTitle') }}</span>
             </el-menu-item>
         </template>
     </template>
 </template>
 <script setup lang="ts">
 import { useConfig } from '/@/stores/config'
-import type { viewMenu } from '/@/stores/interface'
+import { RouteRecordRaw } from 'vue-router'
 import { clickMenu } from '/@/utils/router'
 
 const config = useConfig()
 
 interface Props {
-    menus: viewMenu[]
+    menus: RouteRecordRaw[]
 }
 const props = withDefaults(defineProps<Props>(), {
     menus: () => [],

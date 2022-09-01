@@ -93,14 +93,6 @@ const adminBaseRoute: RouteRecordRaw = {
                 title: pageTitle('Loading'),
             },
         },
-        {
-            path: 'iframe/:url',
-            name: 'adminLayoutIframe',
-            component: () => import('/@/layouts/common/router-view/iframe.vue'),
-            meta: {
-                title: pageTitle('Embedded iframe'),
-            },
-        },
     ],
 }
 
@@ -122,14 +114,6 @@ const memberCenterBaseRoute: RouteRecordRaw = {
             component: () => import('/@/layouts/common/components/loading.vue'),
             meta: {
                 title: pageTitle('Loading'),
-            },
-        },
-        {
-            path: 'iframe/:url',
-            name: 'layoutIframe',
-            component: () => import('/@/layouts/common/router-view/iframe.vue'),
-            meta: {
-                title: pageTitle('Embedded iframe'),
             },
         },
     ],

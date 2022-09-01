@@ -30,14 +30,12 @@ onMounted(() => {
         res.data.userInfo.refreshToken = userInfo.refreshToken
         userInfo.dataFill(res.data.userInfo)
         if (res.data.menus) {
-            let menuRule = handleMemberCenterRoute(res.data.menus)
-            memberCenter.setViewRoutes(menuRule)
-            memberCenter.setShowHeadline(res.data.menus.length > 1 ? true : false)
+            handleMemberCenterRoute(res.data.menus)
 
             // 预跳转到上次路径
             if (route.query && route.query.url && route.query.url != memberCenterBaseRoute.path) {
                 // 检查路径是否有权限
-                let menuPaths = getMenuPaths(menuRule)
+                let menuPaths = getMenuPaths(memberCenter.state.viewRoutes)
                 if (menuPaths.indexOf(route.query.url as string) !== -1) {
                     let query = JSON.parse(route.query.query as string)
                     router.push({ path: route.query.url as string, query: Object.keys(query).length ? query : {} })

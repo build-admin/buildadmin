@@ -14,10 +14,9 @@
 
 <script setup lang="ts">
 import { reactive, onMounted, watch, onBeforeMount, onUnmounted, nextTick } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, RouteLocationNormalized } from 'vue-router'
 import { mainHeight as layoutMainScrollbarStyle } from '/@/utils/layout'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
-import { viewMenu } from '/@/stores/interface'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 
@@ -46,16 +45,16 @@ const addKeepAliveComponentName = function (keepAliveName: string | undefined) {
 }
 
 onBeforeMount(() => {
-    proxy.eventBus.on('onTabViewRefresh', (menu: viewMenu) => {
-        state.keepAliveComponentNameList = state.keepAliveComponentNameList.filter((name: string) => menu.keepalive !== name)
+    proxy.eventBus.on('onTabViewRefresh', (menu: RouteLocationNormalized) => {
+        state.keepAliveComponentNameList = state.keepAliveComponentNameList.filter((name: string) => menu.meta.keepalive !== name)
         state.componentKey = ''
         nextTick(() => {
             state.componentKey = menu.path
-            addKeepAliveComponentName(menu.keepalive)
+            addKeepAliveComponentName(menu.meta.keepalive as string)
         })
     })
-    proxy.eventBus.on('onTabViewClose', (menu: viewMenu) => {
-        state.keepAliveComponentNameList = state.keepAliveComponentNameList.filter((name: string) => menu.keepalive !== name)
+    proxy.eventBus.on('onTabViewClose', (menu: RouteLocationNormalized) => {
+        state.keepAliveComponentNameList = state.keepAliveComponentNameList.filter((name: string) => menu.meta.keepalive !== name)
     })
 })
 
@@ -66,14 +65,18 @@ onUnmounted(() => {
 
 onMounted(() => {
     // 确保刷新页面时也能正确取得当前路由 keepalive 参数
-    addKeepAliveComponentName(navTabs.state.activeRoute?.keepalive)
+    if (typeof navTabs.state.activeRoute?.meta.keepalive == 'string') {
+        addKeepAliveComponentName(navTabs.state.activeRoute?.meta.keepalive)
+    }
 })
 
 watch(
     () => route.path,
     () => {
         state.componentKey = route.path
-        addKeepAliveComponentName(navTabs.state.activeRoute?.keepalive)
+        if (typeof navTabs.state.activeRoute?.meta.keepalive == 'string') {
+            addKeepAliveComponentName(navTabs.state.activeRoute?.meta.keepalive)
+        }
     }
 )
 </script>

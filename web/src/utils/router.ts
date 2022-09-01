@@ -1,23 +1,19 @@
 import router from '/@/router/index'
-import { viewMenu } from '../stores/interface'
-import { isNavigationFailure, NavigationFailureType } from 'vue-router'
+import { isNavigationFailure, NavigationFailureType, RouteRecordRaw, RouteRecordName, RouteParams } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { useNavTabs } from '../stores/navTabs'
 import { useMemberCenter } from '../stores/memberCenter'
 import { adminBaseRoute, memberCenterBaseRoute } from '/@/router/static'
-import _ from 'lodash'
 import { i18n } from '/@/lang/index'
 
-export const clickMenu = (menu: viewMenu) => {
-    switch (menu.type) {
+export const clickMenu = (menu: RouteRecordRaw) => {
+    switch (menu.meta?.type) {
+        case 'iframe':
         case 'tab':
             routePush(menu.name)
             break
         case 'link':
             window.open(menu.path, '_blank')
-            break
-        case 'iframe':
-            routePush('', {}, menu.path)
             break
 
         default:
@@ -35,7 +31,7 @@ export const clickMenu = (menu: viewMenu) => {
  * @param params 路由参数
  * @param path 路由path,通过path导航无法传递@param params
  */
-export const routePush = async (name = '', params: anyObj = {}, path = '') => {
+export const routePush = async (name: RouteRecordName = '', params: RouteParams = {}, path = '') => {
     try {
         const failure = await router.push(name ? { name: name, params: params } : { path: path })
         if (isNavigationFailure(failure, NavigationFailureType.aborted)) {
@@ -58,18 +54,21 @@ export const routePush = async (name = '', params: anyObj = {}, path = '') => {
     }
 }
 
-export const getFirstRoute = (viewRoutes: viewMenu[]): false | viewMenu => {
-    const routerPaths = []
+/**
+ * 获取第一个菜单
+ */
+export const getFirstRoute = (routes: RouteRecordRaw[]): false | RouteRecordRaw => {
+    const routerPaths: string[] = []
     const routers = router.getRoutes()
-    for (const key in routers) {
-        if (routers[key].path) routerPaths.push(routers[key].path)
-    }
-    let find: boolean | viewMenu = false
-    for (const key in viewRoutes) {
-        if (viewRoutes[key].type != 'menu_dir' && routerPaths.indexOf(viewRoutes[key].path) !== -1) {
-            return viewRoutes[key]
-        } else if (viewRoutes[key].children?.length) {
-            find = getFirstRoute(viewRoutes[key].children!)
+    routers.forEach((item) => {
+        if (item.path) routerPaths.push(item.path)
+    })
+    let find: boolean | RouteRecordRaw = false
+    for (const key in routes) {
+        if (routes[key].meta?.type != 'menu_dir' && routerPaths.indexOf(routes[key].path) !== -1) {
+            return routes[key]
+        } else if (routes[key].children && routes[key].children?.length) {
+            find = getFirstRoute(routes[key].children!)
             if (find) return find
         }
     }
@@ -83,7 +82,11 @@ export const handleMemberCenterRoute = (routes: any) => {
     const viewsComponent = import.meta.globEager('/src/views/frontend/**/*.vue')
     addRouteAll(viewsComponent, routes, memberCenterBaseRoute.name as string)
     const menuMemberCenterBaseRoute = '/' + (memberCenterBaseRoute.name as string) + '/'
-    return handleMenuRule(_.cloneDeep(routes), menuMemberCenterBaseRoute, menuMemberCenterBaseRoute)
+    const menuRule = handleMenuRule(routes, menuMemberCenterBaseRoute, menuMemberCenterBaseRoute)
+
+    const memberCenter = useMemberCenter()
+    memberCenter.setViewRoutes(menuRule)
+    memberCenter.setShowHeadline(routes.length > 1 ? true : false)
 }
 
 /**
@@ -93,56 +96,58 @@ export const handleAdminRoute = (routes: any) => {
     const viewsComponent = import.meta.globEager('/src/views/backend/**/*.vue')
     addRouteAll(viewsComponent, routes, adminBaseRoute.name as string)
     const menuAdminBaseRoute = '/' + (adminBaseRoute.name as string) + '/'
-    return handleMenuRule(_.cloneDeep(routes), menuAdminBaseRoute, menuAdminBaseRoute)
+    const menuRule = handleMenuRule(routes, menuAdminBaseRoute, menuAdminBaseRoute)
+
+    // 更新stores中的路由菜单数据
+    const navTabs = useNavTabs()
+    navTabs.setTabsViewRoutes(menuRule)
 }
 
 /**
- * 获取后台菜单的paths
+ * 获取菜单的paths
  */
-export const getMenuPaths = (menus: any): any[] => {
-    let menuPaths = []
-    for (const key in menus) {
-        if (menus[key].extend == 'add_rules_only') {
-            continue
+export const getMenuPaths = (menus: RouteRecordRaw[]): string[] => {
+    let menuPaths: string[] = []
+    menus.forEach((item) => {
+        menuPaths.push(item.path)
+        if (item.children && item.children.length > 0) {
+            menuPaths = menuPaths.concat(getMenuPaths(item.children))
         }
-        menuPaths.push(menus[key].path)
-        if (menus[key].children && menus[key].children.length > 0) {
-            menuPaths = menuPaths.concat(getMenuPaths(menus[key].children))
-        }
-    }
+    })
     return menuPaths
 }
 
 /**
- * 后台菜单处理
+ * 菜单处理
  */
 const handleMenuRule = (routes: any, pathPrefix = '/', parent = '/', module = 'admin') => {
-    const menuRule = []
-    const authNode = []
+    const menuRule: RouteRecordRaw[] = []
+    const authNode: string[] = []
     for (const key in routes) {
         if (routes[key].extend == 'add_rules_only') {
             continue
         }
         if (routes[key].type == 'menu' || routes[key].type == 'menu_dir') {
-            if (routes[key].type == 'menu_dir') {
-                if (!routes[key].children) {
-                    continue
-                }
-                routes[key].menu_type = 'tab'
+            if (routes[key].type == 'menu_dir' && routes[key].children && !routes[key].children.length) {
+                continue
             }
-
-            routes[key].type = routes[key].menu_type
-            if (routes[key].type == 'tab') {
-                routes[key].path = pathPrefix + routes[key].path
-            } else {
-                routes[key].path = routes[key].url
-            }
-            delete routes[key].url
-            delete routes[key].menu_type
+            const currentPath = routes[key].menu_type == 'link' || routes[key].menu_type == 'iframe' ? routes[key].url : pathPrefix + routes[key].path
+            let children: RouteRecordRaw[] = []
             if (routes[key].children && routes[key].children.length > 0) {
-                routes[key].children = handleMenuRule(routes[key].children, pathPrefix, routes[key].path)
+                children = handleMenuRule(routes[key].children, pathPrefix, currentPath)
             }
-            menuRule.push(routes[key])
+            menuRule.push({
+                path: currentPath,
+                name: routes[key].name,
+                component: routes[key].component,
+                meta: {
+                    title: routes[key].title,
+                    icon: routes[key].icon,
+                    keepalive: routes[key].keepalive,
+                    type: routes[key].menu_type,
+                },
+                children: children,
+            })
         } else {
             // 权限节点
             authNode.push(pathPrefix + routes[key].name)
@@ -168,7 +173,10 @@ export const addRouteAll = (viewsComponent: Record<string, { [key: string]: any 
         if (routes[idx].extend == 'add_menu_only') {
             continue
         }
-        if (routes[idx].type == 'menu' && routes[idx].menu_type == 'tab' && viewsComponent[routes[idx].component]) {
+        if (
+            routes[idx].type == 'menu' &&
+            ((routes[idx].menu_type == 'tab' && viewsComponent[routes[idx].component]) || routes[idx].menu_type == 'iframe')
+        ) {
             addRouteItem(viewsComponent, routes[idx], parentName)
         }
 
@@ -182,10 +190,19 @@ export const addRouteAll = (viewsComponent: Record<string, { [key: string]: any 
  * 动态添加路由
  */
 export const addRouteItem = (viewsComponent: Record<string, { [key: string]: any }>, route: any, parentName: string) => {
-    const routeBaseInfo = {
-        path: parentName ? route.path : '/' + route.path,
+    let path = '',
+        component
+    if (route.menu_type == 'iframe') {
+        path = '/admin/iframe/' + encodeURIComponent(route.url)
+        component = () => import('/@/layouts/common/router-view/iframe.vue')
+    } else {
+        path = parentName ? route.path : '/' + route.path
+        component = viewsComponent[route.component].default
+    }
+    const routeBaseInfo: RouteRecordRaw = {
+        path: path,
         name: route.name,
-        component: viewsComponent[route.component].default,
+        component: component,
         meta: {
             title: route.title,
             extend: route.extend,
@@ -194,6 +211,7 @@ export const addRouteItem = (viewsComponent: Record<string, { [key: string]: any
             menu_type: route.menu_type,
             type: route.type,
             url: route.url,
+            addtab: true,
         },
     }
     if (parentName) {

@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { viewMenu, MemberCenter } from '/@/stores/interface/index'
-import { RouteLocationNormalized } from 'vue-router'
+import { MemberCenter } from '/@/stores/interface/index'
+import { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 
 export const useMemberCenter = defineStore('memberCenter', () => {
     const state: MemberCenter = reactive({
@@ -27,7 +27,7 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         state.authNode.set(key, data)
     }
 
-    const setViewRoutes = (data: viewMenu[]): void => {
+    const setViewRoutes = (data: RouteRecordRaw[]): void => {
         state.viewRoutes = encodeRoutesURI(data)
     }
 
@@ -35,7 +35,7 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         state.showHeadline = show
     }
 
-    const setActiveRoute = (route: RouteLocationNormalized | viewMenu) => {
+    const setActiveRoute = (route: RouteLocationNormalized | RouteRecordRaw) => {
         state.activeRoute = route
     }
 
@@ -58,15 +58,15 @@ export const useMemberCenter = defineStore('memberCenter', () => {
     return { state, setAuthNode, setViewRoutes, setShowHeadline, setActiveRoute, setShrink, setStatus, setLayoutMode, toggleMenuExpand }
 })
 
-function encodeRoutesURI(data: viewMenu[]): viewMenu[] {
-    for (const key in data) {
-        if (data[key].type == 'iframe') {
-            data[key].path = '/user/iframe/' + encodeURIComponent(data[key].path)
+function encodeRoutesURI(data: RouteRecordRaw[]) {
+    data.forEach((item) => {
+        if (item.meta?.type == 'iframe') {
+            item.path = '/user/iframe/' + encodeURIComponent(item.path)
         }
 
-        if (data[key].children) {
-            data[key].children = encodeRoutesURI(data[key].children as viewMenu[])
+        if (item.children && item.children.length) {
+            item.children = encodeRoutesURI(item.children)
         }
-    }
+    })
     return data
 }

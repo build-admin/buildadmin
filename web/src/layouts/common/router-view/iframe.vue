@@ -16,13 +16,13 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { mainHeight as iframeStyle } from '/@/utils/layout'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
-const route = useRoute()
+const router = useRouter()
 
 const state = reactive({
     loading: true,
-    iframeSrc: route.params.url as string,
+    iframeSrc: router.currentRoute.value.meta.url as string,
 })
 
 const hideLoading = () => {

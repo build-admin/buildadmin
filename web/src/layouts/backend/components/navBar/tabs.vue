@@ -9,7 +9,7 @@
             :ref="tabsRefs.set"
             :key="idx"
         >
-            {{ item.title }}
+            {{ item.meta.title }}
             <transition @after-leave="selectNavTab(tabsRefs[navTabs.state.activeIndex])" name="el-fade-in">
                 <Icon v-show="navTabs.state.tabsView.length > 1" class="close-icon" @click.stop="closeTab(item)" size="15" name="el-icon-Close" />
             </transition>
@@ -24,7 +24,6 @@ import { nextTick, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate, RouteLocationNormalized } from 'vue-router'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
-import { viewMenu } from '/@/stores/interface'
 import { useTemplateRefsList } from '@vueuse/core'
 import type { ContextMenuItem, ContextmenuItemClickEmitArg } from '/@/components/contextmenu/interface'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
@@ -60,11 +59,11 @@ const activeBoxStyle = reactive({
     transform: 'translateX(0px)',
 })
 
-const onTab = (menu: viewMenu) => {
+const onTab = (menu: RouteLocationNormalized) => {
     router.push({ path: menu.path, query: menu.query, params: menu.params })
 }
 
-const onContextmenu = (menu: viewMenu, el: MouseEvent) => {
+const onContextmenu = (menu: RouteLocationNormalized, el: MouseEvent) => {
     // 禁用刷新
     state.contextmenuItems[0].disabled = route.path !== menu.path
     // 禁用关闭其他和关闭全部
@@ -102,13 +101,13 @@ const toLastTab = () => {
     }
 }
 
-const closeTab = (route: viewMenu) => {
+const closeTab = (route: RouteLocationNormalized) => {
     navTabs.closeTab(route)
     proxy.eventBus.emit('onTabViewClose', route)
     if (navTabs.state.activeRoute?.path === route.path) {
         toLastTab()
     } else {
-        navTabs.setActiveRoute(navTabs.state.activeRoute as viewMenu)
+        navTabs.setActiveRoute(navTabs.state.activeRoute!)
         nextTick(() => {
             selectNavTab(tabsRefs.value[navTabs.state.activeIndex])
         })
@@ -125,16 +124,17 @@ const closeAllTab = () => {
 
 const onContextmenuItem = async (item: ContextmenuItemClickEmitArg) => {
     const { name, menu } = item
+    if (!menu) return
     switch (name) {
         case 'refresh':
             proxy.eventBus.emit('onTabViewRefresh', menu)
             break
         case 'close':
-            closeTab(menu as viewMenu)
+            closeTab(menu)
             break
         case 'closeOther':
-            navTabs.closeTabs(menu as viewMenu)
-            navTabs.setActiveRoute(menu as viewMenu)
+            navTabs.closeTabs(menu)
+            navTabs.setActiveRoute(menu)
             if (navTabs.state.activeRoute?.path !== route.path) {
                 router.push(menu!.path)
             }
@@ -151,7 +151,7 @@ const onContextmenuItem = async (item: ContextmenuItemClickEmitArg) => {
     }
 }
 
-const updateTab = function (newRoute: RouteLocationNormalized | viewMenu) {
+const updateTab = function (newRoute: RouteLocationNormalized) {
     // 添加tab
     navTabs.addTab(newRoute)
     // 激活当前tab

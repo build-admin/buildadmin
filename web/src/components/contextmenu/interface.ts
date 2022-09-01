@@ -1,4 +1,4 @@
-import { viewMenu } from '/@/stores/interface'
+import { RouteLocationNormalized } from 'vue-router'
 
 export interface Axis {
     x: number
@@ -13,7 +13,7 @@ export interface ContextMenuItem {
 }
 
 export interface ContextmenuItemClickEmitArg extends ContextMenuItem {
-    menu?: viewMenu
+    menu?: RouteLocationNormalized
 }
 
 /*

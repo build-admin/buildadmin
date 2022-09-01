@@ -5,7 +5,6 @@ export default {
     notFound: 'Page not found',
     noPower: 'No access permission',
     noTitle: 'No title',
-    'Embedded iframe': 'Embedded Iframe',
     Loading: 'Loading...',
     User: 'Member Center',
     userLogin: 'Menber Login',

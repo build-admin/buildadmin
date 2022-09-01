@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive, toRaw } from 'vue'
 import type { ContextMenuItem, Axis, ContextmenuItemClickEmitArg } from './interface'
-import { viewMenu } from '/@/stores/interface'
+import { RouteLocationNormalized } from 'vue-router'
 
 // 不能使用导出的 interface vue的issue已存在，尚未解决
 interface Props {
@@ -41,17 +41,25 @@ const emits = defineEmits<{
     (e: 'contextmenuItemClick', item: ContextmenuItemClickEmitArg): void
 }>()
 
-const state = reactive({
+const state: {
+    show: boolean
+    axis: {
+        x: number
+        y: number
+    }
+    menu: RouteLocationNormalized | undefined
+    arrowAxis: number
+} = reactive({
     show: false,
     axis: {
         x: 0,
         y: 0,
     },
-    menu: {},
+    menu: undefined,
     arrowAxis: 10,
 })
 
-const onShowContextmenu = (menu: viewMenu, axis: Axis) => {
+const onShowContextmenu = (menu: RouteLocationNormalized, axis: Axis) => {
     state.menu = menu
     state.axis = axis
     state.show = true
@@ -59,7 +67,7 @@ const onShowContextmenu = (menu: viewMenu, axis: Axis) => {
 
 const onContextmenuItem = (item: ContextmenuItemClickEmitArg) => {
     if (item.disabled) return
-    item.menu = toRaw(state.menu) as viewMenu
+    item.menu = toRaw(state.menu)
     emits('contextmenuItemClick', item)
 }
 
