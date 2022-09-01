@@ -34,10 +34,10 @@ const refresh = () => {
 
 if (isAdminApp() && navTabs.state.tabsViewRoutes) {
     let firstRoute = getFirstRoute(navTabs.state.tabsViewRoutes)
-    if (firstRoute) routePush('', {}, firstRoute.path)
+    if (firstRoute) routePush(firstRoute.path)
 } else if (memberCenter.state.viewRoutes) {
     let firstRoute = getFirstRoute(memberCenter.state.viewRoutes)
-    if (firstRoute) router.push({ path: firstRoute.path })
+    if (firstRoute) routePush(firstRoute.path)
 }
 
 timer = setTimeout(() => {

@@ -10,7 +10,7 @@ import { isAdminApp } from '/@/utils/common'
  */
 export function mainHeight(extra = 0): CSSProperties {
     let height = extra
-    let adminLayoutMainExtraHeight: anyObj = {
+    const adminLayoutMainExtraHeight: anyObj = {
         Default: 70,
         Classic: 50,
         Streamline: 60,

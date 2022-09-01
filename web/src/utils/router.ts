@@ -1,5 +1,5 @@
 import router from '/@/router/index'
-import { isNavigationFailure, NavigationFailureType, RouteRecordRaw, RouteRecordName, RouteParams } from 'vue-router'
+import { isNavigationFailure, NavigationFailureType, RouteRecordRaw, RouteLocationRaw } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { useNavTabs } from '../stores/navTabs'
 import { useMemberCenter } from '../stores/memberCenter'
@@ -10,7 +10,7 @@ export const clickMenu = (menu: RouteRecordRaw) => {
     switch (menu.meta?.type) {
         case 'iframe':
         case 'tab':
-            routePush(menu.name)
+            routePush({ name: menu.name })
             break
         case 'link':
             window.open(menu.path, '_blank')
@@ -27,13 +27,11 @@ export const clickMenu = (menu: RouteRecordRaw) => {
 
 /**
  * 导航失败有错误消息的路由push
- * @param name 路由name
- * @param params 路由参数
- * @param path 路由path,通过path导航无法传递@param params
+ * @param to — 导航位置，同 router.push
  */
-export const routePush = async (name: RouteRecordName = '', params: RouteParams = {}, path = '') => {
+export const routePush = async (to: RouteLocationRaw) => {
     try {
-        const failure = await router.push(name ? { name: name, params: params } : { path: path })
+        const failure = await router.push(to)
         if (isNavigationFailure(failure, NavigationFailureType.aborted)) {
             ElNotification({
                 message: i18n.global.t('utils.Navigation failed, navigation guard intercepted!'),

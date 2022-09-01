@@ -59,14 +59,14 @@ const init = () => {
                 let menuPaths = getMenuPaths(navTabs.state.tabsViewRoutes)
                 if (menuPaths.indexOf(route.query.url as string) !== -1) {
                     let query = JSON.parse(route.query.query as string)
-                    router.push({ path: route.query.url as string, query: Object.keys(query).length ? query : {} })
+                    routePush({ path: route.query.url as string, query: Object.keys(query).length ? query : {} })
                     return
                 }
             }
 
             // 跳转到第一个菜单
             let firstRoute = getFirstRoute(navTabs.state.tabsViewRoutes)
-            if (firstRoute) routePush('', {}, firstRoute.path)
+            if (firstRoute) routePush(firstRoute.path)
         }
     })
 }

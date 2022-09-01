@@ -146,7 +146,7 @@ const onFullScreen = () => {
 }
 
 const onAdminInfo = () => {
-    routePush('routine/adminInfo')
+    routePush({ name: 'routine/adminInfo' })
 }
 
 const onLogout = () => {
