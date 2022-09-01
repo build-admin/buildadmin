@@ -17,7 +17,7 @@ const route = useRoute()
 const terminal = useTerminal()
 
 // 初始化 element 的语言包
-const { t, getLocaleMessage } = useI18n()
+const { getLocaleMessage } = useI18n()
 const lang = getLocaleMessage(config.lang.defaultLang) as any
 onMounted(() => {
     iconfontInit()
@@ -28,7 +28,7 @@ onMounted(() => {
 watch(
     () => route.path,
     () => {
-        setTitleFromRoute(t)
+        setTitleFromRoute()
     }
 )
 </script>

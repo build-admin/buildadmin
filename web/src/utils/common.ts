@@ -4,7 +4,6 @@ import * as elIcons from '@element-plus/icons-vue'
 import router from '/@/router/index'
 import Icon from '/@/components/icon/index.vue'
 import { useNavTabs } from '/@/stores/navTabs'
-import { useMemberCenter } from '/@/stores/memberCenter'
 import { ElForm } from 'element-plus'
 import { useSiteConfig } from '../stores/siteConfig'
 import { i18n } from '../lang'
@@ -46,18 +45,16 @@ export function loadJs(url: string): void {
 /**
  * 设置浏览器标题
  */
-export function setTitleFromRoute(t: any = null) {
-    const navTabs = useNavTabs()
-    const memberCenter = useMemberCenter()
+export function setTitleFromRoute() {
+    if (typeof router.currentRoute.value.meta.title != 'string') {
+        return
+    }
     nextTick(() => {
         let webTitle = ''
-        if (navTabs.state.activeRoute) {
-            webTitle = navTabs.state.activeRoute.title
-        } else if (memberCenter.state.activeRoute) {
+        if ((router.currentRoute.value.meta.title as string).indexOf('pagesTitle') === -1) {
             webTitle = router.currentRoute.value.meta.title as string
         } else {
-            webTitle =
-                t && router.currentRoute.value.meta.title ? t(router.currentRoute.value.meta.title) : (router.currentRoute.value.meta.title as string)
+            webTitle = i18n.global.t(router.currentRoute.value.meta.title as string)
         }
         document.title = `${webTitle}`
     })
@@ -69,10 +66,9 @@ export function setTitle(title: string) {
 
 /**
  * 是否是外部链接
- * @param {string} path
- * @return {Boolean}
+ * @param path
  */
-export function isExternal(path: string) {
+export function isExternal(path: string): boolean {
     return /^(https?|ftp|mailto|tel):/.test(path)
 }
 
