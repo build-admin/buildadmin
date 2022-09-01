@@ -1,8 +1,8 @@
 <template>
-    <div class="default-main" v-loading="state.loading">
+    <div class="iframe-main" v-loading="state.loading">
         <iframe
             :src="state.iframeSrc"
-            :style="iframeStyle(3)"
+            :style="iframeStyle(35)"
             frameborder="0"
             height="100%"
             width="100%"
@@ -29,3 +29,9 @@ const hideLoading = () => {
     state.loading = false
 }
 </script>
+
+<style scoped lang="scss">
+.iframe-main {
+    margin: var(--ba-main-space);
+}
+</style>
