@@ -134,6 +134,17 @@ export function postInstallModule(uid: string, orderId: number, extend: anyObj =
     ) as ApiPromise
 }
 
+export function changeState(uid: string, val: boolean) {
+    return createAxios({
+        url: moduleControllerUrl + 'changeState',
+        method: 'post',
+        params: {
+            uid: uid,
+            state: val ? 1 : 0,
+        },
+    })
+}
+
 export function dependentInstallComplete(uid: string, type: string) {
     return createAxios({
         url: moduleControllerUrl + 'dependentInstallComplete',

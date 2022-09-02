@@ -82,9 +82,22 @@ class Module extends Backend
         }
         try {
             Manage::instance($uid)->dependentInstallComplete($type);
-        } catch (moduleException $e) {
-            $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
-        } catch (Exception $e) {
+        } catch (moduleException|Exception $e) {
+            $this->error(__($e->getMessage()));
+        }
+        $this->success();
+    }
+
+    public function changeState()
+    {
+        $uid   = $this->request->get("uid/s", '');
+        $state = $this->request->get("state/b", false);
+        if (!$uid) {
+            $this->error(__('Parameter error'));
+        }
+        try {
+            Manage::instance($uid)->changeState($state);
+        } catch (moduleException|Exception $e) {
             $this->error(__($e->getMessage()));
         }
         $this->success();

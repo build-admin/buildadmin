@@ -46,7 +46,14 @@
                         </div>
                         <div v-if="installButtonState.stateSwitch.includes(state.goodsInfo.info.state)" class="basic-item">
                             <div class="basic-item-title">模块状态</div>
-                            <div class="basic-item-content"><el-switch v-model="state.goodsInfo.info.enable" /></div>
+                            <div class="basic-item-content">
+                                <el-switch
+                                    @change="postChangeState"
+                                    :loading="state.publicButtonLoading"
+                                    :disabled="state.publicButtonLoading"
+                                    v-model="state.goodsInfo.info.enable"
+                                />
+                            </div>
                         </div>
                         <div class="basic-buttons">
                             <el-dropdown
@@ -171,6 +178,7 @@
 
 <script setup lang="ts">
 import { state, showInfo, currency, onBuy, onInstall } from '../index'
+import { changeState } from '/@/api/backend/module'
 import { moduleInstallState } from '../types'
 import { timeFormat } from '/@/components/table'
 import { isEmpty } from 'lodash'
@@ -188,9 +196,19 @@ const installButtonState = {
 }
 
 const openDemo = (url: string, open: boolean) => {
-    if (!open) return
-    if (!url) return
+    if (!open || !url) return
     window.open(url)
+}
+
+const postChangeState = (val: string | number | boolean) => {
+    state.publicButtonLoading = true
+    changeState(state.goodsInfo.info.uid, val as boolean)
+        .then((res) => {
+            console.log(res)
+        })
+        .finally(() => {
+            state.publicButtonLoading = false
+        })
 }
 </script>
 

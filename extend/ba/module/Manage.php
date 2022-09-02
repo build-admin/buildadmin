@@ -139,6 +139,34 @@ class Manage
         return $this->getInfo();
     }
 
+    public function changeState(bool $state)
+    {
+        $info       = $this->getInfo();
+        $canDisable = [
+            self::INSTALLED,
+            self::CONFLICT_PENDING,
+            self::DEPENDENT_WAIT_INSTALL,
+        ];
+        if (!$state) {
+            if (!in_array($info['state'], $canDisable)) {
+                throw new moduleException('The current state of the module cannot be set to disabled', 0, [
+                    'uid'   => $this->uid,
+                    'state' => $info['state'],
+                ]);
+            }
+            $this->disable();
+            return;
+        }
+
+        if ($info['state'] != self::DISABLE) {
+            throw new moduleException('The current state of the module cannot be set to enabled', 0, [
+                'uid'   => $this->uid,
+                'state' => $info['state'],
+            ]);
+        }
+        $this->enable('enable');
+    }
+
     public function enable(string $trigger)
     {
         $this->conflictHandle($trigger);
@@ -146,6 +174,11 @@ class Manage
 
         // 执行启用脚本
         Server::execEvent($this->uid, 'enable');
+    }
+
+    public function disable()
+    {
+        
     }
 
     /**
