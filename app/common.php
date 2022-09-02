@@ -338,3 +338,10 @@ if (!function_exists('set_timezone')) {
         }
     }
 }
+
+if (!function_exists('path_transform')) {
+    function path_transform(string $path)
+    {
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+    }
+}
