@@ -187,9 +187,12 @@ class Manage
          * 5、如果有依赖调整，执行依赖更新/安装命令
          */
 
+        $zipFile = $this->ebakDir . $this->uid . '-install.zip';
+        $zipDir  = Server::unzip($zipFile);
+
         $confirmConflict       = request()->get("confirmConflict/b", false);
         $conflictFile          = Server::getFileList($this->modulesDir, true);
-        $disableDependConflict = $this->disableDependConflictCheck();
+        $disableDependConflict = $this->disableDependConflictCheck($zipDir);
         if (($disableDependConflict || $conflictFile) && !$confirmConflict) {
             throw new moduleException('Module file updated', -1, [
                 'uid'            => $this->uid,
@@ -197,6 +200,20 @@ class Manage
                 'dependConflict' => (bool)$disableDependConflict,
             ]);
         }
+
+        // 对冲突进行备份
+        if (in_array('composer', $disableDependConflict)) {
+            $conflictFile[] = 'composer.json';
+        }
+        if (in_array('npm', $disableDependConflict)) {
+            $conflictFile[] = 'web' . DIRECTORY_SEPARATOR . 'package.json';
+        }
+        if ($conflictFile) {
+            $ebakZip = $this->ebakDir . $this->uid . '-disable-' . date('YmdHis') . '.zip';
+            Server::createZip($conflictFile, $ebakZip);
+        }
+
+        deldir($zipDir);
     }
 
     /**
@@ -420,17 +437,14 @@ class Manage
         }
     }
 
-    public function disableDependConflictCheck(): array
+    public function disableDependConflictCheck(string $ebakDir): array
     {
-        $zipFile = $this->ebakDir . $this->uid . '-install.zip';
-        // 解压
-        $zipDir     = Server::unzip($zipFile);
         $dependFile = [
-            path_transform($zipDir . DIRECTORY_SEPARATOR . 'composer.json')    => [
+            path_transform($ebakDir . DIRECTORY_SEPARATOR . 'composer.json')    => [
                 'path' => path_transform(root_path() . 'composer.json'),
                 'type' => 'composer',
             ],
-            path_transform($zipDir . DIRECTORY_SEPARATOR . 'web/package.json') => [
+            path_transform($ebakDir . DIRECTORY_SEPARATOR . 'web/package.json') => [
                 'path' => path_transform(root_path() . 'web/package.json'),
                 'type' => 'npm',
             ],
@@ -441,7 +455,6 @@ class Manage
                 $conflict[] = $item['type'];
             }
         }
-        deldir($zipDir);
         return $conflict;
     }
 
