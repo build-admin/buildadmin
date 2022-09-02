@@ -78,18 +78,34 @@ class Server
         return $dir;
     }
 
+    public static function getConfig(string $dir, $key = '')
+    {
+        $configFile = $dir . 'config.json';
+        if (!is_dir($dir) || !is_file($configFile)) {
+            return [];
+        }
+        $configContent = @file_get_contents($configFile);
+        $configContent = json_decode($configContent, true);
+        if (!$configContent) {
+            return [];
+        }
+        return $key && isset($configContent[$key]) ? $configContent[$key] : $configContent;
+    }
+
     public static function getDepend(string $dir, $key = '')
     {
-        $dependFile = $dir . 'depend.json';
-        if (!is_dir($dir) || !is_file($dependFile)) {
-            return [];
+        if ($key) {
+            return self::getConfig($dir, $key);
         }
-        $dependContent = @file_get_contents($dependFile);
-        $dependContent = json_decode($dependContent, true);
-        if (!$dependContent) {
-            return [];
+        $configContent = self::getConfig($dir);
+        $dependKey     = ['require', 'require-dev', 'dependencies', 'devDependencies'];
+        $dependArray   = [];
+        foreach ($dependKey as $item) {
+            if (array_key_exists($item, $configContent) && $configContent[$item]) {
+                $dependArray[$item] = $configContent[$item];
+            }
         }
-        return $key && isset($dependContent[$key]) ? $dependContent[$key] : $dependContent;
+        return $dependArray;
     }
 
     public static function dependConflictCheck(string $dir): array
