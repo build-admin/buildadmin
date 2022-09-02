@@ -108,7 +108,7 @@ class Depend
             throw new Exception('composer.json file content is incomplete');
         }
         $content = json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-        $result  = @file_put_contents($this->composer, $content);
+        $result  = @file_put_contents($this->composer, $content . PHP_EOL);
         if (!$result) {
             throw new Exception('File has no write permission:composer.json');
         }
@@ -193,7 +193,7 @@ class Depend
             throw new Exception('package.json file content is incomplete');
         }
         $content = json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-        $result  = @file_put_contents($this->npm, $content);
+        $result  = @file_put_contents($this->npm, $content . PHP_EOL);
         if (!$result) {
             throw new Exception('File has no write permission:package.json');
         }
