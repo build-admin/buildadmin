@@ -89,7 +89,10 @@ class Server
         if (!$configContent) {
             return [];
         }
-        return $key && isset($configContent[$key]) ? $configContent[$key] : $configContent;
+        if ($key) {
+            return $configContent[$key] ?? [];
+        }
+        return $configContent;
     }
 
     public static function getDepend(string $dir, $key = '')
