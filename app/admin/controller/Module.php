@@ -82,7 +82,9 @@ class Module extends Backend
         }
         try {
             Manage::instance($uid)->dependentInstallComplete($type);
-        } catch (moduleException|Exception $e) {
+        } catch (moduleException $e) {
+            $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
+        } catch (Exception $e) {
             $this->error(__($e->getMessage()));
         }
         $this->success();
@@ -97,7 +99,9 @@ class Module extends Backend
         }
         try {
             Manage::instance($uid)->changeState($state);
-        } catch (moduleException|Exception $e) {
+        } catch (moduleException $e) {
+            $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
+        } catch (Exception $e) {
             $this->error(__($e->getMessage()));
         }
         $this->success();
