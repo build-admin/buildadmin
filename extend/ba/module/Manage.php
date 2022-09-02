@@ -188,7 +188,11 @@ class Manage
          */
 
         $zipFile = $this->ebakDir . $this->uid . '-install.zip';
-        $zipDir  = Server::unzip($zipFile);
+        try {
+            $zipDir = Server::unzip($zipFile);
+        } catch (moduleException|Exception $e) {
+            $zipDir = false;
+        }
 
         $confirmConflict       = request()->get("confirmConflict/b", false);
         $conflictFile          = Server::getFileList($this->modulesDir, true);
@@ -211,6 +215,23 @@ class Manage
         if ($conflictFile) {
             $ebakZip = $this->ebakDir . $this->uid . '-disable-' . date('YmdHis') . '.zip';
             Server::createZip($conflictFile, $ebakZip);
+        }
+
+        // 删除模块文件
+        $protectedFiles = Server::getConfig($this->modulesDir, 'protectedFiles');
+        foreach ($protectedFiles as &$protectedFile) {
+            $protectedFile = path_transform(root_path() . $protectedFile);
+        }
+        $moduleFile = Server::getFileList($this->modulesDir);
+        foreach ($moduleFile as $item) {
+            $file = path_transform(root_path() . $item);
+            if (in_array($file, $protectedFiles)) {
+                continue;
+            }
+            if (file_exists($file)) {
+                unlink($file);
+            }
+            del_empty_dir(dirname($file));
         }
 
         deldir($zipDir);
@@ -439,6 +460,9 @@ class Manage
 
     public function disableDependConflictCheck(string $ebakDir): array
     {
+        if (!$ebakDir) {
+            return [];
+        }
         $dependFile = [
             path_transform($ebakDir . DIRECTORY_SEPARATOR . 'composer.json')    => [
                 'path' => path_transform(root_path() . 'composer.json'),
