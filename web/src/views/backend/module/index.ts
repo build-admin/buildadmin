@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import { index, modules, info, createOrder, payOrder, postInstallModule, getInstallStateUrl, dependentInstallComplete } from '/@/api/backend/module'
+import { index, modules, info, createOrder, payOrder, postInstallModule, getInstallStateUrl, changeState } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
 import { Session } from '/@/utils/storage'
 import { INSTALL_MODULE_TEMP, VITE_FULL_RELOAD } from '/@/stores/constant/cacheKey'
@@ -23,6 +23,9 @@ export const state: moduleState = reactive({
         showDialog: false,
         loading: false,
         info: {},
+        showConfirmConflict: false,
+        conflictFile: [],
+        dependConflict: false,
     },
     showBaAccount: false,
     buy: {
@@ -326,6 +329,33 @@ const setInstallLoadingStateTitle = (installState: string | false) => {
 const clearTempStorage = () => {
     Session.remove(INSTALL_MODULE_TEMP)
     Session.remove(VITE_FULL_RELOAD)
+}
+
+export const postChangeState = (val: string | number | boolean, confirmConflict: boolean = false) => {
+    state.publicButtonLoading = true
+    changeState(state.goodsInfo.info.uid, val as boolean, confirmConflict)
+        .then((res) => {
+            console.log(res)
+        })
+        .catch((res) => {
+            state.goodsInfo.info.enable = !state.goodsInfo.info.enable
+            if (res.code == -1) {
+                state.goodsInfo.showConfirmConflict = true
+                state.goodsInfo.dependConflict = res.data.dependConflict
+                if (res.data.conflictFile && res.data.conflictFile.length) {
+                    let conflictFile = []
+                    for (const key in res.data.conflictFile) {
+                        conflictFile.push({
+                            file: res.data.conflictFile[key],
+                        })
+                    }
+                    state.goodsInfo.conflictFile = conflictFile
+                }
+            }
+        })
+        .finally(() => {
+            state.publicButtonLoading = false
+        })
 }
 
 export const loginExpired = (res: ApiResponse) => {

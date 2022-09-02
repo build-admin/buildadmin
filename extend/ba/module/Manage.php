@@ -178,7 +178,25 @@ class Manage
 
     public function disable()
     {
-        
+        /**
+         * 0、找到模块添加的文件，对有修改的进行备份
+         * 1、找到模块添加的文件，删除
+         * 2、找到安装时备份的文件，恢复
+         * 3、执行禁用脚本
+         * 4、将模块设置为已禁用
+         * 5、如果有依赖调整，执行依赖更新/安装命令
+         */
+
+        $confirmConflict       = request()->get("confirmConflict/b", false);
+        $conflictFile          = Server::getFileList($this->modulesDir, true);
+        $disableDependConflict = $this->disableDependConflictCheck();
+        if (($disableDependConflict || $conflictFile) && !$confirmConflict) {
+            throw new moduleException('Module file updated', -1, [
+                'uid'            => $this->uid,
+                'conflictFile'   => $conflictFile,
+                'dependConflict' => (bool)$disableDependConflict,
+            ]);
+        }
     }
 
     /**
@@ -400,6 +418,31 @@ class Manage
             }
             $this->setInfo([], $info);
         }
+    }
+
+    public function disableDependConflictCheck(): array
+    {
+        $zipFile = $this->ebakDir . $this->uid . '-install.zip';
+        // 解压
+        $zipDir     = Server::unzip($zipFile);
+        $dependFile = [
+            path_transform($zipDir . DIRECTORY_SEPARATOR . 'composer.json')    => [
+                'path' => path_transform(root_path() . 'composer.json'),
+                'type' => 'composer',
+            ],
+            path_transform($zipDir . DIRECTORY_SEPARATOR . 'web/package.json') => [
+                'path' => path_transform(root_path() . 'web/package.json'),
+                'type' => 'npm',
+            ],
+        ];
+        $conflict   = [];
+        foreach ($dependFile as $key => $item) {
+            if (is_file($key) && (filesize($key) != filesize($item['path']) || md5_file($key) != md5_file($item['path']))) {
+                $conflict[] = $item['type'];
+            }
+        }
+        deldir($zipDir);
+        return $conflict;
     }
 
     public function checkPackage(): bool

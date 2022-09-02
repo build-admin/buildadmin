@@ -19,6 +19,11 @@ export interface moduleState {
         showDialog: boolean
         info: anyObj
         loading: boolean
+        showConfirmConflict: boolean
+        conflictFile: {
+            file: string
+        }[]
+        dependConflict: boolean
     }
     showBaAccount: boolean
     buy: {

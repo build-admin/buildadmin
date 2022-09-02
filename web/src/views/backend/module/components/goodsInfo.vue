@@ -177,8 +177,7 @@
 </template>
 
 <script setup lang="ts">
-import { state, showInfo, currency, onBuy, onInstall } from '../index'
-import { changeState } from '/@/api/backend/module'
+import { state, showInfo, currency, onBuy, onInstall, postChangeState } from '../index'
 import { moduleInstallState } from '../types'
 import { timeFormat } from '/@/components/table'
 import { isEmpty } from 'lodash'
@@ -198,17 +197,6 @@ const installButtonState = {
 const openDemo = (url: string, open: boolean) => {
     if (!open || !url) return
     window.open(url)
-}
-
-const postChangeState = (val: string | number | boolean) => {
-    state.publicButtonLoading = true
-    changeState(state.goodsInfo.info.uid, val as boolean)
-        .then((res) => {
-            console.log(res)
-        })
-        .finally(() => {
-            state.publicButtonLoading = false
-        })
 }
 </script>
 

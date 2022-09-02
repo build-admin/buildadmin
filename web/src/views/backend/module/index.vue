@@ -6,6 +6,7 @@
         <GoodsInfo />
         <Buy />
         <Install />
+        <ConfirmFileConflict />
     </div>
 </template>
 
@@ -19,6 +20,7 @@ import Tabs from './components/tabs.vue'
 import GoodsInfo from './components/goodsInfo.vue'
 import Buy from './components/buy.vue'
 import Install from './components/install.vue'
+import ConfirmFileConflict from './components/confirmFileConflict.vue'
 import { state, loadData, loginExpired, showInfo } from './index'
 import { Session } from '/@/utils/storage'
 import { VITE_FULL_RELOAD } from '/@/stores/constant/cacheKey'
