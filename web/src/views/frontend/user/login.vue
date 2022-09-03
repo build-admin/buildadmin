@@ -161,7 +161,14 @@
                                     </div>
                                 </div>
                                 <el-form-item class="form-buttons">
-                                    <el-button @click="onSubmit(formRef)" :loading="state.formLoading" round type="primary" size="large">
+                                    <el-button
+                                        class="login-btn"
+                                        @click="onSubmit(formRef)"
+                                        :loading="state.formLoading"
+                                        round
+                                        type="primary"
+                                        size="large"
+                                    >
                                         {{ t('user.user.' + state.form.tab) }}
                                     </el-button>
                                     <el-button
@@ -576,6 +583,19 @@ onUnmounted(() => {
     }
     .retrieve-password-form {
         margin-right: 0;
+    }
+}
+
+// 暗黑样式
+@at-root .dark {
+    .form-buttons {
+        .login-btn {
+            --el-button-bg-color: var(--el-color-primary-light-5);
+            --el-button-border-color: rgba(240, 252, 241, 0.1);
+        }
+    }
+    .captcha-img {
+        filter: brightness(61%);
     }
 }
 </style>

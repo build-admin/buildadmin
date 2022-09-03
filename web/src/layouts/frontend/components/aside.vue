@@ -73,7 +73,7 @@ const routerPush = (routeName = '', route?: RouteRecordRaw) => {
 <style scoped lang="scss">
 .ba-user-layouts {
     width: 240px;
-    background-color: var(--el-color-white);
+    background-color: var(--ba-bg-color-overlay);
     box-shadow: var(--el-box-shadow-light);
 }
 .userinfo {
@@ -145,12 +145,12 @@ const routerPush = (routeName = '', route?: RouteRecordRaw) => {
     .icon {
         color: var(--el-color-primary) !important;
     }
-    background-color: var(--ba-bg-color);
+    background-color: var(--el-color-info-light-8);
 }
 @media screen and (max-width: 991px) {
     .ba-user-layouts {
         width: 100%;
-        background-color: var(--el-color-white);
+        background-color: var(--ba-bg-color-overlay);
         box-shadow: none;
     }
 }

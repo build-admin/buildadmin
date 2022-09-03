@@ -9,7 +9,7 @@
                         <div class="main-content">
                             {{ $t('index.Steve Jobs') }}
                         </div>
-                        <el-button v-if="memberCenter.state.open" @click="$router.push('/user')" color="#FFFFFF" size="large">{{
+                        <el-button v-if="memberCenter.state.open" @click="$router.push('/user')" color="#ffffff" size="large">{{
                             $t('index.Member Center')
                         }}</el-button>
                     </div>
@@ -93,6 +93,9 @@ const memberCenter = useMemberCenter()
                 color: var(--el-menu-hover-text-color);
             }
         }
+    }
+    :deep(.theme-switch) {
+        display: none;
     }
 }
 .footer {

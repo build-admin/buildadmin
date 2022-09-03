@@ -104,8 +104,10 @@ import { buildCaptchaUrl } from '/@/api/common'
 import { uuid } from '../../utils/random'
 import { validatorPassword, validatorAccount } from '/@/utils/validate'
 import router from '/@/router'
+import { useDark } from '@vueuse/core'
 var timer: NodeJS.Timer
 
+useDark()
 const config = useConfig()
 const adminInfo = useAdminInfo()
 
@@ -293,6 +295,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
             letter-spacing: 2px;
             font-weight: 300;
             margin-top: 15px;
+            --el-button-bg-color: var(--el-color-primary);
         }
     }
 }
@@ -317,5 +320,31 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
 }
 .captcha-img {
     width: 100%;
+}
+
+// 暗黑样式
+@at-root .dark {
+    .bubble {
+        background: url(/@/assets/bg-dark.jpg) repeat;
+    }
+    .login {
+        .login-box {
+            background: #161b22;
+        }
+        .head {
+            img {
+                filter: brightness(61%);
+            }
+        }
+        .form {
+            .submit-button {
+                --el-button-bg-color: var(--el-color-primary-light-5);
+                --el-button-border-color: rgba(240, 252, 241, 0.1);
+            }
+        }
+    }
+    .captcha-img {
+        filter: brightness(61%);
+    }
 }
 </style>
