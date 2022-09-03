@@ -1,6 +1,6 @@
 <template>
     <div class="theme-toggle-content">
-        <div @click="toggleDark()" class="switch">
+        <div class="switch">
             <div class="switch-action">
                 <Icon name="local-dark" color="#f2f2f2" size="13px" class="switch-icon dark-icon" />
                 <Icon name="local-light" color="#303133" size="13px" class="switch-icon light-icon" />
@@ -8,27 +8,6 @@
         </div>
     </div>
 </template>
-
-<script setup lang="ts">
-import { useDark, useToggle } from '@vueuse/core'
-import { useConfig } from '/@/stores/config'
-
-const config = useConfig()
-const isDark = useDark({
-    onChanged(dark: boolean) {
-        const htmlEl = document.getElementsByTagName('html')[0]
-        if (dark) {
-            htmlEl.setAttribute('class', 'dark')
-        } else {
-            htmlEl.setAttribute('class', '')
-        }
-        config.setLayout('isDark', dark)
-        config.onSetLayoutColor()
-    },
-})
-
-const toggleDark = useToggle(isDark)
-</script>
 
 <style scoped lang="scss">
 .theme-toggle-content {

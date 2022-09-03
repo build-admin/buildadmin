@@ -61,7 +61,7 @@
                         <el-divider border-style="dashed">{{ t('layouts.overall situation') }}</el-divider>
                         <div class="layout-config-global">
                             <el-form-item size="large" :label="t('layouts.Dark mode')">
-                                <DarkSwitch />
+                                <DarkSwitch @click="toggleDark()" />
                             </el-form-item>
                             <el-form-item :label="t('layouts.Background page switching animation')">
                                 <el-select
@@ -205,6 +205,7 @@ import { Local, Session } from '/@/utils/storage'
 import { useI18n } from 'vue-i18n'
 import { Layout } from '/@/stores/interface'
 import DarkSwitch from '/@/layouts/common/components/darkSwitch.vue'
+import toggleDark from '/@/utils/useDark'
 
 const { t } = useI18n()
 const configStore = useConfig()

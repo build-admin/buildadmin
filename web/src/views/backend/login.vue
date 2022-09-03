@@ -104,10 +104,8 @@ import { buildCaptchaUrl } from '/@/api/common'
 import { uuid } from '../../utils/random'
 import { validatorPassword, validatorAccount } from '/@/utils/validate'
 import router from '/@/router'
-import { useDark } from '@vueuse/core'
 var timer: NodeJS.Timer
 
-useDark()
 const config = useConfig()
 const adminInfo = useAdminInfo()
 

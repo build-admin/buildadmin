@@ -39,7 +39,7 @@
                         >
                     </el-sub-menu>
                     <el-menu-item index="theme-switch" class="theme-switch">
-                        <DarkSwitch />
+                        <DarkSwitch @click="toggleDark()" />
                     </el-menu-item>
                 </el-menu>
             </el-col>
@@ -64,6 +64,7 @@ import 'element-plus/theme-chalk/display.css'
 import Aside from '/@/layouts/frontend/components/aside.vue'
 import 'element-plus/theme-chalk/display.css'
 import DarkSwitch from '/@/layouts/common/components/darkSwitch.vue'
+import toggleDark from '/@/utils/useDark'
 
 const state = reactive({
     activeMenu: '',
