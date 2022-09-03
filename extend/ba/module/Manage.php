@@ -234,6 +234,25 @@ class Manage
             del_empty_dir(dirname($file));
         }
 
+        // 恢复备份文件
+        if ($zipDir) {
+            foreach (
+                $iterator = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($zipDir, FilesystemIterator::SKIP_DOTS),
+                    RecursiveIteratorIterator::SELF_FIRST
+                ) as $item
+            ) {
+                $ebakFile = path_transform(root_path() . $iterator->getSubPathName());
+                if ($item->isDir()) {
+                    if (!is_dir($ebakFile)) {
+                        mkdir($ebakFile, 0755, true);
+                    }
+                } else {
+                    copy($item, $ebakFile);
+                }
+            }
+        }
+
         deldir($zipDir);
     }
 
