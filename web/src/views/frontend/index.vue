@@ -29,9 +29,12 @@ import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import Header from '/@/layouts/frontend/components/header.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
+import { togglePageDark } from '/@/utils/useDark'
 
 const siteConfig = useSiteConfig()
 const memberCenter = useMemberCenter()
+
+togglePageDark(false)
 </script>
 
 <style scoped lang="scss">
