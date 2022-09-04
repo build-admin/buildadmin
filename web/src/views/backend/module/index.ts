@@ -334,9 +334,9 @@ const clearTempStorage = () => {
     Session.remove(VITE_FULL_RELOAD)
 }
 
-export const postDisable = (val: string | number | boolean, confirmConflict: boolean = false) => {
+export const postDisable = (confirmConflict: boolean = false) => {
     state.publicButtonLoading = true
-    changeState(state.goodsInfo.info.uid, val as boolean, confirmConflict)
+    changeState(state.goodsInfo.info.uid, false, confirmConflict)
         .then((res) => {
             ElNotification({
                 type: 'success',
@@ -370,10 +370,39 @@ export const postDisable = (val: string | number | boolean, confirmConflict: boo
                     execCommand(res.data.wait_install)
                     onRefreshData()
                 }
+            } else {
+                ElNotification({
+                    type: 'error',
+                    message: res.msg,
+                })
             }
         })
         .finally(() => {
             state.publicButtonLoading = false
+        })
+}
+
+export const onEnable = (uid: string) => {
+    state.publicButtonLoading = true
+    changeState(uid, true, false)
+        .then(() => {
+            state.install.showDialog = true
+            setInstallLoadingStateTitle('init')
+            state.install.title = '启用'
+            // 安装模块可能会触发热更新或热重载造成状态丢失
+            // 存储当前模块的安装进度等状态
+            Session.set(INSTALL_MODULE_TEMP, { uid: uid })
+
+            execInstall(uid, 0)
+
+            // 关闭其他弹窗
+            state.goodsInfo.showDialog = false
+        })
+        .catch((res) => {
+            ElNotification({
+                type: 'error',
+                message: res.msg,
+            })
         })
 }
 

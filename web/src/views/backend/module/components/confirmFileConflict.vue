@@ -32,7 +32,7 @@
                     :disabled="state.publicButtonLoading"
                     size="large"
                     type="primary"
-                    @click="postDisable(false, true)"
+                    @click="postDisable(true)"
                 >
                     确认禁用模块
                 </el-button>

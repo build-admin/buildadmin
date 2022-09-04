@@ -167,7 +167,6 @@ class Manage
         $this->setInfo([
             'state' => self::WAIT_INSTALL,
         ]);
-        $this->enable('enable');
     }
 
     public function enable(string $trigger)
