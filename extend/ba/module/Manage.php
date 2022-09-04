@@ -187,6 +187,7 @@ class Manage
          * 5、如果有依赖调整，执行依赖更新/安装命令
          */
 
+        $info    = $this->getInfo();
         $zipFile = $this->ebakDir . $this->uid . '-install.zip';
         try {
             $zipDir = Server::unzip($zipFile);
@@ -206,11 +207,20 @@ class Manage
         }
 
         // 对冲突进行备份
+        $dependWaitInstall = [];
         if (in_array('composer', $disableDependConflict)) {
-            $conflictFile[] = 'composer.json';
+            $conflictFile[]      = 'composer.json';
+            $dependWaitInstall[] = [
+                'pm'      => false,
+                'command' => 'composer.update',
+            ];
         }
         if (in_array('npm', $disableDependConflict)) {
-            $conflictFile[] = 'web' . DIRECTORY_SEPARATOR . 'package.json';
+            $conflictFile[]      = 'web' . DIRECTORY_SEPARATOR . 'package.json';
+            $dependWaitInstall[] = [
+                'pm'      => true,
+                'command' => 'web-install',
+            ];
         }
         if ($conflictFile) {
             $ebakZip = $this->ebakDir . $this->uid . '-disable-' . date('YmdHis') . '.zip';
@@ -253,7 +263,23 @@ class Manage
             }
         }
 
+        // 删除解压后的备份文件
         deldir($zipDir);
+
+        // 执行禁用脚本
+        Server::execEvent($this->uid, 'disable');
+
+        $this->setInfo([
+            'state' => self::DISABLE,
+        ]);
+
+        if ($dependWaitInstall) {
+            throw new moduleException('dependent wait install', -2, [
+                'uid'          => $this->uid,
+                'wait_install' => $dependWaitInstall,
+                'fullreload'   => $info['fullreload'],
+            ]);
+        }
     }
 
     /**

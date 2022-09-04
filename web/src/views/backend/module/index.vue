@@ -21,9 +21,8 @@ import GoodsInfo from './components/goodsInfo.vue'
 import Buy from './components/buy.vue'
 import Install from './components/install.vue'
 import ConfirmFileConflict from './components/confirmFileConflict.vue'
-import { state, loadData, loginExpired, showInfo } from './index'
+import { state, loadData, execCommand, VITE_FULL_RELOAD, DEPEND_DATA_TEMP } from './index'
 import { Session } from '/@/utils/storage'
-import { VITE_FULL_RELOAD } from '/@/stores/constant/cacheKey'
 
 const { t } = useI18n()
 const baAccount = useBaAccount()
@@ -34,6 +33,12 @@ onMounted(() => {
         import.meta.hot.on('vite:beforeFullReload', () => {
             Session.set(VITE_FULL_RELOAD, true)
         })
+    }
+
+    const viteFullReload = Session.get(VITE_FULL_RELOAD)
+    const dependDataTemp = Session.get(DEPEND_DATA_TEMP)
+    if (viteFullReload && dependDataTemp) {
+        execCommand(dependDataTemp)
     }
 })
 </script>

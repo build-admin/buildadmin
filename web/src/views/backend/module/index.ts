@@ -2,12 +2,15 @@ import { reactive } from 'vue'
 import { index, modules, info, createOrder, payOrder, postInstallModule, getInstallStateUrl, changeState } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
 import { Session } from '/@/utils/storage'
-import { INSTALL_MODULE_TEMP, VITE_FULL_RELOAD } from '/@/stores/constant/cacheKey'
 import { ElNotification } from 'element-plus'
 import { uuid } from '/@/utils/random'
 import { useTerminal } from '/@/stores/terminal'
 import { taskStatus } from '/@/components/terminal/constant'
 import { moduleInstallState, moduleState } from './types'
+
+export const INSTALL_MODULE_TEMP = 'installModuleTemp' // 模块安装状态临时记录
+export const VITE_FULL_RELOAD = 'viteFullReload' // 是否触发了vite热重载的临时记录
+export const DEPEND_DATA_TEMP = 'dependDataTemp' // 依赖更新临时记录
 
 export const state: moduleState = reactive({
     tableLoading: true,
@@ -335,7 +338,12 @@ export const postChangeState = (val: string | number | boolean, confirmConflict:
     state.publicButtonLoading = true
     changeState(state.goodsInfo.info.uid, val as boolean, confirmConflict)
         .then((res) => {
-            console.log(res)
+            ElNotification({
+                type: 'success',
+                message: '操作成功，请清理系统缓存并刷新浏览器~',
+            })
+            state.goodsInfo.showConfirmConflict = false
+            onRefreshData()
         })
         .catch((res) => {
             state.goodsInfo.info.enable = !state.goodsInfo.info.enable
@@ -351,11 +359,42 @@ export const postChangeState = (val: string | number | boolean, confirmConflict:
                     }
                     state.goodsInfo.conflictFile = conflictFile
                 }
+            } else if (res.code == -2) {
+                state.goodsInfo.showConfirmConflict = false
+                if (parseInt(res.data.fullreload) === 1) {
+                    Session.set(DEPEND_DATA_TEMP, res.data.wait_install)
+                    state.install.showDialog = true
+                    state.install.title = '请稍等'
+                    state.waitFullReload = true
+                } else {
+                    execCommand(res.data.wait_install)
+                    onRefreshData()
+                }
             }
         })
         .finally(() => {
             state.publicButtonLoading = false
         })
+}
+
+export const execCommand = (data: anyObj, extend: string = '') => {
+    if (Array.isArray(data) && data.length) {
+        const terminal = useTerminal()
+        terminal.toggle(true)
+        data.forEach((item) => {
+            if (item.pm) {
+                terminal.addTaskPM(item.command, true, '', (res: number) => {
+                    if (res == taskStatus.Failed) terminal.toggle(true)
+                })
+            } else {
+                terminal.addTask(item.command, true, '', (res: number) => {
+                    if (res == taskStatus.Failed) terminal.toggle(true)
+                })
+            }
+        })
+    }
+    Session.remove(VITE_FULL_RELOAD)
+    Session.remove(DEPEND_DATA_TEMP)
 }
 
 export const loginExpired = (res: ApiResponse) => {
