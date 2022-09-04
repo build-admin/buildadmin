@@ -334,7 +334,7 @@ const clearTempStorage = () => {
     Session.remove(VITE_FULL_RELOAD)
 }
 
-export const postChangeState = (val: string | number | boolean, confirmConflict: boolean = false) => {
+export const postDisable = (val: string | number | boolean, confirmConflict: boolean = false) => {
     state.publicButtonLoading = true
     changeState(state.goodsInfo.info.uid, val as boolean, confirmConflict)
         .then((res) => {

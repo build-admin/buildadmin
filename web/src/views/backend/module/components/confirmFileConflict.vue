@@ -32,7 +32,7 @@
                     :disabled="state.publicButtonLoading"
                     size="large"
                     type="primary"
-                    @click="postChangeState(false, true)"
+                    @click="postDisable(false, true)"
                 >
                     确认禁用模块
                 </el-button>
@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { state, postChangeState } from '../index'
+import { state, postDisable } from '../index'
 </script>
 
 <style scoped lang="scss">

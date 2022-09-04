@@ -48,7 +48,7 @@
                             <div class="basic-item-title">模块状态</div>
                             <div class="basic-item-content">
                                 <el-switch
-                                    @change="postChangeState"
+                                    @change="postDisable"
                                     :loading="state.publicButtonLoading"
                                     :disabled="state.publicButtonLoading"
                                     v-model="state.goodsInfo.info.enable"
@@ -177,7 +177,7 @@
 </template>
 
 <script setup lang="ts">
-import { state, showInfo, currency, onBuy, onInstall, postChangeState } from '../index'
+import { state, showInfo, currency, onBuy, onInstall, postDisable } from '../index'
 import { moduleInstallState } from '../types'
 import { timeFormat } from '/@/components/table'
 import { isEmpty } from 'lodash'
