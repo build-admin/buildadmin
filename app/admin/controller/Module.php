@@ -106,4 +106,20 @@ class Module extends Backend
         }
         $this->success();
     }
+
+    public function uninstall()
+    {
+        $uid = $this->request->get("uid/s", '');
+        if (!$uid) {
+            $this->error(__('Parameter error'));
+        }
+        try {
+            Manage::instance($uid)->uninstall();
+        } catch (moduleException $e) {
+            $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
+        } catch (Exception $e) {
+            $this->error(__($e->getMessage()));
+        }
+        $this->success();
+    }
 }

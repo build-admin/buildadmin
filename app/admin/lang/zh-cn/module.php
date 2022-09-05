@@ -15,4 +15,5 @@ return [
     'The current state of the module cannot be set to disabled' => '模块当前状态无法设定为禁用',
     'The current state of the module cannot be set to enabled'  => '模块当前状态无法设定为启用',
     'Module file updated'                                       => '模块文件有更新',
+    'Please disable the module first'                           => '请先禁用模块',
 ];

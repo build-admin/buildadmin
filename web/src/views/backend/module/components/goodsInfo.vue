@@ -127,6 +127,7 @@
                                 </el-button>
                                 <el-button
                                     v-if="installButtonState.stateSwitch.includes(state.goodsInfo.info.state)"
+                                    @click="unInstall(state.goodsInfo.info.uid)"
                                     v-blur
                                     class="basic-button-item"
                                     type="danger"
@@ -177,7 +178,8 @@
 </template>
 
 <script setup lang="ts">
-import { state, showInfo, currency, onBuy, onInstall, postDisable, onEnable } from '../index'
+import { state, showInfo, currency, onBuy, onInstall, postDisable, onEnable, onRefreshData } from '../index'
+import { postUninstall } from '/@/api/backend/module'
 import { moduleInstallState } from '../types'
 import { timeFormat } from '/@/components/table'
 import { isEmpty } from 'lodash'
@@ -205,6 +207,12 @@ const onChangeState = () => {
     } else {
         postDisable()
     }
+}
+
+const unInstall = (uid: string) => {
+    postUninstall(uid).then(() => {
+        onRefreshData()
+    })
 }
 </script>
 

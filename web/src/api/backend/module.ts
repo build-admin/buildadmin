@@ -134,6 +134,21 @@ export function postInstallModule(uid: string, orderId: number, extend: anyObj =
     ) as ApiPromise
 }
 
+export function postUninstall(uid: string) {
+    return createAxios(
+        {
+            url: moduleControllerUrl + 'uninstall',
+            method: 'post',
+            params: {
+                uid: uid,
+            },
+        },
+        {
+            showSuccessMessage: true,
+        }
+    )
+}
+
 export function changeState(uid: string, state: boolean, confirmConflict: boolean) {
     return createAxios(
         {

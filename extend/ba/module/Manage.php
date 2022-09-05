@@ -139,6 +139,17 @@ class Manage
         return $this->getInfo();
     }
 
+    public function uninstall()
+    {
+        $info = $this->getInfo();
+        if ($info['state'] != self::DISABLE) {
+            throw new moduleException('Please disable the module first', 0, [
+                'uid' => $this->uid,
+            ]);
+        }
+        deldir($this->modulesDir);
+    }
+
     public function changeState(bool $state)
     {
         $info       = $this->getInfo();
