@@ -11,7 +11,7 @@
             <el-tab-pane v-for="cat in state.category" :name="cat.id.toString()" :label="cat.name" class="store-tab-pane">
                 <template v-if="state.modules[state.params.activeTab] && state.modules[state.params.activeTab].length > 0">
                     <div class="goods" v-for="item in state.modules[state.params.activeTab]">
-                        <div @click="showInfo(item.id)" class="goods-item suspension">
+                        <div @click="showInfo(item.uid)" class="goods-item suspension">
                             <el-image fit="contain" class="goods-img" :src="item.logo" />
                             <div class="goods-footer">
                                 <div class="goods-tag" v-if="item.tags.length > 0">

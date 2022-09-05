@@ -126,6 +126,16 @@
                                     已安装 v{{ state.goodsInfo.info.version }}
                                 </el-button>
                                 <el-button
+                                    v-if="state.goodsInfo.info.new_version"
+                                    @click="onUpdate(state.goodsInfo.info.uid, state.goodsInfo.info.purchased)"
+                                    v-loading="state.publicButtonLoading"
+                                    v-blur
+                                    class="basic-button-item"
+                                    type="success"
+                                >
+                                    更新
+                                </el-button>
+                                <el-button
                                     v-if="installButtonState.stateSwitch.includes(state.goodsInfo.info.state)"
                                     @click="unInstall(state.goodsInfo.info.uid)"
                                     v-blur
@@ -160,7 +170,7 @@
                             <div v-if="state.goodsInfo.info.developer.goods.length > 0" class="recommend-goods">
                                 <div
                                     v-for="goods_item in state.goodsInfo.info.developer.goods"
-                                    @click="showInfo(goods_item.id)"
+                                    @click="showInfo(goods_item.uid)"
                                     class="recommend-goods-item"
                                 >
                                     <el-image fit="contain" class="recommend-goods-logo" :src="goods_item.logo"> </el-image>
@@ -179,10 +189,12 @@
 
 <script setup lang="ts">
 import { state, showInfo, currency, onBuy, onInstall, postDisable, onEnable, onRefreshData } from '../index'
-import { postUninstall } from '/@/api/backend/module'
+import { postUninstall, getInstallStateUrl, postUpdate } from '/@/api/backend/module'
 import { moduleInstallState } from '../types'
 import { timeFormat } from '/@/components/table'
 import { isEmpty } from 'lodash'
+import { ElMessageBox } from 'element-plus'
+import { useBaAccount } from '/@/stores/baAccount'
 
 const installButtonState = {
     InstallNow: [moduleInstallState.UNINSTALLED, moduleInstallState.WAIT_INSTALL],
@@ -205,6 +217,10 @@ const onChangeState = () => {
     if (state.goodsInfo.info.enable) {
         onEnable(state.goodsInfo.info.uid)
     } else {
+        state.moduleDisableParams = {
+            uid: state.goodsInfo.info.uid,
+            state: 0,
+        }
         postDisable()
     }
 }
@@ -213,6 +229,39 @@ const unInstall = (uid: string) => {
     postUninstall(uid).then(() => {
         onRefreshData()
     })
+}
+
+const onUpdate = (uid: string, order: number) => {
+    state.publicButtonLoading = true
+    getInstallStateUrl(uid)
+        .then((res) => {
+            if (res.data.state == moduleInstallState.DISABLE) {
+                postUpdate(uid, order).then(() => {
+                    onInstall(uid, order)
+                })
+            } else {
+                ElMessageBox.confirm('更新前需要先禁用该模块，立即禁用？', '提示', {
+                    confirmButtonText: '禁用并更新',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                })
+                    .then(() => {
+                        const baAccount = useBaAccount()
+                        state.moduleDisableParams = {
+                            uid: uid,
+                            state: 0,
+                            upadte: true,
+                            order: order,
+                            token: baAccount.token,
+                        }
+                        postDisable()
+                    })
+                    .catch(() => {})
+            }
+        })
+        .finally(() => {
+            state.publicButtonLoading = false
+        })
 }
 </script>
 

@@ -56,4 +56,5 @@ export interface moduleState {
     }[]
     installedModuleUids: number[]
     waitFullReload: boolean
+    moduleDisableParams: anyObj
 }

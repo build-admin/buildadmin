@@ -89,6 +89,36 @@ class Manage
         return dir_is_empty($this->modulesDir) ? self::UNINSTALLED : self::DIRECTORY_OCCUPIED;
     }
 
+    public function update(string $token, int $orderId)
+    {
+        $state = $this->installState();
+        if ($state != self::DISABLE) {
+            throw new Exception('更新前请先禁用模块');
+        }
+
+        if (!$orderId) {
+            throw new Exception('Order not found');
+        }
+        // 下载
+        $sysVersion = Config::get('buildadmin.version');
+        $zipFile    = Server::download($this->uid, $this->installDir, [
+            'sysVersion'    => $sysVersion,
+            'ba-user-token' => $token,
+            'order_id'      => $orderId,
+        ]);
+
+        // 解压
+        Server::unzip($zipFile);
+
+        // 删除下载的zip
+        @unlink($zipFile);
+
+        // 设置为待安装状态
+        $this->setInfo([
+            'state' => self::WAIT_INSTALL,
+        ]);
+    }
+
     /**
      * 安装模板或案例
      * @param string $token   用户token
@@ -200,6 +230,9 @@ class Manage
          * 5、如果有依赖调整，执行依赖更新/安装命令
          */
 
+        $upadte          = request()->get("upadte/b", false);
+        $confirmConflict = request()->get("confirmConflict/b", false);
+
         $info    = $this->getInfo();
         $zipFile = $this->ebakDir . $this->uid . '-install.zip';
         try {
@@ -208,7 +241,6 @@ class Manage
             $zipDir = false;
         }
 
-        $confirmConflict       = request()->get("confirmConflict/b", false);
         $conflictFile          = Server::getFileList($this->modulesDir, true);
         $disableDependConflict = $this->disableDependConflictCheck($zipDir);
         if (($disableDependConflict || $conflictFile) && !$confirmConflict) {
@@ -285,6 +317,16 @@ class Manage
         $this->setInfo([
             'state' => self::DISABLE,
         ]);
+
+        if ($upadte) {
+            $token = request()->get("token/s", '');
+            $order = request()->get("order/s", '');
+            $this->update($token, $order);
+            throw new moduleException('upadte', -3, [
+                'uid'        => $this->uid,
+                'fullreload' => $info['fullreload'],
+            ]);
+        }
 
         if ($dependWaitInstall) {
             throw new moduleException('dependent wait install', -2, [

@@ -93,7 +93,7 @@ class Module extends Backend
     public function changeState()
     {
         $uid   = $this->request->get("uid/s", '');
-        $state = $this->request->get("state/b", false);
+        $state = $this->request->get("state/b", 0);
         if (!$uid) {
             $this->error(__('Parameter error'));
         }
@@ -115,6 +115,24 @@ class Module extends Backend
         }
         try {
             Manage::instance($uid)->uninstall();
+        } catch (moduleException $e) {
+            $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
+        } catch (Exception $e) {
+            $this->error(__($e->getMessage()));
+        }
+        $this->success();
+    }
+
+    public function update()
+    {
+        $uid     = $this->request->get("uid/s", '');
+        $token   = $this->request->get("token/s", '');
+        $orderId = $this->request->get("order_id/d", 0);
+        if (!$token || !$uid) {
+            $this->error(__('Parameter error'));
+        }
+        try {
+            Manage::instance($uid)->update($token, $orderId);
         } catch (moduleException $e) {
             $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
         } catch (Exception $e) {

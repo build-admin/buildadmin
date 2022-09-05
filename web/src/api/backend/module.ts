@@ -134,6 +134,22 @@ export function postInstallModule(uid: string, orderId: number, extend: anyObj =
     ) as ApiPromise
 }
 
+export function postUpdate(uid: string, orderId: number, extend: anyObj = {}) {
+    const baAccount = useBaAccount()
+    return createAxios({
+        url: moduleControllerUrl + 'update',
+        method: 'POST',
+        params: {
+            uid,
+            order_id: orderId,
+            token: baAccount.token,
+        },
+        data: {
+            extend: extend,
+        },
+    })
+}
+
 export function postUninstall(uid: string) {
     return createAxios(
         {
@@ -149,16 +165,12 @@ export function postUninstall(uid: string) {
     )
 }
 
-export function changeState(uid: string, state: boolean, confirmConflict: boolean) {
+export function changeState(params: anyObj) {
     return createAxios(
         {
             url: moduleControllerUrl + 'changeState',
             method: 'post',
-            params: {
-                uid: uid,
-                state: state ? 1 : 0,
-                confirmConflict: confirmConflict ? 1 : 0,
-            },
+            params: params,
         },
         {
             showCodeMessage: false,

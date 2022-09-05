@@ -56,6 +56,7 @@ export const state: moduleState = reactive({
     installedModule: [],
     installedModuleUids: [],
     waitFullReload: false,
+    moduleDisableParams: {},
 })
 
 export const loadData = () => {
@@ -95,6 +96,14 @@ const getModules = () => {
             params[key] = state.params[key]
         }
     }
+    let installedModule: { uid: string; version: string }[] = []
+    state.installedModule.forEach((item) => {
+        installedModule.push({
+            uid: item.uid,
+            version: item.version,
+        })
+    })
+    params['installed'] = installedModule
     modules(params)
         .then((res) => {
             state.remark = res.data.remark
@@ -108,6 +117,14 @@ const getModules = () => {
                 } else {
                     item.state = 0
                 }
+
+                if (item.new_version) {
+                    item.tags.push({
+                        name: '有新版本',
+                        type: 'danger',
+                    })
+                }
+
                 return item
             })
             state.modules[params.activeTab] = modulesOnlyLocalHandle(state.modulesEbak[params.activeTab])
@@ -133,10 +150,15 @@ export const onRefreshData = () => {
     loadData()
 }
 
-export const showInfo = (id: number) => {
+export const showInfo = (uid: string) => {
     state.goodsInfo.showDialog = true
     state.goodsInfo.loading = true
-    info({ id: id })
+
+    const localItem = state.installedModule.find((item) => {
+        return item.uid == uid
+    })
+
+    info({ uid: uid, localVersion: localItem?.version })
         .then((res) => {
             const idx = state.installedModuleUids.indexOf(res.data.info.uid)
             if (idx !== -1) {
@@ -336,7 +358,8 @@ const clearTempStorage = () => {
 
 export const postDisable = (confirmConflict: boolean = false) => {
     state.publicButtonLoading = true
-    changeState(state.goodsInfo.info.uid, false, confirmConflict)
+    state.moduleDisableParams['confirmConflict'] = confirmConflict
+    changeState(state.moduleDisableParams)
         .then((res) => {
             ElNotification({
                 type: 'success',
@@ -370,6 +393,16 @@ export const postDisable = (confirmConflict: boolean = false) => {
                     execCommand(res.data.wait_install)
                     onRefreshData()
                 }
+            } else if (res.code == -3) {
+                // 更新
+                if (parseInt(res.data.fullreload) === 1) {
+                    state.install.showDialog = true
+                    state.install.title = '请稍等'
+                    state.waitFullReload = true
+                    Session.set(INSTALL_MODULE_TEMP, { uid: state.goodsInfo.info.uid, id: state.goodsInfo.info.purchased })
+                } else {
+                    onInstall(state.goodsInfo.info.uid, state.goodsInfo.info.purchased)
+                }
             } else {
                 ElNotification({
                     type: 'error',
@@ -384,7 +417,10 @@ export const postDisable = (confirmConflict: boolean = false) => {
 
 export const onEnable = (uid: string) => {
     state.publicButtonLoading = true
-    changeState(uid, true, false)
+    changeState({
+        uid: uid,
+        state: 1,
+    })
         .then(() => {
             state.install.showDialog = true
             setInstallLoadingStateTitle('init')
