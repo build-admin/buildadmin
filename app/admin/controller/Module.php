@@ -7,51 +7,30 @@ use think\Exception;
 use ba\module\Manage;
 use ba\module\moduleException;
 use app\common\controller\Backend;
-use FilesystemIterator;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 
 class Module extends Backend
 {
-    protected $noNeedPermission = ['*'];
+    protected $noNeedPermission = ['state', 'dependentInstallComplete'];
 
     public function index()
     {
-        // 已安装的模块
-        $installedModule = [];
-        $excludedDirs    = ['ebak'];
-        $moduleDir       = root_path() . 'modules' . DIRECTORY_SEPARATOR;
-        if (is_dir($moduleDir)) {
-            foreach (
-                $iterator = new RecursiveIteratorIterator(
-                    new RecursiveDirectoryIterator($moduleDir, FilesystemIterator::SKIP_DOTS),
-                    RecursiveIteratorIterator::CATCH_GET_CHILD
-                ) as $item
-            ) {
-                $dirName = $iterator->getSubPathName();
-                if (!in_array($dirName, $excludedDirs)) {
-                    $installedModule[] = Server::getIni($moduleDir . $dirName . DIRECTORY_SEPARATOR);
-                }
-            }
-        }
-
         $this->success('', [
-            'installedModule' => $installedModule
+            'installed' => Server::installedList(root_path() . 'modules' . DIRECTORY_SEPARATOR),
         ]);
     }
 
-    public function installState()
+    public function state()
     {
         $uid = $this->request->get("uid/s", '');
         if (!$uid) {
             $this->error(__('Parameter error'));
         }
         $this->success('', [
-            'state' => Manage::instance($uid)->installState()
+            'state' => Manage::instance($uid)->getInstallState()
         ]);
     }
 
-    public function installModule()
+    public function install()
     {
         $uid     = $this->request->get("uid/s", '');
         $token   = $this->request->get("token/s", '');
@@ -93,7 +72,7 @@ class Module extends Backend
     public function changeState()
     {
         $uid   = $this->request->get("uid/s", '');
-        $state = $this->request->get("state/b", 0);
+        $state = $this->request->get("state/b", false);
         if (!$uid) {
             $this->error(__('Parameter error'));
         }

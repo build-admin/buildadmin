@@ -75,7 +75,7 @@ class Manage
         }
     }
 
-    public function installState()
+    public function getInstallState()
     {
         if (!is_dir($this->modulesDir)) {
             return self::UNINSTALLED;
@@ -89,13 +89,8 @@ class Manage
         return dir_is_empty($this->modulesDir) ? self::UNINSTALLED : self::DIRECTORY_OCCUPIED;
     }
 
-    public function update(string $token, int $orderId)
+    public function download(string $token, int $orderId)
     {
-        $state = $this->installState();
-        if ($state != self::DISABLE) {
-            throw new Exception('更新前请先禁用模块');
-        }
-
         if (!$orderId) {
             throw new Exception('Order not found');
         }
@@ -113,10 +108,25 @@ class Manage
         // 删除下载的zip
         @unlink($zipFile);
 
+        // 检查是否完整
+        $this->checkPackage();
+
         // 设置为待安装状态
         $this->setInfo([
             'state' => self::WAIT_INSTALL,
         ]);
+
+        return $zipFile;
+    }
+
+    public function update(string $token, int $orderId)
+    {
+        $state = $this->getInstallState();
+        if ($state != self::DISABLE) {
+            throw new Exception('Please disable the module before updating');
+        }
+
+        $this->download($token, $orderId);
     }
 
     /**
@@ -128,37 +138,14 @@ class Manage
      */
     public function install(string $token, int $orderId)
     {
-        $state = $this->installState();
+        $state = $this->getInstallState();
         if ($state == self::INSTALLED || $state == self::DIRECTORY_OCCUPIED || $state == self::DISABLE) {
             throw new Exception('Module already exists');
         }
 
         if ($state == self::UNINSTALLED) {
-            if (!$orderId) {
-                throw new Exception('Order not found');
-            }
-            // 下载
-            $sysVersion = Config::get('buildadmin.version');
-            $zipFile    = Server::download($this->uid, $this->installDir, [
-                'sysVersion'    => $sysVersion,
-                'ba-user-token' => $token,
-                'order_id'      => $orderId,
-            ]);
-
-            // 解压
-            Server::unzip($zipFile);
-
-            // 删除下载的zip
-            @unlink($zipFile);
-
-            // 设置为待安装状态
-            $this->setInfo([
-                'state' => self::WAIT_INSTALL,
-            ]);
+            $this->download($token, $orderId);
         }
-
-        // 检查是否完整
-        $this->checkPackage();
 
         // 导入sql
         Server::importSql($this->modulesDir);
@@ -180,6 +167,9 @@ class Manage
         deldir($this->modulesDir);
     }
 
+    /**
+     * 启禁用模块
+     */
     public function changeState(bool $state)
     {
         $info       = $this->getInfo();
@@ -221,24 +211,18 @@ class Manage
 
     public function disable()
     {
-        /**
-         * 0、找到模块添加的文件，对有修改的进行备份
-         * 1、找到模块添加的文件，删除
-         * 2、找到安装时备份的文件，恢复
-         * 3、执行禁用脚本
-         * 4、将模块设置为已禁用
-         * 5、如果有依赖调整，执行依赖更新/安装命令
-         */
-
         $upadte          = request()->get("upadte/b", false);
         $confirmConflict = request()->get("confirmConflict/b", false);
 
         $info    = $this->getInfo();
         $zipFile = $this->ebakDir . $this->uid . '-install.zip';
-        try {
-            $zipDir = Server::unzip($zipFile);
-        } catch (moduleException|Exception $e) {
-            $zipDir = false;
+        $zipDir  = false;
+        if (is_file($zipFile)) {
+            try {
+                $zipDir = Server::unzip($zipFile);
+            } catch (moduleException|Exception $e) {
+                // skip
+            }
         }
 
         $conflictFile          = Server::getFileList($this->modulesDir, true);
@@ -320,7 +304,7 @@ class Manage
 
         if ($upadte) {
             $token = request()->get("token/s", '');
-            $order = request()->get("order/s", '');
+            $order = request()->get("order/d", 0);
             $this->update($token, $order);
             throw new moduleException('upadte', -3, [
                 'uid'        => $this->uid,

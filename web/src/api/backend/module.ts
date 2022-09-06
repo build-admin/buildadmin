@@ -105,7 +105,7 @@ export function payOrder(orderId: number, payType: number): ApiPromise {
 
 export function getInstallStateUrl(uid: string) {
     return createAxios({
-        url: moduleControllerUrl + 'installState',
+        url: moduleControllerUrl + 'state',
         method: 'get',
         params: {
             uid: uid,
@@ -117,7 +117,7 @@ export function postInstallModule(uid: string, orderId: number, extend: anyObj =
     const baAccount = useBaAccount()
     return createAxios(
         {
-            url: moduleControllerUrl + 'installModule',
+            url: moduleControllerUrl + 'install',
             method: 'post',
             params: {
                 uid: uid,

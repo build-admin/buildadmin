@@ -73,11 +73,11 @@ export const loadData = () => {
 const loadIndex = () => {
     return index().then((res) => {
         state.loadIndex = true
-        state.installedModule = res.data.installedModule
+        state.installedModule = res.data.installed
         let installedModuleUids = []
-        if (res.data.installedModule) {
-            for (const key in res.data.installedModule) {
-                installedModuleUids.push(res.data.installedModule[key].uid)
+        if (res.data.installed) {
+            for (const key in res.data.installed) {
+                installedModuleUids.push(res.data.installed[key].uid)
             }
             state.installedModuleUids = installedModuleUids
         }
