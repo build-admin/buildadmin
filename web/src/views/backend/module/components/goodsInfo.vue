@@ -189,7 +189,7 @@
 
 <script setup lang="ts">
 import { state, showInfo, currency, onBuy, onInstall, postDisable, onEnable, onRefreshData } from '../index'
-import { postUninstall, getInstallStateUrl, postUpdate } from '/@/api/backend/module'
+import { postUninstall, getInstallState, postUpdate } from '/@/api/backend/module'
 import { moduleInstallState } from '../types'
 import { timeFormat } from '/@/components/table'
 import { isEmpty } from 'lodash'
@@ -233,7 +233,7 @@ const unInstall = (uid: string) => {
 
 const onUpdate = (uid: string, order: number) => {
     state.publicButtonLoading = true
-    getInstallStateUrl(uid)
+    getInstallState(uid)
         .then((res) => {
             if (res.data.state == moduleInstallState.DISABLE) {
                 postUpdate(uid, order).then(() => {

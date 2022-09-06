@@ -1,16 +1,12 @@
 import { reactive } from 'vue'
-import { index, modules, info, createOrder, payOrder, postInstallModule, getInstallStateUrl, changeState } from '/@/api/backend/module'
+import { index, modules, info, createOrder, payOrder, postInstallModule, getInstallState, changeState } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
 import { Session } from '/@/utils/storage'
 import { ElNotification } from 'element-plus'
 import { uuid } from '/@/utils/random'
 import { useTerminal } from '/@/stores/terminal'
 import { taskStatus } from '/@/components/terminal/constant'
-import { moduleInstallState, moduleState } from './types'
-
-export const INSTALL_MODULE_TEMP = 'installModuleTemp' // 模块安装状态临时记录
-export const VITE_FULL_RELOAD = 'viteFullReload' // 是否触发了vite热重载的临时记录
-export const DEPEND_DATA_TEMP = 'dependDataTemp' // 依赖更新临时记录
+import { moduleInstallState, moduleState, INSTALL_MODULE_TEMP, VITE_FULL_RELOAD, DEPEND_DATA_TEMP } from './types'
 
 export const state: moduleState = reactive({
     tableLoading: true,
@@ -224,7 +220,7 @@ export const onInstall = (uid: string, id: number) => {
     const viteFullReload = Session.get(VITE_FULL_RELOAD)
 
     // 获取安装状态
-    getInstallStateUrl(uid).then((res) => {
+    getInstallState(uid).then((res) => {
         state.install.state = res.data.state
 
         if (state.install.state === moduleInstallState.INSTALLED && viteFullReload) {

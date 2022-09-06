@@ -39,7 +39,8 @@
 </template>
 
 <script setup lang="ts">
-import { state, onInstall, INSTALL_MODULE_TEMP, VITE_FULL_RELOAD } from '../index'
+import { state, onInstall } from '../index'
+import { INSTALL_MODULE_TEMP, VITE_FULL_RELOAD } from '../types'
 import { moduleInstallState } from '../types'
 import InstallConflict from '/@/views/backend/module/components/installConflict.vue'
 import InstallDone from '/@/views/backend/module/components/installDone.vue'

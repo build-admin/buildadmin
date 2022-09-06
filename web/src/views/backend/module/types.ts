@@ -58,3 +58,7 @@ export interface moduleState {
     waitFullReload: boolean
     moduleDisableParams: anyObj
 }
+
+export const INSTALL_MODULE_TEMP = 'installModuleTemp' // 模块安装状态临时记录
+export const VITE_FULL_RELOAD = 'viteFullReload' // 是否触发了vite热重载的临时记录
+export const DEPEND_DATA_TEMP = 'dependDataTemp' // 依赖更新临时记录

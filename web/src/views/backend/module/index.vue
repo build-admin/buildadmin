@@ -21,7 +21,8 @@ import GoodsInfo from './components/goodsInfo.vue'
 import Buy from './components/buy.vue'
 import Install from './components/install.vue'
 import ConfirmFileConflict from './components/confirmFileConflict.vue'
-import { state, loadData, execCommand, VITE_FULL_RELOAD, DEPEND_DATA_TEMP } from './index'
+import { loadData, execCommand } from './index'
+import { VITE_FULL_RELOAD, DEPEND_DATA_TEMP } from './types'
 import { Session } from '/@/utils/storage'
 
 const { t } = useI18n()

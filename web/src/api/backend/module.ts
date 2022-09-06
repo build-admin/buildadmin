@@ -103,7 +103,7 @@ export function payOrder(orderId: number, payType: number): ApiPromise {
     ) as ApiPromise
 }
 
-export function getInstallStateUrl(uid: string) {
+export function getInstallState(uid: string) {
     return createAxios({
         url: moduleControllerUrl + 'state',
         method: 'get',
