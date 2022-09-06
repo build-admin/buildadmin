@@ -27,6 +27,9 @@ export const useBaAccount = defineStore('baAccount', {
         }
     },
     actions: {
+        dataFill(state: UserInfo) {
+            this.$state = state
+        },
         removeToken() {
             this.token = ''
             this.refreshToken = ''
@@ -42,6 +45,12 @@ export const useBaAccount = defineStore('baAccount', {
                     break
             }
             return icon
+        },
+        setToken(token: string, type: 'token' | 'refreshToken') {
+            this[type] = token
+        },
+        getToken(type: 'auth' | 'refresh' = 'auth') {
+            return type === 'auth' ? this.token : this.refreshToken
         },
         logout() {
             postLogout().then((res) => {

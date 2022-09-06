@@ -33,7 +33,7 @@ export function info(params: anyObj) {
             params: params,
         },
         {
-            anotherToken: baAccount.token,
+            anotherToken: baAccount.getToken('auth'),
         }
     )
 }
@@ -45,7 +45,7 @@ export function postLogout(): ApiPromise {
         url: siteConfig.api_url + userControllerUrl + 'logout',
         method: 'POST',
         data: {
-            refresh_token: baAccount.refreshToken,
+            refresh_token: baAccount.getToken('refresh'),
         },
     }) as ApiPromise
 }
@@ -79,7 +79,7 @@ export function createOrder(params: object = {}): ApiPromise {
             params: params,
         },
         {
-            anotherToken: baAccount.token,
+            anotherToken: baAccount.getToken('auth'),
         }
     ) as ApiPromise
 }
@@ -97,7 +97,7 @@ export function payOrder(orderId: number, payType: number): ApiPromise {
             },
         },
         {
-            anotherToken: baAccount.token,
+            anotherToken: baAccount.getToken('auth'),
             showSuccessMessage: true,
         }
     ) as ApiPromise
@@ -122,7 +122,7 @@ export function postInstallModule(uid: string, orderId: number, extend: anyObj =
             params: {
                 uid: uid,
                 order_id: orderId,
-                token: baAccount.token,
+                token: baAccount.getToken('auth'),
             },
             data: {
                 extend: extend,
@@ -142,7 +142,7 @@ export function postUpdate(uid: string, orderId: number, extend: anyObj = {}) {
         params: {
             uid,
             order_id: orderId,
-            token: baAccount.token,
+            token: baAccount.getToken('auth'),
         },
         data: {
             extend: extend,
