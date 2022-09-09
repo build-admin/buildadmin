@@ -103,7 +103,7 @@
                         v-if="btn.name == 'edit'"
                         v-auth="'edit'"
                         v-blur
-                        @click="onButtonClick(btn.name)"
+                        @click="onButtonClick(btn)"
                         :class="btn.class"
                         class="table-operate"
                         :type="btn.type"
@@ -111,12 +111,12 @@
                         <Icon :name="btn.icon" />
                         <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
                     </el-button>
-                    <el-button v-else v-blur @click="onButtonClick(btn.name)" :class="btn.class" class="table-operate" :type="btn.type">
+                    <el-button v-else v-blur @click="onButtonClick(btn)" :class="btn.class" class="table-operate" :type="btn.type">
                         <Icon :name="btn.icon" />
                         <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
                     </el-button>
                 </el-tooltip>
-                <el-popconfirm v-if="btn.render == 'confirmButton'" v-bind="btn.popconfirm" @confirm="onButtonClick(btn.name)">
+                <el-popconfirm v-if="btn.render == 'confirmButton'" v-bind="btn.popconfirm" @confirm="onButtonClick(btn)">
                     <template #reference>
                         <div class="ml-6">
                             <el-tooltip :disabled="btn.title ? false : true" :content="btn.title ? t(btn.title) : ''" placement="top">
@@ -217,9 +217,13 @@ const changeField = (value: any, fieldName: keyof TableRow) => {
     }
 }
 
-const onButtonClick = (name: string) => {
+const onButtonClick = (btn: OptButton) => {
+    if (typeof btn.click === 'function') {
+        btn.click(props.row, props.field)
+        return
+    }
     proxy.eventBus.emit('onTableButtonClick', {
-        name: name,
+        name: btn.name,
         row: props.row,
     })
 }

@@ -98,7 +98,7 @@ declare global {
         customRender?: string | Component
         // 渲染为链接时,链接的打开方式
         target?: aTarget
-        // 渲染为:a|buttons的点击事件
+        // 渲染为:url 时的点击事件
         click?: Function
         // 渲染为 datetime 时的格式化方式,字母可以自由组合:y=年,m=月,d=日,h=时,M=分,s=秒，默认：yyyy-mm-dd hh:MM:ss
         timeFormat?: string
@@ -138,6 +138,8 @@ declare global {
         icon: string
         popconfirm?: any
         disabledTip?: boolean
+        // 自定义点击事件
+        click?: (row: TableRow, field: TableColumn) => void
         // 按钮是否显示，请返回布尔值
         display?: (row: TableRow, field: TableColumn) => boolean
     }
