@@ -1,63 +1,16 @@
-import { reactive } from 'vue'
+import { state } from './store'
 import { index, modules, info, createOrder, payOrder, postInstallModule, getInstallState, changeState } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
 import { Session } from '/@/utils/storage'
 import { ElNotification } from 'element-plus'
-import { uuid } from '/@/utils/random'
 import { useTerminal } from '/@/stores/terminal'
 import { taskStatus } from '/@/components/terminal/constant'
-import { moduleInstallState, moduleState, INSTALL_MODULE_TEMP, VITE_FULL_RELOAD, DEPEND_DATA_TEMP } from './types'
-
-export const state: moduleState = reactive({
-    tableLoading: true,
-    remark: '',
-    modules: [],
-    modulesEbak: [],
-    category: [],
-    params: {
-        quickSearch: '',
-        activeTab: 'all',
-    },
-    goodsInfo: {
-        showDialog: false,
-        loading: false,
-        info: {},
-        showConfirmConflict: false,
-        conflictFile: [],
-        dependConflict: false,
-    },
-    showBaAccount: false,
-    buy: {
-        showLoading: false,
-        showDialog: false,
-        info: {},
-        agreement: true,
-    },
-    publicButtonLoading: false,
-    install: {
-        showDialog: false,
-        title: '',
-        loading: false,
-        stateTitle: 'init',
-        fileConflict: [],
-        dependConflict: [],
-        uid: '',
-        state: 0,
-        componentKey: uuid(),
-        waitInstallDepend: {},
-        dependInstallState: 'executing',
-    },
-    onlyLocal: false,
-    loadIndex: false,
-    installedModule: [],
-    installedModuleUids: [],
-    waitFullReload: false,
-    moduleDisableParams: {},
-})
+import { moduleInstallState, moduleState, MODULE_TEMP, VITE_FULL_RELOAD } from './types'
+import { uuid } from '/@/utils/random'
 
 export const loadData = () => {
-    state.tableLoading = true
-    if (!state.loadIndex) {
+    state.loading.table = true
+    if (!state.table.indexLoaded) {
         loadIndex().then(() => {
             getModules()
         })
@@ -66,9 +19,17 @@ export const loadData = () => {
     }
 }
 
+export const onRefreshTableData = () => {
+    state.table.indexLoaded = false
+    for (const key in state.table.modulesEbak) {
+        state.table.modulesEbak[key] = undefined
+    }
+    loadData()
+}
+
 const loadIndex = () => {
     return index().then((res) => {
-        state.loadIndex = true
+        state.table.indexLoaded = true
         state.installedModule = res.data.installed
         let installedModuleUids = []
         if (res.data.installed) {
@@ -81,15 +42,15 @@ const loadIndex = () => {
 }
 
 const getModules = () => {
-    if (typeof state.modulesEbak[state.params.activeTab] != 'undefined') {
-        state.modules[state.params.activeTab] = modulesOnlyLocalHandle(state.modulesEbak[state.params.activeTab])
-        state.tableLoading = false
+    if (typeof state.table.modulesEbak[state.table.params.activeTab] != 'undefined') {
+        state.table.modules[state.table.params.activeTab] = modulesOnlyLocalHandle(state.table.modulesEbak[state.table.params.activeTab])
+        state.loading.table = false
         return
     }
     let params: anyObj = {}
-    for (const key in state.params) {
-        if (state.params[key] != '') {
-            params[key] = state.params[key]
+    for (const key in state.table.params) {
+        if (state.table.params[key] != '') {
+            params[key] = state.table.params[key]
         }
     }
     let installedModule: { uid: string; version: string }[] = []
@@ -102,8 +63,8 @@ const getModules = () => {
     params['installed'] = installedModule
     modules(params)
         .then((res) => {
-            state.remark = res.data.remark
-            state.modulesEbak[params.activeTab] = res.data.rows.map((item: anyObj) => {
+            state.table.remark = res.data.remark
+            state.table.modulesEbak[params.activeTab] = res.data.rows.map((item: anyObj) => {
                 const idx = state.installedModuleUids.indexOf(item.uid)
                 if (idx !== -1) {
                     item.state = state.installedModule[idx].state
@@ -123,32 +84,17 @@ const getModules = () => {
 
                 return item
             })
-            state.modules[params.activeTab] = modulesOnlyLocalHandle(state.modulesEbak[params.activeTab])
-            state.category = res.data.category
+            state.table.modules[params.activeTab] = modulesOnlyLocalHandle(state.table.modulesEbak[params.activeTab])
+            state.table.category = res.data.category
         })
         .finally(() => {
-            state.tableLoading = false
+            state.loading.table = false
         })
-}
-
-const modulesOnlyLocalHandle = (modules: anyObj) => {
-    if (!state.onlyLocal) return modules
-    return modules.filter((item: anyObj) => {
-        return item.state > moduleInstallState.UNINSTALLED
-    })
-}
-
-export const onRefreshData = () => {
-    state.loadIndex = false
-    for (const key in state.modulesEbak) {
-        state.modulesEbak[key] = undefined
-    }
-    loadData()
 }
 
 export const showInfo = (uid: string) => {
-    state.goodsInfo.showDialog = true
-    state.goodsInfo.loading = true
+    state.dialog.goodsInfo = true
+    state.loading.goodsInfo = true
 
     const localItem = state.installedModule.find((item) => {
         return item.uid == uid
@@ -156,45 +102,44 @@ export const showInfo = (uid: string) => {
 
     info({ uid: uid, localVersion: localItem?.version })
         .then((res) => {
-            const idx = state.installedModuleUids.indexOf(res.data.info.uid)
-            if (idx !== -1) {
-                res.data.info.state = state.installedModule[idx].state
-                res.data.info.version = state.installedModule[idx].version
-                res.data.info.enable = res.data.info.state === moduleInstallState.DISABLE ? false : true
+            if (localItem) {
+                res.data.info.state = localItem.state
+                res.data.info.version = localItem.version
+                res.data.info.enable = localItem.state === moduleInstallState.DISABLE ? false : true
             } else {
                 res.data.info.state = 0
             }
-            state.goodsInfo.info = res.data.info
+            state.goodsInfo = res.data.info
         })
         .catch((err) => {
             if (loginExpired(err)) {
-                state.goodsInfo.showDialog = false
+                state.dialog.goodsInfo = false
             }
         })
         .finally(() => {
-            state.goodsInfo.loading = false
+            state.loading.goodsInfo = false
         })
 }
 
 export const onBuy = () => {
-    state.buy.showDialog = true
-    state.buy.showLoading = true
+    state.dialog.buy = true
+    state.loading.buy = true
     createOrder({
-        goods_id: state.goodsInfo.info.id,
+        goods_id: state.goodsInfo.id,
     })
         .then((res) => {
-            state.buy.showLoading = false
+            state.loading.buy = false
             state.buy.info = res.data.info
         })
         .catch((err) => {
-            state.buy.showDialog = false
-            state.buy.showLoading = false
+            state.dialog.buy = false
+            state.loading.buy = false
             loginExpired(err)
         })
 }
 
 export const onPay = (payType: number) => {
-    state.publicButtonLoading = true
+    state.loading.common = true
     payOrder(state.buy.info.id, payType)
         .then((res) => {
             onInstall(res.data.info.uid, res.data.info.id)
@@ -203,172 +148,160 @@ export const onPay = (payType: number) => {
             loginExpired(err)
         })
         .finally(() => {
-            state.publicButtonLoading = false
+            state.loading.common = false
         })
 }
 
+export const showCommonLoading = (loadingTitle: moduleState['common']['loadingTitle']) => {
+    state.common.type = 'loading'
+    state.common.loadingTitle = loadingTitle
+    state.common.loadingComponentKey = uuid()
+}
+
 export const onInstall = (uid: string, id: number) => {
-    state.install.showDialog = true
-    setInstallLoadingStateTitle('init')
-    state.install.title = '安装'
+    state.dialog.common = true
+    showCommonLoading('init')
+    state.common.dialogTitle = '安装'
 
     // 安装模块可能会触发热更新或热重载造成状态丢失
     // 存储当前模块的安装进度等状态
-    Session.set(INSTALL_MODULE_TEMP, { uid: uid, id: id })
+    Session.set(MODULE_TEMP, { uid: uid, id: id, type: 'install' })
 
     // 是否发生了热重载
     const viteFullReload = Session.get(VITE_FULL_RELOAD)
 
     // 获取安装状态
     getInstallState(uid).then((res) => {
-        state.install.state = res.data.state
-
-        if (state.install.state === moduleInstallState.INSTALLED && viteFullReload) {
-            state.install.title = '安装完成'
-            setInstallLoadingStateTitle(false)
+        if (res.data.state === moduleInstallState.INSTALLED && viteFullReload) {
+            state.common.dialogTitle = '安装完成'
+            state.common.moduleState = moduleInstallState.INSTALLED
+            state.common.type = 'done'
             clearTempStorage()
             return
         }
 
         if (
-            state.install.state === moduleInstallState.INSTALLED ||
-            state.install.state === moduleInstallState.DISABLE ||
-            state.install.state === moduleInstallState.DIRECTORY_OCCUPIED
+            res.data.state === moduleInstallState.INSTALLED ||
+            res.data.state === moduleInstallState.DISABLE ||
+            res.data.state === moduleInstallState.DIRECTORY_OCCUPIED
         ) {
             ElNotification({
                 type: 'error',
                 message:
-                    state.install.state === moduleInstallState.INSTALLED || state.install.state === moduleInstallState.DISABLE
+                    res.data.state === moduleInstallState.INSTALLED || res.data.state === moduleInstallState.DISABLE
                         ? '安装取消，因为模块已经存在！'
                         : '安装取消，因为模块所需目录被占用！',
             })
-            state.install.showDialog = false
-            setInstallLoadingStateTitle(false)
+            state.dialog.common = false
             clearTempStorage()
         } else {
-            setInstallLoadingStateTitle(state.install.state === moduleInstallState.UNINSTALLED ? 'download' : 'install')
+            showCommonLoading(res.data.state === moduleInstallState.UNINSTALLED ? 'download' : 'install')
             execInstall(uid, id)
 
             // 关闭其他弹窗
-            state.goodsInfo.showDialog = false
-            state.buy.showDialog = false
-            state.showBaAccount = false
+            state.dialog.baAccount = false
+            state.dialog.buy = false
+            state.dialog.goodsInfo = false
         }
     })
 }
 
 export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
     const viteFullReload = Session.get(VITE_FULL_RELOAD)
-
     postInstallModule(uid, id, extend)
         .then((res) => {
-            state.install.title = '安装完成'
-            state.install.state = moduleInstallState.INSTALLED
+            state.common.dialogTitle = '安装完成'
             if (parseInt(res.data.data.fullreload) === 0 || viteFullReload) {
+                state.common.moduleState = moduleInstallState.INSTALLED
+                state.common.type = 'done'
                 clearTempStorage()
             } else {
-                state.waitFullReload = true
+                showCommonLoading('wait-full-reload')
             }
         })
-        .catch((err) => {
-            if (loginExpired(err)) return
-            // 冲突
-            if (err.code == -1) {
-                state.install.uid = err.data.uid
-                state.install.title = '发现冲突，请手动处理'
-                state.install.state = err.data.state
-                state.install.fileConflict = err.data.fileConflict
-                state.install.dependConflict = err.data.dependConflict
-            } else if (err.code == -2) {
-                state.install.uid = err.data.uid
-                state.install.title = '依赖待安装'
-                state.install.state = moduleInstallState.DEPENDENT_WAIT_INSTALL
-                state.install.waitInstallDepend = err.data.wait_install
-                state.install.dependInstallState = 'executing'
-                if (extend.type && extend.type == 'conflictHandle' && parseInt(err.data.fullreload) === 1) {
-                    state.waitFullReload = true
+        .catch((res) => {
+            if (loginExpired(res)) return
+            if (res.code == -1) {
+                state.common.uid = res.data.uid
+                state.common.type = 'InstallConflict'
+                state.common.dialogTitle = '发现冲突，请手动处理'
+                state.common.fileConflict = res.data.fileConflict
+                state.common.dependConflict = res.data.dependConflict
+            } else if (res.code == -2) {
+                if (parseInt(res.data.fullreload) === 1 && !viteFullReload) {
+                    state.common.dialogTitle = '等待热更新'
+                    showCommonLoading('wait-full-reload')
+                    state.common.type = 'waitFullReload'
                     return
                 }
-                if (parseInt(err.data.fullreload) === 0 || viteFullReload) {
-                    const terminal = useTerminal()
-                    if (err.data.wait_install.includes('npm_dependent_wait_install')) {
-                        terminal.addTaskPM('web-install', true, 'module-install:' + err.data.uid, (res: number) => {
-                            terminalTaskExecComplete(res, 'npm_dependent_wait_install')
-                        })
-                    }
-                    if (err.data.wait_install.includes('composer_dependent_wait_install')) {
-                        terminal.addTask('composer.update', true, 'module-install:' + err.data.uid, (res: number) => {
-                            terminalTaskExecComplete(res, 'composer_dependent_wait_install')
-                        })
-                    }
-                    clearTempStorage()
-                } else {
-                    state.waitFullReload = true
+
+                state.common.type = 'done'
+                state.common.dialogTitle = '等待依赖安装'
+                state.common.moduleState = moduleInstallState.DEPENDENT_WAIT_INSTALL
+                state.common.waitInstallDepend = res.data.wait_install
+                state.common.dependInstallState = 'executing'
+                const terminal = useTerminal()
+                if (res.data.wait_install.includes('npm_dependent_wait_install')) {
+                    terminal.addTaskPM('web-install', true, 'module-install:' + res.data.uid, (res: number) => {
+                        terminalTaskExecComplete(res, 'npm_dependent_wait_install')
+                    })
                 }
-            } else if (err.code == 0) {
+                if (res.data.wait_install.includes('composer_dependent_wait_install')) {
+                    terminal.addTask('composer.update', true, 'module-install:' + res.data.uid, (res: number) => {
+                        terminalTaskExecComplete(res, 'composer_dependent_wait_install')
+                    })
+                }
+                clearTempStorage()
+            } else if (res.code == 0) {
                 ElNotification({
                     type: 'error',
-                    message: err.msg,
+                    message: res.msg,
                 })
-                state.install.showDialog = false
+                state.dialog.common = false
                 clearTempStorage()
             }
         })
         .finally(() => {
-            setInstallLoadingStateTitle(false)
-            state.publicButtonLoading = false
-            onRefreshData()
+            state.loading.common = false
+            onRefreshTableData()
         })
 }
 
 const terminalTaskExecComplete = (res: number, type: string) => {
     if (res == taskStatus.Success) {
-        state.install.waitInstallDepend = state.install.waitInstallDepend.filter((depend: string) => {
+        state.common.waitInstallDepend = state.common.waitInstallDepend.filter((depend: string) => {
             return depend != type
         })
-        if (state.install.waitInstallDepend.length == 0) {
-            state.install.dependInstallState = 'success'
+        if (state.common.waitInstallDepend.length == 0) {
+            state.common.dependInstallState = 'success'
         }
     } else {
         const terminal = useTerminal()
         terminal.toggle(true)
-        state.install.dependInstallState = 'fail'
+        state.common.dependInstallState = 'fail'
     }
-    onRefreshData()
+    onRefreshTableData()
 }
 
-const setInstallLoadingStateTitle = (installState: string | false) => {
-    if (installState === false) {
-        state.install.loading = false
-        return
-    }
-    state.install.loading = true
-    state.install.stateTitle = installState
-    state.install.componentKey = uuid()
-}
-
-const clearTempStorage = () => {
-    Session.remove(INSTALL_MODULE_TEMP)
-    Session.remove(VITE_FULL_RELOAD)
-}
-
-export const postDisable = (confirmConflict: boolean = false) => {
-    state.publicButtonLoading = true
-    state.moduleDisableParams['confirmConflict'] = confirmConflict
-    changeState(state.moduleDisableParams)
+export const onDisable = (confirmConflict: boolean = false) => {
+    state.loading.common = true
+    state.common.disableParams['confirmConflict'] = confirmConflict
+    changeState(state.common.disableParams)
         .then((res) => {
             ElNotification({
                 type: 'success',
                 message: '操作成功，请清理系统缓存并刷新浏览器~',
             })
-            state.goodsInfo.showConfirmConflict = false
-            onRefreshData()
+            state.dialog.common = false
+            onRefreshTableData()
         })
         .catch((res) => {
-            state.goodsInfo.info.enable = !state.goodsInfo.info.enable
+            state.goodsInfo.enable = !state.goodsInfo.enable
             if (res.code == -1) {
-                state.goodsInfo.showConfirmConflict = true
-                state.goodsInfo.dependConflict = res.data.dependConflict
+                state.dialog.common = true
+                state.common.dialogTitle = '处理冲突'
+                state.common.type = 'disableConfirmConflict'
+                state.common.disableDependConflict = res.data.dependConflict
                 if (res.data.conflictFile && res.data.conflictFile.length) {
                     let conflictFile = []
                     for (const key in res.data.conflictFile) {
@@ -376,28 +309,33 @@ export const postDisable = (confirmConflict: boolean = false) => {
                             file: res.data.conflictFile[key],
                         })
                     }
-                    state.goodsInfo.conflictFile = conflictFile
+                    state.common.disableConflictFile = conflictFile
                 }
             } else if (res.code == -2) {
-                state.goodsInfo.showConfirmConflict = false
+                state.dialog.common = true
+                const commandsData = {
+                    type: 'disable',
+                    commands: res.data.wait_install,
+                }
                 if (parseInt(res.data.fullreload) === 1) {
-                    Session.set(DEPEND_DATA_TEMP, res.data.wait_install)
-                    state.install.showDialog = true
-                    state.install.title = '请稍等'
-                    state.waitFullReload = true
+                    state.common.dialogTitle = '等待热更新'
+                    showCommonLoading('wait-full-reload')
+                    state.common.type = 'waitFullReload'
+                    Session.set(MODULE_TEMP, commandsData)
                 } else {
-                    execCommand(res.data.wait_install)
-                    onRefreshData()
+                    execCommand(commandsData)
+                    onRefreshTableData()
                 }
             } else if (res.code == -3) {
                 // 更新
                 if (parseInt(res.data.fullreload) === 1) {
-                    state.install.showDialog = true
-                    state.install.title = '请稍等'
-                    state.waitFullReload = true
-                    Session.set(INSTALL_MODULE_TEMP, { uid: state.goodsInfo.info.uid, id: state.goodsInfo.info.purchased })
+                    state.dialog.common = true
+                    state.common.dialogTitle = '请稍等'
+                    showCommonLoading('wait-full-reload')
+                    state.common.type = 'waitFullReload'
+                    Session.set(MODULE_TEMP, { uid: state.goodsInfo.uid, id: state.goodsInfo.purchased, type: 'install' })
                 } else {
-                    onInstall(state.goodsInfo.info.uid, state.goodsInfo.info.purchased)
+                    onInstall(state.goodsInfo.uid, state.goodsInfo.purchased)
                 }
             } else {
                 ElNotification({
@@ -407,28 +345,24 @@ export const postDisable = (confirmConflict: boolean = false) => {
             }
         })
         .finally(() => {
-            state.publicButtonLoading = false
+            state.loading.common = false
         })
 }
 
 export const onEnable = (uid: string) => {
-    state.publicButtonLoading = true
+    state.loading.common = true
     changeState({
         uid: uid,
         state: 1,
     })
         .then(() => {
-            state.install.showDialog = true
-            setInstallLoadingStateTitle('init')
-            state.install.title = '启用'
-            // 安装模块可能会触发热更新或热重载造成状态丢失
-            // 存储当前模块的安装进度等状态
-            Session.set(INSTALL_MODULE_TEMP, { uid: uid })
+            state.dialog.common = true
+            showCommonLoading('init')
+            state.common.dialogTitle = '启用'
+            Session.set(MODULE_TEMP, { uid: uid, type: 'install' })
 
             execInstall(uid, 0)
-
-            // 关闭其他弹窗
-            state.goodsInfo.showDialog = false
+            state.dialog.goodsInfo = false
         })
         .catch((res) => {
             ElNotification({
@@ -438,34 +372,50 @@ export const onEnable = (uid: string) => {
         })
 }
 
-export const execCommand = (data: anyObj, extend: string = '') => {
-    if (Array.isArray(data) && data.length) {
-        const terminal = useTerminal()
-        terminal.toggle(true)
-        data.forEach((item) => {
-            if (item.pm) {
-                terminal.addTaskPM(item.command, true, '', (res: number) => {
-                    if (res == taskStatus.Failed) terminal.toggle(true)
-                })
-            } else {
-                terminal.addTask(item.command, true, '', (res: number) => {
-                    if (res == taskStatus.Failed) terminal.toggle(true)
-                })
-            }
-        })
-    }
-    Session.remove(VITE_FULL_RELOAD)
-    Session.remove(DEPEND_DATA_TEMP)
-}
-
 export const loginExpired = (res: ApiResponse) => {
     const baAccount = useBaAccount()
     if (res.code == 301 || res.code == 408) {
         baAccount.removeToken()
-        state.showBaAccount = true
+        state.dialog.baAccount = true
         return true
     }
     return false
+}
+
+const modulesOnlyLocalHandle = (modules: anyObj) => {
+    if (!state.table.onlyLocal) return modules
+    return modules.filter((item: anyObj) => {
+        return item.state > moduleInstallState.UNINSTALLED
+    })
+}
+
+export const execCommand = (data: anyObj, extend: string = '') => {
+    if (data.type == 'disable') {
+        state.dialog.common = true
+        state.common.type = 'done'
+        state.common.dialogTitle = '等待依赖安装'
+        state.common.moduleState = moduleInstallState.DISABLE
+        state.common.dependInstallState = 'executing'
+        const terminal = useTerminal()
+        data.commands.forEach((item: anyObj) => {
+            state.common.waitInstallDepend.push(item.type)
+            if (item.pm) {
+                terminal.addTaskPM(item.command, true, '', (res: number) => {
+                    terminalTaskExecComplete(res, item.type)
+                })
+            } else {
+                terminal.addTask(item.command, true, '', (res: number) => {
+                    terminalTaskExecComplete(res, item.type)
+                })
+            }
+        })
+        clearTempStorage()
+    }
+}
+
+export const clearTempStorage = () => {
+    Session.remove(MODULE_TEMP)
+    Session.remove(VITE_FULL_RELOAD)
 }
 
 export const currency = (price: number, val: number) => {

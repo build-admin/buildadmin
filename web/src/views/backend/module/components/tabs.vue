@@ -1,16 +1,16 @@
 <template>
     <div>
         <el-tabs
-            v-loading="state.tableLoading"
+            v-loading="state.loading.table"
             element-loading-text="加载中..."
-            v-model="state.params.activeTab"
+            v-model="state.table.params.activeTab"
             type="border-card"
             class="store-tabs"
             @tab-change="onTabChange"
         >
-            <el-tab-pane v-for="cat in state.category" :name="cat.id.toString()" :label="cat.name" class="store-tab-pane">
-                <template v-if="state.modules[state.params.activeTab] && state.modules[state.params.activeTab].length > 0">
-                    <div class="goods" v-for="item in state.modules[state.params.activeTab]">
+            <el-tab-pane v-for="cat in state.table.category" :name="cat.id.toString()" :label="cat.name" class="store-tab-pane">
+                <template v-if="state.table.modules[state.table.params.activeTab] && state.table.modules[state.table.params.activeTab].length > 0">
+                    <div class="goods" v-for="item in state.table.modules[state.table.params.activeTab]">
                         <div @click="showInfo(item.uid)" class="goods-item suspension">
                             <el-image fit="contain" class="goods-img" :src="item.logo" />
                             <div class="goods-footer">
@@ -43,7 +43,8 @@
 </template>
 
 <script setup lang="ts">
-import { state, loadData, currency, showInfo } from '../index'
+import { state } from '../store'
+import { loadData, currency, showInfo } from '../index'
 import { moduleInstallState } from '../types'
 
 const onTabChange = () => {

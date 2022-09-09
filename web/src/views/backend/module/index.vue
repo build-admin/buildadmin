@@ -1,32 +1,23 @@
 <template>
     <div class="default-main ba-table-box">
-        <Header />
+        <TableHeader />
         <Tabs />
-        <baUserLogin />
+        <BaAccount />
         <GoodsInfo />
-        <Buy />
-        <Install />
-        <ConfirmFileConflict />
+        <CommonDialog />
     </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useBaAccount } from '/@/stores/baAccount'
-import baUserLogin from './components/userLogin.vue'
-import Header from './components/header.vue'
+import { loadData, execCommand, clearTempStorage, onInstall } from './index'
+import { VITE_FULL_RELOAD, MODULE_TEMP } from './types'
+import { Session } from '/@/utils/storage'
+import TableHeader from './components/tableHeader.vue'
+import BaAccount from './components/baAccount.vue'
 import Tabs from './components/tabs.vue'
 import GoodsInfo from './components/goodsInfo.vue'
-import Buy from './components/buy.vue'
-import Install from './components/install.vue'
-import ConfirmFileConflict from './components/confirmFileConflict.vue'
-import { loadData, execCommand } from './index'
-import { VITE_FULL_RELOAD, DEPEND_DATA_TEMP } from './types'
-import { Session } from '/@/utils/storage'
-
-const { t } = useI18n()
-const baAccount = useBaAccount()
+import CommonDialog from './components/commonDialog.vue'
 
 onMounted(() => {
     loadData()
@@ -37,9 +28,12 @@ onMounted(() => {
     }
 
     const viteFullReload = Session.get(VITE_FULL_RELOAD)
-    const dependDataTemp = Session.get(DEPEND_DATA_TEMP)
-    if (viteFullReload && dependDataTemp) {
-        execCommand(dependDataTemp)
+    const moduleTemp = Session.get(MODULE_TEMP)
+    if (moduleTemp && moduleTemp.type == 'install') {
+        onInstall(moduleTemp.uid, moduleTemp.id)
+    }
+    if (viteFullReload && moduleTemp) {
+        execCommand(moduleTemp)
     }
 })
 </script>

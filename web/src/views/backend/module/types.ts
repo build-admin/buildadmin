@@ -8,57 +8,65 @@ export enum moduleInstallState {
     DISABLE,
 }
 
-export interface moduleState {
-    tableLoading: boolean
-    remark: string
-    modules: anyObj
-    modulesEbak: anyObj
-    category: anyObj
-    params: anyObj
-    goodsInfo: {
-        showDialog: boolean
-        info: anyObj
-        loading: boolean
-        showConfirmConflict: boolean
-        conflictFile: {
-            file: string
-        }[]
-        dependConflict: boolean
+export interface moduleInfo {
+    uid: string
+    title: string
+    version: string
+    state: number
+    fullreload: number
+    website: string
+    stateTag: {
+        type: string
+        text: string
     }
-    showBaAccount: boolean
+}
+
+export interface moduleState {
+    loading: {
+        buy: boolean
+        table: boolean
+        common: boolean
+        install: boolean
+        goodsInfo: boolean
+    }
+    dialog: {
+        buy: boolean
+        common: boolean
+        goodsInfo: boolean
+        baAccount: boolean
+    }
+    table: {
+        remark: string
+        modules: anyObj
+        modulesEbak: anyObj
+        category: anyObj
+        onlyLocal: boolean
+        indexLoaded: boolean
+        params: anyObj
+    }
+    goodsInfo: anyObj
     buy: {
-        showLoading: boolean
-        showDialog: boolean
         info: anyObj
         agreement: boolean
     }
-    publicButtonLoading: boolean
-    install: {
-        showDialog: boolean
-        title: string
-        loading: boolean
-        stateTitle: string
-        fileConflict: any[]
-        dependConflict: any[]
+    common: {
         uid: string
-        state: number
-        componentKey: string
-        waitInstallDepend: anyObj
-        dependInstallState: 'executing' | 'success' | 'fail'
+        moduleState: number
+        type: 'loading' | 'InstallConflict' | 'done' | 'waitFullReload' | 'disableConfirmConflict'
+        dialogTitle: string
+        fileConflict: anyObj[]
+        dependConflict: anyObj[]
+        loadingTitle: 'init' | 'download' | 'install' | 'wait-full-reload'
+        loadingComponentKey: string
+        waitInstallDepend: string[]
+        dependInstallState: 'none' | 'executing' | 'success' | 'fail'
+        disableConflictFile: { file: string }[]
+        disableDependConflict: boolean
+        disableParams: anyObj
     }
-    onlyLocal: boolean
-    loadIndex: boolean
-    installedModule: {
-        uid: string
-        state: number
-        version: string
-        website: string
-    }[]
-    installedModuleUids: number[]
-    waitFullReload: boolean
-    moduleDisableParams: anyObj
+    installedModule: moduleInfo[]
+    installedModuleUids: string[]
 }
 
-export const INSTALL_MODULE_TEMP = 'installModuleTemp' // 模块安装状态临时记录
+export const MODULE_TEMP = 'moduleTemp' // 模块安装/禁用状态临时记录
 export const VITE_FULL_RELOAD = 'viteFullReload' // 是否触发了vite热重载的临时记录
-export const DEPEND_DATA_TEMP = 'dependDataTemp' // 依赖更新临时记录

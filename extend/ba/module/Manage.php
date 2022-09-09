@@ -242,6 +242,7 @@ class Manage
             $dependWaitInstall[] = [
                 'pm'      => false,
                 'command' => 'composer.update',
+                'type'    => 'composer_dependent_wait_install',
             ];
         }
         if (in_array('npm', $disableDependConflict)) {
@@ -249,6 +250,7 @@ class Manage
             $dependWaitInstall[] = [
                 'pm'      => true,
                 'command' => 'web-install',
+                'type'    => 'npm_dependent_wait_install',
             ];
         }
         if ($conflictFile) {

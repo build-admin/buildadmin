@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog v-model="state.showBaAccount" custom-class="ba-account-dialog" width="25%" title="会员信息">
+        <el-dialog v-model="state.dialog.baAccount" custom-class="ba-account-dialog" width="25%" title="会员信息">
             <template v-if="baAccount.token">
                 <div class="userinfo">
                     <div class="user-avatar-box">
@@ -87,7 +87,7 @@ import { useI18n } from 'vue-i18n'
 import { uuid } from '/@/utils/random'
 import { checkIn, buildCaptchaUrl } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
-import { state } from '../index'
+import { state } from '../store'
 
 const { t } = useI18n()
 const baAccount = useBaAccount()
@@ -126,9 +126,9 @@ const onBaAccountSubmit = (formRef: FormInstance | undefined = undefined) => {
             user.loading = true
             checkIn('post', user.form)
                 .then((res) => {
-                    state.showBaAccount = false
+                    state.dialog.baAccount = false
                     user.loading = false
-                    baAccount.$state = res.data.userinfo
+                    baAccount.dataFill(res.data.userinfo)
                 })
                 .catch(() => {
                     user.loading = false

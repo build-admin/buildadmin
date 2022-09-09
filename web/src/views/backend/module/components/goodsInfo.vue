@@ -1,66 +1,66 @@
 <template>
     <div>
-        <el-dialog v-model="state.goodsInfo.showDialog" custom-class="goods-info-dialog" title="详细信息" width="55%">
-            <el-scrollbar v-loading="state.goodsInfo.loading" :key="state.goodsInfo.info.uid" :height="500">
+        <el-dialog v-model="state.dialog.goodsInfo" custom-class="goods-info-dialog" title="详细信息" width="55%">
+            <el-scrollbar v-loading="state.loading.goodsInfo" :key="state.goodsInfo.uid" :height="500">
                 <div class="goods-info">
                     <div class="goods-images">
-                        <el-carousel height="300" v-if="state.goodsInfo.info.images" indicator-position="outside">
-                            <el-carousel-item v-for="(image, idx) in state.goodsInfo.info.images" :key="idx">
+                        <el-carousel height="300" v-if="state.goodsInfo.images" indicator-position="outside">
+                            <el-carousel-item v-for="(image, idx) in state.goodsInfo.images" :key="idx">
                                 <el-image fit="contain" :src="image"></el-image>
                             </el-carousel-item>
                         </el-carousel>
                     </div>
                     <div class="goods-basic">
-                        <h4 class="goods-basic-title">{{ state.goodsInfo.info.title }}</h4>
+                        <h4 class="goods-basic-title">{{ state.goodsInfo.title }}</h4>
                         <div class="goods-tag">
-                            <el-tag v-for="tag in state.goodsInfo.info.tags" :type="tag.type">{{ tag.name }}</el-tag>
+                            <el-tag v-for="tag in state.goodsInfo.tags" :type="tag.type">{{ tag.name }}</el-tag>
                         </div>
                         <div class="basic-item">
                             <div class="basic-item-title">价格</div>
                             <div class="basic-item-price">
-                                {{ currency(state.goodsInfo.info.present_price, state.goodsInfo.info.currency_select) }}
+                                {{ currency(state.goodsInfo.present_price, state.goodsInfo.currency_select) }}
                             </div>
                         </div>
                         <div class="basic-item">
                             <div class="basic-item-title">最后更新</div>
-                            <div class="basic-item-content">{{ timeFormat(state.goodsInfo.info.updatetime) }}</div>
+                            <div class="basic-item-content">{{ timeFormat(state.goodsInfo.updatetime) }}</div>
                         </div>
                         <div class="basic-item">
                             <div class="basic-item-title">发布时间</div>
-                            <div class="basic-item-content">{{ timeFormat(state.goodsInfo.info.createtime) }}</div>
+                            <div class="basic-item-content">{{ timeFormat(state.goodsInfo.createtime) }}</div>
                         </div>
-                        <div v-if="!installButtonState.stateSwitch.includes(state.goodsInfo.info.state)" class="basic-item">
+                        <div v-if="!installButtonState.stateSwitch.includes(state.goodsInfo.state)" class="basic-item">
                             <div class="basic-item-title">下载次数</div>
-                            <div class="basic-item-content">{{ state.goodsInfo.info.downloads }}</div>
+                            <div class="basic-item-content">{{ state.goodsInfo.downloads }}</div>
                         </div>
-                        <div v-if="state.goodsInfo.info.category" class="basic-item">
+                        <div v-if="state.goodsInfo.category" class="basic-item">
                             <div class="basic-item-title">模块分类</div>
-                            <div class="basic-item-content">{{ state.goodsInfo.info.category.name }}</div>
+                            <div class="basic-item-content">{{ state.goodsInfo.category.name }}</div>
                         </div>
                         <div class="basic-item">
                             <div class="basic-item-title">开发者主页</div>
                             <div class="basic-item-content">
-                                <a v-if="state.goodsInfo.info.author_url" :href="state.goodsInfo.info.author_url">点击访问</a>
+                                <a v-if="state.goodsInfo.author_url" :href="state.goodsInfo.author_url">点击访问</a>
                                 <span v-else>无</span>
                             </div>
                         </div>
-                        <div v-if="installButtonState.stateSwitch.includes(state.goodsInfo.info.state)" class="basic-item">
+                        <div v-if="installButtonState.stateSwitch.includes(state.goodsInfo.state)" class="basic-item">
                             <div class="basic-item-title">模块状态</div>
                             <div class="basic-item-content">
                                 <el-switch
                                     @change="onChangeState"
-                                    :loading="state.publicButtonLoading"
-                                    :disabled="state.publicButtonLoading"
-                                    v-model="state.goodsInfo.info.enable"
+                                    :loading="state.loading.common"
+                                    :disabled="state.loading.common"
+                                    v-model="state.goodsInfo.enable"
                                 />
                             </div>
                         </div>
                         <div class="basic-buttons">
                             <el-dropdown
                                 v-if="
-                                    (!state.goodsInfo.info.purchased || installButtonState.InstallNow.includes(state.goodsInfo.info.state)) &&
-                                    state.goodsInfo.info.demo &&
-                                    state.goodsInfo.info.demo.length > 0
+                                    (!state.goodsInfo.purchased || installButtonState.InstallNow.includes(state.goodsInfo.state)) &&
+                                    state.goodsInfo.demo &&
+                                    state.goodsInfo.demo.length > 0
                                 "
                             >
                                 <el-button class="basic-button-demo" type="primary">
@@ -70,7 +70,7 @@
                                 <template #dropdown>
                                     <el-dropdown-menu>
                                         <el-dropdown-item
-                                            v-for="demo in state.goodsInfo.info.demo"
+                                            v-for="demo in state.goodsInfo.demo"
                                             @click="openDemo(demo.link, demo.image ? false : true)"
                                             class="basic-button-dropdown-item"
                                         >
@@ -94,23 +94,23 @@
                                     </el-dropdown-menu>
                                 </template>
                             </el-dropdown>
-                            <el-button v-if="!state.goodsInfo.info.purchased" @click="onBuy" v-blur class="basic-button-item" type="danger"
+                            <el-button v-if="!state.goodsInfo.purchased" @click="onBuy" v-blur class="basic-button-item" type="danger"
                                 >立即购买</el-button
                             >
                             <template v-else>
                                 <el-button
-                                    v-if="installButtonState.InstallNow.includes(state.goodsInfo.info.state)"
-                                    @click="onInstall(state.goodsInfo.info.uid, state.goodsInfo.info.purchased)"
-                                    :loading="state.publicButtonLoading"
+                                    v-if="installButtonState.InstallNow.includes(state.goodsInfo.state)"
+                                    @click="onInstall(state.goodsInfo.uid, state.goodsInfo.purchased)"
+                                    :loading="state.loading.common"
                                     v-blur
                                     class="basic-button-item"
                                     type="success"
                                     >立即安装</el-button
                                 >
                                 <el-button
-                                    v-if="installButtonState.continueInstallation.includes(state.goodsInfo.info.state)"
-                                    @click="onInstall(state.goodsInfo.info.uid, state.goodsInfo.info.purchased)"
-                                    :loading="state.publicButtonLoading"
+                                    v-if="installButtonState.continueInstallation.includes(state.goodsInfo.state)"
+                                    @click="onInstall(state.goodsInfo.uid, state.goodsInfo.purchased)"
+                                    :loading="state.loading.common"
                                     v-blur
                                     class="basic-button-item"
                                     type="success"
@@ -118,17 +118,17 @@
                                     继续安装
                                 </el-button>
                                 <el-button
-                                    v-if="installButtonState.alreadyInstalled.includes(state.goodsInfo.info.state)"
+                                    v-if="installButtonState.alreadyInstalled.includes(state.goodsInfo.state)"
                                     v-blur
                                     :disabled="true"
                                     class="basic-button-item"
                                 >
-                                    已安装 v{{ state.goodsInfo.info.version }}
+                                    已安装 v{{ state.goodsInfo.version }}
                                 </el-button>
                                 <el-button
-                                    v-if="state.goodsInfo.info.new_version"
-                                    @click="onUpdate(state.goodsInfo.info.uid, state.goodsInfo.info.purchased)"
-                                    v-loading="state.publicButtonLoading"
+                                    v-if="state.goodsInfo.new_version"
+                                    @click="onUpdate(state.goodsInfo.uid, state.goodsInfo.purchased)"
+                                    v-loading="state.loading.common"
                                     v-blur
                                     class="basic-button-item"
                                     type="success"
@@ -136,8 +136,8 @@
                                     更新
                                 </el-button>
                                 <el-button
-                                    v-if="installButtonState.stateSwitch.includes(state.goodsInfo.info.state)"
-                                    @click="unInstall(state.goodsInfo.info.uid)"
+                                    v-if="installButtonState.stateSwitch.includes(state.goodsInfo.state)"
+                                    @click="unInstall(state.goodsInfo.uid)"
                                     v-blur
                                     class="basic-button-item"
                                     type="danger"
@@ -147,29 +147,29 @@
                             </template>
                         </div>
                     </div>
-                    <div v-if="!isEmpty(state.goodsInfo.info.developer)" class="goods-developer">
+                    <div v-if="!isEmpty(state.goodsInfo.developer)" class="goods-developer">
                         <div class="developer-header">
-                            <el-avatar :size="60" :src="state.goodsInfo.info.developer.avatar" />
+                            <el-avatar :size="60" :src="state.goodsInfo.developer.avatar" />
                             <div class="developer-name">
-                                <h3 class="developer-nickname">{{ state.goodsInfo.info.developer.nickname }}</h3>
+                                <h3 class="developer-nickname">{{ state.goodsInfo.developer.nickname }}</h3>
                                 <div class="developer-group">
-                                    {{ state.goodsInfo.info.developer.group ? state.goodsInfo.info.developer.group : '无' }}
+                                    {{ state.goodsInfo.developer.group ? state.goodsInfo.developer.group : '无' }}
                                 </div>
                             </div>
                         </div>
-                        <div v-if="state.goodsInfo.info.qq" class="developer-contact">
+                        <div v-if="state.goodsInfo.qq" class="developer-contact">
                             <h4 class="developer-info-title">联系开发者</h4>
                             <div class="contact-item">
-                                <a target="_blank" :href="'http://wpa.qq.com/msgrd?v=3&uin=' + state.goodsInfo.info.qq + '&site=qq&menu=yes'"
-                                    >QQ：{{ state.goodsInfo.info.qq }}</a
+                                <a target="_blank" :href="'http://wpa.qq.com/msgrd?v=3&uin=' + state.goodsInfo.qq + '&site=qq&menu=yes'"
+                                    >QQ：{{ state.goodsInfo.qq }}</a
                                 >
                             </div>
                         </div>
                         <div class="developer-recommend">
                             <h4 class="developer-info-title">TA的其他作品</h4>
-                            <div v-if="state.goodsInfo.info.developer.goods.length > 0" class="recommend-goods">
+                            <div v-if="state.goodsInfo.developer.goods.length > 0" class="recommend-goods">
                                 <div
-                                    v-for="goods_item in state.goodsInfo.info.developer.goods"
+                                    v-for="goods_item in state.goodsInfo.developer.goods"
                                     @click="showInfo(goods_item.uid)"
                                     class="recommend-goods-item"
                                 >
@@ -181,20 +181,23 @@
                         </div>
                     </div>
                 </div>
-                <div class="goods-detail" v-html="state.goodsInfo.info.detail_editor"></div>
+                <div class="goods-detail" v-html="state.goodsInfo.detail_editor"></div>
             </el-scrollbar>
         </el-dialog>
+        <Buy />
     </div>
 </template>
 
 <script setup lang="ts">
-import { state, showInfo, currency, onBuy, onInstall, postDisable, onEnable, onRefreshData } from '../index'
+import { state } from '../store'
+import { showInfo, currency, onBuy, onInstall, onDisable, onEnable, onRefreshTableData, loginExpired } from '../index'
 import { postUninstall, getInstallState, postUpdate } from '/@/api/backend/module'
 import { moduleInstallState } from '../types'
 import { timeFormat } from '/@/components/table'
 import { isEmpty } from 'lodash'
 import { ElMessageBox } from 'element-plus'
 import { useBaAccount } from '/@/stores/baAccount'
+import Buy from './buy.vue'
 
 const installButtonState = {
     InstallNow: [moduleInstallState.UNINSTALLED, moduleInstallState.WAIT_INSTALL],
@@ -214,31 +217,35 @@ const openDemo = (url: string, open: boolean) => {
 }
 
 const onChangeState = () => {
-    if (state.goodsInfo.info.enable) {
-        onEnable(state.goodsInfo.info.uid)
+    if (state.goodsInfo.enable) {
+        onEnable(state.goodsInfo.uid)
     } else {
-        state.moduleDisableParams = {
-            uid: state.goodsInfo.info.uid,
+        state.common.disableParams = {
+            uid: state.goodsInfo.uid,
             state: 0,
         }
-        postDisable()
+        onDisable()
     }
 }
 
 const unInstall = (uid: string) => {
     postUninstall(uid).then(() => {
-        onRefreshData()
+        onRefreshTableData()
     })
 }
 
 const onUpdate = (uid: string, order: number) => {
-    state.publicButtonLoading = true
+    state.loading.common = true
     getInstallState(uid)
         .then((res) => {
             if (res.data.state == moduleInstallState.DISABLE) {
-                postUpdate(uid, order).then(() => {
-                    onInstall(uid, order)
-                })
+                postUpdate(uid, order)
+                    .then(() => {
+                        onInstall(uid, order)
+                    })
+                    .catch((res) => {
+                        if (loginExpired(res)) return
+                    })
             } else {
                 ElMessageBox.confirm('更新前需要先禁用该模块，立即禁用？', '提示', {
                     confirmButtonText: '禁用并更新',
@@ -247,20 +254,20 @@ const onUpdate = (uid: string, order: number) => {
                 })
                     .then(() => {
                         const baAccount = useBaAccount()
-                        state.moduleDisableParams = {
+                        state.common.disableParams = {
                             uid: uid,
                             state: 0,
                             upadte: true,
                             order: order,
                             token: baAccount.token,
                         }
-                        postDisable()
+                        onDisable()
                     })
                     .catch(() => {})
             }
         })
         .finally(() => {
-            state.publicButtonLoading = false
+            state.loading.common = false
         })
 }
 </script>
@@ -395,6 +402,9 @@ const onUpdate = (uid: string, order: number) => {
     .el-carousel__item:nth-child(2n) {
         background-color: #99a9bf;
     }
+}
+.basic-button-item {
+    --el-loading-spinner-size: 22px;
 }
 /* 商品详情弹窗-s */
 @media screen and (max-width: 1440px) {
