@@ -126,7 +126,7 @@
                                     已安装 v{{ state.goodsInfo.version }}
                                 </el-button>
                                 <el-button
-                                    v-if="state.goodsInfo.new_version"
+                                    v-if="state.goodsInfo.new_version && installButtonState.updateButton.includes(state.goodsInfo.state)"
                                     @click="onUpdate(state.goodsInfo.uid, state.goodsInfo.purchased)"
                                     v-loading="state.loading.common"
                                     v-blur
@@ -209,6 +209,7 @@ const installButtonState = {
         moduleInstallState.DEPENDENT_WAIT_INSTALL,
         moduleInstallState.DISABLE,
     ],
+    updateButton: [moduleInstallState.WAIT_INSTALL, moduleInstallState.INSTALLED, moduleInstallState.DISABLE],
 }
 
 const openDemo = (url: string, open: boolean) => {
