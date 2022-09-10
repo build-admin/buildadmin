@@ -137,6 +137,7 @@
                                 </el-button>
                                 <el-button
                                     v-if="installButtonState.stateSwitch.includes(state.goodsInfo.state)"
+                                    v-loading="state.loading.common"
                                     @click="unInstall(state.goodsInfo.uid)"
                                     v-blur
                                     class="basic-button-item"
@@ -230,9 +231,15 @@ const onChangeState = () => {
 }
 
 const unInstall = (uid: string) => {
-    postUninstall(uid).then(() => {
-        onRefreshTableData()
-    })
+    state.loading.common = true
+    postUninstall(uid)
+        .then(() => {
+            onRefreshTableData()
+            state.dialog.goodsInfo = false
+        })
+        .finally(() => {
+            state.loading.common = false
+        })
 }
 
 const onUpdate = (uid: string, order: number) => {
