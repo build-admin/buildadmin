@@ -33,7 +33,7 @@
                     <el-link target="_blank" type="primary" href="https://wonderful-code.gitee.io/guide/other/developerMustSee.html#开发环境">
                         开发环境
                     </el-link>
-                    下或页面未自动刷新，请<el-link type="primary" @click="nonDevMode">点击我</el-link>继续完成安装
+                    下或页面未自动刷新，请<el-link type="primary" @click="nonDevMode">点击我继续</el-link>
                 </div>
             </el-scrollbar>
         </el-dialog>

@@ -265,7 +265,7 @@ const onUpdate = (uid: string, order: number) => {
                         state.common.disableParams = {
                             uid: uid,
                             state: 0,
-                            upadte: true,
+                            upadte: 1,
                             order: order,
                             token: baAccount.token,
                         }
@@ -381,7 +381,7 @@ const onUpdate = (uid: string, order: number) => {
                 background-color: var(--color-bg-1);
             }
             .recommend-goods-logo {
-                width: 34px;
+                height: 28px;
                 border-radius: var(--el-border-radius-base);
             }
             .recommend-goods-title {

@@ -12,7 +12,7 @@
                 <div class="depend-tis">
                     <div v-if="state.common.dependInstallState == 'executing'">
                         <span class="color-red">请勿刷新页面！</span>
-                        <span v-if="state.common.moduleState == moduleInstallState.DISABLE">系统依赖有调整</span>
+                        <span v-if="state.common.moduleState == moduleInstallState.DISABLE">检测到依赖项有新的调整</span>
                         <span v-else-if="state.common.moduleState == moduleInstallState.DEPENDENT_WAIT_INSTALL">本模块添加了新的依赖项</span>，
                         <span>系统内置终端正在自动安装这些依赖，请稍等~</span>
                         <span class="span-a" @click="showTerminal">查看进度</span>

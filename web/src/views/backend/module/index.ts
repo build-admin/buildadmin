@@ -286,7 +286,7 @@ const terminalTaskExecComplete = (res: number, type: string) => {
 
 export const onDisable = (confirmConflict: boolean = false) => {
     state.loading.common = true
-    state.common.disableParams['confirmConflict'] = confirmConflict
+    state.common.disableParams['confirmConflict'] = confirmConflict ? 1 : 0
     changeState(state.common.disableParams)
         .then((res) => {
             ElNotification({
@@ -297,8 +297,8 @@ export const onDisable = (confirmConflict: boolean = false) => {
             onRefreshTableData()
         })
         .catch((res) => {
-            state.goodsInfo.enable = !state.goodsInfo.enable
             if (res.code == -1) {
+                state.goodsInfo.enable = !state.goodsInfo.enable
                 state.dialog.common = true
                 state.common.dialogTitle = '处理冲突'
                 state.common.type = 'disableConfirmConflict'
