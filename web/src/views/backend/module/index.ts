@@ -227,6 +227,7 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
                 state.common.dialogTitle = '发现冲突，请手动处理'
                 state.common.fileConflict = res.data.fileConflict
                 state.common.dependConflict = res.data.dependConflict
+                Session.remove(VITE_FULL_RELOAD)
             } else if (res.code == -2) {
                 if (parseInt(res.data.fullreload) === 1 && !viteFullReload) {
                     state.common.dialogTitle = '等待热更新'
@@ -311,6 +312,7 @@ export const onDisable = (confirmConflict: boolean = false) => {
                     }
                     state.common.disableConflictFile = conflictFile
                 }
+                Session.remove(VITE_FULL_RELOAD)
             } else if (res.code == -2) {
                 state.dialog.common = true
                 const commandsData = {
@@ -333,6 +335,7 @@ export const onDisable = (confirmConflict: boolean = false) => {
                     state.common.dialogTitle = '请稍等'
                     showCommonLoading('wait-full-reload')
                     state.common.type = 'waitFullReload'
+                    clearTempStorage()
                     Session.set(MODULE_TEMP, { uid: state.goodsInfo.uid, id: state.goodsInfo.purchased, type: 'install' })
                 } else {
                     onInstall(state.goodsInfo.uid, state.goodsInfo.purchased)
