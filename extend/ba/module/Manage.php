@@ -127,6 +127,9 @@ class Manage
         }
 
         $this->download($token, $orderId);
+
+        // 执行更新脚本
+        Server::execEvent($this->uid, 'update');
     }
 
     /**
@@ -150,6 +153,9 @@ class Manage
         // 导入sql
         Server::importSql($this->modulesDir);
 
+        // 执行安装脚本
+        Server::execEvent($this->uid, 'install');
+
         // 启用插件
         $this->enable('install');
 
@@ -164,6 +170,10 @@ class Manage
                 'uid' => $this->uid,
             ]);
         }
+
+        // 执行卸载脚本
+        Server::execEvent($this->uid, 'uninstall');
+
         deldir($this->modulesDir);
     }
 
