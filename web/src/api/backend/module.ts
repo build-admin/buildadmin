@@ -188,3 +188,13 @@ export function dependentInstallComplete(uid: string, type: string) {
         },
     }) as ApiPromise
 }
+
+export function upload(file: string) {
+    return createAxios({
+        url: moduleControllerUrl + 'upload',
+        method: 'post',
+        params: {
+            file: file,
+        },
+    }) as ApiPromise
+}

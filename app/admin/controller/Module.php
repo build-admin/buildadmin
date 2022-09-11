@@ -119,4 +119,23 @@ class Module extends Backend
         }
         $this->success();
     }
+
+    public function upload()
+    {
+        $file = $this->request->get("file/s", '');
+        if (!$file) {
+            $this->error(__('Parameter error'));
+        }
+        $info = [];
+        try {
+            $info = Manage::instance()->upload($file);
+        } catch (moduleException $e) {
+            $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
+        } catch (Exception $e) {
+            $this->error(__($e->getMessage()));
+        }
+        $this->success('', [
+            'info' => $info
+        ]);
+    }
 }

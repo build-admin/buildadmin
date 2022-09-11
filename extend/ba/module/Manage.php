@@ -53,7 +53,7 @@ class Manage
      * @param string $uid
      * @return Manage
      */
-    public static function instance(string $uid): Manage
+    public static function instance(string $uid = ''): Manage
     {
         if (is_null(self::$instance)) {
             self::$instance = new static($uid);
@@ -63,15 +63,18 @@ class Manage
 
     public function __construct(string $uid)
     {
-        $this->uid        = $uid;
         $this->installDir = root_path() . 'modules' . DIRECTORY_SEPARATOR;
         $this->ebakDir    = $this->installDir . 'ebak' . DIRECTORY_SEPARATOR;
-        $this->modulesDir = $this->installDir . $uid . DIRECTORY_SEPARATOR;
         if (!is_dir($this->installDir)) {
             mkdir($this->installDir, 0755, true);
         }
         if (!is_dir($this->ebakDir)) {
             mkdir($this->ebakDir, 0755, true);
+        }
+
+        if ($uid) {
+            $this->uid        = $uid;
+            $this->modulesDir = $this->installDir . $uid . DIRECTORY_SEPARATOR;
         }
     }
 
@@ -117,6 +120,43 @@ class Manage
         ]);
 
         return $zipFile;
+    }
+
+    public function upload(string $file)
+    {
+        $file = path_transform(root_path() . 'public' . $file);
+        if (!is_file($file)) {
+            throw new Exception('Zip file not found');
+        }
+
+        $copyTo = $this->installDir . 'uploadTemp' . date('YmdHis') . '.zip';
+        copy($file, $copyTo);
+
+        // 解压
+        $copyToDir = Server::unzip($copyTo);
+        $copyToDir .= DIRECTORY_SEPARATOR;
+
+        // 删除zip
+        @unlink($copyTo);
+
+        // 读取ini
+        $info = Server::getIni($copyToDir);
+        if (!isset($info['uid']) || !$info['uid']) {
+            throw new Exception('Basic configuration of the Module is incomplete');
+        }
+        $this->uid        = $info['uid'];
+        $this->modulesDir = $this->installDir . $info['uid'] . DIRECTORY_SEPARATOR;
+        rename($copyToDir, $this->modulesDir);
+
+        // 检查是否完整
+        $this->checkPackage();
+
+        // 设置为待安装状态
+        $this->setInfo([
+            'state' => self::WAIT_INSTALL,
+        ]);
+
+        return $info;
     }
 
     public function update(string $token, int $orderId)
