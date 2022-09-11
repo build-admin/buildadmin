@@ -76,14 +76,17 @@ class Module extends Backend
         if (!$uid) {
             $this->error(__('Parameter error'));
         }
+        $info = [];
         try {
-            Manage::instance($uid)->changeState($state);
+            $info = Manage::instance($uid)->changeState($state);
         } catch (moduleException $e) {
             $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
         } catch (Exception $e) {
             $this->error(__($e->getMessage()));
         }
-        $this->success();
+        $this->success('', [
+            'info' => $info,
+        ]);
     }
 
     public function uninstall()

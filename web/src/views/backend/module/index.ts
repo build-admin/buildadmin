@@ -289,6 +289,13 @@ export const onDisable = (confirmConflict: boolean = false) => {
     state.common.disableParams['confirmConflict'] = confirmConflict ? 1 : 0
     changeState(state.common.disableParams)
         .then((res) => {
+            if (res.data.info?.fullreload) {
+                state.common.dialogTitle = '请稍等'
+                showCommonLoading('wait-full-reload')
+                state.common.type = 'waitFullReload'
+                Session.set(MODULE_TEMP, { type: 'clean-cache' })
+                return
+            }
             ElNotification({
                 type: 'success',
                 message: '操作成功，请清理系统缓存并刷新浏览器~',

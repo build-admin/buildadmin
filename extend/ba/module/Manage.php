@@ -235,8 +235,7 @@ class Manage
                     'state' => $info['state'],
                 ]);
             }
-            $this->disable();
-            return;
+            return $this->disable();
         }
 
         if ($info['state'] != self::DISABLE) {
@@ -248,6 +247,7 @@ class Manage
         $this->setInfo([
             'state' => self::WAIT_INSTALL,
         ]);
+        return $info;
     }
 
     public function enable(string $trigger)
@@ -371,6 +371,7 @@ class Manage
                 'fullreload'   => $info['fullreload'],
             ]);
         }
+        return $info;
     }
 
     /**

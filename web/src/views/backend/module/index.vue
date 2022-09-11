@@ -27,13 +27,16 @@ onMounted(() => {
         })
     }
 
-    const viteFullReload = Session.get(VITE_FULL_RELOAD)
     const moduleTemp = Session.get(MODULE_TEMP)
-    if (moduleTemp && moduleTemp.type == 'install') {
-        onInstall(moduleTemp.uid, moduleTemp.id)
-    }
-    if (viteFullReload && moduleTemp) {
-        execCommand(moduleTemp)
+    if (moduleTemp) {
+        const viteFullReload = Session.get(VITE_FULL_RELOAD)
+        if (moduleTemp.type == 'clean-cache') {
+            clearTempStorage()
+        } else if (moduleTemp.type == 'install') {
+            onInstall(moduleTemp.uid, moduleTemp.id)
+        } else if (viteFullReload) {
+            execCommand(moduleTemp)
+        }
     }
 })
 </script>
