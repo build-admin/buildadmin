@@ -252,6 +252,11 @@ const unInstall = (uid: string) => {
 }
 
 const onUpdate = (uid: string, order: number) => {
+    const baAccount = useBaAccount()
+    if (!baAccount.token) {
+        state.dialog.baAccount = true
+        return
+    }
     state.loading.common = true
     getInstallState(uid)
         .then((res) => {
@@ -270,7 +275,6 @@ const onUpdate = (uid: string, order: number) => {
                     type: 'warning',
                 })
                     .then(() => {
-                        const baAccount = useBaAccount()
                         state.common.disableParams = {
                             uid: uid,
                             state: 0,
