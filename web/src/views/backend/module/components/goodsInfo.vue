@@ -94,58 +94,66 @@
                                     </el-dropdown-menu>
                                 </template>
                             </el-dropdown>
-                            <el-button v-if="!state.goodsInfo.purchased" @click="onBuy" v-blur class="basic-button-item" type="danger"
-                                >立即购买</el-button
+                            <el-button
+                                v-if="!state.goodsInfo.purchased && installButtonState.buy.includes(state.goodsInfo.state)"
+                                @click="onBuy"
+                                v-blur
+                                class="basic-button-item"
+                                type="danger"
                             >
-                            <template v-else>
-                                <el-button
-                                    v-if="installButtonState.InstallNow.includes(state.goodsInfo.state)"
-                                    @click="onInstall(state.goodsInfo.uid, state.goodsInfo.purchased)"
-                                    :loading="state.loading.common"
-                                    v-blur
-                                    class="basic-button-item"
-                                    type="success"
-                                    >立即安装</el-button
-                                >
-                                <el-button
-                                    v-if="installButtonState.continueInstallation.includes(state.goodsInfo.state)"
-                                    @click="onInstall(state.goodsInfo.uid, state.goodsInfo.purchased)"
-                                    :loading="state.loading.common"
-                                    v-blur
-                                    class="basic-button-item"
-                                    type="success"
-                                >
-                                    继续安装
-                                </el-button>
-                                <el-button
-                                    v-if="installButtonState.alreadyInstalled.includes(state.goodsInfo.state)"
-                                    v-blur
-                                    :disabled="true"
-                                    class="basic-button-item"
-                                >
-                                    已安装 v{{ state.goodsInfo.version }}
-                                </el-button>
-                                <el-button
-                                    v-if="state.goodsInfo.new_version && installButtonState.updateButton.includes(state.goodsInfo.state)"
-                                    @click="onUpdate(state.goodsInfo.uid, state.goodsInfo.purchased)"
-                                    v-loading="state.loading.common"
-                                    v-blur
-                                    class="basic-button-item"
-                                    type="success"
-                                >
-                                    更新
-                                </el-button>
-                                <el-button
-                                    v-if="installButtonState.stateSwitch.includes(state.goodsInfo.state)"
-                                    v-loading="state.loading.common"
-                                    @click="unInstall(state.goodsInfo.uid)"
-                                    v-blur
-                                    class="basic-button-item"
-                                    type="danger"
-                                >
-                                    卸载
-                                </el-button>
-                            </template>
+                                立即购买
+                            </el-button>
+                            <el-button
+                                v-if="
+                                    (state.goodsInfo.state == moduleInstallState.UNINSTALLED && state.goodsInfo.purchased) ||
+                                    state.goodsInfo.state == moduleInstallState.WAIT_INSTALL
+                                "
+                                @click="onInstall(state.goodsInfo.uid, state.goodsInfo.purchased)"
+                                :loading="state.loading.common"
+                                v-blur
+                                class="basic-button-item"
+                                type="success"
+                            >
+                                立即安装
+                            </el-button>
+                            <el-button
+                                v-if="installButtonState.continueInstallation.includes(state.goodsInfo.state)"
+                                @click="onInstall(state.goodsInfo.uid, state.goodsInfo.purchased)"
+                                :loading="state.loading.common"
+                                v-blur
+                                class="basic-button-item"
+                                type="success"
+                            >
+                                继续安装
+                            </el-button>
+                            <el-button
+                                v-if="installButtonState.alreadyInstalled.includes(state.goodsInfo.state)"
+                                v-blur
+                                :disabled="true"
+                                class="basic-button-item"
+                            >
+                                已安装 v{{ state.goodsInfo.version }}
+                            </el-button>
+                            <el-button
+                                v-if="state.goodsInfo.new_version && installButtonState.updateButton.includes(state.goodsInfo.state)"
+                                @click="onUpdate(state.goodsInfo.uid, state.goodsInfo.purchased)"
+                                v-loading="state.loading.common"
+                                v-blur
+                                class="basic-button-item"
+                                type="success"
+                            >
+                                更新
+                            </el-button>
+                            <el-button
+                                v-if="installButtonState.stateSwitch.includes(state.goodsInfo.state)"
+                                v-loading="state.loading.common"
+                                @click="unInstall(state.goodsInfo.uid)"
+                                v-blur
+                                class="basic-button-item"
+                                type="danger"
+                            >
+                                卸载
+                            </el-button>
                         </div>
                     </div>
                     <div v-if="!isEmpty(state.goodsInfo.developer)" class="goods-developer">
@@ -211,6 +219,7 @@ const installButtonState = {
         moduleInstallState.DISABLE,
     ],
     updateButton: [moduleInstallState.WAIT_INSTALL, moduleInstallState.INSTALLED, moduleInstallState.DISABLE],
+    buy: [moduleInstallState.UNINSTALLED],
 }
 
 const openDemo = (url: string, open: boolean) => {
