@@ -5,8 +5,8 @@
                 <div class="goods-info">
                     <div class="goods-images">
                         <el-carousel height="300" v-if="state.goodsInfo.images" indicator-position="outside">
-                            <el-carousel-item v-for="(image, idx) in state.goodsInfo.images" :key="idx">
-                                <el-image fit="contain" :src="image"></el-image>
+                            <el-carousel-item class="goods-image-item" v-for="(image, idx) in state.goodsInfo.images" :key="idx">
+                                <el-image fit="contain" :preview-src-list="state.goodsInfo.images" :preview-teleported="true" :src="image"></el-image>
                             </el-carousel-item>
                         </el-carousel>
                     </div>
@@ -315,6 +315,11 @@ const onUpdate = (uid: string, order: number) => {
     .goods-images {
         max-width: 41%;
         width: 300px;
+        .goods-image-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     }
     .goods-basic {
         position: relative;
