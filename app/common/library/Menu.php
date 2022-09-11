@@ -59,7 +59,7 @@ class Menu
      * @param string|int $id        规则name或id
      * @param bool       $recursion 是否递归删除子级菜单
      */
-    public static function delete($id, $recursion = false)
+    public static function delete($id, bool $recursion = false)
     {
         if (!$id) {
             return true;
@@ -80,6 +80,38 @@ class Menu
             $menuRule->delete();
             self::delete($menuRule->pid, false);
         }
+        return true;
+    }
+
+    /**
+     * 启用菜单
+     * @param string|int $id 规则name或id
+     * @return bool
+     */
+    public static function enable($id): bool
+    {
+        $menuRule = MenuRule::where((is_numeric($id) ? 'id' : 'name'), $id)->find();
+        if (!$menuRule) {
+            return false;
+        }
+        $menuRule->status = '1';
+        $menuRule->save();
+        return true;
+    }
+
+    /**
+     * 禁用菜单
+     * @param string|int $id 规则name或id
+     * @return bool
+     */
+    public static function disable($id): bool
+    {
+        $menuRule = MenuRule::where((is_numeric($id) ? 'id' : 'name'), $id)->find();
+        if (!$menuRule) {
+            return false;
+        }
+        $menuRule->status = '0';
+        $menuRule->save();
         return true;
     }
 
