@@ -35,7 +35,7 @@ class Module extends Backend
         $uid     = $this->request->get("uid/s", '');
         $token   = $this->request->get("token/s", '');
         $orderId = $this->request->get("order_id/d", 0);
-        if (!$token || !$uid) {
+        if (!$uid) {
             $this->error(__('Parameter error'));
         }
         $res = [];
