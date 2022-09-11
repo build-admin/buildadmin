@@ -18,7 +18,7 @@
                         <span>{{ $t('user.user.balance') + ' ' + baAccount.money }}</span>
                     </p>
                     <div class="userinfo-buttons">
-                        <el-button v-blur size="default" type="primary">我的模块</el-button>
+                        <!-- <el-button v-blur size="default" type="primary">我的模块</el-button> -->
                         <el-button @click="baAccount.logout()" v-blur size="default" type="warning">注销登录</el-button>
                     </div>
                 </div>
