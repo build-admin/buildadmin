@@ -1,9 +1,9 @@
 <template>
     <div>
         <el-dialog
-            :close-on-press-escape="false"
+            :close-on-press-escape="state.common.quickClose"
             :title="state.common.dialogTitle"
-            :close-on-click-modal="false"
+            :close-on-click-modal="state.common.quickClose"
             v-model="state.dialog.common"
             custom-class="common-dialog"
         >
@@ -27,6 +27,9 @@
                 <!-- 安装/禁用结束 -->
                 <CommonDone v-if="state.common.type == 'done'" />
 
+                <!-- 上传安装 -->
+                <UploadInstall v-if="state.common.type == 'uploadInstall'" />
+
                 <!-- 等待热更新 -->
                 <div v-if="state.common.type == 'waitFullReload'" class="full-reload-tips">
                     若您未在
@@ -47,6 +50,7 @@ import { Session } from '/@/utils/storage'
 import { VITE_FULL_RELOAD } from '../types'
 import InstallConflict from './installConflict.vue'
 import CommonDone from './commonDone.vue'
+import UploadInstall from './uploadInstall.vue'
 import ConfirmFileConflict from './confirmFileConflict.vue'
 
 const nonDevMode = () => {

@@ -7,7 +7,7 @@
                     <Icon name="fa fa-refresh" color="#ffffff" size="14" />
                 </el-button>
                 <el-button-group class="ml10">
-                    <el-button title="上传ZIP包安装" v-blur type="primary">
+                    <el-button @click="uploadInstall" title="上传ZIP包安装" v-blur type="primary">
                         <Icon name="fa fa-upload" color="#ffffff" size="14" />
                         <span class="table-header-operate-text">上传安装</span>
                     </el-button>
@@ -67,6 +67,13 @@ const onSearchInput = () => {
 
 const navigateTo = (url: string) => {
     window.open(url, '_blank')
+}
+
+const uploadInstall = () => {
+    state.dialog.common = true
+    state.common.quickClose = true
+    state.common.dialogTitle = '上传安装'
+    state.common.type = 'uploadInstall'
 }
 </script>
 

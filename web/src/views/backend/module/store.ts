@@ -36,6 +36,7 @@ export const state = reactive<moduleState>({
     common: {
         uid: '',
         moduleState: 0,
+        quickClose: false,
         type: 'loading',
         dialogTitle: '',
         fileConflict: [],

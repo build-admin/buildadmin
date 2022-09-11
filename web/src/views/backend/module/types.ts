@@ -52,7 +52,8 @@ export interface moduleState {
     common: {
         uid: string
         moduleState: number
-        type: 'loading' | 'InstallConflict' | 'done' | 'waitFullReload' | 'disableConfirmConflict'
+        quickClose: boolean
+        type: 'loading' | 'InstallConflict' | 'done' | 'waitFullReload' | 'disableConfirmConflict' | 'uploadInstall'
         dialogTitle: string
         fileConflict: anyObj[]
         dependConflict: anyObj[]
