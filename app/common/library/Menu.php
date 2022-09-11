@@ -57,7 +57,7 @@ class Menu
     /**
      * 删菜单
      * @param string|int $id        规则name或id
-     * @param bool       $recursion 是否递归删除子级菜单
+     * @param bool       $recursion 是否递归删除子级菜单、是否删除自身，是否删除上级空菜单
      */
     public static function delete($id, bool $recursion = false)
     {
