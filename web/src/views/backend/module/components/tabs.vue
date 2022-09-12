@@ -72,7 +72,7 @@ const onTabChange = () => {
     padding-bottom: 40px;
     position: relative;
     border-radius: var(--el-border-radius-base);
-    background-color: var(--color-bg-2);
+    background-color: var(--el-fill-color-extra-light);
     cursor: pointer;
     box-shadow: var(--el-box-shadow-light);
 }
@@ -105,19 +105,19 @@ const onTabChange = () => {
         align-items: baseline;
         padding: 10px 0;
         .download-count {
-            color: var(--color-placeholder);
+            color: var(--el-text-color-placeholder);
         }
         .goods-price {
             margin-left: auto;
         }
         .original-price {
             font-size: 13px;
-            color: var(--color-placeholder);
+            color: var(--el-text-color-placeholder);
             text-decoration: line-through;
         }
         .current-price {
             font-size: 16px;
-            color: var(--color-danger);
+            color: var(--el-color-danger);
             padding-left: 6px;
         }
     }
@@ -128,7 +128,7 @@ const onTabChange = () => {
     border-radius: var(--el-border-radius-base);
 }
 .el-tabs--border-card :deep(.el-tabs__header) {
-    background-color: var(--color-bg-1);
+    background-color: var(--ba-bg-color);
     border-bottom: none;
     border-radius: var(--el-border-radius-base);
 }

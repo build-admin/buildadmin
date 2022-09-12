@@ -74,7 +74,7 @@ const baAccount = useBaAccount()
             }
             a {
                 text-decoration: none;
-                color: var(--color-primary);
+                color: var(--el-color-primary);
             }
         }
         .order-info-buttons {

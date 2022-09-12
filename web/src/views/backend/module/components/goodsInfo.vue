@@ -88,7 +88,7 @@
                                             >
                                                 <template #reference>
                                                     <div class="demo-item-title">
-                                                        <Icon :name="demo.icon" size="14" color="var(--color-text-primary)" />{{ demo.title }}
+                                                        <Icon :name="demo.icon" size="14" color="var(--el-color-primary)" />{{ demo.title }}
                                                     </div>
                                                 </template>
                                                 <div class="demo-image">
@@ -341,12 +341,12 @@ const onUpdate = (uid: string, order: number) => {
             padding: 5px 0;
             .basic-item-title {
                 font-size: var(--el-font-size-base);
-                color: var(--color-secondary);
+                color: var(--el-text-color-secondary);
                 width: 80px;
             }
             .basic-item-content {
                 font-size: var(--el-font-size-base);
-                color: var(--color-regular);
+                color: var(--el-text-color-regular);
             }
         }
         .basic-button-dropdown-span {
@@ -363,7 +363,7 @@ const onUpdate = (uid: string, order: number) => {
     }
     .goods-developer {
         width: 20%;
-        border-left: 1px solid var(--color-bg-1);
+        border-left: 1px solid var(--ba-bg-color);
         padding: 10px;
         .developer-header {
             display: flex;
@@ -375,12 +375,12 @@ const onUpdate = (uid: string, order: number) => {
                 .developer-group {
                     padding-top: 5px;
                     font-size: var(--el-font-size-extra-small);
-                    color: var(--color-secondary);
+                    color: var(--el-text-color-secondary);
                 }
             }
         }
         .developer-info-title {
-            color: var(--color-secondary);
+            color: var(--el-text-color-secondary);
             padding-top: 15px;
             line-height: 20px;
             text-align: center;
@@ -391,7 +391,7 @@ const onUpdate = (uid: string, order: number) => {
             line-height: 30px;
             text-align: center;
             a {
-                color: var(--color-primary);
+                color: var(--el-color-primary);
                 text-decoration: none;
             }
         }
@@ -402,7 +402,7 @@ const onUpdate = (uid: string, order: number) => {
             cursor: pointer;
             padding: 2px;
             &:hover {
-                background-color: var(--color-bg-1);
+                background-color: var(--ba-bg-color);
             }
             .recommend-goods-logo {
                 height: 28px;
@@ -425,7 +425,7 @@ const onUpdate = (uid: string, order: number) => {
         .developer-recommend {
             .data-empty {
                 font-size: var(--el-font-size-extra-small);
-                color: var(--color-secondary);
+                color: var(--el-text-color-secondary);
                 text-align: center;
                 padding: 6px;
             }
