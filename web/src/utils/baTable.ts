@@ -8,6 +8,9 @@ import { ElNotification, ElForm } from 'element-plus'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import _ from 'lodash'
 import { i18n } from '/@/lang/index'
+import { handleAdminRoute } from '/@/utils/router'
+import { useNavTabs } from '../stores/navTabs'
+import { index } from '/@/api/backend'
 
 export default class baTable {
     public api
@@ -212,6 +215,7 @@ export default class baTable {
                         this.toggleForm()
                     }
                     this.runAfter('onSubmit', { res })
+                    this.updateNavTabAside()
                 })
                 .catch(() => {
                     this.form.submitLoading = false
@@ -237,6 +241,16 @@ export default class baTable {
             ids.push(item[this.table.pk!])
         })
         return ids
+    }
+
+    /* 更新目录导航栏 */
+    updateNavTabAside() {
+        const navTabs = useNavTabs()
+        index().then((res) => {
+            let menuRule = handleAdminRoute(res.data.menus)
+            // 更新stores中的路由菜单数据
+            navTabs.setTabsViewRoutes(menuRule)
+        })
     }
 
     /**
@@ -428,6 +442,7 @@ export default class baTable {
 
                 this.api.sortableApi(moveRow[this.table.pk!], replaceRow[this.table.pk!]).then(() => {
                     this.onTableHeaderAction('refresh', {})
+                    this.updateNavTabAside()
                 })
             },
         })
@@ -476,6 +491,7 @@ export default class baTable {
                     .then(() => {
                         data.row.loading = false
                         data.row[data.field] = data.value
+                        this.updateNavTabAside()
                     })
                     .catch(() => {
                         data.row.loading = false
