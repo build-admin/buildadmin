@@ -7,6 +7,7 @@ import { useTerminal } from '/@/stores/terminal'
 import { taskStatus } from '/@/components/terminal/constant'
 import { moduleInstallState, moduleState, MODULE_TEMP, VITE_FULL_RELOAD } from './types'
 import { uuid } from '/@/utils/random'
+import { fullUrl } from '/@/utils/common'
 
 export const loadData = () => {
     state.loading.table = true
@@ -53,6 +54,7 @@ const getModules = () => {
             params[key] = state.table.params[key]
         }
     }
+    let moduleUids: string[] = []
     let installedModule: { uid: string; version: string }[] = []
     state.installedModule.forEach((item) => {
         installedModule.push({
@@ -63,6 +65,18 @@ const getModules = () => {
     params['installed'] = installedModule
     modules(params)
         .then((res) => {
+            if (params.activeTab == 'all') {
+                res.data.rows.forEach((item: anyObj) => {
+                    moduleUids.push(item.uid)
+                })
+
+                state.installedModule.forEach((item) => {
+                    if (moduleUids.indexOf(item.uid) === -1) {
+                        res.data.rows.push(item)
+                    }
+                })
+            }
+
             state.table.remark = res.data.remark
             state.table.modulesEbak[params.activeTab] = res.data.rows.map((item: anyObj) => {
                 const idx = state.installedModuleUids.indexOf(item.uid)
@@ -75,7 +89,7 @@ const getModules = () => {
                     item.state = 0
                 }
 
-                if (item.new_version) {
+                if (item.new_version && item.tags) {
                     item.tags.push({
                         name: '有新版本',
                         type: 'danger',
@@ -103,8 +117,13 @@ export const showInfo = (uid: string) => {
     info({ uid: uid, localVersion: localItem?.version })
         .then((res) => {
             if (localItem) {
-                res.data.info.state = localItem.state
-                res.data.info.version = localItem.version
+                if (res.data.info.type == 'local') {
+                    res.data.info = localItem
+                    res.data.info.images = [fullUrl('/static/images/local-module-logo.png')]
+                } else {
+                    res.data.info.state = localItem.state
+                    res.data.info.version = localItem.version
+                }
                 res.data.info.enable = localItem.state === moduleInstallState.DISABLE ? false : true
             } else {
                 res.data.info.state = 0

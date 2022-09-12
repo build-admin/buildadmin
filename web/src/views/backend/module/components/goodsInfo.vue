@@ -18,24 +18,26 @@
                         <div class="basic-item">
                             <div class="basic-item-title">价格</div>
                             <div class="basic-item-price">
-                                {{ currency(state.goodsInfo.present_price, state.goodsInfo.currency_select) }}
+                                {{
+                                    state.goodsInfo.currency_select ? currency(state.goodsInfo.present_price, state.goodsInfo.currency_select) : '无'
+                                }}
                             </div>
                         </div>
                         <div class="basic-item">
                             <div class="basic-item-title">最后更新</div>
-                            <div class="basic-item-content">{{ timeFormat(state.goodsInfo.updatetime) }}</div>
+                            <div class="basic-item-content">{{ state.goodsInfo.updatetime ? timeFormat(state.goodsInfo.updatetime) : '无' }}</div>
                         </div>
                         <div class="basic-item">
                             <div class="basic-item-title">发布时间</div>
-                            <div class="basic-item-content">{{ timeFormat(state.goodsInfo.createtime) }}</div>
+                            <div class="basic-item-content">{{ state.goodsInfo.createtime ? timeFormat(state.goodsInfo.createtime) : '无' }}</div>
                         </div>
                         <div v-if="!installButtonState.stateSwitch.includes(state.goodsInfo.state)" class="basic-item">
                             <div class="basic-item-title">下载次数</div>
-                            <div class="basic-item-content">{{ state.goodsInfo.downloads }}</div>
+                            <div class="basic-item-content">{{ state.goodsInfo.downloads ? state.goodsInfo.downloads : '无' }}</div>
                         </div>
-                        <div v-if="state.goodsInfo.category" class="basic-item">
+                        <div class="basic-item">
                             <div class="basic-item-title">模块分类</div>
-                            <div class="basic-item-content">{{ state.goodsInfo.category.name }}</div>
+                            <div class="basic-item-content">{{ state.goodsInfo.category ? state.goodsInfo.category.name : '无' }}</div>
                         </div>
                         <div class="basic-item">
                             <div class="basic-item-title">开发者主页</div>

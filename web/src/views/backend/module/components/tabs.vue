@@ -12,9 +12,13 @@
                 <template v-if="state.table.modules[state.table.params.activeTab] && state.table.modules[state.table.params.activeTab].length > 0">
                     <div class="goods" v-for="item in state.table.modules[state.table.params.activeTab]">
                         <div @click="showInfo(item.uid)" class="goods-item suspension">
-                            <el-image fit="contain" class="goods-img" :src="item.logo" />
+                            <el-image
+                                fit="contain"
+                                class="goods-img"
+                                :src="item.logo ? item.logo : fullUrl('/static/images/local-module-logo.png')"
+                            />
                             <div class="goods-footer">
-                                <div class="goods-tag" v-if="item.tags.length > 0">
+                                <div class="goods-tag" v-if="item.tags && item.tags.length > 0">
                                     <el-tag v-for="tag in item.tags" :type="tag.type">{{ tag.name }}</el-tag>
                                 </div>
                                 <div class="goods-title">
@@ -22,7 +26,7 @@
                                 </div>
                                 <div class="goods-data">
                                     <span class="download-count">
-                                        <Icon name="fa fa-download" color="#c0c4cc" size="13" /> {{ item.downloads }}
+                                        <Icon name="fa fa-download" color="#c0c4cc" size="13" /> {{ item.downloads ? item.downloads : '无' }}
                                     </span>
                                     <span v-if="item.state === moduleInstallState.UNINSTALLED" class="goods-price">
                                         <span class="original-price">{{ currency(item.original_price, item.currency_select) }}</span>
@@ -46,6 +50,7 @@
 import { state } from '../store'
 import { loadData, currency, showInfo } from '../index'
 import { moduleInstallState } from '../types'
+import { fullUrl } from '/@/utils/common'
 
 const onTabChange = () => {
     loadData()
