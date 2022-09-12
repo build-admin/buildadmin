@@ -179,6 +179,7 @@ const onChangeCaptcha = () => {
         display: block;
         width: 100px;
         border-radius: 50%;
+        border: 1px solid var(--el-border-color-extra-light);
     }
     .user-avatar-gender {
         position: absolute;

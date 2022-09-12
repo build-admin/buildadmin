@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog v-model="state.dialog.goodsInfo" custom-class="goods-info-dialog" title="详细信息" width="55%">
+        <el-dialog v-model="state.dialog.goodsInfo" custom-class="goods-info-dialog" title="详细信息" width="60%">
             <el-scrollbar v-loading="state.loading.goodsInfo" :key="state.goodsInfo.uid" :height="500">
                 <div class="goods-info">
                     <div class="goods-images">
@@ -405,7 +405,7 @@ const onUpdate = (uid: string, order: number) => {
                 background-color: var(--ba-bg-color);
             }
             .recommend-goods-logo {
-                height: 28px;
+                width: 42px;
                 border-radius: var(--el-border-radius-base);
             }
             .recommend-goods-title {
@@ -441,12 +441,12 @@ const onUpdate = (uid: string, order: number) => {
 /* 商品详情弹窗-s */
 @media screen and (max-width: 1440px) {
     :deep(.goods-info-dialog) {
-        --el-dialog-width: 60% !important;
+        --el-dialog-width: 65% !important;
     }
 }
 @media screen and (max-width: 1280px) {
     :deep(.goods-info-dialog) {
-        --el-dialog-width: 76% !important;
+        --el-dialog-width: 80% !important;
     }
 }
 @media screen and (max-width: 1024px) {
@@ -455,7 +455,7 @@ const onUpdate = (uid: string, order: number) => {
     }
 }
 /* 商品详情弹窗-e */
-@media screen and (max-width: 860px) {
+@media screen and (max-width: 865px) {
     .goods-info .goods-developer {
         display: none;
     }
