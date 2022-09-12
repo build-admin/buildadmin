@@ -17,7 +17,9 @@
                             <el-checkbox v-model="state.buy.agreement" size="small" label="" />
                             <span>
                                 理解并同意《
-                                <a href="https://wonderful-code.gitee.io/guide/other/appendix/templateAgreement.html" target="_blank"> 模块购买和使用协议 </a>
+                                <a href="https://wonderful-code.gitee.io/guide/other/appendix/templateAgreement.html" target="_blank">
+                                    模块购买和使用协议
+                                </a>
                                 》
                             </span>
                         </div>

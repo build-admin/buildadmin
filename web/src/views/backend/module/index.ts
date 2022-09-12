@@ -32,7 +32,7 @@ const loadIndex = () => {
     return index().then((res) => {
         state.table.indexLoaded = true
         state.installedModule = res.data.installed
-        let installedModuleUids = []
+        const installedModuleUids = []
         if (res.data.installed) {
             for (const key in res.data.installed) {
                 installedModuleUids.push(res.data.installed[key].uid)
@@ -48,14 +48,14 @@ const getModules = () => {
         state.loading.table = false
         return
     }
-    let params: anyObj = {}
+    const params: anyObj = {}
     for (const key in state.table.params) {
         if (state.table.params[key] != '') {
             params[key] = state.table.params[key]
         }
     }
-    let moduleUids: string[] = []
-    let installedModule: { uid: string; version: string }[] = []
+    const moduleUids: string[] = []
+    const installedModule: { uid: string; version: string }[] = []
     state.installedModule.forEach((item) => {
         installedModule.push({
             uid: item.uid,
@@ -303,7 +303,7 @@ const terminalTaskExecComplete = (res: number, type: string) => {
     onRefreshTableData()
 }
 
-export const onDisable = (confirmConflict: boolean = false) => {
+export const onDisable = (confirmConflict = false) => {
     state.loading.common = true
     state.common.disableParams['confirmConflict'] = confirmConflict ? 1 : 0
     changeState(state.common.disableParams)
@@ -330,7 +330,7 @@ export const onDisable = (confirmConflict: boolean = false) => {
                 state.common.type = 'disableConfirmConflict'
                 state.common.disableDependConflict = res.data.dependConflict
                 if (res.data.conflictFile && res.data.conflictFile.length) {
-                    let conflictFile = []
+                    const conflictFile = []
                     for (const key in res.data.conflictFile) {
                         conflictFile.push({
                             file: res.data.conflictFile[key],
@@ -418,7 +418,7 @@ const modulesOnlyLocalHandle = (modules: anyObj) => {
     })
 }
 
-export const execCommand = (data: anyObj, extend: string = '') => {
+export const execCommand = (data: anyObj) => {
     if (data.type == 'disable') {
         state.dialog.common = true
         state.common.type = 'done'

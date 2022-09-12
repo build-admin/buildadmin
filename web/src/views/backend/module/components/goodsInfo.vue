@@ -13,7 +13,7 @@
                     <div class="goods-basic">
                         <h4 class="goods-basic-title">{{ state.goodsInfo.title }}</h4>
                         <div class="goods-tag">
-                            <el-tag v-for="tag in state.goodsInfo.tags" :type="tag.type">{{ tag.name }}</el-tag>
+                            <el-tag v-for="(tag, idx) in state.goodsInfo.tags" :key="idx" :type="tag.type">{{ tag.name }}</el-tag>
                         </div>
                         <div class="basic-item">
                             <div class="basic-item-title">价格</div>
@@ -74,7 +74,8 @@
                                 <template #dropdown>
                                     <el-dropdown-menu>
                                         <el-dropdown-item
-                                            v-for="demo in state.goodsInfo.demo"
+                                            v-for="(demo, idx) in state.goodsInfo.demo"
+                                            :key="idx"
                                             @click="openDemo(demo.link, demo.image ? false : true)"
                                             class="basic-button-dropdown-item"
                                         >
@@ -182,7 +183,8 @@
                             <h4 class="developer-info-title">TA的其他作品</h4>
                             <div v-if="state.goodsInfo.developer.goods.length > 0" class="recommend-goods">
                                 <div
-                                    v-for="goods_item in state.goodsInfo.developer.goods"
+                                    v-for="(goods_item, idx) in state.goodsInfo.developer.goods"
+                                    :key="idx"
                                     @click="showInfo(goods_item.uid)"
                                     class="recommend-goods-item"
                                 >

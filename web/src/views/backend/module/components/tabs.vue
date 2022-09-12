@@ -8,9 +8,9 @@
             class="store-tabs"
             @tab-change="onTabChange"
         >
-            <el-tab-pane v-for="cat in state.table.category" :name="cat.id.toString()" :label="cat.name" class="store-tab-pane">
+            <el-tab-pane v-for="cat in state.table.category" :name="cat.id.toString()" :key="cat.id" :label="cat.name" class="store-tab-pane">
                 <template v-if="state.table.modules[state.table.params.activeTab] && state.table.modules[state.table.params.activeTab].length > 0">
-                    <div class="goods" v-for="item in state.table.modules[state.table.params.activeTab]">
+                    <div class="goods" v-for="item in state.table.modules[state.table.params.activeTab]" :key="item.uid">
                         <div @click="showInfo(item.uid)" class="goods-item suspension">
                             <el-image
                                 fit="contain"
@@ -19,7 +19,7 @@
                             />
                             <div class="goods-footer">
                                 <div class="goods-tag" v-if="item.tags && item.tags.length > 0">
-                                    <el-tag v-for="tag in item.tags" :type="tag.type">{{ tag.name }}</el-tag>
+                                    <el-tag v-for="(tag, idx) in item.tags" :type="tag.type" :key="idx">{{ tag.name }}</el-tag>
                                 </div>
                                 <div class="goods-title">
                                     {{ item.title }}
