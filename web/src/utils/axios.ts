@@ -55,6 +55,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             showErrorMessage: true, // 是否开启接口错误信息展示,默认为true
             showCodeMessage: true, // 是否开启code不为1时的信息提示, 默认为true
             showSuccessMessage: false, // 是否开启code为1时的信息提示, 默认为false
+            anotherToken: '', // 当前请求使用另外的用户token
         },
         options
     )
@@ -76,7 +77,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             if (config.headers) {
                 const token = adminInfo.getToken()
                 if (token) config.headers.batoken = token
-                const userToken = userInfo.getToken()
+                const userToken = options.anotherToken || userInfo.getToken()
                 if (userToken) config.headers['ba-user-token'] = userToken
             }
 
@@ -93,7 +94,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             removePending(response.config)
             options.loading && closeLoading(options) // 关闭loading
 
-            if (options.showCodeMessage && response.data && response.data.code !== 1) {
+            if (response.data && response.data.code !== 1) {
                 if (response.data.code == 409) {
                     if (!window.tokenRefreshing) {
                         window.tokenRefreshing = true
@@ -153,10 +154,12 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                         })
                     }
                 }
-                ElNotification({
-                    type: 'error',
-                    message: response.data.msg,
-                })
+                if (options.showCodeMessage) {
+                    ElNotification({
+                        type: 'error',
+                        message: response.data.msg,
+                    })
+                }
                 // 自动跳转到路由name或path，仅限server端返回302的情况
                 if (response.data.code == 302) {
                     if (response.data.data.routeName) {
@@ -335,6 +338,8 @@ interface Options {
     showCodeMessage?: boolean
     // 是否开启code为0时的信息提示, 默认为false
     showSuccessMessage?: boolean
+    // 当前请求使用另外的用户token
+    anotherToken?: string
 }
 
 /*

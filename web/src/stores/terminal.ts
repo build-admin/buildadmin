@@ -6,6 +6,8 @@ import { timeFormat } from '/@/components/table'
 import { buildTerminalUrl } from '/@/api/common'
 import { uuid } from '../utils/random'
 import { taskStatus } from '/@/components/terminal/constant'
+import { ElNotification } from 'element-plus'
+import { i18n } from '/@/lang/index'
 
 export const useTerminal = defineStore(
     'terminal',
@@ -101,7 +103,7 @@ export const useTerminal = defineStore(
             })
         }
 
-        function addTask(command: string, blockOnFailure = true, callback: Function = () => {}) {
+        function addTask(command: string, blockOnFailure = true, extend = '', callback: Function = () => {}) {
             if (!state.show) toggleDot(true)
             state.taskList = state.taskList.concat({
                 uuid: uuid(),
@@ -111,6 +113,7 @@ export const useTerminal = defineStore(
                 message: [],
                 showMessage: false,
                 blockOnFailure: blockOnFailure,
+                extend: extend,
                 callback: callback,
             })
 
@@ -119,11 +122,24 @@ export const useTerminal = defineStore(
                 clearSuccessTask()
             }
 
+            // 检查是否有已经失败的任务
+            if (state.show === false) {
+                for (const key in state.taskList) {
+                    if (state.taskList[key].status == taskStatus.Failed || state.taskList[key].status == taskStatus.Unknown) {
+                        ElNotification({
+                            type: 'error',
+                            message: i18n.global.t('terminal.Newly added tasks will never start because they are blocked by failed tasks'),
+                        })
+                        break
+                    }
+                }
+            }
+
             startTask()
         }
 
-        function addTaskPM(command: string, blockOnFailure = true, callback: Function = () => {}) {
-            addTask(command + '.' + state.packageManager, blockOnFailure, callback)
+        function addTaskPM(command: string, blockOnFailure = true, extend = '', callback: Function = () => {}) {
+            addTask(command + '.' + state.packageManager, blockOnFailure, extend, callback)
         }
 
         function delTask(idx: number) {
@@ -163,14 +179,16 @@ export const useTerminal = defineStore(
         }
 
         function startEventSource(taskKey: number) {
-            window.eventSource = new EventSource(buildTerminalUrl(state.taskList[taskKey].command, state.taskList[taskKey].uuid))
+            window.eventSource = new EventSource(
+                buildTerminalUrl(state.taskList[taskKey].command, state.taskList[taskKey].uuid, state.taskList[taskKey].extend)
+            )
             window.eventSource.onmessage = function (e) {
                 const data = JSON.parse(e.data)
                 if (!data || !data.data) {
                     return
                 }
 
-                const taskIdx = findTaskIdxFromUuid(data.extend)
+                const taskIdx = findTaskIdxFromUuid(data.uuid)
                 if (taskIdx === false) {
                     return
                 }

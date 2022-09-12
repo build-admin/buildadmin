@@ -65,6 +65,9 @@ class Version
         throw new Exception('Version number comparison failed');
     }
 
+    /**
+     * 是否是一个数字版本号
+     */
     public static function checkDigitalVersion($version)
     {
         if (!$version) {
@@ -84,10 +87,9 @@ class Version
 
     public static function getCnpmVersion()
     {
-        $execOut = CommandExec::instance(false)->getOutputFromPopen('version-view.cnpm');
+        $execOut = Terminal::getOutputFromProc('version.cnpm');
         if ($execOut) {
-            $execOut = implode('', $execOut);
-            $preg    = '/cnpm@(.+?) \(/is';
+            $preg = '/cnpm@(.+?) \(/is';
             preg_match($preg, $execOut, $result);
             return $result[1] ?? false;
         } else {
@@ -104,8 +106,9 @@ class Version
         if ($name == 'cnpm') {
             return self::getCnpmVersion();
         } elseif (in_array($name, ['npm', 'yarn', 'pnpm', 'node'])) {
-            $execOut = CommandExec::instance(false)->getOutputFromPopen('version-view.' . $name);
+            $execOut = Terminal::getOutputFromProc('version.' . $name);
             if ($execOut) {
+                $execOut = preg_split('/\r\n|\r|\n/', $execOut);
                 // 检测两行，第一行可能会是个警告消息
                 for ($i = 0; $i < 2; $i++) {
                     if (isset($execOut[$i]) && self::checkDigitalVersion($execOut[$i])) {

@@ -36,4 +36,6 @@ export default {
     'Site domain name': 'Site domain name',
     'The current terminal is not running under the installation service, and some commands may not be executed':
         'The current terminal is not running under the installation service, and some commands may not be executed.',
+    'Newly added tasks will never start because they are blocked by failed tasks':
+        'Newly added tasks will never start because they are blocked by failed tasks!(Web terminal)',
 }

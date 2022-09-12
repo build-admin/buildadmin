@@ -73,6 +73,47 @@ if (!function_exists('deldir')) {
     }
 }
 
+if (!function_exists('del_empty_dir')) {
+    /**
+     * 删除一个路径下的所有相对空文件夹（删除此路径中的所有空文件夹）
+     * @param string $path 相对于根目录的文件夹路径，如 c:BuildAdmin/a/b/
+     * @return void
+     */
+    function del_empty_dir(string $path)
+    {
+        $path = str_replace(root_path(), '', trim(path_transform($path), DIRECTORY_SEPARATOR));
+        $path = array_filter(explode(DIRECTORY_SEPARATOR, $path));
+        for ($i = count($path) - 1; $i >= 0; $i--) {
+            $dirPath = root_path() . implode(DIRECTORY_SEPARATOR, $path);
+            if (!is_dir($dirPath)) {
+                unset($path[$i]);
+                continue;
+            }
+            if (dir_is_empty($dirPath)) {
+                deldir($dirPath);
+                unset($path[$i]);
+            } else {
+                break;
+            }
+        }
+    }
+}
+
+if (!function_exists('dir_is_empty')) {
+    function dir_is_empty(string $dir): bool
+    {
+        $handle = opendir($dir);
+        while (false !== ($entry = readdir($handle))) {
+            if ($entry != "." && $entry != "..") {
+                closedir($handle);
+                return false;
+            }
+        }
+        closedir($handle);
+        return true;
+    }
+}
+
 if (!function_exists('__')) {
     /**
      * 语言翻译
@@ -319,5 +360,12 @@ if (!function_exists('set_timezone')) {
             ]);
             date_default_timezone_set($timezone);
         }
+    }
+}
+
+if (!function_exists('path_transform')) {
+    function path_transform(string $path)
+    {
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
     }
 }

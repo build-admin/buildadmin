@@ -303,6 +303,12 @@ INSERT INTO `__PREFIX__menu_rule` VALUES ('74', '71', 'button', '编辑', 'secur
 INSERT INTO `__PREFIX__menu_rule` VALUES ('75', '71', 'button', '删除', 'security/sensitiveData/del', '', '', null, '', '', '0', 'none', '', '81', '1', '1648065864', '1647806112');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('76', '0', 'menu', 'BuildAdmin', 'buildadmin/buildadmin', 'buildadmin', 'local-logo', 'link', 'https://doc.buildadmin.com', '', '0', 'none', '', '0', '0', '1651926977', '1648947396');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('77', '45', 'button', '添加', 'routine/config/add', '', '', null, '', '', '0', 'none', '', '88', '1', '1655375826', '1655375812');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('78', '0', 'menu', '模块市场', 'moduleStore/moduleStore', 'moduleStore', 'el-icon-GoodsFilled', 'tab', '', '/src/views/backend/module/index.vue', '1', 'none', '', '86', '1', '1661317584', '1661317424');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('79', '78', 'button', '查看', 'moduleStore/moduleStore/index', '', '', null, '', '', '0', 'none', '', '1', '1', '1648065864', '1647806112');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('80', '78', 'button', '安装', 'moduleStore/moduleStore/install', '', '', null, '', '', '0', 'none', '', '2', '1', '1648065864', '1647806112');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('81', '78', 'button', '调整状态', 'moduleStore/moduleStore/changeState', '', '', null, '', '', '0', 'none', '', '3', '1', '1648065864', '1647806112');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('82', '78', 'button', '卸载', 'moduleStore/moduleStore/uninstall', '', '', null, '', '', '0', 'none', '', '4', '1', '1648065864', '1647806112');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('83', '78', 'button', '更新', 'moduleStore/moduleStore/update', '', '', null, '', '', '0', 'none', '', '5', '1', '1648065864', '1647806112');
 COMMIT;
 
 -- ----------------------------

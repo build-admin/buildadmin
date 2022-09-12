@@ -76,7 +76,7 @@
         <el-empty v-else :image-size="80" :description="t('terminal.No mission yet')" />
 
         <el-button-group>
-            <el-button class="terminal-menu-item" icon="el-icon-MagicStick" v-blur @click="terminal.addTaskPM('test-install', false)">{{
+            <el-button class="terminal-menu-item" icon="el-icon-MagicStick" v-blur @click="terminal.addTaskPM('test', false)">{{
                 t('terminal.Test command')
             }}</el-button>
             <el-button class="terminal-menu-item" icon="el-icon-Download" v-blur @click="terminal.addTaskPM('web-install')">{{

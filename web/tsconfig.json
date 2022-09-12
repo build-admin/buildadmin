@@ -11,6 +11,7 @@
         "resolveJsonModule": true,
         "esModuleInterop": true,
         "lib": ["esnext", "dom"],
+        "isolatedModules": true,
         "baseUrl": "./",
         "paths": {
             "/@/*": ["src/*"]
