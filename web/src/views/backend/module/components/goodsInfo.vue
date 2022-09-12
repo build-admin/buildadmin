@@ -19,7 +19,9 @@
                             <div class="basic-item-title">价格</div>
                             <div class="basic-item-price">
                                 {{
-                                    state.goodsInfo.currency_select ? currency(state.goodsInfo.present_price, state.goodsInfo.currency_select) : '无'
+                                    typeof state.goodsInfo.currency_select != 'undefined'
+                                        ? currency(state.goodsInfo.present_price, state.goodsInfo.currency_select)
+                                        : '无'
                                 }}
                             </div>
                         </div>
