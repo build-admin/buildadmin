@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog v-model="state.dialog.baAccount" custom-class="ba-account-dialog" width="25%" title="会员信息">
+        <el-dialog v-model="state.dialog.baAccount" custom-class="ba-account-dialog" width="25%" :title="t('module.Member information')">
             <template v-if="baAccount.token">
                 <div class="userinfo">
                     <div class="user-avatar-box">
@@ -18,14 +18,14 @@
                         <span>{{ $t('user.user.balance') + ' ' + baAccount.money }}</span>
                     </p>
                     <div class="userinfo-buttons">
-                        <!-- <el-button v-blur size="default" type="primary">我的模块</el-button> -->
-                        <el-button @click="baAccount.logout()" v-blur size="default" type="warning">注销登录</el-button>
+                        <!-- <el-button v-blur size="default" type="primary">{{ $('module.My module') }}</el-button> -->
+                        <el-button @click="baAccount.logout()" v-blur size="default" type="warning">{{ $t('user.user.Logout login') }}</el-button>
                     </div>
                 </div>
             </template>
             <template v-else>
                 <div class="ba-login">
-                    <h3 class="ba-title">登录到 BuildAdmin 模块市场</h3>
+                    <h3 class="ba-title">{{ t('module.Log in to the buildadmin module marketplace') }}</h3>
                     <el-form
                         @keyup.enter="onBaAccountSubmit(baAccountFormRef)"
                         ref="baAccountFormRef"
@@ -37,7 +37,7 @@
                             v-model="user.form.username"
                             type="string"
                             prop="username"
-                            placeholder="请输入 BuildAdmin 账户名/邮箱/手机号"
+                            :placeholder="t('module.Please enter buildadmin account name or email')"
                             :input-attr="{
                                 size: 'large',
                             }"
@@ -46,7 +46,7 @@
                             v-model="user.form.password"
                             type="password"
                             prop="password"
-                            placeholder="请输入 BuildAdmin 账户密码"
+                            :placeholder="t('module.Please enter the buildadmin account password')"
                             :input-attr="{
                                 size: 'large',
                             }"
@@ -55,7 +55,13 @@
                         <el-form-item prop="captcha">
                             <el-row class="w100">
                                 <el-col :span="16">
-                                    <el-input v-model="user.form.captcha" size="large" clearable autocomplete="off" placeholder="请输入登录验证码">
+                                    <el-input
+                                        v-model="user.form.captcha"
+                                        size="large"
+                                        clearable
+                                        autocomplete="off"
+                                        :placeholder="t('module.Please enter the login verification code')"
+                                    >
                                     </el-input>
                                 </el-col>
                                 <el-col class="captcha-box" :span="8">
@@ -65,10 +71,10 @@
                         </el-form-item>
                         <el-form-item class="form-buttons">
                             <el-button @click="onBaAccountSubmit(baAccountFormRef)" :loading="user.loading" round type="primary" size="large">
-                                登录
+                                {{ t('module.Sign in') }}
                             </el-button>
                             <a target="_blank" class="ba-account-register" href="https://ba.buildadmin.com/#/user/login?type=register">
-                                <el-button round plain type="info" size="large"> 没有账户？去注册 </el-button>
+                                <el-button round plain type="info" size="large"> {{ t('module.Register') }} </el-button>
                             </a>
                         </el-form-item>
                     </el-form>
@@ -115,9 +121,9 @@ const user: {
 })
 
 const baAccountFormRules: Partial<Record<string, FormItemRule[]>> = reactive({
-    username: [buildValidatorData('required', '用户名')],
-    captcha: [buildValidatorData('required', '验证码')],
-    password: [buildValidatorData('required', '密码'), buildValidatorData('password')],
+    username: [buildValidatorData('required', t('user.user.User name'))],
+    captcha: [buildValidatorData('required', t('user.user.Verification Code'))],
+    password: [buildValidatorData('required', t('user.user.password')), buildValidatorData('password')],
 })
 
 const onBaAccountSubmit = (formRef: FormInstance | undefined = undefined) => {

@@ -2,35 +2,35 @@
     <div>
         <div class="install-conflict">
             <template v-if="state.common.fileConflict.length > 0">
-                <div class="install-title">文件冲突</div>
-                <el-table :data="state.common.fileConflict" stripe border style="width: 100%">
-                    <el-table-column prop="newFile" label="新文件" />
-                    <el-table-column prop="oldFile" label="已有文件" />
-                    <el-table-column prop="solution" width="200" label="处理方案" align="center">
+                <div class="install-title">{{ $t('module.File conflict') }}</div>
+                <el-table :data="state.common.fileConflict" stripe border :style="{ width: '100%' }">
+                    <el-table-column prop="newFile" :label="$t('module.new file')" />
+                    <el-table-column prop="oldFile" :label="$t('module.Existing files')" />
+                    <el-table-column prop="solution" width="200" :label="$t('module.Treatment scheme')" align="center">
                         <template #default="scope">
                             <el-select v-model="scope.row.solution">
-                                <el-option label="备份并覆盖已有文件" value="cover"></el-option>
-                                <el-option label="丢弃新文件" value="discard"></el-option>
+                                <el-option :label="$t('module.Backup and overwrite existing files')" value="cover"></el-option>
+                                <el-option :label="$t('module.Discard new file')" value="discard"></el-option>
                             </el-select>
                         </template>
                     </el-table-column>
                 </el-table>
             </template>
             <template v-if="state.common.dependConflict.length > 0">
-                <div class="install-title">依赖冲突</div>
+                <div class="install-title">{{ $t('module.Dependency conflict') }}</div>
                 <el-table :data="state.common.dependConflict" stripe border style="width: 100%">
-                    <el-table-column prop="env" label="环境">
+                    <el-table-column prop="env" :label="$t('module.environment')">
                         <template #default="scope">
                             <span v-if="scope.row.env">{{ $t('module.env ' + scope.row.env) }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="newDepend" label="新依赖" />
-                    <el-table-column prop="oldDepend" label="已有依赖" />
-                    <el-table-column prop="solution" width="200" label="处理方案" align="center">
+                    <el-table-column prop="newDepend" :label="$t('module.New dependency')" />
+                    <el-table-column prop="oldDepend" :label="$t('module.Existing dependencies')" />
+                    <el-table-column prop="solution" width="200" :label="$t('module.Treatment scheme')" align="center">
                         <template #default="scope">
                             <el-select v-model="scope.row.solution">
-                                <el-option label="覆盖已有依赖" value="cover"></el-option>
-                                <el-option label="不使用新依赖" value="discard"></el-option>
+                                <el-option :label="$t('module.Overwrite existing dependencies')" value="cover"></el-option>
+                                <el-option :label="$t('module.Do not use new dependencies')" value="discard"></el-option>
                             </el-select>
                         </template>
                     </el-table-column>

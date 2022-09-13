@@ -32,11 +32,11 @@
 
                 <!-- 等待热更新 -->
                 <div v-if="state.common.type == 'waitFullReload'" class="full-reload-tips">
-                    若您未在
+                    {{ $t('module.hmrTips1') }}
                     <el-link target="_blank" type="primary" href="https://wonderful-code.gitee.io/guide/other/developerMustSee.html#开发环境">
-                        开发环境
+                        {{ $t('module.hmrTips2') }}
                     </el-link>
-                    下或页面未自动刷新，请<el-link type="primary" @click="triggerFullReload">点击我继续</el-link>
+                    {{ $t('module.hmrTips3') }}<el-link type="primary" @click="triggerFullReload">{{ $t('module.hmrTips4') }}</el-link>
                 </div>
             </el-scrollbar>
         </el-dialog>

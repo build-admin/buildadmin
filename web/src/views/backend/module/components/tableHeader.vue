@@ -7,35 +7,35 @@
                     <Icon name="fa fa-refresh" color="#ffffff" size="14" />
                 </el-button>
                 <el-button-group class="ml10">
-                    <el-button @click="uploadInstall" title="上传ZIP包安装" v-blur type="primary">
+                    <el-button @click="uploadInstall" :title="t('module.Upload zip package for installation')" v-blur type="primary">
                         <Icon name="fa fa-upload" color="#ffffff" size="14" />
-                        <span class="table-header-operate-text">上传安装</span>
+                        <span class="table-header-operate-text">{{ t('module.Upload installation') }}</span>
                     </el-button>
                     <el-button
                         @click="localModules"
                         :class="state.table.onlyLocal ? 'local-active' : ''"
-                        title="已上传/安装的模块"
+                        :title="t('module.Uploaded / installed modules')"
                         v-blur
                         type="primary"
                     >
                         <Icon name="fa fa-desktop" color="#ffffff" size="14" />
-                        <span class="table-header-operate-text">本地模块</span>
+                        <span class="table-header-operate-text">{{ t('module.Local module') }}</span>
                     </el-button>
                 </el-button-group>
                 <el-button-group class="ml10">
                     <el-button @click="navigateTo('https://wonderful-code.gitee.io/senior/module/start.html')" v-blur type="success">
                         <Icon name="fa fa-cloud-upload" color="#ffffff" size="14" />
-                        <span class="table-header-operate-text">发布模块</span>
+                        <span class="table-header-operate-text">{{ t('module.Publishing module') }}</span>
                     </el-button>
                     <el-button @click="navigateTo('https://wonderful-code.gitee.io/guide/other/appendix/getPoints.html')" v-blur type="success">
                         <Icon name="fa fa-rocket" color="#ffffff" size="14" />
-                        <span class="table-header-operate-text">获得积分</span>
+                        <span class="table-header-operate-text">{{ t('module.Get points') }}</span>
                     </el-button>
                 </el-button-group>
 
                 <el-button v-blur class="ml10" @click="state.dialog.baAccount = true" type="success">
                     <Icon name="fa fa-user-o" color="#ffffff" size="14" />
-                    <span class="table-header-operate-text">会员信息</span>
+                    <span class="table-header-operate-text">{{ t('module.Member information') }}</span>
                 </el-button>
             </div>
             <div class="table-search">
@@ -43,7 +43,7 @@
                     v-model="state.table.params.quickSearch"
                     class="xs-hidden"
                     @input="debounce(onSearchInput, 500)()"
-                    placeholder="搜索其实很简单"
+                    :placeholder="t('module.Search is actually very simple')"
                 />
             </div>
         </div>
@@ -53,8 +53,10 @@
 <script setup lang="ts">
 import { state } from '../store'
 import { loadData, onRefreshTableData } from '../index'
+import { useI18n } from 'vue-i18n'
 import { debounce } from '/@/utils/common'
 
+const { t } = useI18n()
 const localModules = () => {
     state.table.onlyLocal = !state.table.onlyLocal
     loadData()
@@ -72,7 +74,7 @@ const navigateTo = (url: string) => {
 const uploadInstall = () => {
     state.dialog.common = true
     state.common.quickClose = true
-    state.common.dialogTitle = '上传安装'
+    state.common.dialogTitle = t('module.Upload installation')
     state.common.type = 'uploadInstall'
 }
 </script>

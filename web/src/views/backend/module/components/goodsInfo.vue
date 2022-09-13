@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog v-model="state.dialog.goodsInfo" custom-class="goods-info-dialog" title="详细信息" width="60%">
+        <el-dialog v-model="state.dialog.goodsInfo" custom-class="goods-info-dialog" :title="t('module.detailed information')" width="60%">
             <el-scrollbar v-loading="state.loading.goodsInfo" :key="state.goodsInfo.uid" :height="500">
                 <div class="goods-info">
                     <div class="goods-images">
@@ -16,40 +16,40 @@
                             <el-tag v-for="(tag, idx) in state.goodsInfo.tags" :key="idx" :type="tag.type">{{ tag.name }}</el-tag>
                         </div>
                         <div class="basic-item">
-                            <div class="basic-item-title">价格</div>
+                            <div class="basic-item-title">{{ t('module.Price') }}</div>
                             <div class="basic-item-price">
                                 {{
                                     typeof state.goodsInfo.currency_select != 'undefined'
                                         ? currency(state.goodsInfo.present_price, state.goodsInfo.currency_select)
-                                        : '无'
+                                        : '-'
                                 }}
                             </div>
                         </div>
                         <div class="basic-item">
-                            <div class="basic-item-title">最后更新</div>
-                            <div class="basic-item-content">{{ state.goodsInfo.updatetime ? timeFormat(state.goodsInfo.updatetime) : '无' }}</div>
+                            <div class="basic-item-title">{{ t('module.Last updated') }}</div>
+                            <div class="basic-item-content">{{ state.goodsInfo.updatetime ? timeFormat(state.goodsInfo.updatetime) : '-' }}</div>
                         </div>
                         <div class="basic-item">
-                            <div class="basic-item-title">发布时间</div>
-                            <div class="basic-item-content">{{ state.goodsInfo.createtime ? timeFormat(state.goodsInfo.createtime) : '无' }}</div>
+                            <div class="basic-item-title">{{ t('module.Published on') }}</div>
+                            <div class="basic-item-content">{{ state.goodsInfo.createtime ? timeFormat(state.goodsInfo.createtime) : '-' }}</div>
                         </div>
                         <div v-if="!installButtonState.stateSwitch.includes(state.goodsInfo.state)" class="basic-item">
-                            <div class="basic-item-title">下载次数</div>
-                            <div class="basic-item-content">{{ state.goodsInfo.downloads ? state.goodsInfo.downloads : '无' }}</div>
+                            <div class="basic-item-title">{{ t('module.amount of downloads') }}</div>
+                            <div class="basic-item-content">{{ state.goodsInfo.downloads ? state.goodsInfo.downloads : '-' }}</div>
                         </div>
                         <div class="basic-item">
-                            <div class="basic-item-title">模块分类</div>
-                            <div class="basic-item-content">{{ state.goodsInfo.category ? state.goodsInfo.category.name : '无' }}</div>
+                            <div class="basic-item-title">{{ t('module.Module classification') }}</div>
+                            <div class="basic-item-content">{{ state.goodsInfo.category ? state.goodsInfo.category.name : '-' }}</div>
                         </div>
                         <div class="basic-item">
-                            <div class="basic-item-title">开发者主页</div>
+                            <div class="basic-item-title">{{ t('module.Developer Homepage') }}</div>
                             <div class="basic-item-content">
-                                <a v-if="state.goodsInfo.author_url" :href="state.goodsInfo.author_url">点击访问</a>
-                                <span v-else>无</span>
+                                <a v-if="state.goodsInfo.author_url" :href="state.goodsInfo.author_url">{{ t('module.Click to access') }}</a>
+                                <span v-else>-</span>
                             </div>
                         </div>
                         <div v-if="installButtonState.stateSwitch.includes(state.goodsInfo.state)" class="basic-item">
-                            <div class="basic-item-title">模块状态</div>
+                            <div class="basic-item-title">{{ t('module.Module status') }}</div>
                             <div class="basic-item-content">
                                 <el-switch
                                     @change="onChangeState"
@@ -68,7 +68,7 @@
                                 "
                             >
                                 <el-button class="basic-button-demo" type="primary">
-                                    <span class="basic-button-dropdown-span">查看演示</span>
+                                    <span class="basic-button-dropdown-span">{{ t('module.View demo') }}</span>
                                     <Icon color="#ffffff" size="16" name="el-icon-ArrowDown" />
                                 </el-button>
                                 <template #dropdown>
@@ -81,7 +81,7 @@
                                         >
                                             <el-popover
                                                 placement="right"
-                                                title="扫码预览"
+                                                :title="t('module.Code scanning Preview')"
                                                 trigger="hover"
                                                 :disabled="demo.image ? false : true"
                                                 :width="174"
@@ -106,7 +106,7 @@
                                 class="basic-button-item"
                                 type="danger"
                             >
-                                立即购买
+                                {{ t('module.Buy now') }}
                             </el-button>
                             <el-button
                                 v-if="
@@ -119,7 +119,7 @@
                                 class="basic-button-item"
                                 type="success"
                             >
-                                立即安装
+                                {{ t('module.Install now') }}
                             </el-button>
                             <el-button
                                 v-if="installButtonState.continueInstallation.includes(state.goodsInfo.state)"
@@ -129,7 +129,7 @@
                                 class="basic-button-item"
                                 type="success"
                             >
-                                继续安装
+                                {{ t('module.continue installation') }}
                             </el-button>
                             <el-button
                                 v-if="installButtonState.alreadyInstalled.includes(state.goodsInfo.state)"
@@ -137,7 +137,7 @@
                                 :disabled="true"
                                 class="basic-button-item"
                             >
-                                已安装 v{{ state.goodsInfo.version }}
+                                {{ t('module.installed') }} v{{ state.goodsInfo.version }}
                             </el-button>
                             <el-button
                                 v-if="state.goodsInfo.new_version && installButtonState.updateButton.includes(state.goodsInfo.state)"
@@ -147,7 +147,7 @@
                                 class="basic-button-item"
                                 type="success"
                             >
-                                更新
+                                {{ t('module.to update') }}
                             </el-button>
                             <el-button
                                 v-if="installButtonState.stateSwitch.includes(state.goodsInfo.state)"
@@ -157,7 +157,7 @@
                                 class="basic-button-item"
                                 type="danger"
                             >
-                                卸载
+                                {{ t('module.uninstall') }}
                             </el-button>
                         </div>
                     </div>
@@ -167,12 +167,12 @@
                             <div class="developer-name">
                                 <h3 class="developer-nickname">{{ state.goodsInfo.developer.nickname }}</h3>
                                 <div class="developer-group">
-                                    {{ state.goodsInfo.developer.group ? state.goodsInfo.developer.group : '无' }}
+                                    {{ state.goodsInfo.developer.group ? state.goodsInfo.developer.group : '-' }}
                                 </div>
                             </div>
                         </div>
                         <div v-if="state.goodsInfo.qq" class="developer-contact">
-                            <h4 class="developer-info-title">联系开发者</h4>
+                            <h4 class="developer-info-title">{{ t('module.Contact developer') }}</h4>
                             <div class="contact-item">
                                 <a target="_blank" :href="'http://wpa.qq.com/msgrd?v=3&uin=' + state.goodsInfo.qq + '&site=qq&menu=yes'"
                                     >QQ：{{ state.goodsInfo.qq }}</a
@@ -180,7 +180,7 @@
                             </div>
                         </div>
                         <div class="developer-recommend">
-                            <h4 class="developer-info-title">TA的其他作品</h4>
+                            <h4 class="developer-info-title">{{ t('module.Other works of developers') }}</h4>
                             <div v-if="state.goodsInfo.developer.goods.length > 0" class="recommend-goods">
                                 <div
                                     v-for="(goods_item, idx) in state.goodsInfo.developer.goods"
@@ -192,7 +192,7 @@
                                     <div class="recommend-goods-title">{{ goods_item.title }}</div>
                                 </div>
                             </div>
-                            <div v-else class="data-empty">没有更多作品了</div>
+                            <div v-else class="data-empty">{{ t('module.There are no more works') }}</div>
                         </div>
                     </div>
                 </div>
@@ -212,6 +212,7 @@ import { timeFormat } from '/@/components/table'
 import { isEmpty } from 'lodash'
 import { ElMessageBox } from 'element-plus'
 import { useBaAccount } from '/@/stores/baAccount'
+import { useI18n } from 'vue-i18n'
 import Buy from './buy.vue'
 
 const installButtonState = {
@@ -228,6 +229,7 @@ const installButtonState = {
     buy: [moduleInstallState.UNINSTALLED],
 }
 
+const { t } = useI18n()
 const openDemo = (url: string, open: boolean) => {
     if (!open || !url) return
     window.open(url)
@@ -275,9 +277,9 @@ const onUpdate = (uid: string, order: number) => {
                         if (loginExpired(res)) return
                     })
             } else {
-                ElMessageBox.confirm('更新前需要先禁用该模块，立即禁用？', '提示', {
-                    confirmButtonText: '禁用并更新',
-                    cancelButtonText: '取消',
+                ElMessageBox.confirm(t('module.You need to disable this module before updating Do you want to disable it now?'), t('Reminder'), {
+                    confirmButtonText: t('module.Disable and update'),
+                    cancelButtonText: t('Cancel'),
                     type: 'warning',
                 })
                     .then(() => {

@@ -2,25 +2,23 @@
     <div>
         <div class="confirm-file-conflict">
             <template v-if="state.common.disableConflictFile.length">
-                <div class="conflict-title">文件冲突</div>
-                <el-alert
-                    :closable="false"
-                    :center="true"
-                    title="检测到以下的模块文件有更新，禁用时将自动覆盖，请注意备份。"
-                    class="alert-warning"
-                    type="warning"
-                ></el-alert>
+                <div class="conflict-title">{{ $t('module.File conflict') }}</div>
+                <el-alert :closable="false" :center="true" :title="$t('module.Update warning')" class="alert-warning" type="warning"></el-alert>
                 <el-table :data="state.common.disableConflictFile" stripe border :style="{ width: '100%', marginBottom: '20px' }">
-                    <el-table-column prop="file" label="冲突文件" />
+                    <el-table-column prop="file" :label="$t('module.Conflict file')" />
                 </el-table>
             </template>
             <template v-if="state.common.disableDependConflict">
-                <div class="conflict-title">依赖冲突</div>
-                <div class="depend-conflict-tips">禁用后，系统依赖项将被还原到模块<span class="text-bold">安装之前</span>，请注意备份！</div>
+                <div class="conflict-title">{{ $t('module.Dependency conflict') }}</div>
+                <div class="depend-conflict-tips">
+                    {{ $t('module.Dependency recovery warning 1') }}
+                    <span class="text-bold">{{ $t('module.Dependency recovery warning 2') }}</span>
+                    {{ $t('module.Dependency recovery warning 3') }}
+                </div>
                 <el-alert
                     :closable="false"
                     :center="true"
-                    title="composer.json 和 web/package.json 文件将被还原"
+                    :title="$t('module.composer and package The JSON file will be restored')"
                     class="alert-warning"
                     type="error"
                 ></el-alert>
@@ -36,9 +34,9 @@
                 type="primary"
                 @click="onDisable(true)"
             >
-                确认禁用模块
+                {{ $t('module.Confirm to disable the module') }}
             </el-button>
-            <el-button v-blur class="center-button" size="large" @click="cancelDisable()"> 取消 </el-button>
+            <el-button v-blur class="center-button" size="large" @click="cancelDisable()"> {{ $t('Cancel') }} </el-button>
         </div>
     </div>
 </template>

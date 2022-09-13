@@ -2,7 +2,7 @@
     <div>
         <el-tabs
             v-loading="state.loading.table"
-            element-loading-text="加载中..."
+            :element-loading-text="$t('module.Loading')"
             v-model="state.table.params.activeTab"
             type="border-card"
             class="store-tabs"
@@ -26,7 +26,7 @@
                                 </div>
                                 <div class="goods-data">
                                     <span class="download-count">
-                                        <Icon name="fa fa-download" color="#c0c4cc" size="13" /> {{ item.downloads ? item.downloads : '无' }}
+                                        <Icon name="fa fa-download" color="#c0c4cc" size="13" /> {{ item.downloads ? item.downloads : '-' }}
                                     </span>
                                     <span v-if="item.state === moduleInstallState.UNINSTALLED" class="goods-price">
                                         <span class="original-price">{{ currency(item.original_price, item.currency_select) }}</span>
@@ -40,7 +40,7 @@
                         </div>
                     </div>
                 </template>
-                <el-empty v-else class="modules-empty" description="没有更多了..." />
+                <el-empty v-else class="modules-empty" :description="$t('module.No more')" />
             </el-tab-pane>
         </el-tabs>
     </div>

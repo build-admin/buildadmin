@@ -1,46 +1,66 @@
 <template>
     <div class="install-done">
         <div class="install-done-title">
-            <span v-if="state.common.moduleState == moduleInstallState.INSTALLED">恭喜，模块安装已完成。</span>
-            <span v-else-if="state.common.moduleState == moduleInstallState.DISABLE">模块已禁用。</span>
-            <span v-else-if="state.common.moduleState == moduleInstallState.DEPENDENT_WAIT_INSTALL">恭喜，模块的代码已经准备好了。</span>
-            <span v-else>未知状态。</span>
+            <span v-if="state.common.moduleState == moduleInstallState.INSTALLED">
+                {{ t('module.Congratulations, module installation is complete') }}
+            </span>
+            <span v-else-if="state.common.moduleState == moduleInstallState.DISABLE">{{ t('module.Module is disabled') }}</span>
+            <span v-else-if="state.common.moduleState == moduleInstallState.DEPENDENT_WAIT_INSTALL">
+                {{ t('module.Congratulations, the code of the module is ready') }}
+            </span>
+            <span v-else>{{ t('module.Unknown state') }}</span>
         </div>
         <div class="install-tis-box">
             <div v-if="state.common.dependInstallState != 'none'" class="depend-box">
                 <div class="depend-loading" v-if="state.common.dependInstallState == 'executing'" v-loading="true"></div>
                 <div class="depend-tis">
                     <div v-if="state.common.dependInstallState == 'executing'">
-                        <span class="color-red">请勿刷新页面！</span>
-                        <span v-if="state.common.moduleState == moduleInstallState.DISABLE">检测到依赖项有新的调整</span>
-                        <span v-else-if="state.common.moduleState == moduleInstallState.DEPENDENT_WAIT_INSTALL">本模块添加了新的依赖项</span>，
-                        <span>系统内置终端正在自动安装这些依赖，请稍等~</span>
-                        <span class="span-a" @click="showTerminal">查看进度</span>
+                        <span class="color-red">{{ t('module.Do not refresh the page!') }}</span>
+                        <span v-if="state.common.moduleState == moduleInstallState.DISABLE">
+                            {{ t('module.New adjustment of dependency detected') }}
+                        </span>
+                        <span v-else-if="state.common.moduleState == moduleInstallState.DEPENDENT_WAIT_INSTALL">
+                            {{ t('module.This module adds new dependencies') }} </span
+                        >，
+                        <span>
+                            {{ t('module.The built-in terminal of the system is automatically installing these dependencies, please wait~') }}
+                        </span>
+                        <span class="span-a" @click="showTerminal">{{ t('module.View progress') }}</span>
                     </div>
-                    <div v-if="state.common.dependInstallState == 'success'" class="color-green">依赖已安装完成~</div>
+                    <div v-if="state.common.dependInstallState == 'success'" class="color-green">
+                        {{ t('module.Dependency installation completed~') }}
+                    </div>
                     <div v-if="state.common.dependInstallState == 'fail'" class="exec-fail color-red">
-                        依赖安装失败，请点击<span class="span-a" @click="showTerminal">终端</span>中的重试按钮，您也可以查看
+                        {{ t('module.Dependency installation fail 1') }}
+                        <span class="span-a" @click="showTerminal">{{ t('module.Dependency installation fail 2') }}</span>
+                        {{ t('module.Dependency installation fail 3') }}
                         <el-link target="_blank" type="primary" href="https://wonderful-code.gitee.io/guide/install/manualOperation.html">
-                            手动完成未尽事宜
+                            {{ t('module.Dependency installation fail 4') }}
                         </el-link>
                     </div>
                 </div>
             </div>
-            <div v-else-if="state.common.moduleState == moduleInstallState.INSTALLED" class="depend-tis">本模块没有添加新的依赖项。</div>
-            <div v-else>系统依赖无调整。</div>
+            <div v-else-if="state.common.moduleState == moduleInstallState.INSTALLED" class="depend-tis">
+                {{ t('module.This module does not add new dependencies') }}
+            </div>
+            <div v-else>{{ t('module.There is no adjustment for system dependency') }}</div>
         </div>
         <div class="install-tis-box">
             <div class="install-tis">
-                请{{ state.common.moduleState == moduleInstallState.DISABLE ? '' : '在安装结束后' }}手动的清理系统和浏览器缓存，并刷新页面。
+                {{ t('module.please') }}{{ state.common.moduleState == moduleInstallState.DISABLE ? '' : t('module.After installation 1') }}
+                {{ t('module.Manually clean up the system and browser cache, and refresh the page') }}
             </div>
         </div>
         <div class="install-tis-box">
             <div class="install-form">
                 <FormItem
-                    :label="(state.common.moduleState == moduleInstallState.DISABLE ? '' : '安装结束后') + '自动执行重新发布命令？'"
+                    :label="
+                        (state.common.moduleState == moduleInstallState.DISABLE ? '' : t('module.After installation 2')) +
+                        t('module.Automatically execute reissue command?')
+                    "
                     v-model="form.rebuild"
                     type="radio"
-                    :data="{ content: { 0: '否', 1: '是' }, childrenAttr: { border: true } }"
+                    :data="{ content: { 0: t('module.no'), 1: t('module.yes') }, childrenAttr: { border: true } }"
                 />
             </div>
         </div>
@@ -52,7 +72,7 @@
             type="primary"
             @click="onSubmitInstallDone"
         >
-            {{ state.common.moduleState == moduleInstallState.DISABLE ? '完成' : '安装结束' }}
+            {{ state.common.moduleState == moduleInstallState.DISABLE ? t('complete') : t('module.End of installation') }}
         </el-button>
     </div>
 </template>
@@ -64,7 +84,9 @@ import { moduleInstallState } from '../types'
 import { useTerminal } from '/@/stores/terminal'
 import FormItem from '/@/components/formItem/index.vue'
 import { taskStatus } from '/@/components/terminal/constant'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const terminal = useTerminal()
 const form = reactive({
     rebuild: 0,

@@ -1,17 +1,19 @@
 <template>
     <div class="upload-install">
         <div class="tips">
-            <div class="title">请您务必确认模块包文件来自官方渠道或经由官方认证的模块作者，否则系统可能被破坏，因为：</div>
-            <div class="tip-item">1. 模块可以修改和新增系统文件</div>
-            <div class="tip-item">2. 模块可以执行sql命令和代码</div>
-            <div class="tip-item">3. 模块可以安装新的前后端依赖</div>
+            <div class="title">{{ $t('module.Local upload warning') }}</div>
+            <div class="tip-item">1. {{ $t('module.The module can modify and add system files') }}</div>
+            <div class="tip-item">2. {{ $t('module.The module can execute sql commands and codes') }}</div>
+            <div class="tip-item">3. {{ $t('module.The module can install new front and rear dependencies') }}</div>
         </div>
         <el-upload class="upload-module" :show-file-list="false" accept=".zip" drag :auto-upload="false" @change="uploadModule">
             <template v-if="state.uploadState == 'wait-file'">
                 <Icon size="50px" color="#909399" name="el-icon-UploadFilled" />
-                <div class="el-upload__text">拖拽模块包文件到此处或 <em>点击我上传</em></div>
+                <div class="el-upload__text">
+                    {{ $t('module.Drag the module package file here') }} <em>{{ $t('module.Click me to upload') }}</em>
+                </div>
             </template>
-            <el-result v-else icon="success" sub-title="已上传，即将开始安装，请稍等..."></el-result>
+            <el-result v-else icon="success" :sub-title="$t('module.Uploaded, installation is about to start, please wait')"></el-result>
         </el-upload>
     </div>
 </template>
