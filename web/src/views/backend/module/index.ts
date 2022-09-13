@@ -8,6 +8,7 @@ import { taskStatus } from '/@/components/terminal/constant'
 import { moduleInstallState, moduleState, MODULE_TEMP, VITE_FULL_RELOAD } from './types'
 import { uuid } from '/@/utils/random'
 import { fullUrl } from '/@/utils/common'
+import router from '/@/router'
 
 export const loadData = () => {
     state.loading.table = true
@@ -177,6 +178,20 @@ export const showCommonLoading = (loadingTitle: moduleState['common']['loadingTi
     state.common.loadingComponentKey = uuid()
 }
 
+export const showWaitFullReload = (vitereload = 0) => {
+    Session.remove(VITE_FULL_RELOAD)
+    state.dialog.common = true
+    state.common.dialogTitle = '等待热更新'
+    showCommonLoading('wait-full-reload')
+    state.common.type = 'waitFullReload'
+    if (vitereload == 2) triggerFullReload()
+}
+
+export const triggerFullReload = () => {
+    Session.set(VITE_FULL_RELOAD, true)
+    router.go(0)
+}
+
 export const onInstall = (uid: string, id: number) => {
     state.dialog.common = true
     showCommonLoading('init')
@@ -230,12 +245,12 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
     postInstallModule(uid, id, extend)
         .then((res) => {
             state.common.dialogTitle = '安装完成'
-            if (parseInt(res.data.data.fullreload) === 0 || viteFullReload) {
+            if (res.data.data.vitereload == 0 || viteFullReload) {
                 state.common.moduleState = moduleInstallState.INSTALLED
                 state.common.type = 'done'
                 clearTempStorage()
             } else {
-                showCommonLoading('wait-full-reload')
+                showWaitFullReload(res.data.data.vitereload)
             }
         })
         .catch((res) => {
@@ -248,10 +263,8 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
                 state.common.dependConflict = res.data.dependConflict
                 Session.remove(VITE_FULL_RELOAD)
             } else if (res.code == -2) {
-                if (parseInt(res.data.fullreload) === 1 && !viteFullReload) {
-                    state.common.dialogTitle = '等待热更新'
-                    showCommonLoading('wait-full-reload')
-                    state.common.type = 'waitFullReload'
+                if (res.data.vitereload != 0 && !viteFullReload) {
+                    showWaitFullReload(res.data.vitereload)
                     return
                 }
 
@@ -308,11 +321,9 @@ export const onDisable = (confirmConflict = false) => {
     state.common.disableParams['confirmConflict'] = confirmConflict ? 1 : 0
     changeState(state.common.disableParams)
         .then((res) => {
-            if (res.data.info?.fullreload) {
-                state.common.dialogTitle = '请稍等'
-                showCommonLoading('wait-full-reload')
-                state.common.type = 'waitFullReload'
+            if (res.data.info?.vitereload != 0) {
                 Session.set(MODULE_TEMP, { type: 'clean-cache' })
+                showWaitFullReload(res.data.info.vitereload)
                 return
             }
             ElNotification({
@@ -324,7 +335,6 @@ export const onDisable = (confirmConflict = false) => {
         })
         .catch((res) => {
             if (res.code == -1) {
-                state.goodsInfo.enable = !state.goodsInfo.enable
                 state.dialog.common = true
                 state.common.dialogTitle = '处理冲突'
                 state.common.type = 'disableConfirmConflict'
@@ -345,26 +355,20 @@ export const onDisable = (confirmConflict = false) => {
                     type: 'disable',
                     commands: res.data.wait_install,
                 }
-                if (parseInt(res.data.fullreload) === 1) {
-                    state.common.dialogTitle = '等待热更新'
-                    showCommonLoading('wait-full-reload')
-                    state.common.type = 'waitFullReload'
-                    Session.set(MODULE_TEMP, commandsData)
-                } else {
+                if (res.data.vitereload == 0) {
                     execCommand(commandsData)
                     onRefreshTableData()
+                } else {
+                    Session.set(MODULE_TEMP, commandsData)
+                    showWaitFullReload(res.data.vitereload)
                 }
             } else if (res.code == -3) {
                 // 更新
-                if (parseInt(res.data.fullreload) === 1) {
-                    state.dialog.common = true
-                    state.common.dialogTitle = '请稍等'
-                    showCommonLoading('wait-full-reload')
-                    state.common.type = 'waitFullReload'
-                    clearTempStorage()
-                    Session.set(MODULE_TEMP, { uid: state.goodsInfo.uid, id: state.goodsInfo.purchased, type: 'install' })
-                } else {
+                if (res.data.vitereload == 0) {
                     onInstall(state.goodsInfo.uid, state.goodsInfo.purchased)
+                } else {
+                    Session.set(MODULE_TEMP, { uid: state.goodsInfo.uid, id: state.goodsInfo.purchased, type: 'install' })
+                    showWaitFullReload(res.data.vitereload)
                 }
             } else {
                 ElNotification({

@@ -360,7 +360,7 @@ class Manage
             $this->update($token, $order);
             throw new moduleException('upadte', -3, [
                 'uid'        => $this->uid,
-                'fullreload' => $info['fullreload'],
+                'vitereload' => $info['vitereload'],
             ]);
         }
 
@@ -368,7 +368,7 @@ class Manage
             throw new moduleException('dependent wait install', -2, [
                 'uid'          => $this->uid,
                 'wait_install' => $dependWaitInstall,
-                'fullreload'   => $info['fullreload'],
+                'vitereload'   => $info['vitereload'],
             ]);
         }
         return $info;
@@ -565,7 +565,7 @@ class Manage
                     'uid'          => $this->uid,
                     'state'        => self::DEPENDENT_WAIT_INSTALL,
                     'wait_install' => $waitInstall,
-                    'fullreload'   => $info['fullreload'],
+                    'vitereload'   => $info['vitereload'],
                 ]);
             } else {
                 $this->setInfo([

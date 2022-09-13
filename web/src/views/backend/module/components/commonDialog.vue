@@ -36,7 +36,7 @@
                     <el-link target="_blank" type="primary" href="https://wonderful-code.gitee.io/guide/other/developerMustSee.html#开发环境">
                         开发环境
                     </el-link>
-                    下或页面未自动刷新，请<el-link type="primary" @click="nonDevMode">点击我继续</el-link>
+                    下或页面未自动刷新，请<el-link type="primary" @click="triggerFullReload">点击我继续</el-link>
                 </div>
             </el-scrollbar>
         </el-dialog>
@@ -45,18 +45,11 @@
 
 <script setup lang="ts">
 import { state } from '../store'
-import router from '/@/router'
-import { Session } from '/@/utils/storage'
-import { VITE_FULL_RELOAD } from '../types'
+import { triggerFullReload } from '../index'
 import InstallConflict from './installConflict.vue'
 import CommonDone from './commonDone.vue'
 import UploadInstall from './uploadInstall.vue'
 import ConfirmFileConflict from './confirmFileConflict.vue'
-
-const nonDevMode = () => {
-    Session.set(VITE_FULL_RELOAD, true)
-    router.go(0)
-}
 </script>
 
 <style scoped lang="scss">

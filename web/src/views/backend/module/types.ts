@@ -13,7 +13,7 @@ export interface moduleInfo {
     title: string
     version: string
     state: number
-    fullreload: number
+    vitereload: number
     website: string
     stateTag: {
         type: string

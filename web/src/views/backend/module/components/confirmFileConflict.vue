@@ -38,7 +38,7 @@
             >
                 确认禁用模块
             </el-button>
-            <el-button v-blur class="center-button" size="large" @click="state.dialog.common = false"> 取消 </el-button>
+            <el-button v-blur class="center-button" size="large" @click="cancelDisable()"> 取消 </el-button>
         </div>
     </div>
 </template>
@@ -46,6 +46,11 @@
 <script setup lang="ts">
 import { state } from '../store'
 import { onDisable } from '../index'
+
+const cancelDisable = () => {
+    state.dialog.common = false
+    state.goodsInfo.enable = true
+}
 </script>
 
 <style scoped lang="scss">
