@@ -43,14 +43,11 @@ class Attachment extends Model
             ['storage', '=', $model->storage],
         ])->find();
         if ($repeat) {
-            //判断文件是否存在
-            $distPath      = root_path() . 'public' . DIRECTORY_SEPARATOR;
-            $storageFile    = $distPath . $repeat['url'];
-            if (!file_exists($storageFile)){
-                //删除记录
+            $storageFile = path_transform(public_path() . ltrim($repeat['url'], '/'));
+            if (!file_exists($storageFile)) {
                 $repeat->delete();
                 return true;
-            }else{
+            } else {
                 $repeat->quote++;
                 $repeat->lastuploadtime = time();
                 $repeat->save();
