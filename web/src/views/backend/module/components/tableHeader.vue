@@ -91,7 +91,7 @@ const uploadInstall = () => {
     align-items: center;
     padding: 10px;
     margin-bottom: 10px;
-    background-color: var(--el-color-white);
+    background-color: var(--ba-bg-color-overlay);
     border-radius: var(--el-border-radius-base);
     border-top-left-radius: 0;
     border-top-right-radius: 0;

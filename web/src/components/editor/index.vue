@@ -186,4 +186,13 @@ watch(
 .wangeditor-toolbar {
     border-bottom: 1px solid var(--el-border-color-lighter);
 }
+
+// 暗黑样式
+@at-root .dark {
+    .ba-editor {
+        --w-e-textarea-bg-color: var(--ba-bg-color-overlay);
+        --w-e-toolbar-bg-color: var(--ba-bg-color-overlay);
+        --w-e-toolbar-border-color: var(--el-color-info-light-3);
+    }
+}
 </style>
