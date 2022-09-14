@@ -129,7 +129,7 @@
                                 </el-input>
                             </el-form-item>
                             <el-form-item :label="t('layouts.Side menu default icon')">
-                                <selector
+                                <IconSelector
                                     @change="onCommitMenuDefaultIcon($event, 'menuDefaultIcon')"
                                     :model-value="configStore.layout.menuDefaultIcon"
                                 />
@@ -199,7 +199,7 @@
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 import { useRouter } from 'vue-router'
-import selector from '/@/components/icon/selector.vue'
+import IconSelector from '/@/components/baInput/components/iconSelector.vue'
 import { STORE_CONFIG, BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
 import { Local, Session } from '/@/utils/storage'
 import { useI18n } from 'vue-i18n'
