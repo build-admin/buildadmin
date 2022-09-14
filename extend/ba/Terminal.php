@@ -59,7 +59,7 @@ class Terminal
     /**
      * 命令执行实时输出内容
      */
-    protected $outputContent = null;
+    protected $outputContent = '';
 
     /**
      * 自动构建的前端文件的 outDir（相对于根目录）
@@ -194,6 +194,7 @@ class Terminal
                     $this->outputContent = $contents;
                 }
             }
+            usleep(500000);
         }
         foreach ($this->pipes as $pipe) {
             fclose($pipe);
