@@ -71,7 +71,7 @@
     <div v-if="field.render == 'url' && fieldValue">
         <el-input :model-value="fieldValue" :placeholder="t('Link address')">
             <template #append>
-                <el-button @click="typeof field.click == 'function' ? field.click(fieldValue, field) : openUrl(fieldValue, field)">
+                <el-button @click="typeof field.click == 'function' ? field.click(row, fieldValue, field) : openUrl(fieldValue, field)">
                     <Icon :color="'#606266'" name="el-icon-Position" />
                 </el-button>
             </template>
