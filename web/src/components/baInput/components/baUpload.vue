@@ -86,6 +86,7 @@ const state: {
     // el-upload的属性对象
     attr: Partial<UploadProps>
     isExceed: boolean
+    uploading: number
 } = reactive({
     defaultReturnType: 'string',
     preview: {
@@ -96,6 +97,7 @@ const state: {
     fileList: [],
     attr: {},
     isExceed: false,
+    uploading: 0,
 })
 
 const onChange = (file: UploadFileExt) => {
@@ -103,6 +105,7 @@ const onChange = (file: UploadFileExt) => {
     let fd = new FormData()
     fd.append('file', file.raw!)
     fd = formDataAppend(fd)
+    state.uploading++
     fileUpload(fd, { uuid: uuid() })
         .then((res) => {
             if (res.code == 1) {
@@ -118,6 +121,7 @@ const onChange = (file: UploadFileExt) => {
             file.status = 'fail'
         })
         .finally(() => {
+            state.uploading--
             state.isExceed = false
         })
 }
@@ -167,6 +171,7 @@ onMounted(() => {
 watch(
     () => props.modelValue,
     (newVal) => {
+        if (state.uploading > 0) return
         if (newVal === undefined) {
             return init('')
         }
