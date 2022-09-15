@@ -825,10 +825,12 @@ class Crud extends Command
                     $this->getModelAttrMethod($modelSetAttrArr, $field, $inputType, $column);
 
                     // placeholder
-                    if (in_array($inputType, ['radio', 'checkbox', 'datetime', 'year', 'date', 'time', 'select', 'selects', 'remoteSelect', 'remoteSelects', 'city', 'image', 'images', 'file', 'files', 'icon'])) {
-                        $formFieldList[$field][':input-attr']['placeholder'] = "t('Please select field', { field: t('" . $this->langPrefix . $field . "') })";
-                    } else {
-                        $formFieldList[$field][':input-attr']['placeholder'] = "t('Please input field', { field: t('" . $this->langPrefix . $field . "') })";
+                    if (!in_array($inputType, ['image', 'images', 'file', 'files'])) {
+                        if (in_array($inputType, ['radio', 'checkbox', 'datetime', 'year', 'date', 'time', 'select', 'selects', 'remoteSelect', 'remoteSelects', 'city', 'icon'])) {
+                            $formFieldList[$field][':input-attr']['placeholder'] = "t('Please select field', { field: t('" . $this->langPrefix . $field . "') })";
+                        } else {
+                            $formFieldList[$field][':input-attr']['placeholder'] = "t('Please input field', { field: t('" . $this->langPrefix . $field . "') })";
+                        }
                     }
 
                     // 字段验证规则
