@@ -18,7 +18,7 @@ export const useAdminInfo = defineStore('adminInfo', {
     },
     actions: {
         dataFill(state: AdminInfo) {
-            this.$state = state
+            this.$state = { ...this.$state, ...state }
         },
         removeToken() {
             this.token = ''
