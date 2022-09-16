@@ -56,6 +56,8 @@
             <template #dropdown>
                 <el-dropdown-menu class="dropdown-menu-box">
                     <el-dropdown-item @click="onClearCache('tp')">{{ t('utils.Clean up system cache') }}</el-dropdown-item>
+                    <el-dropdown-item @click="onClearCache('storage')">{{ t('utils.Clean up browser cache') }}</el-dropdown-item>
+                    <el-dropdown-item @click="onClearCache('all')" divided>{{ t('utils.Clean up all cache') }}</el-dropdown-item>
                 </el-dropdown-menu>
             </template>
         </el-dropdown>
@@ -110,7 +112,7 @@ import { useI18n } from 'vue-i18n'
 import Config from './config.vue'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { useTerminal } from '/@/stores/terminal'
-import { Local } from '/@/utils/storage'
+import { Local, Session } from '/@/utils/storage'
 import { ADMIN_INFO } from '/@/stores/constant/cacheKey'
 import router from '/@/router'
 import { routePush } from '/@/utils/router'
@@ -157,6 +159,13 @@ const onLogout = () => {
 }
 
 const onClearCache = (type: string) => {
+    if (type == 'storage' || type == 'all') {
+        const adminInfo = Local.get(ADMIN_INFO)
+        Session.clear()
+        Local.clear()
+        Local.set(ADMIN_INFO, adminInfo)
+        if (type == 'storage') return
+    }
     postClearCache(type).then(() => {})
 }
 </script>

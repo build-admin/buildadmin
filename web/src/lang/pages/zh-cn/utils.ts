@@ -18,4 +18,6 @@ export default {
     open: '开启',
     close: '关闭',
     'Clean up system cache': '清理系统缓存',
+    'Clean up browser cache': '清理浏览器缓存',
+    'Clean up all cache': '一键清理所有',
 }

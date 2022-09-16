@@ -80,7 +80,7 @@ class Ajax extends Backend
     public function clearCache()
     {
         $type = $this->request->post('type');
-        if ($type == 'tp') {
+        if ($type == 'tp' || $type == 'all') {
             Cache::clear();
         } else {
             $this->error(__('Parameter error'));

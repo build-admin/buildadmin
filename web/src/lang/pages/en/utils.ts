@@ -18,4 +18,6 @@ export default {
     open: 'Open',
     close: 'Close',
     'Clean up system cache': 'Clean up the system cache',
+    'Clean up browser cache': 'Clean up browser cache',
+    'Clean up all cache': 'Clean up all cache',
 }
