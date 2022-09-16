@@ -64,50 +64,48 @@ export async function loadLang(app: App) {
 }
 
 function getLangFileMessage(mList: any, locale: string) {
-    interface msg {
-        [key: string]: any
-    }
-    const msg: msg = {}
+    let msg: anyObj = {}
     locale = '/' + locale
     for (const path in mList) {
         if (mList[path].default) {
             //  获取文件名
             const pathName = path.slice(path.lastIndexOf(locale) + (locale.length + 1), path.lastIndexOf('.'))
             if (pathName.indexOf('/') > 0) {
-                const pathNameTmp = pathName.split('/')
-                if (pathNameTmp.length == 2) {
-                    if (msg[pathNameTmp[0]] === undefined) msg[pathNameTmp[0]] = []
-                    msg[pathNameTmp[0]][pathNameTmp[1]] = handleMsglist(mList[path].default)
-                } else if (pathNameTmp.length == 3) {
-                    if (msg[pathNameTmp[0]] === undefined) msg[pathNameTmp[0]] = []
-                    if (msg[pathNameTmp[0]][pathNameTmp[1]] === undefined) msg[pathNameTmp[0]][pathNameTmp[1]] = []
-                    msg[pathNameTmp[0]][pathNameTmp[1]][pathNameTmp[2]] = handleMsglist(mList[path].default)
-                } else {
-                    msg[pathName] = handleMsglist(mList[path].default)
-                }
+                msg = handleMsglist(msg, mList[path].default, pathName)
             } else {
-                msg[pathName] = handleMsglist(mList[path].default)
+                msg[pathName] = mList[path].default
             }
         }
     }
     return msg
 }
 
-function handleMsglist(mlist: anyObj) {
-    const newMlist: any = {}
-    for (const key in mlist) {
-        if (key.indexOf('.') > 0) {
-            const keyTmp = key.split('.')
-            if (typeof newMlist[keyTmp[0]] === 'undefined') {
-                newMlist[keyTmp[0]] = []
-            } else {
-                newMlist[keyTmp[0]][keyTmp[1]] = mlist[key]
+export function handleMsglist(msg: anyObj, mList: anyObj, pathName: string) {
+    const pathNameTmp = pathName.split('/')
+    let obj: anyObj = {}
+    for (let i = pathNameTmp.length - 1; i >= 0; i--) {
+        if (i == pathNameTmp.length - 1) {
+            obj = {
+                [pathNameTmp[i]]: mList,
             }
         } else {
-            newMlist[key] = mlist[key]
+            obj = {
+                [pathNameTmp[i]]: obj,
+            }
         }
     }
-    return newMlist
+    return mergeMsg(msg, obj)
+}
+
+export function mergeMsg(msg: anyObj, obj: anyObj) {
+    for (const key in obj) {
+        if (typeof msg[key] == 'undefined') {
+            msg[key] = obj[key]
+        } else if (typeof msg[key] == 'object') {
+            msg[key] = mergeMsg(msg[key], obj[key])
+        }
+    }
+    return msg
 }
 
 export function editDefaultLang(lang: string): void {
