@@ -208,7 +208,7 @@ function httpErrorStatusHandle(error: any) {
                 message = i18n.global.t('axios.Incorrect parameter!')
                 break
             case 401:
-                message = i18n.global.t('axios.You are not logged in, or the login has timed out. Please log in first!')
+                message = i18n.global.t('axios.You do not have permission to operate!')
                 break
             case 403:
                 message = i18n.global.t('axios.You do not have permission to operate!')
@@ -235,7 +235,7 @@ function httpErrorStatusHandle(error: any) {
                 message = i18n.global.t('axios.Service unavailable!')
                 break
             case 504:
-                message = i18n.global.t('axios.The service is temporarily unavailable. Please try again later!')
+                message = i18n.global.t('axios.The service is temporarily unavailable Please try again later!')
                 break
             case 505:
                 message = i18n.global.t('axios.HTTP version is not supported!')
