@@ -201,6 +201,7 @@ const onClearCache = (type: string) => {
     }
     .admin-name {
         padding-left: 6px;
+        white-space: nowrap;
     }
     .nav-menu-item:hover,
     .admin-info:hover,
