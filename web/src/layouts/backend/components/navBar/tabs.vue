@@ -167,7 +167,7 @@ onBeforeRouteUpdate(async (to) => {
 })
 
 onMounted(() => {
-    updateTab(route)
+    updateTab(router.currentRoute.value)
     new horizontalScroll(tabScrollbarRef.value)
 })
 </script>
