@@ -27,4 +27,5 @@ export default {
     'When the same file is uploaded multiple times, only one attachment record will be saved and added':
         '同一文件被多次上传时，只会保存一份和增加一条附件记录',
     'SHA1 encoding of file': '文件的sha1编码',
+    'Files and records will be deleted at the same time Are you sure?': '将同时删除文件和记录，确认吗？',
 }

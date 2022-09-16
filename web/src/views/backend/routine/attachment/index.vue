@@ -5,10 +5,36 @@
 
             <!-- 表格顶部菜单 -->
             <TableHeader
-                :buttons="['refresh', 'edit', 'delete', 'comSearch', 'quickSearch', 'columnDisplay']"
+                :buttons="['refresh', 'edit', 'comSearch', 'quickSearch', 'columnDisplay']"
                 :quick-search-placeholder="t('quick Search Placeholder', { fields: t('routine.attachment.Original name') })"
                 @action="baTable.onTableHeaderAction"
-            />
+            >
+                <el-popconfirm
+                    v-if="auth('del')"
+                    @confirm="baTable.onTableHeaderAction('delete', {})"
+                    :confirm-button-text="t('delete')"
+                    :cancel-button-text="t('Cancel')"
+                    confirmButtonType="danger"
+                    :title="t('routine.attachment.Files and records will be deleted at the same time Are you sure?')"
+                    :disabled="baTable.table.selection!.length > 0 ? false : true"
+                >
+                    <template #reference>
+                        <div class="mlr-12">
+                            <el-tooltip :content="t('Delete selected row')" placement="top">
+                                <el-button
+                                    v-blur
+                                    :disabled="baTable.table.selection!.length > 0 ? false : true"
+                                    class="table-header-operate"
+                                    type="danger"
+                                >
+                                    <Icon color="#ffffff" name="fa fa-trash" />
+                                    <span class="table-header-operate-text">{{ t('delete') }}</span>
+                                </el-button>
+                            </el-tooltip>
+                        </div>
+                    </template>
+                </el-popconfirm>
+            </TableHeader>
 
             <!-- 表格 -->
             <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
@@ -31,9 +57,13 @@ import { defaultOptButtons } from '/@/components/table'
 import { previewRenderFormatter } from './index'
 import { baTableApi } from '/@/api/common'
 import { useI18n } from 'vue-i18n'
+import { auth } from '/@/utils/common'
 
 const { t } = useI18n()
 const tableRef = ref()
+
+const optBtn = defaultOptButtons(['edit', 'delete'])
+optBtn[1].popconfirm.title = t('routine.attachment.Files and records will be deleted at the same time Are you sure?')
 
 const baTable = new baTableClass(new baTableApi(routineAttachment), {
     column: [
@@ -121,7 +151,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             align: 'center',
             width: '100',
             render: 'buttons',
-            buttons: defaultOptButtons(['edit', 'delete']),
+            buttons: optBtn,
             operator: false,
         },
     ],
@@ -146,4 +176,11 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.table-header-operate {
+    margin-left: 12px;
+}
+.table-header-operate-text {
+    margin-left: 6px;
+}
+</style>

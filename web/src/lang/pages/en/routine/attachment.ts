@@ -28,4 +28,5 @@ export default {
     'When the same file is uploaded multiple times, only one attachment record will be saved and added':
         'When the same file is uploaded many times, only one attachment record will be saved and added.',
     'SHA1 encoding of file': 'The SHA1 encoding of file',
+    'Files and records will be deleted at the same time Are you sure?': 'Files and records will be deleted at the same time Are you sure?',
 }

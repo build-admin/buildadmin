@@ -39,6 +39,7 @@
                                     'routine.attachment.The file is saved in the directory, and the file will not be automatically transferred if the record is modified'
                                 )
                             "
+                            readonly
                         ></el-input>
                     </el-form-item>
                     <el-form-item :label="t('routine.attachment.Physical path')">
@@ -46,6 +47,7 @@
                             v-model="baTable.form.items!.url"
                             type="string"
                             :placeholder="t('routine.attachment.File saving path Modifying records will not automatically transfer files')"
+                            readonly
                         ></el-input>
                     </el-form-item>
                     <el-form-item :label="t('routine.attachment.image width')">
@@ -94,13 +96,19 @@
                         }}</span>
                     </el-form-item>
                     <el-form-item :label="t('routine.attachment.Storage mode')">
-                        <el-input v-model="baTable.form.items!.storage" type="string" :placeholder="t('routine.attachment.Storage mode')"></el-input>
+                        <el-input
+                            v-model="baTable.form.items!.storage"
+                            type="string"
+                            :placeholder="t('routine.attachment.Storage mode')"
+                            readonly
+                        ></el-input>
                     </el-form-item>
                     <el-form-item :label="t('routine.attachment.SHA1 code')">
                         <el-input
                             v-model="baTable.form.items!.sha1"
                             type="string"
                             :placeholder="t('routine.attachment.SHA1 encoding of file')"
+                            readonly
                         ></el-input>
                     </el-form-item>
                 </el-form>
