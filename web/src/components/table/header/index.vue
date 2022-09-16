@@ -183,15 +183,6 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
     .table-header-operate-text {
         margin-left: 6px;
     }
-    .table-header-operate .icon {
-        font-size: 14px !important;
-        color: var(--ba-bg-color-overlay) !important;
-    }
-    .el-button.is-disabled {
-        .icon {
-            color: var(--el-button-disabled-text-color) !important;
-        }
-    }
 }
 
 .mlr-12 {

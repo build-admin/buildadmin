@@ -63,6 +63,18 @@ body,
     padding-top: 5px;
 }
 
+/* 表格顶部菜单-s */
+.table-header {
+    .table-header-operate .icon {
+        font-size: 14px !important;
+        color: var(--el-color-white) !important;
+    }
+    .el-button.is-disabled .icon {
+        color: var(--el-button-disabled-text-color) !important;
+    }
+}
+/* 表格顶部菜单-e */
+
 /* 表格-s */
 .ba-table-box {
     border-radius: var(--el-border-radius-round);
