@@ -281,7 +281,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
             border-radius: 50%;
             border: 4px solid var(--ba-bg-color-overlay);
             top: -50px;
-            right: 175px;
+            right: calc(50% - 50px);
             z-index: 2;
             user-select: none;
         }
