@@ -20,6 +20,8 @@
 import { useConfig } from '/@/stores/config'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { closeShade } from '/@/utils/pageShade'
+import { Session } from '/@/utils/storage'
+import { BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
 
 const config = useConfig()
 const siteConfig = useSiteConfig()
@@ -30,6 +32,11 @@ const onMenuCollapse = function () {
     }
 
     config.setLayout('menuCollapse', !config.layout.menuCollapse)
+
+    Session.set(BEFORE_RESIZE_LAYOUT, {
+        layoutMode: config.layout.layoutMode,
+        menuCollapse: config.layout.menuCollapse,
+    })
 }
 </script>
 
