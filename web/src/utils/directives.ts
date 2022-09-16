@@ -153,15 +153,8 @@ function dragDirective(app: App) {
                 // 获取到的值带px 正则匹配替换
                 let styL: string | number = getComputedStyle(dragDom).left
                 let styT: string | number = getComputedStyle(dragDom).top
-
-                // 注意在ie中 第一次获取到的值为组件自带50% 移动之后赋值为px
-                if (styL.includes('%')) {
-                    styL = +document.body.clientWidth * (+styL.replace(/\%/g, '') / 100)
-                    styT = +document.body.clientHeight * (+styT.replace(/\%/g, '') / 100)
-                } else {
-                    styL = +styL.replace(/\px/g, '')
-                    styT = +styT.replace(/\px/g, '')
-                }
+                styL = +styL.replace(/\px/g, '')
+                styT = +styT.replace(/\px/g, '')
 
                 return {
                     disX,
