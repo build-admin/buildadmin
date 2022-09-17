@@ -20,4 +20,7 @@ export default {
     'Clean up system cache': 'Clean up the system cache',
     'Clean up browser cache': 'Clean up browser cache',
     'Clean up all cache': 'Clean up all cache',
+    'The data of the uploaded file is incomplete!': 'The data of the uploaded file is incomplete!',
+    'The type of uploaded file is not allowed!': 'The type of uploaded file is not allowed!',
+    'The size of the uploaded file exceeds the allowed range!': 'The size of the uploaded file exceeds the allowed range!',
 }

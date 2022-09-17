@@ -184,6 +184,24 @@ export const fullUrl = (relativeUrl: string, domain = '') => {
     return domain + relativeUrl
 }
 
+export const checkFileMimetype = (fileName: string, fileType: string) => {
+    if (!fileName || !fileType) return false
+    const siteConfig = useSiteConfig()
+    const mimetype = siteConfig.upload.mimetype.toLowerCase().split(',')
+    const fileTypeTemp = fileType.toLowerCase().split('/')
+    const fileSuffix = fileName.substring(fileName.lastIndexOf('.') + 1)
+    if (
+        siteConfig.upload.mimetype === '*' ||
+        mimetype.includes(fileSuffix) ||
+        mimetype.includes('.' + fileSuffix) ||
+        mimetype.includes(fileType) ||
+        mimetype.includes(fileTypeTemp[0] + '/*')
+    ) {
+        return true
+    }
+    return false
+}
+
 export const arrayFullUrl = (relativeUrls: string | string[], domain = '') => {
     if (typeof relativeUrls === 'string') {
         relativeUrls = relativeUrls == '' ? [] : relativeUrls.split(',')

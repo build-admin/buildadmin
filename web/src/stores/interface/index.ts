@@ -114,7 +114,7 @@ export interface SiteConfig {
     api_url: string
     upload: {
         mode: string
-        maxsize: string
+        maxsize: number
         mimetype: string
         savename: string
         url?: string

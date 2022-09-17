@@ -11,7 +11,7 @@ export const useSiteConfig = defineStore('siteConfig', {
             api_url: '',
             upload: {
                 mode: 'local',
-                maxsize: '',
+                maxsize: 0,
                 mimetype: '',
                 savename: '',
             },

@@ -1,8 +1,11 @@
 import createAxios from '/@/utils/axios'
-import { isAdminApp } from '/@/utils/common'
+import { isAdminApp, checkFileMimetype } from '/@/utils/common'
 import { getUrl } from '/@/utils/axios'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { useUserInfo } from '/@/stores/userInfo'
+import { ElNotification, UploadRawFile } from 'element-plus'
+import { useSiteConfig } from '/@/stores/siteConfig'
+import { i18n } from '../lang'
 
 /*
  * 公共请求函数和Url定义
@@ -30,6 +33,27 @@ export const apiAreaUrl = '/api/ajax/area'
  * 上传文件
  */
 export function fileUpload(fd: FormData, params: anyObj = {}): ApiPromise {
+    let errorMsg = ''
+    const file = fd.get('file') as UploadRawFile
+    const siteConfig = useSiteConfig()
+
+    if (!file.name || !file.type || typeof file.size == 'undefined') {
+        errorMsg = i18n.global.t('utils.The data of the uploaded file is incomplete!')
+    } else if (!checkFileMimetype(file.name, file.type)) {
+        errorMsg = i18n.global.t('utils.The type of uploaded file is not allowed!')
+    } else if (file.size > siteConfig.upload.maxsize) {
+        errorMsg = i18n.global.t('utils.The size of the uploaded file exceeds the allowed range!')
+    }
+    if (errorMsg) {
+        return new Promise((resolve, reject) => {
+            ElNotification({
+                type: 'error',
+                message: errorMsg,
+            })
+            reject(errorMsg)
+        })
+    }
+
     return createAxios({
         url: isAdminApp() ? adminUploadUrl : apiUploadUrl,
         method: 'POST',

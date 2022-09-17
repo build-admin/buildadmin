@@ -373,8 +373,10 @@ if (!function_exists('path_transform')) {
 if (!function_exists('get_upload_config')) {
     function get_upload_config()
     {
-        $uploadConfig = Config::get('upload');
-        $upload       = request()->upload;
+        $uploadConfig            = Config::get('upload');
+        $uploadConfig['maxsize'] = file_unit_to_byte($uploadConfig['maxsize']);
+
+        $upload = request()->upload;
         if (!$upload) {
             $uploadConfig['mode'] = 'local';
             return $uploadConfig;
