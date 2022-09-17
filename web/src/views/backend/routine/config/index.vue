@@ -1,7 +1,7 @@
 <template>
     <div class="default-main">
         <el-row v-loading="state.loading" :gutter="20">
-            <el-col class="xs-mb-20" :xs="24" :sm="12">
+            <el-col class="xs-mb-20" :xs="24" :sm="16">
                 <el-form
                     v-if="!state.loading"
                     ref="formRef"
@@ -73,7 +73,7 @@
                     </el-tabs>
                 </el-form>
             </el-col>
-            <el-col :xs="24" :sm="12">
+            <el-col :xs="24" :sm="8">
                 <el-card :header="t('routine.config.Quick configuration entry')">
                     <el-button v-for="item in state.quickEntrance" class="config_quick_entrance">
                         <div @click="routePush(item['value'])">{{ item['key'] }}</div>
