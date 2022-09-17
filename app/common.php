@@ -369,3 +369,16 @@ if (!function_exists('path_transform')) {
         return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
     }
 }
+
+if (!function_exists('get_upload_config')) {
+    function get_upload_config()
+    {
+        $uploadConfig = Config::get('upload');
+        $upload       = request()->upload;
+        if (!$upload) {
+            $uploadConfig['mode'] = 'local';
+            return $uploadConfig;
+        }
+        return array_merge($upload, $uploadConfig);
+    }
+}

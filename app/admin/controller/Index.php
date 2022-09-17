@@ -33,6 +33,7 @@ class Index extends Backend
                 'version'   => get_sys_config('version'),
                 'cdn_url'   => full_url(),
                 'api_url'   => Config::get('buildadmin.api_url'),
+                'upload'    => get_upload_config(),
             ],
             'terminal'   => [
                 'install_service_port' => Config::get('terminal.install_service_port'),

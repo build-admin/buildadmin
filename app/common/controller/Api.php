@@ -42,7 +42,7 @@ class Api extends BaseController
             // 时区设定
             set_timezone();
             // 存储/上传资料配置
-            Event::trigger('storageConfigInit', $this->app);
+            Event::trigger('uploadConfigInit', $this->app);
         }
 
         parent::initialize();

@@ -9,6 +9,12 @@ export const useSiteConfig = defineStore('siteConfig', {
             version: '',
             cdn_url: '',
             api_url: '',
+            upload: {
+                mode: 'local',
+                maxsize: '',
+                mimetype: '',
+                savename: '',
+            },
         }
     },
     actions: {

@@ -112,4 +112,12 @@ export interface SiteConfig {
     version: string
     cdn_url: string
     api_url: string
+    upload: {
+        mode: string
+        maxsize: string
+        mimetype: string
+        savename: string
+        url?: string
+        params?: anyObj
+    }
 }
