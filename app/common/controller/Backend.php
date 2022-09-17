@@ -145,7 +145,7 @@ class Backend extends Api
         }
 
         // 管理员验权和登录标签位
-        Event::trigger('backendInit');
+        Event::trigger('backendInit', $this->auth);
     }
 
     public function queryBuilder()

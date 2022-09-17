@@ -4,6 +4,7 @@ namespace app\common\controller;
 
 use think\App;
 use app\BaseController;
+use think\facade\Event;
 use think\facade\Config;
 use think\Response;
 use think\exception\HttpResponseException;
@@ -40,6 +41,8 @@ class Api extends BaseController
             ip_check();
             // 时区设定
             set_timezone();
+            // 存储/上传资料配置
+            Event::trigger('storageConfigInit', $this->app);
         }
 
         parent::initialize();

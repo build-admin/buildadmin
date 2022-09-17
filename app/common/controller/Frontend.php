@@ -52,6 +52,6 @@ class Frontend extends Api
         }
 
         // 会员验权和登录标签位
-        Event::trigger('frontendInit');
+        Event::trigger('frontendInit', $this->auth);
     }
 }

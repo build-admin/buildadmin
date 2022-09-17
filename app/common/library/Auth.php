@@ -158,7 +158,7 @@ class Auth extends \ba\Auth
             $this->model = User::where('username', $username)->find();
             $this->token = Random::uuid();
             Token::set($this->token, 'user', $this->model->id, $this->keeptime);
-            Event::trigger('user_register_successed');
+            Event::trigger('userRegisterSuccessed', $this->model);
             Db::commit();
         } catch (Exception $e) {
             $this->setError($e->getMessage());

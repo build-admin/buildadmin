@@ -6,6 +6,7 @@ use ba\Terminal;
 use think\Exception;
 use think\facade\Db;
 use think\facade\Cache;
+use think\facade\Event;
 use app\admin\model\AdminLog;
 use app\common\library\Upload;
 use think\exception\FileException;
@@ -85,6 +86,7 @@ class Ajax extends Backend
         } else {
             $this->error(__('Parameter error'));
         }
+        Event::trigger('cacheClearAfter', $this->app);
         $this->success(__('Cache cleaned~'));
     }
 }
