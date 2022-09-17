@@ -135,11 +135,7 @@ class Upload
      */
     protected function checkSize()
     {
-        preg_match('/([0-9\.]+)(\w+)/', $this->config['maxsize'], $matches);
-        $size     = $matches ? $matches[1] : $this->config['maxsize'];
-        $type     = $matches ? strtolower($matches[2]) : 'b';
-        $typeDict = ['b' => 0, 'k' => 1, 'kb' => 1, 'm' => 2, 'mb' => 2, 'gb' => 3, 'g' => 3];
-        $size     = (int)($size * pow(1024, $typeDict[$type] ?? 0));
+        $size = file_unit_to_byte($this->config['maxsize']);
         if ($this->fileInfo['size'] > $size) {
             throw new Exception(__('The uploaded file is too large (%sMiB), Maximum file size:%sMiB', [
                 round($this->fileInfo['size'] / pow(1024, 2), 2),
