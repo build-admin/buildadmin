@@ -276,7 +276,7 @@ class Server
         return true;
     }
 
-    public static function getClass(string $uid, string $type = 'hook', string $class = null): string
+    public static function getClass(string $uid, string $type = 'event', string $class = null): string
     {
         $name = parse_name($uid);
         if (!is_null($class) && strpos($class, '.')) {
