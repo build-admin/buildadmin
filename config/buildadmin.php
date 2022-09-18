@@ -52,7 +52,7 @@ return [
     'auto_write_admin_log' => true,
     // 缺省头像图片路径
     'default_avatar'       => '/static/images/avatar.png',
-    // 内容分发网络URL
+    // 内容分发网络URL，末尾不带`/`
     'cdn_url'              => '',
     // 版本号
     'version'              => 'v1.0.5',

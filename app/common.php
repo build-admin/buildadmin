@@ -193,8 +193,9 @@ if (!function_exists('full_url')) {
     function full_url($relativeUrl = false, bool $domain = true, $default = '')
     {
         $cdnUrl = Config::get('buildadmin.cdn_url');
+        if (!$cdnUrl) $cdnUrl = request()->upload['cdn'] ?? request()->domain();
         if ($domain === true) {
-            $domain = $cdnUrl ?: request()->domain();
+            $domain = $cdnUrl;
         } elseif ($domain === false) {
             $domain = '';
         }
@@ -381,6 +382,7 @@ if (!function_exists('get_upload_config')) {
             $uploadConfig['mode'] = 'local';
             return $uploadConfig;
         }
+        unset($upload['cdn']);
         return array_merge($upload, $uploadConfig);
     }
 }
