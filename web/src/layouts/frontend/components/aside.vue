@@ -2,7 +2,7 @@
     <el-aside class="ba-user-layouts">
         <div class="userinfo">
             <div @click="routerPush('account/profile')" class="user-avatar-box">
-                <img class="user-avatar" :src="userInfo.avatar" alt="" />
+                <img class="user-avatar" :src="fullUrl(userInfo.avatar)" alt="" />
                 <Icon class="user-avatar-gender" :name="userInfo.getGenderIcon()['name']" size="14" :color="userInfo.getGenderIcon()['color']" />
             </div>
             <p class="username">{{ userInfo.nickname }}</p>
@@ -53,6 +53,7 @@ import { useRouter, RouteRecordRaw } from 'vue-router'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { clickMenu } from '/@/utils/router'
+import { fullUrl } from '/@/utils/common'
 
 const router = useRouter()
 const userInfo = useUserInfo()
