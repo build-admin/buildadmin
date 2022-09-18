@@ -179,7 +179,6 @@ export const showCommonLoading = (loadingTitle: moduleState['common']['loadingTi
 }
 
 export const showWaitFullReload = (vitereload = 0) => {
-    Session.remove(VITE_FULL_RELOAD)
     state.dialog.common = true
     state.common.dialogTitle = '等待热更新'
     showCommonLoading('wait-full-reload')
