@@ -44,7 +44,7 @@ class Attachment extends Model
         ])->find();
         if ($repeat) {
             $storageFile = path_transform(public_path() . ltrim($repeat['url'], '/'));
-            if (!file_exists($storageFile)) {
+            if ($model->storage == 'local' && !file_exists($storageFile)) {
                 $repeat->delete();
                 return true;
             } else {
