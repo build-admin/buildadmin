@@ -55,7 +55,7 @@ export function fileUpload(fd: FormData, params: anyObj = {}): ApiPromise {
         })
     }
 
-    if (uploadExpandState == 'enable') {
+    if (uploadExpandState() == 'enable') {
         return uploadExpand(fd, params)
     }
 
