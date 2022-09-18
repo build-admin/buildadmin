@@ -3,9 +3,9 @@
 namespace app\admin\controller\routine;
 
 use Exception;
+use think\facade\Event;
 use app\common\controller\Backend;
 use app\common\model\Attachment as AttachmentModel;
-use think\facade\Db;
 use think\db\exception\PDOException;
 
 class Attachment extends Backend
@@ -42,6 +42,7 @@ class Attachment extends Backend
         $count = 0;
         try {
             foreach ($data as $v) {
+                Event::trigger('AttachmentDel', $v);
                 $filePath = path_transform(public_path() . ltrim($v->url, '/'));
                 if (file_exists($filePath)) {
                     unlink($filePath);
