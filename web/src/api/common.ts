@@ -5,6 +5,7 @@ import { useAdminInfo } from '/@/stores/adminInfo'
 import { useUserInfo } from '/@/stores/userInfo'
 import { ElNotification, UploadRawFile } from 'element-plus'
 import { useSiteConfig } from '/@/stores/siteConfig'
+import { state as uploadExpandState, fileUpload as uploadExpand } from '/@/components/baInput/components/baUpload'
 import { i18n } from '../lang'
 
 /*
@@ -52,6 +53,10 @@ export function fileUpload(fd: FormData, params: anyObj = {}): ApiPromise {
             })
             reject(errorMsg)
         })
+    }
+
+    if (uploadExpandState == 'enable') {
+        return uploadExpand(fd, params)
     }
 
     return createAxios({
