@@ -252,11 +252,11 @@ class Manage
 
     public function enable(string $trigger)
     {
-        $this->conflictHandle($trigger);
-        $this->dependUpdateHandle();
-
         // 执行启用脚本
         Server::execEvent($this->uid, 'enable');
+
+        $this->conflictHandle($trigger);
+        $this->dependUpdateHandle();
     }
 
     public function disable()
