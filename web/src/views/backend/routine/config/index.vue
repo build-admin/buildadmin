@@ -174,7 +174,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
-            postData('edit', state.form).then((res) => {
+            postData('edit', state.form).then(() => {
                 for (const key in siteConfig.$state) {
                     if (siteConfig.$state[key as keyof SiteConfig] != state.form[key]) {
                         siteConfig.$state[key as keyof SiteConfig] = state.form[key]
@@ -186,7 +186,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
 }
 
 const onDelConfig = (config: anyObj) => {
-    del(config.id).then((res) => {
+    del([config.id]).then(() => {
         getIndex()
     })
 }
