@@ -33,7 +33,7 @@ const uploadModule = (file: UploadFile) => {
     if (!file || !file.raw) return
     let fd = new FormData()
     fd.append('file', file.raw!)
-    fileUpload(fd).then((res) => {
+    fileUpload(fd, {}, true).then((res) => {
         if (res.code == 1) {
             upload(res.data.file.url).then((res) => {
                 onInstall(res.data.info.uid, 0)
