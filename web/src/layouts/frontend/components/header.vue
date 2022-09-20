@@ -16,7 +16,11 @@
                         <el-sub-menu v-if="userInfo.id" v-blur index="user">
                             <template #title>
                                 <div class="header-user-box">
-                                    <img class="header-user-avatar" :src="userInfo.avatar" alt="" />
+                                    <img
+                                        class="header-user-avatar"
+                                        :src="fullUrl(userInfo.avatar ? userInfo.avatar : '/static/images/avatar.png')"
+                                        alt=""
+                                    />
                                     {{ userInfo.nickname }}
                                 </div>
                             </template>
@@ -65,6 +69,7 @@ import Aside from '/@/layouts/frontend/components/aside.vue'
 import 'element-plus/theme-chalk/display.css'
 import DarkSwitch from '/@/layouts/common/components/darkSwitch.vue'
 import toggleDark from '/@/utils/useDark'
+import { fullUrl } from '/@/utils/common'
 
 const state = reactive({
     activeMenu: '',

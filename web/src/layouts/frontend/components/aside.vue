@@ -2,7 +2,7 @@
     <el-aside class="ba-user-layouts">
         <div class="userinfo">
             <div @click="routerPush('account/profile')" class="user-avatar-box">
-                <img class="user-avatar" :src="fullUrl(userInfo.avatar)" alt="" />
+                <img class="user-avatar" :src="fullUrl(userInfo.avatar ? userInfo.avatar : '/static/images/avatar.png')" alt="" />
                 <Icon class="user-avatar-gender" :name="userInfo.getGenderIcon()['name']" size="14" :color="userInfo.getGenderIcon()['color']" />
             </div>
             <p class="username">{{ userInfo.nickname }}</p>
