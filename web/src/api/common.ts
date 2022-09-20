@@ -33,7 +33,7 @@ export const apiAreaUrl = '/api/ajax/area'
 /**
  * 上传文件
  */
-export function fileUpload(fd: FormData, params: anyObj = {}): ApiPromise {
+export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false): ApiPromise {
     let errorMsg = ''
     const file = fd.get('file') as UploadRawFile
     const siteConfig = useSiteConfig()
@@ -55,7 +55,7 @@ export function fileUpload(fd: FormData, params: anyObj = {}): ApiPromise {
         })
     }
 
-    if (uploadExpandState() == 'enable') {
+    if (!forceLocal && uploadExpandState() == 'enable') {
         return uploadExpand(fd, params)
     }
 
