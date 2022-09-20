@@ -392,7 +392,7 @@ class Manage
         $coverFiles   = [];// 要覆盖的文件-备份
         $discardFiles = [];// 抛弃的文件-复制时不覆盖
         $dependObj    = new Depend();
-        if ($fileConflict || $dependConflict) {
+        if ($fileConflict || !self::emptyArray($dependConflict)) {
             $extend = request()->post('extend/a', []);
             if (!$extend) {
                 // 发现冲突->手动处理->转换为方便前端使用的格式
@@ -441,7 +441,7 @@ class Manage
                     }
                 }
             }
-            if ($dependConflict && isset($extend['dependConflict'])) {
+            if (!self::emptyArray($dependConflict) && isset($extend['dependConflict'])) {
                 foreach ($depends as $fKey => $fItem) {
                     foreach ($fItem as $cKey => $cItem) {
                         if (isset($extend['dependConflict'][$fKey][$cKey])) {
@@ -652,5 +652,23 @@ class Manage
             return Server::setIni($this->modulesDir, $arr);
         }
         throw new Exception('Parameter error');
+    }
+
+
+    /**
+     * 检查多维数组是否为空
+     */
+    public static function emptyArray($arr)
+    {
+        $empty = true;
+        foreach ($arr as $item) {
+            if (is_array($item)) {
+                $empty = self::emptyArray($item);
+                if (!$empty) return false;
+            } elseif ($item) {
+                return false;
+            }
+        }
+        return $empty;
     }
 }
