@@ -5,7 +5,7 @@
             :title="state.common.dialogTitle"
             :close-on-click-modal="state.common.quickClose"
             v-model="state.dialog.common"
-            custom-class="common-dialog"
+            class="common-dialog"
         >
             <el-scrollbar :height="500">
                 <!-- 公共dialog形式的loading -->

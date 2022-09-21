@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-bind="$attrs" v-model="terminal.state.show" :title="t('terminal.Terminal')" custom-class="ba-terminal-dialog" :append-to-body="true">
+    <el-dialog v-bind="$attrs" v-model="terminal.state.show" :title="t('terminal.Terminal')" class="ba-terminal-dialog" :append-to-body="true">
         <el-timeline v-if="terminal.state.taskList.length">
             <el-timeline-item
                 v-for="(item, idx) in terminal.state.taskList"
@@ -102,7 +102,7 @@
     <el-dialog
         @close="terminal.togglePackageManagerDialog(false)"
         :model-value="terminal.state.showPackageManagerDialog"
-        custom-class="ba-terminal-dialog"
+        class="ba-terminal-dialog"
         :title="t('terminal.Please select package manager')"
         center
     >
@@ -124,7 +124,7 @@
     <el-dialog
         @close="terminal.toggleConfigDialog(false)"
         :model-value="terminal.state.showConfig"
-        custom-class="ba-terminal-dialog"
+        class="ba-terminal-dialog"
         :title="t('terminal.Terminal settings')"
     >
         <el-form label-position="top">

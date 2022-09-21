@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog v-model="state.dialog.goodsInfo" custom-class="goods-info-dialog" :title="t('module.detailed information')" width="60%">
+        <el-dialog v-model="state.dialog.goodsInfo" class="goods-info-dialog" :title="t('module.detailed information')" width="60%">
             <el-scrollbar v-loading="state.loading.goodsInfo" :key="state.goodsInfo.uid" :height="500">
                 <div class="goods-info">
                     <div class="goods-images">

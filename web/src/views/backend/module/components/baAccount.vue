@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog v-model="state.dialog.baAccount" custom-class="ba-account-dialog" width="25%" :title="t('module.Member information')">
+        <el-dialog v-model="state.dialog.baAccount" class="ba-account-dialog" width="25%" :title="t('module.Member information')">
             <template v-if="baAccount.token">
                 <div class="userinfo">
                     <div class="user-avatar-box">

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog v-model="state.dialog.buy" custom-class="buy-dialog" :title="t('module.payment')" top="20vh" width="28%">
+        <el-dialog v-model="state.dialog.buy" class="buy-dialog" :title="t('module.payment')" top="20vh" width="28%">
             <div v-loading="state.loading.buy">
                 <el-alert :title="t('module.Module installation warning')" type="error" :center="true" :closable="false" />
                 <div v-if="!isEmpty(state.buy.info)" class="order-info">

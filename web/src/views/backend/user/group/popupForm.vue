@@ -1,7 +1,7 @@
 <template>
     <!-- 对话框表单 -->
     <el-dialog
-        custom-class="ba-operate-dialog"
+        class="ba-operate-dialog"
         top="10vh"
         :close-on-click-modal="false"
         :model-value="baTable.form.operate ? true : false"
