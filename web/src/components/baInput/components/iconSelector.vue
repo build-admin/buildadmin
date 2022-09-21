@@ -1,5 +1,5 @@
 <template>
-    <el-popover :placement="placement" :width="state.selectorWidth" v-model:visible="state.popoverVisible">
+    <el-popover :placement="placement" trigger="focus" :hide-after="0" :width="state.selectorWidth" :visible="state.popoverVisible">
         <div @mouseover.stop="state.iconSelectorMouseover = true" @mouseout.stop="state.iconSelectorMouseover = false" class="icon-selector">
             <transition name="el-zoom-in-center">
                 <div class="icon-selector-box">
@@ -78,6 +78,7 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted, nextTick, onUnmounted, watch, computed } from 'vue'
 import { getAwesomeIconfontNames, getIconfontNames, getElementPlusIconfontNames, getLocalIconfontNames } from '/@/utils/iconfont'
+import { Placement } from 'element-plus'
 
 type IconType = 'ele' | 'awe' | 'ali' | 'local'
 
@@ -86,7 +87,7 @@ interface Props {
     disabled?: boolean
     title?: string
     type?: IconType
-    placement?: string
+    placement?: Placement
     modelValue?: string
     showIconName?: boolean
 }
@@ -170,8 +171,12 @@ const onIcon = (icon: string) => {
     state.iconSelectorMouseover = state.popoverVisible = false
     state.iconKey++
     state.prependIcon = icon
+    state.inputValue = ''
     emits('update:modelValue', icon)
     emits('change', icon)
+    nextTick(() => {
+        selectorInput.value.blur()
+    })
 }
 
 const renderFontIconNames = computed(() => {
