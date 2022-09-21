@@ -11,6 +11,7 @@
             @preview="onPreview"
             @exceed="onExceed"
             v-bind="state.attr"
+            :key="state.key"
         >
             <!-- 插槽支持，不加 if 时 el-upload 样式会错乱 -->
             <template v-if="slots.default" #default><slot name="default"></slot></template>
@@ -25,7 +26,7 @@
             <template v-if="slots.tip" #tip><slot name="tip"></slot></template>
             <template v-if="slots.file" #file><slot name="file"></slot></template>
         </el-upload>
-        <el-dialog v-model="state.preview.show" custom-class="ba-upload-preview">
+        <el-dialog v-model="state.preview.show" class="ba-upload-preview">
             <img :src="state.preview.url" class="ba-upload-preview-img" alt="" />
         </el-dialog>
     </div>
@@ -35,7 +36,7 @@
 import { ref, reactive, onMounted, watch, useSlots } from 'vue'
 import { UploadInstance, UploadUserFile, UploadProps, genFileId, UploadRawFile } from 'element-plus'
 import { stringToArray } from '/@/components/baInput/helper'
-import { fullUrl, getFileNameFromPath } from '/@/utils/common'
+import { fullUrl, arrayFullUrl, getFileNameFromPath } from '/@/utils/common'
 import { fileUpload } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import _ from 'lodash'
@@ -73,6 +74,7 @@ const emits = defineEmits<{
 const slots = useSlots()
 const upload = ref<UploadInstance>()
 const state: {
+    key: string
     // 返回值类型，通过v-model类型动态计算
     defaultReturnType: 'string' | 'array'
     // 预览弹窗
@@ -80,23 +82,21 @@ const state: {
         show: boolean
         url: string
     }
-    urls: string[]
     // 文件列表
     fileList: UploadFileExt[]
     // el-upload的属性对象
     attr: Partial<UploadProps>
-    isExceed: boolean
+    // 正在上传的文件数量
     uploading: number
 } = reactive({
+    key: uuid(),
     defaultReturnType: 'string',
     preview: {
         show: false,
         url: '',
     },
-    urls: [],
     fileList: [],
     attr: {},
-    isExceed: false,
     uploading: 0,
 })
 
@@ -109,12 +109,9 @@ const onChange = (file: UploadFileExt) => {
     fileUpload(fd, { uuid: uuid() })
         .then((res) => {
             if (res.code == 1) {
-                if (state.isExceed) {
-                    state.fileList.push(file)
-                }
-                file.serverUrl = props.returnFullUrl ? res.data.file.full_url : res.data.file.url
-                emits('update:modelValue', getAllUrls())
+                file.serverUrl = res.data.file.url
                 file.status = 'success'
+                emits('update:modelValue', getAllUrls())
             }
         })
         .catch(() => {
@@ -122,7 +119,6 @@ const onChange = (file: UploadFileExt) => {
         })
         .finally(() => {
             state.uploading--
-            state.isExceed = false
         })
 }
 
@@ -143,10 +139,6 @@ const onPreview = (file: UploadFileExt) => {
 }
 
 const onExceed = (files: UploadUserFile[]) => {
-    state.isExceed = true
-    // 虽然是v-model，但此处任然需要手动维护 state.fileList
-    limitExceed()
-    upload.value!.clearFiles()
     const file = files[0] as UploadRawFile
     file.uid = genFileId()
     upload.value!.handleStart(file)
@@ -175,9 +167,10 @@ watch(
         if (newVal === undefined) {
             return init('')
         }
-        let newValArr = stringToArray(_.cloneDeep(newVal))
-        if (newValArr.sort().toString() != (getAllUrls('array') as string[]).sort().toString()) {
-            init(newVal as string)
+        let newValArr = arrayFullUrl(stringToArray(_.cloneDeep(newVal)))
+        let oldValArr = arrayFullUrl(getAllUrls('array'))
+        if (newValArr.sort().toString() != oldValArr.sort().toString()) {
+            init(newVal)
         }
     }
 )
@@ -191,15 +184,15 @@ const limitExceed = () => {
 }
 
 const init = (modelValue: string | string[]) => {
-    state.urls = stringToArray(modelValue as string) // 默认值
+    let urls = stringToArray(modelValue as string)
     state.fileList = []
     state.defaultReturnType = typeof modelValue === 'string' || props.type == 'file' || props.type == 'image' ? 'string' : 'array'
 
-    for (const key in state.urls) {
+    for (const key in urls) {
         state.fileList.push({
-            name: getFileNameFromPath(state.urls[key]),
-            url: fullUrl(state.urls[key]),
-            serverUrl: props.returnFullUrl ? fullUrl(state.urls[key]) : state.urls[key],
+            name: getFileNameFromPath(urls[key]),
+            url: fullUrl(urls[key]),
+            serverUrl: urls[key],
         })
     }
 
@@ -207,6 +200,7 @@ const init = (modelValue: string | string[]) => {
     if (limitExceed() || props.returnFullUrl) {
         emits('update:modelValue', getAllUrls())
     }
+    state.key = uuid()
 }
 
 // 获取当前所有图片路径的列表
@@ -214,9 +208,10 @@ const getAllUrls = (returnType: string = state.defaultReturnType) => {
     limitExceed()
     let urlList = []
     for (const key in state.fileList) {
-        urlList.push(state.fileList[key].serverUrl)
+        if (state.fileList[key].serverUrl) urlList.push(state.fileList[key].serverUrl)
     }
-    return returnType === 'string' ? (urlList.join(',') as string) : (urlList as string[])
+    if (props.returnFullUrl) urlList = arrayFullUrl(urlList as string[])
+    return returnType === 'string' ? urlList.join(',') : (urlList as string[])
 }
 
 const formDataAppend = (fd: FormData) => {
@@ -227,6 +222,14 @@ const formDataAppend = (fd: FormData) => {
     }
     return fd
 }
+
+const getUploadRef = () => {
+    return upload.value
+}
+
+defineExpose({
+    getUploadRef,
+})
 </script>
 
 <style scoped lang="scss">
