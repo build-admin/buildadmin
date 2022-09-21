@@ -7,13 +7,15 @@
         :filterable="true"
         :remote="true"
         clearable
+        remote-show-suffix
         :remote-method="onLogKeyword"
         v-model="state.value"
         @change="onChangeSelect"
         :multiple="multiple"
         :key="state.selectKey"
-        :reserve-keyword="false"
         @clear="onClear"
+        @visible-change="onVisibleChange"
+        v-loading="state.accidentBlur"
     >
         <el-option
             class="remote-select-option"
@@ -75,6 +77,7 @@ const state: {
     value: valType
     selectKey: string
     initializeData: boolean
+    accidentBlur: boolean
 } = reactive({
     primaryKey: props.pk,
     options: [],
@@ -87,6 +90,7 @@ const state: {
     value: props.modelValue,
     selectKey: uuid(),
     initializeData: false,
+    accidentBlur: false,
 })
 
 const emits = defineEmits<{
@@ -95,12 +99,24 @@ const emits = defineEmits<{
 
 const onChangeSelect = (val: valType) => {
     emits('update:modelValue', val)
-    nextTick(() => {
-        selectRef.value?.blur()
-    })
+}
+
+const onVisibleChange = (val: boolean) => {
+    // 保持面板状态和焦点状态一致
+    if (!val) {
+        nextTick(() => {
+            selectRef.value?.blur()
+        })
+    }
 }
 
 const onFocus = () => {
+    if (props.multiple && selectRef.value?.query != state.keyword) {
+        state.keyword = selectRef.value!.query
+        state.initializeData = false
+        // el-select 自动清理搜索词会产生意外的脱焦
+        state.accidentBlur = true
+    }
     if (!state.initializeData) {
         getData()
     }
@@ -112,16 +128,8 @@ const onClear = () => {
 }
 
 const onLogKeyword = (q: string) => {
-    if (q == '') {
-        selectRef.value?.blur()
-        state.keyword = q
-        state.initializeData = false
-        return
-    }
-    if (state.keyword != q) {
-        state.keyword = q
-        getData()
-    }
+    state.keyword = q
+    getData()
 }
 
 const getData = (initValue: valType = '') => {
@@ -142,6 +150,12 @@ const getData = (initValue: valType = '') => {
             }
             state.loading = false
             state.initializeData = initializeData
+            if (state.accidentBlur) {
+                nextTick(() => {
+                    selectRef.value?.focus()
+                    state.accidentBlur = false
+                })
+            }
         })
         .catch(() => {
             state.loading = false
@@ -178,7 +192,7 @@ onMounted(() => {
 watch(
     () => props.modelValue,
     (newVal) => {
-        if (state.value != newVal) {
+        if (state.value.toString() != newVal.toString()) {
             state.value = newVal
             initDefaultValue()
         }
