@@ -35,10 +35,14 @@ const uploadModule = (file: UploadFile) => {
     fd.append('file', file.raw!)
     fileUpload(fd, {}, true).then((res) => {
         if (res.code == 1) {
-            upload(res.data.file.url).then((res) => {
-                onInstall(res.data.info.uid, 0)
-            })
-            state.uploadState = 'success'
+            upload(res.data.file.url)
+                .then((res) => {
+                    state.uploadState = 'success'
+                    onInstall(res.data.info.uid, 0)
+                })
+                .catch(() => {
+                    state.uploadState = 'wait-file'
+                })
         }
     })
 }

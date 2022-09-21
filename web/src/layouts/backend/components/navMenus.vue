@@ -113,7 +113,7 @@ import Config from './config.vue'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { useTerminal } from '/@/stores/terminal'
 import { Local, Session } from '/@/utils/storage'
-import { ADMIN_INFO } from '/@/stores/constant/cacheKey'
+import { ADMIN_INFO, BA_ACCOUNT } from '/@/stores/constant/cacheKey'
 import router from '/@/router'
 import { routePush } from '/@/utils/router'
 import { logout } from '/@/api/backend/index'
@@ -161,9 +161,11 @@ const onLogout = () => {
 const onClearCache = (type: string) => {
     if (type == 'storage' || type == 'all') {
         const adminInfo = Local.get(ADMIN_INFO)
+        const baAccount = Local.get(BA_ACCOUNT)
         Session.clear()
         Local.clear()
         Local.set(ADMIN_INFO, adminInfo)
+        Local.set(BA_ACCOUNT, baAccount)
         if (type == 'storage') return
     }
     postClearCache(type).then(() => {})

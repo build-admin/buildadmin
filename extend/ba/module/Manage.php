@@ -142,10 +142,25 @@ class Manage
         // 读取ini
         $info = Server::getIni($copyToDir);
         if (!isset($info['uid']) || !$info['uid']) {
+            deldir($copyToDir);
             throw new Exception('Basic configuration of the Module is incomplete');
         }
         $this->uid        = $info['uid'];
         $this->modulesDir = $this->installDir . $info['uid'] . DIRECTORY_SEPARATOR;
+
+        if (is_dir($this->modulesDir)) {
+            $info = $this->getInfo();
+            if ($info && isset($info['uid'])) {
+                deldir($copyToDir);
+                throw new Exception('Module already exists');
+            }
+
+            if (!dir_is_empty($this->modulesDir)) {
+                deldir($copyToDir);
+                throw new Exception('The directory required by the module is occupied');
+            }
+        }
+
         rename($copyToDir, $this->modulesDir);
 
         // 检查是否完整
@@ -359,8 +374,7 @@ class Manage
             $order = request()->get("order/d", 0);
             $this->update($token, $order);
             throw new moduleException('upadte', -3, [
-                'uid'        => $this->uid,
-                'vitereload' => $info['vitereload'],
+                'uid' => $this->uid,
             ]);
         }
 
@@ -368,7 +382,6 @@ class Manage
             throw new moduleException('dependent wait install', -2, [
                 'uid'          => $this->uid,
                 'wait_install' => $dependWaitInstall,
-                'vitereload'   => $info['vitereload'],
             ]);
         }
         return $info;
@@ -565,7 +578,6 @@ class Manage
                     'uid'          => $this->uid,
                     'state'        => self::DEPENDENT_WAIT_INSTALL,
                     'wait_install' => $waitInstall,
-                    'vitereload'   => $info['vitereload'],
                 ]);
             } else {
                 $this->setInfo([

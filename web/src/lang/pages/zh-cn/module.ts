@@ -2,11 +2,11 @@ export default {
     'stateTitle init': '模块安装器初始化...',
     'stateTitle download': '正在下载模块...',
     'stateTitle install': '正在安装模块...',
-    'stateTitle wait-full-reload': 'WEB端文件已更新，正在等待热重载...',
     'env require': '后端依赖（composer）',
     'env require-dev': '后端开发环境依赖（composer）',
     'env dependencies': '前端依赖（NPM）',
     'env devDependencies': '前端开发环境依赖（NPM）',
+    'This is a deliberate error thrown to prevent a hot update of Vite': '这是为了防止Vite的热更新而有意抛出的错误',
     // user
     'Member information': '会员信息',
     'My module': '我的模块',
@@ -29,11 +29,6 @@ export default {
     'Balance payment': '余额支付',
     'Install now': '立即安装',
     payment: '支付',
-    // commonDialog
-    hmrTips1: '若您未在',
-    hmrTips2: '开发环境',
-    hmrTips3: '下或页面未自动刷新，请',
-    hmrTips4: '点击我继续',
     // commonDone
     'Congratulations, module installation is complete': '恭喜，模块安装已完成。',
     'Module is disabled': '模块已禁用。',
@@ -57,6 +52,11 @@ export default {
     'Dependency installation fail 2': '终端',
     'Dependency installation fail 3': '中的重试按钮，您也可以查看',
     'Dependency installation fail 4': '手动完成未尽事宜',
+    'Dependency installation fail 5': '在您',
+    'Dependency installation fail 6': '确定依赖已准备好',
+    'Dependency installation fail 7': '之前，模块还不能正常使用！',
+    'Is the command that failed on the WEB terminal executed manually or in other ways successfully?':
+        'WEB终端失败的命令已经手动或以其他方式执行成功？',
     yes: '是',
     no: '否',
     // confirmFileConflict

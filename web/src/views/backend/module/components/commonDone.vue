@@ -45,6 +45,15 @@
             </div>
             <div v-else>{{ t('module.There is no adjustment for system dependency') }}</div>
         </div>
+        <div v-if="state.common.dependInstallState == 'fail'" class="install-tis-box">
+            <div class="install-tis">
+                {{ t('module.Dependency installation fail 5') }}
+                <span class="span-a" @click="onConfirmDepend">
+                    {{ t('module.Dependency installation fail 6') }}
+                </span>
+                {{ t('module.Dependency installation fail 7') }}
+            </div>
+        </div>
         <div class="install-tis-box">
             <div class="install-tis">
                 {{ t('module.please') }}{{ state.common.moduleState == moduleInstallState.DISABLE ? '' : t('module.After installation 1') }}
@@ -70,6 +79,7 @@
             :disabled="state.common.dependInstallState != 'executing' || state.common.moduleState == moduleInstallState.INSTALLED ? false : true"
             size="large"
             type="primary"
+            v-loading="state.loading.common"
             @click="onSubmitInstallDone"
         >
             {{ state.common.moduleState == moduleInstallState.DISABLE ? t('complete') : t('module.End of installation') }}
@@ -81,10 +91,13 @@
 import { reactive } from 'vue'
 import { state } from '../store'
 import { moduleInstallState } from '../types'
+import { onRefreshTableData } from '../index'
 import { useTerminal } from '/@/stores/terminal'
 import FormItem from '/@/components/formItem/index.vue'
 import { taskStatus } from '/@/components/terminal/constant'
+import { ElMessageBox } from 'element-plus'
 import { useI18n } from 'vue-i18n'
+import { dependentInstallComplete } from '/@/api/backend/module'
 
 const { t } = useI18n()
 const terminal = useTerminal()
@@ -106,6 +119,20 @@ const onSubmitInstallDone = () => {
             }
         })
     }
+}
+
+const onConfirmDepend = () => {
+    ElMessageBox.confirm(t('module.Is the command that failed on the WEB terminal executed manually or in other ways successfully?'), t('Reminder'), {
+        confirmButtonText: t('module.yes'),
+        cancelButtonText: t('Cancel'),
+        type: 'warning',
+    }).then(() => {
+        state.loading.common = true
+        dependentInstallComplete(state.common.uid).then(() => {
+            onRefreshTableData()
+            state.loading.common = false
+        })
+    })
 }
 </script>
 
@@ -141,6 +168,9 @@ const onSubmitInstallDone = () => {
 .span-a {
     color: var(--el-color-primary);
     cursor: pointer;
+    &:hover {
+        color: var(--el-color-primary-light-5);
+    }
 }
 .install-form :deep(.ba-input-item-radio) {
     margin-bottom: 0;

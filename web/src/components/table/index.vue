@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, reactive, inject } from 'vue'
+import { ref, nextTick, inject } from 'vue'
 import type { ElTable } from 'element-plus'
 import Column from '/@/components/table/column/index.vue'
 import FieldRender from '/@/components/table/fieldRender/index.vue'

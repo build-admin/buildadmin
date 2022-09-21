@@ -17,4 +17,5 @@ return [
     'Module file updated'                                       => '模块文件有更新',
     'Please disable the module first'                           => '请先禁用模块',
     'Please disable the module before updating'                 => '更新前请先禁用模块',
+    'The directory required by the module is occupied'          => '模块所需目录已被占用',
 ];

@@ -1,14 +1,12 @@
 import { state } from './store'
 import { index, modules, info, createOrder, payOrder, postInstallModule, getInstallState, changeState } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
-import { Session } from '/@/utils/storage'
 import { ElNotification } from 'element-plus'
 import { useTerminal } from '/@/stores/terminal'
 import { taskStatus } from '/@/components/terminal/constant'
-import { moduleInstallState, moduleState, MODULE_TEMP, VITE_FULL_RELOAD } from './types'
+import { moduleInstallState, moduleState } from './types'
 import { uuid } from '/@/utils/random'
 import { fullUrl } from '/@/utils/common'
-import router from '/@/router'
 
 export const loadData = () => {
     state.loading.table = true
@@ -178,41 +176,13 @@ export const showCommonLoading = (loadingTitle: moduleState['common']['loadingTi
     state.common.loadingComponentKey = uuid()
 }
 
-export const showWaitFullReload = (vitereload = 0) => {
-    state.dialog.common = true
-    state.common.dialogTitle = '等待热更新'
-    showCommonLoading('wait-full-reload')
-    state.common.type = 'waitFullReload'
-    if (vitereload == 2) triggerFullReload()
-}
-
-export const triggerFullReload = () => {
-    Session.set(VITE_FULL_RELOAD, true)
-    router.go(0)
-}
-
 export const onInstall = (uid: string, id: number) => {
     state.dialog.common = true
     showCommonLoading('init')
     state.common.dialogTitle = '安装'
 
-    // 安装模块可能会触发热更新或热重载造成状态丢失
-    // 存储当前模块的安装进度等状态
-    Session.set(MODULE_TEMP, { uid: uid, id: id, type: 'install' })
-
-    // 是否发生了热重载
-    const viteFullReload = Session.get(VITE_FULL_RELOAD)
-
     // 获取安装状态
     getInstallState(uid).then((res) => {
-        if (res.data.state === moduleInstallState.INSTALLED && viteFullReload) {
-            state.common.dialogTitle = '安装完成'
-            state.common.moduleState = moduleInstallState.INSTALLED
-            state.common.type = 'done'
-            clearTempStorage()
-            return
-        }
-
         if (
             res.data.state === moduleInstallState.INSTALLED ||
             res.data.state === moduleInstallState.DISABLE ||
@@ -226,7 +196,6 @@ export const onInstall = (uid: string, id: number) => {
                         : '安装取消，因为模块所需目录被占用！',
             })
             state.dialog.common = false
-            clearTempStorage()
         } else {
             showCommonLoading(res.data.state === moduleInstallState.UNINSTALLED ? 'download' : 'install')
             execInstall(uid, id)
@@ -240,17 +209,12 @@ export const onInstall = (uid: string, id: number) => {
 }
 
 export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
-    const viteFullReload = Session.get(VITE_FULL_RELOAD)
+    state.common.disableHmr = true
     postInstallModule(uid, id, extend)
-        .then((res) => {
+        .then(() => {
             state.common.dialogTitle = '安装完成'
-            if (res.data.data.vitereload == 0 || viteFullReload) {
-                state.common.moduleState = moduleInstallState.INSTALLED
-                state.common.type = 'done'
-                clearTempStorage()
-            } else {
-                showWaitFullReload(res.data.data.vitereload)
-            }
+            state.common.moduleState = moduleInstallState.INSTALLED
+            state.common.type = 'done'
         })
         .catch((res) => {
             if (loginExpired(res)) return
@@ -260,14 +224,9 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
                 state.common.dialogTitle = '发现冲突，请手动处理'
                 state.common.fileConflict = res.data.fileConflict
                 state.common.dependConflict = res.data.dependConflict
-                Session.remove(VITE_FULL_RELOAD)
             } else if (res.code == -2) {
-                if (res.data.vitereload != 0 && !viteFullReload) {
-                    showWaitFullReload(res.data.vitereload)
-                    return
-                }
-
                 state.common.type = 'done'
+                state.common.uid = res.data.uid
                 state.common.dialogTitle = '等待依赖安装'
                 state.common.moduleState = moduleInstallState.DEPENDENT_WAIT_INSTALL
                 state.common.waitInstallDepend = res.data.wait_install
@@ -283,18 +242,17 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
                         terminalTaskExecComplete(res, 'composer_dependent_wait_install')
                     })
                 }
-                clearTempStorage()
             } else if (res.code == 0) {
                 ElNotification({
                     type: 'error',
                     message: res.msg,
                 })
                 state.dialog.common = false
-                clearTempStorage()
             }
         })
         .finally(() => {
             state.loading.common = false
+            state.common.disableHmr = true
             onRefreshTableData()
         })
 }
@@ -317,14 +275,10 @@ const terminalTaskExecComplete = (res: number, type: string) => {
 
 export const onDisable = (confirmConflict = false) => {
     state.loading.common = true
+    state.common.disableHmr = true
     state.common.disableParams['confirmConflict'] = confirmConflict ? 1 : 0
     changeState(state.common.disableParams)
-        .then((res) => {
-            if (res.data.info?.vitereload != 0) {
-                Session.set(MODULE_TEMP, { type: 'clean-cache' })
-                showWaitFullReload(res.data.info.vitereload)
-                return
-            }
+        .then(() => {
             ElNotification({
                 type: 'success',
                 message: '操作成功，请清理系统缓存并刷新浏览器~',
@@ -347,28 +301,18 @@ export const onDisable = (confirmConflict = false) => {
                     }
                     state.common.disableConflictFile = conflictFile
                 }
-                Session.remove(VITE_FULL_RELOAD)
             } else if (res.code == -2) {
                 state.dialog.common = true
                 const commandsData = {
                     type: 'disable',
                     commands: res.data.wait_install,
                 }
-                if (res.data.vitereload == 0) {
-                    execCommand(commandsData)
-                    onRefreshTableData()
-                } else {
-                    Session.set(MODULE_TEMP, commandsData)
-                    showWaitFullReload(res.data.vitereload)
-                }
+                state.common.uid = state.goodsInfo.uid
+                execCommand(commandsData)
+                onRefreshTableData()
             } else if (res.code == -3) {
                 // 更新
-                if (res.data.vitereload == 0) {
-                    onInstall(state.goodsInfo.uid, state.goodsInfo.purchased)
-                } else {
-                    Session.set(MODULE_TEMP, { uid: state.goodsInfo.uid, id: state.goodsInfo.purchased, type: 'install' })
-                    showWaitFullReload(res.data.vitereload)
-                }
+                onInstall(state.goodsInfo.uid, state.goodsInfo.purchased)
             } else {
                 ElNotification({
                     type: 'error',
@@ -378,6 +322,7 @@ export const onDisable = (confirmConflict = false) => {
         })
         .finally(() => {
             state.loading.common = false
+            state.common.disableHmr = true
         })
 }
 
@@ -391,7 +336,6 @@ export const onEnable = (uid: string) => {
             state.dialog.common = true
             showCommonLoading('init')
             state.common.dialogTitle = '启用'
-            Session.set(MODULE_TEMP, { uid: uid, type: 'install' })
 
             execInstall(uid, 0)
             state.dialog.goodsInfo = false
@@ -441,13 +385,7 @@ export const execCommand = (data: anyObj) => {
                 })
             }
         })
-        clearTempStorage()
     }
-}
-
-export const clearTempStorage = () => {
-    Session.remove(MODULE_TEMP)
-    Session.remove(VITE_FULL_RELOAD)
 }
 
 export const currency = (price: number, val: number) => {

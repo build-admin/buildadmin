@@ -2,11 +2,11 @@ export default {
     'stateTitle init': 'Module installer initialization...',
     'stateTitle download': 'Downloading module...',
     'stateTitle install': 'Installing module...',
-    'stateTitle wait-full-reload': 'Web side file updated, waiting for hot reload...',
     'env require': 'Composer',
     'env require-dev': 'Composer-dev',
     'env dependencies': 'NPM',
     'env devDependencies': 'NPM-dev',
+    'This is a deliberate error thrown to prevent a hot update of Vite': 'This is a deliberate error thrown to prevent a hot update of Vite',
     // user
     'Member information': 'Member information',
     'My module': 'My module',
@@ -30,11 +30,6 @@ export default {
     'Balance payment': 'Balance payment',
     'Install now': 'Install now',
     payment: 'payment',
-    // commonDialog
-    hmrTips1: 'If you are not',
-    hmrTips2: 'development environment',
-    hmrTips3: 'Or the page does not refresh automatically, please',
-    hmrTips4: 'Click me to continue',
     // commonDone
     'Congratulations, module installation is complete': 'Congratulations, module installation is complete.',
     'Module is disabled': 'Module is disabled.',
@@ -59,6 +54,11 @@ export default {
     'Dependency installation fail 2': 'terminal',
     'Dependency installation fail 3': 'You can also view the ',
     'Dependency installation fail 4': 'unfinished matters manually',
+    'Dependency installation fail 5': 'Until you are',
+    'Dependency installation fail 6': 'sure that the dependency is ready',
+    'Dependency installation fail 7': ', the module will not work!',
+    'Is the command that failed on the WEB terminal executed manually or in other ways successfully?':
+        'Is the command that failed on the WEB terminal executed manually or in other ways successfully?',
     yes: 'yes',
     no: 'no',
     // confirmFileConflict

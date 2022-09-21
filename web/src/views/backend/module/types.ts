@@ -13,7 +13,6 @@ export interface moduleInfo {
     title: string
     version: string
     state: number
-    vitereload: number
     website: string
     stateTag: {
         type: string
@@ -53,11 +52,12 @@ export interface moduleState {
         uid: string
         moduleState: number
         quickClose: boolean
-        type: 'loading' | 'InstallConflict' | 'done' | 'waitFullReload' | 'disableConfirmConflict' | 'uploadInstall'
+        type: 'loading' | 'InstallConflict' | 'done' | 'disableConfirmConflict' | 'uploadInstall'
+        disableHmr: boolean
         dialogTitle: string
         fileConflict: anyObj[]
         dependConflict: anyObj[]
-        loadingTitle: 'init' | 'download' | 'install' | 'wait-full-reload'
+        loadingTitle: 'init' | 'download' | 'install'
         loadingComponentKey: string
         waitInstallDepend: string[]
         dependInstallState: 'none' | 'executing' | 'success' | 'fail'
@@ -68,6 +68,3 @@ export interface moduleState {
     installedModule: moduleInfo[]
     installedModuleUids: string[]
 }
-
-export const MODULE_TEMP = 'moduleTemp' // 模块安装/禁用状态临时记录
-export const VITE_FULL_RELOAD = 'viteFullReload' // 是否触发了vite热重载的临时记录

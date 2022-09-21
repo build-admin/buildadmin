@@ -10,12 +10,11 @@
             <el-scrollbar :height="500">
                 <!-- 公共dialog形式的loading -->
                 <div
-                    v-if="state.common.type == 'loading' || state.common.type == 'waitFullReload'"
+                    v-if="state.common.type == 'loading'"
                     v-loading="true"
                     :element-loading-text="state.common.loadingTitle ? $t('module.stateTitle ' + state.common.loadingTitle) : ''"
                     :key="state.common.loadingComponentKey"
                     class="common-loading"
-                    :style="{ height: state.common.type == 'loading' ? '400px' : '250px' }"
                 ></div>
 
                 <!-- 安装冲突 -->
@@ -29,15 +28,6 @@
 
                 <!-- 上传安装 -->
                 <UploadInstall v-if="state.common.type == 'uploadInstall'" />
-
-                <!-- 等待热更新 -->
-                <div v-if="state.common.type == 'waitFullReload'" class="full-reload-tips">
-                    {{ $t('module.hmrTips1') }}
-                    <el-link target="_blank" type="primary" href="https://wonderful-code.gitee.io/guide/other/developerMustSee.html#开发环境">
-                        {{ $t('module.hmrTips2') }}
-                    </el-link>
-                    {{ $t('module.hmrTips3') }}<el-link type="primary" @click="triggerFullReload">{{ $t('module.hmrTips4') }}</el-link>
-                </div>
             </el-scrollbar>
         </el-dialog>
     </div>
@@ -45,7 +35,6 @@
 
 <script setup lang="ts">
 import { state } from '../store'
-import { triggerFullReload } from '../index'
 import InstallConflict from './installConflict.vue'
 import CommonDone from './commonDone.vue'
 import UploadInstall from './uploadInstall.vue'
@@ -59,10 +48,8 @@ import ConfirmFileConflict from './confirmFileConflict.vue'
 .common-dialog {
     height: 500px;
 }
-.full-reload-tips {
-    display: flex;
-    justify-content: center;
-    color: var(--el-color-warning);
+.common-loading {
+    height: 400px;
 }
 @media screen and (max-width: 1440px) {
     :deep(.common-dialog) {
