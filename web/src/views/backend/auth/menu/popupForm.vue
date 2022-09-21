@@ -67,7 +67,7 @@
                         ></el-input>
                     </el-form-item>
                     <FormItem
-                        v-if="baTable.form.items!.type != 'button'"
+                        v-if="baTable.form.operate && baTable.form.items!.type != 'button'"
                         type="icon"
                         :label="t('auth.menu.Rule Icon')"
                         v-model="baTable.form.items!.icon"
