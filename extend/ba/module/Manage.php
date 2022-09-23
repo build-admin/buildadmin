@@ -99,10 +99,17 @@ class Manage
         }
         // 下载
         $sysVersion = Config::get('buildadmin.version');
-        $zipFile    = Server::download($this->uid, $this->installDir, [
+        $installed  = Server::installedList($this->installDir);
+        foreach ($installed as $item) {
+            $installedUids[] = $item['uid'];
+        }
+        unset($installed);
+        $zipFile = Server::download($this->uid, $this->installDir, [
             'sysVersion'    => $sysVersion,
             'ba-user-token' => $token,
             'order_id'      => $orderId,
+            // 传递已安装模块，做互斥检测
+            'installed'     => $installedUids,
         ]);
 
         // 解压
