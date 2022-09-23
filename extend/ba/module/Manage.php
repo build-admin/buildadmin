@@ -109,7 +109,7 @@ class Manage
             'ba-user-token' => $token,
             'order_id'      => $orderId,
             // 传递已安装模块，做互斥检测
-            'installed'     => $installedUids,
+            'installed'     => $installedUids ?? [],
         ]);
 
         // 解压
