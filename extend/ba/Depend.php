@@ -75,6 +75,7 @@ class Depend
      * 添加 composer 依赖
      * @param array $require 要添加的依赖数组["php" => ">=7.1.0",]
      * @param bool  $devEnv  是否添加为开发环境依赖
+     * @param bool  $cover   覆盖模式
      * @throws Exception
      */
     public function addComposerRequire(array $require, bool $devEnv = false, bool $cover = false)
@@ -91,6 +92,31 @@ class Depend
             foreach ($require as $key => $item) {
                 if (isset($composerRequire[$key])) {
                     throw new Exception($key . ' require already exists!');
+                }
+            }
+        }
+        $this->setComposer($composerContent);
+    }
+
+    /**
+     * 删除 composer 依赖
+     * @param array $require 要删除的依赖数组["php", "w7corp/easywechat"]
+     * @param bool  $devEnv  是否为开发环境删除依赖
+     * @throws Exception
+     */
+    public function removeComposerRequire(array $require, bool $devEnv = false)
+    {
+        $composerContent = $this->getComposer(true);
+        if ($devEnv) {
+            foreach ($require as $item) {
+                if (isset($composerContent['require-dev'][$item])) {
+                    unset($composerContent['require-dev'][$item]);
+                }
+            }
+        } else {
+            foreach ($require as $item) {
+                if (isset($composerContent['require'][$item])) {
+                    unset($composerContent['require'][$item]);
                 }
             }
         }
@@ -160,6 +186,7 @@ class Depend
      * 添加 npm 依赖
      * @param array $dependencies 要添加的依赖数组["xxx" => ">=7.1.0",]
      * @param bool  $devEnv       是否添加为开发环境依赖
+     * @param bool  $cover        覆盖模式
      * @throws Exception
      */
     public function addNpmDependencies(array $dependencies, bool $devEnv = false, bool $cover = false)
@@ -176,6 +203,31 @@ class Depend
             foreach ($dependencies as $key => $item) {
                 if (isset($npmDependencies[$key])) {
                     throw new Exception($key . ' dependencie already exists!');
+                }
+            }
+        }
+        $this->setNpm($npmContent);
+    }
+
+    /**
+     * 删除 npm 依赖
+     * @param array $dependencies 要删除的依赖数组["xxx", "vue-i18n"]
+     * @param bool  $devEnv       是否添加为开发环境删除依赖
+     * @throws Exception
+     */
+    public function removeNpmDependencies(array $dependencies, bool $devEnv = false)
+    {
+        $npmContent = $this->getNpm(true);
+        if ($devEnv) {
+            foreach ($dependencies as $dependency) {
+                if (isset($npmContent['devDependencies'][$dependency])) {
+                    unset($npmContent['devDependencies'][$dependency]);
+                }
+            }
+        } else {
+            foreach ($dependencies as $dependency) {
+                if (isset($npmContent['dependencies'][$dependency])) {
+                    unset($npmContent['dependencies'][$dependency]);
                 }
             }
         }
