@@ -283,8 +283,9 @@ class Manage
 
     public function disable()
     {
-        $upadte          = request()->get("upadte/b", false);
-        $confirmConflict = request()->get("confirmConflict/b", false);
+        $upadte                 = request()->post("upadte/b", false);
+        $confirmConflict        = request()->post("confirmConflict/b", false);
+        $dependConflictSolution = request()->post("dependConflictSolution/a", []);
 
         $info    = $this->getInfo();
         $zipFile = $this->ebakDir . $this->uid . '-install.zip';
@@ -297,19 +298,43 @@ class Manage
             }
         }
 
-        $conflictFile          = Server::getFileList($this->modulesDir, true);
-        $disableDependConflict = $this->disableDependConflictCheck($zipDir);
-        if (($disableDependConflict || $conflictFile) && !$confirmConflict) {
+        $conflictFile   = Server::getFileList($this->modulesDir, true);
+        $dependConflict = $this->disableDependCheck();
+        if (($conflictFile || !self::emptyArray($dependConflict)) && !$confirmConflict) {
+            $dependConflictTemp = [];
+            foreach ($dependConflict as $env => $item) {
+                $dev = !(stripos($env, 'dev') === false);
+                foreach ($item as $depend => $v) {
+                    $dependConflictTemp[] = [
+                        'env'         => $env,
+                        'depend'      => $depend,
+                        'dependTitle' => $depend . ' ' . $v,
+                        'solution'    => 'delete',
+                    ];
+                }
+            }
             throw new moduleException('Module file updated', -1, [
                 'uid'            => $this->uid,
                 'conflictFile'   => $conflictFile,
-                'dependConflict' => (bool)$disableDependConflict,
+                'dependConflict' => $dependConflictTemp,
             ]);
         }
 
-        // 对冲突进行备份
+        // 是否需要备份依赖？
+        $delNpmDepend      = false;
+        $delComposerDepend = false;
+        foreach ($dependConflictSolution as $env => $depends) {
+            if (!$depends) continue;
+            if ($env == 'require' || $env == 'require-dev') {
+                $delComposerDepend = true;
+            } elseif ($env == 'dependencies' || $env == 'devDependencies') {
+                $delNpmDepend = true;
+            }
+        }
+
+        // 备份
         $dependWaitInstall = [];
-        if (in_array('composer', $disableDependConflict)) {
+        if ($delComposerDepend) {
             $conflictFile[]      = 'composer.json';
             $dependWaitInstall[] = [
                 'pm'      => false,
@@ -317,7 +342,7 @@ class Manage
                 'type'    => 'composer_dependent_wait_install',
             ];
         }
-        if (in_array('npm', $disableDependConflict)) {
+        if ($delNpmDepend) {
             $conflictFile[]      = 'web' . DIRECTORY_SEPARATOR . 'package.json';
             $dependWaitInstall[] = [
                 'pm'      => true,
@@ -328,6 +353,18 @@ class Manage
         if ($conflictFile) {
             $ebakZip = $this->ebakDir . $this->uid . '-disable-' . date('YmdHis') . '.zip';
             Server::createZip($conflictFile, $ebakZip);
+        }
+
+        // 删除依赖
+        $sysDepend = new Depend();
+        foreach ($dependConflictSolution as $env => $depends) {
+            if (!$depends) continue;
+            $dev = !(stripos($env, 'dev') === false);
+            if ($env == 'require' || $env == 'require-dev') {
+                $sysDepend->removeComposerRequire($depends, $dev);
+            } elseif ($env == 'dependencies' || $env == 'devDependencies') {
+                $sysDepend->removeNpmDependencies($depends, $dev);
+            }
         }
 
         // 删除模块文件
@@ -361,7 +398,9 @@ class Manage
                         mkdir($ebakFile, 0755, true);
                     }
                 } else {
-                    copy($item, $ebakFile);
+                    if ($ebakFile != path_transform(root_path() . 'composer.json') && $ebakFile != path_transform(root_path() . 'web/package.json')) {
+                        copy($item, $ebakFile);
+                    }
                 }
             }
         }
@@ -377,8 +416,8 @@ class Manage
         ]);
 
         if ($upadte) {
-            $token = request()->get("token/s", '');
-            $order = request()->get("order/d", 0);
+            $token = request()->post("token/s", '');
+            $order = request()->post("order/d", 0);
             $this->update($token, $order);
             throw new moduleException('upadte', -3, [
                 'uid' => $this->uid,
@@ -612,6 +651,37 @@ class Manage
             }
             $this->setInfo([], $info);
         }
+    }
+
+    public function disableDependCheck()
+    {
+        // 读取模块所有依赖
+        $depend = Server::getDepend($this->modulesDir);
+        if (!$depend) {
+            return [];
+        }
+
+        // 读取所有依赖中，系统上已经安装的依赖
+        $sysDepend = new Depend();
+        foreach ($depend as $key => $depends) {
+            $dev = !(stripos($key, 'dev') === false);
+            if ($key == 'require' || $key == 'require-dev') {
+                foreach ($depends as $dependKey => $dependItem) {
+                    if (!$sysDepend->hasComposerRequire($dependKey, $dev)) {
+                        unset($depends[$dependKey]);
+                    }
+                }
+                $depend[$key] = $depends;
+            } elseif ($key == 'dependencies' || $key == 'devDependencies') {
+                foreach ($depends as $dependKey => $dependItem) {
+                    if (!$sysDepend->hasNpmDependencies($dependKey, $dev)) {
+                        unset($depends[$dependKey]);
+                    }
+                }
+                $depend[$key] = $depends;
+            }
+        }
+        return $depend;
     }
 
     public function disableDependConflictCheck(string $ebakDir): array

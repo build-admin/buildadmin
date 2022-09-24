@@ -47,7 +47,7 @@ export const state = reactive<moduleState>({
         waitInstallDepend: [],
         dependInstallState: 'none',
         disableConflictFile: [],
-        disableDependConflict: false,
+        disableDependConflict: [],
         disableParams: {},
     },
     installedModule: [],

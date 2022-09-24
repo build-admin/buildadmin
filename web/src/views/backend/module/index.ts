@@ -276,7 +276,23 @@ const terminalTaskExecComplete = (res: number, type: string) => {
 export const onDisable = (confirmConflict = false) => {
     state.loading.common = true
     state.common.disableHmr = true
-    state.common.disableParams['confirmConflict'] = confirmConflict ? 1 : 0
+
+    // 拼装依赖处理方案
+    if (confirmConflict) {
+        const dependConflict: anyObj = {}
+        for (const key in state.common.disableDependConflict) {
+            if (state.common.disableDependConflict[key]['solution'] != 'delete') {
+                continue
+            }
+            if (typeof dependConflict[state.common.disableDependConflict[key].env] == 'undefined') {
+                dependConflict[state.common.disableDependConflict[key].env] = []
+            }
+            dependConflict[state.common.disableDependConflict[key].env].push(state.common.disableDependConflict[key].depend)
+        }
+        state.common.disableParams['confirmConflict'] = 1
+        state.common.disableParams['dependConflictSolution'] = dependConflict
+    }
+
     changeState(state.common.disableParams)
         .then(() => {
             ElNotification({

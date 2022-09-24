@@ -62,7 +62,7 @@ export interface moduleState {
         waitInstallDepend: string[]
         dependInstallState: 'none' | 'executing' | 'success' | 'fail'
         disableConflictFile: { file: string }[]
-        disableDependConflict: boolean
+        disableDependConflict: anyObj[]
         disableParams: anyObj
     }
     installedModule: moduleInfo[]

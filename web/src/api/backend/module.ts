@@ -170,7 +170,7 @@ export function changeState(params: anyObj) {
         {
             url: moduleControllerUrl + 'changeState',
             method: 'post',
-            params: params,
+            data: params,
         },
         {
             showCodeMessage: false,

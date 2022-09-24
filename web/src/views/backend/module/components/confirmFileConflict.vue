@@ -8,20 +8,25 @@
                     <el-table-column prop="file" :label="$t('module.Conflict file')" />
                 </el-table>
             </template>
-            <template v-if="state.common.disableDependConflict">
-                <div class="conflict-title">{{ $t('module.Dependency conflict') }}</div>
-                <div class="depend-conflict-tips">
-                    {{ $t('module.Dependency recovery warning 1') }}
-                    <span class="text-bold">{{ $t('module.Dependency recovery warning 2') }}</span>
-                    {{ $t('module.Dependency recovery warning 3') }}
-                </div>
-                <el-alert
-                    :closable="false"
-                    :center="true"
-                    :title="$t('module.composer and package The JSON file will be restored')"
-                    class="alert-warning"
-                    type="error"
-                ></el-alert>
+
+            <template v-if="state.common.disableDependConflict.length > 0">
+                <div class="conflict-title">{{ $t('module.The module declares the added dependencies') }}</div>
+                <el-table :data="state.common.disableDependConflict" stripe border style="width: 100%">
+                    <el-table-column prop="env" :label="$t('module.environment')">
+                        <template #default="scope">
+                            <span v-if="scope.row.env">{{ $t('module.env ' + scope.row.env) }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="dependTitle" :label="$t('module.Dependencies')" />
+                    <el-table-column prop="solution" width="200" :label="$t('module.Treatment scheme')" align="center">
+                        <template #default="scope">
+                            <el-select v-model="scope.row.solution">
+                                <el-option :label="$t('delete')" value="delete"></el-option>
+                                <el-option :label="$t('module.retain')" value="retain"></el-option>
+                            </el-select>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </template>
         </div>
         <div class="center-buttons">

@@ -69,8 +69,8 @@ class Module extends Backend
 
     public function changeState()
     {
-        $uid   = $this->request->get("uid/s", '');
-        $state = $this->request->get("state/b", false);
+        $uid   = $this->request->post("uid/s", '');
+        $state = $this->request->post("state/b", false);
         if (!$uid) {
             $this->error(__('Parameter error'));
         }
