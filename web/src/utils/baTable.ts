@@ -271,10 +271,8 @@ export default class baTable {
             [
                 'sort-change',
                 () => {
-                    let newOrder = ''
-                    if (!data.prop) {
-                        newOrder = ''
-                    } else if (data.prop) {
+                    let newOrder: string | undefined
+                    if (data.prop && data.order) {
                         newOrder = data.prop + ',' + data.order
                     }
                     if (newOrder != this.table.filter!.order) {
