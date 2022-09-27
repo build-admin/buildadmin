@@ -109,6 +109,21 @@ class Captcha
     }
 
     /**
+     * 获取验证码数据
+     * @access public
+     * @param string $id 验证码标识
+     * @return array
+     */
+    public function getCaptchaData(string $id): array
+    {
+        $key    = $this->authcode($this->seKey, $id);
+        $secode = Db::name('captcha')
+            ->where('key', $key)
+            ->find();
+        return $secode ?: [];
+    }
+
+    /**
      * 验证验证码是否正确
      * @access public
      * @param string $code 用户验证码
