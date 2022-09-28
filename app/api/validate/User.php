@@ -21,9 +21,8 @@ class User extends Validate
      * 验证场景
      */
     protected $scene = [
-        'login'              => ['password', 'captcha', 'captchaId'],
-        'register'           => ['email', 'username', 'password', 'mobile', 'captcha'],
-        'send-register-code' => ['email', 'username', 'password', 'mobile'],
+        'login'    => ['password', 'captcha', 'captchaId'],
+        'register' => ['email', 'username', 'password', 'mobile', 'captcha'],
     ];
 
     public function __construct()

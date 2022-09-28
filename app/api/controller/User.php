@@ -77,7 +77,7 @@ class User extends Frontend
                 }
                 $res = $this->auth->login($params['username'], $params['password'], (bool)$params['keep']);
             } elseif ($params['tab'] == 'register') {
-                if (!$captchaObj->check($params['captcha'], $params['registerType'] == 'email' ? $params['email'] : $params['mobile'])) {
+                if (!$captchaObj->check($params['captcha'], ($params['registerType'] == 'email' ? $params['email'] : $params['mobile']) . 'user_register')) {
                     $this->error(__('Please enter the correct verification code'));
                 }
                 $res = $this->auth->register($params['username'], $params['password'], $params['mobile'], $params['email']);

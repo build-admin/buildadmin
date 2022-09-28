@@ -85,35 +85,6 @@ export function postLogout(): ApiPromise {
     }) as ApiPromise
 }
 
-export function sendRetrievePasswordCode(type: string, account: string): ApiPromise {
-    return createAxios(
-        {
-            url: accountUrl + 'sendRetrievePasswordCode',
-            method: 'POST',
-            data: {
-                type: type,
-                account: account,
-            },
-        },
-        {
-            showSuccessMessage: true,
-        }
-    ) as ApiPromise
-}
-
-export function sendRegisterCode(params: anyObj): ApiPromise {
-    return createAxios(
-        {
-            url: accountUrl + 'sendRegisterCode',
-            method: 'POST',
-            data: params,
-        },
-        {
-            showSuccessMessage: true,
-        }
-    ) as ApiPromise
-}
-
 export function retrievePassword(params: anyObj): ApiPromise {
     return createAxios(
         {

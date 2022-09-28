@@ -289,11 +289,11 @@ import Header from '/@/layouts/frontend/components/header.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
-import { buildCaptchaUrl } from '/@/api/common'
+import { buildCaptchaUrl, sendEms, sendSms } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import { useI18n } from 'vue-i18n'
 import { buildValidatorData, validatorAccount } from '/@/utils/validate'
-import { checkIn, sendRetrievePasswordCode, retrievePassword, sendRegisterCode } from '/@/api/frontend/user/index'
+import { checkIn, retrievePassword } from '/@/api/frontend/user/index'
 import { onResetForm } from '/@/utils/common'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useRouter } from 'vue-router'
@@ -454,14 +454,12 @@ const sendRegisterCaptcha = (formRef: InstanceType<typeof ElForm> | undefined = 
     formRef!.validateField([state.form.registerType, 'username', 'password']).then((valid) => {
         if (valid) {
             state.sendCaptchaLoading = true
-            sendRegisterCode(state.form)
+            const func = state.form.registerType == 'email' ? sendEms : sendSms
+            func(state.form[state.form.registerType], 'user_register')
                 .then((res) => {
-                    state.sendCaptchaLoading = false
-                    if (res.code == 1) {
-                        startTiming(60)
-                    }
+                    if (res.code == 1) startTiming(60)
                 })
-                .catch(() => {
+                .finally(() => {
                     state.sendCaptchaLoading = false
                 })
         }
@@ -473,14 +471,12 @@ const sendRetrieveCaptcha = (formRef: InstanceType<typeof ElForm> | undefined = 
     formRef!.validateField('account').then((valid) => {
         if (valid) {
             state.sendCaptchaLoading = true
-            sendRetrievePasswordCode(state.retrievePasswordForm.type, state.retrievePasswordForm.account)
+            const func = state.retrievePasswordForm.type == 'email' ? sendEms : sendSms
+            func(state.retrievePasswordForm.account, 'user_retrieve_pwd')
                 .then((res) => {
-                    state.sendCaptchaLoading = false
-                    if (res.code == 1) {
-                        startTiming(60)
-                    }
+                    if (res.code == 1) startTiming(60)
                 })
-                .catch(() => {
+                .finally(() => {
                     state.sendCaptchaLoading = false
                 })
         }

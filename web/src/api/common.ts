@@ -29,7 +29,8 @@ export const refreshTokenUrl = '/api/common/refreshToken'
 export const apiUploadUrl = '/api/ajax/upload'
 export const apiBuildSuffixSvgUrl = '/api/ajax/buildSuffixSvg'
 export const apiAreaUrl = '/api/ajax/area'
-export const apiSendSms = '/api/sms/send'
+export const apiSendSms = '/api/Sms/send'
+export const apiSendEms = '/api/Ems/send'
 
 /**
  * 上传文件
@@ -121,7 +122,26 @@ export function sendSms(mobile: string, templateCode: string) {
         {
             showSuccessMessage: true,
         }
-    )
+    ) as ApiPromise
+}
+
+/**
+ * 发送邮件
+ */
+export function sendEms(email: string, event: string) {
+    return createAxios(
+        {
+            url: apiSendEms,
+            method: 'POST',
+            data: {
+                email: email,
+                event: event,
+            },
+        },
+        {
+            showSuccessMessage: true,
+        }
+    ) as ApiPromise
 }
 
 /*

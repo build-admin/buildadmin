@@ -12,13 +12,10 @@ use app\common\controller\Frontend;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
 use app\api\validate\Account as AccountValidate;
-use app\common\library\Email;
-use PHPMailer\PHPMailer\Exception as PHPMailerException;
-use app\api\validate\User as UserValidate;
 
 class Account extends Frontend
 {
-    protected $noNeedLogin = ['sendRetrievePasswordCode', 'sendRegisterCode', 'retrievePassword'];
+    protected $noNeedLogin = ['retrievePassword'];
 
     protected $model = null;
 
@@ -126,80 +123,6 @@ class Account extends Frontend
         ]);
     }
 
-    public function sendRegisterCode()
-    {
-        $data = $this->request->only(['registerType', 'email', 'mobile', 'username', 'password']);
-
-        $validate = new UserValidate();
-        try {
-            $validate->scene('send-register-code')->check($data);
-        } catch (ValidateException $e) {
-            $this->error($e->getMessage());
-        }
-
-        // 生成一个验证码
-        $captcha = new Captcha();
-        $account = $data['registerType'] == 'email' ? $data['email'] : $data['mobile'];
-        $code    = $captcha->create($account);
-
-        if ($data['registerType'] == 'email') {
-            $mail = new Email();
-            if (!$mail->configured) {
-                $this->error(__('Mail sending service unavailable'));
-            }
-            try {
-                $mail->isSMTP();
-                $mail->addAddress($account);
-                $mail->isHTML();
-                $mail->setSubject(__('Member registration verification') . '-' . get_sys_config('site_name'));
-                $mail->Body = __('Your verification code is: %s', [$code]);
-                $mail->send();
-            } catch (PHPMailerException $e) {
-                $this->error($mail->ErrorInfo);
-            }
-
-            $this->success(__('Mail sent successfully~'));
-        } else {
-            $this->error(__('Unknown operation'));
-        }
-    }
-
-    public function sendRetrievePasswordCode()
-    {
-        $data = $this->request->only(['type', 'account']);
-
-        if ($data['type'] == 'email') {
-            $user = User::where('email', $data['account'])->find();
-        } else {
-            $user = User::where('mobile', $data['account'])->find();
-        }
-        if (!$user) {
-            $this->error(__('Account does not exist~'));
-        }
-
-        // 生成一个验证码
-        $captcha = new Captcha();
-        $code    = $captcha->create($data['account'] . $user->id);
-
-        if ($data['type'] == 'email') {
-            $mail = new Email();
-            try {
-                $mail->isSMTP();
-                $mail->addAddress($data['account']);
-                $mail->isHTML();
-                $mail->setSubject(__('Retrieve password verification') . '-' . get_sys_config('site_name'));
-                $mail->Body = __('Your verification code is: %s', [$code]);
-                $mail->send();
-            } catch (PHPMailerException $e) {
-                $this->error($mail->ErrorInfo);
-            }
-
-            $this->success(__('Mail sent successfully~'));
-        } else {
-            $this->error(__('Unknown operation'));
-        }
-    }
-
     public function retrievePassword()
     {
         $params = $this->request->only(['type', 'account', 'captcha', 'password']);
@@ -220,7 +143,7 @@ class Account extends Frontend
         }
 
         $captchaObj = new Captcha();
-        if (!$captchaObj->check($params['captcha'], $params['account'] . $user->id)) {
+        if (!$captchaObj->check($params['captcha'], $params['account'] . 'user_retrieve_pwd')) {
             $this->error(__('Please enter the correct verification code'));
         }
 

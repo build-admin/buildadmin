@@ -1,6 +1,6 @@
 <?php
 return [
-    'avatar'                                             => 'Profile picture',
+    'avatar'                                             => 'Avatar',
     'username'                                           => 'Username',
     'nickname'                                           => 'Nickname',
     'birthday'                                           => 'Birthday',
@@ -14,13 +14,8 @@ return [
     'nicknameChsDash'                                    => 'Usernames can only be Chinese characters, letters, numbers, underscores_ and dashes-.',
     'Password has been changed~'                         => 'Password has been changed~',
     'Password has been changed, please login again~'     => 'Password has been changed, please login again~',
-    'Retrieve password verification'                     => 'Retrieve password verification',
-    'Member registration verification'                   => 'Member registration verification',
-    'Your verification code is: %s'                      => 'Your Captcha is: %s，valid for 10 minutes~',
-    'Mail sent successfully~'                            => 'Mail sent successfully',
     'Account does not exist~'                            => 'Account does not exist',
     'Failed to modify password, please try again later~' => 'Failed to modify password, please try again later~',
     'Please enter the correct verification code'         => 'Please enter the correct Captcha',
     '%s has been registered'                             => '%s has been registered, please login directly.',
-    'Mail sending service unavailable'                   => 'The mail sending service is not working, please contact the webmaster to configure it.',
 ];
