@@ -229,6 +229,9 @@ const initUserGrowthChart = () => {
         yAxis: {},
         legend: {
             data: [t('dashboard.Visits'), t('dashboard.Registration volume')],
+            textStyle: {
+                color: '#73767a',
+            },
         },
         series: [
             {
@@ -278,6 +281,9 @@ const initFileGrowthChart = () => {
                 }
                 return list
             })(),
+            textStyle: {
+                color: '#73767a',
+            },
         },
         visualMap: {
             top: 'middle',
@@ -424,6 +430,9 @@ const initUserSurnameChart = () => {
             top: 20,
             bottom: 20,
             data: data.legendData,
+            textStyle: {
+                color: '#73767a',
+            },
         },
         series: [
             {
