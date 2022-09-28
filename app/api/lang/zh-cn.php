@@ -28,4 +28,5 @@ return [
     'No action available, please contact the administrator~' => '没有可用操作，请联系管理员~',
     'Please login first'                                     => '请先登录！',
     'You have no permission'                                 => '没有权限操作！',
+    'Parameter error'                                        => '参数错误!',
 ];
