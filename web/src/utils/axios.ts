@@ -45,6 +45,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             'think-lang': config.lang.defaultLang,
             server: true,
         },
+        responseType: 'json',
     })
 
     options = Object.assign(
@@ -94,88 +95,91 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             removePending(response.config)
             options.loading && closeLoading(options) // 关闭loading
 
-            if (response.data && response.data.code !== 1) {
-                if (response.data.code == 409) {
-                    if (!window.tokenRefreshing) {
-                        window.tokenRefreshing = true
-                        return refreshToken()
-                            .then((res) => {
-                                if (res.data.type == 'admin-refresh') {
-                                    adminInfo.setToken(res.data.token, 'token')
-                                    response.headers.batoken = `${res.data.token}`
-                                    window.requests.forEach((cb) => cb(res.data.token, 'admin-refresh'))
-                                } else if (res.data.type == 'user-refresh') {
-                                    userInfo.setToken(res.data.token, 'token')
-                                    response.headers['ba-user-token'] = `${res.data.token}`
-                                    window.requests.forEach((cb) => cb(res.data.token, 'user-refresh'))
-                                }
-                                window.requests = []
-                                return Axios(response.config)
-                            })
-                            .catch((err) => {
-                                if (isAdminApp()) {
-                                    adminInfo.removeToken()
-                                    if (router.currentRoute.value.name != 'adminLogin') {
-                                        router.push({ name: 'adminLogin' })
-                                        return Promise.reject(err)
-                                    } else {
-                                        response.headers.batoken = ''
-                                        window.requests.forEach((cb) => cb('', 'admin-refresh'))
-                                        window.requests = []
-                                        return Axios(response.config)
+            if (response.config.responseType == 'json') {
+                if (response.data && response.data.code !== 1) {
+                    if (response.data.code == 409) {
+                        if (!window.tokenRefreshing) {
+                            window.tokenRefreshing = true
+                            return refreshToken()
+                                .then((res) => {
+                                    if (res.data.type == 'admin-refresh') {
+                                        adminInfo.setToken(res.data.token, 'token')
+                                        response.headers.batoken = `${res.data.token}`
+                                        window.requests.forEach((cb) => cb(res.data.token, 'admin-refresh'))
+                                    } else if (res.data.type == 'user-refresh') {
+                                        userInfo.setToken(res.data.token, 'token')
+                                        response.headers['ba-user-token'] = `${res.data.token}`
+                                        window.requests.forEach((cb) => cb(res.data.token, 'user-refresh'))
                                     }
-                                } else {
-                                    userInfo.removeToken()
-                                    if (router.currentRoute.value.name != 'userLogin') {
-                                        router.push({ name: 'userLogin' })
-                                        return Promise.reject(err)
+                                    window.requests = []
+                                    return Axios(response.config)
+                                })
+                                .catch((err) => {
+                                    if (isAdminApp()) {
+                                        adminInfo.removeToken()
+                                        if (router.currentRoute.value.name != 'adminLogin') {
+                                            router.push({ name: 'adminLogin' })
+                                            return Promise.reject(err)
+                                        } else {
+                                            response.headers.batoken = ''
+                                            window.requests.forEach((cb) => cb('', 'admin-refresh'))
+                                            window.requests = []
+                                            return Axios(response.config)
+                                        }
                                     } else {
-                                        response.headers['ba-user-token'] = ''
-                                        window.requests.forEach((cb) => cb('', 'user-refresh'))
-                                        window.requests = []
-                                        return Axios(response.config)
+                                        userInfo.removeToken()
+                                        if (router.currentRoute.value.name != 'userLogin') {
+                                            router.push({ name: 'userLogin' })
+                                            return Promise.reject(err)
+                                        } else {
+                                            response.headers['ba-user-token'] = ''
+                                            window.requests.forEach((cb) => cb('', 'user-refresh'))
+                                            window.requests = []
+                                            return Axios(response.config)
+                                        }
                                     }
-                                }
+                                })
+                                .finally(() => {
+                                    window.tokenRefreshing = false
+                                })
+                        } else {
+                            return new Promise((resolve) => {
+                                // 用函数形式将 resolve 存入，等待刷新后再执行
+                                window.requests.push((token: string, type: string) => {
+                                    if (type == 'admin-refresh') {
+                                        response.headers.batoken = `${token}`
+                                    } else {
+                                        response.headers['ba-user-token'] = `${token}`
+                                    }
+                                    resolve(Axios(response.config))
+                                })
                             })
-                            .finally(() => {
-                                window.tokenRefreshing = false
-                            })
-                    } else {
-                        return new Promise((resolve) => {
-                            // 用函数形式将 resolve 存入，等待刷新后再执行
-                            window.requests.push((token: string, type: string) => {
-                                if (type == 'admin-refresh') {
-                                    response.headers.batoken = `${token}`
-                                } else {
-                                    response.headers['ba-user-token'] = `${token}`
-                                }
-                                resolve(Axios(response.config))
-                            })
+                        }
+                    }
+                    if (options.showCodeMessage) {
+                        ElNotification({
+                            type: 'error',
+                            message: response.data.msg,
                         })
                     }
-                }
-                if (options.showCodeMessage) {
+                    // 自动跳转到路由name或path，仅限server端返回302的情况
+                    if (response.data.code == 302) {
+                        if (response.data.data.routeName) {
+                            router.push({ name: response.data.data.routeName })
+                        } else if (response.data.data.routePath) {
+                            router.push({ path: response.data.data.routePath })
+                        }
+                    }
+                    // code不等于1, 页面then内的具体逻辑就不执行了
+                    return Promise.reject(response.data)
+                } else if (options.showSuccessMessage && response.data && response.data.code == 1) {
                     ElNotification({
-                        type: 'error',
-                        message: response.data.msg,
+                        message: response.data.msg ? response.data.msg : i18n.global.t('axios.Operation successful'),
+                        type: 'success',
                     })
                 }
-                // 自动跳转到路由name或path，仅限server端返回302的情况
-                if (response.data.code == 302) {
-                    if (response.data.data.routeName) {
-                        router.push({ name: response.data.data.routeName })
-                    } else if (response.data.data.routePath) {
-                        router.push({ path: response.data.data.routePath })
-                    }
-                }
-                // code不等于1, 页面then内的具体逻辑就不执行了
-                return Promise.reject(response.data)
-            } else if (options.showSuccessMessage && response.data && response.data.code == 1) {
-                ElNotification({
-                    message: response.data.msg ? response.data.msg : i18n.global.t('axios.Operation successful'),
-                    type: 'success',
-                })
             }
+
             return options.reductDataFormat ? response.data : response
         },
         (error) => {
