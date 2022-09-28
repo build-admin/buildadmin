@@ -22,6 +22,12 @@ if (!function_exists('get_account_verification_type')) {
             $types[] = 'email';
         }
 
+        // 手机号，检查是否安装短信模块
+        $sms = \ba\module\Server::getIni(path_transform(root_path() . 'modules/sms/'));
+        if ($sms && $sms['state'] == 1) {
+            $types[] = 'mobile';
+        }
+
         return $types;
     }
 }
