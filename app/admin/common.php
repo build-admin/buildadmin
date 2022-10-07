@@ -25,15 +25,14 @@ if (!function_exists('get_controller_list')) {
 }
 
 if (!function_exists('get_table_list')) {
-    function get_table_list()
+    function get_table_list(): array
     {
         $tableList = [];
-        $tables    = Db::query("SHOW TABLES");
-
-        foreach ($tables as $table) {
-            $tableList[reset($table)] = reset($table);
+        $database  = config('database.connections.mysql.database');
+        $tables    = Db::query("SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema = ? ", [$database]);
+        foreach ($tables as $row) {
+            $tableList[$row['TABLE_NAME']] = $row['TABLE_NAME'] . ($row['TABLE_COMMENT'] ? ' - ' . str_replace('表', '', $row['TABLE_COMMENT']) : '');
         }
-
         return $tableList;
     }
 }

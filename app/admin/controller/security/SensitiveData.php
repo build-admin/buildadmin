@@ -195,6 +195,8 @@ class SensitiveData extends Backend
             'Ajax.php',
             'Dashboard.php',
             'Index.php',
+            'Module.php',
+            'Terminal.php',
             'auth/AdminLog.php',
             'routine/AdminInfo.php',
             'routine/Config.php',
@@ -216,6 +218,7 @@ class SensitiveData extends Backend
         $tablePrefix     = config('database.connections.mysql.prefix');
         $outExcludeTable = [
             // 功能表
+            'area',
             'token',
             'captcha',
             'admin_group_access',
@@ -229,10 +232,10 @@ class SensitiveData extends Backend
         $outTables = [];
         $tables    = get_table_list();
         $pattern   = '/^' . $tablePrefix . '/i';
-        foreach ($tables as $table) {
+        foreach ($tables as $table => $tableComment) {
             $table = preg_replace($pattern, '', $table);
             if (!in_array($table, $outExcludeTable)) {
-                $outTables[$table] = $table;
+                $outTables[$table] = $tableComment;
             }
         }
         return $outTables;
