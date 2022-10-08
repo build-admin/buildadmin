@@ -38,7 +38,7 @@ if (!function_exists('get_table_list')) {
 }
 
 if (!function_exists('get_table_fields')) {
-    function get_table_fields($table, $cleanComment = false)
+    function get_table_fields($table, $onlyCleanComment = false): array
     {
         if (!$table) return [];
 
@@ -54,16 +54,19 @@ if (!function_exists('get_table_fields')) {
             $columnList = Db::query($sql, [$dbname, $prefix . $table]);
         }
 
-        $fieldlist = [];
+        $fieldList = [];
         foreach ($columnList as $item) {
-            $comment = $item['COLUMN_COMMENT'];
-            if ($cleanComment && $comment) {
-                $comment = explode(':', $comment);
-                $comment = $comment[0] ?? '';
+            if ($onlyCleanComment) {
+                $fieldList[$item['COLUMN_NAME']] = '';
+                if ($item['COLUMN_COMMENT']) {
+                    $comment                         = explode(':', $item['COLUMN_COMMENT']);
+                    $fieldList[$item['COLUMN_NAME']] = $comment[0];
+                }
+                continue;
             }
-            $fieldlist[$item['COLUMN_NAME']] = $comment;
+            $fieldList[$item['COLUMN_NAME']] = $item;
         }
-        return $fieldlist;
+        return $fieldList;
     }
 }
 
