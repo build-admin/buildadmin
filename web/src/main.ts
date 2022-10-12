@@ -9,6 +9,7 @@ import pinia from '/@/stores/index'
 import { directives } from '/@/utils/directives'
 import 'element-plus/dist/index.css'
 import '/@/styles/index.scss'
+import 'default-passive-events'
 
 async function start() {
     const app = createApp(App)

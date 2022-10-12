@@ -25,7 +25,6 @@ export default class horizontalScroll {
         if (this.el.clientWidth >= this.el.scrollWidth) {
             return
         }
-        event.preventDefault()
         this.el.scrollLeft += event.deltaY ? event.deltaY : event.detail && event.detail !== 0 ? event.detail : -event.wheelDelta
     }
 }
