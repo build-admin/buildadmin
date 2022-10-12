@@ -60,7 +60,7 @@ const activeBoxStyle = reactive({
 })
 
 const onTab = (menu: RouteLocationNormalized) => {
-    router.push({ path: menu.path, query: menu.query, params: menu.params })
+    router.push(menu)
 }
 
 const onContextmenu = (menu: RouteLocationNormalized, el: MouseEvent) => {
