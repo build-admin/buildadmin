@@ -37,6 +37,13 @@ onMounted(() => {
 })
 </script>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
+    name: 'moduleStore/moduleStore',
+})
+</script>
+
 <style scoped lang="scss">
 :deep(.goods-tag) .el-tag {
     margin: 0 6px 6px 0;

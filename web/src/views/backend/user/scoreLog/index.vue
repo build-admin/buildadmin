@@ -119,4 +119,11 @@ watch(
 )
 </script>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
+    name: 'user/scoreLog',
+})
+</script>
+
 <style scoped lang="scss"></style>
