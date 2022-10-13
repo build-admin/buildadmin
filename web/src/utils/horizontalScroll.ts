@@ -18,7 +18,7 @@ export default class horizontalScroll {
         } else {
             wheel = 'DOMMouseScroll'
         }
-        this.el['addEventListener'](wheel, this.scroll)
+        this.el['addEventListener'](wheel, this.scroll, { passive: true })
     }
 
     scroll = (event: any) => {
