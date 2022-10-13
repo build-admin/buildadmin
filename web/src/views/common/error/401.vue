@@ -8,11 +8,11 @@
             <div class="page-footer">
                 <el-button-group>
                     <el-button size="large" type="info">
-                        <router-link class="stopcode-a" to="/">{{ $t('Return to home page') }}</router-link>
+                        <router-link class="stopcode-a" to="/">{{ $t('404.Return to home page') }}</router-link>
                     </el-button>
                     <el-button size="large" type="info">
                         <router-link class="stopcode-a" to="">
-                            <span @click="$router.back()">{{ $t('Back to previous page') }}</span>
+                            <span @click="$router.back()">{{ $t('404.Back to previous page') }}</span>
                         </router-link>
                     </el-button>
                 </el-button-group>

@@ -1,5 +1,5 @@
 <template>
-    <div :title="$t('layout.Exit full screen')" @mouseover.stop="onMouseover" @mouseout.stop="onMouseout">
+    <div :title="$t('layouts.Exit full screen')" @mouseover.stop="onMouseover" @mouseout.stop="onMouseout">
         <div @click.stop="onCloseFullScreen" class="close-full-screen" :style="{ top: state.closeBoxTop + 'px' }">
             <Icon name="el-icon-Close" />
         </div>

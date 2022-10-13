@@ -15,9 +15,9 @@
                     <div class="stopcode-text">{{ $t('404.We will automatically return to the previous page when we are finished') }}</div>
                     <div class="stopcode-text">
                         <router-link class="stopcode-a" to="">
-                            <span @click="$router.back()">{{ $t('Back to previous page') }}</span>
+                            <span @click="$router.back()">{{ $t('404.Back to previous page') }}</span>
                         </router-link>
-                        <router-link class="stopcode-a" to="/">{{ $t('Return to home page') }}</router-link>
+                        <router-link class="stopcode-a" to="/">{{ $t('404.Return to home page') }}</router-link>
                     </div>
                 </div>
             </div>

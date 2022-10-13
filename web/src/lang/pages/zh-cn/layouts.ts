@@ -29,4 +29,6 @@ export default {
     'personal data': '个人资料',
     cancellation: '注销',
     'Dark mode': '暗黑模式',
+    'Exit full screen': '退出全屏',
+    'Full screen is not supported': '您的浏览器不支持全屏，请更换浏览器再试~',
 }

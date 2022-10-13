@@ -29,4 +29,6 @@ export default {
     'personal data': 'Personal data',
     cancellation: 'Cancellation',
     'Dark mode': 'Dark mode',
+    'Exit full screen': 'Exit Full Screen',
+    'Full screen is not supported': 'Your browser does not support full screen, please change another browser and try again~',
 }
