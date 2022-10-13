@@ -1,6 +1,6 @@
 <script lang="ts">
 import { createVNode, defineComponent, resolveComponent, PropType, computed } from 'vue'
-import { inputTypes, modelValueTypes } from '/@/components/baInput'
+import { inputTypes, modelValueTypes, InputAttr } from '/@/components/baInput'
 import BaInput from '/@/components/baInput/index.vue'
 
 export default defineComponent({

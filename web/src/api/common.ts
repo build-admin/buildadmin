@@ -279,7 +279,7 @@ export class baTableApi {
 
     postData(action: string, data: anyObj) {
         if (!this.actionUrl.has(action)) {
-            throw new Error('action 不存在！')
+            throw new Error('action does not exist')
         }
         return createAxios(
             {
