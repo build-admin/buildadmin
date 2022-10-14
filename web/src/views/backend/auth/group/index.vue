@@ -29,14 +29,13 @@ import PopupForm from './popupForm.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { useI18n } from 'vue-i18n'
 import { cloneDeep } from 'lodash'
-import { ElForm } from 'element-plus'
 import { getArrayKey } from '/@/utils/common'
 
 const formRef = ref()
 const tableRef = ref()
 const { t } = useI18n()
 
-const baTable = new baTableClass(
+const baTable: baTableClass = new baTableClass(
     new baTableApi(authGroup),
     {
         expandAll: true,
@@ -65,8 +64,8 @@ const baTable = new baTableClass(
     },
     {
         // 提交前
-        onSubmit: (params: { formEl: InstanceType<typeof ElForm> }) => {
-            var items = cloneDeep(baTable.form.items!)
+        onSubmit: ({ formEl, items }) => {
+            var items = cloneDeep(items)
 
             items.rules = formRef.value.getCheckeds()
 
@@ -92,14 +91,14 @@ const baTable = new baTableClass(
                         }
                         baTable.runAfter('onSubmit', { res })
                     })
-                    .catch((err) => {
+                    .catch(() => {
                         baTable.form.submitLoading = false
                     })
             }
 
-            if (params.formEl) {
-                baTable.form.ref = params.formEl
-                params.formEl.validate((valid) => {
+            if (formEl) {
+                baTable.form.ref = formEl
+                formEl.validate((valid) => {
                     if (valid) {
                         submitCallback()
                     }
@@ -110,16 +109,16 @@ const baTable = new baTableClass(
             return false
         },
         // 双击编辑前
-        onTableDblclick: ({ row, column }: { row: TableRow; column: any }) => {
+        onTableDblclick: ({ row }) => {
             return baTable.table.extend!['adminGroup'].indexOf(row.id) === -1
         },
     },
     {
-        getIndex: ({ res }: { res: ApiResponse }) => {
+        getIndex: ({ res }) => {
             baTable.table.extend!['adminGroup'] = res.data.group
             let buttonsKey = getArrayKey(baTable.table.column, 'render', 'buttons')
-            baTable.table.column[buttonsKey].buttons!.forEach((value, index) => {
-                value.display = (row, field) => {
+            baTable.table.column[buttonsKey].buttons!.forEach((value: OptButton) => {
+                value.display = (row) => {
                     return res.data.group.indexOf(row.id) === -1
                 }
             })

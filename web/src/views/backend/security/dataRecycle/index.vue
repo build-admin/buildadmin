@@ -90,7 +90,7 @@ const baTable = new baTableClass(
     },
     {
         // 添加前获取控制器和数据表
-        toggleForm: ({ operate }: { operate: string }) => {
+        toggleForm: ({ operate }) => {
             if (operate == 'add' || operate == 'edit') {
                 baTable.form.loading = true
                 add().then((res) => {
@@ -99,6 +99,7 @@ const baTable = new baTableClass(
                     baTable.form.loading = false
                 })
             }
+            return true
         },
     }
 )

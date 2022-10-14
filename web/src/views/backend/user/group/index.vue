@@ -28,7 +28,6 @@ import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
 import { useI18n } from 'vue-i18n'
-import { ElForm } from 'element-plus'
 import { cloneDeep } from 'lodash'
 
 const { t } = useI18n()
@@ -69,8 +68,8 @@ const baTable = new baTableClass(
     },
     {
         // 提交前
-        onSubmit: (params: { formEl: InstanceType<typeof ElForm> }) => {
-            var items = cloneDeep(baTable.form.items!)
+        onSubmit: ({ formEl, items }) => {
+            var items = cloneDeep(items)
             items.rules = formRef.value.getCheckeds()
 
             for (const key in items) {
@@ -95,14 +94,14 @@ const baTable = new baTableClass(
                         }
                         baTable.runAfter('onSubmit', { res })
                     })
-                    .catch((err) => {
+                    .catch(() => {
                         baTable.form.submitLoading = false
                     })
             }
 
-            if (params.formEl) {
-                baTable.form.ref = params.formEl
-                params.formEl.validate((valid) => {
+            if (formEl) {
+                baTable.form.ref = formEl
+                formEl.validate((valid) => {
                     if (valid) {
                         submitCallback()
                     }

@@ -119,7 +119,7 @@ const baTable = new baTableClass(
     },
     {},
     {
-        onTableDblclick: ({ row }: { row: TableRow }) => {
+        onTableDblclick: ({ row }) => {
             infoButtonClick(row)
             return false
         },

@@ -1,24 +1,47 @@
-import type { TagProps, ButtonType, ElForm } from 'element-plus'
+import type { TagProps, ButtonType, ElForm, FormInstance } from 'element-plus'
 import { Component, ComponentPublicInstance } from 'vue'
 import Table from '/@/components/table/index.vue'
 declare global {
     /* baTable */
     interface BaTable {
+        // 表格 ref，通常在 页面onMounted 时赋值
         ref?: typeof Table
+        // 表格对应数据表的主键字段
         pk?: string
+        // 表格数据，通过getIndex加载
         data?: TableRow[]
+        // 路由 remark，后台菜单规则备注信息
         remark?: string | null
+        // 表格加载状态
         loading?: boolean
-        expandAll?: boolean
+        // 当前选中行
         selection?: TableRow[]
-        dblClickNotEditColumn?: (string | undefined)[]
+        // 表格列定义
         column: TableColumn[]
+        // 数据总量
         total?: number
-        filter?: anyObj
+        // 字段搜索,快速搜索,分页等数据
+        filter?: {
+            page?: number
+            limit?: number
+            order?: string
+            quick_search?: string
+            search?: comSearchData[]
+            [key: string]: any
+        }
+        // 默认排序字段和排序方式
         defaultOrder?: { prop: string; order: string }
+        // 拖动排序限位字段:例如拖动行pid=1,那么拖动目的行pid也需要为1
         dragSortLimitField?: string
+        // 接受url的query参数并自动触发通用搜索
         acceptQuery?: boolean
+        // 显示公共搜索
         showComSearch?: boolean
+        // 不需要'双击编辑'的字段，type=selection的列为 undefined
+        dblClickNotEditColumn?: (string | undefined)[]
+        // 是否展开所有子项，树状表格专用属性
+        expandAll?: boolean
+        // 表格扩展数据，随意定义，以便一些自定义数据可以随baTable实例传递
         extend?: anyObj
     }
 
@@ -32,42 +55,69 @@ declare global {
 
     /* baTableForm */
     interface BaTableForm {
+        // 表单ref，实例化表格时通常无需传递
         ref?: InstanceType<typeof ElForm> | undefined
+        // 表单项label的宽度
         labelWidth?: number
+        // 当前操作:add=添加,edit=编辑
         operate?: string
+        // 被操作数据ID,支持批量编辑:add=[0],edit=[1,2,n]
         operateIds?: string[]
+        // 表单数据，内含用户输入
         items?: anyObj
+        // 提交按钮状态
         submitLoading?: boolean
+        // 默认表单数据(添加时)
         defaultItems?: anyObj
+        // 表单加载状态
         loading?: boolean
+        // 表单扩展数据，随意定义，以便一些自定义数据可以随baTable实例传递
         extend?: anyObj
     }
 
     /* BaTable前置处理函数(前置埋点) */
     interface BaTableBefore {
-        getIndex?: Function
-        postDel?: Function
-        requestEdit?: Function
-        onTableDblclick?: Function
-        toggleForm?: Function
-        onSubmit?: Function
-        onTableAction?: Function
-        onTableHeaderAction?: Function
-        mount?: Function
+        // 获取表格数据前
+        getIndex?: () => boolean
+        // 删除前
+        postDel?: ({ ids }: { ids: string[] }) => boolean
+        // 编辑请求前
+        requestEdit?: ({ id }: { id: string }) => boolean
+        // 双击表格具体操作执行前
+        onTableDblclick?: ({ row, column }: { row: TableRow; column: TableColumn }) => boolean
+        // 表单切换前
+        toggleForm?: ({ operate, operateIds }: { operate: string; operateIds: string[] }) => boolean
+        // 表单提交前
+        onSubmit?: ({ formEl, operate, items }: { formEl: FormInstance | undefined; operate: string; items: anyObj }) => boolean
+        // 表格内事件响应前
+        onTableAction?: ({ event, data }: { event: string; data: anyObj }) => boolean
+        // 表格顶部菜单事件响应前
+        onTableHeaderAction?: ({ event, data }: { event: string; data: anyObj }) => boolean
+        // 表格初始化前
+        mount?: () => boolean
         [key: string]: Function | undefined
     }
 
     /* BaTable后置处理函数(后置埋点) */
     interface BaTableAfter {
-        getIndex?: Function
-        postDel?: Function
-        requestEdit?: Function
-        onTableDblclick?: Function
-        toggleForm?: Function
-        onSubmit?: Function
-        onTableAction?: Function
-        onTableHeaderAction?: Function
-        mount?: Function
+        // 表格数据请求后
+        getIndex?: ({ res }: { res: ApiResponse }) => void
+        // 删除请求后
+        postDel?: ({ res }: { res: ApiResponse }) => void
+        // 编辑表单请求后
+        requestEdit?: ({ res }: { res: ApiResponse }) => void
+        // 双击单元格操作执行后
+        onTableDblclick?: ({ row, column }: { row: TableRow; column: TableColumn }) => void
+        // 表单切换后
+        toggleForm?: ({ operate, operateIds }: { operate: string; operateIds: string[] }) => void
+        // 表单提交后
+        onSubmit?: ({ res }: { res: ApiResponse }) => void
+        // 表格事件响应后
+        onTableAction?: ({ event, data }: { event: string; data: anyObj }) => void
+        // 表格顶部事件菜单响应后
+        onTableHeaderAction?: ({ event, data }: { event: string; data: anyObj }) => void
+        // 表格初始化后
+        mount?: () => void
         [key: string]: Function | undefined
     }
 

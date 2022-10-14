@@ -174,7 +174,7 @@ const baTable = new baTableClass(
     },
     {},
     {
-        onTableDblclick: ({ row }: { row: TableRow }) => {
+        onTableDblclick: ({ row }) => {
             infoButtonClick(row[baTable.table.pk!])
             return false
         },
@@ -182,7 +182,7 @@ const baTable = new baTableClass(
 )
 
 const onRollback = (ids: string[]) => {
-    rollback(ids).then((res) => {
+    rollback(ids).then(() => {
         baTable.onTableHeaderAction('refresh', {})
     })
 }

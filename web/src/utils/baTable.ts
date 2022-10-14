@@ -10,74 +10,53 @@ import _ from 'lodash'
 import { i18n } from '/@/lang/index'
 
 export default class baTable {
+    // API实例
     public api
 
     // 表格是否激活，多表格共存时，激活的表格才能触发事件
     public activate: boolean
 
-    /* 表格状态-s */
+    /* 表格状态-s 属性对应含义请查阅 BaTable 的类型定义 */
     public table: BaTable = reactive({
         ref: undefined,
-        // 主键字段
         pk: 'id',
-        // 数据源
         data: [],
-        // 路由remark
         remark: null,
-        // 表格加载状态
         loading: false,
-        // 是否展开所有子项
-        expandAll: false,
-        // 选中项
         selection: [],
-        // 不需要'双击编辑'的字段
-        dblClickNotEditColumn: [undefined],
-        // 列数据
         column: [],
-        // 数据总量
         total: 0,
-        // 字段搜索,快速搜索,分页等数据
         filter: {},
-        // 拖动排序限位字段:例如拖动行pid=1,那么拖动目的行pid也需要为1
         dragSortLimitField: 'pid',
-        // 接受url的query参数并自动触发通用搜索
         acceptQuery: true,
-        // 显示公共搜索
         showComSearch: false,
-        // 扩展数据
+        dblClickNotEditColumn: [undefined],
+        expandAll: false,
         extend: {},
     })
     /* 表格状态-e */
 
-    /* 表单状态-s */
+    /* 表单状态-s 属性对应含义请查阅 BaTableForm 的类型定义 */
     public form: BaTableForm = reactive({
-        // 表单ref，new时无需传递
         ref: undefined,
-        // 表单label宽度
         labelWidth: 160,
-        // 当前操作:add=添加,edit=编辑
         operate: '',
-        // 被操作数据ID,支持批量编辑:add=[0],edit=[1,2,n]
         operateIds: [],
-        // 表单数据
         items: {},
-        // 提交按钮状态
         submitLoading: false,
-        // 默认表单数据(添加)
         defaultItems: {},
-        // 表单字段加载状态
         loading: false,
-        // 扩展数据
         extend: {},
     })
     /* 表单状态-e */
 
-    // BaTable前置处理函数列表(前置埋点)
-    public before
-    // BaTable后置处理函数列表(后置埋点)
-    public after
+    // BaTable前置处理函数列表（前置埋点）
+    public before: BaTableBefore
 
-    // 通用搜索数据-需要响应性
+    // BaTable后置处理函数列表（后置埋点）
+    public after: BaTableAfter
+
+    // 通用搜索数据
     public comSearch: ComSearch = reactive({
         form: {},
         fieldData: new Map(),
@@ -120,10 +99,9 @@ export default class baTable {
                 this.table.data = res.data.list
                 this.table.total = res.data.total
                 this.table.remark = res.data.remark
-                this.table.loading = false
                 this.runAfter('getIndex', { res })
             })
-            .catch(() => {
+            .finally(() => {
                 this.table.loading = false
             })
     }
@@ -156,13 +134,10 @@ export default class baTable {
      * 双击表格
      */
     onTableDblclick = (row: TableRow, column: any) => {
-        if (this.table.dblClickNotEditColumn!.indexOf('all') === -1 && this.table.dblClickNotEditColumn!.indexOf(column.property) === -1) {
+        if (!this.table.dblClickNotEditColumn!.includes('all') && !this.table.dblClickNotEditColumn!.includes(column.property)) {
             if (this.runBefore('onTableDblclick', { row, column }) === false) return
             this.toggleForm('edit', [row[this.table.pk!]])
-            this.runAfter('onTableDblclick', {
-                row,
-                column,
-            })
+            this.runAfter('onTableDblclick', { row, column })
         }
     }
 
@@ -193,9 +168,7 @@ export default class baTable {
         if (this.runBefore('onSubmit', { formEl: formEl, operate: this.form.operate!, items: this.form.items! }) === false) return
 
         Object.keys(this.form.items!).forEach((item) => {
-            if (this.form.items![item] === null) {
-                delete this.form.items![item]
-            }
+            if (this.form.items![item] === null) delete this.form.items![item]
         })
 
         // 表单验证通过后执行的api请求操作
@@ -205,7 +178,6 @@ export default class baTable {
                 .postData(this.form.operate!, this.form.items!)
                 .then((res) => {
                     this.onTableHeaderAction('refresh', {})
-                    this.form.submitLoading = false
                     this.form.operateIds?.shift()
                     if (this.form.operateIds!.length > 0) {
                         this.toggleForm('edit', this.form.operateIds)
@@ -214,7 +186,7 @@ export default class baTable {
                     }
                     this.runAfter('onSubmit', { res })
                 })
-                .catch(() => {
+                .finally(() => {
                     this.form.submitLoading = false
                 })
         }
@@ -231,7 +203,9 @@ export default class baTable {
         }
     }
 
-    /* 获取表格选择项的id数组 */
+    /**
+     * 获取表格选择项的id数组
+     */
     getSelectionIds() {
         const ids: string[] = []
         this.table.selection?.forEach((item) => {
@@ -454,7 +428,7 @@ export default class baTable {
          * 通用搜索响应
          * @param comSearchData 通用搜索数据
          */
-        proxy.eventBus.on('onTableComSearch', (data: comSearchData) => {
+        proxy.eventBus.on('onTableComSearch', (data: comSearchData[]) => {
             if (!this.activate) return
             this.table.filter!.search = data
             this.getIndex()
@@ -509,11 +483,11 @@ export default class baTable {
      */
     initComSearch = (query: anyObj = {}) => {
         const form: anyObj = {}
+        const field = this.table.column
 
-        if (this.table.column.length <= 0) {
+        if (field.length <= 0) {
             return
         }
-        const field = this.table.column
 
         for (const key in field) {
             if (field[key].operator === false) {
