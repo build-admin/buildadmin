@@ -71,7 +71,9 @@
     <div v-if="field.render == 'url' && fieldValue">
         <el-input :model-value="fieldValue" :placeholder="t('Link address')">
             <template #append>
-                <el-button @click="typeof field.click == 'function' ? field.click(row, fieldValue, field) : openUrl(fieldValue, field)">
+                <el-button
+                    @click="typeof field.click == 'function' ? field.click(row, field, fieldValue, column, index) : openUrl(fieldValue, field)"
+                >
                     <Icon :color="'#606266'" name="el-icon-Position" />
                 </el-button>
             </template>
@@ -84,10 +86,21 @@
     </div>
 
     <!-- customTemplate 自定义模板 -->
-    <div v-if="field.render == 'customTemplate'" v-html="field.customTemplate ? field.customTemplate(row, field, fieldValue) : ''"></div>
+    <div
+        v-if="field.render == 'customTemplate'"
+        v-html="field.customTemplate ? field.customTemplate(row, field, fieldValue, column, index) : ''"
+    ></div>
 
     <!-- 自定义组件/函数渲染 -->
-    <component v-if="field.render == 'customRender'" :is="field.customRender" :renderRow="row" :renderField="field" :renderValue="fieldValue" />
+    <component
+        v-if="field.render == 'customRender'"
+        :is="field.customRender"
+        :renderRow="row"
+        :renderField="field"
+        :renderValue="fieldValue"
+        :renderColumn="column"
+        :renderIndex="index"
+    />
 
     <!-- 按钮组 -->
     <div v-if="field.render == 'buttons' && field.buttons">
@@ -172,6 +185,7 @@ import { timeFormat, openUrl } from '/@/components/table'
 import { useI18n } from 'vue-i18n'
 import { fullUrl, arrayFullUrl } from '/@/utils/common'
 import type baTableClass from '/@/utils/baTable'
+import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
 
 const { t } = useI18n()
 const baTable = inject('baTable') as baTableClass
@@ -179,22 +193,16 @@ const baTable = inject('baTable') as baTableClass
 interface Props {
     row: TableRow
     field: TableColumn
-    // 字段名
-    property?: string
+    column: TableColumnCtx<TableRow>
+    index: number
 }
+const props = defineProps<Props>()
 
-const props = withDefaults(defineProps<Props>(), {
-    row: () => [],
-    field: () => {
-        return {}
-    },
-    property: '',
-})
-
-// 字段值(单元格值)
-const fieldValue = ref(props.row[props.property])
-if (props.property.indexOf('.') > -1) {
-    let fieldNameArr = props.property.split('.')
+// 字段值（单元格值）
+const fieldName = ref(props.field.prop)
+const fieldValue = ref(fieldName.value ? props.row[fieldName.value] : '')
+if (fieldName.value && fieldName.value.indexOf('.') > -1) {
+    let fieldNameArr = fieldName.value.split('.')
     let val: any = ref(props.row[fieldNameArr[0]])
     for (let index = 1; index < fieldNameArr.length; index++) {
         val.value = val.value ? val.value[fieldNameArr[index]] ?? '' : ''
@@ -203,7 +211,7 @@ if (props.property.indexOf('.') > -1) {
 }
 
 if (props.field.renderFormatter && typeof props.field.renderFormatter == 'function') {
-    fieldValue.value = props.field.renderFormatter(props.row, props.field, fieldValue.value)
+    fieldValue.value = props.field.renderFormatter(props.row, props.field, fieldValue.value, props.column, props.index)
 }
 
 const onChangeField = (value: any) => {

@@ -7,6 +7,7 @@ import { ElNotification, ElForm } from 'element-plus'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import _ from 'lodash'
 import { i18n } from '/@/lang/index'
+import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
 
 export default class baTable {
     // API实例
@@ -128,7 +129,7 @@ export default class baTable {
     /**
      * 双击表格
      */
-    onTableDblclick = (row: TableRow, column: any) => {
+    onTableDblclick = (row: TableRow, column: TableColumnCtx<TableRow>) => {
         if (!this.table.dblClickNotEditColumn!.includes('all') && !this.table.dblClickNotEditColumn!.includes(column.property)) {
             if (this.runBefore('onTableDblclick', { row, column }) === false) return
             this.toggleForm('edit', [row[this.table.pk!]])

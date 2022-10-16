@@ -1,6 +1,8 @@
 import type { TagProps, ButtonType, ElForm, FormInstance } from 'element-plus'
 import { Component, ComponentPublicInstance } from 'vue'
 import Table from '/@/components/table/index.vue'
+import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
+
 declare global {
     /* baTable */
     interface BaTable {
@@ -141,13 +143,13 @@ declare global {
         // 自定义数据:比如渲染为Tag时,可以指定不同值时的Tag的Type属性 { open: 'success', close: 'info' }
         custom?: any
         // 谨慎使用：自定义渲染模板，方法可返回html内容，请确保返回内容是xss安全的
-        customTemplate?: (row: TableRow, field: TableColumn, value: any) => string
+        customTemplate?: (row: TableRow, field: TableColumn, value: any, column: TableColumnCtx<TableRow>, index: number) => string
         // 自定义组件/函数渲染
         customRender?: string | Component
         // 渲染为链接时,链接的打开方式
         target?: aTarget
         // 渲染为:url 时的点击事件
-        click?: Function
+        click?: (row: TableRow, field: TableColumn, value: any, column: TableColumnCtx<TableRow>, index: number) => any
         // 渲染为 datetime 时的格式化方式,字母可以自由组合:y=年,m=月,d=日,h=时,M=分,s=秒，默认：yyyy-mm-dd hh:MM:ss
         timeFormat?: string
         // 默认值
@@ -155,7 +157,7 @@ declare global {
         // 值替换数据,如{open: '开'}
         replaceValue?: any
         // 使用了 render 属性时,渲染前对字段值的预处理方法，请返回新值
-        renderFormatter?: (row: TableRow, field: TableColumn, value: any) => any
+        renderFormatter?: (row: TableRow, field: TableColumn, value: any, column: TableColumnCtx<TableRow>, index: number) => any
         // 通用搜索操作符,默认值为=,false禁用此字段通用搜索,支持的操作符见下定义
         operator?: boolean | OperatorStr
         // 通用搜索框的placeholder

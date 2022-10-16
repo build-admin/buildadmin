@@ -17,16 +17,15 @@
             @row-dblclick="baTable.onTableDblclick"
             v-bind="$attrs"
         >
-            <template v-for="(item, key) in baTable.table.column" :key="key">
-                <Column v-if="item.show !== false" :attr="item">
+            <template v-for="(item, key) in baTable.table.column">
+                <Column v-if="item.show !== false" :attr="item" :key="key + '-column'">
                     <template v-if="item.render" #default="scope">
                         <FieldRender
                             :field="item"
-                            :key="
-                                item.render == 'switch' ? 'column-' + scope.column.property + '-' + key + '-' + scope.row[scope.column.property] : 0
-                            "
                             :row="scope.row"
-                            :property="scope.column.property"
+                            :column="scope.column"
+                            :index="scope.$index"
+                            :key="item.render == 'switch' ? 'sw-' + item.prop + '-' + key + '-' + scope.row[item.prop!] : key"
                         />
                     </template>
                 </Column>
