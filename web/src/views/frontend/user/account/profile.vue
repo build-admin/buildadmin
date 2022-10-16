@@ -89,8 +89,8 @@ const state = reactive({
     formSubmitLoading: false,
     form: userInfo.$state,
     rules: {
-        avatar: [buildValidatorData('required', '', 'blur', t('Please select field', { field: t('user.user.head portrait') }))],
-        nickname: [buildValidatorData('required', t('user.user.nickname'))],
+        avatar: [buildValidatorData({ name: 'required', message: t('Please select field', { field: t('user.user.head portrait') }) })],
+        nickname: [buildValidatorData({ name: 'required', title: t('user.user.nickname') })],
     },
 })
 

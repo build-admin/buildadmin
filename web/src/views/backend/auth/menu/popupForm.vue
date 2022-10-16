@@ -173,6 +173,7 @@ import { reactive, ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import FormItem from '/@/components/formItem/index.vue'
+import { buildValidatorData } from '/@/utils/validate'
 import type { ElForm, FormItemRule } from 'element-plus'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
@@ -181,27 +182,9 @@ const baTable = inject('baTable') as baTableClass
 const { t } = useI18n()
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    title: [
-        {
-            required: true,
-            message: t('Please input field', { field: t('auth.menu.Rule title') }),
-            trigger: 'blur',
-        },
-    ],
-    name: [
-        {
-            required: true,
-            message: t('Please input field', { field: t('auth.menu.Rule name') }),
-            trigger: 'blur',
-        },
-    ],
-    url: [
-        {
-            type: 'url',
-            message: t('auth.menu.Please enter the correct URL'),
-            trigger: 'blur',
-        },
-    ],
+    title: [buildValidatorData({ name: 'required', title: t('auth.menu.Rule title') })],
+    name: [buildValidatorData({ name: 'required', title: t('auth.menu.Rule name') })],
+    url: [buildValidatorData({ name: 'url', message: t('auth.menu.Please enter the correct URL') })],
     pid: [
         {
             validator: (rule: any, val: string, callback: Function) => {

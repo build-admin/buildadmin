@@ -61,11 +61,11 @@ const state = reactive({
         confirmPassword: '',
     },
     rules: {
-        oldPassword: [buildValidatorData('required', t('user.user.Old password'))],
-        newPassword: [buildValidatorData('required', t('user.user.New password')), buildValidatorData('password')],
+        oldPassword: [buildValidatorData({ name: 'required', title: t('user.user.Old password') })],
+        newPassword: [buildValidatorData({ name: 'required', title: t('user.user.New password') }), buildValidatorData({ name: 'password' })],
         confirmPassword: [
-            buildValidatorData('required', t('user.user.Confirm new password')),
-            buildValidatorData('password'),
+            buildValidatorData({ name: 'required', title: t('user.user.Confirm new password') }),
+            buildValidatorData({ name: 'password' }),
             {
                 validator: (rule: any, val: string, callback: Function) => {
                     if (state.form.newPassword || state.form.confirmPassword) {

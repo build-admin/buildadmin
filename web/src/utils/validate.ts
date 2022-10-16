@@ -67,13 +67,6 @@ export function validatorEditorRequired(rule: any, val: string, callback: Functi
     return callback()
 }
 
-/**
- * 构建表单验证规则
- * @var ruleName 规则名:required=必填,mobile=手机号,account=账户,password=密码,varName=变量名,number、integer、float、date、url、email
- * @var title 验证项的标题
- * @var trigger 自定义验证触发方式
- * @var message 自定义验证错误消息
- */
 export const validatorType = {
     required: i18n.global.t('validate.Required'),
     mobile: i18n.global.t('validate.mobile'),
@@ -87,9 +80,25 @@ export const validatorType = {
     integer: i18n.global.t('validate.integer'),
     float: i18n.global.t('validate.Floating point number'),
 }
-export function buildValidatorData(ruleName: string, title = '', trigger = 'blur', message = ''): FormItemRule {
+
+export interface buildValidatorParams {
+    // 规则名:required=必填,mobile=手机号,account=账户,password=密码,varName=变量名,editorRequired=富文本必填,number、integer、float、date、url、email
+    name: 'required' | 'mobile' | 'account' | 'password' | 'varName' | 'editorRequired' | 'number' | 'integer' | 'float' | 'date' | 'url' | 'email'
+    // 自定义验证错误消息
+    message?: string
+    // 验证项的标题，这些验证方式不支持:mobile、account、password、varName、editorRequired
+    title?: string
+    // 验证触发方式
+    trigger?: 'change' | 'blur'
+}
+
+/**
+ * 构建表单验证规则
+ * @param {buildValidatorParams} paramsObj 参数对象
+ */
+export function buildValidatorData({ name, message, title, trigger = 'blur' }: buildValidatorParams): FormItemRule {
     // 必填
-    if (ruleName == 'required') {
+    if (name == 'required') {
         return {
             required: true,
             message: message ? message : i18n.global.t('Please input field', { field: title }),
@@ -99,9 +108,9 @@ export function buildValidatorData(ruleName: string, title = '', trigger = 'blur
 
     // 常见类型
     const validatorType = ['number', 'integer', 'float', 'date', 'url', 'email']
-    if (validatorType.includes(ruleName)) {
+    if (validatorType.includes(name)) {
         return {
-            type: ruleName as RuleType,
+            type: name as RuleType,
             message: message ? message : i18n.global.t('Please enter the correct field', { field: title }),
             trigger: trigger,
         }
@@ -115,10 +124,12 @@ export function buildValidatorData(ruleName: string, title = '', trigger = 'blur
         varName: validatorVarName,
         editorRequired: validatorEditorRequired,
     }
-    if (validatorCustomFun[ruleName]) {
+    if (validatorCustomFun[name]) {
         return {
-            validator: validatorCustomFun[ruleName],
+            required: name == 'editorRequired' ? true : false,
+            validator: validatorCustomFun[name],
             trigger: trigger,
+            message: message,
         }
     }
     return {}

@@ -367,9 +367,12 @@ const state: State = reactive({
 })
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    email: [buildValidatorData('required', t('user.user.mailbox')), buildValidatorData('email', t('user.user.mailbox'))],
+    email: [
+        buildValidatorData({ name: 'required', title: t('user.user.mailbox') }),
+        buildValidatorData({ name: 'email', title: t('user.user.mailbox') }),
+    ],
     username: [
-        buildValidatorData('required', t('user.user.User name')),
+        buildValidatorData({ name: 'required', title: t('user.user.User name') }),
         {
             validator: (rule: any, val: string, callback: Function) => {
                 if (state.form.tab == 'register') {
@@ -381,15 +384,15 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
             trigger: 'blur',
         },
     ],
-    password: [buildValidatorData('required', t('user.user.password')), buildValidatorData('password')],
-    mobile: [buildValidatorData('required', t('user.user.mobile')), buildValidatorData('mobile')],
-    captcha: [buildValidatorData('required', t('user.user.Verification Code'))],
+    password: [buildValidatorData({ name: 'required', title: t('user.user.password') }), buildValidatorData({ name: 'password' })],
+    mobile: [buildValidatorData({ name: 'required', title: t('user.user.mobile') }), buildValidatorData({ name: 'mobile' })],
+    captcha: [buildValidatorData({ name: 'required', title: t('user.user.Verification Code') })],
 })
 
 const retrieveRules: Partial<Record<string, FormItemRule[]>> = reactive({
-    account: [buildValidatorData('required', t('user.user.Account name'))],
-    captcha: [buildValidatorData('required', t('user.user.Verification Code'))],
-    password: [buildValidatorData('required', t('user.user.password')), buildValidatorData('password')],
+    account: [buildValidatorData({ name: 'required', title: t('user.user.Account name') })],
+    captcha: [buildValidatorData({ name: 'required', title: t('user.user.Verification Code') })],
+    password: [buildValidatorData({ name: 'required', title: t('user.user.password') }), buildValidatorData({ name: 'password' })],
 })
 
 const resize = () => {

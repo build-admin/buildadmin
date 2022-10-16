@@ -116,11 +116,34 @@ const state: {
 })
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    name: [buildValidatorData('required', t('security.sensitiveData.Rule name'))],
-    controller: [buildValidatorData('required', '', 'change', t('Please select field', { field: t('security.sensitiveData.controller') }))],
-    data_table: [buildValidatorData('required', '', 'change', t('Please select field', { field: t('security.sensitiveData.data sheet') }))],
-    primary_key: [buildValidatorData('required', t('security.sensitiveData.Data table primary key'), 'change')],
-    data_fields: [buildValidatorData('required', '', 'blur', t('Please select field', { field: t('security.sensitiveData.Sensitive fields') }))],
+    name: [buildValidatorData({ name: 'required', title: t('security.sensitiveData.Rule name') })],
+    controller: [
+        buildValidatorData({
+            name: 'required',
+            trigger: 'change',
+            message: t('Please select field', { field: t('security.sensitiveData.controller') }),
+        }),
+    ],
+    data_table: [
+        buildValidatorData({
+            name: 'required',
+            trigger: 'change',
+            message: t('Please select field', { field: t('security.sensitiveData.data sheet') }),
+        }),
+    ],
+    primary_key: [
+        buildValidatorData({
+            name: 'required',
+            trigger: 'change',
+            title: t('security.sensitiveData.Data table primary key'),
+        }),
+    ],
+    data_fields: [
+        buildValidatorData({
+            name: 'required',
+            message: t('Please select field', { field: t('security.sensitiveData.Sensitive fields') }),
+        }),
+    ],
 })
 
 /**

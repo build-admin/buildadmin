@@ -86,32 +86,14 @@ import { add } from '/@/api/backend/user/scoreLog'
 import { userUser } from '/@/api/controllerUrls'
 import FormItem from '/@/components/formItem/index.vue'
 import type { FormItemRule } from 'element-plus'
+import { buildValidatorData } from '/@/utils/validate'
 
 const { t } = useI18n()
 const baTable = inject('baTable') as baTableClass
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    user_id: [
-        {
-            required: true,
-            message: t('Please select field', { field: t('user.moneyLog.User') }),
-            trigger: 'blur',
-        },
-        {
-            validator: (rule: any, val: string, callback: Function) => {
-                if (!val || parseInt(val) <= 0) {
-                    return callback(new Error(t('Please select field', { field: t('user.moneyLog.user') })))
-                }
-                return callback()
-            },
-            trigger: 'blur',
-        },
-    ],
+    user_id: [buildValidatorData({ name: 'required', message: t('Please select field', { field: t('user.moneyLog.User') }) })],
     score: [
-        {
-            required: true,
-            message: t('Please enter the correct field', { field: t('user.moneyLog.Change amount') }),
-            trigger: 'blur',
-        },
+        buildValidatorData({ name: 'required', title: t('user.moneyLog.Change amount') }),
         {
             validator: (rule: any, val: string, callback: Function) => {
                 if (!val || parseInt(val) == 0) {
@@ -122,13 +104,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
             trigger: 'blur',
         },
     ],
-    memo: [
-        {
-            required: true,
-            message: t('Please input field', { field: t('user.moneyLog.remarks') }),
-            trigger: 'blur',
-        },
-    ],
+    memo: [buildValidatorData({ name: 'required', title: t('user.moneyLog.remarks') })],
 })
 
 const formRef = ref<InstanceType<typeof ElForm>>()

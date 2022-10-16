@@ -108,7 +108,7 @@ import { index, log, postData } from '/@/api/backend/routine/AdminInfo'
 import { ElForm, FormItemRule } from 'element-plus'
 import { onResetForm } from '/@/utils/common'
 import { uuid } from '../../../utils/random'
-import { validatorMobile, validatorPassword } from '/@/utils/validate'
+import { buildValidatorData } from '/@/utils/validate'
 import { fileUpload } from '/@/api/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { timeFormat } from '/@/components/table'
@@ -187,37 +187,10 @@ const onLogCurrentChange = (page: number) => {
 }
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    nickname: [
-        {
-            required: true,
-            message: t('Please input field', { field: t('adminInfo.User nickname') }),
-            trigger: 'blur',
-        },
-        {
-            min: 3,
-            message: t('adminLogin.Account length must be greater than 3 digits'),
-            trigger: 'blur',
-        },
-    ],
-    email: [
-        {
-            type: 'email',
-            message: t('Please input field', { field: t('adminInfo.e-mail address') }),
-            trigger: 'blur',
-        },
-    ],
-    mobile: [
-        {
-            validator: validatorMobile,
-            trigger: 'blur',
-        },
-    ],
-    password: [
-        {
-            validator: validatorPassword,
-            trigger: 'blur',
-        },
-    ],
+    nickname: [buildValidatorData({ name: 'required', title: t('adminInfo.User nickname') })],
+    email: [buildValidatorData({ name: 'email', title: t('adminInfo.e-mail address') })],
+    mobile: [buildValidatorData({ name: 'mobile', message: t('Please enter the correct field', { field: t('adminInfo.phone number') }) })],
+    password: [buildValidatorData({ name: 'password' })],
 })
 
 const onAvatarBeforeUpload = (file: any) => {

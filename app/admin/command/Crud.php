@@ -836,16 +836,18 @@ class Crud extends Command
                     // 字段验证规则
                     if ($column['IS_NULLABLE'] == 'NO' && !in_array($inputType, ['switch', 'icon'])) {
                         if ($inputType == 'editor') {
-                            $formItemRules[$field][] = "buildValidatorData('editorRequired', t('" . $this->langPrefix . $field . "'))";
+                            $formItemRules[$field][] = "buildValidatorData({name: 'editorRequired', message: t('Please input field', { field: t('" . $this->langPrefix . $field . "') })})";
+                        } elseif (in_array($inputType, ['radio', 'checkbox', 'datetime', 'year', 'date', 'time', 'select', 'selects', 'remoteSelect', 'city', 'image', 'images', 'file', 'files', 'icon'])) {
+                            $formItemRules[$field][] = "buildValidatorData({name: 'required', message: t('Please select field', { field: t('" . $this->langPrefix . $field . "') })})";
                         } else {
-                            $formItemRules[$field][] = "buildValidatorData('required', t('" . $this->langPrefix . $field . "'))";
+                            $formItemRules[$field][] = "buildValidatorData({name: 'required', title: t('" . $this->langPrefix . $field . "')})";
                         }
                     }
                     if ($field == 'mobile') {
-                        $formItemRules[$field][] = "buildValidatorData('mobile', '', 'blur', t('Please enter the correct field', { field: t('" . $this->langPrefix . $field . "') }))";
+                        $formItemRules[$field][] = "buildValidatorData({name: 'mobile', message: t('Please enter the correct field', { field: t('" . $this->langPrefix . $field . "') })})";
                     }
                     if ($inputType == 'datetime' || $inputType == 'date') {
-                        $formItemRules[$field][] = "buildValidatorData('date', '', 'blur', t('Please enter the correct field', { field: t('" . $this->langPrefix . $field . "') }))";
+                        $formItemRules[$field][] = "buildValidatorData({name: 'date', message: t('Please enter the correct field', { field: t('" . $this->langPrefix . $field . "') })})";
                     }
                 }
 

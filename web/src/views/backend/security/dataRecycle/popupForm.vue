@@ -99,10 +99,22 @@ const baTable = inject('baTable') as baTableClass
 const { t } = useI18n()
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    name: [buildValidatorData('required', t('security.dataRecycle.Rule name'))],
-    controller: [buildValidatorData('required', '', 'change', t('Please select field', { field: t('security.dataRecycle.controller') }))],
-    data_table: [buildValidatorData('required', '', 'change', t('Please select field', { field: t('security.dataRecycle.data sheet') }))],
-    primary_key: [buildValidatorData('required', t('security.dataRecycle.Data table primary key'), 'change')],
+    name: [buildValidatorData({ name: 'required', title: t('security.dataRecycle.Rule name') })],
+    controller: [
+        buildValidatorData({
+            name: 'required',
+            trigger: 'change',
+            message: t('Please select field', { field: t('security.dataRecycle.controller') }),
+        }),
+    ],
+    data_table: [
+        buildValidatorData({
+            name: 'required',
+            trigger: 'change',
+            message: t('Please select field', { field: t('security.dataRecycle.data sheet') }),
+        }),
+    ],
+    primary_key: [buildValidatorData({ name: 'required', trigger: 'change', title: t('security.dataRecycle.Data table primary key') })],
 })
 
 const onTableChange = (val: string) => {

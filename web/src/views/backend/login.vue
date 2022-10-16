@@ -102,7 +102,7 @@ import { useAdminInfo } from '/@/stores/adminInfo'
 import { login } from '/@/api/backend'
 import { buildCaptchaUrl } from '/@/api/common'
 import { uuid } from '../../utils/random'
-import { validatorPassword, validatorAccount } from '/@/utils/validate'
+import { buildValidatorData } from '/@/utils/validate'
 import router from '/@/router'
 var timer: NodeJS.Timer
 
@@ -136,34 +136,10 @@ const { t } = useI18n()
 
 // 表单验证规则
 const rules = reactive({
-    username: [
-        {
-            required: true,
-            message: t('adminLogin.Please enter an account'),
-            trigger: 'blur',
-        },
-        {
-            validator: validatorAccount,
-            trigger: 'blur',
-        },
-    ],
-    password: [
-        {
-            required: true,
-            message: t('adminLogin.Please input a password'),
-            trigger: 'blur',
-        },
-        {
-            validator: validatorPassword,
-            trigger: 'blur',
-        },
-    ],
+    username: [buildValidatorData({ name: 'required', message: t('adminLogin.Please enter an account') }), buildValidatorData({ name: 'account' })],
+    password: [buildValidatorData({ name: 'required', message: t('adminLogin.Please input a password') }), buildValidatorData({ name: 'password' })],
     captcha: [
-        {
-            required: true,
-            message: t('adminLogin.Please enter the verification code'),
-            trigger: 'blur',
-        },
+        buildValidatorData({ name: 'required', title: t('adminLogin.Please enter the verification code') }),
         {
             min: 4,
             max: 6,

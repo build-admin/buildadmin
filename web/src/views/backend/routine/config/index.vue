@@ -93,7 +93,7 @@ import { index, postData, del, postSendTestMail } from '/@/api/backend/routine/c
 import { ElForm, FormItemRule, ElMessageBox, ElNotification } from 'element-plus'
 import AddFrom from './add.vue'
 import { routePush } from '/@/utils/router'
-import { buildValidatorData } from '/@/utils/validate'
+import { buildValidatorData, buildValidatorParams } from '/@/utils/validate'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { SiteConfig } from '/@/stores/interface'
 import { useI18n } from 'vue-i18n'
@@ -145,7 +145,9 @@ const getIndex = () => {
                         let ruleStr = state.config[key].list[lKey].rule.split(',')
                         let ruleArr: anyObj = []
                         ruleStr.forEach((item: string) => {
-                            ruleArr.push(buildValidatorData(item, state.config[key].list[lKey].title))
+                            ruleArr.push(
+                                buildValidatorData({ name: item as buildValidatorParams['name'], title: state.config[key].list[lKey].title })
+                            )
                         })
                         rules = Object.assign(rules, {
                             [state.config[key].list[lKey].name]: ruleArr,

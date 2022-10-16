@@ -38,6 +38,7 @@
                     <FormItem
                         :label="t('auth.admin.grouping')"
                         v-model="baTable.form.items!.group_arr"
+                        prop="group_arr"
                         type="remoteSelect"
                         :input-attr="{
                             multiple: true,
@@ -103,13 +104,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive, inject, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
-import { regularPassword, validatorAccount, validatorMobile } from '/@/utils/validate'
+import { regularPassword } from '/@/utils/validate'
 import type { ElForm, FormItemRule } from 'element-plus'
 import FormItem from '/@/components/formItem/index.vue'
 import { authGroup } from '/@/api/controllerUrls'
+import { buildValidatorData } from '/@/utils/validate'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 const baTable = inject('baTable') as baTableClass
@@ -118,36 +120,13 @@ const { t } = useI18n()
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     username: [
-        {
-            required: true,
-            message: t('Please input field', { field: t('auth.admin.username') }),
-            trigger: 'blur',
-        },
-        {
-            validator: validatorAccount,
-            trigger: 'blur',
-        },
+        buildValidatorData({ name: 'required', title: t('auth.admin.username') }),
+        buildValidatorData({ name: 'account', message: t('Please enter the correct field', { field: t('auth.admin.username') }) }),
     ],
-    nickname: [
-        {
-            required: true,
-            message: t('Please input field', { field: t('auth.admin.nickname') }),
-            trigger: 'blur',
-        },
-    ],
-    email: [
-        {
-            type: 'email',
-            message: t('Please enter the correct field', { field: t('auth.admin.mailbox') }),
-            trigger: 'blur',
-        },
-    ],
-    mobile: [
-        {
-            validator: validatorMobile,
-            trigger: 'blur',
-        },
-    ],
+    nickname: [buildValidatorData({ name: 'required', title: t('auth.admin.nickname') })],
+    group_arr: [buildValidatorData({ name: 'required', message: t('Please select field', { field: t('auth.admin.grouping') }) })],
+    email: [buildValidatorData({ name: 'email', message: t('Please enter the correct field', { field: t('auth.admin.mailbox') }) })],
+    mobile: [buildValidatorData({ name: 'mobile', message: t('Please enter the correct field', { field: t('auth.admin.mobile') }) })],
     password: [
         {
             validator: (rule: any, val: string, callback: Function) => {
@@ -169,6 +148,13 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
         },
     ],
 })
+
+watch(
+    () => baTable.form.operate,
+    (newVal) => {
+        rules.password![0].required = newVal == 'add'
+    }
+)
 </script>
 
 <style scoped lang="scss">

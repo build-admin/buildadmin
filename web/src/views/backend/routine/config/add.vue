@@ -134,11 +134,26 @@ key2=value2`,
 })
 
 const rules = reactive<FormRules>({
-    name: [buildValidatorData('required', t('routine.config.Variable name')), buildValidatorData('varName')],
-    group: [buildValidatorData('required', '', 'change', t('Please select field', { field: t('routine.config.Variable grouping') }))],
-    title: [buildValidatorData('required', t('routine.config.Variable title'))],
-    type: [buildValidatorData('required', '', 'change', t('Please select field', { field: t('routine.config.Variable type') }))],
-    weigh: [buildValidatorData('integer', t('routine.config.number'))],
+    name: [
+        buildValidatorData({ name: 'required', title: t('routine.config.Variable name') }),
+        buildValidatorData({ name: 'varName', message: t('Please enter the correct field', { field: t('routine.config.Variable name') }) }),
+    ],
+    group: [
+        buildValidatorData({
+            name: 'required',
+            trigger: 'change',
+            message: t('Please select field', { field: t('routine.config.Variable grouping') }),
+        }),
+    ],
+    title: [buildValidatorData({ name: 'required', title: t('routine.config.Variable title') })],
+    type: [
+        buildValidatorData({
+            name: 'required',
+            trigger: 'change',
+            message: t('Please select field', { field: t('routine.config.Variable type') }),
+        }),
+    ],
+    weigh: [buildValidatorData({ name: 'integer', title: t('routine.config.number') })],
 })
 
 const inputTypesHandle = () => {

@@ -121,9 +121,12 @@ const user: {
 })
 
 const baAccountFormRules: Partial<Record<string, FormItemRule[]>> = reactive({
-    username: [buildValidatorData('required', t('user.user.User name'))],
-    captcha: [buildValidatorData('required', t('user.user.Verification Code'))],
-    password: [buildValidatorData('required', t('user.user.password')), buildValidatorData('password')],
+    username: [buildValidatorData({ name: 'required', title: t('user.user.User name') })],
+    captcha: [buildValidatorData({ name: 'required', title: t('user.user.Verification Code') })],
+    password: [
+        buildValidatorData({ name: 'required', title: t('user.user.password') }),
+        buildValidatorData({ name: 'password', message: t('Please enter the correct field', { field: t('user.user.password') }) }),
+    ],
 })
 
 const onBaAccountSubmit = (formRef: FormInstance | undefined = undefined) => {

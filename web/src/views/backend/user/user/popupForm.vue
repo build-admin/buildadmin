@@ -134,14 +134,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive, inject, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
-import { regularPassword, validatorAccount, validatorMobile } from '/@/utils/validate'
+import { regularPassword } from '/@/utils/validate'
 import type { ElForm, FormItemRule } from 'element-plus'
 import FormItem from '/@/components/formItem/index.vue'
 import { userGroup } from '/@/api/controllerUrls'
 import router from '/@/router/index'
+import { buildValidatorData } from '/@/utils/validate'
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 const baTable = inject('baTable') as baTableClass
@@ -149,37 +150,10 @@ const baTable = inject('baTable') as baTableClass
 const { t } = useI18n()
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    username: [
-        {
-            required: true,
-            message: t('Please input field', { field: t('user.user.User name') }),
-            trigger: 'blur',
-        },
-        {
-            validator: validatorAccount,
-            trigger: 'blur',
-        },
-    ],
-    nickname: [
-        {
-            required: true,
-            message: t('Please input field', { field: t('user.user.nickname') }),
-            trigger: 'blur',
-        },
-    ],
-    email: [
-        {
-            type: 'email',
-            message: t('Please enter the correct field', { field: t('user.user.mailbox') }),
-            trigger: 'blur',
-        },
-    ],
-    mobile: [
-        {
-            validator: validatorMobile,
-            trigger: 'blur',
-        },
-    ],
+    username: [buildValidatorData({ name: 'required', title: t('user.user.User name') }), buildValidatorData({ name: 'account' })],
+    nickname: [buildValidatorData({ name: 'required', title: t('user.user.nickname') })],
+    email: [buildValidatorData({ name: 'email', title: t('user.user.mailbox') })],
+    mobile: [buildValidatorData({ name: 'mobile' })],
     password: [
         {
             validator: (rule: any, val: string, callback: Function) => {
@@ -211,6 +185,13 @@ const changeAccount = (type: string) => {
         },
     })
 }
+
+watch(
+    () => baTable.form.operate,
+    (newVal) => {
+        rules.password![0].required = newVal == 'add'
+    }
+)
 </script>
 
 <style scoped lang="scss">

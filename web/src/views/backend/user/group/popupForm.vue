@@ -75,6 +75,7 @@ import type { ElForm, ElTree, FormItemRule } from 'element-plus'
 import { uuid } from '/@/utils/random'
 import FormItem from '/@/components/formItem/index.vue'
 import type Node from 'element-plus/es/components/tree/src/model/node'
+import { buildValidatorData } from '/@/utils/validate'
 
 interface MenuRules {
     id: number
@@ -99,15 +100,10 @@ const state: {
 })
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    name: [
-        {
-            required: true,
-            message: t('Please input field', { field: t('user.group.Group name') }),
-            trigger: 'blur',
-        },
-    ],
+    name: [buildValidatorData({ name: 'required', title: t('user.group.Group name') })],
     auth: [
         {
+            required: true,
             validator: (rule: any, val: string, callback: Function) => {
                 let ids = getCheckeds()
                 if (ids.length <= 0) {
