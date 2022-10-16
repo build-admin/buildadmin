@@ -131,12 +131,9 @@
 
 <script setup lang="ts">
 import { inject } from 'vue'
-import useCurrentInstance from '/@/utils/useCurrentInstance'
 import type baTableClass from '/@/utils/baTable'
 import { isEmpty } from 'lodash'
 import BaInput from '/@/components/baInput/index.vue'
-
-const { proxy } = useCurrentInstance()
 
 const baTable = inject('baTable') as baTableClass
 
@@ -179,7 +176,7 @@ const onComSearch = () => {
         }
     }
 
-    proxy.eventBus.emit('onTableComSearch', comSearchData)
+    baTable.onTableAction('com-search', comSearchData)
 }
 
 const onResetForm = () => {

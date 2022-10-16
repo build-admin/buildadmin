@@ -78,23 +78,23 @@ declare global {
     /* BaTable前置处理函数(前置埋点) */
     interface BaTableBefore {
         // 获取表格数据前
-        getIndex?: () => boolean
+        getIndex?: () => boolean | void
         // 删除前
-        postDel?: ({ ids }: { ids: string[] }) => boolean
+        postDel?: ({ ids }: { ids: string[] }) => boolean | void
         // 编辑请求前
-        requestEdit?: ({ id }: { id: string }) => boolean
+        requestEdit?: ({ id }: { id: string }) => boolean | void
         // 双击表格具体操作执行前
-        onTableDblclick?: ({ row, column }: { row: TableRow; column: TableColumn }) => boolean
+        onTableDblclick?: ({ row, column }: { row: TableRow; column: TableColumn }) => boolean | void
         // 表单切换前
-        toggleForm?: ({ operate, operateIds }: { operate: string; operateIds: string[] }) => boolean
+        toggleForm?: ({ operate, operateIds }: { operate: string; operateIds: string[] }) => boolean | void
         // 表单提交前
-        onSubmit?: ({ formEl, operate, items }: { formEl: FormInstance | undefined; operate: string; items: anyObj }) => boolean
+        onSubmit?: ({ formEl, operate, items }: { formEl: FormInstance | undefined; operate: string; items: anyObj }) => boolean | void
         // 表格内事件响应前
-        onTableAction?: ({ event, data }: { event: string; data: anyObj }) => boolean
+        onTableAction?: ({ event, data }: { event: string; data: anyObj }) => boolean | void
         // 表格顶部菜单事件响应前
-        onTableHeaderAction?: ({ event, data }: { event: string; data: anyObj }) => boolean
+        onTableHeaderAction?: ({ event, data }: { event: string; data: anyObj }) => boolean | void
         // 表格初始化前
-        mount?: () => boolean
+        mount?: () => boolean | void
         [key: string]: Function | undefined
     }
 
@@ -116,8 +116,6 @@ declare global {
         onTableAction?: ({ event, data }: { event: string; data: anyObj }) => void
         // 表格顶部事件菜单响应后
         onTableHeaderAction?: ({ event, data }: { event: string; data: anyObj }) => void
-        // 表格初始化后
-        mount?: () => void
         [key: string]: Function | undefined
     }
 

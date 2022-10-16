@@ -98,7 +98,6 @@ const baTable = new baTableClass(
                     baTable.form.loading = false
                 })
             }
-            return true
         },
     }
 )

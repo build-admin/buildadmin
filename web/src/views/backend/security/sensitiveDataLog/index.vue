@@ -52,7 +52,6 @@ import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
-import useCurrentInstance from '/@/utils/useCurrentInstance'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -67,6 +66,9 @@ let optButtons: OptButton[] = [
         icon: 'fa fa-search-plus',
         class: 'table-row-info',
         disabledTip: false,
+        click: (row: TableRow) => {
+            infoButtonClick(row[baTable.table.pk!])
+        },
     },
     {
         render: 'confirmButton',
@@ -83,6 +85,9 @@ let optButtons: OptButton[] = [
             title: t('security.sensitiveDataLog.Are you sure you want to rollback the record?'),
         },
         disabledTip: false,
+        click: (row: TableRow) => {
+            onRollback([row[baTable.table.pk!]])
+        },
     },
 ]
 optButtons = optButtons.concat(defaultOptButtons(['delete']))
@@ -203,23 +208,8 @@ const infoButtonClick = (id: string) => {
 provide('baTable', baTable)
 
 onMounted(() => {
-    const { proxy } = useCurrentInstance()
     baTable.mount()
     baTable.getIndex()
-
-    /**
-     * 表格内的按钮响应
-     * @param name 按钮name
-     * @param row 被操作行数据
-     */
-    proxy.eventBus.on('onTableButtonClick', (data: { name: string; row: TableRow }) => {
-        if (!baTable.activate) return
-        if (data.name == 'rollback') {
-            onRollback([data.row[baTable.table.pk!]])
-        } else if (data.name == 'info') {
-            infoButtonClick(data.row[baTable.table.pk!])
-        }
-    })
 })
 </script>
 

@@ -5,7 +5,7 @@
     <!-- switch -->
     <el-switch
         v-if="field.render == 'switch'"
-        @change="changeField($event, property)"
+        @change="onChangeField"
         :model-value="fieldValue.toString()"
         :loading="row.loading"
         active-value="1"
@@ -166,15 +166,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import type { TagProps } from 'element-plus'
 import { timeFormat, openUrl } from '/@/components/table'
-import useCurrentInstance from '/@/utils/useCurrentInstance'
 import { useI18n } from 'vue-i18n'
 import { fullUrl, arrayFullUrl } from '/@/utils/common'
+import type baTableClass from '/@/utils/baTable'
 
 const { t } = useI18n()
-const { proxy } = useCurrentInstance()
+const baTable = inject('baTable') as baTableClass
 
 interface Props {
     row: TableRow
@@ -206,15 +206,8 @@ if (props.field.renderFormatter && typeof props.field.renderFormatter == 'functi
     fieldValue.value = props.field.renderFormatter(props.row, props.field, fieldValue.value)
 }
 
-const changeField = (value: any, fieldName: keyof TableRow) => {
-    if (props.field.render == 'switch') {
-        proxy.eventBus.emit('onTableFieldChange', {
-            value: value,
-            row: props.row,
-            field: fieldName,
-            render: props.field.render,
-        })
-    }
+const onChangeField = (value: any) => {
+    baTable.onTableAction('field-change', { value: value, ...props })
 }
 
 const onButtonClick = (btn: OptButton) => {
@@ -222,10 +215,7 @@ const onButtonClick = (btn: OptButton) => {
         btn.click(props.row, props.field)
         return
     }
-    proxy.eventBus.emit('onTableButtonClick', {
-        name: btn.name,
-        row: props.row,
-    })
+    baTable.onTableAction(btn.name, props)
 }
 
 const getTagType = (value: string, custom: any): TagProps['type'] => {

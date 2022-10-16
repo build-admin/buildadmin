@@ -1,6 +1,5 @@
-import { reactive, onUnmounted, onActivated, onDeactivated } from 'vue'
+import { reactive } from 'vue'
 import { getArrayKey } from '/@/utils/common'
-import useCurrentInstance from '/@/utils/useCurrentInstance'
 import type { baTableApi } from '/@/api/common'
 import Sortable from 'sortablejs'
 import { findIndexRow } from '/@/components/table'
@@ -12,9 +11,6 @@ import { i18n } from '/@/lang/index'
 export default class baTable {
     // API实例
     public api
-
-    // 表格是否激活，多表格共存时，激活的表格才能触发事件
-    public activate: boolean
 
     /* 表格状态-s 属性对应含义请查阅 BaTable 的类型定义 */
     public table: BaTable = reactive({
@@ -68,7 +64,6 @@ export default class baTable {
         this.table = Object.assign(this.table, table)
         this.before = before
         this.after = after
-        this.activate = true
 
         const route = useRoute()
         this.initComSearch(!_.isUndefined(route) ? route.query : {})
@@ -216,7 +211,7 @@ export default class baTable {
 
     /**
      * 表格内的事件统一响应
-     * @param event 事件:selection-change=选中项改变,page-size-change=每页数量改变,current-page-change=翻页,sort-change=排序
+     * @param event 事件:selection-change=选中项改变,page-size-change=每页数量改变,current-page-change=翻页,sort-change=排序,edit=编辑,delete=删除,field-change=单元格值改变,com-search=公共搜索
      * @param data 携带数据
      */
     onTableAction = (event: string, data: anyObj) => {
@@ -253,6 +248,43 @@ export default class baTable {
                         this.table.filter!.order = newOrder
                         this.getIndex()
                     }
+                },
+            ],
+            [
+                'edit',
+                () => {
+                    this.toggleForm('edit', [data.row[this.table.pk!]])
+                },
+            ],
+            [
+                'delete',
+                () => {
+                    this.postDel([data.row[this.table.pk!]])
+                },
+            ],
+            [
+                'field-change',
+                () => {
+                    if (data.field.render == 'switch') {
+                        if (!data.field || !data.field.prop) return
+                        data.row.loading = true
+                        this.api
+                            .postData('edit', { [this.table.pk!]: data.row[this.table.pk!], [data.field.prop]: data.value })
+                            .then(() => {
+                                data.row.loading = false
+                                data.row[data.field.prop] = data.value
+                            })
+                            .catch(() => {
+                                data.row.loading = false
+                            })
+                    }
+                },
+            ],
+            [
+                'com-search',
+                () => {
+                    this.table.filter!.search = data as comSearchData[]
+                    this.getIndex()
                 },
             ],
             [
@@ -408,68 +440,6 @@ export default class baTable {
 
     mount = () => {
         if (this.runBefore('mount') === false) return
-        this.activate = true
-        const { proxy } = useCurrentInstance()
-        /**
-         * 表格内的按钮响应
-         * @param name 按钮name
-         * @param row 被操作行数据
-         */
-        proxy.eventBus.on('onTableButtonClick', (data: { name: string; row: TableRow }) => {
-            if (!this.activate) return
-            if (data.name == 'edit') {
-                this.toggleForm('edit', [data.row[this.table.pk!]])
-            } else if (data.name == 'delete') {
-                this.postDel([data.row[this.table.pk!]])
-            }
-        })
-
-        /**
-         * 通用搜索响应
-         * @param comSearchData 通用搜索数据
-         */
-        proxy.eventBus.on('onTableComSearch', (data: comSearchData[]) => {
-            if (!this.activate) return
-            this.table.filter!.search = data
-            this.getIndex()
-        })
-
-        /**
-         * 表格内的字段操作响应
-         * @param value 修改后的值
-         * @param row 被操作行数据
-         * @param field 被操作字段名
-         */
-        proxy.eventBus.on('onTableFieldChange', (data: { value: any; row: TableRow; field: keyof TableRow; render: string }) => {
-            if (!this.activate) return
-            if (data.render == 'switch') {
-                data.row.loading = true
-                this.api
-                    .postData('edit', { [this.table.pk!]: data.row[this.table.pk!], [data.field]: data.value })
-                    .then(() => {
-                        data.row.loading = false
-                        data.row[data.field] = data.value
-                    })
-                    .catch(() => {
-                        data.row.loading = false
-                    })
-            }
-        })
-
-        onUnmounted(() => {
-            // 考虑到 keepalive 在 onMounted、onActivated 时注册事件；onUnmounted、onDeactivated 时注销事件，但并不是最方便的方案，且注销后在全局事件管理中本来就有留存
-            // 干脆，不off掉事件，改用 this.activate 来决定事件是否执行
-            this.activate = false
-            this.runAfter('mount')
-        })
-
-        onActivated(() => {
-            this.activate = true
-        })
-
-        onDeactivated(() => {
-            this.activate = false
-        })
 
         // 监听路由变化,响应通用搜索更新
         onBeforeRouteUpdate((to) => {

@@ -17,14 +17,13 @@
 
 <script setup lang="ts">
 import _ from 'lodash'
-import { onMounted, provide } from 'vue'
+import { provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { authAdminLog } from '/@/api/controllerUrls'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
-import useCurrentInstance from '/@/utils/useCurrentInstance'
 import { useI18n } from 'vue-i18n'
 import Info from './info.vue'
 import { buildJsonToElTreeData } from '/@/utils/common'
@@ -41,6 +40,9 @@ let optButtons: OptButton[] = [
         icon: 'fa fa-search-plus',
         class: 'table-row-edit',
         disabledTip: false,
+        click: (row: TableRow) => {
+            infoButtonClick(row)
+        },
     },
 ]
 
@@ -139,21 +141,6 @@ const infoButtonClick = (row: TableRow) => {
     baTable.form.extend!['info'] = rowClone
     baTable.form.operate = 'info'
 }
-
-onMounted(() => {
-    const { proxy } = useCurrentInstance()
-    /**
-     * 表格内的按钮响应
-     * @param name 按钮name
-     * @param row 被操作行数据
-     */
-    proxy.eventBus.on('onTableButtonClick', (data: { name: string; row: TableRow }) => {
-        if (!baTable.activate) return
-        if (data.name == 'info') {
-            infoButtonClick(data.row)
-        }
-    })
-})
 </script>
 
 <script lang="ts">

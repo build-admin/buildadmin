@@ -98,7 +98,6 @@ const baTable = new sensitiveDataClass(
         // 提交前
         onSubmit: () => {
             baTable.form.items!.fields = formRef.value.getDataFields()
-            return true
         },
     }
 )

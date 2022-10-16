@@ -1,45 +1,49 @@
 <template>
-    <el-table
-        ref="tableRef"
-        class="ba-data-table w100"
-        header-cell-class-name="table-header-cell"
-        :default-expand-all="baTable.table.expandAll"
-        :data="baTable.table.data"
-        :row-key="baTable.table.pk"
-        :border="true"
-        v-loading="baTable.table.loading"
-        stripe
-        @select-all="onSelectAll"
-        @select="onSelect"
-        @selection-change="onSelectionChange"
-        @sort-change="onSortChange"
-        @row-dblclick="baTable.onTableDblclick"
-        v-bind="$attrs"
-    >
-        <template v-for="(item, key) in baTable.table.column" :key="key">
-            <Column v-if="item.show !== false" :attr="item">
-                <template v-if="item.render" #default="scope">
-                    <FieldRender
-                        :field="item"
-                        :key="item.render == 'switch' ? 'column-' + scope.column.property + '-' + key + '-' + scope.row[scope.column.property] : 0"
-                        :row="scope.row"
-                        :property="scope.column.property"
-                    />
-                </template>
-            </Column>
-        </template>
-    </el-table>
-    <div v-if="props.pagination" class="table-pagination">
-        <el-pagination
-            :currentPage="baTable.table.filter!.page"
-            :page-size="baTable.table.filter!.limit"
-            :page-sizes="[10, 20, 50, 100]"
-            background
-            :layout="config.layout.shrink ? 'prev, next, jumper' : 'sizes,total, ->, prev, pager, next, jumper'"
-            :total="baTable.table.total"
-            @size-change="onTableSizeChange"
-            @current-change="onTableCurrentChange"
-        ></el-pagination>
+    <div>
+        <el-table
+            ref="tableRef"
+            class="ba-data-table w100"
+            header-cell-class-name="table-header-cell"
+            :default-expand-all="baTable.table.expandAll"
+            :data="baTable.table.data"
+            :row-key="baTable.table.pk"
+            :border="true"
+            v-loading="baTable.table.loading"
+            stripe
+            @select-all="onSelectAll"
+            @select="onSelect"
+            @selection-change="onSelectionChange"
+            @sort-change="onSortChange"
+            @row-dblclick="baTable.onTableDblclick"
+            v-bind="$attrs"
+        >
+            <template v-for="(item, key) in baTable.table.column" :key="key">
+                <Column v-if="item.show !== false" :attr="item">
+                    <template v-if="item.render" #default="scope">
+                        <FieldRender
+                            :field="item"
+                            :key="
+                                item.render == 'switch' ? 'column-' + scope.column.property + '-' + key + '-' + scope.row[scope.column.property] : 0
+                            "
+                            :row="scope.row"
+                            :property="scope.column.property"
+                        />
+                    </template>
+                </Column>
+            </template>
+        </el-table>
+        <div v-if="props.pagination" class="table-pagination">
+            <el-pagination
+                :currentPage="baTable.table.filter!.page"
+                :page-size="baTable.table.filter!.limit"
+                :page-sizes="[10, 20, 50, 100]"
+                background
+                :layout="config.layout.shrink ? 'prev, next, jumper' : 'sizes,total, ->, prev, pager, next, jumper'"
+                :total="baTable.table.total"
+                @size-change="onTableSizeChange"
+                @current-change="onTableCurrentChange"
+            ></el-pagination>
+        </div>
     </div>
 </template>
 
