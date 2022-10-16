@@ -9,6 +9,7 @@
                     :model="state.form"
                     :rules="state.rules"
                     :label-position="'top'"
+                    :key="state.formKey"
                 >
                     <el-tabs v-model="state.activeTab" type="border-card" :before-leave="onBeforeLeave">
                         <el-tab-pane class="config-tab-pane" v-for="(group, key) in state.config" :key="key" :name="key" :label="group.title">
@@ -97,6 +98,7 @@ import { buildValidatorData, buildValidatorParams } from '/@/utils/validate'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { SiteConfig } from '/@/stores/interface'
 import { useI18n } from 'vue-i18n'
+import { uuid } from '/@/utils/random'
 
 const { t } = useI18n()
 const siteConfig = useSiteConfig()
@@ -113,6 +115,7 @@ const state: {
     rules: Partial<Record<string, FormItemRule[]>>
     form: anyObj
     quickEntrance: anyObj
+    formKey: string
 } = reactive({
     loading: true,
     config: [],
@@ -123,6 +126,7 @@ const state: {
     rules: {},
     form: {},
     quickEntrance: {},
+    formKey: uuid(),
 })
 
 const getIndex = () => {
@@ -159,6 +163,7 @@ const getIndex = () => {
 
             state.form = formNames
             state.rules = rules
+            state.formKey = uuid()
         })
         .catch(() => {
             state.loading = false
