@@ -18,7 +18,7 @@
 
         <!-- 表格 -->
         <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
-        <Table ref="tableRef" @action="baTable.onTableAction" />
+        <Table ref="tableRef" />
 
         <!-- 表单 -->
         <PopupForm />

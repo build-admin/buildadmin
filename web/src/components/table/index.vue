@@ -62,27 +62,16 @@ const props = withDefaults(defineProps<Props>(), {
     pagination: true,
 })
 
-const emits = defineEmits<{
-    (e: 'action', event: string, data: anyObj): void
-}>()
-
 const onTableSizeChange = (val: number) => {
-    emits('action', 'page-size-change', {
-        size: val,
-    })
+    baTable.onTableAction('page-size-change', { size: val })
 }
 
 const onTableCurrentChange = (val: number) => {
-    emits('action', 'current-page-change', {
-        page: val,
-    })
+    baTable.onTableAction('current-page-change', { page: val })
 }
 
 const onSortChange = ({ order, prop }: { order: string; prop: string }) => {
-    emits('action', 'sort-change', {
-        prop: prop,
-        order: order ? (order == 'ascending' ? 'asc' : 'desc') : '',
-    })
+    baTable.onTableAction('sort-change', { prop: prop, order: order ? (order == 'ascending' ? 'asc' : 'desc') : '' })
 }
 
 /*
@@ -161,7 +150,7 @@ const onSelect = (selection: TableRow[], row: TableRow) => {
  * 记录选择的项
  */
 const onSelectionChange = (selection: TableRow[]) => {
-    emits('action', 'selection-change', selection)
+    baTable.onTableAction('selection-change', selection)
 }
 
 /*
