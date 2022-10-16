@@ -6,7 +6,6 @@
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'comSearch', 'quickSearch', 'columnDisplay']"
             :quick-search-placeholder="t('quick Search Placeholder', { fields: t('security.dataRecycle.Rule name') })"
-            @action="baTable.onTableHeaderAction"
         />
 
         <!-- 表格 -->

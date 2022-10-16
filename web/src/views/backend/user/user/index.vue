@@ -6,7 +6,6 @@
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'comSearch', 'quickSearch', 'columnDisplay']"
             :quick-search-placeholder="t('quick Search Placeholder', { fields: t('user.user.User name') + '/' + t('user.user.nickname') })"
-            @action="baTable.onTableHeaderAction"
         />
 
         <!-- 表格 -->

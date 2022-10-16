@@ -6,7 +6,6 @@
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'unfold', 'quickSearch', 'columnDisplay']"
             :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.group.GroupName') })"
-            @action="baTable.onTableHeaderAction"
         />
 
         <!-- 表格 -->

@@ -8,7 +8,6 @@
             :quick-search-placeholder="
                 t('quick Search Placeholder', { fields: t('user.moneyLog.User name') + '/' + t('user.moneyLog.User nickname') })
             "
-            @action="baTable.onTableHeaderAction"
         >
             <el-button v-if="!_.isEmpty(state.userInfo)" v-blur class="table-header-operate">
                 <span class="table-header-operate-text">{{

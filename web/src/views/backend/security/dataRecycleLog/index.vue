@@ -6,7 +6,6 @@
         <TableHeader
             :buttons="['refresh', 'delete', 'comSearch', 'quickSearch', 'columnDisplay']"
             :quick-search-placeholder="t('quick Search Placeholder', { fields: t('security.dataRecycleLog.Rule name') })"
-            @action="baTable.onTableHeaderAction"
         >
             <el-popconfirm
                 @confirm="onRestoreAction"

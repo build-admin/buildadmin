@@ -258,7 +258,7 @@ export default class baTable {
             [
                 'default',
                 () => {
-                    console.warn('未定义操作')
+                    console.warn('No action defined')
                 },
             ],
         ])
@@ -270,7 +270,7 @@ export default class baTable {
 
     /**
      * 表格顶栏按钮事件统一响应
-     * @param event 事件:refresh=刷新,edit=编辑,delete=删除,quick-search=快速查询
+     * @param event 事件:refresh=刷新,edit=编辑,delete=删除,quick-search=快速查询,unfold=折叠/展开,change-show-column=调整列显示状态
      * @param data 携带数据
      */
     onTableHeaderAction = (event: string, data: anyObj) => {
@@ -305,7 +305,7 @@ export default class baTable {
                 'unfold',
                 () => {
                     if (!this.table.ref) {
-                        console.warn('折叠/展开失败，因为tableRef未定义，请在onMounted时赋值tableRef')
+                        console.warn('Collapse/expand failed because table ref is not defined. Please assign table ref when onMounted')
                         return
                     }
                     this.table.expandAll = data.unfold
@@ -329,7 +329,7 @@ export default class baTable {
             [
                 'default',
                 () => {
-                    console.warn('未定义操作')
+                    console.warn('No action defined')
                 },
             ],
         ])
@@ -347,7 +347,7 @@ export default class baTable {
     initSort = () => {
         if (this.table.defaultOrder && this.table.defaultOrder.prop) {
             if (!this.table.ref) {
-                console.warn('初始化默认排序失败，因为tableRef未定义，请在onMounted时赋值tableRef')
+                console.warn('Failed to initialize default sorting because table ref is not defined. Please assign table ref when onMounted')
                 return
             }
 
@@ -369,7 +369,7 @@ export default class baTable {
             return
         }
         if (!this.table.ref) {
-            console.warn('初始化拖拽排序失败，因为tableRef未定义，请在onMounted时赋值tableRef')
+            console.warn('Failed to initialize drag sort because table ref is not defined. Please assign table ref when onMounted')
             return
         }
 

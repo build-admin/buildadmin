@@ -7,7 +7,6 @@
             <TableHeader
                 :buttons="['refresh', 'edit', 'comSearch', 'quickSearch', 'columnDisplay']"
                 :quick-search-placeholder="t('quick Search Placeholder', { fields: t('routine.attachment.Original name') })"
-                @action="baTable.onTableHeaderAction"
             >
                 <el-popconfirm
                     v-if="auth('del')"

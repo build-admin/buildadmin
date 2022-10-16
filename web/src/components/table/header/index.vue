@@ -48,7 +48,12 @@
             :content="(baTable.table.expandAll ? t('shrink') : t('open')) + t('All submenus')"
             placement="top"
         >
-            <el-button v-blur @click="changeUnfold" class="table-header-operate" :type="baTable.table.expandAll ? 'danger' : 'warning'">
+            <el-button
+                v-blur
+                @click="baTable.onTableHeaderAction('unfold', { unfold: !baTable.table.expandAll })"
+                class="table-header-operate"
+                :type="baTable.table.expandAll ? 'danger' : 'warning'"
+            >
                 <span class="table-header-operate-text">{{ baTable.table.expandAll ? t('Shrink all') : t('Expand all') }}</span>
             </el-button>
         </el-tooltip>
@@ -145,24 +150,16 @@ const columnDisplay = computed(() => {
 
 const enableBatchOpt = computed(() => (baTable.table.selection!.length > 0 ? true : false))
 
-const emits = defineEmits<{
-    (e: 'action', event: string, data: anyObj): void
-}>()
-
 const onAction = (event: string, data: anyObj = {}) => {
-    emits('action', event, data)
-}
-
-const changeUnfold = () => {
-    emits('action', 'unfold', { unfold: !baTable.table.expandAll })
+    baTable.onTableHeaderAction(event, data)
 }
 
 const onSearchInput = () => {
-    emits('action', 'quick-search', { keyword: state.quickSearch })
+    baTable.onTableHeaderAction('quick-search', { keyword: state.quickSearch })
 }
 
 const onChangeShowColumn = (value: string | number | boolean, field: string) => {
-    emits('action', 'change-show-column', { field: field, value: value })
+    baTable.onTableHeaderAction('change-show-column', { field: field, value: value })
 }
 </script>
 
