@@ -1,5 +1,6 @@
 <template>
     <div>
+        <slot name="neck"></slot>
         <el-table
             ref="tableRef"
             class="ba-data-table w100"
@@ -17,6 +18,7 @@
             @row-dblclick="baTable.onTableDblclick"
             v-bind="$attrs"
         >
+            <slot name="columnPrepend"></slot>
             <template v-for="(item, key) in baTable.table.column">
                 <Column v-if="item.show !== false" :attr="item" :key="key + '-column'">
                     <template v-if="item.render" #default="scope">
@@ -30,6 +32,7 @@
                     </template>
                 </Column>
             </template>
+            <slot name="columnAppend"></slot>
         </el-table>
         <div v-if="props.pagination" class="table-pagination">
             <el-pagination
@@ -43,6 +46,7 @@
                 @current-change="onTableCurrentChange"
             ></el-pagination>
         </div>
+        <slot name="footer"></slot>
     </div>
 </template>
 
