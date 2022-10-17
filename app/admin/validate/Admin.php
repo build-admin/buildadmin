@@ -11,7 +11,7 @@ class Admin extends Validate
     protected $rule = [
         'username'  => 'require|regex:^[a-zA-Z][a-zA-Z0-9_]{2,15}$|unique:admin',
         'nickname'  => 'require',
-        'password'  => 'require|regex:^[a-zA-Z0-9_]{6,32}$',
+        'password'  => 'require|regex:^(?!.*[&<>"\'\n\r]).{6,32}$',
         'email'     => 'email|unique:admin',
         'mobile'    => 'mobile|unique:admin',
         'group_arr' => 'require|array',

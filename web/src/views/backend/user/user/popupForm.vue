@@ -167,7 +167,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
                     }
                 }
                 if (!regularPassword(val)) {
-                    return callback(new Error(t('Please enter the correct field', { field: t('user.user.password') })))
+                    return callback(new Error(t('validate.Please enter the correct password')))
                 }
                 return callback()
             },

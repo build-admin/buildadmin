@@ -61,7 +61,7 @@ class Index extends Backend
 
             $rule = [
                 'username|' . __('Username') => 'require|length:3,30',
-                'password|' . __('Password') => 'require|length:3,30',
+                'password|' . __('Password') => 'require|regex:^(?!.*[&<>"\'\n\r]).{6,32}$',
             ];
             $data = [
                 'username' => $username,

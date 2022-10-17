@@ -34,8 +34,7 @@ export function validatorAccount(rule: any, val: string, callback: Function) {
  * 密码验证
  */
 export function regularPassword(val: string) {
-    if (/^[a-zA-Z0-9_]{6,32}$/.test(val)) return true
-    return false
+    return /^(?!.*[&<>"'\n\r]).{6,32}$/.test(val)
 }
 export function validatorPassword(rule: any, val: string, callback: Function) {
     if (!val) {

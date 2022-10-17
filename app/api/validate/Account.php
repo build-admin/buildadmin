@@ -14,7 +14,7 @@ class Account extends Validate
         'birthday' => 'date',
         'email'    => 'require|email|unique:user',
         'mobile'   => 'require|mobile|unique:user',
-        'password' => 'require|regex:^[a-zA-Z0-9_]{6,32}$',
+        'password' => 'require|regex:^(?!.*[&<>"\'\n\r]).{6,32}$',
         'account'  => 'require',
         'captcha'  => 'require',
     ];

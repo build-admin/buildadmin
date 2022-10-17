@@ -12,7 +12,7 @@ class User extends Validate
         'username'  => 'require|regex:^[a-zA-Z][a-zA-Z0-9_]{2,15}$|unique:user',
         'email'     => 'email|unique:user',
         'mobile'    => 'mobile|unique:user',
-        'password'  => 'require|regex:^[a-zA-Z0-9_]{6,32}$',
+        'password'  => 'require|regex:^(?!.*[&<>"\'\n\r]).{6,32}$',
         'captcha'   => 'require',
         'captchaId' => 'require',
     ];

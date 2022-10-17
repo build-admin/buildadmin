@@ -123,7 +123,7 @@ class Auth extends \ba\Auth
             'mobile'   => 'mobile|unique:user',
             'email'    => 'email|unique:user',
             'username' => 'regex:^[a-zA-Z][a-zA-Z0-9_]{2,15}$|unique:user',
-            'password' => 'regex:^[a-zA-Z0-9_]{6,32}$',
+            'password' => 'regex:^(?!.*[&<>"\'\n\r]).{6,32}$',
         ]);
         $params   = [
             'username' => $username,
