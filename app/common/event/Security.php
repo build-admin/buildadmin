@@ -92,15 +92,14 @@ class Security
 
                     /*
                      * 其他跳过规则可添加至此处
-                     * 1. 如果字段名中包含 password 且修改值为空，则忽略
+                     * 1. 如果字段名中包含 password，修改值为空则忽略，修改值不为空，则密码记录为 ******
                      */
-                    if (stripos('password', $field) !== false && $newData[$field] == '') {
-                        continue;
-                    }
-
-                    // 如果字段名中包含 password 且修改值不为空，则设置密码记录为 ******
-                    if (stripos('password', $field) !== false && $newData[$field] !== '') {
-                        $newData[$field] = "******";
+                    if (stripos('password', $field) !== false) {
+                        if (!$newData[$field]) {
+                            continue;
+                        } else {
+                            $newData[$field] = "******";
+                        }
                     }
 
                     $sensitiveDataLog[] = [
