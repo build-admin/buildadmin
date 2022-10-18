@@ -98,6 +98,11 @@ class Security
                         continue;
                     }
 
+                    // 如果字段名中包含 password 且修改值不为空，则设置密码记录为 ******
+                    if (stripos('password', $field) !== false && $newData[$field] !== '') {
+                        $newData[$field] = "******";
+                    }
+
                     $sensitiveDataLog[] = [
                         'admin_id'     => $adminId,
                         'sensitive_id' => $sensitiveData['id'],
