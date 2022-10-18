@@ -40,7 +40,7 @@ export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false
     const file = fd.get('file') as UploadRawFile
     const siteConfig = useSiteConfig()
 
-    if (!file.name || !file.type || typeof file.size == 'undefined') {
+    if (!file.name || typeof file.size == 'undefined') {
         errorMsg = i18n.global.t('utils.The data of the uploaded file is incomplete!')
     } else if (!checkFileMimetype(file.name, file.type)) {
         errorMsg = i18n.global.t('utils.The type of uploaded file is not allowed!')
