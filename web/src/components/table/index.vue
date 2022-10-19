@@ -38,7 +38,7 @@
             <el-pagination
                 :currentPage="baTable.table.filter!.page"
                 :page-size="baTable.table.filter!.limit"
-                :page-sizes="[10, 20, 50, 100]"
+                :page-sizes="pageSizes"
                 background
                 :layout="config.layout.shrink ? 'prev, next, jumper' : 'sizes,total, ->, prev, pager, next, jumper'"
                 :total="baTable.table.total"
@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, inject } from 'vue'
+import { ref, nextTick, inject, computed } from 'vue'
 import type { ElTable } from 'element-plus'
 import Column from '/@/components/table/column/index.vue'
 import FieldRender from '/@/components/table/fieldRender/index.vue'
@@ -80,6 +80,16 @@ const onTableCurrentChange = (val: number) => {
 const onSortChange = ({ order, prop }: { order: string; prop: string }) => {
     baTable.onTableAction('sort-change', { prop: prop, order: order ? (order == 'ascending' ? 'asc' : 'desc') : '' })
 }
+
+const pageSizes = computed(() => {
+    let defaultSizes = [10, 20, 50, 100]
+    if (baTable.table.filter!.limit) {
+        if (!defaultSizes.includes(baTable.table.filter!.limit)) {
+            defaultSizes.push(baTable.table.filter!.limit)
+        }
+    }
+    return defaultSizes
+})
 
 /*
  * 全选和取消全选
