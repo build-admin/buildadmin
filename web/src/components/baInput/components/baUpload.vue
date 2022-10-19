@@ -16,11 +16,20 @@
             <!-- 插槽支持，不加 if 时 el-upload 样式会错乱 -->
             <template v-if="slots.default" #default><slot name="default"></slot></template>
             <template v-else #default>
-                <Icon v-if="type == 'image' || type == 'images'" name="el-icon-Plus" size="30" color="#c0c4cc" />
-                <el-button v-else type="primary">
-                    <Icon name="el-icon-Plus" color="#ffffff" />
-                    <span>{{ $t('Upload') }}</span>
-                </el-button>
+                <template v-if="type == 'image' || type == 'images'">
+                    <div @click.stop="state.selectFile.show = true" class="ba-upload-select-image">{{ $t('routine.attachment.choice') }}</div>
+                    <Icon class="ba-upload-icon" name="el-icon-Plus" size="30" color="#c0c4cc" />
+                </template>
+                <template v-else>
+                    <el-button type="primary">
+                        <Icon name="el-icon-Plus" color="#ffffff" />
+                        <span>{{ $t('Upload') }}</span>
+                    </el-button>
+                    <el-button @click.stop="state.selectFile.show = true" type="success">
+                        <Icon name="fa fa-th-list" size="14px" color="#ffffff" />
+                        <span class="ml-6">{{ $t('routine.attachment.choice') }}</span>
+                    </el-button>
+                </template>
             </template>
             <template v-if="slots.trigger" #trigger><slot name="trigger"></slot></template>
             <template v-if="slots.tip" #tip><slot name="tip"></slot></template>
@@ -29,6 +38,7 @@
         <el-dialog v-model="state.preview.show" class="ba-upload-preview">
             <img :src="state.preview.url" class="ba-upload-preview-img" alt="" />
         </el-dialog>
+        <SelectFile v-model="state.selectFile.show" v-bind="state.selectFile" @choice="onChoice" />
     </div>
 </template>
 
@@ -38,6 +48,7 @@ import { UploadInstance, UploadUserFile, UploadProps, genFileId, UploadRawFile }
 import { stringToArray } from '/@/components/baInput/helper'
 import { fullUrl, arrayFullUrl, getFileNameFromPath } from '/@/utils/common'
 import { fileUpload } from '/@/api/common'
+import SelectFile from '/@/components/baInput/components/selectFile.vue'
 import { uuid } from '/@/utils/random'
 import _ from 'lodash'
 
@@ -88,6 +99,13 @@ const state: {
     attr: Partial<UploadProps>
     // 正在上传的文件数量
     uploading: number
+    // 显示选择文件窗口
+    selectFile: {
+        show: boolean
+        type?: 'image' | 'file'
+        limit?: number
+        returnFullUrl: boolean
+    }
 } = reactive({
     key: uuid(),
     defaultReturnType: 'string',
@@ -98,6 +116,11 @@ const state: {
     fileList: [],
     attr: {},
     uploading: 0,
+    selectFile: {
+        show: false,
+        type: 'file',
+        returnFullUrl: props.returnFullUrl,
+    },
 })
 
 const onChange = (file: UploadFileExt) => {
@@ -144,6 +167,14 @@ const onExceed = (files: UploadUserFile[]) => {
     upload.value!.handleStart(file)
 }
 
+const onChoice = (files: string[]) => {
+    let oldValArr = getAllUrls('array') as string[]
+    files = oldValArr.concat(files)
+    init(files)
+    emits('update:modelValue', getAllUrls())
+    state.selectFile.show = false
+}
+
 onMounted(() => {
     if (props.type == 'image' || props.type == 'file') {
         state.attr = { ...state.attr, limit: 1 }
@@ -152,10 +183,12 @@ onMounted(() => {
     }
 
     if (props.type == 'image' || props.type == 'images') {
+        state.selectFile.type = 'image'
         state.attr = { ...state.attr, accept: 'image/*', listType: 'picture-card' }
     }
 
     state.attr = { ...state.attr, ...props.attr }
+    if (state.attr.limit) state.selectFile.limit = state.attr.limit
 
     init(props.modelValue)
 })
@@ -227,12 +260,40 @@ const getUploadRef = () => {
     return upload.value
 }
 
+const showSelectFile = () => {
+    state.selectFile.show = true
+}
+
 defineExpose({
     getUploadRef,
+    showSelectFile,
 })
 </script>
 
 <style scoped lang="scss">
+.ba-upload-select-image {
+    position: absolute;
+    top: 0px;
+    border: 1px dashed var(--el-border-color);
+    border-top: 1px dashed transparent;
+    width: var(--el-upload-picture-card-size);
+    height: 30px;
+    line-height: 30px;
+    border-radius: 6px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    text-align: center;
+    font-size: var(--el-font-size-extra-small);
+    color: var(--el-text-color-regular);
+    &:hover {
+        color: var(--el-color-primary);
+        border: 1px dashed var(--el-color-primary);
+        border-top: 1px dashed var(--el-color-primary);
+    }
+}
+.ba-upload :deep(.el-upload:hover .ba-upload-icon) {
+    color: var(--el-color-primary) !important;
+}
 :deep(.ba-upload-preview) .el-dialog__body {
     display: flex;
     align-items: center;
@@ -243,6 +304,7 @@ defineExpose({
 }
 .ba-upload.image :deep(.el-upload--picture-card),
 .ba-upload.images :deep(.el-upload--picture-card) {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -250,5 +312,8 @@ defineExpose({
 .ba-upload.file :deep(.el-upload-list),
 .ba-upload.files :deep(.el-upload-list) {
     margin-left: -10px;
+}
+.ml-6 {
+    margin-left: 6px;
 }
 </style>

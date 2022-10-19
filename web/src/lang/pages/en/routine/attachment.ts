@@ -6,6 +6,8 @@ export default {
     size: 'Size',
     type: 'Type',
     preview: 'Preview',
+    choice: 'Choice',
+    'Select File': 'Select File',
     'Upload (Reference) times': 'Upload (Reference) times',
     'Storage mode': 'Storage mode',
     'Last upload time': 'Last upload time',
@@ -29,4 +31,6 @@ export default {
         'When the same file is uploaded many times, only one attachment record will be saved and added.',
     'SHA1 encoding of file': 'The SHA1 encoding of file',
     'Files and records will be deleted at the same time Are you sure?': 'Files and records will be deleted at the same time Are you sure?',
+    'You can also select': 'You can also select',
+    items: 'items',
 }
