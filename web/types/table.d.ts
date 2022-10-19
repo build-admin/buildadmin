@@ -228,7 +228,7 @@ declare global {
         field: string
         val: string
         operator: string
-        render: string
+        render?: string
     }
 
     interface ElTreeData {
