@@ -14,7 +14,12 @@
 
     <!-- image -->
     <div v-if="field.render == 'image' && fieldValue" class="ba-render-image">
-        <el-image :preview-teleported="true" :preview-src-list="[fullUrl(fieldValue)]" :src="fullUrl(fieldValue)"></el-image>
+        <el-image
+            :hide-on-click-modal="true"
+            :preview-teleported="true"
+            :preview-src-list="[fullUrl(fieldValue)]"
+            :src="fullUrl(fieldValue)"
+        ></el-image>
     </div>
 
     <!-- images -->
@@ -28,6 +33,7 @@
                 :preview-src-list="arrayFullUrl(fieldValue)"
                 class="images-item"
                 :src="fullUrl(item)"
+                :hide-on-click-modal="true"
             ></el-image>
         </template>
     </div>
