@@ -16,6 +16,8 @@ class Attachment extends Backend
 
     protected $withJoinTable = ['admin', 'user'];
 
+    protected $defaultSortField = 'lastuploadtime,desc';
+
     public function initialize()
     {
         parent::initialize();
