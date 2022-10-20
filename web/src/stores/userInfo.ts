@@ -60,6 +60,9 @@ export const useUserInfo = defineStore('userInfo', {
                 }
             })
         },
+        isLogin() {
+            return this.id && this.token
+        },
     },
     persist: {
         key: USER_INFO,

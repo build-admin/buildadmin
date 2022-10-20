@@ -2,18 +2,18 @@
     <el-header class="header">
         <el-row justify="center">
             <el-col class="header-row" :span="16" :xs="24">
-                <div :class="userInfo.id > 0 ? 'hidden-sm-and-down' : ''" @click="router.push({ name: '/' })" class="header-logo">
+                <div :class="userInfo.isLogin() ? 'hidden-sm-and-down' : ''" @click="router.push({ name: '/' })" class="header-logo">
                     <img src="~assets/logo.png" />
                     <span class="hidden-xs-only">{{ siteConfig.site_name }}</span>
                 </div>
-                <div v-if="userInfo.id > 0" @click="memberCenter.toggleMenuExpand(true)" class="user-menus-expand hidden-md-and-up">
+                <div v-if="userInfo.isLogin()" @click="memberCenter.toggleMenuExpand(true)" class="user-menus-expand hidden-md-and-up">
                     <Icon name="fa fa-indent" color="var(--el-color-primary)" size="20" />
                 </div>
                 <el-menu :default-active="state.activeMenu" class="frontend-header-menu" mode="horizontal" :ellipsis="false">
                     <el-menu-item @click="router.push({ name: '/' })" v-blur index="index">{{ $t('index.index') }}</el-menu-item>
 
                     <template v-if="memberCenter.state.open">
-                        <el-sub-menu v-if="userInfo.id" v-blur index="user">
+                        <el-sub-menu v-if="userInfo.isLogin()" v-blur index="user">
                             <template #title>
                                 <div class="header-user-box">
                                     <img
