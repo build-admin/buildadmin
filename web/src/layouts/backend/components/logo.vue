@@ -55,9 +55,14 @@ const onMenuCollapse = function () {
     width: 28px;
 }
 .website-name {
+    display: block;
+    width: 180px;
     padding-left: 4px;
     font-size: var(--el-font-size-extra-large);
     font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .fold {
     margin-left: auto;
