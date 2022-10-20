@@ -294,6 +294,7 @@ import { uuid } from '/@/utils/random'
 import { useI18n } from 'vue-i18n'
 import { buildValidatorData, validatorAccount } from '/@/utils/validate'
 import { checkIn, retrievePassword } from '/@/api/frontend/user/index'
+import { useEventListener } from '@vueuse/core'
 import { onResetForm } from '/@/utils/common'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useRouter } from 'vue-router'
@@ -502,7 +503,7 @@ const endTiming = () => {
 
 onMounted(() => {
     resize()
-    window.addEventListener('resize', resize)
+    useEventListener(window, 'resize', resize)
 
     checkIn('get').then((res) => {
         state.accountVerificationType = res.data.accountVerificationType
@@ -512,7 +513,6 @@ onMounted(() => {
     if (route.query.type == 'register') state.form.tab = 'register'
 })
 onUnmounted(() => {
-    window.removeEventListener('resize', resize)
     state.codeSendCountdown = 0
     endTiming()
 })

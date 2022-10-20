@@ -22,9 +22,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, toRaw } from 'vue'
+import { onMounted, reactive, toRaw } from 'vue'
 import type { ContextMenuItem, Axis, ContextmenuItemClickEmitArg } from './interface'
 import { RouteLocationNormalized } from 'vue-router'
+import { useEventListener } from '@vueuse/core'
 
 // 不能使用导出的 interface vue的issue已存在，尚未解决
 interface Props {
@@ -81,10 +82,7 @@ defineExpose({
 })
 
 onMounted(() => {
-    document.body.addEventListener('click', onHideContextmenu)
-})
-onUnmounted(() => {
-    document.body.removeEventListener('click', onHideContextmenu)
+    useEventListener(document, 'click', onHideContextmenu)
 })
 </script>
 

@@ -77,6 +77,7 @@ import * as echarts from 'echarts'
 import { useI18n } from 'vue-i18n'
 import { getGreet } from '/@/utils/common'
 import { overview } from '/@/api/frontend/user/index'
+import { useEventListener } from '@vueuse/core'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -167,14 +168,13 @@ onMounted(() => {
         state.money = res.data.money
         initUserGrowthChart()
     })
-    window.addEventListener('resize', echartsResize)
+    useEventListener(window, 'resize', echartsResize)
 })
 
 onBeforeMount(() => {
     for (const key in state.charts) {
         state.charts[key].dispose()
     }
-    window.removeEventListener('resize', echartsResize)
 })
 </script>
 

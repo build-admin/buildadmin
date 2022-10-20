@@ -2,6 +2,7 @@ import { App, nextTick } from 'vue'
 import horizontalScroll from '/@/utils/horizontalScroll'
 import router from '/@/router/index'
 import { useNavTabs } from '../stores/navTabs'
+import { useEventListener } from '@vueuse/core'
 
 export function directives(app: App) {
     // 鉴权指令
@@ -57,9 +58,7 @@ function tableLateralDragDirective(app: App) {
 function blurDirective(app: App) {
     app.directive('blur', {
         mounted(el) {
-            el.addEventListener('focus', () => {
-                el.blur()
-            })
+            useEventListener(el, 'focus', () => el.blur())
         },
     })
 }

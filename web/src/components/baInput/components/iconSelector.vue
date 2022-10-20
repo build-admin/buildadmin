@@ -76,8 +76,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted, nextTick, onUnmounted, watch, computed } from 'vue'
+import { reactive, ref, onMounted, nextTick, watch, computed } from 'vue'
 import { getAwesomeIconfontNames, getIconfontNames, getElementPlusIconfontNames, getLocalIconfontNames } from '/@/utils/iconfont'
+import { useEventListener } from '@vueuse/core'
 import { Placement } from 'element-plus'
 
 type IconType = 'ele' | 'awe' | 'ali' | 'local'
@@ -212,13 +213,10 @@ watch(
 )
 onMounted(() => {
     getInputWidth()
-    document.body.addEventListener('click', popoverVisible)
+    useEventListener(document, 'click', popoverVisible)
     getElementPlusIconfontNames().then((res) => {
         state.fontIconNames = res
     })
-})
-onUnmounted(() => {
-    document.body.removeEventListener('click', popoverVisible)
 })
 </script>
 

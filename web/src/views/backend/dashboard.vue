@@ -162,6 +162,7 @@ import { Local } from '/@/utils/storage'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { WORKING_TIME } from '/@/stores/constant/cacheKey'
 import { getGreet } from '/@/utils/common'
+import { useEventListener } from '@vueuse/core'
 import 'element-plus/theme-chalk/display.css'
 var workTimer: NodeJS.Timer
 
@@ -593,14 +594,13 @@ onMounted(() => {
     initFileGrowthChart()
     initUserSourceChart()
     initUserSurnameChart()
-    window.addEventListener('resize', echartsResize)
+    useEventListener(window, 'resize', echartsResize)
 })
 
 onBeforeMount(() => {
     for (const key in state.charts) {
         state.charts[key].dispose()
     }
-    window.removeEventListener('resize', echartsResize)
 })
 
 onUnmounted(() => {
