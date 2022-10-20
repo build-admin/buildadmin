@@ -6,6 +6,7 @@ import Icon from '/@/components/icon/index.vue'
 import { useNavTabs } from '/@/stores/navTabs'
 import { ElForm } from 'element-plus'
 import { useSiteConfig } from '../stores/siteConfig'
+import { useTitle } from '@vueuse/core'
 import { i18n } from '../lang'
 import { getUrl } from './axios'
 
@@ -56,12 +57,16 @@ export function setTitleFromRoute() {
         } else {
             webTitle = i18n.global.t(router.currentRoute.value.meta.title as string)
         }
-        document.title = `${webTitle}`
+        const title = useTitle()
+        const siteConfig = useSiteConfig()
+        title.value = `${webTitle}${siteConfig.site_name ? ' - ' + siteConfig.site_name : ''}`
     })
 }
 
-export function setTitle(title: string) {
-    document.title = `${title}`
+export function setTitle(webTitle: string) {
+    const title = useTitle()
+    const siteConfig = useSiteConfig()
+    title.value = `${webTitle}${siteConfig.site_name ? ' - ' + siteConfig.site_name : ''}`
 }
 
 /**
