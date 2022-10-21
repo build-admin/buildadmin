@@ -160,4 +160,5 @@ export interface InputAttr {
     onFocus?: Function
     onCalendarChange?: Function
     onPanelChange?: Function
+    [key: string]: any
 }
