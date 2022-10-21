@@ -23,4 +23,5 @@ export default {
     'The data of the uploaded file is incomplete!': 'The data of the uploaded file is incomplete!',
     'The type of uploaded file is not allowed!': 'The type of uploaded file is not allowed!',
     'The size of the uploaded file exceeds the allowed range!': 'The size of the uploaded file exceeds the allowed range!',
+    'Please install editor': 'Please install editor',
 }
