@@ -55,7 +55,7 @@ return [
     // 内容分发网络URL，末尾不带`/`
     'cdn_url'              => '',
     // 版本号
-    'version'              => 'v1.0.6',
+    'version'              => 'v1.0.7',
     // 接口地址
     'api_url'              => 'https://ba.buildadmin.com',
 ];
