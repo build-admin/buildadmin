@@ -328,6 +328,7 @@ const onUpdate = (uid: string, order: number) => {
 }
 .goods-info {
     display: flex;
+    position: relative;
     .goods-images {
         max-width: 41%;
         width: 300px;
@@ -375,6 +376,8 @@ const onUpdate = (uid: string, order: number) => {
         width: 20%;
         border-left: 1px solid var(--ba-bg-color);
         padding: 10px;
+        position: absolute;
+        right: 0;
         .developer-header {
             display: flex;
             align-items: center;
@@ -408,9 +411,9 @@ const onUpdate = (uid: string, order: number) => {
         .recommend-goods-item {
             display: flex;
             align-items: center;
-            margin: 8px 0;
+            margin: 4px 0;
             cursor: pointer;
-            padding: 2px;
+            padding: 6px;
             &:hover {
                 background-color: var(--ba-bg-color);
             }
@@ -450,6 +453,9 @@ const onUpdate = (uid: string, order: number) => {
 }
 .basic-button-item {
     --el-loading-spinner-size: 22px;
+}
+.goods-detail {
+    width: calc(100% - 20%);
 }
 /* 商品详情弹窗-s */
 @media screen and (max-width: 1440px) {
