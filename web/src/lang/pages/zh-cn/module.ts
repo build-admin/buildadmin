@@ -120,4 +120,6 @@ export default {
     'Drag the module package file here': '拖拽模块包文件到此处或',
     'Click me to upload': '点击我上传',
     'Uploaded, installation is about to start, please wait': '已上传，即将开始安装，请稍等',
+    'Update Log': '更新日志',
+    'No detailed update log': '无详细更新日志',
 }

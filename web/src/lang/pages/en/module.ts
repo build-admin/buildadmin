@@ -125,4 +125,6 @@ export default {
     'Drag the module package file here': 'Drag the module package file here, Or',
     'Click me to upload': 'Click me to upload',
     'Uploaded, installation is about to start, please wait': 'Uploaded, installation is about to start, please wait',
+    'Update Log': 'Update Log',
+    'No detailed update log': 'No detailed update log',
 }

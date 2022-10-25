@@ -205,6 +205,33 @@
                     </div>
                 </div>
                 <div class="goods-detail ba-markdown" v-html="state.goodsInfo.detail_editor"></div>
+                <div class="goods-version">
+                    <h1>{{ t('module.Update Log') }}</h1>
+                    <div class="version-timeline">
+                        <el-timeline>
+                            <el-timeline-item
+                                v-for="(version, idx) in state.goodsInfo.version"
+                                :key="idx"
+                                :timestamp="timeFormat(version.createtime)"
+                                placement="top"
+                                :color="idx == 0 ? 'var(--el-color-success)' : ''"
+                            >
+                                <el-card class="version-card" shadow="hover">
+                                    <template #header>
+                                        <div class="version-card-header">
+                                            <h2>{{ version.title }}</h2>
+                                            <span class="version-short-describe">{{ version.short_describe }}</span>
+                                        </div>
+                                    </template>
+                                    <div
+                                        class="version-detail ba-markdown"
+                                        v-html="version.describe ? version.describe : t('module.No detailed update log')"
+                                    ></div>
+                                </el-card>
+                            </el-timeline-item>
+                        </el-timeline>
+                    </div>
+                </div>
             </el-scrollbar>
         </el-dialog>
         <Buy />
@@ -455,7 +482,31 @@ const onUpdate = (uid: string, order: number) => {
     --el-loading-spinner-size: 22px;
 }
 .goods-detail {
-    width: calc(100% - 20%);
+    width: 80%;
+}
+.goods-version {
+    width: 80%;
+    h1 {
+        margin: 1.4em 0 0.8em;
+        font-weight: 700;
+        font-size: var(--el-font-size-large);
+        text-transform: uppercase;
+        color: var(--el-color-primary);
+    }
+    .version-timeline {
+        padding-left: 2px;
+        :deep(.el-card__body) {
+            padding: 10px 20px 20px 20px;
+        }
+    }
+    .version-card {
+        border: 1px solid var(--el-color-info-light-9);
+    }
+    .version-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 }
 /* 商品详情弹窗-s */
 @media screen and (max-width: 1440px) {
