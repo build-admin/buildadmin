@@ -27,7 +27,7 @@ import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
 import { useI18n } from 'vue-i18n'
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash-es'
 
 const { t } = useI18n()
 const tableRef = ref()

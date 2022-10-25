@@ -5,7 +5,7 @@ import Sortable from 'sortablejs'
 import { findIndexRow } from '/@/components/table'
 import { ElNotification, ElForm } from 'element-plus'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import _ from 'lodash'
+import { isUndefined } from 'lodash-es'
 import { i18n } from '/@/lang/index'
 import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
 
@@ -67,7 +67,7 @@ export default class baTable {
         this.after = after
 
         const route = useRoute()
-        this.initComSearch(!_.isUndefined(route) ? route.query : {})
+        this.initComSearch(!isUndefined(route) ? route.query : {})
     }
 
     /**

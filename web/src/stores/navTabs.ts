@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import { isEmpty } from 'lodash-es'
 import { reactive } from 'vue'
 import { i18n } from '../lang'
 import { defineStore } from 'pinia'
@@ -28,8 +28,8 @@ export const useNavTabs = defineStore(
             if (!route.meta.addtab) return
             for (const key in state.tabsView) {
                 if (state.tabsView[key].path === route.path) {
-                    state.tabsView[key].params = !_.isEmpty(route.params) ? route.params : state.tabsView[key].params
-                    state.tabsView[key].query = !_.isEmpty(route.query) ? route.query : state.tabsView[key].query
+                    state.tabsView[key].params = !isEmpty(route.params) ? route.params : state.tabsView[key].params
+                    state.tabsView[key].query = !isEmpty(route.query) ? route.query : state.tabsView[key].query
                     return
                 }
             }

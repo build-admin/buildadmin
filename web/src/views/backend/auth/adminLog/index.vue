@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import _ from 'lodash'
+import { concat, cloneDeep } from 'lodash-es'
 import { provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { authAdminLog } from '/@/api/controllerUrls'
@@ -46,7 +46,7 @@ let optButtons: OptButton[] = [
     },
 ]
 
-optButtons = _.concat(optButtons, defaultOptButtons(['delete']))
+optButtons = concat(optButtons, defaultOptButtons(['delete']))
 
 const baTable = new baTableClass(
     new baTableApi(authAdminLog),
@@ -136,7 +136,7 @@ provide('baTable', baTable)
 const infoButtonClick = (row: TableRow) => {
     if (!row) return
     // 数据来自表格数据,未重新请求api,深克隆,不然可能会影响表格
-    let rowClone = _.cloneDeep(row)
+    let rowClone = cloneDeep(row)
     rowClone.data = rowClone.data ? [{ label: '点击展开', children: buildJsonToElTreeData(JSON.parse(rowClone.data)) }] : []
     baTable.form.extend!['info'] = rowClone
     baTable.form.operate = 'info'

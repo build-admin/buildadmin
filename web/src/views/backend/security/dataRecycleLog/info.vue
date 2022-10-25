@@ -5,7 +5,7 @@
         </template>
         <el-scrollbar v-loading="baTable.form.loading" class="ba-table-form-scrollbar">
             <div class="ba-operate-form" :class="'ba-' + baTable.form.operate + '-form'">
-                <el-descriptions v-if="!_.isEmpty(baTable.form.extend!.info)" :column="2" border>
+                <el-descriptions v-if="!isEmpty(baTable.form.extend!.info)" :column="2" border>
                     <el-descriptions-item :label="t('id')">
                         {{ baTable.form.extend!.info.id }}
                     </el-descriptions-item>
@@ -50,7 +50,7 @@ import { inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type BaTable from '/@/utils/baTable'
 import { timeFormat } from '/@/components/table'
-import _ from 'lodash'
+import { isEmpty } from 'lodash-es'
 import { ElMessageBox } from 'element-plus'
 import { restore } from '/@/api/backend/security/dataRecycleLog'
 

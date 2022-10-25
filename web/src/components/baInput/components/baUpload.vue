@@ -50,7 +50,7 @@ import { fullUrl, arrayFullUrl, getFileNameFromPath } from '/@/utils/common'
 import { fileUpload } from '/@/api/common'
 import SelectFile from '/@/components/baInput/components/selectFile.vue'
 import { uuid } from '/@/utils/random'
-import _ from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash-es'
 
 interface Props {
     type: 'image' | 'images' | 'file' | 'files'
@@ -200,7 +200,7 @@ watch(
         if (newVal === undefined) {
             return init('')
         }
-        let newValArr = arrayFullUrl(stringToArray(_.cloneDeep(newVal)))
+        let newValArr = arrayFullUrl(stringToArray(cloneDeep(newVal)))
         let oldValArr = arrayFullUrl(getAllUrls('array'))
         if (newValArr.sort().toString() != oldValArr.sort().toString()) {
             init(newVal)
@@ -248,7 +248,7 @@ const getAllUrls = (returnType: string = state.defaultReturnType) => {
 }
 
 const formDataAppend = (fd: FormData) => {
-    if (props.data && !_.isEmpty(props.data)) {
+    if (props.data && !isEmpty(props.data)) {
         for (const key in props.data) {
             fd.append(key, props.data[key])
         }

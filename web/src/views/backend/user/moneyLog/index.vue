@@ -9,7 +9,7 @@
                 t('quick Search Placeholder', { fields: t('user.moneyLog.User name') + '/' + t('user.moneyLog.User nickname') })
             "
         >
-            <el-button v-if="!_.isEmpty(state.userInfo)" v-blur class="table-header-operate">
+            <el-button v-if="!isEmpty(state.userInfo)" v-blur class="table-header-operate">
                 <span class="table-header-operate-text">{{
                     state.userInfo.username + '(ID:' + state.userInfo.id + ') ' + t('user.moneyLog.balance') + ':' + state.userInfo.money
                 }}</span>
@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import _ from 'lodash'
+import { isEmpty, parseInt } from 'lodash-es'
 import { ref, provide, reactive, watch } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { userMoneyLog } from '/@/api/controllerUrls'
@@ -98,7 +98,7 @@ baTable.getIndex()
 provide('baTable', baTable)
 
 const getUserInfo = (userId: string) => {
-    if (userId && _.parseInt(userId) > 0) {
+    if (userId && parseInt(userId) > 0) {
         add(userId).then((res) => {
             state.userInfo = res.data.user
         })

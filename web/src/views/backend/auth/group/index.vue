@@ -27,7 +27,7 @@ import TableHeader from '/@/components/table/header/index.vue'
 import PopupForm from './popupForm.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { useI18n } from 'vue-i18n'
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash-es'
 import { getArrayKey } from '/@/utils/common'
 
 const formRef = ref()

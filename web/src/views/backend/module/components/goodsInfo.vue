@@ -244,7 +244,7 @@ import { showInfo, currency, onBuy, onInstall, onDisable, onEnable, onRefreshTab
 import { postUninstall, getInstallState, postUpdate } from '/@/api/backend/module'
 import { moduleInstallState } from '../types'
 import { timeFormat } from '/@/components/table'
-import { isEmpty } from 'lodash'
+import { isEmpty } from 'lodash-es'
 import { ElMessageBox } from 'element-plus'
 import { useBaAccount } from '/@/stores/baAccount'
 import { useI18n } from 'vue-i18n'

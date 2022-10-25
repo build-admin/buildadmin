@@ -132,7 +132,7 @@
 <script setup lang="ts">
 import { inject } from 'vue'
 import type baTableClass from '/@/utils/baTable'
-import { isEmpty } from 'lodash'
+import { isEmpty } from 'lodash-es'
 import BaInput from '/@/components/baInput/index.vue'
 
 const baTable = inject('baTable') as baTableClass

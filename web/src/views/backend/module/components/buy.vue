@@ -54,7 +54,7 @@ import { state } from '../store'
 import { onPay, currency, onInstall } from '../index'
 import { useBaAccount } from '/@/stores/baAccount'
 import { useI18n } from 'vue-i18n'
-import { isEmpty } from 'lodash'
+import { isEmpty } from 'lodash-es'
 
 const { t } = useI18n()
 const baAccount = useBaAccount()
