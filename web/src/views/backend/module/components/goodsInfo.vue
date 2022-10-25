@@ -204,7 +204,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="goods-detail" v-html="state.goodsInfo.detail_editor"></div>
+                <div class="goods-detail ba-markdown" v-html="state.goodsInfo.detail_editor"></div>
             </el-scrollbar>
         </el-dialog>
         <Buy />
