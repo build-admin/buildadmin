@@ -6,25 +6,6 @@ import { useMemberCenter } from '../stores/memberCenter'
 import { adminBaseRoute, memberCenterBaseRoute } from '/@/router/static'
 import { i18n } from '/@/lang/index'
 
-export const clickMenu = (menu: RouteRecordRaw) => {
-    switch (menu.meta?.type) {
-        case 'iframe':
-        case 'tab':
-            routePush({ name: menu.name })
-            break
-        case 'link':
-            window.open(menu.path, '_blank')
-            break
-
-        default:
-            ElNotification({
-                message: i18n.global.t('utils.Navigation failed, the menu type is unrecognized!'),
-                type: 'error',
-            })
-            break
-    }
-}
-
 /**
  * 导航失败有错误消息的路由push
  * @param to — 导航位置，同 router.push
@@ -71,6 +52,29 @@ export const getFirstRoute = (routes: RouteRecordRaw[]): false | RouteRecordRaw 
         }
     }
     return find
+}
+
+/**
+ * 打开侧边菜单
+ * @param menu 菜单数据
+ */
+export const onClickMenu = (menu: RouteRecordRaw) => {
+    switch (menu.meta?.type) {
+        case 'iframe':
+        case 'tab':
+            routePush({ name: menu.name })
+            break
+        case 'link':
+            window.open(menu.path, '_blank')
+            break
+
+        default:
+            ElNotification({
+                message: i18n.global.t('utils.Navigation failed, the menu type is unrecognized!'),
+                type: 'error',
+            })
+            break
+    }
 }
 
 /**

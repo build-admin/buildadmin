@@ -27,7 +27,10 @@ export function registerIcons(app: App) {
     }
 }
 
-/* 加载网络css文件 */
+/**
+ * 加载网络css文件
+ * @param url css资源url
+ */
 export function loadCss(url: string): void {
     const link = document.createElement('link')
     link.rel = 'stylesheet'
@@ -36,7 +39,10 @@ export function loadCss(url: string): void {
     document.getElementsByTagName('head')[0].appendChild(link)
 }
 
-/* 加载网络js文件 */
+/**
+ * 加载网络js文件
+ * @param url js资源url
+ */
 export function loadJs(url: string): void {
     const link = document.createElement('script')
     link.src = url
@@ -44,7 +50,7 @@ export function loadJs(url: string): void {
 }
 
 /**
- * 设置浏览器标题
+ * 根据路由 meta.title 设置浏览器标题
  */
 export function setTitleFromRoute() {
     if (typeof router.currentRoute.value.meta.title != 'string') {
@@ -63,6 +69,10 @@ export function setTitleFromRoute() {
     })
 }
 
+/**
+ * 设置浏览器标题-只能在路由加载完成后调用
+ * @param webTitle 新的标题
+ */
 export function setTitle(webTitle: string) {
     const title = useTitle()
     const siteConfig = useSiteConfig()
@@ -114,7 +124,7 @@ export const getArrayKey = (arr: any, pk: string, value: string): any => {
  */
 export const onResetForm = (formEl: InstanceType<typeof ElForm> | undefined) => {
     if (!formEl) return
-    formEl.resetFields()
+    formEl.resetFields && formEl.resetFields()
 }
 
 /**
@@ -213,6 +223,11 @@ export const checkFileMimetype = (fileName: string, fileType: string) => {
     return false
 }
 
+/**
+ * 获取一组资源的完整地址
+ * @param relativeUrls 资源相对地址
+ * @param domain 指定域名
+ */
 export const arrayFullUrl = (relativeUrls: string | string[], domain = '') => {
     if (typeof relativeUrls === 'string') {
         relativeUrls = relativeUrls == '' ? [] : relativeUrls.split(',')
@@ -223,6 +238,9 @@ export const arrayFullUrl = (relativeUrls: string | string[], domain = '') => {
     return relativeUrls
 }
 
+/**
+ * 根据当前时间生成问候语
+ */
 export const getGreet = () => {
     const now = new Date()
     const hour = now.getHours()

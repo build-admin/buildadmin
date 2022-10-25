@@ -10,7 +10,7 @@
             </el-sub-menu>
         </template>
         <template v-else>
-            <el-menu-item :index="menu.path" :key="menu.path" @click="clickMenu(menu)">
+            <el-menu-item :index="menu.path" :key="menu.path" @click="onClickMenu(menu)">
                 <Icon :color="config.getColorVal('menuColor')" :name="menu.meta?.icon ? menu.meta?.icon : config.layout.menuDefaultIcon" />
                 <span>{{ menu.meta?.title ? menu.meta?.title : $t('noTitle') }}</span>
             </el-menu-item>
@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { useConfig } from '/@/stores/config'
 import { RouteRecordRaw } from 'vue-router'
-import { clickMenu } from '/@/utils/router'
+import { onClickMenu } from '/@/utils/router'
 
 const config = useConfig()
 

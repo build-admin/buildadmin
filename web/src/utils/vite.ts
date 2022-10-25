@@ -18,7 +18,9 @@ export function isProd(mode: string | undefined): boolean {
     return mode === 'production'
 }
 
-// Read all environment variable configuration files to process.env
+/**
+ * Read all environment variable configuration files to process.env
+ */
 export function loadEnv(mode: string): ViteEnv {
     const ret: any = {}
     const envList = [`.env.${mode}.local`, `.env.${mode}`, '.env.local', '.env']

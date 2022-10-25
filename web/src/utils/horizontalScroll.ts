@@ -1,3 +1,6 @@
+/**
+ * 横向滚动条
+ */
 export default class horizontalScroll {
     private el: HTMLElement
 

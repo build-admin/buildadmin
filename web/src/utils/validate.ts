@@ -4,7 +4,6 @@ import { i18n } from '../lang'
 
 /**
  * 手机号码验证
- * 用于表单验证
  */
 export function validatorMobile(rule: any, mobile: string | number, callback: Function) {
     // 允许空值，若需必填请添加多验证规则

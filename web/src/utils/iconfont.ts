@@ -8,6 +8,9 @@ const cssUrls: Array<string> = [
 ]
 const jsUrls: Array<string> = []
 
+/*
+ * 加载预设的字体图标资源
+ */
 export default function init() {
     if (cssUrls.length > 0) {
         cssUrls.map((v) => {

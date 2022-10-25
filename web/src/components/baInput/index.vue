@@ -7,7 +7,6 @@ import IconSelector from '/@/components/baInput/components/iconSelector.vue'
 import Editor from '/@/components/baInput/components/editor.vue'
 import BaUpload from '/@/components/baInput/components/baUpload.vue'
 import { getArea } from '/@/api/common'
-import _ from 'lodash'
 
 export default defineComponent({
     name: 'baInput',

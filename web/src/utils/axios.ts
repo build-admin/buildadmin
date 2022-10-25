@@ -17,11 +17,17 @@ const loadingInstance: LoadingInstance = {
     count: 0,
 }
 
+/*
+ * 根据运行环境获取基础请求URL
+ */
 export const getUrl = (): string => {
     const value: string = import.meta.env.VITE_AXIOS_BASE_URL as string
     return value == 'getCurrentDomain' ? window.location.protocol + '//' + window.location.host : value
 }
 
+/*
+ * 根据运行环境获取基础请求URL的端口
+ */
 export const getUrlPort = (): string => {
     const url = getUrl()
     return new URL(url).port
@@ -313,6 +319,9 @@ function getPendingKey(config: AxiosRequestConfig) {
     ].join('&')
 }
 
+/**
+ * 根据请求方法组装请求数据/参数
+ */
 export function requestPayload(method: Method, data: anyObj) {
     if (method == 'GET') {
         return {

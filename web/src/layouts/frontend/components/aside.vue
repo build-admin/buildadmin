@@ -52,7 +52,7 @@
 import { useRouter, RouteRecordRaw } from 'vue-router'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useMemberCenter } from '/@/stores/memberCenter'
-import { clickMenu } from '/@/utils/router'
+import { onClickMenu } from '/@/utils/router'
 import { fullUrl } from '/@/utils/common'
 
 const router = useRouter()
@@ -66,7 +66,7 @@ const routerPush = (routeName = '', route?: RouteRecordRaw) => {
     if (routeName) {
         router.push({ name: routeName })
     } else if (route) {
-        clickMenu(route)
+        onClickMenu(route)
     }
 }
 </script>

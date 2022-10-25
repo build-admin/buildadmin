@@ -20,7 +20,7 @@
                         </el-sub-menu>
                     </template>
                     <template v-else>
-                        <el-menu-item :index="menu.path" :key="menu.path" @click="clickMenu(menu)">
+                        <el-menu-item :index="menu.path" :key="menu.path" @click="onClickMenu(menu)">
                             <Icon
                                 :color="config.getColorVal('menuColor')"
                                 :name="menu.meta?.icon ? menu.meta?.icon : config.layout.menuDefaultIcon"
@@ -44,7 +44,7 @@ import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 import type { ElScrollbar } from 'element-plus'
 import NavMenus from '/@/layouts/backend/components/navMenus.vue'
-import { clickMenu } from '/@/utils/router'
+import { onClickMenu } from '/@/utils/router'
 import { uuid } from '../../../utils/random'
 
 const horizontalMenusRef = ref<InstanceType<typeof ElScrollbar>>()

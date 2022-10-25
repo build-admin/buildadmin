@@ -10,8 +10,15 @@ const isDark = useDark({
         config.onSetLayoutColor()
     },
 })
+
+/**
+ * 切换暗黑模式
+ */
 const toggleDark = useToggle(isDark)
 
+/**
+ * 切换当前页面的暗黑模式
+ */
 export function togglePageDark(val: boolean) {
     const config = useConfig()
     const isDark = ref(config.layout.isDark)

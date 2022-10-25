@@ -70,6 +70,11 @@ export default class baTable {
         this.initComSearch(!_.isUndefined(route) ? route.query : {})
     }
 
+    /**
+     * 运行前置函数
+     * @param funName 函数名
+     * @param args 参数
+     */
     runBefore(funName: string, args: any = {}) {
         if (this.before && this.before[funName] && typeof this.before[funName] == 'function') {
             return this.before[funName]!({ ...args }) === false ? false : true
@@ -77,6 +82,11 @@ export default class baTable {
         return true
     }
 
+    /**
+     * 运行后置函数
+     * @param funName 函数名
+     * @param args 参数
+     */
     runAfter(funName: string, args: any = {}) {
         if (this.after && this.after[funName] && typeof this.after[funName] == 'function') {
             return this.after[funName]!({ ...args }) === false ? false : true
@@ -128,6 +138,8 @@ export default class baTable {
 
     /**
      * 双击表格
+     * @param row 行数据
+     * @param column 列上下文数据
      */
     onTableDblclick = (row: TableRow, column: TableColumnCtx<TableRow>) => {
         if (!this.table.dblClickNotEditColumn!.includes('all') && !this.table.dblClickNotEditColumn!.includes(column.property)) {
@@ -160,6 +172,10 @@ export default class baTable {
         this.runAfter('toggleForm', { operate, operateIds })
     }
 
+    /**
+     * 提交表单
+     * @param formEl 表单组件ref
+     */
     onSubmit = (formEl: InstanceType<typeof ElForm> | undefined = undefined) => {
         if (this.runBefore('onSubmit', { formEl: formEl, operate: this.form.operate!, items: this.form.items! }) === false) return
 
@@ -393,7 +409,7 @@ export default class baTable {
     }
 
     /**
-     * 表格拖动排序
+     * 初始化表格拖动排序
      */
     dragSort = () => {
         const buttonsKey = getArrayKey(this.table.column, 'render', 'buttons')
@@ -439,6 +455,9 @@ export default class baTable {
         })
     }
 
+    /**
+     * 表格初始化
+     */
     mount = () => {
         if (this.runBefore('mount') === false) return
 
@@ -451,6 +470,7 @@ export default class baTable {
 
     /**
      * 通用搜索初始化
+     * @param query 要搜索的数据
      */
     initComSearch = (query: anyObj = {}) => {
         const form: anyObj = {}
