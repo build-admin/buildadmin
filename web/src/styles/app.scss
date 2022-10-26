@@ -76,6 +76,23 @@ body,
 }
 /* 表格顶部菜单-e */
 
+/* 鼠标置入浮动效果-s */
+.suspension {
+    transition: all 0.3s ease;
+}
+.suspension:hover {
+    -webkit-transform: translateY(-4px) scale(1.02);
+    -moz-transform: translateY(-4px) scale(1.02);
+    -ms-transform: translateY(-4px) scale(1.02);
+    -o-transform: translateY(-4px) scale(1.02);
+    transform: translateY(-4px) scale(1.02);
+    -webkit-box-shadow: 0 14px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    border-radius: 6px;
+}
+/* 鼠标置入浮动效果-e */
+
 /* 表格-s */
 .ba-table-box {
     border-radius: var(--el-border-radius-round);

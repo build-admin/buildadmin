@@ -624,7 +624,6 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .welcome {
-    transition: all 0.3s ease;
     background: #e1eaf9;
     border-radius: 6px;
     display: flex;
@@ -708,7 +707,6 @@ export default defineComponent({
 .small-panel {
     background-color: #e9edf2;
     border-radius: var(--el-border-radius-base);
-    transition: all 0.3s ease;
     padding: 25px;
     margin-bottom: 20px;
     .small-panel-title {
@@ -750,18 +748,6 @@ export default defineComponent({
 }
 .growth-chart {
     margin-bottom: 20px;
-}
-
-.suspension:hover {
-    -webkit-transform: translateY(-4px) scale(1.02);
-    -moz-transform: translateY(-4px) scale(1.02);
-    -ms-transform: translateY(-4px) scale(1.02);
-    -o-transform: translateY(-4px) scale(1.02);
-    transform: translateY(-4px) scale(1.02);
-    -webkit-box-shadow: 0 14px 24px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.2);
-    z-index: 999;
-    border-radius: 6px;
 }
 .user-growth-chart,
 .file-growth-chart {
