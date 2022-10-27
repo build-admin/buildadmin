@@ -20,6 +20,7 @@ import router from '/@/router/index'
 import { adminBaseRoute } from '/@/router/static'
 import { useEventListener } from '@vueuse/core'
 import { BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
+import { isEmpty } from 'lodash-es'
 
 const terminal = useTerminal()
 const navTabs = useNavTabs()
@@ -52,11 +53,19 @@ const init = () => {
 
             // 预跳转到上次路径
             if (route.query && route.query.url && route.query.url != adminBaseRoute.path) {
+                let query = JSON.parse(route.query.query as string)
+                query = !isEmpty(query) ? query : {}
+                const lastRouter = router.getRoutes().find((value) => {
+                    return value.path == route.query.url
+                })
+                if (lastRouter) {
+                    routePush({ path: lastRouter.path, query: query })
+                    return
+                }
                 // 检查路径是否有权限
                 let menuPaths = getMenuPaths(navTabs.state.tabsViewRoutes)
                 if (menuPaths.indexOf(route.query.url as string) !== -1) {
-                    let query = JSON.parse(route.query.query as string)
-                    routePush({ path: route.query.url as string, query: Object.keys(query).length ? query : {} })
+                    routePush({ path: route.query.url as string, query: query })
                     return
                 }
             }
