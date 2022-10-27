@@ -31,6 +31,7 @@
                         :label="t('auth.group.Parent group')"
                         v-model="baTable.form.items!.pid"
                         type="remoteSelect"
+                        prop="pid"
                         :input-attr="{
                             params: { isTree: true },
                             field: 'name',
@@ -123,6 +124,20 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
                 }
                 return callback()
             },
+        },
+    ],
+    pid: [
+        {
+            validator: (rule: any, val: string, callback: Function) => {
+                if (!val) {
+                    return callback()
+                }
+                if (parseInt(val) == parseInt(baTable.form.items!.id)) {
+                    return callback(new Error(t('auth.group.The parent group cannot be the group itself')))
+                }
+                return callback()
+            },
+            trigger: 'blur',
         },
     ],
 })
