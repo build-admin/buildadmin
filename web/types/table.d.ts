@@ -1,4 +1,4 @@
-import type { TagProps, ButtonType, ElForm, FormInstance } from 'element-plus'
+import type { TagProps, ButtonType, ElForm, FormInstance, ButtonProps } from 'element-plus'
 import { Component, ComponentPublicInstance } from 'vue'
 import Table from '/@/components/table/index.vue'
 import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
@@ -192,6 +192,10 @@ declare global {
         click?: (row: TableRow, field: TableColumn) => void
         // 按钮是否显示，请返回布尔值
         display?: (row: TableRow, field: TableColumn) => boolean
+        // 按钮是否禁用，请返回布尔值
+        disabled?: (row: TableRow, field: TableColumn) => boolean
+        // 自定义el-button属性
+        attr?: Partial<ButtonProps>
     }
 
     /* 表格行 */
