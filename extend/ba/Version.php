@@ -2,7 +2,6 @@
 
 namespace ba;
 
-use think\Exception;
 
 /**
  * 版本类
@@ -40,9 +39,6 @@ class Version
 
         $v1 = explode('.', $v1);
         $v2 = explode('.', $v2);
-        if (!is_array($v1) || !is_array($v2)) {
-            throw new Exception('Version number format error');
-        }
 
         // 将号码逐个进行比较
         for ($i = 0; $i < count($v1); $i++) {
@@ -62,13 +58,15 @@ class Version
         if (count($v1) != count($v2)) {
             return !(count($v1) > count($v2));
         }
-        throw new Exception('Version number comparison failed');
+        return false;
     }
 
     /**
      * 是否是一个数字版本号
+     * @param $version
+     * @return bool
      */
-    public static function checkDigitalVersion($version)
+    public static function checkDigitalVersion($version): bool
     {
         if (!$version) {
             return false;
@@ -85,23 +83,27 @@ class Version
         return false;
     }
 
-    public static function getCnpmVersion()
+    /**
+     * @return string
+     */
+    public static function getCnpmVersion(): string
     {
         $execOut = Terminal::getOutputFromProc('version.cnpm');
         if ($execOut) {
             $preg = '/cnpm@(.+?) \(/is';
             preg_match($preg, $execOut, $result);
-            return $result[1] ?? false;
+            return $result[1] ?? '';
         } else {
-            return false;
+            return '';
         }
     }
 
     /**
      * 获取依赖版本号
      * @param string $name 支持：npm、cnpm、yarn、pnpm、node
+     * @return string
      */
-    public static function getVersion(string $name)
+    public static function getVersion(string $name): string
     {
         if ($name == 'cnpm') {
             return self::getCnpmVersion();
@@ -116,10 +118,9 @@ class Version
                     }
                 }
             } else {
-                return false;
+                return '';
             }
         }
-
-        return false;
+        return '';
     }
 }
