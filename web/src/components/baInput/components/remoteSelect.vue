@@ -87,7 +87,7 @@ const state: {
     pageSize: 10,
     params: props.params,
     keyword: '',
-    value: props.modelValue,
+    value: props.modelValue ? props.modelValue : '',
     selectKey: uuid(),
     initializeData: false,
     accidentBlur: false,
@@ -193,7 +193,7 @@ watch(
     () => props.modelValue,
     (newVal) => {
         if (state.value.toString() != newVal.toString()) {
-            state.value = newVal
+            state.value = newVal ? newVal : ''
             initDefaultValue()
         }
     }
