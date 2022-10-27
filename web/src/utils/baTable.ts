@@ -534,12 +534,14 @@ export default class baTable {
             const comSearchData: comSearchData[] = []
             for (const key in query) {
                 const fieldDataTemp = this.comSearch.fieldData.get(key)
-                comSearchData.push({
-                    field: key,
-                    val: query[key] as string,
-                    operator: fieldDataTemp.operator,
-                    render: fieldDataTemp.render,
-                })
+                if (fieldDataTemp) {
+                    comSearchData.push({
+                        field: key,
+                        val: query[key] as string,
+                        operator: fieldDataTemp.operator,
+                        render: fieldDataTemp.render,
+                    })
+                }
             }
             this.table.filter!.search = comSearchData
         }
