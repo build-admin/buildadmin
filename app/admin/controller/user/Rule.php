@@ -28,6 +28,22 @@ class Rule extends Backend
 
     protected $quickSearchField = 'title';
 
+    /**
+     * 远程select初始化传值
+     * @var array
+     */
+    protected $initValue;
+
+    /**
+     * 是否组装Tree
+     * @var bool
+     */
+    protected $assembleTree;
+
+    /**
+     * 搜索关键词
+     * @var array
+     */
     protected $keyword = false;
 
     public function initialize()
@@ -36,7 +52,12 @@ class Rule extends Backend
         $this->model = new UserRule();
         $this->tree  = Tree::instance();
 
-        $this->keyword = $this->request->request("quick_search");
+        $isTree          = $this->request->param('isTree', true);
+        $this->initValue = $this->request->get("initValue/a", '');
+        $this->keyword   = $this->request->request("quick_search");
+
+        // 有初始化值时不组装树状（初始化出来的值更好看）
+        $this->assembleTree = $isTree && !$this->initValue;
     }
 
     public function index()
@@ -46,7 +67,7 @@ class Rule extends Backend
         }
 
         $this->success('', [
-            'list'   => $this->getRule(),
+            'list'   => $this->getRules(),
             'remark' => get_route_remark(),
         ]);
     }
@@ -156,10 +177,9 @@ class Rule extends Backend
 
     public function select()
     {
-        $isTree = $this->request->param('isTree');
-        $data   = $this->getRule([['status', '=', '1']]);
+        $data = $this->getRules([['status', '=', '1']]);
 
-        if ($isTree && !$this->keyword) {
+        if ($this->assembleTree) {
             $data = $this->tree->assembleTree($this->tree->getTreeArray($data, 'title'));
         }
         $this->success('', [
@@ -167,8 +187,11 @@ class Rule extends Backend
         ]);
     }
 
-    public function getRule($where = [])
+    public function getRules($where = []): array
     {
+        $pk      = $this->model->getPk();
+        $initKey = $this->request->get("initKey/s", $pk);
+
         if ($this->keyword) {
             $keyword = explode(' ', $this->keyword);
             foreach ($keyword as $item) {
@@ -176,8 +199,12 @@ class Rule extends Backend
             }
         }
 
+        if ($this->initValue) {
+            $where[] = [$initKey, 'in', $this->initValue];
+        }
+
         $data = $this->model->where($where)->order('weigh desc,id asc')->select()->toArray();
-        return $this->tree->assembleChild($data);
+        return $this->assembleTree ? $this->tree->assembleChild($data) : $data;
     }
 
 }

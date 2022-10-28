@@ -26,7 +26,23 @@ class Menu extends Backend
 
     protected $quickSearchField = 'title';
 
+    /**
+     * 远程select初始化传值
+     * @var array
+     */
+    protected $initValue;
+
+    /**
+     * 搜索关键词
+     * @var array
+     */
     protected $keyword = false;
+
+    /**
+     * 是否组装Tree
+     * @var bool
+     */
+    protected $assembleTree;
 
     protected $modelValidate = false;
 
@@ -36,7 +52,12 @@ class Menu extends Backend
         $this->model = new MenuRule();
         $this->tree  = Tree::instance();
 
-        $this->keyword = $this->request->request("quick_search");
+        $isTree          = $this->request->param('isTree', true);
+        $this->initValue = $this->request->get("initValue/a", '');
+        $this->keyword   = $this->request->request("quick_search");
+
+        // 有初始化值时不组装树状（初始化出来的值更好看）
+        $this->assembleTree = $isTree && !$this->initValue;
     }
 
     public function index()
@@ -158,10 +179,9 @@ class Menu extends Backend
      */
     public function select()
     {
-        $isTree = $this->request->param('isTree');
-        $data   = $this->getMenus([['type', 'in', ['menu_dir', 'menu']], ['status', '=', '1']]);
+        $data = $this->getMenus([['type', 'in', ['menu_dir', 'menu']], ['status', '=', '1']]);
 
-        if ($isTree && !$this->keyword) {
+        if ($this->assembleTree) {
             $data = $this->tree->assembleTree($this->tree->getTreeArray($data, 'title'));
         }
         $this->success('', [
@@ -169,14 +189,11 @@ class Menu extends Backend
         ]);
     }
 
-    protected function getMenus($where = [])
+    protected function getMenus($where = []): array
     {
-        $rules = $this->getRuleList($where);
-        return $this->tree->assembleChild($rules);
-    }
+        $pk      = $this->model->getPk();
+        $initKey = $this->request->get("initKey/s", $pk);
 
-    protected function getRuleList($where = [])
-    {
         $ids = $this->auth->getRuleIds();
 
         // 如果没有 * 则只获取用户拥有的规则
@@ -191,10 +208,17 @@ class Menu extends Backend
             }
         }
 
+        if ($this->initValue) {
+            $where[] = [$initKey, 'in', $this->initValue];
+        }
+
         // 读取用户组所有权限规则
-        return $this->model
+        $rules = $this->model
             ->where($where)
             ->order('weigh desc,id asc')
-            ->select();
+            ->select()->toArray();
+
+        // 如果要求树状，此处先组装好 children
+        return $this->assembleTree ? $this->tree->assembleChild($rules) : $rules;
     }
 }

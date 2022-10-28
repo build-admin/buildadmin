@@ -3,7 +3,7 @@
 namespace ba;
 
 /**
- *
+ * 树
  */
 class Tree
 {
@@ -18,6 +18,10 @@ class Tree
      */
     public static $icon = array('│', '├', '└');
 
+    /**
+     * 子级数据（树枝）
+     * @var array
+     */
     protected $childrens = [];
 
 
@@ -36,18 +40,15 @@ class Tree
     }
 
     /**
-     * 将数组渲染为树状,需自备children children可通过$this->assembleChild()方法组装
+     * 将数组某个字段渲染为树状,需自备children children可通过$this->assembleChild()方法组装
      * @param array  $arr         要改为树状的数组
      * @param string $field       '树枝'字段
      * @param int    $level       递归数组层次,无需手动维护
      * @param false  $superiorEnd 递归上一级树枝是否结束,无需手动维护
      * @return array
      */
-    public static function getTreeArray($arr, $field = 'name', $level = 0, $superiorEnd = false): array
+    public static function getTreeArray(array $arr, string $field = 'name', int $level = 0, bool $superiorEnd = false): array
     {
-        if (!is_array($arr)) {
-            return [];
-        }
         $level++;
         $number = 1;
         $total  = count($arr);
@@ -68,11 +69,11 @@ class Tree
     }
 
     /**
-     * 递归合并树状数组,多维变二维
-     * @param array $data 要合并的数组
-     * @return array
+     * 递归合并树状数组（根据children多维变二维方便渲染）
+     * @param array $data 要合并的数组 ['id' => 1, 'pid' => 0, 'title' => '标题1', 'children' => ['id' => 2, 'pid' => 1, 'title' => '    └标题1-1']]
+     * @return array [['id' => 1, 'pid' => 0, 'title' => '标题1'], ['id' => 2, 'pid' => 1, 'title' => '    └标题1-1']]
      */
-    public static function assembleTree($data)
+    public static function assembleTree(array $data): array
     {
         $arr = [];
         foreach ($data as $v) {
@@ -87,33 +88,55 @@ class Tree
     }
 
     /**
-     * 递归的根据指定字段组装children数组
+     * 递归的根据指定字段组装 children 数组
      * @param array  $data 数据源 例如：[['id' => 1, 'pid' => 0, title => '标题1'], ['id' => 2, 'pid' => 1, title => '标题1-1']]
      * @param string $pid  存储上级id的字段
+     * @param string $pk   主键字段
      * @return array ['id' => 1, 'pid' => 0, 'title' => '标题1', 'children' => ['id' => 2, 'pid' => 1, 'title' => '标题1-1']]
      */
-    public function assembleChild($data, $pid = 'pid')
+    public function assembleChild(array $data, string $pid = 'pid', string $pk = 'id'): array
     {
-        if (!$data) {
-            return [];
-        }
+        if (!$data) return [];
 
-        // 以pid组成数组
+        $pks             = [];
+        $topLevelData    = []; // 顶级数据
+        $this->childrens = []; // 置空子级数据
         foreach ($data as $item) {
+            $pks[] = $item[$pk];
+
+            // 以pid组成children
             $this->childrens[$item[$pid]][] = $item;
         }
-        if (isset($this->childrens[0])) {
-            return $this->getChildren($this->childrens[0]);
+        // 上级不存在的就是顶级，只获取它们的 children
+        foreach ($data as $item) {
+            if (!in_array($item[$pid], $pks)) {
+                $topLevelData[] = $item;
+            }
+        }
+
+        if (count($this->childrens) > 0) {
+            foreach ($topLevelData as $key => $item) {
+                $topLevelData[$key]['children'] = $this->getChildren($this->childrens[$item[$pk]] ?? [], $pk);
+            }
+            return $topLevelData;
         } else {
             return $data;
         }
     }
 
-    protected function getChildren($data): array
+    /**
+     * 获取 children 数组
+     * 辅助 assembleChild 组装 children
+     * @param array  $data
+     * @param string $pk
+     * @return array
+     */
+    protected function getChildren(array $data, string $pk = 'id'): array
     {
+        if (!$data) return [];
         foreach ($data as $key => $item) {
-            if (array_key_exists($item['id'], $this->childrens)) {
-                $data[$key]['children'] = $this->getChildren($this->childrens[$item['id']]);
+            if (array_key_exists($item[$pk], $this->childrens)) {
+                $data[$key]['children'] = $this->getChildren($this->childrens[$item[$pk]]);
             }
         }
         return $data;

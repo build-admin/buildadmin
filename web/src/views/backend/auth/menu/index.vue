@@ -71,6 +71,9 @@ const baTable = new baTableClass(
         },
     },
     {
+        getIndex: () => {
+            baTable.table.expandAll = baTable.table.filter?.quick_search ? true : false
+        },
         // 获得编辑数据后
         requestEdit: () => {
             if (baTable.form.items && !baTable.form.items.icon) baTable.form.items.icon = 'el-icon-Minus'

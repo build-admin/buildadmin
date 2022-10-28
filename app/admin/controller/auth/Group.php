@@ -2,14 +2,14 @@
 
 namespace app\admin\controller\auth;
 
-use app\admin\model\MenuRule;
 use ba\Tree;
-use app\common\controller\Backend;
-use app\admin\model\AdminGroup;
 use Exception;
+use think\facade\Db;
+use app\admin\model\MenuRule;
+use app\admin\model\AdminGroup;
+use app\common\controller\Backend;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
-use think\facade\Db;
 
 class Group extends Backend
 {
@@ -34,15 +34,21 @@ class Group extends Backend
      */
     protected $tree = null;
 
-    protected $keyword = false;
-
     /**
-     * @var array 远程select初始化传值
+     * 远程select初始化传值
+     * @var array
      */
     protected $initValue;
 
     /**
-     * @var bool 是否组装Tree
+     * 搜索关键词
+     * @var array
+     */
+    protected $keyword = false;
+
+    /**
+     * 是否组装Tree
+     * @var bool
      */
     protected $assembleTree;
 
@@ -61,7 +67,8 @@ class Group extends Backend
         $this->initValue = $this->request->get("initValue/a", '');
         $this->keyword   = $this->request->request("quick_search");
 
-        $this->assembleTree = $isTree && !$this->keyword && !$this->initValue;
+        // 有初始化值时不组装树状（初始化出来的值更好看）
+        $this->assembleTree = $isTree && !$this->initValue;
 
         $this->adminGroups = Db::name('admin_group_access')->where('uid', $this->auth->id)->column('group_id');
     }
@@ -269,7 +276,7 @@ class Group extends Backend
         ]);
     }
 
-    public function getGroups($where = [])
+    public function getGroups($where = []): array
     {
         $pk      = $this->model->getPk();
         $initKey = $this->request->get("initKey/s", $pk);
@@ -290,23 +297,27 @@ class Group extends Backend
             $authGroups = array_merge($this->adminGroups, $authGroups);
             $where[]    = ['id', 'in', $authGroups];
         }
-        $data = $this->model->where($where)->select();
-        // 获取第一个权限的名称
-        foreach ($data as $datum) {
-            if ($datum->rules) {
-                if ($datum->rules == '*') {
-                    $datum->rules = __('Super administrator');
+        $data = $this->model->where($where)->select()->toArray();
+
+        // 获取第一个权限的名称供列表显示-s
+        foreach ($data as &$datum) {
+            if ($datum['rules']) {
+                if ($datum['rules'] == '*') {
+                    $datum['rules'] = __('Super administrator');
                 } else {
-                    $rules = explode(',', $datum->rules);
+                    $rules = explode(',', $datum['rules']);
                     if ($rules) {
                         $rulesFirstTitle = MenuRule::where('id', $rules[0])->value('title');
-                        $datum->rules    = count($rules) == 1 ? $rulesFirstTitle : $rulesFirstTitle . '等 ' . count($rules) . ' 项';
+                        $datum['rules']  = count($rules) == 1 ? $rulesFirstTitle : $rulesFirstTitle . '等 ' . count($rules) . ' 项';
                     }
                 }
             } else {
-                $datum->rules = __('No permission');
+                $datum['rules'] = __('No permission');
             }
         }
+        // 获取第一个权限的名称供列表显示-e
+
+        // 如果要求树状，此处先组装好 children
         return $this->assembleTree ? $this->tree->assembleChild($data) : $data;
     }
 
