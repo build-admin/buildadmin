@@ -369,7 +369,7 @@ class Terminal
         return '';
     }
 
-    public static function mvDist()
+    public static function mvDist(): bool
     {
         $distPath      = root_path() . self::$distDir . DIRECTORY_SEPARATOR;
         $indexHtmlPath = $distPath . 'index.html';
@@ -391,7 +391,7 @@ class Terminal
         }
     }
 
-    public static function changeTerminalConfig($config = [])
+    public static function changeTerminalConfig($config = []): bool
     {
         // 不保存在数据库中，因为切换包管理器时，数据库资料可能还未配置
         $oldPort           = Config::get('terminal.install_service_port');

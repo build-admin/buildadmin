@@ -8,14 +8,23 @@ use think\facade\Db;
 use think\facade\Event;
 use think\facade\Config;
 use app\common\model\User;
-use app\common\facade\Token;
 use think\facade\Validate;
+use app\common\facade\Token;
+use think\db\exception\DbException;
+use think\db\exception\PDOException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * 公共权限类（会员权限类）
  */
 class Auth extends \ba\Auth
 {
+    /**
+     * @var Auth 对象实例
+     */
+    protected static $instance;
+
     /**
      * @var bool 是否登录
      */
@@ -51,13 +60,13 @@ class Auth extends \ba\Auth
      */
     protected $allowFields = ['id', 'username', 'nickname', 'email', 'mobile', 'avatar', 'gender', 'birthday', 'money', 'score', 'jointime', 'motto', 'lastlogintime', 'lastloginip'];
 
-    public function __construct()
+    public function __construct(array $config = [])
     {
-        parent::__construct([
+        parent::__construct(array_merge([
             'auth_group'        => 'user_group', // 用户组数据表名
             'auth_group_access' => '', // 用户-用户组关系表（关系字段）
             'auth_rule'         => 'user_rule', // 权限规则表
-        ]);
+        ], $config));
     }
 
     /**
@@ -71,11 +80,29 @@ class Auth extends \ba\Auth
     }
 
     /**
+     * 初始化
+     * @access public
+     * @param array $options 参数
+     * @return Auth
+     */
+    public static function instance(array $options = []): Auth
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new static($options);
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * 根据Token初始化会员登录态
      * @param $token
      * @return bool
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function init($token)
+    public function init($token): bool
     {
         if ($this->logined) {
             return true;
@@ -142,7 +169,7 @@ class Auth extends \ba\Auth
         $data = [
             'password'      => encrypt_password($password, $salt),
             'group_id'      => $group,
-            'nickname'      => preg_match("/^1[3-9]{1}\d{9}$/", $username) ? substr_replace($username, '****', 3, 4) : $username,
+            'nickname'      => preg_match("/^1[3-9]\d{9}$/", $username) ? substr_replace($username, '****', 3, 4) : $username,
             'joinip'        => $ip,
             'jointime'      => $time,
             'lastloginip'   => $ip,
@@ -160,7 +187,7 @@ class Auth extends \ba\Auth
             Token::set($this->token, 'user', $this->model->id, $this->keeptime);
             Event::trigger('userRegisterSuccessed', $this->model);
             Db::commit();
-        } catch (Exception $e) {
+        } catch (PDOException|Exception $e) {
             $this->setError($e->getMessage());
             Db::rollback();
             return false;
@@ -174,6 +201,9 @@ class Auth extends \ba\Auth
      * @param string $password
      * @param bool   $keeptime
      * @return bool
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function login(string $username, string $password, bool $keeptime): bool
     {
@@ -221,9 +251,10 @@ class Auth extends \ba\Auth
 
     /**
      * 检查旧密码是否正确
+     * @param $password
      * @return bool
      */
-    public function checkPassword($password)
+    public function checkPassword($password): bool
     {
         if ($this->model->password != encrypt_password($password, $this->model->salt)) {
             return false;
@@ -254,7 +285,7 @@ class Auth extends \ba\Auth
                 Token::set($this->token, 'user', $this->model->id, $this->keeptime);
             }
             Db::commit();
-        } catch (Exception $e) {
+        } catch (PDOException|Exception $e) {
             Db::rollback();
             $this->setError($e->getMessage());
             return false;
@@ -282,7 +313,7 @@ class Auth extends \ba\Auth
             $this->model   = null;
             $this->logined = false;
             Db::commit();
-        } catch (Exception $e) {
+        } catch (PDOException|Exception $e) {
             Db::rollback();
             $this->setError($e->getMessage());
             return false;
@@ -294,7 +325,7 @@ class Auth extends \ba\Auth
      * 退出登录
      * @return bool
      */
-    public function logout()
+    public function logout(): bool
     {
         if (!$this->logined) {
             $this->setError('You are not logged in');
@@ -310,16 +341,16 @@ class Auth extends \ba\Auth
      * 是否登录
      * @return bool
      */
-    public function isLogin()
+    public function isLogin(): bool
     {
         return $this->logined;
     }
 
     /**
      * 获取会员模型
-     * @return null
+     * @return User
      */
-    public function getUser()
+    public function getUser(): User
     {
         return $this->model;
     }
@@ -328,7 +359,7 @@ class Auth extends \ba\Auth
      * 获取会员Token
      * @return string
      */
-    public function getToken()
+    public function getToken(): string
     {
         return $this->token;
     }
@@ -337,7 +368,7 @@ class Auth extends \ba\Auth
      * 设置刷新Token
      * @param int $keeptime
      */
-    public function setRefreshToken($keeptime = 0)
+    public function setRefreshToken(int $keeptime = 0)
     {
         $this->refreshToken = Random::uuid();
         Token::set($this->refreshToken, 'user-refresh', $this->model->id, $keeptime);
@@ -347,7 +378,7 @@ class Auth extends \ba\Auth
      * 获取会员刷新Token
      * @return string
      */
-    public function getRefreshToken()
+    public function getRefreshToken(): string
     {
         return $this->refreshToken;
     }
@@ -356,7 +387,7 @@ class Auth extends \ba\Auth
      * 获取会员信息 - 只输出允许输出的字段
      * @return array
      */
-    public function getUserInfo()
+    public function getUserInfo(): array
     {
         if (!$this->model) {
             return [];
@@ -372,7 +403,7 @@ class Auth extends \ba\Auth
      * 获取允许输出字段
      * @return string[]
      */
-    public function getAllowFields()
+    public function getAllowFields(): array
     {
         return $this->allowFields;
     }
@@ -390,32 +421,32 @@ class Auth extends \ba\Auth
      * 设置Token有效期
      * @param int $keeptime
      */
-    public function setKeeptime($keeptime = 0)
+    public function setKeeptime(int $keeptime = 0)
     {
         $this->keeptime = $keeptime;
     }
 
-    public function check($name, $uid = null, $relation = 'or', $mode = 'url')
+    public function check(string $name, int $uid = 0, string $relation = 'or', string $mode = 'url'): bool
     {
         return parent::check($name, $uid ?: $this->id, $relation, $mode);
     }
 
-    public function getRuleList($uid = null)
+    public function getRuleList(int $uid = 0): array
     {
         return parent::getRuleList($uid ?: $this->id);
     }
 
-    public function getRuleIds($uid = null)
+    public function getRuleIds(int $uid = 0): array
     {
         return parent::getRuleIds($uid ?: $this->id);
     }
 
-    public function getMenus($uid = null)
+    public function getMenus(int $uid = 0): array
     {
         return parent::getMenus($uid ?: $this->id);
     }
 
-    public function isSuperUser()
+    public function isSuperUser(): bool
     {
         return in_array('*', $this->getRuleIds());
     }
@@ -425,7 +456,7 @@ class Auth extends \ba\Auth
      * @param $error
      * @return $this
      */
-    public function setError($error)
+    public function setError($error): Auth
     {
         $this->error = $error;
         return $this;

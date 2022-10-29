@@ -305,7 +305,7 @@ class Backend extends Api
             return in_array($this->auth->id, $adminIds) ? [] : [$this->auth->id];
         } elseif ($this->dataLimit == 'allAuth' || $this->dataLimit == 'allAuthAndOthers') {
             // 取得拥有他所有权限的分组
-            $allAuthGroups = $this->auth->getallAuthGroups($this->dataLimit);
+            $allAuthGroups = $this->auth->getAllAuthGroups($this->dataLimit);
             // 取得分组内的所有管理员
             $adminIds = $this->auth->getGroupAdmins($allAuthGroups);
         }

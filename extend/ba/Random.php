@@ -8,7 +8,7 @@ class Random
      * 获取全球唯一标识
      * @return string
      */
-    public static function uuid()
+    public static function uuid(): string
     {
         return sprintf(
                 '%04x%04x-%04x-%04x-%04x-',

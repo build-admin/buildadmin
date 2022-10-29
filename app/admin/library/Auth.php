@@ -2,19 +2,28 @@
 
 namespace app\admin\library;
 
-use app\admin\model\Admin;
-use app\admin\model\AdminGroup;
 use ba\Random;
 use think\Exception;
-use think\facade\Config;
-use app\common\facade\Token;
 use think\facade\Db;
+use think\facade\Config;
+use app\admin\model\Admin;
+use app\common\facade\Token;
+use app\admin\model\AdminGroup;
+use think\db\exception\DbException;
+use think\db\exception\PDOException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * 管理员权限类
  */
 class Auth extends \ba\Auth
 {
+    /**
+     * @var Auth 对象实例
+     */
+    protected static $instance;
+
     /**
      * @var bool 是否登录
      */
@@ -44,9 +53,9 @@ class Auth extends \ba\Auth
      */
     protected $allowFields = ['id', 'username', 'nickname', 'avatar', 'lastlogintime'];
 
-    public function __construct()
+    public function __construct(array $config = [])
     {
-        parent::__construct();
+        parent::__construct($config);
     }
 
     /**
@@ -60,11 +69,29 @@ class Auth extends \ba\Auth
     }
 
     /**
+     * 初始化
+     * @access public
+     * @param array $options 参数
+     * @return Auth
+     */
+    public static function instance(array $options = []): Auth
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new static($options);
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * 根据Token初始化管理员登录态
      * @param $token
      * @return bool
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function init($token)
+    public function init($token): bool
     {
         if ($this->logined) {
             return true;
@@ -98,12 +125,15 @@ class Auth extends \ba\Auth
 
     /**
      * 管理员登录
-     * @param      $username
-     * @param      $password
-     * @param bool $keeptime
+     * @param string $username
+     * @param string $password
+     * @param bool   $keeptime
      * @return bool
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function login($username, $password, $keeptime = false)
+    public function login(string $username, string $password, bool $keeptime = false): bool
     {
         $this->model = Admin::where('username', $username)->find();
         if (!$this->model) {
@@ -136,7 +166,7 @@ class Auth extends \ba\Auth
      * 设置刷新Token
      * @param int $keeptime
      */
-    public function setRefreshToken($keeptime = 0)
+    public function setRefreshToken(int $keeptime = 0)
     {
         $this->refreshToken = Random::uuid();
         Token::set($this->refreshToken, 'admin-refresh', $this->model->id, $keeptime);
@@ -146,7 +176,7 @@ class Auth extends \ba\Auth
      * 管理员登录成功
      * @return bool
      */
-    public function loginSuccessful()
+    public function loginSuccessful(): bool
     {
         if (!$this->model) {
             return false;
@@ -164,7 +194,7 @@ class Auth extends \ba\Auth
                 Token::set($this->token, 'admin', $this->model->id, $this->keeptime);
             }
             Db::commit();
-        } catch (Exception $e) {
+        } catch (PDOException|Exception $e) {
             Db::rollback();
             $this->setError($e->getMessage());
             return false;
@@ -176,7 +206,7 @@ class Auth extends \ba\Auth
      * 管理员登录失败
      * @return bool
      */
-    public function loginFailed()
+    public function loginFailed(): bool
     {
         if (!$this->model) {
             return false;
@@ -192,7 +222,7 @@ class Auth extends \ba\Auth
             $this->model   = null;
             $this->logined = false;
             Db::commit();
-        } catch (Exception $e) {
+        } catch (PDOException|Exception $e) {
             Db::rollback();
             $this->setError($e->getMessage());
             return false;
@@ -204,7 +234,7 @@ class Auth extends \ba\Auth
      * 退出登录
      * @return bool
      */
-    public function logout()
+    public function logout(): bool
     {
         if (!$this->logined) {
             $this->setError('You are not logged in');
@@ -220,16 +250,16 @@ class Auth extends \ba\Auth
      * 是否登录
      * @return bool
      */
-    public function isLogin()
+    public function isLogin(): bool
     {
         return $this->logined;
     }
 
     /**
      * 获取管理员模型
-     * @return null
+     * @return Admin
      */
-    public function getAdmin()
+    public function getAdmin(): Admin
     {
         return $this->model;
     }
@@ -238,7 +268,7 @@ class Auth extends \ba\Auth
      * 获取管理员Token
      * @return string
      */
-    public function getToken()
+    public function getToken(): string
     {
         return $this->token;
     }
@@ -247,7 +277,7 @@ class Auth extends \ba\Auth
      * 获取管理员刷新Token
      * @return string
      */
-    public function getRefreshToken()
+    public function getRefreshToken(): string
     {
         return $this->refreshToken;
     }
@@ -256,7 +286,7 @@ class Auth extends \ba\Auth
      * 获取管理员信息 - 只输出允许输出的字段
      * @return array
      */
-    public function getInfo()
+    public function getInfo(): array
     {
         if (!$this->model) {
             return [];
@@ -272,7 +302,7 @@ class Auth extends \ba\Auth
      * 获取允许输出字段
      * @return string[]
      */
-    public function getAllowFields()
+    public function getAllowFields(): array
     {
         return $this->allowFields;
     }
@@ -290,37 +320,37 @@ class Auth extends \ba\Auth
      * 设置Token有效期
      * @param int $keeptime
      */
-    public function setKeeptime($keeptime = 0)
+    public function setKeeptime(int $keeptime = 0)
     {
         $this->keeptime = $keeptime;
     }
 
-    public function check($name, $uid = null, $relation = 'or', $mode = 'url')
+    public function check(string $name, int $uid = 0, string $relation = 'or', string $mode = 'url'): bool
     {
         return parent::check($name, $uid ?: $this->id, $relation, $mode);
     }
 
-    public function getGroups($uid = null)
+    public function getGroups(int $uid = 0): array
     {
         return parent::getGroups($uid ?: $this->id);
     }
 
-    public function getRuleList($uid = null)
+    public function getRuleList(int $uid = 0): array
     {
         return parent::getRuleList($uid ?: $this->id);
     }
 
-    public function getRuleIds($uid = null)
+    public function getRuleIds(int $uid = 0): array
     {
         return parent::getRuleIds($uid ?: $this->id);
     }
 
-    public function getMenus($uid = null)
+    public function getMenus(int $uid = 0): array
     {
         return parent::getMenus($uid ?: $this->id);
     }
 
-    public function isSuperAdmin()
+    public function isSuperAdmin(): bool
     {
         return in_array('*', $this->getRuleIds());
     }
@@ -328,6 +358,9 @@ class Auth extends \ba\Auth
     /**
      * 获取管理员所在分组的所有子级分组
      * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getAdminChildGroups(): array
     {
@@ -366,8 +399,11 @@ class Auth extends \ba\Auth
      * 获取拥有"所有权限"的分组
      * @param string $dataLimit 数据权限
      * @return array 分组数组
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function getallAuthGroups(string $dataLimit): array
+    public function getAllAuthGroups(string $dataLimit): array
     {
         // 当前管理员拥有的权限
         $rules         = $this->getRuleIds();
@@ -401,7 +437,7 @@ class Auth extends \ba\Auth
      * @param $error
      * @return $this
      */
-    public function setError($error)
+    public function setError($error): Auth
     {
         $this->error = $error;
         return $this;

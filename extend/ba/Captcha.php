@@ -15,6 +15,10 @@
 namespace ba;
 
 use think\facade\Db;
+use think\Response;
+use think\db\exception\DbException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
 
 class Captcha
 {
@@ -55,14 +59,19 @@ class Captcha
      * @var \GdImage|resource|null
      */
     private $image = null; // 验证码图片实例
+
+    /**
+     * @var bool|int|null
+     */
     private $color = null; // 验证码字体颜色
 
     /**
      * 架构方法 设置参数
      * @access public
      * @param array $config 配置参数
+     * @throws DbException
      */
-    public function __construct($config = [])
+    public function __construct(array $config = [])
     {
         $this->config = array_merge($this->config, $config);
 
@@ -78,7 +87,7 @@ class Captcha
      * @param string $name 配置名称
      * @return mixed    配置值
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         return $this->config[$name];
     }
@@ -87,10 +96,10 @@ class Captcha
      * 设置验证码配置
      * @access public
      * @param string $name  配置名称
-     * @param string $value 配置值
+     * @param mixed  $value 配置值
      * @return void
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
         if (isset($this->config[$name])) {
             $this->config[$name] = $value;
@@ -103,24 +112,9 @@ class Captcha
      * @param string $name 配置名称
      * @return bool
      */
-    public function __isset($name)
+    public function __isset(string $name)
     {
         return isset($this->config[$name]);
-    }
-
-    /**
-     * 获取验证码数据
-     * @access public
-     * @param string $id 验证码标识
-     * @return array
-     */
-    public function getCaptchaData(string $id): array
-    {
-        $key    = $this->authcode($this->seKey, $id);
-        $secode = Db::name('captcha')
-            ->where('key', $key)
-            ->find();
-        return $secode ?: [];
     }
 
     /**
@@ -129,8 +123,11 @@ class Captcha
      * @param string $code 用户验证码
      * @param string $id   验证码标识
      * @return bool 用户验证码是否正确
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function check($code, $id)
+    public function check(string $code, string $id): bool
     {
         $key = $this->authcode($this->seKey, $id);
         // 验证码不能为空
@@ -159,11 +156,14 @@ class Captcha
     /**
      * 创建一个验证码（非图形）
      * @access public
-     * @param string $id      验证码标识
-     * @param string $captcha 验证码，不传递则自动生成
+     * @param string      $id      验证码标识
+     * @param string|bool $captcha 验证码，不传递则自动生成
      * @return string 生成的验证码
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function create($id, $captcha = false)
+    public function create(string $id, $captcha = false)
     {
         $nowTime     = time();
         $key         = $this->authcode($this->seKey, $id);
@@ -185,29 +185,34 @@ class Captcha
         return $captcha;
     }
 
-    private function generate($captcha = false)
+    /**
+     * 获取验证码数据
+     * @access public
+     * @param string $id 验证码标识
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     */
+    public function getCaptchaData(string $id): array
     {
-        $code = []; // 验证码
-        if ($this->useZh) {
-            // 中文验证码
-            for ($i = 0; $i < $this->length; $i++) {
-                $code[$i] = $captcha ? $captcha[$i] : iconv_substr($this->zhSet, floor(mt_rand(0, mb_strlen($this->zhSet, 'utf-8') - 1)), 1, 'utf-8');
-            }
-        } else {
-            for ($i = 0; $i < $this->length; $i++) {
-                $code[$i] = $captcha ? $captcha[$i] : $this->codeSet[mt_rand(0, strlen($this->codeSet) - 1)];
-            }
-        }
-        return $captcha ?: strtoupper(implode('', $code));
+        $key    = $this->authcode($this->seKey, $id);
+        $secode = Db::name('captcha')
+            ->where('key', $key)
+            ->find();
+        return $secode ?: [];
     }
 
     /**
      * 输出图形验证码并把验证码的值保存的Mysql中
      * @access public
      * @param string $id 要生成验证码的标识
-     * @return \think\Response
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function entry($id)
+    public function entry(string $id): Response
     {
         $nowTime = time();
         // 图片宽(px)
@@ -256,7 +261,7 @@ class Captcha
             ->find();
         // 绘验证码
         if ($captcha && $nowTime <= $captcha['expiretime']) {
-            $captcha = $this->writeText($captcha['captcha']);
+            $this->writeText($captcha['captcha']);
         } else {
             $captcha = $this->writeText();
             // 保存验证码
@@ -285,7 +290,7 @@ class Captcha
      * @param string $captcha 验证码
      * @return array|string 验证码
      */
-    private function writeText($captcha = false)
+    private function writeText(string $captcha = '')
     {
         $code   = []; // 验证码
         $codeNX = 0; // 验证码第N个字符的左边距
@@ -293,7 +298,7 @@ class Captcha
             // 中文验证码
             for ($i = 0; $i < $this->length; $i++) {
                 $code[$i] = $captcha ? $captcha[$i] : iconv_substr($this->zhSet, floor(mt_rand(0, mb_strlen($this->zhSet, 'utf-8') - 1)), 1, 'utf-8');
-                imagettftext($this->image, $this->fontSize, mt_rand(-40, 40), $this->fontSize * ($i + 1) * 1.5, $this->fontSize + mt_rand(10, 20), $this->color, $this->fontttf, $code[$i]);
+                imagettftext($this->image, $this->fontSize, mt_rand(-40, 40), $this->fontSize * ($i + 1) * 1.5, $this->fontSize + mt_rand(10, 20), (int)$this->color, $this->fontttf, $code[$i]);
             }
         } else {
             for ($i = 0; $i < $this->length; $i++) {
@@ -410,10 +415,29 @@ class Captcha
     /**
      * 加密验证码
      */
-    private function authcode($str, $id)
+    private function authcode($str, $id): string
     {
         $key = substr(md5($this->seKey), 5, 8);
         $str = substr(md5($str), 8, 10);
         return md5($key . $str . $id);
+    }
+
+    /**
+     * 生成验证码随机字符
+     */
+    private function generate($captcha = false)
+    {
+        $code = []; // 验证码
+        if ($this->useZh) {
+            // 中文验证码
+            for ($i = 0; $i < $this->length; $i++) {
+                $code[$i] = $captcha ? $captcha[$i] : iconv_substr($this->zhSet, floor(mt_rand(0, mb_strlen($this->zhSet, 'utf-8') - 1)), 1, 'utf-8');
+            }
+        } else {
+            for ($i = 0; $i < $this->length; $i++) {
+                $code[$i] = $captcha ? $captcha[$i] : $this->codeSet[mt_rand(0, strlen($this->codeSet) - 1)];
+            }
+        }
+        return $captcha ?: strtoupper(implode('', $code));
     }
 }

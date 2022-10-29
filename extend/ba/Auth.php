@@ -3,17 +3,15 @@
 namespace ba;
 
 use think\facade\Db;
+use think\db\exception\DbException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * 权限规则检测类
  */
 class Auth
 {
-    /**
-     * @var Auth 对象实例
-     */
-    protected static $instance;
-
     /**
      * 用户有权限的规则节点
      */
@@ -38,7 +36,7 @@ class Auth
     /**
      * @param array $config
      */
-    public function __construct($config = [])
+    public function __construct(array $config = [])
     {
         $this->config = array_merge($this->config, $config);
     }
@@ -53,27 +51,15 @@ class Auth
     }
 
     /**
-     * 初始化
-     * @access public
-     * @param array $options 参数
-     * @return Auth
-     */
-    public static function instance($options = [])
-    {
-        if (is_null(self::$instance)) {
-            self::$instance = new static($options);
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * 获取菜单规则列表
      * @access public
      * @param int $uid 用户ID
      * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function getMenus($uid)
+    public function getMenus(int $uid): array
     {
         if (!$this->rules) {
             $this->getRuleList($uid);
@@ -95,7 +81,7 @@ class Auth
      * 获取数组中所有菜单规则的子规则
      * @param array $rules 菜单规则
      */
-    public function getChildren($rules): array
+    private function getChildren(array $rules): array
     {
         foreach ($rules as $key => $rule) {
             if (array_key_exists($rule['id'], $this->childrens)) {
@@ -112,8 +98,11 @@ class Auth
      * @param string $relation 如果出现两个 name,是两个都通过(and)还是一个通过即可(or)
      * @param string $mode     如果不使用 url 则菜单规则name匹配到即通过
      * @return bool
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function check($name, $uid, $relation = 'or', $mode = 'url')
+    public function check(string $name, int $uid, string $relation = 'or', string $mode = 'url'): bool
     {
         // 获取用户需要验证的所有有效规则列表
         $rulelist = $this->getRuleList($uid);
@@ -121,7 +110,7 @@ class Auth
             return true;
         }
 
-        if (is_string($name)) {
+        if ($name) {
             $name = strtolower($name);
             if (strpos($name, ',') !== false) {
                 $name = explode(',', $name);
@@ -164,8 +153,11 @@ class Auth
      * 获得权限规则列表
      * @param int $uid 用户id
      * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function getRuleList($uid)
+    public function getRuleList(int $uid): array
     {
         // 静态保存所有用户验证通过的权限列表
         static $ruleList = [];
@@ -209,10 +201,13 @@ class Auth
 
     /**
      * 获取权限规则ids
-     * @param $uid
+     * @param int $uid
      * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function getRuleIds($uid)
+    public function getRuleIds(int $uid): array
     {
         // 用户的组别和规则ID
         $groups = $this->getGroups($uid);
@@ -225,10 +220,13 @@ class Auth
 
     /**
      * 获取用户所有分组和对应权限规则
-     * @param $uid
+     * @param int $uid
      * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function getGroups($uid)
+    public function getGroups(int $uid): array
     {
         static $groups = [];
         if (isset($groups[$uid])) {
@@ -240,15 +238,15 @@ class Auth
                 ->alias('aga')
                 ->join($this->config['auth_group'] . ' ag', 'aga.group_id = ag.id', 'LEFT')
                 ->field('aga.uid,aga.group_id,ag.id,ag.pid,ag.name,ag.rules')
-                ->where("aga.uid='{$uid}' and ag.status='1'")
-                ->select();
+                ->where("aga.uid='$uid' and ag.status='1'")
+                ->select()->toArray();
         } else {
             $userGroups = Db::name('user')
                 ->alias('u')
                 ->join($this->config['auth_group'] . ' ag', 'u.group_id = ag.id', 'LEFT')
                 ->field('u.id as uid,u.group_id,ag.id,ag.name,ag.rules')
-                ->where("u.id='{$uid}' and ag.status='1'")
-                ->select();
+                ->where("u.id='$uid' and ag.status='1'")
+                ->select()->toArray();
         }
 
         $groups[$uid] = $userGroups ?: [];

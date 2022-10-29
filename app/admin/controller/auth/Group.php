@@ -293,7 +293,7 @@ class Group extends Backend
         }
 
         if (!$this->auth->isSuperAdmin()) {
-            $authGroups = $this->auth->getallAuthGroups($this->authMethod);
+            $authGroups = $this->auth->getAllAuthGroups($this->authMethod);
             $authGroups = array_merge($this->adminGroups, $authGroups);
             $where[]    = ['id', 'in', $authGroups];
         }
@@ -323,7 +323,7 @@ class Group extends Backend
 
     public function checkAuth($groupId)
     {
-        $authGroups = $this->auth->getallAuthGroups($this->authMethod);
+        $authGroups = $this->auth->getAllAuthGroups($this->authMethod);
         if (!$this->auth->isSuperAdmin() && !in_array($groupId, $authGroups)) {
             $this->error(__($this->authMethod == 'allAuth' ? 'You need to have all permissions of this group to operate this group~' : 'You need to have all the permissions of the group and have additional permissions before you can operate the group~'));
         }
