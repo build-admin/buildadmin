@@ -32,12 +32,14 @@
                                             :placeholder="item.operatorPlaceholder"
                                             type="string"
                                             v-model="baTable.comSearch.form[item.prop! + '-start']"
+                                            :clearable="true"
                                         ></el-input>
                                         <div class="range-separator">{{ $t('to') }}</div>
                                         <el-input
                                             :placeholder="item.operatorPlaceholder"
                                             type="string"
                                             v-model="baTable.comSearch.form[item.prop! + '-end']"
+                                            :clearable="true"
                                         ></el-input>
                                     </div>
                                     <!-- 是否 [NOT] NULL -->
@@ -111,6 +113,7 @@
                                             v-else
                                             type="string"
                                             v-model="baTable.comSearch.form[item.prop!]"
+                                            :clearable="true"
                                         ></el-input>
                                     </div>
                                 </div>
