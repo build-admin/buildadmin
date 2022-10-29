@@ -1,8 +1,10 @@
 import router from '/@/router/index'
 import { isNavigationFailure, NavigationFailureType, RouteRecordRaw, RouteLocationRaw } from 'vue-router'
 import { ElNotification } from 'element-plus'
-import { useNavTabs } from '../stores/navTabs'
-import { useMemberCenter } from '../stores/memberCenter'
+import { useConfig } from '/@/stores/config'
+import { useNavTabs } from '/@/stores/navTabs'
+import { useMemberCenter } from '/@/stores/memberCenter'
+import { closeShade } from '/@/utils/pageShade'
 import { adminBaseRoute, memberCenterBaseRoute } from '/@/router/static'
 import { i18n } from '/@/lang/index'
 
@@ -74,6 +76,13 @@ export const onClickMenu = (menu: RouteRecordRaw) => {
                 type: 'error',
             })
             break
+    }
+
+    const config = useConfig()
+    if (config.layout.shrink) {
+        closeShade(() => {
+            config.setLayout('menuCollapse', true)
+        })
     }
 }
 
