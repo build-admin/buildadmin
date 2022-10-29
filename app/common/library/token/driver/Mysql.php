@@ -2,10 +2,10 @@
 
 namespace app\common\library\token\driver;
 
-use app\common\library\token\Driver;
-use think\facade\Cache;
-use think\facade\Db;
 use think\Response;
+use think\facade\Db;
+use think\facade\Cache;
+use app\common\library\token\Driver;
 use think\exception\HttpResponseException;
 
 /**
@@ -21,8 +21,8 @@ class Mysql extends Driver
 
     /**
      * 构造函数
-     * @param array $options 参数
      * @access public
+     * @param array $options 参数
      */
     public function __construct(array $options = [])
     {

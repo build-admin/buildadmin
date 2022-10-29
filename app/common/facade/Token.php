@@ -2,8 +2,8 @@
 
 namespace app\common\facade;
 
-use app\common\library\token\Driver;
 use think\Facade;
+use app\common\library\token\Driver;
 
 /**
  * Token 门面类
@@ -16,7 +16,7 @@ use think\Facade;
  */
 class Token extends Facade
 {
-    protected static function getFacadeClass()
+    protected static function getFacadeClass(): string
     {
         return 'app\common\library\Token';
     }

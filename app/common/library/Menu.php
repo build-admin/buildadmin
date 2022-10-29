@@ -3,18 +3,24 @@
 namespace app\common\library;
 
 use app\admin\model\MenuRule;
+use think\db\exception\DbException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
 
 /**
- *
+ * 后台菜单类
  */
 class Menu
 {
     /**
-     * @param        $menu
-     * @param int    $parent 父级规则name或id
-     * @param string $mode   添加模式(规则重复时):cover=覆盖旧菜单,rename=重命名新菜单,ignore=忽略
+     * @param array      $menu
+     * @param int|string $parent 父级规则name或id
+     * @param string     $mode   添加模式(规则重复时):cover=覆盖旧菜单,rename=重命名新菜单,ignore=忽略
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public static function create($menu, $parent = 0, $mode = 'cover')
+    public static function create(array $menu, $parent = 0, string $mode = 'cover')
     {
         $pid        = 0;
         $parentRule = MenuRule::where((is_numeric($parent) ? 'id' : 'name'), $parent)->find();
@@ -58,8 +64,12 @@ class Menu
      * 删菜单
      * @param string|int $id        规则name或id
      * @param bool       $recursion 是否递归删除子级菜单、是否删除自身，是否删除上级空菜单
+     * @return bool
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public static function delete($id, bool $recursion = false)
+    public static function delete($id, bool $recursion = false): bool
     {
         if (!$id) {
             return true;
@@ -87,6 +97,9 @@ class Menu
      * 启用菜单
      * @param string|int $id 规则name或id
      * @return bool
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public static function enable($id): bool
     {
@@ -103,6 +116,9 @@ class Menu
      * 禁用菜单
      * @param string|int $id 规则name或id
      * @return bool
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public static function disable($id): bool
     {

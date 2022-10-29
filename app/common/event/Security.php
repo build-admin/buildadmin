@@ -17,7 +17,7 @@ class Security
 {
     protected $listenAction = ['edit', 'del'];
 
-    public function handle(Request $request)
+    public function handle(Request $request): bool
     {
         $action = $request->action(true);
         if (!in_array($action, $this->listenAction) || (!$request->isPost() && !$request->isDelete())) {

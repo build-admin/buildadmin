@@ -198,7 +198,7 @@ trait Backend
      * @param int $id       排序主键值
      * @param int $targetId 排序位置主键值
      */
-    public function sortable($id, $targetId)
+    public function sortable(int $id, int $targetId)
     {
         $dataLimitAdminIds = $this->getDataLimitAdminIds();
         if ($dataLimitAdminIds) {

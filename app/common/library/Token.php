@@ -2,9 +2,9 @@
 
 namespace app\common\library;
 
-use think\facade\Config;
 use think\helper\Arr;
 use think\helper\Str;
+use think\facade\Config;
 use InvalidArgumentException;
 
 /**
@@ -79,7 +79,7 @@ class Token
      * 默认驱动
      * @return string
      */
-    protected function getDefaultDriver()
+    protected function getDefaultDriver(): string
     {
         return $this->getConfig('default');
     }

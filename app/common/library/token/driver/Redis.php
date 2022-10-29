@@ -2,9 +2,10 @@
 
 namespace app\common\library\token\driver;
 
+use think\Response;
+use BadFunctionCallException;
 use app\common\library\token\Driver;
 use think\exception\HttpResponseException;
-use think\Response;
 
 /**
  * @see Driver
@@ -19,13 +20,13 @@ class Redis extends Driver
 
     /**
      * 构造函数
-     * @param array $options 参数
      * @access public
+     * @param array $options 参数
      */
     public function __construct(array $options = [])
     {
         if (!extension_loaded('redis')) {
-            throw new \BadFunctionCallException('未安装redis扩展');
+            throw new BadFunctionCallException('未安装redis扩展');
         }
         if (!empty($options)) {
             $this->options = array_merge($this->options, $options);

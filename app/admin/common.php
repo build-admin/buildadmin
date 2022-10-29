@@ -3,7 +3,7 @@
 use think\facade\Db;
 
 if (!function_exists('get_controller_list')) {
-    function get_controller_list()
+    function get_controller_list(): array
     {
         $controllerDir = app_path() . 'controller' . DIRECTORY_SEPARATOR;
 
@@ -71,7 +71,7 @@ if (!function_exists('get_table_fields')) {
 }
 
 if (!function_exists('mb_ucfirst')) {
-    function mb_ucfirst($string)
+    function mb_ucfirst($string): string
     {
         return mb_strtoupper(mb_substr($string, 0, 1)) . mb_strtolower(mb_substr($string, 1));
     }

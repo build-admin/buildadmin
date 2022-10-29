@@ -66,7 +66,7 @@ abstract class Driver
      * @access public
      * @return object|null
      */
-    public function handler()
+    public function handler(): ?object
     {
         return $this->handler;
     }

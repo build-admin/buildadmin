@@ -148,7 +148,7 @@ class Backend extends Api
         Event::trigger('backendInit', $this->auth);
     }
 
-    public function queryBuilder()
+    public function queryBuilder(): array
     {
         if (empty($this->model)) {
             return [];

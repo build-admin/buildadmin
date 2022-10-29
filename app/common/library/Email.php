@@ -3,6 +3,7 @@
 namespace app\common\library;
 
 use think\facade\Lang;
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 /**
@@ -28,6 +29,7 @@ class Email extends PHPMailer
     /**
      * 构造函数
      * @param array $options
+     * @throws Exception
      */
     public function __construct(array $options = [])
     {

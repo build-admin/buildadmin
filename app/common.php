@@ -8,6 +8,9 @@ use think\facade\Config;
 use app\admin\model\Config as configModel;
 use think\exception\HttpResponseException;
 use Symfony\Component\HttpFoundation\IpUtils;
+use think\db\exception\DbException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
 
 if (!function_exists('path_is_writable')) {
     /**
@@ -49,7 +52,7 @@ if (!function_exists('deldir')) {
      * @param bool   $delself 是否删除自身
      * @return boolean
      */
-    function deldir($dirname, $delself = true)
+    function deldir(string $dirname, bool $delself = true): bool
     {
         if (!is_dir($dirname)) {
             return false;
@@ -138,8 +141,11 @@ if (!function_exists('get_sys_config')) {
      * @param string $group  变量分组，传递此参数来获取某个分组的所有配置项
      * @param bool   $reduct 是否开启简洁模式，简洁模式下，获取多项配置时只返回配置的键值对
      * @return string | array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    function get_sys_config($name = '', $group = '', $reduct = true)
+    function get_sys_config(string $name = '', string $group = '', bool $reduct = true)
     {
         if ($name) {
             // 直接使用->value('value')不能使用到模型的类型格式化
@@ -190,7 +196,7 @@ if (!function_exists('full_url')) {
      * @param boolean $domain      是否携带域名 或者直接传入域名
      * @return string
      */
-    function full_url($relativeUrl = false, bool $domain = true, $default = '')
+    function full_url(string $relativeUrl = '', bool $domain = true, $default = '')
     {
         $cdnUrl = Config::get('buildadmin.cdn_url');
         if (!$cdnUrl) $cdnUrl = request()->upload['cdn'] ?? request()->domain();
@@ -224,9 +230,10 @@ if (!function_exists('encrypt_password')) {
 if (!function_exists('action_in_arr')) {
     /**
      * 检测一个方法是否在传递的数组内
+     * @param array $arr
      * @return bool
      */
-    function action_in_arr($arr = [])
+    function action_in_arr(array $arr = []): bool
     {
         $arr = is_array($arr) ? $arr : explode(',', $arr);
         if (!$arr) {
@@ -243,18 +250,18 @@ if (!function_exists('action_in_arr')) {
 if (!function_exists('build_suffix_svg')) {
     /**
      * 构建文件后缀的svg图片
-     * @param string $suffix     文件后缀
-     * @param string $background 背景颜色，如：rgb(255,255,255)
+     * @param string      $suffix     文件后缀
+     * @param string|null $background 背景颜色，如：rgb(255,255,255)
      * @return string
      */
-    function build_suffix_svg($suffix = 'file', $background = null)
+    function build_suffix_svg(string $suffix = 'file', string $background = null): string
     {
         $suffix = mb_substr(strtoupper($suffix), 0, 4);
         $total  = unpack('L', hash('adler32', $suffix, true))[1];
         $hue    = $total % 360;
         [$r, $g, $b] = hsv2rgb($hue / 360, 0.3, 0.9);
 
-        $background = $background ?: "rgb({$r},{$g},{$b})";
+        $background = $background ?: "rgb($r,$g,$b)";
 
         return '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
             <path style="fill:#E2E5E7;" d="M128,0c-17.6,0-32,14.4-32,32v448c0,17.6,14.4,32,32,32h320c17.6,0,32-14.4,32-32V128L352,0H128z"/>
@@ -286,7 +293,7 @@ if (!function_exists('get_area')) {
 }
 
 if (!function_exists('hsv2rgb')) {
-    function hsv2rgb($h, $s, $v)
+    function hsv2rgb($h, $s, $v): array
     {
         $r = $g = $b = 0;
 
