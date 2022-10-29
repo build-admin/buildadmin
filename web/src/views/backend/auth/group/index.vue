@@ -41,7 +41,7 @@ const baTable: baTableClass = new baTableClass(
         dblClickNotEditColumn: [undefined],
         column: [
             { type: 'selection', align: 'center' },
-            { label: t('auth.group.Group name'), prop: 'name', align: 'left' },
+            { label: t('auth.group.Group name'), prop: 'name', align: 'left', width: '200' },
             { label: t('auth.group.jurisdiction'), prop: 'rules', align: 'center' },
             {
                 label: t('state'),

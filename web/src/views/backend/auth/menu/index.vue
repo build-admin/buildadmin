@@ -36,7 +36,7 @@ const baTable = new baTableClass(
         dblClickNotEditColumn: [undefined, 'keepalive', 'status'],
         column: [
             { type: 'selection', align: 'center' },
-            { label: t('auth.menu.title'), prop: 'title', align: 'left' },
+            { label: t('auth.menu.title'), prop: 'title', align: 'left', width: '200' },
             { label: t('auth.menu.Icon'), prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
             { label: t('auth.menu.name'), prop: 'name', align: 'center', 'show-overflow-tooltip': true },
             {
