@@ -32,10 +32,12 @@
 }
 
 /* dialog滚动条-s */
-.el-overlay-dialog {
+.el-overlay-dialog,
+.ba-scroll-style {
     scrollbar-width: none;
     &::-webkit-scrollbar {
         width: 5px;
+        height: 5px;
     }
     &::-webkit-scrollbar-thumb {
         background: #eaeaea;

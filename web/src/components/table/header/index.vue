@@ -5,7 +5,7 @@
     </transition>
 
     <!-- 操作按钮组 -->
-    <div v-bind="$attrs" class="table-header">
+    <div v-bind="$attrs" class="table-header ba-scroll-style">
         <el-tooltip v-if="props.buttons.includes('refresh')" :content="t('refresh')" placement="top">
             <el-button v-blur @click="onAction('refresh', { loading: true })" color="#40485b" class="table-header-operate" type="info">
                 <Icon name="fa fa-refresh" />
@@ -166,7 +166,7 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
 <style scoped lang="scss">
 .table-header {
     position: relative;
-    overflow: hidden;
+    overflow-y: scroll;
     box-sizing: border-box;
     display: flex;
     align-items: center;
