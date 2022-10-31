@@ -2,7 +2,7 @@
     <div>
         <el-dialog v-model="state.dialog.baAccount" class="ba-account-dialog" width="25%" :title="t('module.Member information')">
             <template v-if="baAccount.token">
-                <div class="userinfo">
+                <div v-loading="state.loading.common" class="userinfo">
                     <div class="user-avatar-box">
                         <img class="user-avatar" :src="baAccount.avatar" alt="" />
                         <Icon

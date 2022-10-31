@@ -33,7 +33,7 @@
                     </el-button>
                 </el-button-group>
 
-                <el-button v-blur class="ml10" @click="state.dialog.baAccount = true" type="success">
+                <el-button v-blur class="ml10" @click="onShowBaAccount" type="success">
                     <Icon name="fa fa-user-o" color="#ffffff" size="14" />
                     <span class="table-header-operate-text">{{ t('module.Member information') }}</span>
                 </el-button>
@@ -55,11 +55,26 @@ import { state } from '../store'
 import { loadData, onRefreshTableData } from '../index'
 import { useI18n } from 'vue-i18n'
 import { debounce } from '/@/utils/common'
+import { getUserInfo } from '/@/api/backend/module'
+import { useBaAccount } from '/@/stores/baAccount'
 
 const { t } = useI18n()
+const baAccount = useBaAccount()
 const localModules = () => {
     state.table.onlyLocal = !state.table.onlyLocal
     loadData()
+}
+
+const onShowBaAccount = () => {
+    state.dialog.baAccount = true
+    state.loading.common = true
+    getUserInfo()
+        .then((res) => {
+            baAccount.dataFill(res.data.userInfo)
+        })
+        .finally(() => {
+            state.loading.common = false
+        })
 }
 
 const onSearchInput = () => {

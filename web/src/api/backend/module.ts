@@ -69,6 +69,20 @@ export function checkIn(method: 'get' | 'post', params: object = {}): ApiPromise
     ) as ApiPromise
 }
 
+export function getUserInfo(): ApiPromise {
+    const baAccount = useBaAccount()
+    const siteConfig = useSiteConfig()
+    return createAxios(
+        {
+            url: siteConfig.api_url + userControllerUrl + 'info',
+            method: 'get',
+        },
+        {
+            anotherToken: baAccount.getToken('auth'),
+        }
+    ) as ApiPromise
+}
+
 export function createOrder(params: object = {}): ApiPromise {
     const baAccount = useBaAccount()
     const siteConfig = useSiteConfig()
