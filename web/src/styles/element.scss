@@ -1,6 +1,6 @@
 /* 修复 Chrome 浏览器输入框内选中字符行高异常的bug-s */
 .el-input .el-input__inner {
-    line-height: 29px;
+    line-height: calc(var(--el-input-height, 40px) - 4px);
 }
 /* 修复 Chrome 浏览器输入框内选中字符行高异常的bug-e */
 
