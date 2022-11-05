@@ -3,24 +3,30 @@
 use think\facade\Db;
 
 if (!function_exists('get_controller_list')) {
-    function get_controller_list(): array
+    function get_controller_list($app = 'admin'): array
     {
-        $controllerDir = app_path() . 'controller' . DIRECTORY_SEPARATOR;
+        $controllerDir = root_path() . 'app' . DIRECTORY_SEPARATOR . $app . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR;
+        return get_dir_files($controllerDir);
+    }
+}
 
+if (!function_exists('get_dir_files')) {
+    function get_dir_files($dir): array
+    {
         $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($controllerDir), RecursiveIteratorIterator::LEAVES_ONLY
+            new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY
         );
 
-        $controllerList = [];
+        $fileList = [];
         foreach ($files as $file) {
             if (!$file->isDir() && $file->getExtension() == 'php') {
-                $filePath              = $file->getRealPath();
-                $name                  = str_replace($controllerDir, '', $filePath);
-                $name                  = str_replace(DIRECTORY_SEPARATOR, "/", $name);
-                $controllerList[$name] = $name;
+                $filePath        = $file->getRealPath();
+                $name            = str_replace($dir, '', $filePath);
+                $name            = str_replace(DIRECTORY_SEPARATOR, "/", $name);
+                $fileList[$name] = $name;
             }
         }
-        return $controllerList;
+        return $fileList;
     }
 }
 
