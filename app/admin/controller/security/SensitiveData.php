@@ -175,19 +175,6 @@ class SensitiveData extends Backend
         ]);
     }
 
-    public function getFieldList($table = null)
-    {
-        if (!$table) {
-            $this->error(__('Parameter error'));
-        }
-
-        $tablePk = Db::name($table)->getPk();
-        $this->success('', [
-            'pk'        => $tablePk,
-            'fieldlist' => get_table_fields($table, true),
-        ]);
-    }
-
     protected function getControllerList()
     {
         $outExcludeController = [

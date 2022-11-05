@@ -1,7 +1,7 @@
 import baTableClass from '/@/utils/baTable'
 import type { baTableApi } from '/@/api/common'
+import { getTableFieldList } from '/@/api/common'
 import { add } from '/@/api/backend/security/sensitiveData'
-import { getFieldList } from '/@/api/backend/security/sensitiveData'
 import { uuid } from '/@/utils/random'
 
 export interface DataFields {
@@ -63,7 +63,7 @@ export class sensitiveDataClass extends baTableClass {
         this.form.items!.data_fields = []
         if (this.form.extend!.parentRef) this.form.extend!.parentRef.setDataFields([])
 
-        getFieldList(table).then((res) => {
+        getTableFieldList(table).then((res) => {
             this.form.items!.primary_key = res.data.pk
             this.form.defaultItems!.primary_key = res.data.pk
 

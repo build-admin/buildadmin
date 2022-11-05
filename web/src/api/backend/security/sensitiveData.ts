@@ -7,13 +7,3 @@ export function add() {
         method: 'get',
     })
 }
-
-export function getFieldList(table: string) {
-    return createAxios({
-        url: securitySensitiveData + 'getFieldList',
-        method: 'get',
-        params: {
-            table: table,
-        },
-    })
-}

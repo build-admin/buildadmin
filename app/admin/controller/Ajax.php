@@ -68,6 +68,21 @@ class Ajax extends Backend
         $this->success('', ['pk' => $tablePk]);
     }
 
+    public function getTableFieldList()
+    {
+        $table = $this->request->param('table');
+        $clean = $this->request->param('clean', true);
+        if (!$table) {
+            $this->error(__('Parameter error'));
+        }
+
+        $tablePk = Db::name($table)->getPk();
+        $this->success('', [
+            'pk'        => $tablePk,
+            'fieldlist' => get_table_fields($table, $clean),
+        ]);
+    }
+
     public function changeTerminalConfig()
     {
         AdminLog::setTitle(__('changeTerminalConfig'));
