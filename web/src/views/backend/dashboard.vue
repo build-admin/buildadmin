@@ -163,7 +163,6 @@ import { useAdminInfo } from '/@/stores/adminInfo'
 import { WORKING_TIME } from '/@/stores/constant/cacheKey'
 import { getGreet } from '/@/utils/common'
 import { useEventListener } from '@vueuse/core'
-import 'element-plus/theme-chalk/display.css'
 var workTimer: NodeJS.Timer
 
 const d = new Date()

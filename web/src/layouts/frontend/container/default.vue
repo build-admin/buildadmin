@@ -19,7 +19,6 @@ import Aside from '/@/layouts/frontend/components/aside.vue'
 import Main from '/@/layouts/frontend/components/main.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
 import { mainHeight as layoutMainScrollbarStyle } from '/@/utils/layout'
-import 'element-plus/theme-chalk/display.css'
 </script>
 
 <style scoped lang="scss">
