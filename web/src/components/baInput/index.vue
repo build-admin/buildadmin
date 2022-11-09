@@ -182,8 +182,9 @@ export default defineComponent({
             [
                 'switch',
                 () => {
+                    const valueType = computed(() => typeof props.modelValue)
                     const valueComputed = computed(() => {
-                        if (typeof props.modelValue === 'boolean') {
+                        if (valueType.value === 'boolean') {
                             return props.modelValue
                         } else {
                             let valueTmp = parseInt(props.modelValue as string)
@@ -194,7 +195,17 @@ export default defineComponent({
                         createVNode(resolveComponent('el-switch'), {
                             ...props.attr,
                             modelValue: valueComputed.value,
-                            'onUpdate:modelValue': onValueUpdate,
+                            'onUpdate:modelValue': (value: boolean) => {
+                                let newValue: boolean | string | number = value
+                                switch (valueType.value) {
+                                    case 'string':
+                                        newValue = value ? '1' : '0'
+                                        break
+                                    case 'number':
+                                        newValue = value ? 1 : 0
+                                }
+                                emit('update:modelValue', newValue)
+                            },
                         })
                 },
             ],
