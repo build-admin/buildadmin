@@ -90,7 +90,10 @@
     <div v-if="field.render == 'datetime'">
         {{ !fieldValue ? '-' : timeFormat(fieldValue, field.timeFormat ?? undefined) }}
     </div>
-
+    <!-- color -->
+    <div v-if="field.render == 'color'">
+        <div :style="{background:fieldValue}" class="el-color"></div>
+    </div>
     <!-- customTemplate 自定义模板 -->
     <div
         v-if="field.render == 'customTemplate'"
@@ -304,5 +307,9 @@ const getTagType = (value: string, custom: any): TagProps['type'] => {
 }
 .ml-6 + .el-button {
     margin-left: 6px;
+}
+.el-color{
+    height:25px;
+    width:100%
 }
 </style>

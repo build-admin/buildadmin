@@ -376,6 +376,17 @@ export default defineComponent({
                 },
             ],
             [
+                'color',
+                () => {
+                    return () =>
+                        createVNode(resolveComponent('el-color-picker'), {
+                            modelValue: props.modelValue,
+                            'onUpdate:modelValue': onValueUpdate,
+                            ...props.attr,
+                        })
+                },
+            ],
+            [
                 'editor',
                 () => {
                     return () =>

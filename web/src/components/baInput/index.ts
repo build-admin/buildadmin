@@ -24,6 +24,7 @@ export const inputTypes = [
     'file',
     'files',
     'icon',
+    'color'
 ]
 export type modelValueTypes = string | number | boolean | object
 

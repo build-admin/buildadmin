@@ -96,6 +96,7 @@ export default defineComponent({
             'remoteSelect',
             'city',
             'icon',
+            'color'
         ] // 不带独立label输入框
         let needLabelSlot = ['radio', 'checkbox', 'switch', 'array', 'image', 'images', 'file', 'files', 'editor'] // 需要独立label的输入框
         if (noNeedLabelSlot.includes(props.type)) {
