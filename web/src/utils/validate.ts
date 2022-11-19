@@ -66,17 +66,17 @@ export function validatorEditorRequired(rule: any, val: string, callback: Functi
 }
 
 export const validatorType = {
-    required: i18n.global.t('validate.Required'),
-    mobile: i18n.global.t('validate.mobile'),
-    account: i18n.global.t('validate.Account name'),
-    password: i18n.global.t('validate.password'),
-    varName: i18n.global.t('validate.Variable name'),
+    required: i18n.global.t('validate.required'),
+    mobile: i18n.global.t('utils.mobile'),
+    account: i18n.global.t('utils.account'),
+    password: i18n.global.t('utils.password'),
+    varName: i18n.global.t('utils.variable name'),
     url: 'URL',
-    email: i18n.global.t('validate.e-mail address'),
-    date: i18n.global.t('validate.date'),
-    number: i18n.global.t('validate.number'),
-    integer: i18n.global.t('validate.integer'),
-    float: i18n.global.t('validate.Floating point number'),
+    email: i18n.global.t('utils.email'),
+    date: i18n.global.t('utils.date'),
+    number: i18n.global.t('utils.number'),
+    integer: i18n.global.t('utils.integer'),
+    float: i18n.global.t('utils.float'),
 }
 
 export interface buildValidatorParams {

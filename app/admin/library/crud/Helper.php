@@ -534,6 +534,7 @@ class Helper
             'pk'        => 'string',
             'weigh'     => 'number',
             'timestamp' => 'datetime',
+            'float'     => 'number',
         ];
         if (array_key_exists($field['designType'], $designTypeComparison)) {
             $field['designType'] = $designTypeComparison[$field['designType']];

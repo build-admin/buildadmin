@@ -455,6 +455,7 @@ const router = useRouter()
 const designWindowRef = ref()
 const formRef = ref<FormInstance>()
 const tabsRefs = useTemplateRefsList<HTMLElement>()
+let nameRepeatCount = 1
 const state: {
     loading: {
         init: boolean
@@ -808,7 +809,8 @@ onMounted(() => {
                 // name 重复字段自动重命名
                 const nameRepeatKey = getArrayKey(state.fields, 'name', data.name)
                 if (nameRepeatKey) {
-                    data.name = data.name + nameRepeatKey
+                    data.name = data.name + nameRepeatCount
+                    nameRepeatCount++
                 }
 
                 // 找到字段类型的附加属性
