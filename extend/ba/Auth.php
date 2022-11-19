@@ -120,7 +120,7 @@ class Auth
         }
         $list = []; //保存验证通过的规则名
         if ('url' == $mode) {
-            $REQUEST = unserialize(strtolower(serialize(request()->param())));
+            $REQUEST = json_decode(strtolower(json_encode(request()->param(), JSON_UNESCAPED_UNICODE)), true);
         }
         foreach ($rulelist as $rule) {
             $query = preg_replace('/^.+\?/U', '', $rule);
