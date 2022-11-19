@@ -761,7 +761,7 @@ export const designTypes: anyObj = {
     date: {
         name: i18n.global.t('utils.date') + i18n.global.t('utils.choice'),
         table: {
-            operator: getTableAttr('operator', 'RANGE'),
+            operator: getTableAttr('operator', '='),
             sortable: getTableAttr('sortable', 'custom'),
         },
         form: {
