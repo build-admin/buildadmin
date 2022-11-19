@@ -1,0 +1,6 @@
+
+    public function initialize()
+    {
+        parent::initialize();
+        $this->model = new \{%modelNamespace%}\{%modelName%};{%filterRule%}
+    }

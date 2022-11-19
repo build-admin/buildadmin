@@ -1,0 +1,20 @@
+<?php
+
+namespace {%namespace%};
+
+use app\common\controller\Backend;
+
+/**
+ * {%tableComment%}
+ *
+ */
+class {%className%} extends Backend
+{
+    /**
+     * {%modelName%}模型对象
+     * @var \{%modelNamespace%}\{%modelName%}
+     */
+    protected $model = null;
+    {%attr%}{%initialize%}
+{%methods%}
+}

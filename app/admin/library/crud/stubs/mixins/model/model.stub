@@ -1,0 +1,18 @@
+<?php
+
+namespace {%namespace%};
+
+use think\Model;
+
+/**
+ * {%className%}
+ */
+class {%className%} extends Model
+{{%pk%}
+    // 表名
+    protected $name = '{%name%}';
+
+    // 自动写入时间戳字段
+    protected $autoWriteTimestamp = {%autoWriteTimestamp%};{%createTime%}{%updateTime%}
+{%fieldType%}{%afterInsert%}{%methods%}
+}

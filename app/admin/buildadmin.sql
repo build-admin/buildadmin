@@ -309,6 +309,10 @@ INSERT INTO `__PREFIX__menu_rule` VALUES ('80', '78', 'button', '安装', 'modul
 INSERT INTO `__PREFIX__menu_rule` VALUES ('81', '78', 'button', '调整状态', 'moduleStore/moduleStore/changeState', '', '', null, '', '', '0', 'none', '', '3', '1', '1648065864', '1647806112');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('82', '78', 'button', '卸载', 'moduleStore/moduleStore/uninstall', '', '', null, '', '', '0', 'none', '', '4', '1', '1648065864', '1647806112');
 INSERT INTO `__PREFIX__menu_rule` VALUES ('83', '78', 'button', '更新', 'moduleStore/moduleStore/update', '', '', null, '', '', '0', 'none', '', '5', '1', '1648065864', '1647806112');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('84', '0', 'menu', 'CRUD代码生成', 'crud/crud', 'crud/crud', 'fa fa-code', 'tab', '', '/src/views/backend/crud/index.vue', '1', 'none', '', '80', '1', '1668848266', '1668848266');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('85', '84', 'button', '查看', 'crud/crud/index', '', '', null, '', '', '0', 'none', '', '3', '1', '1668848809', '1668848770');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('86', '84', 'button', '生成', 'crud/crud/generate', '', '', null, '', '', '0', 'none', '', '2', '1', '1668848809', '1668848770');
+INSERT INTO `__PREFIX__menu_rule` VALUES ('87', '84', 'button', '删除', 'crud/crud/delete', '', '', null, '', '', '0', 'none', '', '1', '1', '1668848921', '1668848921');
 COMMIT;
 
 -- ----------------------------

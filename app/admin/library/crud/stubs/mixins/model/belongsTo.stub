@@ -1,0 +1,5 @@
+
+    public function {%relationMethod%}()
+    {
+        return $this->{%relationMode%}({%relationClassName%}, '{%relationForeignKey%}', '{%relationPrimaryKey%}');
+    }
