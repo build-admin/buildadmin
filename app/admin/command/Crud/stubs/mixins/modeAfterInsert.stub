@@ -1,8 +1,0 @@
-
-    protected static function onAfterInsert($model)
-    {
-        if ($model->weigh == 0) {
-            $pk = $model->getPk();
-            $model->where($pk, $model[$pk])->update(['{%order%}' => $model[$pk]]);
-        }
-    }

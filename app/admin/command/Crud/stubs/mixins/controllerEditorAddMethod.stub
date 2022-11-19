@@ -1,6 +1,0 @@
-
-    public function add()
-    {
-        $this->request->filter('trim,htmlspecialchars');
-        parent::add();
-    }

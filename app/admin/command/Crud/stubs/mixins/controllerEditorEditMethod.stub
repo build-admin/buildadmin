@@ -1,6 +1,0 @@
-
-    public function edit($id = null)
-    {
-        $this->request->filter('trim,htmlspecialchars');
-        parent::edit($id);
-    }
