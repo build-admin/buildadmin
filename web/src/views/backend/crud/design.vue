@@ -6,32 +6,34 @@
                     <div class="header-item-box">
                         <FormItem
                             class="mr-20 table-name-item"
-                            label="数据表名"
+                            :label="t('crud.log.table_name')"
                             v-model="state.table.name"
                             type="string"
-                            placeholder="数据表的名称"
+                            :placeholder="t('crud.crud.Name of the data table')"
                             :input-attr="{
                                 onChange: onTableChange,
                             }"
                         />
                         <FormItem
                             class="table-comment-item"
-                            label="数据表注释"
+                            :label="t('crud.crud.Data Table Notes')"
                             v-model="state.table.comment"
                             type="string"
-                            placeholder="如：`会员表`将生成为`会员管理`"
+                            :placeholder="t('crud.crud.For example: `user table` will be generated into `user management`')"
                         />
                     </div>
                     <div class="header-right">
-                        <el-button type="primary" :loading="state.loading.generate" @click="onGenerate" v-blur>生成 CRUD 代码</el-button>
-                        <el-button @click="onAbandonDesign" type="danger" v-blur>放弃</el-button>
+                        <el-button type="primary" :loading="state.loading.generate" @click="onGenerate" v-blur>
+                            {{ t('crud.crud.Generate CRUD code') }}
+                        </el-button>
+                        <el-button @click="onAbandonDesign" type="danger" v-blur>{{ t('crud.crud.give up') }}</el-button>
                     </div>
                 </div>
             </el-row>
             <transition :name="state.showHeaderSeniorConfig ? 'el-zoom-in-top' : 'el-zoom-in-bottom'">
                 <div v-if="state.showHeaderSeniorConfig" class="header-senior-config-box">
                     <div class="header-senior-config-form">
-                        <el-form-item :label-width="140" label="表格快速搜索字段">
+                        <el-form-item :label-width="140" :label="t('crud.crud.Table Quick Search Fields')">
                             <el-select :clearable="true" :multiple="true" class="w100" v-model="state.table.quickSearchField" placement="bottom">
                                 <el-option
                                     v-for="(item, idx) in state.fields"
@@ -42,7 +44,7 @@
                             </el-select>
                         </el-form-item>
                         <div class="default-sort-field-box">
-                            <el-form-item :label-width="140" class="default-sort-field" label="表格默认排序字段">
+                            <el-form-item :label-width="140" class="default-sort-field" :label="t('crud.crud.Table Default Sort Fields')">
                                 <el-select :clearable="true" v-model="state.table.defaultSortField" placement="bottom">
                                     <el-option
                                         v-for="(item, idx) in state.fields"
@@ -54,15 +56,15 @@
                             </el-form-item>
                             <FormItem
                                 class="default-sort-field-type"
-                                label="排序方式"
+                                :label="t('crud.crud.sort order')"
                                 v-model="state.table.defaultSortType"
                                 type="select"
                                 :data="{
-                                    content: { desc: 'desc-倒序', asc: 'asc-顺序' },
+                                    content: { desc: t('crud.crud.sort order desc'), asc: t('crud.crud.sort order asc') },
                                 }"
                             />
                         </div>
-                        <el-form-item :label-width="140" label="作为表格列的字段">
+                        <el-form-item :label-width="140" :label="t('crud.crud.Fields as Table Columns')">
                             <el-select :clearable="true" :multiple="true" class="w100" v-model="state.table.columnFields" placement="bottom">
                                 <el-option
                                     v-for="(item, idx) in state.fields"
@@ -72,7 +74,7 @@
                                 />
                             </el-select>
                         </el-form-item>
-                        <el-form-item :label-width="140" label="作为表单项的字段">
+                        <el-form-item :label-width="140" :label="t('crud.crud.Fields as form items')">
                             <el-select :clearable="true" :multiple="true" class="w100" v-model="state.table.formFields" placement="bottom">
                                 <el-option
                                     v-for="(item, idx) in state.fields"
@@ -83,7 +85,7 @@
                             </el-select>
                         </el-form-item>
                         <FormItem
-                            label="生成的控制器位置"
+                            :label="t('crud.crud.Generated Controller Location')"
                             v-model="state.table.controllerFile"
                             type="string"
                             :attr="{
@@ -91,7 +93,7 @@
                             }"
                         />
                         <FormItem
-                            label="生成的数据模型位置"
+                            :label="t('crud.crud.Generated Data Model Location')"
                             v-model="state.table.modelFile"
                             type="string"
                             :attr="{
@@ -99,7 +101,7 @@
                             }"
                         />
                         <FormItem
-                            label="生成的验证器位置"
+                            :label="t('crud.crud.Generated Validator Location')"
                             v-model="state.table.validateFile"
                             type="string"
                             :attr="{
@@ -107,7 +109,7 @@
                             }"
                         />
                         <FormItem
-                            label="WEB端视图目录"
+                            :label="t('crud.crud.WEB end view directory')"
                             v-model="state.table.webViewsDir"
                             type="string"
                             :attr="{
@@ -118,7 +120,7 @@
                 </div>
             </transition>
             <div @click="state.showHeaderSeniorConfig = !state.showHeaderSeniorConfig" class="header-senior-config">
-                <span>高级配置</span>
+                <span>{{ t('crud.crud.Advanced Configuration') }}</span>
                 <Icon
                     class="senior-config-arrow-icon"
                     size="14"
@@ -130,21 +132,21 @@
         <el-row v-loading="state.loading.init" class="fields-box" :gutter="20">
             <el-col :xs="24" :span="6">
                 <el-collapse class="field-collapse" v-model="state.fieldCollapseName">
-                    <el-collapse-item title="常用字段" name="common">
+                    <el-collapse-item :title="t('crud.crud.Common Fields')" name="common">
                         <div class="field-box" :ref="tabsRefs.set">
                             <div v-for="(field, index) in fieldItem.common" :key="index" class="field-item">
                                 <span>{{ field.title }}</span>
                             </div>
                         </div>
                     </el-collapse-item>
-                    <el-collapse-item title="基础字段" name="base">
+                    <el-collapse-item :title="t('crud.crud.Base Fields')" name="base">
                         <div class="field-box" :ref="tabsRefs.set">
                             <div v-for="(field, index) in fieldItem.base" :key="index" class="field-item">
                                 <span>{{ field.title }}</span>
                             </div>
                         </div>
                     </el-collapse-item>
-                    <el-collapse-item title="高级字段" name="senior">
+                    <el-collapse-item :title="t('crud.crud.Advanced Fields')" name="senior">
                         <div class="field-box" :ref="tabsRefs.set">
                             <div v-for="(field, index) in fieldItem.senior" :key="index" class="field-item">
                                 <span>{{ field.title }}</span>
@@ -164,7 +166,7 @@
                         :data-id="index"
                     >
                         <div class="design-field">
-                            <span>字段名：</span>
+                            <span>{{ t('crud.crud.Field Name') }}：</span>
                             <BaInput
                                 class="design-field-name-input"
                                 v-model="field.name"
@@ -176,7 +178,7 @@
                             />
                         </div>
                         <div class="design-field">
-                            <span>字段注释：</span>
+                            <span>{{ t('crud.crud.field comment') }}：</span>
                             <BaInput
                                 class="design-field-name-comment"
                                 v-model="field.comment"
@@ -202,32 +204,40 @@
                             </el-button>
                         </div>
                     </div>
-                    <div class="design-field-empty" v-if="!state.fields.length">拖动左侧元素至此处以开始设计CRUD</div>
+                    <div class="design-field-empty" v-if="!state.fields.length">
+                        {{ t('crud.crud.Drag the left element here to start designing CRUD') }}
+                    </div>
                 </div>
             </el-col>
             <el-col :xs="24" :span="6">
                 <div class="field-config ba-scroll-style">
-                    <div v-if="state.activateField === -1" class="design-field-empty">请先从左侧选择一个字段</div>
+                    <div v-if="state.activateField === -1" class="design-field-empty">
+                        {{ t('crud.crud.Please select a field from the left first') }}
+                    </div>
                     <div v-else :key="'activate-field-' + state.activateField">
                         <el-form label-position="top">
-                            <el-divider content-position="left">常用</el-divider>
-                            <el-form-item label="生成为">
+                            <el-divider content-position="left">{{ t('crud.crud.Common') }}</el-divider>
+                            <el-form-item :label="t('crud.crud.generate')">
                                 <el-select class="w100" v-model="state.fields[state.activateField].designType" placement="bottom">
                                     <el-option v-for="(item, idx) in designTypes" :key="idx" :label="item.name" :value="idx" />
                                 </el-select>
                             </el-form-item>
                             <FormItem
-                                label="字段注释（CRUD字典）"
+                                :label="t('crud.crud.Field comments (CRUD dictionary)')"
                                 type="textarea"
                                 :input-attr="{
                                     rows: 2,
                                 }"
-                                placeholder="字段注释将作为 CRUD字典，冒号前将识别为字段标题，冒号后识别为数据字典"
+                                :placeholder="
+                                    t(
+                                        'crud.crud.The field comment will be used as the CRUD dictionary, and will be identified as the field title before the colon, and as the data dictionary after the colon'
+                                    )
+                                "
                                 v-model="state.fields[state.activateField].comment"
                             />
-                            <el-divider content-position="left">字段属性</el-divider>
+                            <el-divider content-position="left">{{ t('crud.crud.Field Properties') }}</el-divider>
                             <FormItem
-                                label="字段名"
+                                :label="t('crud.crud.Field Name')"
                                 type="string"
                                 v-model="state.fields[state.activateField].name"
                                 :input-attr="{
@@ -235,31 +245,39 @@
                                 }"
                             />
                             <template v-if="state.fields[state.activateField].dataType">
-                                <FormItem label="字段类型" type="textarea" v-model="state.fields[state.activateField].dataType" />
+                                <FormItem :label="t('crud.crud.Field Type')" type="textarea" v-model="state.fields[state.activateField].dataType" />
                             </template>
                             <template v-else>
-                                <FormItem label="字段类型" type="string" v-model="state.fields[state.activateField].type" />
+                                <FormItem :label="t('crud.crud.Field Type')" type="string" v-model="state.fields[state.activateField].type" />
                                 <div class="field-inline">
-                                    <FormItem label="长度" type="number" v-model.number="state.fields[state.activateField].length" />
-                                    <FormItem label="小数点" type="number" v-model.number="state.fields[state.activateField].precision" />
+                                    <FormItem
+                                        :label="t('crud.crud.length')"
+                                        type="number"
+                                        v-model.number="state.fields[state.activateField].length"
+                                    />
+                                    <FormItem
+                                        :label="t('crud.crud.decimal point')"
+                                        type="number"
+                                        v-model.number="state.fields[state.activateField].precision"
+                                    />
                                 </div>
                             </template>
                             <FormItem
-                                label="字段默认值"
-                                placeholder="可以直接输入null、0、empty string"
+                                :label="t('crud.crud.Field Defaults')"
+                                :placeholder="t('crud.crud.You can directly enter null, 0, empty string')"
                                 type="string"
                                 v-model="state.fields[state.activateField].default"
                             />
                             <div class="field-inline">
                                 <FormItem
                                     class="form-item-position-right"
-                                    label="主键"
+                                    :label="t('crud.state.Primary key')"
                                     type="switch"
                                     v-model="state.fields[state.activateField].primaryKey"
                                 />
                                 <FormItem
                                     class="form-item-position-right"
-                                    label="自动递增"
+                                    :label="t('crud.crud.Auto increment')"
                                     type="switch"
                                     v-model="state.fields[state.activateField].autoIncrement"
                                 />
@@ -267,19 +285,19 @@
                             <div class="field-inline">
                                 <FormItem
                                     class="form-item-position-right"
-                                    label="无符号"
+                                    :label="t('crud.crud.Unsigned')"
                                     type="switch"
                                     v-model="state.fields[state.activateField].unsigned"
                                 />
                                 <FormItem
                                     class="form-item-position-right"
-                                    label="允许NULL"
+                                    :label="t('crud.crud.Allow NULL')"
                                     type="switch"
                                     v-model="state.fields[state.activateField].null"
                                 />
                             </div>
                             <template v-if="!isEmpty(state.fields[state.activateField].table)">
-                                <el-divider content-position="left">字段表格属性</el-divider>
+                                <el-divider content-position="left">{{ t('crud.crud.Field Table Properties') }}</el-divider>
                                 <template v-for="(item, idx) in state.fields[state.activateField].table" :key="idx">
                                     <FormItem
                                         :label="$t('crud.crud.' + idx)"
@@ -292,7 +310,7 @@
                                 </template>
                             </template>
                             <template v-if="!isEmpty(state.fields[state.activateField].form)">
-                                <el-divider content-position="left">字段表单属性</el-divider>
+                                <el-divider content-position="left">{{ t('crud.crud.Field Form Properties') }}</el-divider>
                                 <template v-for="(item, idx) in state.fields[state.activateField].form" :key="idx">
                                     <FormItem
                                         :label="$t('crud.crud.' + idx)"
@@ -315,7 +333,7 @@
             @close="onCancelRemoteSelect"
             class="ba-operate-dialog"
             :model-value="state.remoteSelectPre.show"
-            title="远程下拉关联信息"
+            :title="t('crud.crud.Remote drop-down association information')"
             :close-on-click-modal="false"
             @keyup.enter="onSaveRemoteSelect"
         >
@@ -332,7 +350,7 @@
                     <FormItem
                         prop="table"
                         type="select"
-                        label="关联数据表"
+                        :label="t('crud.crud.Associated Data Table')"
                         v-model="state.remoteSelectPre.form.table"
                         :key="JSON.stringify(state.remoteSelectPre.dbList)"
                         :data="{
@@ -344,9 +362,9 @@
                         <FormItem
                             prop="pk"
                             type="select"
-                            label="下拉value字段"
+                            :label="t('crud.crud.Drop down value field')"
                             v-model="state.remoteSelectPre.form.pk"
-                            placeholder="请选择select组件的value字段"
+                            :placeholder="t('crud.crud.Please select the value field of the select component')"
                             :key="'select-value' + JSON.stringify(state.remoteSelectPre.fieldList)"
                             :data="{
                                 content: state.remoteSelectPre.fieldList,
@@ -355,9 +373,9 @@
                         <FormItem
                             prop="label"
                             type="select"
-                            label="下拉label字段"
+                            :label="t('crud.crud.Drop down label field')"
                             v-model="state.remoteSelectPre.form.label"
-                            placeholder="请选择select组件的label字段"
+                            :placeholder="t('crud.crud.Please select the label field of the select component')"
                             :key="'select-label' + JSON.stringify(state.remoteSelectPre.fieldList)"
                             :data="{
                                 content: state.remoteSelectPre.fieldList,
@@ -366,9 +384,9 @@
                         <FormItem
                             prop="joinField"
                             type="selects"
-                            label="在表格中显示的字段"
+                            :label="t('crud.crud.Fields displayed in the table')"
                             v-model="state.remoteSelectPre.form.joinField"
-                            placeholder="请选择在表格中显示的字段"
+                            :placeholder="t('crud.crud.Please select the fields displayed in the table')"
                             :key="'join-field' + JSON.stringify(state.remoteSelectPre.fieldList)"
                             :data="{
                                 content: state.remoteSelectPre.fieldList,
@@ -377,28 +395,32 @@
                         <FormItem
                             prop="controllerFile"
                             type="select"
-                            label="控制器位置"
+                            :label="t('crud.crud.Controller position')"
                             v-model="state.remoteSelectPre.form.controllerFile"
-                            placeholder="请选择数据表的控制器"
+                            :placeholder="t('crud.crud.Please select the controller of the data table')"
                             :key="'controller-file' + JSON.stringify(state.remoteSelectPre.controllerFileList)"
                             :data="{
                                 content: state.remoteSelectPre.controllerFileList,
                             }"
                             :attr="{
-                                'block-help': '远程下拉将请求对应的控制器来获取数据，所以建议先生成好被关联表的CRUD',
+                                'block-help': t(
+                                    'crud.crud.The remote pull-down will request the corresponding controller to obtain data, so it is recommended that you create the CRUD of the associated table'
+                                ),
                             }"
                         />
                         <FormItem
                             type="select"
-                            label="数据模型位置"
+                            :label="t('crud.crud.Data Model Location')"
                             v-model="state.remoteSelectPre.form.modelFile"
-                            placeholder="请选择数据表的数据模型位置"
+                            :placeholder="t('crud.crud.Please select the data model location of the data table')"
                             :key="'model-file' + JSON.stringify(state.remoteSelectPre.modelFileList)"
                             :data="{
                                 content: state.remoteSelectPre.modelFileList,
                             }"
                             :attr="{
-                                'block-help': '留空则自动生成关联表的模型，若该表已有模型，建议选择好以免重复生成',
+                                'block-help': t(
+                                    'crud.crud.If it is left blank, the model of the associated table will be generated automatically If the table already has a model, it is recommended to select it to avoid repeated generation'
+                                ),
                             }"
                         />
                     </div>
@@ -417,17 +439,33 @@
             @close="closeConfirmGenerate"
             class="ba-operate-dialog confirm-generate-dialog"
             :model-value="state.confirmGenerate.show"
-            title="确认生成CRUD代码"
+            :title="t('crud.crud.Confirm CRUD code generation')"
         >
             <div class="confirm-generate-dialog-body">
-                <el-alert v-if="state.confirmGenerate.controller" title="控制器已经存在，继续生成将自动覆盖已有代码！" center type="error" />
+                <el-alert
+                    v-if="state.confirmGenerate.controller"
+                    :title="t('crud.crud.The controller already exists Continuing to generate will automatically overwrite the existing code!')"
+                    center
+                    type="error"
+                />
                 <br />
-                <el-alert v-if="state.confirmGenerate.table" title="数据表已经存在，继续生成将自动删除原表并建立新的数据表！" center type="error" />
+                <el-alert
+                    v-if="state.confirmGenerate.table"
+                    :title="
+                        t(
+                            'crud.crud.The data table already exists Continuing to generate will automatically delete the original table and create a new one!'
+                        )
+                    "
+                    center
+                    type="error"
+                />
             </div>
             <template #footer>
                 <div class="confirm-generate-dialog-footer">
                     <el-button @click="closeConfirmGenerate">{{ $t('Cancel') }}</el-button>
-                    <el-button :loading="state.loading.generate" v-blur @click="startGenerate" type="primary">继续生成</el-button>
+                    <el-button :loading="state.loading.generate" v-blur @click="startGenerate" type="primary">
+                        {{ t('crud.crud.Continue building') }}
+                    </el-button>
                 </div>
             </template>
         </el-dialog>
@@ -450,7 +488,9 @@ import { getTableFieldList } from '/@/api/common'
 import { buildValidatorData } from '/@/utils/validate'
 import { getArrayKey } from '/@/utils/common'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const router = useRouter()
 const designWindowRef = ref()
 const formRef = ref<FormInstance>()
@@ -648,12 +688,12 @@ const startGenerate = () => {
 
 const onGenerate = () => {
     let msg = ''
-    if (!state.table.name) msg = '请输入数据表名！'
+    if (!state.table.name) msg = t('crud.crud.Please enter the data table name!')
     const pkIndex = state.fields.findIndex((item) => {
         return item.primaryKey
     })
     if (pkIndex === -1) {
-        msg = '请设计主键字段！'
+        msg = t('crud.crud.Please design the primary key field!')
     }
     if (msg) {
         ElNotification({
@@ -690,9 +730,9 @@ const onAbandonDesign = () => {
     if (!state.table.name && !state.table.comment && !state.fields.length) {
         return changeStep('start')
     }
-    ElMessageBox.confirm('放弃设计不可逆，确定要放弃吗？', '温馨提示', {
-        confirmButtonText: '放弃',
-        cancelButtonText: '取消',
+    ElMessageBox.confirm(t('crud.crud.It is irreversible to give up the design Are you sure you want to give up?'), t('Reminder'), {
+        confirmButtonText: t('crud.crud.give up'),
+        cancelButtonText: t('Cancel'),
         type: 'warning',
     })
         .then(() => {
@@ -793,7 +833,7 @@ onMounted(() => {
                     if (primaryKeyField) {
                         ElNotification({
                             type: 'error',
-                            message: '只可以有一个主键字段。',
+                            message: t('crud.crud.There can only be one primary key field'),
                         })
                         return evt.item.remove()
                     }
@@ -956,11 +996,11 @@ const resetRemoteSelectForm = () => {
 }
 
 const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reactive({
-    table: [buildValidatorData({ name: 'required', title: '关联数据表' })],
-    pk: [buildValidatorData({ name: 'required', title: '下拉value字段' })],
-    label: [buildValidatorData({ name: 'required', title: '下拉label字段' })],
-    joinField: [buildValidatorData({ name: 'required', title: '在表格中显示的字段' })],
-    controllerFile: [buildValidatorData({ name: 'required', title: '控制器位置' })],
+    table: [buildValidatorData({ name: 'required', title: t('crud.crud.remote-table') })],
+    pk: [buildValidatorData({ name: 'required', title: t('crud.crud.Drop down value field') })],
+    label: [buildValidatorData({ name: 'required', title: t('crud.crud.Drop down label field') })],
+    joinField: [buildValidatorData({ name: 'required', title: t('crud.crud.Fields displayed in the table') })],
+    controllerFile: [buildValidatorData({ name: 'required', title: t('crud.crud.Controller position') })],
 })
 </script>
 
