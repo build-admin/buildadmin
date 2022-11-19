@@ -44,4 +44,5 @@ export default {
     unknown: 'Unknown',
     weigh: 'weigh',
     'No route found to jump~': 'Failed to find a jump route.',
+    'This is a deliberate error thrown to prevent a hot update of Vite': 'This is a deliberate error thrown to prevent a hot update of Vite',
 }

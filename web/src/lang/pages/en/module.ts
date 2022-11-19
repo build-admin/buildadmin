@@ -6,7 +6,6 @@ export default {
     'env require-dev': 'Composer-dev',
     'env dependencies': 'NPM',
     'env devDependencies': 'NPM-dev',
-    'This is a deliberate error thrown to prevent a hot update of Vite': 'This is a deliberate error thrown to prevent a hot update of Vite',
     // user
     'Member information': 'Member information',
     'My module': 'My module',

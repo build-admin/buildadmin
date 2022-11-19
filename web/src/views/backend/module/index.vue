@@ -25,13 +25,13 @@ onMounted(() => {
     loadData()
     if (import.meta.hot) {
         import.meta.hot.on('vite:beforeFullReload', () => {
-            if (state.common.disableHmr) throw t('module.This is a deliberate error thrown to prevent a hot update of Vite')
+            if (state.common.disableHmr) throw t('This is a deliberate error thrown to prevent a hot update of Vite')
         })
         import.meta.hot.on('vite:beforeUpdate', () => {
-            if (state.common.disableHmr) throw t('module.This is a deliberate error thrown to prevent a hot update of Vite')
+            if (state.common.disableHmr) throw t('This is a deliberate error thrown to prevent a hot update of Vite')
         })
         import.meta.hot.on('vite:beforePrune', () => {
-            if (state.common.disableHmr) throw t('module.This is a deliberate error thrown to prevent a hot update of Vite')
+            if (state.common.disableHmr) throw t('This is a deliberate error thrown to prevent a hot update of Vite')
         })
     }
 })

@@ -6,7 +6,6 @@ export default {
     'env require-dev': '后端开发环境依赖（composer）',
     'env dependencies': '前端依赖（NPM）',
     'env devDependencies': '前端开发环境依赖（NPM）',
-    'This is a deliberate error thrown to prevent a hot update of Vite': '这是为了防止Vite的热更新而有意抛出的错误',
     // user
     'Member information': '会员信息',
     'My module': '我的模块',
