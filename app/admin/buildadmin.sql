@@ -573,3 +573,17 @@ CREATE TABLE `__PREFIX__user_score_log` (
     `createtime` int(10) unsigned DEFAULT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='会员积分变动表';
+
+-- ----------------------------
+-- Table structure for `__PREFIX__crud_log`
+-- ----------------------------
+DROP TABLE IF EXISTS `__PREFIX__crud_log`;
+CREATE TABLE `__PREFIX__crud_log` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `table_name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '数据表名',
+    `table` text COLLATE utf8mb4_unicode_ci COMMENT '数据表数据',
+    `fields` text COLLATE utf8mb4_unicode_ci COMMENT '字段数据',
+    `status` enum('delete','success','error','start') COLLATE utf8mb4_unicode_ci DEFAULT 'start' COMMENT '状态:delete=已删除,success=成功,error=失败,start=生成中',
+    `create_time` bigint(16) DEFAULT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='crud记录';
