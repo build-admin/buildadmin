@@ -335,7 +335,7 @@ class Helper
         }
 
         $appDir       = app()->getBasePath() . $app . DIRECTORY_SEPARATOR;
-        $namespace    = "app/$app/$type" . ($pathArr ? '/' . implode('/', $pathArr) : '');
+        $namespace    = "app\\$app\\$type" . ($pathArr ? '\\' . implode('\\', $pathArr) : '');
         $parseFile    = $appDir . $type . DIRECTORY_SEPARATOR . ($pathArr ? implode(DIRECTORY_SEPARATOR, $pathArr) . DIRECTORY_SEPARATOR : '') . $lastName . '.php';
         $rootFileName = $namespace . "/$lastName" . '.php';
 
@@ -343,7 +343,7 @@ class Helper
             'lastName'         => $lastName,
             'originalLastName' => $originalLastName,
             'path'             => $pathArr,
-            'namespace'        => path_transform($namespace),
+            'namespace'        => $namespace,
             'parseFile'        => path_transform($parseFile),
             'rootFileName'     => path_transform($rootFileName),
         ];
