@@ -867,7 +867,7 @@ class Helper
                     $jsonStr .= $keyStr . $item . ',';
                 } elseif ($item === null) {
                     $jsonStr .= $keyStr . 'null,';
-                } elseif ($item[0] == '[' && substr($item, -1, 1) == ']') {
+                } elseif (isset($item[0]) && $item[0] == '[' && substr($item, -1, 1) == ']') {
                     $jsonStr .= $keyStr . $item . ',';
                 } else {
                     $quote   = stripos($item, "'") === false ? "'" : '"';
