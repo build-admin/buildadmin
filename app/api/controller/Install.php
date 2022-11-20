@@ -50,7 +50,7 @@ class Install extends Api
      */
     static $needDependentVersion = [
         'php'  => '7.1.0',
-        'npm'  => '7.0.0',
+        'npm'  => '6.14.0',
         'cnpm' => '7.1.0',
         'node' => '14.13.1',
         'yarn' => '1.2.0',
