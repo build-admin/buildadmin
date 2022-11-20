@@ -87,10 +87,10 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             label: t('routine.attachment.size'),
             prop: 'size',
             align: 'center',
-            formatter: (row: TableRow, column: TableColumn, cellValue: string, index: number) => {
-                var size = parseFloat(cellValue)
-                var i = Math.floor(Math.log(size) / Math.log(1024))
-                return parseInt((size / Math.pow(1024, i)).toFixed(i < 2 ? 0 : 2)) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i]
+            formatter: (row: TableRow, column: TableColumn, cellValue: string) => {
+                const size = parseFloat(cellValue)
+                const i = Math.floor(Math.log(size) / Math.log(1024))
+                return (size / Math.pow(1024, i)).toFixed(i < 1 ? 0 : 2) + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i]
             },
             operator: 'RANGE',
             sortable: 'custom',
