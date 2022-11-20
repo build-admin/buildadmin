@@ -84,7 +84,7 @@ if (!function_exists('del_empty_dir')) {
      */
     function del_empty_dir(string $path)
     {
-        $path = str_replace(root_path(), '', trim(path_transform($path), DIRECTORY_SEPARATOR));
+        $path = str_replace(root_path(), '', rtrim(path_transform($path), DIRECTORY_SEPARATOR));
         $path = array_filter(explode(DIRECTORY_SEPARATOR, $path));
         for ($i = count($path) - 1; $i >= 0; $i--) {
             $dirPath = root_path() . implode(DIRECTORY_SEPARATOR, $path);
