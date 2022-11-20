@@ -515,7 +515,7 @@ class Crud extends Backend
                 'relationMode'       => 'belongsTo',
                 'relationPrimaryKey' => $field['form']['remote-pk'],
                 'relationForeignKey' => $field['name'],
-                'relationClassName'  => str_replace('.php', '', '\\' . $field['form']['remote-model']) . "::class",
+                'relationClassName'  => str_replace(['.php', '/'], ['', '\\'], '\\' . $field['form']['remote-model']) . "::class",
             ];
             $this->modelData['relationMethodList'][$tableName] = Helper::assembleStub('mixins/model/belongsTo', $relationData);
 
