@@ -32,7 +32,7 @@ export function del(ids: string[]) {
         {
             url: actionUrl.get('del'),
             method: 'DELETE',
-            data: {
+            params: {
                 ids: ids,
             },
         },

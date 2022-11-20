@@ -284,7 +284,7 @@ export class baTableApi {
             {
                 url: this.actionUrl.get('del'),
                 method: 'DELETE',
-                data: {
+                params: {
                     ids: ids,
                 },
             },
