@@ -108,7 +108,11 @@
                                 </template>
                             </el-dropdown>
                             <el-button
-                                v-if="!state.goodsInfo.purchased && installButtonState.buy.includes(state.goodsInfo.state)"
+                                v-if="
+                                    !state.goodsInfo.purchased &&
+                                    installButtonState.buy.includes(state.goodsInfo.state) &&
+                                    state.goodsInfo.type == 'online'
+                                "
                                 @click="onBuy"
                                 v-blur
                                 class="basic-button-item"
@@ -146,6 +150,14 @@
                                 class="basic-button-item"
                             >
                                 {{ t('module.installed') }} v{{ state.goodsInfo.version }}
+                            </el-button>
+                            <el-button
+                                v-if="state.goodsInfo.type == 'local' && !installButtonState.alreadyInstalled.includes(state.goodsInfo.state)"
+                                v-blur
+                                :disabled="true"
+                                class="basic-button-item"
+                            >
+                                {{ t('module.Local module') }} v{{ state.goodsInfo.version }}
                             </el-button>
                             <el-button
                                 v-if="state.goodsInfo.new_version && installButtonState.updateButton.includes(state.goodsInfo.state)"

@@ -119,13 +119,16 @@ export const showInfo = (uid: string) => {
                 if (res.data.info.type == 'local') {
                     res.data.info = localItem
                     res.data.info.images = [fullUrl('/static/images/local-module-logo.png')]
+                    res.data.info.type = 'local' // 纯本地模块
                 } else {
+                    res.data.info.type = 'online'
                     res.data.info.state = localItem.state
                     res.data.info.version = localItem.version
                 }
                 res.data.info.enable = localItem.state === moduleInstallState.DISABLE ? false : true
             } else {
                 res.data.info.state = 0
+                res.data.info.type = 'online'
             }
             state.goodsInfo = res.data.info
         })
@@ -405,6 +408,9 @@ export const execCommand = (data: anyObj) => {
 }
 
 export const currency = (price: number, val: number) => {
+    if (typeof price == 'undefined' || typeof val == 'undefined') {
+        return '-'
+    }
     if (val == 0) {
         return parseInt(price.toString()) + '积分'
     } else {
