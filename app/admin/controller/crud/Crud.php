@@ -483,29 +483,31 @@ class Crud extends Backend
 
             // 建立关联模型代码文件
             if (!$field['form']['remote-model'] || !file_exists(root_path() . $field['form']['remote-model'])) {
-                $joinModelFile                = Helper::parseNameData('admin', $tableName, '', 'model', $field['form']['remote-model']);
-                $joinModelData['methods']     = [];
-                $joinModelData['fieldType']   = [];
-                $joinModelData['createTime']  = '';
-                $joinModelData['updateTime']  = '';
-                $joinModelData['afterInsert'] = '';
-                $joinModelData['name']        = $tableName;
-                $joinModelData['className']   = $joinModelFile['lastName'];
-                $joinModelData['namespace']   = $joinModelFile['namespace'];
-                $joinTablePk                  = 'id';
-                $joinFieldsMap                = [];
-                foreach ($columns as $column) {
-                    $joinFieldsMap[$column['name']] = $column['designType'];
-                    $this->parseModelMethods($column, $joinModelData);
-                    if ($column['primaryKey']) $joinTablePk = $column['name'];
+                $joinModelFile = Helper::parseNameData('admin', $tableName, '', 'model', $field['form']['remote-model']);
+                if (!file_exists(root_path() . $joinModelFile['rootFileName'])) {
+                    $joinModelData['methods']     = [];
+                    $joinModelData['fieldType']   = [];
+                    $joinModelData['createTime']  = '';
+                    $joinModelData['updateTime']  = '';
+                    $joinModelData['afterInsert'] = '';
+                    $joinModelData['name']        = $tableName;
+                    $joinModelData['className']   = $joinModelFile['lastName'];
+                    $joinModelData['namespace']   = $joinModelFile['namespace'];
+                    $joinTablePk                  = 'id';
+                    $joinFieldsMap                = [];
+                    foreach ($columns as $column) {
+                        $joinFieldsMap[$column['name']] = $column['designType'];
+                        $this->parseModelMethods($column, $joinModelData);
+                        if ($column['primaryKey']) $joinTablePk = $column['name'];
+                    }
+                    $weighKey = array_search('weigh', $joinFieldsMap);
+                    if ($weighKey !== false) {
+                        $joinModelData['afterInsert'] = Helper::assembleStub('mixins/model/afterInsert', [
+                            'field' => $joinFieldsMap[$weighKey]
+                        ]);
+                    }
+                    Helper::writeModelFile($joinTablePk, $joinFieldsMap, $joinModelData, $joinModelFile);
                 }
-                $weighKey = array_search('weigh', $joinFieldsMap);
-                if ($weighKey !== false) {
-                    $joinModelData['afterInsert'] = Helper::assembleStub('mixins/model/afterInsert', [
-                        'field' => $joinFieldsMap[$weighKey]
-                    ]);
-                }
-                Helper::writeModelFile($joinTablePk, $joinFieldsMap, $joinModelData, $joinModelFile);
                 $field['form']['remote-model'] = $joinModelFile['rootFileName'];
             }
 
