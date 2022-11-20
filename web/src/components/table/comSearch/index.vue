@@ -15,9 +15,9 @@
                                             v-model="baTable.comSearch.form[item.prop!]"
                                             :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:[new Date(), new Date()]"
                                             :type="item.comSearchRender == 'date' ? 'daterange' : 'datetimerange'"
-                                            range-separator="To"
-                                            start-placeholder="Start date"
-                                            end-placeholder="End date"
+                                            :range-separator="$t('to')"
+                                            :start-placeholder="$t('el.datepicker.startDate')"
+                                            :end-placeholder="$t('el.datepicker.endDate')"
                                             :value-format="item.comSearchRender == 'date' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'"
                                         />
                                     </div>
