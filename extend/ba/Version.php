@@ -110,6 +110,13 @@ class Version
         } elseif (in_array($name, ['npm', 'yarn', 'pnpm', 'node'])) {
             $execOut = Terminal::getOutputFromProc('version.' . $name);
             if ($execOut) {
+                if (strripos($execOut, 'npm WARN') !== false) {
+                    $preg = '/\d+(\.\d+){0,2}/';
+                    preg_match($preg, $execOut, $matches);
+                    if (isset($matches[0]) && self::checkDigitalVersion($matches[0])) {
+                        return $matches[0];
+                    }
+                }
                 $execOut = preg_split('/\r\n|\r|\n/', $execOut);
                 // 检测两行，第一行可能会是个警告消息
                 for ($i = 0; $i < 2; $i++) {
