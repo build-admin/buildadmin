@@ -173,14 +173,14 @@
                                     </el-button>
                                     <el-button
                                         v-if="state.form.tab == 'register'"
-                                        @click="state.form.tab = 'login'"
+                                        @click="switchTab(formRef, 'login')"
                                         round
                                         plain
                                         type="info"
                                         size="large"
                                         >{{ t('user.user.Back to login') }}</el-button
                                     >
-                                    <el-button v-else @click="state.form.tab = 'register'" round plain type="info" size="large">
+                                    <el-button v-else @click="switchTab(formRef, 'register')" round plain type="info" size="large">
                                         {{ t('user.user.No account yet? Click Register') }}
                                     </el-button>
                                 </el-form-item>
@@ -485,6 +485,12 @@ const sendRetrieveCaptcha = (formRef: InstanceType<typeof ElForm> | undefined = 
                 })
         }
     })
+}
+
+const switchTab = (formRef: InstanceType<typeof ElForm> | undefined = undefined, tab: 'login' | 'register') => {
+    state.form.tab = tab
+    // 切换登录或者注册tab时重置表单，避免切换后保存之前表单的状态
+    onResetForm(formRef)
 }
 
 const startTiming = (seconds: number) => {
