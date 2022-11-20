@@ -133,7 +133,19 @@ declare global {
         // 是否在下拉菜单的复选框显示 默认为true显示
         enableColumnDisplayControl?: boolean
         // 渲染为:icon|switch|image|images|tag|url|datetime|buttons|customTemplate|customRender
-        render?: 'icon' | 'switch' | 'image' | 'images' | 'tag' | 'tags' | 'url' | 'datetime' | 'buttons' | 'customTemplate' | 'customRender'
+        render?:
+            | 'icon'
+            | 'switch'
+            | 'image'
+            | 'images'
+            | 'tag'
+            | 'tags'
+            | 'url'
+            | 'datetime'
+            | 'color'
+            | 'buttons'
+            | 'customTemplate'
+            | 'customRender'
         // 操作按钮组
         buttons?: OptButton[]
         // 渲染为Tag时:el-tag 组件的主题

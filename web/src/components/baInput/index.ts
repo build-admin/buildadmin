@@ -24,7 +24,7 @@ export const inputTypes = [
     'file',
     'files',
     'icon',
-    'color'
+    'color',
 ]
 export type modelValueTypes = string | number | boolean | object
 
@@ -121,6 +121,10 @@ export interface InputAttr {
     'show-icon-name'?: boolean
     placement?: string
     title?: string
+    // 颜色选择器
+    'show-alpha'?: boolean
+    'color-format'?: string
+    predefine?: string[]
     // 图片文件上传属性
     action?: string
     headers?: anyObj
@@ -161,5 +165,6 @@ export interface InputAttr {
     onFocus?: Function
     onCalendarChange?: Function
     onPanelChange?: Function
+    onActiveChange?: Function
     [key: string]: any
 }
