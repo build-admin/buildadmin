@@ -417,13 +417,13 @@ CREATE TABLE `__PREFIX__security_sensitive_data_log` (
 DROP TABLE IF EXISTS `__PREFIX__test_build`;
 CREATE TABLE `__PREFIX__test_build` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
-    `title` varchar(100) NOT NULL DEFAULT '' COMMENT '标题',
-    `keyword_rows` varchar(100) NOT NULL DEFAULT '' COMMENT '关键词',
+    `title` varchar(100) DEFAULT NULL COMMENT '标题',
+    `keyword_rows` varchar(100) DEFAULT NULL COMMENT '关键词',
     `content` text NOT NULL COMMENT '内容',
     `views` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '浏览量',
     `likes` mediumint(9) unsigned NOT NULL DEFAULT '0' COMMENT '有帮助数',
     `dislikes` mediumint(9) unsigned NOT NULL DEFAULT '0' COMMENT '无帮助数',
-    `note_textarea` varchar(100) NOT NULL DEFAULT '' COMMENT '备注',
+    `note_textarea` varchar(100) DEFAULT NULL COMMENT '备注',
     `status` enum('1','0') NOT NULL DEFAULT '1' COMMENT '状态:0=隐藏,1=正常',
     `weigh` int(10) NOT NULL DEFAULT '0' COMMENT '权重',
     `updatetime` int(10) unsigned DEFAULT NULL COMMENT '更新时间',
