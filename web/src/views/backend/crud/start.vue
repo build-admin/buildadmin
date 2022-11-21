@@ -46,7 +46,7 @@
             </el-row>
 
             <el-dialog
-                class="ba-operate-dialog"
+                class="ba-operate-dialog select-db-dialog"
                 v-model="state.dialog.visible"
                 :title="state.dialog.type == 'sql' ? t('crud.crud.Please enter SQL') : t('crud.crud.Please select a data table')"
             >
@@ -150,6 +150,9 @@ const onSubmit = (formEl: FormInstance | undefined = undefined) => {
 </script>
 
 <style scoped lang="scss">
+:deep(.select-db-dialog) .el-dialog__body {
+    height: unset;
+}
 .crud-title {
     display: flex;
     align-items: center;

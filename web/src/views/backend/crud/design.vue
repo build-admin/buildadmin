@@ -1173,6 +1173,9 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
     padding: 20px;
     background-color: var(--el-color-white);
 }
+:deep(.confirm-generate-dialog) .el-dialog__body {
+    height: unset;
+}
 .confirm-generate-dialog-body {
     padding: 30px;
 }
