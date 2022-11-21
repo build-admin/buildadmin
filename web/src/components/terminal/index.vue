@@ -1,5 +1,6 @@
 <template>
     <el-dialog v-bind="$attrs" v-model="terminal.state.show" :title="t('terminal.Terminal')" class="ba-terminal-dialog" :append-to-body="true">
+        <el-alert class="terminal-warning-alert" v-if="state.terminalWarning" :title="state.terminalWarning" type="error" />
         <el-timeline v-if="terminal.state.taskList.length">
             <el-timeline-item
                 v-for="(item, idx) in terminal.state.taskList"
@@ -96,7 +97,6 @@
                 }}</el-button>
             </template>
         </el-button-group>
-        <el-alert v-if="state.terminalWarning" :title="state.terminalWarning" type="warning" />
     </el-dialog>
 
     <el-dialog
@@ -293,6 +293,9 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+.terminal-warning-alert {
+    margin: -20px 0 20px 0;
+}
 .command {
     font-size: var(--el-font-size-large);
     font-weight: bold;
