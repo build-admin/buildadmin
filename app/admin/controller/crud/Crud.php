@@ -388,14 +388,15 @@ class Crud extends Backend
         $sql   = $this->request->post('sql');
         $table = $this->request->post('table');
         if ($type == 'db') {
-            $columns = Helper::parseTableColumns($table);
-
             $sql       = 'SELECT * FROM `information_schema`.`tables` '
                 . 'WHERE TABLE_SCHEMA = ? AND table_name = ?';
             $tableInfo = Db::query($sql, [config('database.connections.mysql.database'), Helper::getTableName($table)]);
+            if (!$tableInfo) {
+                $this->error(__('Record not found'));
+            }
             $this->success('', [
-                'columns' => $columns,
-                'comment' => $tableInfo[0]['TABLE_COMMENT'],
+                'columns' => Helper::parseTableColumns($table),
+                'comment' => $tableInfo[0]['TABLE_COMMENT'] ?? '',
             ]);
         } elseif ($type == 'sql') {
             // TODO
