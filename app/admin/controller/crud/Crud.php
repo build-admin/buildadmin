@@ -262,6 +262,7 @@ class Crud extends Backend
                 'id'     => $crudLogId,
                 'status' => 'error',
             ]);
+            if (env('app_debug', false)) throw $e;
             $this->error($e->getMessage());
         }
 
