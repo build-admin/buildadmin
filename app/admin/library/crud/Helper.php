@@ -246,14 +246,17 @@ class Helper
     public static function createTable($name, $comment, $fields): array
     {
         $fieldType = [
-            'variableLength' => ['blob', 'date', 'enum', 'geometry', 'geometrycollection', 'json', 'linestring', 'longblob', 'longtext', 'mediumblob', 'mediumtext', 'multilinestring', 'multipoint', 'multipolygon', 'point', 'polygon', 'set', 'text', 'tinyblob', 'tinytext', 'year'],
-            'fixedLength'    => ['int', 'bigint', 'binary', 'bit', 'char', 'datetime', 'mediumint', 'smallint', 'time', 'timestamp', 'tinyint', 'varbinary', 'varchar'],
-            'decimal'        => ['decimal', 'double', 'float'],
+            'variableLength'  => ['blob', 'date', 'enum', 'geometry', 'geometrycollection', 'json', 'linestring', 'longblob', 'longtext', 'mediumblob', 'mediumtext', 'multilinestring', 'multipoint', 'multipolygon', 'point', 'polygon', 'set', 'text', 'tinyblob', 'tinytext', 'year'],
+            'fixedLength'     => ['int', 'bigint', 'binary', 'bit', 'char', 'datetime', 'mediumint', 'smallint', 'time', 'timestamp', 'tinyint', 'varbinary', 'varchar'],
+            'decimal'         => ['decimal', 'double', 'float'],
+            'supportUnsigned' => ['int', 'tinyint', 'smallint', 'mediumint', 'integer', 'bigint', 'real', 'double', 'float', 'decimal', 'numeric'],
         ];
         $name      = self::getTableName($name);
         $sql       = "CREATE TABLE IF NOT EXISTS `$name` (" . PHP_EOL;
         $pk        = '';
         foreach ($fields as $field) {
+            $fieldConciseType = self::analyseFieldType($field);
+            // 组装dateType
             if (!isset($field['dataType']) || !$field['dataType']) {
                 if (!$field['type']) {
                     continue;
@@ -268,7 +271,7 @@ class Helper
                     $field['dataType'] = $field['precision'] ? "{$field['type']}({$field['length']},{$field['precision']})" : "{$field['type']}({$field['length']})";
                 }
             }
-            $unsigned      = $field['unsigned'] ? ' UNSIGNED' : '';
+            $unsigned      = ($field['unsigned'] && in_array($fieldConciseType, $fieldType['supportUnsigned'])) ? ' UNSIGNED' : '';
             $null          = $field['null'] ? ' NULL' : ' NOT NULL';
             $autoIncrement = $field['autoIncrement'] ? ' AUTO_INCREMENT' : '';
             $default       = '';
@@ -535,16 +538,22 @@ class Helper
         }
     }
 
+    public static function analyseFieldType($field): string
+    {
+        $dataType = (isset($field['dataType']) && $field['dataType']) ? $field['dataType'] : $field['type'];
+        if (stripos($dataType, '(') !== false) {
+            $typeName = explode('(', $field['dataType']);
+            return trim($typeName[0]);
+        }
+        return trim($field['type']);
+    }
+
     /**
      * 分析字段
      */
     public static function analyseField(&$field)
     {
-        $field['dataType'] = (isset($field['dataType']) && $field['dataType']) ? $field['dataType'] : $field['type'];
-        if (stripos($field['dataType'], '(') !== false) {
-            $typeName      = explode('(', $field['dataType']);
-            $field['type'] = trim($typeName[0]);
-        }
+        $field['type'] = self::analyseFieldType($field);
 
         // 表单项类型转换对照表
         $designTypeComparison = [
