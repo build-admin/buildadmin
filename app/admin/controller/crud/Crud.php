@@ -529,7 +529,7 @@ class Crud extends Backend
             }
 
             foreach ($relationFields as $relationField) {
-                $relationFieldPrefix     = strtolower($tableName) . '.';
+                $relationFieldPrefix     = $relationMethod . '.';
                 $relationFieldLangPrefix = strtolower($tableName) . '__';
                 if (array_key_exists($relationField, $columns)) {
                     Helper::getDictData($dictEn, $columns[$relationField], 'en', $relationFieldLangPrefix);
