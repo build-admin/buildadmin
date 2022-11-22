@@ -218,7 +218,12 @@
                         <el-form label-position="top">
                             <el-divider content-position="left">{{ t('crud.crud.Common') }}</el-divider>
                             <el-form-item :label="t('crud.crud.generate')">
-                                <el-select class="w100" v-model="state.fields[state.activateField].designType" placement="bottom">
+                                <el-select
+                                    @change="onFieldDesignTypeChange"
+                                    class="w100"
+                                    v-model="state.fields[state.activateField].designType"
+                                    placement="bottom"
+                                >
                                     <el-option v-for="(item, idx) in designTypes" :key="idx" :label="item.name" :value="idx" />
                                 </el-select>
                             </el-form-item>
@@ -596,6 +601,17 @@ type TableKey = keyof typeof state.table
 
 const onActivateField = (idx: number) => {
     state.activateField = idx
+}
+
+const onFieldDesignTypeChange = () => {
+    const field = cloneDeep(state.fields[state.activateField])
+    for (const tKey in field.table) {
+        field.table[tKey] = field.table[tKey].value
+    }
+    for (const tKey in field.form) {
+        field.form[tKey] = field.form[tKey].value
+    }
+    state.fields[state.activateField] = handleFieldAttr(field)
 }
 
 const onFieldNameChange = (val: string) => {
