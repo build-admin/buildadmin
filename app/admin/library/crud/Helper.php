@@ -497,7 +497,7 @@ class Helper
         $columns     = [];
         $tableColumn = Db::query($sql, [config('database.connections.mysql.database'), self::getTableName($table)]);
         foreach ($tableColumn as $item) {
-            $columns[$item['COLUMN_NAME']] = [
+            $column = [
                 'name'          => $item['COLUMN_NAME'],
                 'type'          => $item['DATA_TYPE'],
                 'dataType'      => stripos($item['COLUMN_TYPE'], '(') !== false ? substr_replace($item['COLUMN_TYPE'], '', stripos($item['COLUMN_TYPE'], ')') + 1) : $item['COLUMN_TYPE'],
@@ -512,10 +512,27 @@ class Helper
                 'form'          => [],
             ];
             if ($analyseField) {
-                self::analyseField($columns[$item['COLUMN_NAME']]);
+                self::analyseField($column);
+            } else {
+                self::handleTableColumn($column);
             }
+            $columns[$item['COLUMN_NAME']] = $column;
         }
         return $columns;
+    }
+
+    /**
+     * 解析到的表字段的额外处理
+     */
+    public static function handleTableColumn(&$column)
+    {
+        // designType转换为前端兼容的格式
+        $multipleDesignType = ['selects', 'images', 'files', 'remoteSelects'];
+        if (in_array($column['designType'], $multipleDesignType)) {
+            $column['designType']      = rtrim($column['designType'], 's');
+            $multiKey                  = $column['designType'] == 'remoteSelect' ? 'select-multi' : $column['designType'] . '-multi';
+            $column['form'][$multiKey] = true;
+        }
     }
 
     /**

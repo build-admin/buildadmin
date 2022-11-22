@@ -303,9 +303,11 @@
                                         :label="$t('crud.crud.' + idx)"
                                         :type="item.type"
                                         v-model="state.fields[state.activateField].table[idx].value"
+                                        :placeholder="state.fields[state.activateField].table[idx].placeholder ?? ''"
                                         :data="{
                                             content: state.fields[state.activateField].table[idx].options ?? {},
                                         }"
+                                        :input-attr="state.fields[state.activateField].table[idx].attr ?? {}"
                                     />
                                 </template>
                             </template>
@@ -481,7 +483,7 @@ import type { FieldItem } from '/@/views/backend/crud/index'
 import { cloneDeep, range, isEmpty } from 'lodash-es'
 import Sortable, { SortableEvent } from 'sortablejs'
 import { useTemplateRefsList } from '@vueuse/core'
-import { changeStep, state as crudState } from '/@/views/backend/crud/index'
+import { changeStep, state as crudState, getTableAttr } from '/@/views/backend/crud/index'
 import { ElNotification, FormItemRule, FormInstance, ElMessageBox } from 'element-plus'
 import { getDatabaseList, getFileData, generateCheck, generate, parseFieldData, postLogStart } from '/@/api/backend/crud'
 import { getTableFieldList } from '/@/api/common'
@@ -745,6 +747,25 @@ interface SortableEvt extends SortableEvent {
     originalEvent?: DragEvent
 }
 
+/**
+ * 处理字段的属性
+ */
+const handleFieldAttr = (field: FieldItem) => {
+    const designTypeAttr = cloneDeep(designTypes[field.designType])
+    for (const tKey in field.form) {
+        if (designTypeAttr.form[tKey]) designTypeAttr.form[tKey].value = field.form[tKey]
+        if (tKey == 'image-multi' && field.form[tKey]) {
+            designTypeAttr.table['render'] = getTableAttr('render', 'images')
+        }
+    }
+    for (const tKey in field.table) {
+        if (designTypeAttr.table[tKey]) designTypeAttr.table[tKey].value = field.table[tKey]
+    }
+    field.form = designTypeAttr.form
+    field.table = designTypeAttr.table
+    return field
+}
+
 const loadData = () => {
     if (!['db', 'sql', 'log'].includes(crudState.type)) return
 
@@ -757,16 +778,7 @@ const loadData = () => {
                 state.table = res.data.table
                 const fields = res.data.fields
                 for (const key in fields) {
-                    const field = cloneDeep(fields[key])
-                    const designTypeAttr = cloneDeep(designTypes[field.designType])
-                    field.form = designTypeAttr.form
-                    field.table = designTypeAttr.table
-                    for (const tKey in field.table) {
-                        field.table[tKey].value = fields[key].table[tKey]
-                    }
-                    for (const tKey in field.form) {
-                        field.form[tKey].value = fields[key].form[tKey]
-                    }
+                    const field = handleFieldAttr(cloneDeep(fields[key]))
                     state.fields.push(field)
                 }
             })
@@ -781,11 +793,7 @@ const loadData = () => {
         .then((res) => {
             let fields = []
             for (const key in res.data.columns) {
-                const field = res.data.columns[key]
-                const designTypeAttr = cloneDeep(designTypes[field.designType])
-                field.form = designTypeAttr.form
-                field.table = designTypeAttr.table
-
+                const field = handleFieldAttr(res.data.columns[key])
                 if (!['id', 'update_time', 'create_time', 'updatetime', 'createtime'].includes(field.name)) {
                     state.table.formFields.push(field.name)
                 }
@@ -823,7 +831,7 @@ onMounted(() => {
             const name = evt.originalEvent?.dataTransfer?.getData('name')
             const field = fieldItem[name as keyof typeof fieldItem]
             if (field && field[evt.oldIndex!]) {
-                const data = cloneDeep(field[evt.oldIndex!])
+                const data = handleFieldAttr(cloneDeep(field[evt.oldIndex!]))
 
                 // 主键重复检测
                 if (data.primaryKey == true) {
@@ -852,11 +860,6 @@ onMounted(() => {
                     data.name = data.name + nameRepeatCount
                     nameRepeatCount++
                 }
-
-                // 找到字段类型的附加属性
-                const designTypeAttr = cloneDeep(designTypes[data.designType])
-                data.form = designTypeAttr.form
-                data.table = designTypeAttr.table
 
                 state.fields.splice(evt.newIndex!, 0, data)
 

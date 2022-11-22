@@ -585,7 +585,7 @@ const formBaseAttr = {
     },
 }
 
-const getTableAttr = (type: keyof typeof tableBaseAttr, val: string) => {
+export const getTableAttr = (type: keyof typeof tableBaseAttr, val: string) => {
     return {
         ...tableBaseAttr[type],
         value: val,
