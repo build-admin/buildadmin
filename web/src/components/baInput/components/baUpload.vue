@@ -17,7 +17,9 @@
             <template v-if="slots.default" #default><slot name="default"></slot></template>
             <template v-else #default>
                 <template v-if="type == 'image' || type == 'images'">
-                    <div @click.stop="state.selectFile.show = true" class="ba-upload-select-image">{{ $t('routine.attachment.choice') }}</div>
+                    <div v-if="!hideSelectFile" @click.stop="state.selectFile.show = true" class="ba-upload-select-image">
+                        {{ $t('routine.attachment.choice') }}
+                    </div>
                     <Icon class="ba-upload-icon" name="el-icon-Plus" size="30" color="#c0c4cc" />
                 </template>
                 <template v-else>
@@ -25,7 +27,7 @@
                         <Icon name="el-icon-Plus" color="#ffffff" />
                         <span>{{ $t('Upload') }}</span>
                     </el-button>
-                    <el-button @click.stop="state.selectFile.show = true" type="success">
+                    <el-button v-if="!hideSelectFile" @click.stop="state.selectFile.show = true" type="success">
                         <Icon name="fa fa-th-list" size="14px" color="#ffffff" />
                         <span class="ml-6">{{ $t('routine.attachment.choice') }}</span>
                     </el-button>
@@ -59,6 +61,8 @@ interface Props {
     modelValue: string | string[]
     // 返回绝对路径
     returnFullUrl?: boolean
+    // 隐藏附件选择器
+    hideSelectFile?: boolean
     // 可自定义el-upload的其他属性
     attr?: Partial<UploadProps>
 }
@@ -73,6 +77,7 @@ const props = withDefaults(defineProps<Props>(), {
     },
     modelValue: () => [],
     returnFullUrl: false,
+    hideSelectFile: false,
     attr: () => {
         return {}
     },

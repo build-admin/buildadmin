@@ -137,6 +137,7 @@ export interface InputAttr {
     'list-type'?: string
     'auto-upload'?: boolean
     limit?: number
+    'hide-select-file'?: boolean
     'return-full-url'?: boolean
     // editor属性
     height?: string
