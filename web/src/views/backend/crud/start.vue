@@ -201,4 +201,12 @@ const onSubmit = (formEl: FormInstance | undefined = undefined) => {
         padding-left: 10px;
     }
 }
+@at-root .dark {
+    .start-item {
+        background-color: #1D1E1F;
+    }
+    .crud-tips {
+        background-color: rgba($color: #1D1E1F, $alpha: 0.4);
+    }
+}
 </style>

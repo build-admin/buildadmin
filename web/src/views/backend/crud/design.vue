@@ -1071,7 +1071,7 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
         font-size: var(--el-font-size-small);
         border-bottom-left-radius: 50px;
         border-bottom-right-radius: 50px;
-        background-color: var(--el-color-white);
+        background-color: var(--ba-bg-color-overlay);
         color: var(--el-color-info);
         cursor: pointer;
         user-select: none;
@@ -1083,7 +1083,7 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
 .header-senior-config-box {
     width: 100%;
     padding: 10px;
-    background-color: var(--el-color-white);
+    background-color: var(--ba-bg-color-overlay);
 }
 .header-senior-config-form {
     width: 50%;
@@ -1096,7 +1096,7 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
     align-items: center;
     height: 60px;
     padding: 10px;
-    background-color: var(--el-color-white);
+    background-color: var(--ba-bg-color-overlay);
     border-radius: var(--el-border-radius-base);
     .header,
     .header-item-box {
@@ -1149,7 +1149,7 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
     overflow-x: auto;
     height: calc(100vh - 200px);
     border-radius: var(--el-border-radius-base);
-    background-color: var(--el-color-white);
+    background-color: var(--ba-bg-color-overlay);
     .design-field-box {
         display: flex;
         padding: 10px;
@@ -1190,7 +1190,7 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
     overflow-x: auto;
     height: calc(100vh - 200px);
     padding: 20px;
-    background-color: var(--el-color-white);
+    background-color: var(--ba-bg-color-overlay);
 }
 :deep(.confirm-generate-dialog) .el-dialog__body {
     height: unset;
