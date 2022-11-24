@@ -1,0 +1,5 @@
+
+    public function get{%field%}Attr($value): float
+    {
+        return (float)$value;
+    }

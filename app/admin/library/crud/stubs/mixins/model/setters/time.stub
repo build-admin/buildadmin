@@ -1,5 +1,5 @@
 
-    public function set{%field%}Attr($value)
+    public function set{%field%}Attr($value): string
     {
         return $value ? date('H:i:s', strtotime($value)) : '';
     }

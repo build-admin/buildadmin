@@ -553,7 +553,8 @@ class Helper
      */
     public static function analyseField(&$field)
     {
-        $field['type'] = self::analyseFieldType($field);
+        $field['type']               = self::analyseFieldType($field);
+        $field['originalDesignType'] = $field['designType'];
 
         // 表单项类型转换对照表
         $designTypeComparison = [
