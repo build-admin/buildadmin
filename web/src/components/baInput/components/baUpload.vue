@@ -6,10 +6,11 @@
             :class="type"
             v-model:file-list="state.fileList"
             :auto-upload="false"
-            @change="onChange"
-            @remove="onRemove"
-            @preview="onPreview"
-            @exceed="onExceed"
+            @change="onElChange"
+            @remove="onElRemove"
+            @preview="onElPreview"
+            @exceed="onElExceed"
+            :before-remove="onBeforeRemove"
             v-bind="state.attr"
             :key="state.key"
         >
@@ -54,6 +55,7 @@ import SelectFile from '/@/components/baInput/components/selectFile.vue'
 import { uuid } from '/@/utils/random'
 import { cloneDeep, isEmpty } from 'lodash-es'
 
+type Writeable<T> = { -readonly [P in keyof T]: T[P] }
 interface Props {
     type: 'image' | 'images' | 'file' | 'files'
     // 上传请求时的额外携带数据
@@ -64,7 +66,7 @@ interface Props {
     // 隐藏附件选择器
     hideSelectFile?: boolean
     // 可自定义el-upload的其他属性
-    attr?: Partial<UploadProps>
+    attr?: Partial<Writeable<UploadProps>>
 }
 interface UploadFileExt extends UploadUserFile {
     serverUrl?: string
@@ -111,6 +113,7 @@ const state: {
         limit?: number
         returnFullUrl: boolean
     }
+    events: anyObj
 } = reactive({
     key: uuid(),
     defaultReturnType: 'string',
@@ -126,10 +129,12 @@ const state: {
         type: 'file',
         returnFullUrl: props.returnFullUrl,
     },
+    events: [],
 })
 
-const onChange = (file: UploadFileExt) => {
+const onElChange = (file: UploadFileExt) => {
     if (!file || !file.raw) return
+    if (typeof state.events['beforeUpload'] == 'function' && state.events['beforeUpload'](file) === false) return
     let fd = new FormData()
     fd.append('file', file.raw!)
     fd = formDataAppend(fd)
@@ -139,22 +144,33 @@ const onChange = (file: UploadFileExt) => {
             if (res.code == 1) {
                 file.serverUrl = res.data.file.url
                 file.status = 'success'
-                emits('update:modelValue', getAllUrls())
+                const urls = getAllUrls()
+                typeof state.events['onSuccess'] == 'function' && state.events['onSuccess'](res, file, urls)
+                emits('update:modelValue', urls)
             }
         })
-        .catch(() => {
+        .catch((res) => {
             file.status = 'fail'
+            typeof state.events['onError'] == 'function' && state.events['onError'](res, file, getAllUrls())
         })
         .finally(() => {
             state.uploading--
+            typeof state.events['onChange'] == 'function' && state.events['onChange'](file, getAllUrls())
         })
 }
 
-const onRemove = () => {
-    emits('update:modelValue', getAllUrls())
+const onBeforeRemove = (rawFile: UploadRawFile) => {
+    if (typeof state.events['beforeRemove'] == 'function' && state.events['beforeRemove'](rawFile) === false) return false
 }
 
-const onPreview = (file: UploadFileExt) => {
+const onElRemove = (file: UploadUserFile) => {
+    const urls = getAllUrls()
+    typeof state.events['onRemove'] == 'function' && state.events['onRemove'](file, urls)
+    emits('update:modelValue', urls)
+}
+
+const onElPreview = (file: UploadFileExt) => {
+    typeof state.events['onPreview'] == 'function' && state.events['onPreview'](file)
     if (!file || !file.url) {
         return
     }
@@ -166,17 +182,20 @@ const onPreview = (file: UploadFileExt) => {
     state.preview.url = file.url
 }
 
-const onExceed = (files: UploadUserFile[]) => {
+const onElExceed = (files: UploadUserFile[]) => {
     const file = files[0] as UploadRawFile
     file.uid = genFileId()
     upload.value!.handleStart(file)
+    typeof state.events['onExceed'] == 'function' && state.events['onExceed'](file, files)
 }
 
 const onChoice = (files: string[]) => {
     let oldValArr = getAllUrls('array') as string[]
     files = oldValArr.concat(files)
     init(files)
-    emits('update:modelValue', getAllUrls())
+    const urls = getAllUrls()
+    emits('update:modelValue', urls)
+    typeof state.events['onChange'] == 'function' && state.events['onChange'](files, urls)
     state.selectFile.show = false
 }
 
@@ -190,6 +209,14 @@ onMounted(() => {
     if (props.type == 'image' || props.type == 'images') {
         state.selectFile.type = 'image'
         state.attr = { ...state.attr, accept: 'image/*', listType: 'picture-card' }
+    }
+
+    const evtArr = ['onPreview', 'onRemove', 'onSuccess', 'onError', 'onChange', 'onExceed', 'beforeUpload', 'beforeRemove', 'onProgress']
+    for (const key in props.attr) {
+        if (evtArr.includes(key)) {
+            state.events[key] = props.attr[key as keyof typeof props.attr]
+            delete props.attr[key as keyof typeof props.attr]
+        }
     }
 
     state.attr = { ...state.attr, ...props.attr }
