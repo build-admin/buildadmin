@@ -505,6 +505,22 @@ export const fieldItem: {
             table: {},
             form: {},
         },
+        {
+            title: i18n.global.t('utils.color picker'),
+            name: 'color',
+            type: 'varchar',
+            length: 30,
+            precision: 0,
+            default: 'empty string',
+            null: false,
+            primaryKey: false,
+            unsigned: false,
+            autoIncrement: false,
+            comment: i18n.global.t('utils.color picker'),
+            designType: 'color',
+            table: {},
+            form: {},
+        },
     ],
 }
 
@@ -522,6 +538,7 @@ const tableBaseAttr = {
             tags: 'Tags',
             url: 'URL',
             datetime: i18n.global.t('utils.time date'),
+            color: i18n.global.t('utils.color'),
         },
     },
     operator: {
@@ -882,6 +899,14 @@ export const designTypes: anyObj = {
         name: i18n.global.t('utils.icon select'),
         table: {
             render: getTableAttr('render', 'icon'),
+            operator: getTableAttr('operator', 'false'),
+        },
+        form: formBaseAttr,
+    },
+    color: {
+        name: i18n.global.t('utils.color picker'),
+        table: {
+            render: getTableAttr('render', 'color'),
             operator: getTableAttr('operator', 'false'),
         },
         form: formBaseAttr,

@@ -51,5 +51,7 @@ export default {
     'remote select': '远程下拉',
     'city select': '城市选择',
     'icon select': '图标选择',
+    'color picker': '颜色选择器',
+    color: '颜色',
     choice: '选择',
 }

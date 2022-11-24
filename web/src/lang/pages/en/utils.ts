@@ -51,5 +51,7 @@ export default {
     'remote select': 'Remote Select',
     'city select': 'City select',
     'icon select': 'Icon select',
+    'color picker': 'color picker',
+    color: 'color',
     choice: ' Choice',
 }
