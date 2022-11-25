@@ -157,7 +157,10 @@ const getIndex = () => {
                             [state.config[key].list[lKey].name]: ruleArr,
                         })
                     }
-                    formNames[state.config[key].list[lKey].name] = state.config[key].list[lKey].value
+                    formNames[state.config[key].list[lKey].name] =
+                        state.config[key].list[lKey].type == 'number'
+                            ? parseFloat(state.config[key].list[lKey].value)
+                            : state.config[key].list[lKey].value
                 }
             }
 
