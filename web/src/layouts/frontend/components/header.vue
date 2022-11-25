@@ -48,7 +48,14 @@
                 </el-menu>
             </el-col>
         </el-row>
-        <el-drawer custom-class="aside-drawer" v-model="memberCenter.state.menuExpand" :with-header="false" direction="ltr" size="50%">
+        <el-drawer
+            custom-class="aside-drawer"
+            :append-to-body="true"
+            v-model="memberCenter.state.menuExpand"
+            :with-header="false"
+            direction="ltr"
+            size="70%"
+        >
             <Aside />
         </el-drawer>
     </el-header>

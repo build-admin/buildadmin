@@ -9,9 +9,15 @@
                         <div class="main-content">
                             {{ $t('index.Steve Jobs') }}
                         </div>
-                        <el-button v-if="memberCenter.state.open" @click="$router.push('/user')" color="#ffffff" size="large">{{
-                            $t('index.Member Center')
-                        }}</el-button>
+                        <el-button
+                            v-if="memberCenter.state.open"
+                            @click="$router.push('/user')"
+                            class="container-button"
+                            color="#ffffff"
+                            size="large"
+                        >
+                            {{ $t('index.Member Center') }}
+                        </el-button>
                     </div>
                     <div class="main-right">
                         <img :src="indexCover" alt="" />
@@ -38,6 +44,9 @@ togglePageDark(false)
 </script>
 
 <style scoped lang="scss">
+.container-button {
+    margin: 0 15px 15px 0;
+}
 .container {
     width: 100vw;
     height: 100vh;
@@ -109,6 +118,11 @@ togglePageDark(false)
 }
 
 @media screen and (max-width: 1024px) {
+    .container {
+        .main {
+            height: unset;
+        }
+    }
     .main-container {
         width: 90% !important;
         flex-wrap: wrap;
