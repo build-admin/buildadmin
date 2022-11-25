@@ -229,14 +229,14 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     display: flex;
     width: 100vw;
     height: 100vh;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
     .login-box {
         overflow: hidden;
         width: 430px;
         padding: 0;
         background: var(--ba-bg-color-overlay);
-        margin-top: 130px;
+        margin-bottom: 80px;
     }
     .head {
         background: #ccccff;
@@ -319,6 +319,11 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     }
     .captcha-img {
         filter: brightness(61%);
+    }
+}
+@media screen and (max-height: 800px) {
+    .login .login-box {
+        margin-bottom: 0;
     }
 }
 </style>
