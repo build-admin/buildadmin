@@ -985,7 +985,7 @@ export const designTypes: anyObj = {
     city: {
         name: i18n.global.t('utils.city select'),
         table: {
-            operator: getTableAttr('operator', 'LIKE'),
+            operator: getTableAttr('operator', 'false'),
         },
         form: formBaseAttr,
     },
