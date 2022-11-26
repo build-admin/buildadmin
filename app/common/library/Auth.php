@@ -181,8 +181,7 @@ class Auth extends \ba\Auth
         $data = array_merge($data, $extend);
         Db::startTrans();
         try {
-            User::create($data);
-            $this->model = User::where('username', $username)->find();
+            $this->model = User::create($data);
             $this->token = Random::uuid();
             Token::set($this->token, 'user', $this->model->id, $this->keeptime);
             Event::trigger('userRegisterSuccessed', $this->model);
