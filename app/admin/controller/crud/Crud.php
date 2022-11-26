@@ -605,6 +605,14 @@ class Crud extends Backend
                 'field' => $fieldName
             ]);
         }
+
+        if ($field['designType'] == 'city') {
+            $modelData['append'][]  = $field['name'] . '_text';
+            $modelData['methods'][] = Helper::assembleStub('mixins/model/getters/cityNames', [
+                'field'             => $fieldName . 'Text',
+                'originalFieldName' => $field['name'],
+            ]);
+        }
     }
 
     /**
@@ -721,7 +729,7 @@ class Crud extends Backend
     {
         $column = [
             'label' => "t('" . $this->webTranslate . $translationPrefix . $field['name'] . "')",
-            'prop'  => $fieldNamePrefix . $field['name'],
+            'prop'  => $fieldNamePrefix . $field['name'] . ($field['designType'] == 'city' ? '_text' : ''),
             'align' => 'center',
         ];
 
