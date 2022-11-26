@@ -522,7 +522,40 @@ export const fieldItem: {
             form: {},
         },
         {
-            title: i18n.global.t('crud.state.Select(Multi)'),
+            title: i18n.global.t('utils.image') + i18n.global.t('crud.state.Multi'),
+            name: 'images',
+            type: 'varchar',
+            length: 255,
+            precision: 0,
+            default: 'empty string',
+            null: false,
+            primaryKey: false,
+            unsigned: false,
+            autoIncrement: false,
+            comment: i18n.global.t('utils.image'),
+            designType: 'images',
+            table: {},
+            form: {},
+        },
+        {
+            title: i18n.global.t('utils.file') + i18n.global.t('crud.state.Multi'),
+            name: 'files',
+            type: 'varchar',
+            length: 255,
+            precision: 0,
+            default: 'empty string',
+            null: false,
+            primaryKey: false,
+            unsigned: false,
+            autoIncrement: false,
+            comment: i18n.global.t('utils.file'),
+            designType: 'files',
+            tableBuildExclude: true,
+            table: {},
+            form: {},
+        },
+        {
+            title: i18n.global.t('utils.select') + i18n.global.t('crud.state.Multi'),
             name: 'selects',
             type: 'varchar',
             length: 100,
@@ -970,6 +1003,20 @@ export const designTypes: anyObj = {
             },
         },
     },
+    images: {
+        name: i18n.global.t('utils.image') + i18n.global.t('Upload'),
+        table: {
+            render: getTableAttr('render', 'images'),
+            operator: getTableAttr('operator', 'false'),
+        },
+        form: {
+            ...formBaseAttr,
+            'image-multi': {
+                type: 'switch',
+                value: true,
+            },
+        },
+    },
     file: {
         name: i18n.global.t('utils.file') + i18n.global.t('Upload'),
         table: {
@@ -981,6 +1028,20 @@ export const designTypes: anyObj = {
             'file-multi': {
                 type: 'switch',
                 value: false,
+            },
+        },
+    },
+    files: {
+        name: i18n.global.t('utils.file') + i18n.global.t('Upload'),
+        table: {
+            render: getTableAttr('render', 'none'),
+            operator: getTableAttr('operator', 'false'),
+        },
+        form: {
+            ...formBaseAttr,
+            'file-multi': {
+                type: 'switch',
+                value: true,
             },
         },
     },

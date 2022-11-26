@@ -534,13 +534,7 @@ class Helper
      */
     public static function handleTableColumn(&$column)
     {
-        // designType转换为前端兼容的格式
-        $multipleDesignType = ['selects', 'images', 'files', 'remoteSelects'];
-        if (in_array($column['designType'], $multipleDesignType)) {
-            $column['designType']      = rtrim($column['designType'], 's');
-            $multiKey                  = $column['designType'] == 'remoteSelect' ? 'select-multi' : $column['designType'] . '-multi';
-            $column['form'][$multiKey] = true;
-        }
+        // 预留
     }
 
     public static function analyseFieldType($field): string
