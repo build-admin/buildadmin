@@ -5,6 +5,7 @@ export default {
     'Weight (drag and drop sorting)': '权重（拖拽排序）',
     'Status:0=Disabled,1=Enabled': '状态:0=禁用,1=启用',
     'Remote Select (association table)': '远程下拉（关联表）',
+    'Remote Select (Multi)': '远程下拉（关联多选）',
     'Radio:opt0=Option1,opt1=Option2': '单选框:opt0=选项一,opt1=选项二',
     'Checkbox:opt0=Option1,opt1=Option2': '复选框:opt0=选项一,opt1=选项二',
     'Select:0=Option1,1=Option2': '下拉框:0=选项一,1=选项二',

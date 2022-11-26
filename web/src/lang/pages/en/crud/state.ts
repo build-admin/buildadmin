@@ -5,6 +5,7 @@ export default {
     'Weight (drag and drop sorting)': 'Weight (drag and drop sorting)',
     'Status:0=Disabled,1=Enabled': 'Status:0=Disabled,1=Enabled',
     'Remote Select (association table)': 'Remote Select (association table)',
+    'Remote Select (Multi)': 'Remote Select (Multi)',
     'Radio:opt0=Option1,opt1=Option2': 'Radio:opt0=Option1,opt1=Option2',
     'Checkbox:opt0=Option1,opt1=Option2': 'Checkbox:opt0=Option1,opt1=Option2',
     'Select:0=Option1,1=Option2': 'Select:0=Option1,1=Option2',

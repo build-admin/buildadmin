@@ -1,0 +1,7 @@
+
+    public function get{%field%}Attr($value, $row): array
+    {
+        return [
+            '{%labelFieldName%}' => {%className%}::whereIn('{%primaryKey%}', $row['{%foreignKey%}'])->column('{%labelFieldName%}'),
+        ];
+    }

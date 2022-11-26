@@ -174,6 +174,23 @@ export const fieldItem: {
             table: {},
             form: {},
         },
+        {
+            title: i18n.global.t('crud.state.Remote Select (Multi)'),
+            name: 'user_ids',
+            type: 'varchar',
+            length: 100,
+            precision: 0,
+            default: 'empty string',
+            null: false,
+            primaryKey: false,
+            unsigned: true,
+            autoIncrement: false,
+            comment: i18n.global.t('utils.remote select'),
+            designType: 'remoteSelects',
+            tableBuildExclude: true,
+            table: {},
+            form: {},
+        },
     ],
     base: [
         {
@@ -818,6 +835,48 @@ export const designTypes: anyObj = {
             'select-multi': {
                 type: 'switch',
                 value: false,
+            },
+            'remote-pk': {
+                type: 'string',
+                value: 'id',
+            },
+            'remote-field': {
+                type: 'string',
+                value: 'name',
+            },
+            'remote-table': {
+                type: 'string',
+                value: '',
+            },
+            'remote-controller': {
+                type: 'string',
+                value: '',
+            },
+            'remote-model': {
+                type: 'string',
+                value: '',
+            },
+            'relation-fields': {
+                type: 'string',
+                value: '',
+            },
+            'remote-url': {
+                type: 'string',
+                value: '',
+                placeholder: i18n.global.t('crud.state.If it is not input, it will be automatically analyzed by the controller'),
+            },
+        },
+    },
+    remoteSelects: {
+        name: i18n.global.t('utils.remote select') + i18n.global.t('utils.choice'),
+        table: {
+            operator: getTableAttr('operator', 'LIKE'),
+        },
+        form: {
+            ...formBaseAttr,
+            'select-multi': {
+                type: 'switch',
+                value: true,
             },
             'remote-pk': {
                 type: 'string',

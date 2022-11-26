@@ -190,7 +190,7 @@
                         </div>
                         <div class="design-field-right">
                             <el-button
-                                v-if="field.designType == 'remoteSelect'"
+                                v-if="['remoteSelect', 'remoteSelects'].includes(field.designType)"
                                 @click.stop="onEditField(index, field)"
                                 type="primary"
                                 size="small"
@@ -673,7 +673,7 @@ const showRemoteSelectPre = (index: number, hideDelField = false) => {
 }
 
 const onEditField = (index: number, field: FieldItem) => {
-    if (field.designType == 'remoteSelect') return showRemoteSelectPre(index)
+    if (['remoteSelect', 'remoteSelects'].includes(field.designType)) return showRemoteSelectPre(index)
 }
 
 const closeConfirmGenerate = () => {
@@ -880,7 +880,7 @@ onMounted(() => {
                 state.fields.splice(evt.newIndex!, 0, data)
 
                 // 远程下拉参数预填
-                if (data.designType == 'remoteSelect') {
+                if (['remoteSelect', 'remoteSelects'].includes(data.designType)) {
                     showRemoteSelectPre(evt.newIndex!, true)
                 }
 
