@@ -813,7 +813,7 @@ const loadData = () => {
                 if (!['id', 'update_time', 'create_time', 'updatetime', 'createtime'].includes(field.name)) {
                     state.table.formFields.push(field.name)
                 }
-                if (!['textarea', 'file', 'editor', 'password', 'array'].includes(field.designType)) {
+                if (!['textarea', 'file', 'files', 'editor', 'password', 'array'].includes(field.designType)) {
                     state.table.columnFields.push(field.name)
                 }
                 if (field.designType == 'pk') {
