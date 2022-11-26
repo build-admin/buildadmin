@@ -8,6 +8,7 @@ export default {
     'Remote Select (Multi)': '远程下拉（关联多选）',
     'Radio:opt0=Option1,opt1=Option2': '单选框:opt0=选项一,opt1=选项二',
     'Checkbox:opt0=Option1,opt1=Option2': '复选框:opt0=选项一,opt1=选项二',
+    'Select(Multi)': '下拉框（多选）',
     'Select:0=Option1,1=Option2': '下拉框:0=选项一,1=选项二',
     'Switch:0=off,1=on': '开关:0=关,1=开',
     'Time date (timestamp storage)': '时间日期（时间戳存储）',

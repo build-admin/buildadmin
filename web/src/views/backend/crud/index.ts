@@ -293,6 +293,22 @@ export const fieldItem: {
             form: {},
         },
         {
+            title: i18n.global.t('crud.state.Select(Multi)'),
+            name: 'selects',
+            type: 'varchar',
+            length: 100,
+            precision: 0,
+            default: 'empty string',
+            null: false,
+            primaryKey: false,
+            unsigned: false,
+            autoIncrement: false,
+            comment: i18n.global.t('crud.state.Select:0=Option1,1=Option2'),
+            designType: 'selects',
+            table: {},
+            form: {},
+        },
+        {
             title: i18n.global.t('utils.switch'),
             name: 'switch',
             type: 'tinyint',
@@ -822,6 +838,20 @@ export const designTypes: anyObj = {
             'select-multi': {
                 type: 'switch',
                 value: false,
+            },
+        },
+    },
+    selects: {
+        name: i18n.global.t('utils.select'),
+        table: {
+            ...tableBaseAttr,
+            render: getTableAttr('render', 'tags'),
+        },
+        form: {
+            ...formBaseAttr,
+            'select-multi': {
+                type: 'switch',
+                value: true,
             },
         },
     },

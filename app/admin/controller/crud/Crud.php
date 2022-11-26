@@ -682,7 +682,7 @@ class Crud extends Backend
         }
         if ($field['default'] == 'null') {
             $this->indexVueData['defaultItems'][$field['name']] = null;
-        } elseif ($field['default'] == '0' && in_array($field['designType'], ['radio', 'checkbox', 'select'])) {
+        } elseif ($field['default'] == '0' && in_array($field['designType'], ['radio', 'checkbox', 'select', 'selects'])) {
             $this->indexVueData['defaultItems'][$field['name']] = '0';
         }
         if ($field['designType'] == 'array') {
