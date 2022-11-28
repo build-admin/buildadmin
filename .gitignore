@@ -16,6 +16,7 @@ pnpm-lock.yaml
 package-lock.json
 yarn.lock
 /.env
+Desktop.ini
 
 # Log files
 *.log
