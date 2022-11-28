@@ -277,6 +277,9 @@ class Manage
         // 执行启用脚本
         Server::execEvent($this->uid, 'enable');
 
+        // 安装 WebBootstrap
+        Server::installWebBootstrap($this->uid, $this->modulesDir);
+
         $this->conflictHandle($trigger);
         $this->dependUpdateHandle();
     }
@@ -410,6 +413,9 @@ class Manage
 
         // 执行禁用脚本
         Server::execEvent($this->uid, 'disable');
+
+        // 卸载 WebBootstrap
+        Server::uninstallWebBootstrap($this->uid, $this->modulesDir);
 
         $this->setInfo([
             'state' => self::DISABLE,

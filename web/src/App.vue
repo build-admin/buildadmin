@@ -11,6 +11,7 @@ import { useRoute } from 'vue-router'
 import { setTitleFromRoute } from '/@/utils/common'
 import { useConfig } from '/@/stores/config'
 import { useTerminal } from '/@/stores/terminal'
+// modules import mark, Please do not remove.
 
 const config = useConfig()
 const route = useRoute()
@@ -22,6 +23,8 @@ const lang = getLocaleMessage(config.lang.defaultLang) as any
 onMounted(() => {
     iconfontInit()
     terminal.init()
+
+    // Modules onMounted mark, Please do not remove.
 })
 
 // 监听路由变化时更新浏览器标题

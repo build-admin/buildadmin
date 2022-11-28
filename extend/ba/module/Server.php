@@ -14,6 +14,7 @@ use RecursiveDirectoryIterator;
 use PhpZip\Exception\ZipException;
 use GuzzleHttp\Exception\TransferException;
 use think\db\exception\PDOException;
+use app\admin\library\crud\Helper;
 
 /**
  * 模块服务类
@@ -304,6 +305,165 @@ class Server
             if (method_exists($eventClass, $event)) {
                 $handle->$event();
             }
+        }
+    }
+
+    /**
+     * 分析 WebBootstrap 代码
+     */
+    public static function analysisWebBootstrap(string $uid, string $dir): array
+    {
+        $bootstrapFile = $dir . 'webBootstrap.stub';
+        if (!file_exists($bootstrapFile)) return [];
+        $bootstrapContent = file_get_contents($bootstrapFile);
+        $pregArr          = [
+            'mainTsImport'    => '/#main.ts import code start#([\s\S]*?)#main.ts import code end#/i',
+            'mainTsStart'     => '/#main.ts start code start#([\s\S]*?)#main.ts start code end#/i',
+            'appVueImport'    => '/#App.vue import code start#([\s\S]*?)#App.vue import code end#/i',
+            'appVueOnMounted' => '/#App.vue onMounted code start#([\s\S]*?)#App.vue onMounted code end#/i',
+        ];
+        $codeStrArr       = [];
+        foreach ($pregArr as $key => $item) {
+            preg_match($item, $bootstrapContent, $matches);
+            if (isset($matches[1]) && $matches[1]) {
+                $mainImportCodeArr = array_filter(preg_split('/\r\n|\r|\n/', $matches[1]));
+                if ($mainImportCodeArr) {
+                    $codeStrArr[$key] = "\n";
+                    if (count($mainImportCodeArr) == 1) {
+                        foreach ($mainImportCodeArr as $codeItem) {
+                            $codeStrArr[$key] .= $codeItem . self::buildMarkStr('module-line-mark', $uid, $key);
+                        }
+                    } else {
+                        $codeStrArr[$key] .= self::buildMarkStr('module-multi-line-mark-start', $uid, $key);
+                        foreach ($mainImportCodeArr as $codeItem) {
+                            $codeStrArr[$key] .= $codeItem . "\n";
+                        }
+                        $codeStrArr[$key] .= self::buildMarkStr('module-multi-line-mark-end', $uid, $key);
+                    }
+                }
+            }
+            unset($matches);
+        }
+
+        return $codeStrArr;
+    }
+
+    /**
+     * 安装 WebBootstrap
+     */
+    public static function installWebBootstrap(string $uid, string $dir)
+    {
+        $mainTsKeys    = ['mainTsImport', 'mainTsStart'];
+        $bootstrapCode = self::analysisWebBootstrap($uid, $dir);
+        $basePath      = root_path() . 'web' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR;
+
+        $marks = [
+            'mainTsImport'    => self::buildMarkStr('import-root-mark'),
+            'mainTsStart'     => self::buildMarkStr('start-root-mark'),
+            'appVueImport'    => self::buildMarkStr('import-root-mark'),
+            'appVueOnMounted' => self::buildMarkStr('onMounted-root-mark'),
+        ];
+
+        foreach ($bootstrapCode as $key => $item) {
+            if ($item && isset($marks[$key])) {
+                $filePath = $basePath . (in_array($key, $mainTsKeys) ? 'main.ts' : 'App.vue');
+                $content  = file_get_contents($filePath);
+
+                $markPos = stripos($content, $marks[$key]);
+                if ($markPos && strripos($content, self::buildMarkStr('module-line-mark', $uid, $key)) === false && strripos($content, self::buildMarkStr('module-multi-line-mark-start', $uid, $key)) === false) {
+                    $content = substr_replace($content, $item, $markPos + strlen($marks[$key]), 0);
+                    file_put_contents($filePath, $content);
+                }
+            }
+        }
+    }
+
+    /**
+     * 卸载 WebBootstrap
+     */
+    public static function uninstallWebBootstrap(string $uid, string $dir)
+    {
+        $mainTsKeys = ['mainTsImport', 'mainTsStart'];
+        $basePath   = root_path() . 'web' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR;
+        $marksKey   = [
+            'mainTsImport',
+            'mainTsStart',
+            'appVueImport',
+            'appVueOnMounted',
+        ];
+
+        foreach ($marksKey as $item) {
+            $filePath                 = $basePath . (in_array($item, $mainTsKeys) ? 'main.ts' : 'App.vue');
+            $content                  = file_get_contents($filePath);
+            $moduleLineMark           = self::buildMarkStr('module-line-mark', $uid, $item);
+            $moduleMultiLineMarkStart = self::buildMarkStr('module-multi-line-mark-start', $uid, $item);
+            $moduleMultiLineMarkEnd   = self::buildMarkStr('module-multi-line-mark-end', $uid, $item);
+
+            // 寻找标记，找到则将其中内容删除
+            $moduleLineMarkPos = strripos($content, $moduleLineMark);
+            if ($moduleLineMarkPos !== false) {
+                $delStartTemp = explode($moduleLineMark, $content);
+                $delStartPos  = strripos(rtrim($delStartTemp[0], "\n"), "\n");
+                $delEndPos    = stripos($content, "\n", $moduleLineMarkPos);
+                $content      = substr_replace($content, '', $delStartPos, $delEndPos - $delStartPos);
+            }
+
+            $moduleMultiLineMarkStartPos = stripos($content, $moduleMultiLineMarkStart);
+            if ($moduleMultiLineMarkStartPos !== false) {
+                $moduleMultiLineMarkStartPos--;
+                $moduleMultiLineMarkEndPos = stripos($content, $moduleMultiLineMarkEnd);
+                $delLang                   = ($moduleMultiLineMarkEndPos + strlen($moduleMultiLineMarkEnd)) - $moduleMultiLineMarkStartPos;
+                $content                   = substr_replace($content, '', $moduleMultiLineMarkStartPos, $delLang);
+            }
+
+            if ($moduleLineMarkPos || $moduleMultiLineMarkStartPos) {
+                file_put_contents($filePath, $content);
+            }
+        }
+    }
+
+    /**
+     * 构建 WebBootstrap 需要的各种标记字符串
+     * @param string $type
+     * @param string $uid    模块UID
+     * @param string $extend 扩展数据
+     * @return string
+     */
+    public static function buildMarkStr(string $type, string $uid = '', string $extend = ''): string
+    {
+        $importKeys = ['mti', 'avi'];
+        switch ($extend) {
+            case 'mainTsImport':
+                $extend = 'mti';
+                break;
+            case 'mainTsStart':
+                $extend = 'mts';
+                break;
+            case 'appVueImport':
+                $extend = 'avi';
+                break;
+            case 'appVueOnMounted':
+                $extend = 'avo';
+                break;
+            default:
+                $extend = '';
+                break;
+        }
+        switch ($type) {
+            case 'import-root-mark':
+                return '// modules import mark, Please do not remove.';
+            case 'start-root-mark':
+                return '// modules start mark, Please do not remove.';
+            case 'onMounted-root-mark':
+                return '// Modules onMounted mark, Please do not remove.';
+            case 'module-line-mark':
+                return ' // Code from module \'' . $uid . "'" . ($extend ? "($extend)" : '');
+            case 'module-multi-line-mark-start':
+                return (in_array($extend, $importKeys) ? '' : Helper::tab()) . "// Code from module '$uid' start" . ($extend ? "($extend)" : '') . "\n";
+            case 'module-multi-line-mark-end':
+                return (in_array($extend, $importKeys) ? '' : Helper::tab()) . "// Code from module '$uid' end";
+            default:
+                return '';
         }
     }
 
