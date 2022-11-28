@@ -53,7 +53,7 @@ class Account extends Frontend
     {
         if ($this->request->isPost()) {
             $data = $this->request->only(['avatar', 'nickname', 'gender', 'birthday', 'motto']);
-            if (!$data['birthday']) $data['birthday'] = null;
+            if (!isset($data['birthday'])) $data['birthday'] = null;
 
             Db::startTrans();
             try {
