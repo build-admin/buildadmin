@@ -118,10 +118,7 @@ const baTable = inject('baTable') as baTableClass
 const { t } = useI18n()
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    username: [
-        buildValidatorData({ name: 'required', title: t('auth.admin.username') }),
-        buildValidatorData({ name: 'account', message: t('Please enter the correct field', { field: t('auth.admin.username') }) }),
-    ],
+    username: [buildValidatorData({ name: 'required', title: t('auth.admin.username') }), buildValidatorData({ name: 'account' })],
     nickname: [buildValidatorData({ name: 'required', title: t('auth.admin.nickname') })],
     group_arr: [buildValidatorData({ name: 'required', message: t('Please select field', { field: t('auth.admin.grouping') }) })],
     email: [buildValidatorData({ name: 'email', message: t('Please enter the correct field', { field: t('auth.admin.mailbox') }) })],
