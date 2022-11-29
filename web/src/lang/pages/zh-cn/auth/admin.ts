@@ -10,5 +10,4 @@ export default {
     'Please leave blank if not modified': '不修改请留空',
     'Personal signature': '个性签名',
     'Administrator login': '管理员登录名',
-    'Please enter the correct password': '请输入正确的密码',
 }
