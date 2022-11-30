@@ -395,6 +395,10 @@ const onUpdate = (uid: string, order: number) => {
                 color: var(--el-text-color-secondary);
                 width: 80px;
             }
+            .basic-item-price {
+                font-size: 16px;
+                color: var(--el-color-danger);
+            }
             .basic-item-content {
                 font-size: var(--el-font-size-base);
                 color: var(--el-text-color-regular);

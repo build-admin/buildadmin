@@ -9,7 +9,9 @@
                     <div class="order-info-item">{{ t('module.Purchase user') }}：{{ baAccount.nickname + '（' + baAccount.email + '）' }}</div>
                     <div class="order-info-item">
                         {{ t('module.Order price') }}：
-                        <span v-if="!state.buy.info.purchased" class="order-price">{{ currency(state.buy.info.amount, 0) }}</span>
+                        <span v-if="!state.buy.info.purchased" class="order-price">
+                            {{ currency(state.buy.info.amount, state.buy.info.pay.money ? 1 : 0) }}
+                        </span>
                         <span v-else class="order-price">{{ t('module.Purchased, can be installed directly') }}</span>
                     </div>
                     <div class="order-footer">
@@ -17,7 +19,7 @@
                             <el-checkbox v-model="state.buy.agreement" size="small" label="" />
                             <span>
                                 {{ t('module.Understand and agree') }}《
-                                <a href="https://wonderful-code.gitee.io/guide/other/appendix/templateAgreement.html" target="_blank">
+                                <a href="https://doc.buildadmin.com/guide/other/appendix/templateAgreement.html" target="_blank">
                                     {{ t('module.Module purchase and use agreement') }}
                                 </a>
                                 》
