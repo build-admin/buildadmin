@@ -72,6 +72,9 @@ const onShowBaAccount = () => {
         .then((res) => {
             baAccount.dataFill(res.data.userInfo)
         })
+        .catch(() => {
+            baAccount.removeToken()
+        })
         .finally(() => {
             state.loading.common = false
         })
