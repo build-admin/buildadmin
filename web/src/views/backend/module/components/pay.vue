@@ -10,7 +10,7 @@
         >
             <div>
                 <div class="header-box">
-                    <img class="wechat-pay-logo" src="http://localhost:9000/static/images/wechat-pay.png" alt="" />
+                    <img class="wechat-pay-logo" src="https://ba.buildadmin.com/static/images/wechat-pay.png" alt="" />
                 </div>
                 <div class="pay-box">
                     <div class="left">
@@ -40,7 +40,7 @@
                         </el-alert>
                     </div>
                     <div class="right">
-                        <img class="wechat-pay-logo" src="http://localhost:9000/static/images/screenshot-wechat.png" alt="" />
+                        <img class="wechat-pay-logo" src="https://ba.buildadmin.com/static/images/screenshot-wechat.png" alt="" />
                     </div>
                 </div>
             </div>
