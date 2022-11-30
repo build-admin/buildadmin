@@ -27,8 +27,10 @@ export default {
     'Module purchase and use agreement': 'Module purchase and use agreement',
     'Point payment': 'Point payment',
     'Balance payment': 'Balance payment',
+    'Wechat payment': 'Wechat payment',
     'Install now': 'Install now',
     payment: 'payment',
+    'Confirm order info': 'Confirm order info',
     // commonDone
     'Congratulations, module installation is complete': 'Congratulations, module installation is complete.',
     'Module is disabled': 'Module is disabled.',
@@ -126,4 +128,5 @@ export default {
     'Uploaded, installation is about to start, please wait': 'Uploaded, installation is about to start, please wait',
     'Update Log': 'Update Log',
     'No detailed update log': 'No detailed update log',
+    'Use WeChat to scan QR code for payment': 'Use WeChat to scan QR code for payment',
 }

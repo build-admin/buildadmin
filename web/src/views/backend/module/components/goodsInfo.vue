@@ -248,6 +248,7 @@
             </el-scrollbar>
         </el-dialog>
         <Buy />
+        <Pay />
     </div>
 </template>
 
@@ -262,6 +263,7 @@ import { ElMessageBox } from 'element-plus'
 import { useBaAccount } from '/@/stores/baAccount'
 import { useI18n } from 'vue-i18n'
 import Buy from './buy.vue'
+import Pay from './pay.vue'
 
 const installButtonState = {
     InstallNow: [moduleInstallState.UNINSTALLED, moduleInstallState.WAIT_INSTALL],

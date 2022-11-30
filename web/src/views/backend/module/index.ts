@@ -1,5 +1,5 @@
 import { state } from './store'
-import { index, modules, info, createOrder, payOrder, postInstallModule, getInstallState, changeState } from '/@/api/backend/module'
+import { index, modules, info, createOrder, payOrder, postInstallModule, getInstallState, changeState, payCheck } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
 import { ElNotification } from 'element-plus'
 import { useTerminal } from '/@/stores/terminal'
@@ -159,11 +159,33 @@ export const onBuy = () => {
         })
 }
 
-export const onPay = (payType: number) => {
+export const onPay = (payType: 'score' | 'wx' | 'balance') => {
     state.loading.common = true
     payOrder(state.buy.info.id, payType)
         .then((res) => {
-            onInstall(res.data.info.uid, res.data.info.id)
+            if (payType == 'wx') {
+                // 关闭其他弹窗
+                state.dialog.buy = false
+                state.dialog.goodsInfo = false
+
+                // 显示支付二维码
+                state.dialog.pay = true
+                state.payInfo = res.data
+
+                // 轮询获取支付状态
+                const timer = setInterval(() => {
+                    payCheck(state.payInfo.info.sn)
+                        .then(() => {
+                            state.payInfo.pay.status = 'success'
+                            clearInterval(timer)
+                            onInstall(res.data.info.uid, res.data.info.id)
+                            state.dialog.pay = false
+                        })
+                        .catch(() => {})
+                }, 3000)
+            } else {
+                onInstall(res.data.info.uid, res.data.info.id)
+            }
         })
         .catch((err) => {
             loginExpired(err)

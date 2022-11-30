@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog v-model="state.dialog.buy" class="buy-dialog" :title="t('module.payment')" top="20vh" width="28%">
+        <el-dialog v-model="state.dialog.buy" class="buy-dialog" :title="t('module.Confirm order info')" top="20vh" width="28%">
             <div v-loading="state.loading.buy">
                 <el-alert :title="t('module.Module installation warning')" type="error" :center="true" :closable="false" />
                 <div v-if="!isEmpty(state.buy.info)" class="order-info">
@@ -27,12 +27,23 @@
                         </div>
                         <div class="order-info-buttons">
                             <template v-if="!state.buy.info.purchased">
-                                <el-button v-if="state.buy.info.pay.score" :loading="state.loading.common" @click="onPay(0)" v-blur type="warning">
+                                <el-button
+                                    v-if="state.buy.info.pay.score"
+                                    :loading="state.loading.common"
+                                    @click="onPay('score')"
+                                    v-blur
+                                    type="warning"
+                                >
                                     {{ t('module.Point payment') }}
                                 </el-button>
-                                <el-button v-if="state.buy.info.pay.money" :loading="state.loading.common" @click="onPay(1)" v-blur type="warning">
-                                    {{ t('module.Balance payment') }}
-                                </el-button>
+                                <template v-if="state.buy.info.pay.money">
+                                    <el-button :loading="state.loading.common" @click="onPay('balance')" v-blur type="warning">
+                                        {{ t('module.Balance payment') }}
+                                    </el-button>
+                                    <el-button :loading="state.loading.common" @click="onPay('wx')" v-blur type="success">
+                                        {{ t('module.Wechat payment') }}
+                                    </el-button>
+                                </template>
                             </template>
                             <el-button
                                 v-else
@@ -83,7 +94,7 @@ const baAccount = useBaAccount()
             }
         }
         .order-info-buttons {
-            padding-top: 6px;
+            padding-top: 15px;
             display: flex;
             align-items: center;
             justify-content: center;

@@ -203,10 +203,10 @@ const onSubmit = (formEl: FormInstance | undefined = undefined) => {
 }
 @at-root .dark {
     .start-item {
-        background-color: #1D1E1F;
+        background-color: #1d1e1f;
     }
     .crud-tips {
-        background-color: rgba($color: #1D1E1F, $alpha: 0.4);
+        background-color: rgba($color: #1d1e1f, $alpha: 0.4);
     }
 }
 </style>

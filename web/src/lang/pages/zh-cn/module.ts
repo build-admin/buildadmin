@@ -26,8 +26,10 @@ export default {
     'Module purchase and use agreement': '模块购买和使用协议',
     'Point payment': '积分支付',
     'Balance payment': '余额支付',
+    'Wechat payment': '微信支付',
     'Install now': '立即安装',
     payment: '支付',
+    'Confirm order info': '确认订单信息',
     // commonDone
     'Congratulations, module installation is complete': '恭喜，模块安装已完成。',
     'Module is disabled': '模块已禁用。',
@@ -121,4 +123,5 @@ export default {
     'Uploaded, installation is about to start, please wait': '已上传，即将开始安装，请稍等',
     'Update Log': '更新日志',
     'No detailed update log': '无详细更新日志',
+    'Use WeChat to scan QR code for payment': '使用微信扫描二维码支付',
 }

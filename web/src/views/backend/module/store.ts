@@ -12,6 +12,7 @@ export const state = reactive<moduleState>({
     },
     dialog: {
         buy: false,
+        pay: false,
         common: false,
         goodsInfo: false,
         baAccount: false,
@@ -28,6 +29,7 @@ export const state = reactive<moduleState>({
             activeTab: 'all',
         },
     },
+    payInfo: {},
     goodsInfo: {},
     buy: {
         info: {},

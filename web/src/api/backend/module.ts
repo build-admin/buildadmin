@@ -5,7 +5,7 @@ import { useBaAccount } from '/@/stores/baAccount'
 const userControllerUrl = '/api/user/'
 const captchaUrl = '/api/common/captcha'
 const moduleControllerUrl = '/admin/module/'
-const storeUrl = '/api/v1.store/'
+const storeUrl = '/api/v2.store/'
 
 export function index(params: anyObj = {}) {
     return createAxios({
@@ -99,7 +99,7 @@ export function createOrder(params: object = {}): ApiPromise {
     ) as ApiPromise
 }
 
-export function payOrder(orderId: number, payType: number): ApiPromise {
+export function payOrder(orderId: number, payType: string): ApiPromise {
     const baAccount = useBaAccount()
     const siteConfig = useSiteConfig()
     return createAxios(
@@ -114,6 +114,24 @@ export function payOrder(orderId: number, payType: number): ApiPromise {
         {
             anotherToken: baAccount.getToken('auth'),
             showSuccessMessage: true,
+        }
+    ) as ApiPromise
+}
+
+export function payCheck(sn: string): ApiPromise {
+    const baAccount = useBaAccount()
+    const siteConfig = useSiteConfig()
+    return createAxios(
+        {
+            url: siteConfig.api_url + '/api/pay/check',
+            method: 'get',
+            params: {
+                sn: sn,
+            },
+        },
+        {
+            anotherToken: baAccount.getToken('auth'),
+            showCodeMessage: false,
         }
     ) as ApiPromise
 }

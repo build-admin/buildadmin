@@ -30,6 +30,7 @@ export interface moduleState {
     }
     dialog: {
         buy: boolean
+        pay: boolean
         common: boolean
         goodsInfo: boolean
         baAccount: boolean
@@ -43,6 +44,7 @@ export interface moduleState {
         indexLoaded: boolean
         params: anyObj
     }
+    payInfo: anyObj
     goodsInfo: anyObj
     buy: {
         info: anyObj
