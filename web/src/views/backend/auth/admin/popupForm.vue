@@ -40,9 +40,10 @@
                         v-model="baTable.form.items!.group_arr"
                         prop="group_arr"
                         type="remoteSelect"
+                        :key="('group-' + baTable.form.items!.id)"
                         :input-attr="{
                             multiple: true,
-                            params: { isTree: true },
+                            params: { isTree: true, absoluteAuth: adminInfo.id == baTable.form.items!.id ? 0 : 1 },
                             field: 'name',
                             'remote-url': authGroup + 'index',
                             placeholder: t('Click Select'),
@@ -111,7 +112,9 @@ import { regularPassword, buildValidatorData } from '/@/utils/validate'
 import type { ElForm, FormItemRule } from 'element-plus'
 import FormItem from '/@/components/formItem/index.vue'
 import { authGroup } from '/@/api/controllerUrls'
+import { useAdminInfo } from '/@/stores/adminInfo'
 
+const adminInfo = useAdminInfo()
 const formRef = ref<InstanceType<typeof ElForm>>()
 const baTable = inject('baTable') as baTableClass
 

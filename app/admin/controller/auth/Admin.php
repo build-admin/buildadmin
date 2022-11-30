@@ -87,6 +87,7 @@ class Admin extends Backend
 
             $data   = $this->excludeFields($data);
             $result = false;
+            if ($data['group_arr']) $this->checkGroupAuth($data['group_arr']);
             Db::startTrans();
             try {
                 $data['salt']     = $salt;
@@ -157,25 +158,31 @@ class Admin extends Backend
                 $this->model->resetPassword($data['id'], $data['password']);
             }
 
-            Db::name('admin_group_access')
-                ->where('uid', $id)
-                ->delete();
+            $groupAccess = [];
             if ($data['group_arr']) {
-                $groupAccess = [];
+                $checkGroups = [];
                 foreach ($data['group_arr'] as $datum) {
+                    if (!in_array($datum, $row->group_arr)) {
+                        $checkGroups[] = $datum;
+                    }
                     $groupAccess[] = [
                         'uid'      => $id,
                         'group_id' => $datum,
                     ];
                 }
-                Db::name('admin_group_access')->insertAll($groupAccess);
+                $this->checkGroupAuth($checkGroups);
             }
+
+            Db::name('admin_group_access')
+                ->where('uid', $id)
+                ->delete();
 
             $data   = $this->excludeFields($data);
             $result = false;
             Db::startTrans();
             try {
                 $result = $row->save($data);
+                if ($groupAccess) Db::name('admin_group_access')->insertAll($groupAccess);
                 Db::commit();
             } catch (PDOException|Exception $e) {
                 Db::rollback();
@@ -230,6 +237,19 @@ class Admin extends Backend
             $this->success(__('Deleted successfully'));
         } else {
             $this->error(__('No rows were deleted'));
+        }
+    }
+
+    public function checkGroupAuth(array $groups)
+    {
+        if ($this->auth->isSuperAdmin()) {
+            return;
+        }
+        $authGroups = $this->auth->getAllAuthGroups('allAuthAndOthers');
+        foreach ($groups as $group) {
+            if (!in_array($group, $authGroups)) {
+                $this->error(__('You have no permission to add an administrator to this group!'));
+            }
         }
     }
 }

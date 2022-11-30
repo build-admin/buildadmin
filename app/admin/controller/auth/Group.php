@@ -15,7 +15,7 @@ class Group extends Backend
 {
     /**
      * 修改、删除分组时对操作管理员进行鉴权
-     * allAuth=管理员拥有该分组所有权限时允许
+     * 本管理功能部分场景对数据权限有要求，修改此值请额外确定以下的 absoluteAuth 实现的功能
      * allAuthAndOthers=管理员拥有该分组所有权限并拥有额外权限时允许
      */
     protected $authMethod = 'allAuthAndOthers';
@@ -281,6 +281,9 @@ class Group extends Backend
         $pk      = $this->model->getPk();
         $initKey = $this->request->get("initKey/s", $pk);
 
+        // 下拉选择时只获取：拥有所有权限并且有额外权限的分组
+        $absoluteAuth = $this->request->get('absoluteAuth/b', false);
+
         if ($this->keyword) {
             $keyword = explode(' ', $this->keyword);
             foreach ($keyword as $item) {
@@ -294,8 +297,8 @@ class Group extends Backend
 
         if (!$this->auth->isSuperAdmin()) {
             $authGroups = $this->auth->getAllAuthGroups($this->authMethod);
-            $authGroups = array_merge($this->adminGroups, $authGroups);
-            $where[]    = ['id', 'in', $authGroups];
+            if (!$absoluteAuth) $authGroups = array_merge($this->adminGroups, $authGroups);
+            $where[] = ['id', 'in', $authGroups];
         }
         $data = $this->model->where($where)->select()->toArray();
 
