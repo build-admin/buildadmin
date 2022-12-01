@@ -3,7 +3,7 @@
         ref="selectRef"
         @focus="onFocus"
         class="remote-select"
-        :loading="state.loading"
+        :loading="state.loading || state.accidentBlur"
         :filterable="true"
         :remote="true"
         clearable
@@ -15,7 +15,6 @@
         :key="state.selectKey"
         @clear="onClear"
         @visible-change="onVisibleChange"
-        v-loading="state.accidentBlur"
     >
         <el-option
             class="remote-select-option"
@@ -111,8 +110,8 @@ const onVisibleChange = (val: boolean) => {
 }
 
 const onFocus = () => {
-    if (props.multiple && selectRef.value?.query != state.keyword) {
-        state.keyword = selectRef.value!.query
+    if (selectRef.value?.query != state.keyword) {
+        state.keyword = ''
         state.initializeData = false
         // el-select 自动清理搜索词会产生意外的脱焦
         state.accidentBlur = true
@@ -152,7 +151,8 @@ const getData = (initValue: valType = '') => {
             state.initializeData = initializeData
             if (state.accidentBlur) {
                 nextTick(() => {
-                    selectRef.value?.focus()
+                    const inputEl = selectRef.value?.$el.querySelector('.el-select__tags .el-select__input')
+                    inputEl && inputEl.focus()
                     state.accidentBlur = false
                 })
             }
