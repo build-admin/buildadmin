@@ -103,6 +103,7 @@ export interface InputAttr {
     'filter-method'?: Function
     remote?: false // 禁止使用远程搜索,如需使用请使用单独封装好的 remoteSelect 组件
     'remote-method'?: false
+    'label-formatter'?: (optionData: anyObj, optionKey: string) => string
     'no-match-text'?: string
     'no-data-text'?: string
     'reserve-keyword'?: boolean

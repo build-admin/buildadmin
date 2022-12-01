@@ -51,6 +51,7 @@ interface Props {
     multiple?: boolean
     remoteUrl: string
     modelValue: valType
+    labelFormatter?: (optionData: anyObj, optionKey: string) => string
 }
 const props = withDefaults(defineProps<Props>(), {
     pk: 'id',
@@ -140,6 +141,11 @@ const getData = (initValue: valType = '') => {
         .then((res) => {
             let initializeData = true
             let opts = res.data.options ? res.data.options : res.data.list
+            if (typeof props.labelFormatter == 'function') {
+                for (const key in opts) {
+                    opts[key][props.field] = props.labelFormatter(opts[key], key)
+                }
+            }
             state.options = opts
             state.total = res.data.total ?? 0
             if (initValue) {
