@@ -168,6 +168,7 @@
                         <div class="design-field">
                             <span>{{ t('crud.crud.Field Name') }}：</span>
                             <BaInput
+                                @pointerdown.stop
                                 class="design-field-name-input"
                                 v-model="field.name"
                                 type="string"
@@ -180,6 +181,7 @@
                         <div class="design-field">
                             <span>{{ t('crud.crud.field comment') }}：</span>
                             <BaInput
+                                @pointerdown.stop
                                 class="design-field-name-comment"
                                 v-model="field.comment"
                                 type="string"
