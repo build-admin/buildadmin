@@ -116,9 +116,20 @@ const closeTab = (route: RouteLocationNormalized) => {
     contextmenuRef.value.onHideContextmenu()
 }
 
-const closeAllTab = () => {
-    navTabs.closeTabs(false)
+const closeOtherTab = (menu: RouteLocationNormalized) => {
+    navTabs.closeTabs(menu)
+    navTabs.setActiveRoute(menu)
+    if (navTabs.state.activeRoute?.path !== route.path) {
+        router.push(menu!.path)
+    }
+}
+
+const closeAllTab = (menu: RouteLocationNormalized) => {
     let firstRoute = getFirstRoute(navTabs.state.tabsViewRoutes)
+    if (firstRoute && firstRoute.path == menu.path) {
+        return closeOtherTab(menu)
+    }
+    navTabs.closeTabs(false)
     if (firstRoute) routePush(firstRoute.path)
 }
 
@@ -133,14 +144,10 @@ const onContextmenuItem = async (item: ContextmenuItemClickEmitArg) => {
             closeTab(menu)
             break
         case 'closeOther':
-            navTabs.closeTabs(menu)
-            navTabs.setActiveRoute(menu)
-            if (navTabs.state.activeRoute?.path !== route.path) {
-                router.push(menu!.path)
-            }
+            closeOtherTab(menu)
             break
         case 'closeAll':
-            closeAllTab()
+            closeAllTab(menu)
             break
         case 'fullScreen':
             if (route.path !== menu?.path) {
