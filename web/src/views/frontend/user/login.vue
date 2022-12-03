@@ -108,7 +108,7 @@
                                 <el-form-item v-if="state.form.tab == 'register' && state.form.registerType == 'email'" prop="email">
                                     <el-input
                                         v-model="state.form.email"
-                                        :placeholder="t('Please input field', { field: t('user.user.mailbox') })"
+                                        :placeholder="t('Please input field', { field: t('user.user.email') })"
                                         :clearable="true"
                                         size="large"
                                     >
@@ -219,12 +219,12 @@
                             }}</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item prop="account" :label="state.retrievePasswordForm.type == 'email' ? t('user.user.mailbox') : t('user.user.mobile')">
+                    <el-form-item prop="account" :label="state.retrievePasswordForm.type == 'email' ? t('user.user.email') : t('user.user.mobile')">
                         <el-input
                             v-model="state.retrievePasswordForm.account"
                             :placeholder="
                                 t('Please input field', {
-                                    field: state.retrievePasswordForm.type == 'email' ? t('user.user.mailbox') : t('user.user.mobile'),
+                                    field: state.retrievePasswordForm.type == 'email' ? t('user.user.email') : t('user.user.mobile'),
                                 })
                             "
                             :clearable="true"
@@ -369,8 +369,8 @@ const state: State = reactive({
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     email: [
-        buildValidatorData({ name: 'required', title: t('user.user.mailbox') }),
-        buildValidatorData({ name: 'email', title: t('user.user.mailbox') }),
+        buildValidatorData({ name: 'required', title: t('user.user.email') }),
+        buildValidatorData({ name: 'email', title: t('user.user.email') }),
     ],
     username: [
         buildValidatorData({ name: 'required', title: t('user.user.User name') }),

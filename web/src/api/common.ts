@@ -110,7 +110,7 @@ export function getArea(values: number[]) {
 /**
  * 发送短信
  */
-export function sendSms(mobile: string, templateCode: string) {
+export function sendSms(mobile: string, templateCode: string, extend: anyObj = {}) {
     return createAxios(
         {
             url: apiSendSms,
@@ -118,6 +118,7 @@ export function sendSms(mobile: string, templateCode: string) {
             data: {
                 mobile: mobile,
                 template_code: templateCode,
+                ...extend,
             },
         },
         {
@@ -129,7 +130,7 @@ export function sendSms(mobile: string, templateCode: string) {
 /**
  * 发送邮件
  */
-export function sendEms(email: string, event: string) {
+export function sendEms(email: string, event: string, extend: anyObj = {}) {
     return createAxios(
         {
             url: apiSendEms,
@@ -137,6 +138,7 @@ export function sendEms(email: string, event: string) {
             data: {
                 email: email,
                 event: event,
+                ...extend,
             },
         },
         {

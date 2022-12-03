@@ -39,6 +39,34 @@ export function postProfile(params: anyObj) {
     )
 }
 
+export function getProfile() {
+    return createAxios({
+        url: accountUrl + 'profile',
+        method: 'get',
+    })
+}
+
+export function postVerification(data: anyObj) {
+    return createAxios({
+        url: accountUrl + 'verification',
+        method: 'post',
+        data: data,
+    })
+}
+
+export function postChangeBind(data: anyObj) {
+    return createAxios(
+        {
+            url: accountUrl + 'changeBind',
+            method: 'post',
+            data: data,
+        },
+        {
+            showSuccessMessage: true,
+        }
+    )
+}
+
 export function changePassword(params: anyObj): ApiPromise {
     return createAxios(
         {

@@ -4,14 +4,17 @@ namespace app\api\controller;
 
 use ba\Date;
 use ba\Captcha;
+use ba\Random;
 use think\facade\Db;
 use app\common\model\User;
+use app\common\facade\Token;
 use app\common\model\UserScoreLog;
 use app\common\model\UserMoneyLog;
 use app\common\controller\Frontend;
 use think\db\exception\PDOException;
 use think\exception\ValidateException;
 use app\api\validate\Account as AccountValidate;
+use think\facade\Validate;
 
 class Account extends Frontend
 {
@@ -68,6 +71,73 @@ class Account extends Frontend
 
             $this->success(__('Data updated successfully~'));
         }
+
+        $this->success('', [
+            'accountVerificationType' => get_account_verification_type()
+        ]);
+    }
+
+    /**
+     * 通过手机号或邮箱验证账户
+     * 此处检查的验证码是通过 api/Ems或api/Sms发送的
+     * 验证成功后，向前端返回一个 email-pass Token或着 mobile-pass Token
+     * 在 changBind 方法中，通过 pass Token来确定用户已经通过了账户验证（用户未绑定邮箱/手机时通过账户密码验证）
+     */
+    public function verification()
+    {
+        $captcha = new Captcha();
+        $params  = $this->request->only(['type', 'captcha']);
+        if ($captcha->check($params['captcha'], ($params['type'] == 'email' ? $this->auth->email : $this->auth->mobile) . "user_{$params['type']}_verify")) {
+            $uuid = Random::uuid();
+            Token::set($uuid, $params['type'] . '-pass', $this->auth->id, 600);
+            $this->success('', [
+                'type'                     => $params['type'],
+                'accountVerificationToken' => $uuid,
+            ]);
+        }
+        $this->error(__('Please enter the correct verification code'));
+    }
+
+    /**
+     * 修改绑定信息（手机号、邮箱）
+     * 通过 pass Token来确定用户已经通过了账户验证，也就是以上的 verification 方法，同时用户未绑定邮箱/手机时通过账户密码验证
+     */
+    public function changeBind()
+    {
+        $captcha = new Captcha();
+        $params  = $this->request->only(['type', 'captcha', 'email', 'mobile', 'accountVerificationToken', 'password']);
+        $user    = $this->auth->getUser();
+
+        if ($user[$params['type']]) {
+            if (!Token::check($params['accountVerificationToken'], $params['type'] . '-pass', $user->id)) {
+                $this->error(__('You need to verify your account before modifying the binding information'));
+            }
+        } else {
+            // 验证账户密码
+            if (!isset($params['password']) || $user->password != encrypt_password($params['password'], $user->salt)) {
+                $this->error(__('Password error'));
+            }
+        }
+
+        // 检查验证码
+        if ($captcha->check($params['captcha'], $params[$params['type']] . "user_change_{$params['type']}")) {
+            if ($params['type'] == 'email') {
+                $validate = Validate::rule(['email' => 'require|email'])->message(['email' => 'email format error']);
+                if (!$validate->check(['email' => $params['email']])) {
+                    $this->error(__($validate->getError()));
+                }
+                $user->email = $params['email'];
+            } elseif ($params['type'] == 'mobile') {
+                $validate = Validate::rule(['mobile' => 'require|mobile'])->message(['mobile' => 'mobile format error']);
+                if (!$validate->check(['mobile' => $params['mobile']])) {
+                    $this->error(__($validate->getError()));
+                }
+                $user->mobile = $params['mobile'];
+            }
+            $user->save();
+            $this->success();
+        }
+        $this->error(__('Please enter the correct verification code'));
     }
 
     public function changePassword()

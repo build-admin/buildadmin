@@ -13,7 +13,7 @@
                 <div class="user-avatar">
                     <img :src="userInfo.avatar" alt="" />
                     <div class="user-avatar-icons">
-                        <div class="avatar-icon-item">
+                        <div @click="router.push({ name: 'account/profile' })" class="avatar-icon-item">
                             <el-tooltip
                                 effect="light"
                                 placement="right"
@@ -26,11 +26,11 @@
                                 />
                             </el-tooltip>
                         </div>
-                        <div class="avatar-icon-item">
+                        <div @click="router.push({ name: 'account/profile' })" class="avatar-icon-item">
                             <el-tooltip
                                 effect="light"
                                 placement="right"
-                                :content="(userInfo.email ? $t('user.user.Filled in') : $t('user.user.Not filled in')) + $t('user.user.mailbox')"
+                                :content="(userInfo.email ? $t('user.user.Filled in') : $t('user.user.Not filled in')) + $t('user.user.email')"
                             >
                                 <Icon
                                     name="fa fa-envelope-square"
