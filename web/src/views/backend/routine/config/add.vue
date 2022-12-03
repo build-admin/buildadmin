@@ -37,6 +37,8 @@
                         class="add-item-content"
                         :label="t('routine.config.Dictionary data')"
                         type="textarea"
+                        @keyup.enter.stop=""
+                        @keyup.ctrl.enter="onAddSubmit(formRef)"
                         v-model="state.addConfig.content"
                         :input-attr="{
                             rows: 3,
@@ -52,6 +54,8 @@
                     <FormItem
                         :label="t('routine.config.Extended properties')"
                         type="textarea"
+                        @keyup.enter.stop=""
+                        @keyup.ctrl.enter="onAddSubmit(formRef)"
                         v-model="state.addConfig.extend"
                         :input-attr="{ placeholder: t('routine.config.One attribute per line without quotation marks') }"
                     />
