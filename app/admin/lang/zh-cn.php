@@ -54,4 +54,5 @@ return [
     // 时间格式化-e
     'Cache cleaned~'                                                                      => '缓存已清理，请刷新后台~',
     'Please delete the child element first, or use batch deletion'                        => '请首先删除子元素，或使用批量删除！',
+    'Configuration write failed: %s'                                                      => '配置写入失败：%s',
 ];
