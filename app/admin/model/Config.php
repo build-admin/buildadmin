@@ -82,6 +82,8 @@ class Config extends Model
                 return implode(',', $value);
             }
             return $value ?: '';
+        } elseif (is_array($value)) {
+            return implode(',', $value);
         }
 
         return $value;
