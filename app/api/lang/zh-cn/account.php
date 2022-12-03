@@ -22,4 +22,6 @@ return [
     'mobile format error'                                                      => '手机号格式错误！',
     'You need to verify your account before modifying the binding information' => '您需要先通过账户验证才能修改绑定信息！',
     'Password error'                                                           => '密码错误！',
+    'email is occupied'                                                        => '电子邮箱地址已被占用！',
+    'mobile is occupied'                                                       => '手机号已被占用！',
 ];

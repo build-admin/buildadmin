@@ -122,13 +122,21 @@ class Account extends Frontend
         // 检查验证码
         if ($captcha->check($params['captcha'], $params[$params['type']] . "user_change_{$params['type']}")) {
             if ($params['type'] == 'email') {
-                $validate = Validate::rule(['email' => 'require|email'])->message(['email' => 'email format error']);
+                $validate = Validate::rule(['email' => 'require|email|unique:user'])->message([
+                    'email.require' => 'email format error',
+                    'email.email'   => 'email format error',
+                    'email.unique'  => 'email is occupied',
+                ]);
                 if (!$validate->check(['email' => $params['email']])) {
                     $this->error(__($validate->getError()));
                 }
                 $user->email = $params['email'];
             } elseif ($params['type'] == 'mobile') {
-                $validate = Validate::rule(['mobile' => 'require|mobile'])->message(['mobile' => 'mobile format error']);
+                $validate = Validate::rule(['mobile' => 'require|mobile|unique:user'])->message([
+                    'mobile.require' => 'mobile format error',
+                    'mobile.mobile'  => 'mobile format error',
+                    'mobile.unique'  => 'mobile is occupied',
+                ]);
                 if (!$validate->check(['mobile' => $params['mobile']])) {
                     $this->error(__($validate->getError()));
                 }
