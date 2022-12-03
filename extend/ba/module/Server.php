@@ -297,13 +297,13 @@ class Server
         return class_exists($namespace) ? $namespace : '';
     }
 
-    public static function execEvent(string $uid, string $event)
+    public static function execEvent(string $uid, string $event, array $params = [])
     {
         $eventClass = self::getClass($uid);
         if (class_exists($eventClass)) {
             $handle = new $eventClass();
             if (method_exists($eventClass, $event)) {
-                $handle->$event();
+                $handle->$event($params);
             }
         }
     }

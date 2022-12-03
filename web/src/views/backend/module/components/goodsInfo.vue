@@ -336,7 +336,7 @@ const onUpdate = (uid: string, order: number) => {
                         state.common.disableParams = {
                             uid: uid,
                             state: 0,
-                            upadte: 1,
+                            update: 1,
                             order: order,
                             token: baAccount.token,
                         }
