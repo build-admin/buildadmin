@@ -274,13 +274,14 @@ class Manage
 
     public function enable(string $trigger)
     {
-        // 执行启用脚本
-        Server::execEvent($this->uid, 'enable');
-
         // 安装 WebBootstrap
         Server::installWebBootstrap($this->uid, $this->modulesDir);
 
         $this->conflictHandle($trigger);
+
+        // 执行启用脚本
+        Server::execEvent($this->uid, 'enable');
+
         $this->dependUpdateHandle();
     }
 
