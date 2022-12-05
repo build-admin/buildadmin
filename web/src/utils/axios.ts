@@ -2,7 +2,7 @@ import axios, { AxiosPromise, Method } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 import { ElLoading, LoadingOptions, ElNotification } from 'element-plus'
 import { useConfig } from '/@/stores/config'
-import { isAdminApp } from './common'
+import { isAdminApp } from '/@/utils/common'
 import router from '/@/router/index'
 import { refreshToken } from '/@/api/common'
 import { useUserInfo } from '/@/stores/userInfo'
@@ -170,6 +170,11 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
                     }
                     // 自动跳转到路由name或path，仅限server端返回302的情况
                     if (response.data.code == 302) {
+                        if (isAdminApp()) {
+                            adminInfo.removeToken()
+                        } else {
+                            userInfo.removeToken()
+                        }
                         if (response.data.data.routeName) {
                             router.push({ name: response.data.data.routeName })
                         } else if (response.data.data.routePath) {
