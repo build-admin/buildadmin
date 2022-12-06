@@ -210,7 +210,7 @@ export const checkFileMimetype = (fileName: string, fileType: string) => {
     const siteConfig = useSiteConfig()
     const mimetype = siteConfig.upload.mimetype.toLowerCase().split(',')
 
-    const fileSuffix = fileName.substring(fileName.lastIndexOf('.') + 1)
+    const fileSuffix = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase()
     if (siteConfig.upload.mimetype === '*' || mimetype.includes(fileSuffix) || mimetype.includes('.' + fileSuffix)) {
         return true
     }
