@@ -14,52 +14,71 @@
                     <el-tabs v-model="state.activeTab" type="border-card" :before-leave="onBeforeLeave">
                         <el-tab-pane class="config-tab-pane" v-for="(group, key) in state.config" :key="key" :name="key" :label="group.title">
                             <div class="config-form-item" v-for="(item, idx) in group.list">
-                                <FormItem
-                                    v-if="item.type == 'number'"
-                                    :label="item.title"
-                                    :type="item.type"
-                                    v-model.number="state.form[item.name]"
-                                    :input-attr="{ placeholder: item.tip, rows: 3 }"
-                                    :data="{ tip: item.tip, content: item.content ? item.content : {} }"
-                                    :attr="Object.assign({ prop: item.name }, item.extend)"
-                                />
-                                <!-- 富文本在dialog内全屏编辑器时必须拥有很高的z-index，此处选择单独为editor设定较小的z-index -->
-                                <FormItem
-                                    v-else-if="item.type == 'editor'"
-                                    :label="item.title"
-                                    :type="item.type"
-                                    v-model="state.form[item.name]"
-                                    :input-attr="{
-                                        placeholder: item.tip,
-                                        style: {
-                                            zIndex: 99,
-                                        },
-                                    }"
-                                    :data="{ tip: item.tip }"
-                                    :attr="Object.assign({ prop: item.name }, item.extend)"
-                                />
-                                <FormItem
-                                    v-else
-                                    :label="item.title"
-                                    :type="item.type"
-                                    v-model="state.form[item.name]"
-                                    :input-attr="{ placeholder: item.tip, rows: 3 }"
-                                    :data="{ tip: item.tip, content: item.content ? item.content : {} }"
-                                    :attr="Object.assign({ prop: item.name }, item.extend)"
-                                />
-                                <div class="config-form-item-name">${{ item.name }}</div>
-                                <div class="del-config-form-item">
-                                    <el-popconfirm
-                                        @confirm="onDelConfig(item)"
-                                        v-if="item.allow_del"
-                                        :confirmButtonText="t('delete')"
-                                        :title="t('routine.config.Are you sure to delete the configuration item?')"
-                                    >
-                                        <template #reference>
-                                            <Icon class="close-icon" size="15" name="el-icon-Close" />
-                                        </template>
-                                    </el-popconfirm>
-                                </div>
+                                <template v-if="item.group == state.activeTab">
+                                    <FormItem
+                                        v-if="item.type == 'number'"
+                                        :label="item.title"
+                                        :type="item.type"
+                                        v-model.number="state.form[item.name]"
+                                        :input-attr="{ placeholder: item.tip }"
+                                        :data="{ tip: item.tip }"
+                                        :attr="Object.assign({ prop: item.name }, item.extend)"
+                                        :key="'number-' + item.id"
+                                    />
+                                    <!-- 富文本在dialog内全屏编辑器时必须拥有很高的z-index，此处选择单独为editor设定较小的z-index -->
+                                    <FormItem
+                                        v-else-if="item.type == 'editor'"
+                                        :label="item.title"
+                                        :type="item.type"
+                                        @keyup.enter.stop=""
+                                        @keyup.ctrl.enter="onSubmit(formRef)"
+                                        v-model="state.form[item.name]"
+                                        :input-attr="{
+                                            placeholder: item.tip,
+                                            style: {
+                                                zIndex: 99,
+                                            },
+                                        }"
+                                        :data="{ tip: item.tip }"
+                                        :attr="Object.assign({ prop: item.name }, item.extend)"
+                                        :key="'editor-' + item.id"
+                                    />
+                                    <FormItem
+                                        v-else-if="item.type == 'textarea'"
+                                        :label="item.title"
+                                        :type="item.type"
+                                        @keyup.enter.stop=""
+                                        @keyup.ctrl.enter="onSubmit(formRef)"
+                                        v-model="state.form[item.name]"
+                                        :input-attr="{ placeholder: item.tip, rows: 3 }"
+                                        :data="{ tip: item.tip }"
+                                        :attr="Object.assign({ prop: item.name }, item.extend)"
+                                        :key="'textarea-' + item.id"
+                                    />
+                                    <FormItem
+                                        v-else
+                                        :label="item.title"
+                                        :type="item.type"
+                                        v-model="state.form[item.name]"
+                                        :input-attr="{ placeholder: item.tip }"
+                                        :data="{ tip: item.tip, content: item.content ? item.content : {} }"
+                                        :attr="Object.assign({ prop: item.name }, item.extend)"
+                                        :key="'other-' + item.id"
+                                    />
+                                    <div class="config-form-item-name">${{ item.name }}</div>
+                                    <div class="del-config-form-item">
+                                        <el-popconfirm
+                                            @confirm="onDelConfig(item)"
+                                            v-if="item.allow_del"
+                                            :confirmButtonText="t('delete')"
+                                            :title="t('routine.config.Are you sure to delete the configuration item?')"
+                                        >
+                                            <template #reference>
+                                                <Icon class="close-icon" size="15" name="el-icon-Close" />
+                                            </template>
+                                        </el-popconfirm>
+                                    </div>
+                                </template>
                             </div>
                             <div v-if="group.name == 'mail'" class="send-test-mail">
                                 <el-button @click="onTestSendMail()">{{ t('routine.config.Test mail sending') }}</el-button>
@@ -184,10 +203,20 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
-            postData('edit', state.form).then(() => {
+            // 只提交当前tab的表单数据
+            const formData: anyObj = {}
+            for (const key in state.config) {
+                if (key != state.activeTab) {
+                    continue
+                }
+                for (const lKey in state.config[key].list) {
+                    formData[state.config[key].list[lKey].name] = state.form[state.config[key].list[lKey].name] ?? ''
+                }
+            }
+            postData('edit', formData).then(() => {
                 for (const key in siteConfig.$state) {
-                    if (siteConfig.$state[key as keyof SiteConfig] != state.form[key]) {
-                        siteConfig.$state[key as keyof SiteConfig] = state.form[key]
+                    if (formData[key] && siteConfig.$state[key as keyof SiteConfig] != formData[key]) {
+                        siteConfig.$state[key as keyof SiteConfig] = formData[key]
                     }
                 }
             })

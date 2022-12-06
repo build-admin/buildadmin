@@ -102,7 +102,7 @@ class Config extends Backend
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
-                $this->success(__('Update successful'));
+                $this->success(__('The current page configuration item was updated successfully'));
             } else {
                 $this->error(__('No rows updated'));
             }

@@ -19,4 +19,5 @@ return [
     'Test mail sent successfully~'                                                                      => '测试邮件发送成功~',
     'This is a test email'                                                                              => '这是一封测试邮件',
     'Congratulations, receiving this email means that your email service has been configured correctly' => '恭喜您，收到此邮件代表您的邮件服务已配置正确；这是邮件主体 <b>在主体中可以使用Html!</b>',
+    'The current page configuration item was updated successfully'                                      => '当前页配置项更新成功！',
 ];
