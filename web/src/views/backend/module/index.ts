@@ -7,6 +7,7 @@ import { taskStatus } from '/@/components/terminal/constant'
 import { moduleInstallState, moduleState } from './types'
 import { uuid } from '/@/utils/random'
 import { fullUrl } from '/@/utils/common'
+import { UserInfo } from '/@/stores/interface'
 
 export const loadData = () => {
     state.loading.table = true
@@ -427,6 +428,10 @@ export const execCommand = (data: anyObj) => {
             }
         })
     }
+}
+
+export const specificUserName = (userInfo: UserInfo) => {
+    return userInfo.nickname + '（' + (userInfo.email || userInfo.mobile || 'ID:' + userInfo.id) + '）'
 }
 
 export const currency = (price: number, val: number) => {

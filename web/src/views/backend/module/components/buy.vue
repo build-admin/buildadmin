@@ -6,7 +6,7 @@
                 <div v-if="!isEmpty(state.buy.info)" class="order-info">
                     <div class="order-info-item">{{ t('module.Order title') }}：{{ state.buy.info.title }}</div>
                     <div class="order-info-item">{{ t('module.Order No') }}：{{ state.buy.info.sn }}</div>
-                    <div class="order-info-item">{{ t('module.Purchase user') }}：{{ baAccount.nickname + '（' + baAccount.email + '）' }}</div>
+                    <div class="order-info-item">{{ t('module.Purchase user') }}：{{ specificUserName(baAccount) }}</div>
                     <div class="order-info-item">
                         {{ t('module.Order price') }}：
                         <span v-if="!state.buy.info.purchased" class="order-price">
@@ -64,7 +64,7 @@
 
 <script setup lang="ts">
 import { state } from '../store'
-import { onPay, currency, onInstall } from '../index'
+import { onPay, currency, onInstall, specificUserName } from '../index'
 import { useBaAccount } from '/@/stores/baAccount'
 import { useI18n } from 'vue-i18n'
 import { isEmpty } from 'lodash-es'
