@@ -184,6 +184,7 @@
                                         {{ t('user.user.No account yet? Click Register') }}
                                     </el-button>
                                 </el-form-item>
+                                <LoginFooterMixin />
                             </el-form>
                         </div>
                         <el-alert v-else :center="true" :title="$t('user.user.Member center disabled')" type="error" />
@@ -299,6 +300,7 @@ import { onResetForm } from '/@/utils/common'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
+import LoginFooterMixin from '/@/layouts/common/mixins/loginFooter.vue'
 import type { FormItemRule, FormInstance } from 'element-plus'
 let timer: NodeJS.Timer
 
@@ -528,7 +530,7 @@ onUnmounted(() => {
 .login-box {
     width: 460px;
     margin: 40px auto;
-    padding: 10px 60px 70px 60px;
+    padding: 10px 60px 20px 60px;
     background-color: var(--ba-bg-color-overlay);
 }
 .login-title {
