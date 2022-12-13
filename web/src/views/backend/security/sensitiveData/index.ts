@@ -55,7 +55,7 @@ export class sensitiveDataClass extends baTableClass {
     onTableChange = (table: string) => {
         this.form.extend = Object.assign(this.form.extend!, {
             fieldLoading: true,
-            fieldlist: {},
+            fieldList: {},
             fieldSelect: {},
             fieldSelectKey: uuid(),
         })
@@ -68,13 +68,13 @@ export class sensitiveDataClass extends baTableClass {
             this.form.defaultItems!.primary_key = res.data.pk
 
             const fieldSelect: anyObj = {}
-            for (const key in res.data.fieldlist) {
-                fieldSelect[key] = (key ? key + ' - ' : '') + res.data.fieldlist[key]
+            for (const key in res.data.fieldList) {
+                fieldSelect[key] = (key ? key + ' - ' : '') + res.data.fieldList[key]
             }
 
             this.form.extend = Object.assign(this.form.extend!, {
                 fieldLoading: false,
-                fieldlist: res.data.fieldlist,
+                fieldList: res.data.fieldList,
                 fieldSelect: fieldSelect,
                 fieldSelectKey: uuid(),
             })

@@ -159,7 +159,7 @@ const onFieldChange = (val: string[]) => {
                 exist = state.dataFields[k]
             }
         }
-        dataFields[key] = exist ? exist : { name: val[key], value: baTable.form.extend!.fieldlist[val[key]] ?? '' }
+        dataFields[key] = exist ? exist : { name: val[key], value: baTable.form.extend!.fieldList[val[key]] ?? '' }
     }
     state.dataFields = dataFields
 }

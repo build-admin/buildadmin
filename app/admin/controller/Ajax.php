@@ -79,7 +79,7 @@ class Ajax extends Backend
         $tablePk = Db::name($table)->getPk();
         $this->success('', [
             'pk'        => $tablePk,
-            'fieldlist' => get_table_fields($table, $clean),
+            'fieldList' => get_table_fields($table, $clean),
         ]);
     }
 

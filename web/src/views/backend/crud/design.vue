@@ -945,7 +945,7 @@ const onJoinTableChange = (val: string) => {
             state.remoteSelectPre.form.pk = res.data.pk
 
             const preLabel = ['name', 'title', 'username', 'nickname']
-            for (const key in res.data.fieldlist) {
+            for (const key in res.data.fieldList) {
                 if (preLabel.includes(key)) {
                     state.remoteSelectPre.form.label = key
                     state.remoteSelectPre.form.joinField.push(key)
@@ -954,8 +954,8 @@ const onJoinTableChange = (val: string) => {
             }
 
             const fieldSelect: anyObj = {}
-            for (const key in res.data.fieldlist) {
-                fieldSelect[key] = (key ? key + ' - ' : '') + res.data.fieldlist[key]
+            for (const key in res.data.fieldList) {
+                fieldSelect[key] = (key ? key + ' - ' : '') + res.data.fieldList[key]
             }
             state.remoteSelectPre.fieldList = fieldSelect
         })
