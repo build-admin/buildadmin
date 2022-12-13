@@ -159,8 +159,9 @@ const onElChange = (file: UploadFileExt) => {
         })
 }
 
-const onBeforeRemove = (rawFile: UploadRawFile) => {
-    if (typeof state.events['beforeRemove'] == 'function' && state.events['beforeRemove'](rawFile) === false) return false
+const onBeforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
+    if (typeof state.events['beforeRemove'] == 'function' && state.events['beforeRemove'](uploadFile, uploadFiles) === false) return false
+    return true
 }
 
 const onElRemove = (file: UploadUserFile) => {
