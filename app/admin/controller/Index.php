@@ -29,15 +29,15 @@ class Index extends Backend
             'adminInfo'  => $adminInfo,
             'menus'      => $menus,
             'siteConfig' => [
-                'site_name' => get_sys_config('site_name'),
-                'version'   => get_sys_config('version'),
-                'cdn_url'   => full_url(),
-                'api_url'   => Config::get('buildadmin.api_url'),
-                'upload'    => get_upload_config(),
+                'siteName' => get_sys_config('site_name'),
+                'version'  => get_sys_config('version'),
+                'cdnUrl'   => full_url(),
+                'apiUrl'   => Config::get('buildadmin.api_url'),
+                'upload'   => get_upload_config(),
             ],
             'terminal'   => [
-                'install_service_port' => Config::get('terminal.install_service_port'),
-                'npm_package_manager'  => Config::get('terminal.npm_package_manager'),
+                'installServicePort' => Config::get('terminal.install_service_port'),
+                'npmPackageManager'  => Config::get('terminal.npm_package_manager'),
             ]
         ]);
     }
@@ -91,7 +91,7 @@ class Index extends Backend
             $res = $this->auth->login($username, $password, (bool)$keep);
             if ($res === true) {
                 $this->success(__('Login succeeded!'), [
-                    'userinfo'  => $this->auth->getInfo(),
+                    'userInfo'  => $this->auth->getInfo(),
                     'routePath' => '/admin'
                 ]);
             } else {

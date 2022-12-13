@@ -107,11 +107,11 @@ export interface Terminal {
 }
 
 export interface SiteConfig {
-    site_name: string
-    record_number?: string
+    siteName: string
+    recordNumber?: string
     version: string
-    cdn_url: string
-    api_url: string
+    cdnUrl: string
+    apiUrl: string
     upload: {
         mode: string
         maxsize: number

@@ -7,7 +7,7 @@
                     <el-col :span="16" :xs="24">
                         <div v-if="memberCenter.state.open" class="login-box">
                             <div class="login-title">
-                                {{ t('user.user.' + state.form.tab) + t('user.user.reach') + siteConfig.site_name }}
+                                {{ t('user.user.' + state.form.tab) + t('user.user.reach') + siteConfig.siteName }}
                             </div>
                             <el-form ref="formRef" @keyup.enter="onSubmit(formRef)" :rules="rules" :model="state.form">
                                 <!-- 注册验证方式 -->
@@ -423,7 +423,7 @@ const onSubmit = (formRef: FormInstance | undefined = undefined) => {
             checkIn('post', state.form)
                 .then((res) => {
                     state.formLoading = false
-                    userInfo.dataFill(res.data.userinfo)
+                    userInfo.dataFill(res.data.userInfo)
                     router.push({ path: res.data.routePath })
                 })
                 .catch(() => {

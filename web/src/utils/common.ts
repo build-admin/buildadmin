@@ -65,7 +65,7 @@ export function setTitleFromRoute() {
         }
         const title = useTitle()
         const siteConfig = useSiteConfig()
-        title.value = `${webTitle}${siteConfig.site_name ? ' - ' + siteConfig.site_name : ''}`
+        title.value = `${webTitle}${siteConfig.siteName ? ' - ' + siteConfig.siteName : ''}`
     })
 }
 
@@ -76,7 +76,7 @@ export function setTitleFromRoute() {
 export function setTitle(webTitle: string) {
     const title = useTitle()
     const siteConfig = useSiteConfig()
-    title.value = `${webTitle}${siteConfig.site_name ? ' - ' + siteConfig.site_name : ''}`
+    title.value = `${webTitle}${siteConfig.siteName ? ' - ' + siteConfig.siteName : ''}`
 }
 
 /**
@@ -196,7 +196,7 @@ export const auth = (name: string) => {
 export const fullUrl = (relativeUrl: string, domain = '') => {
     const siteConfig = useSiteConfig()
     if (!domain) {
-        domain = siteConfig.cdn_url ? siteConfig.cdn_url : getUrl()
+        domain = siteConfig.cdnUrl ? siteConfig.cdnUrl : getUrl()
     }
     if (!relativeUrl) return domain
 

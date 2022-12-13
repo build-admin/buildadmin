@@ -1,8 +1,8 @@
 <template>
     <el-footer class="footer">
         <div>
-            Copyright @ 2020~2022 {{ siteConfig.site_name }} {{ $t('index.copyright') }}
-            <a href="http://beian.miit.gov.cn/">{{ siteConfig.record_number }}</a>
+            Copyright @ 2020~2022 {{ siteConfig.siteName }} {{ $t('index.copyright') }}
+            <a href="http://beian.miit.gov.cn/">{{ siteConfig.recordNumber }}</a>
         </div>
     </el-footer>
 </template>

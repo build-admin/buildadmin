@@ -4,7 +4,7 @@
             <el-col class="header-row" :span="16" :xs="24">
                 <div :class="userInfo.isLogin() ? 'hidden-sm-and-down' : ''" @click="router.push({ name: '/' })" class="header-logo">
                     <img src="~assets/logo.png" />
-                    <span class="hidden-xs-only">{{ siteConfig.site_name }}</span>
+                    <span class="hidden-xs-only">{{ siteConfig.siteName }}</span>
                 </div>
                 <div v-if="userInfo.isLogin()" @click="memberCenter.toggleMenuExpand(true)" class="user-menus-expand hidden-md-and-up">
                     <Icon name="fa fa-indent" color="var(--el-color-primary)" size="20" />

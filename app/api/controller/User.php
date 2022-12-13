@@ -85,7 +85,7 @@ class User extends Frontend
 
             if (isset($res) && $res === true) {
                 $this->success(__('Login succeeded!'), [
-                    'userinfo'  => $this->auth->getUserInfo(),
+                    'userInfo'  => $this->auth->getUserInfo(),
                     'routePath' => '/user'
                 ]);
             } else {

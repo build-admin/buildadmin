@@ -190,7 +190,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
             login('post', form)
                 .then((res) => {
                     form.loading = false
-                    adminInfo.dataFill(res.data.userinfo)
+                    adminInfo.dataFill(res.data.userInfo)
                     ElNotification({
                         message: res.msg,
                         type: 'success',

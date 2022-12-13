@@ -17,14 +17,14 @@ class Index extends Frontend
     public function index()
     {
         $this->success('', [
-            'site'               => [
-                'site_name'     => get_sys_config('site_name'),
-                'record_number' => get_sys_config('record_number'),
-                'version'       => get_sys_config('version'),
-                'cdn_url'       => full_url(),
-                'upload'        => get_upload_config(),
+            'site'             => [
+                'siteName'     => get_sys_config('site_name'),
+                'recordNumber' => get_sys_config('record_number'),
+                'version'      => get_sys_config('version'),
+                'cdnUrl'       => full_url(),
+                'upload'       => get_upload_config(),
             ],
-            'open_member_center' => Config::get('buildadmin.open_member_center'),
+            'openMemberCenter' => Config::get('buildadmin.open_member_center'),
         ]);
     }
 }

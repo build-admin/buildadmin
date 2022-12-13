@@ -18,7 +18,7 @@ export function index(params: anyObj = {}) {
 export function modules(params: anyObj = {}) {
     const siteConfig = useSiteConfig()
     return createAxios({
-        url: siteConfig.api_url + storeUrl + 'modules',
+        url: siteConfig.apiUrl + storeUrl + 'modules',
         method: 'get',
         params: params,
     })
@@ -29,7 +29,7 @@ export function info(params: anyObj) {
     const siteConfig = useSiteConfig()
     return createAxios(
         {
-            url: siteConfig.api_url + storeUrl + 'info',
+            url: siteConfig.apiUrl + storeUrl + 'info',
             method: 'get',
             params: params,
         },
@@ -43,7 +43,7 @@ export function postLogout(): ApiPromise {
     const siteConfig = useSiteConfig()
     const baAccount = useBaAccount()
     return createAxios({
-        url: siteConfig.api_url + userControllerUrl + 'logout',
+        url: siteConfig.apiUrl + userControllerUrl + 'logout',
         method: 'POST',
         data: {
             refresh_token: baAccount.getToken('refresh'),
@@ -53,14 +53,14 @@ export function postLogout(): ApiPromise {
 
 export function buildCaptchaUrl() {
     const siteConfig = useSiteConfig()
-    return siteConfig.api_url + captchaUrl + '?server=1'
+    return siteConfig.apiUrl + captchaUrl + '?server=1'
 }
 
 export function checkIn(method: 'get' | 'post', params: object = {}): ApiPromise {
     const siteConfig = useSiteConfig()
     return createAxios(
         {
-            url: siteConfig.api_url + userControllerUrl + 'checkIn',
+            url: siteConfig.apiUrl + userControllerUrl + 'checkIn',
             data: params,
             method: method,
         },
@@ -75,7 +75,7 @@ export function getUserInfo(): ApiPromise {
     const siteConfig = useSiteConfig()
     return createAxios(
         {
-            url: siteConfig.api_url + userControllerUrl + 'info',
+            url: siteConfig.apiUrl + userControllerUrl + 'info',
             method: 'get',
         },
         {
@@ -89,7 +89,7 @@ export function createOrder(params: object = {}): ApiPromise {
     const siteConfig = useSiteConfig()
     return createAxios(
         {
-            url: siteConfig.api_url + storeUrl + 'order',
+            url: siteConfig.apiUrl + storeUrl + 'order',
             method: 'post',
             params: params,
         },
@@ -104,7 +104,7 @@ export function payOrder(orderId: number, payType: string): ApiPromise {
     const siteConfig = useSiteConfig()
     return createAxios(
         {
-            url: siteConfig.api_url + storeUrl + 'pay',
+            url: siteConfig.apiUrl + storeUrl + 'pay',
             method: 'post',
             params: {
                 order_id: orderId,
@@ -123,7 +123,7 @@ export function payCheck(sn: string): ApiPromise {
     const siteConfig = useSiteConfig()
     return createAxios(
         {
-            url: siteConfig.api_url + '/api/pay/check',
+            url: siteConfig.apiUrl + '/api/pay/check',
             method: 'get',
             params: {
                 sn: sn,

@@ -44,8 +44,8 @@ onBeforeMount(() => {
 const init = () => {
     index().then((res) => {
         siteConfig.dataFill(res.data.siteConfig)
-        terminal.changePort(res.data.terminal.install_service_port)
-        terminal.changePackageManager(res.data.terminal.npm_package_manager)
+        terminal.changePort(res.data.terminal.installServicePort)
+        terminal.changePackageManager(res.data.terminal.npmPackageManager)
         adminInfo.dataFill(res.data.adminInfo)
 
         if (res.data.menus) {
