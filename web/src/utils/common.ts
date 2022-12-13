@@ -157,6 +157,15 @@ export const isAdminApp = () => {
 }
 
 /**
+ * 是否为手机设备
+ */
+export const isMobile = () => {
+    return !!navigator.userAgent.match(
+        /android|webos|ip(hone|ad|od)|opera (mini|mobi|tablet)|iemobile|windows.+(phone|touch)|mobile|fennec|kindle (Fire)|Silk|maemo|blackberry|playbook|bb10\; (touch|kbd)|Symbian(OS)|Ubuntu Touch/i
+    )
+}
+
+/**
  * 从一个文件路径中获取文件名
  * @param path 文件路径
  */
