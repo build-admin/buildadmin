@@ -10,7 +10,7 @@
                 </div>
             </template>
             <div class="user-profile">
-                <el-form :model="state.form" :rules="state.rules" :label-position="'top'" ref="formRef" @keyup.enter="onSubmit(formRef)">
+                <el-form :model="state.form" :rules="state.rules" :label-width="100" ref="formRef" @keyup.enter="onSubmit(formRef)">
                     <FormItem
                         :label="$t('user.user.head portrait')"
                         :input-attr="{
@@ -24,10 +24,8 @@
                         :label="$t('user.user.User name')"
                         type="string"
                         v-model="state.form.username"
-                        :input-attr="{
-                            disabled: true,
-                        }"
                         :placeholder="$t('Please input field', { field: $t('user.user.User name') })"
+                        prop="username"
                     />
                     <FormItem
                         :label="$t('user.user.User nickname')"
@@ -284,6 +282,7 @@ const state: {
     form: userInfo.$state,
     rules: {
         avatar: [buildValidatorData({ name: 'required', message: t('Please select field', { field: t('user.user.head portrait') }) })],
+        username: [buildValidatorData({ name: 'required', title: t('user.user.User name') }), buildValidatorData({ name: 'account' })],
         nickname: [buildValidatorData({ name: 'required', title: t('user.user.nickname') })],
     },
     accountVerificationType: [],
@@ -462,7 +461,7 @@ onMounted(() => {
     align-items: center;
 }
 .user-profile {
-    width: 360px;
+    width: 400px;
     max-width: 100%;
 }
 .submit-buttons :deep(.el-form-item__content) {

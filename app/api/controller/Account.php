@@ -55,7 +55,7 @@ class Account extends Frontend
     public function profile()
     {
         if ($this->request->isPost()) {
-            $data = $this->request->only(['avatar', 'nickname', 'gender', 'birthday', 'motto']);
+            $data = $this->request->only(['id', 'avatar', 'username', 'nickname', 'gender', 'birthday', 'motto']);
             if (!isset($data['birthday'])) $data['birthday'] = null;
 
             Db::startTrans();
