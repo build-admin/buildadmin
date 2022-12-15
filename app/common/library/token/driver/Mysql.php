@@ -77,7 +77,8 @@ class Mysql extends Driver
     public function check(string $token, string $type, int $user_id, bool $expirationException = true): bool
     {
         $data = $this->get($token, $expirationException);
-        return $data && $data['type'] == $type && $data['user_id'] == $user_id;
+        if (!$data || (!$expirationException && $data['expiretime'] && $data['expiretime'] <= time())) return false;
+        return $data['type'] == $type && $data['user_id'] == $user_id;
     }
 
     public function delete(string $token): bool
