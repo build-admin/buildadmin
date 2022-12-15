@@ -32,7 +32,7 @@ export async function loadLang(app: App) {
     const message = lang.default ?? {}
 
     /*
-     * 0、加载页面语言包 import.meta.globEager 的路径不能使用变量
+     * 0、加载页面语言包 import.meta.globEager 的路径不能使用变量 import() 在 Vite 中目录名不能使用变量(编译后,文件名可以)
      * 1、vue3 setup 内只能使用 useI18n({messages:{}}) 来动态载入当前页面单独的语言包，不方便使用
      * 2、直接载入所有 /@/lang/pages/语言/*.ts 文件，若某页面有特别大量的语言配置，可在其他位置单独建立语言包文件，并在对应页面加载语言包
      */
@@ -114,7 +114,7 @@ export function editDefaultLang(lang: string): void {
 
     /*
      * 语言包是按需加载的,比如默认语言为中文,则只在app实例内加载了中文语言包
-     * 查阅文档无数遍,无耐接受当前的 i18n 版本并不支持动态添加语言包(或需要在 setup 内动态添加,无法满足全局替换的需求)
+     * 查阅文档无数遍,无耐接受当前的 Vite 版本并不支持动态的导入当前路由语言包数据，参第35行注释(或需要在 setup 内动态添加,无法满足全局替换的需求)
      * 故 reload;如果您有已经实现的无需一次性加载全部语言包且无需 reload 的方案,请一定@我
      */
     location.reload()
