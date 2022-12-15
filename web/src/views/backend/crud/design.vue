@@ -633,9 +633,7 @@ const onFieldNameChange = (val: string) => {
 
 const onDelField = (index: number) => {
     if (!state.fields[index]) return
-    if (state.activateField === index) {
-        state.activateField = -1
-    }
+    state.activateField = -1
     if (state.fields[index].name == state.table.defaultSortField) {
         state.table.defaultSortField = ''
     }
