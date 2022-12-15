@@ -429,7 +429,7 @@ class Helper
      */
     public static function getMenuName(array $webDir): string
     {
-        return ($webDir['path'] ? implode('.', $webDir['path']) . '/' : '') . $webDir['originalLastName'];
+        return ($webDir['path'] ? implode('/', $webDir['path']) . '/' : '') . $webDir['originalLastName'];
     }
 
     /**
