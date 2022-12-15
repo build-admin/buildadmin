@@ -210,7 +210,7 @@ class Crud extends Backend
             if ($weighKey !== false) {
                 $this->indexVueData['enableDragSort'] = true;
                 $this->modelData['afterInsert']       = Helper::assembleStub('mixins/model/afterInsert', [
-                    'field' => $fieldsMap[$weighKey]
+                    'field' => $weighKey
                 ]);
             }
 
