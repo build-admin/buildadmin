@@ -64,7 +64,7 @@ class Server
             throw new moduleException('Unable to open the zip file', 0, ['msg' => $e->getMessage()]);
         }
 
-        $dir = $dir ?: rtrim($file, '.zip');
+        $dir = $dir ?: substr($file, 0, strripos($file, '.zip'));
         if (!is_dir($dir)) {
             @mkdir($dir, 0755);
         }
