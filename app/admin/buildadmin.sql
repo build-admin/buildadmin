@@ -550,13 +550,12 @@ CREATE TABLE `__PREFIX__user_rule` (
 -- Records of __PREFIX__user_rule
 -- ----------------------------
 BEGIN;
-INSERT INTO `__PREFIX__user_rule` VALUES ('1', '0', 'route', '前台', 'api', 'api', 'el-icon-HomeFilled', 'tab', '', '', 'none', '', '99', '1', '1655867308', '1648156017');
-INSERT INTO `__PREFIX__user_rule` VALUES ('2', '0', 'menu_dir', '我的账户', 'account', 'account', 'fa fa-user-circle', 'tab', '', '', 'none', '', '98', '1', '1655970295', '1648156017');
-INSERT INTO `__PREFIX__user_rule` VALUES ('3', '2', 'menu', '账户概览', 'account/overview', 'account/overview', 'fa fa-home', 'tab', '', '/src/views/frontend/user/account/overview.vue', 'none', '', '99', '1', '1655879438', '1655820267');
-INSERT INTO `__PREFIX__user_rule` VALUES ('4', '2', 'menu', '个人资料', 'account/profile', 'account/profile', 'fa fa-user-circle-o', 'tab', '', '/src/views/frontend/user/account/profile.vue', 'none', '', '98', '1', '1655972096', '1655820365');
-INSERT INTO `__PREFIX__user_rule` VALUES ('5', '2', 'menu', '修改密码', 'account/changePassword', 'account/changePassword', 'fa fa-shield', 'tab', '', '/src/views/frontend/user/account/changePassword.vue', 'none', '', '97', '1', '1655980365', '1655820461');
-INSERT INTO `__PREFIX__user_rule` VALUES ('6', '2', 'menu', '积分记录', 'account/integral', 'account/integral', 'fa fa-tag', 'tab', '', '/src/views/frontend/user/account/integral.vue', 'none', '', '96', '1', '1655985356', '1655820507');
-INSERT INTO `__PREFIX__user_rule` VALUES ('7', '2', 'menu', '余额记录', 'account/balance', 'account/balance', 'fa fa-money', 'tab', '', '/src/views/frontend/user/account/balance.vue', 'none', '', '95', '1', '1655985373', '1655820593');
+INSERT INTO `__PREFIX__user_rule` VALUES ('1', '0', 'menu_dir', '我的账户', 'account', 'account', 'fa fa-user-circle', 'tab', '', '', 'none', '', '98', '1', '1655970295', '1648156017');
+INSERT INTO `__PREFIX__user_rule` VALUES ('2', '1', 'menu', '账户概览', 'account/overview', 'account/overview', 'fa fa-home', 'tab', '', '/src/views/frontend/user/account/overview.vue', 'none', '', '99', '1', '1655879438', '1655820267');
+INSERT INTO `__PREFIX__user_rule` VALUES ('3', '1', 'menu', '个人资料', 'account/profile', 'account/profile', 'fa fa-user-circle-o', 'tab', '', '/src/views/frontend/user/account/profile.vue', 'none', '', '98', '1', '1655972096', '1655820365');
+INSERT INTO `__PREFIX__user_rule` VALUES ('4', '1', 'menu', '修改密码', 'account/changePassword', 'account/changePassword', 'fa fa-shield', 'tab', '', '/src/views/frontend/user/account/changePassword.vue', 'none', '', '97', '1', '1655980365', '1655820461');
+INSERT INTO `__PREFIX__user_rule` VALUES ('5', '1', 'menu', '积分记录', 'account/integral', 'account/integral', 'fa fa-tag', 'tab', '', '/src/views/frontend/user/account/integral.vue', 'none', '', '96', '1', '1655985356', '1655820507');
+INSERT INTO `__PREFIX__user_rule` VALUES ('6', '1', 'menu', '余额记录', 'account/balance', 'account/balance', 'fa fa-money', 'tab', '', '/src/views/frontend/user/account/balance.vue', 'none', '', '95', '1', '1655985373', '1655820593');
 COMMIT;
 
 -- ----------------------------
