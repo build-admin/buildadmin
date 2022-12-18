@@ -2,7 +2,7 @@
 <div align="center">
     <img src="https://wonderful-code.gitee.io/images/readme/logo-title.png" alt="" />
     <br />
-    <a href="https://demo.buildadmin.com/" target="_blank">演示站</a> |
+    <a href="https://buildadmin.com/" target="_blank">官网</a> | <a href="https://demo.buildadmin.com/" target="_blank">演示站</a> |
     <a href="https://wonderful-code.gitee.io/" target="_blank">文档</a> |
     <a href="https://jq.qq.com/?_wv=1027&k=QwtXa14c" target="_blank">加群</a> |
     <a href="https://wonderful-code.gitee.io/guide/" target="_blank">视频介绍</a> |
