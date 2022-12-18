@@ -57,5 +57,5 @@ return [
     // 版本号
     'version'              => 'v1.1.0',
     // 接口地址
-    'api_url'              => 'https://ba.buildadmin.com',
+    'api_url'              => 'https://buildadmin.com',
 ];
