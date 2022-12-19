@@ -1,7 +1,7 @@
 <template>
     <transition name="el-fade-in">
         <div class="table-com-search">
-            <el-form @keyup.enter="onComSearch" label-position="top" :model="baTable.comSearch.form">
+            <el-form @submit.prevent="onComSearch" label-position="top" :model="baTable.comSearch.form">
                 <el-row>
                     <template v-for="(item, idx) in baTable.table.column" :key="idx">
                         <template v-if="item.operator !== false">
