@@ -39,7 +39,11 @@
             <template v-if="slots.file" #file><slot name="file"></slot></template>
         </el-upload>
         <el-dialog v-model="state.preview.show" class="ba-upload-preview">
-            <img :src="state.preview.url" class="ba-upload-preview-img" alt="" />
+            <el-scrollbar class="ba-upload-preview-scrollbar">
+                <div>
+                    <img :src="state.preview.url" class="ba-upload-preview-img" alt=""/>
+                </div>
+            </el-scrollbar>
         </el-dialog>
         <SelectFile v-model="state.selectFile.show" v-bind="state.selectFile" @choice="onChoice" />
     </div>
@@ -331,9 +335,25 @@ defineExpose({
     display: flex;
     align-items: center;
     justify-content: center;
+    max-height: calc(100vh - 200px);
+    padding-right: 0px;
+}
+.ba-upload-preview-scrollbar{
+    max-height: calc(100vh - 200px);
+}
+:deep(.el-scrollbar__wrap){
+    max-height: calc(100vh - 200px);
 }
 .ba-upload-preview-img {
+    width: auto;
+    height: auto;
     max-width: 100%;
+    max-height: 100%;
+}
+:deep(.el-dialog__headerbtn){
+    top: 2px;
+    width: 37px;
+    height: 37px;
 }
 .ba-upload.image :deep(.el-upload--picture-card),
 .ba-upload.images :deep(.el-upload--picture-card) {
