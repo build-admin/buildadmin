@@ -3,7 +3,7 @@
     <el-dialog
         class="ba-operate-dialog"
         :close-on-click-modal="false"
-        :model-value="baTable.form.operate ? true : false"
+        :model-value="['add', 'edit'].includes(baTable.form.operate!)"
         @close="baTable.toggleForm"{%bigDialog%}
     >
         <template #header>
@@ -20,7 +20,7 @@
                 <el-form
                     v-if="!baTable.form.loading"
                     ref="formRef"
-                    @keyup.enter="baTable.onSubmit(formRef)"
+                    @submit.prevent="baTable.onSubmit(formRef)"
                     :model="baTable.form.items"
                     label-position="right"
                     :label-width="baTable.form.labelWidth + 'px'"
