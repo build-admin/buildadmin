@@ -12,6 +12,7 @@ import { memberCenterBaseRoute } from '/@/router/static'
 import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
+import userMounted from '/@/layouts/common/mixins/userMounted'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -23,7 +24,10 @@ onBeforeRouteUpdate((to) => {
     memberCenter.setActiveRoute(to)
 })
 
-onMounted(() => {
+onMounted(async () => {
+    const ret = await userMounted()
+    if (ret.type == 'break') return
+
     if (!userInfo.token) return router.push({ name: 'userLogin' })
 
     index().then((res) => {
@@ -31,6 +35,8 @@ onMounted(() => {
         userInfo.dataFill(res.data.userInfo)
         if (res.data.menus) {
             handleMemberCenterRoute(res.data.menus)
+
+            if (ret.type == 'jump') return router.push(ret.url)
 
             // 预跳转到上次路径
             if (route.query && route.query.url && route.query.url != memberCenterBaseRoute.path) {

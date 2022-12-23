@@ -511,8 +511,7 @@ const endTiming = () => {
 }
 
 onMounted(async () => {
-    const res = await loginMounted()
-    if (res) return
+    if (await loginMounted()) return
 
     resize()
     useEventListener(window, 'resize', resize)

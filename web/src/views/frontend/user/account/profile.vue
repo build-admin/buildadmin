@@ -69,6 +69,7 @@
                         v-model="state.form.motto"
                         :input-attr="{ 'show-word-limit': true, rows: 3 }"
                     />
+                    <UserProfileMixin />
                     <el-form-item class="submit-buttons">
                         <el-button @click="onResetForm(formRef)">{{ $t('Reset') }}</el-button>
                         <el-button type="primary" :loading="state.formSubmitLoading" @click="onSubmit(formRef)">{{ $t('Save') }}</el-button>
@@ -236,6 +237,7 @@ import { useUserInfo } from '/@/stores/userInfo'
 import { onResetForm } from '/@/utils/common'
 import { buildValidatorData } from '/@/utils/validate'
 import { getProfile, postProfile, postVerification, postChangeBind } from '/@/api/frontend/user/index'
+import UserProfileMixin from '/@/layouts/common/mixins/userProfile.vue'
 import { useI18n } from 'vue-i18n'
 import { sendEms, sendSms } from '/@/api/common'
 let timer: NodeJS.Timer
