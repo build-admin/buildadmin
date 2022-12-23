@@ -4,7 +4,7 @@
     <br />
     <a href="https://buildadmin.com/" target="_blank">官网</a> | <a href="https://demo.buildadmin.com/" target="_blank">演示站</a> |
     <a href="https://wonderful-code.gitee.io/" target="_blank">文档</a> |
-    <a href="https://jq.qq.com/?_wv=1027&k=QwtXa14c" target="_blank">加群</a> |
+    <a href="https://jq.qq.com/?_wv=1027&k=c8a7iSk8" target="_blank">加群</a> |
     <a href="https://wonderful-code.gitee.io/guide/" target="_blank">视频介绍</a> |
     <a href="https://gitee.com/wonderful-code/buildadmin" target="_blank">Gitee仓库</a> |
     <a href="https://github.com/build-admin/BuildAdmin" target="_blank">GitHub仓库</a>
@@ -57,7 +57,7 @@
 一键安装数据导出、短信发送、云存储、单页或是纯前端技术栈的学习案例项目等等，随时随地为系统添砖加瓦，系统能够自动维护`package.json`和`composer.json`并通过内置终端自动完成模块所需依赖的安装，若您愿意成为模块开发者，模块可以：覆盖系统任何文件或为系统新增文件，您的模块经由官方审核即可上架。
 
 **🔀 前后端分离：**
-`web`文件夹内包含：`干净`(不含后端代码)、`完整`(所有前端代码文件均在此内) 的前端代码文件，对前端开发者友好，作为纯前端开发者，您可以将BAdmin当做学习与资源的社群，本系统可为您准备好案例和模板等所需要的环境，而您只需专注于学习或工作，不需要会任何后端代码！（邀您：[和我们一起](https://jq.qq.com/?_wv=1027&k=QwtXa14c) ）
+`web`文件夹内包含：`干净`(不含后端代码)、`完整`(所有前端代码文件均在此内) 的前端代码文件，对前端开发者友好，作为纯前端开发者，您可以将BAdmin当做学习与资源的社群，本系统可为您准备好案例和模板等所需要的环境，而您只需专注于学习或工作，不需要会任何后端代码！（邀您：[和我们一起](https://jq.qq.com/?_wv=1027&k=c8a7iSk8) ）
 
 **🌴 数据回收与反悔：**
 内置全局数据回收站，并且提供字段级数据修改记录和修改对比，随时回滚和还原，安全且无感。
@@ -83,11 +83,10 @@
 ### 联系我们
 - [演示站](https://demo.buildadmin.com/) 账户：`admin`，密码：`123456`（演示站数据无法修改，请下载源码安装体验全部功能）
 - [文档：wonderful-code.gitee.io](https://wonderful-code.gitee.io/)
-- [加群：687903819](https://jq.qq.com/?_wv=1027&k=QwtXa14c)
-- [Gitee仓库](https://gitee.com/wonderful-code/buildadmin)
-- [GitHub仓库](https://github.com/build-admin/BuildAdmin)
+- 加群：[687903819（已满）](https://jq.qq.com/?_wv=1027&k=QwtXa14c)、[751852082](https://jq.qq.com/?_wv=1027&k=c8a7iSk8)
+- [Gitee仓库](https://gitee.com/wonderful-code/buildadmin)、[GitHub仓库](https://github.com/build-admin/BuildAdmin)
 - [备用文档：doc.buildadmin.com](https://doc.buildadmin.com/)
-- [邮箱 hi@buildadmin.com](mailto:hi@buildadmin.com)
+- [官网](https://buildadmin.com/)、[官方邮箱 hi@buildadmin.com](mailto:hi@buildadmin.com)
 
 ### 项目预览
 |  |  |
