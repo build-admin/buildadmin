@@ -20,7 +20,8 @@
                 <el-form
                     v-if="!baTable.form.loading"
                     ref="formRef"
-                    @submit.prevent="baTable.onSubmit(formRef)"
+                    @submit.prevent=""
+                    @keyup.enter="baTable.onSubmit(formRef)"
                     :model="baTable.form.items"
                     label-position="right"
                     :label-width="baTable.form.labelWidth + 'px'"
