@@ -27,6 +27,7 @@ onBeforeRouteUpdate((to) => {
 onMounted(async () => {
     const ret = await userMounted()
     if (ret.type == 'break') return
+    if (ret.type == 'reload') return (window.location.href = ret.url)
 
     if (!userInfo.token) return router.push({ name: 'userLogin' })
 

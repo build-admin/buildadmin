@@ -1,5 +1,5 @@
 interface UserMountedRet {
-    type: 'jump' | 'break' | 'continue'
+    type: 'jump' | 'break' | 'continue' | 'reload'
     [key: string]: any
 }
 
