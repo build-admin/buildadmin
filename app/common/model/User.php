@@ -15,7 +15,7 @@ class User extends Model
 
     public function getAvatarAttr($value)
     {
-        return full_url($value, true, Config::get('buildadmin.default_avatar'));
+        return full_url(htmlspecialchars_decode($value), true, Config::get('buildadmin.default_avatar'));
     }
 
     public function resetPassword($uid, $newPassword)

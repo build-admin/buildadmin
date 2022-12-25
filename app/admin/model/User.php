@@ -16,6 +16,11 @@ class User extends Model
     protected $createTime = 'createtime';
     protected $updateTime = 'updatetime';
 
+    public function getAvatarAttr($value)
+    {
+        return htmlspecialchars_decode($value);
+    }
+
     public function getMoneyAttr($value)
     {
         return bcdiv($value, 100, 2);
