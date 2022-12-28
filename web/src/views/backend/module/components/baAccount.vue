@@ -134,7 +134,7 @@ const onBaAccountSubmit = (formRef: FormInstance | undefined = undefined) => {
                 .then((res) => {
                     state.dialog.baAccount = false
                     user.loading = false
-                    baAccount.dataFill(res.data.userinfo)
+                    baAccount.dataFill(res.data.userInfo)
                 })
                 .catch(() => {
                     user.loading = false
