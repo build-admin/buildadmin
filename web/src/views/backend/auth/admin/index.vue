@@ -26,9 +26,16 @@ import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
+import { useAdminInfo } from '/@/stores/adminInfo'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
+const adminInfo = useAdminInfo()
+
+const optButtons = defaultOptButtons(['edit', 'delete'])
+optButtons[1].display = (row) => {
+    return row.id != adminInfo.id
+}
 
 const baTable = new baTableClass(
     new baTableApi(authAdmin),
@@ -65,7 +72,7 @@ const baTable = new baTableClass(
                 align: 'center',
                 width: '100',
                 render: 'buttons',
-                buttons: defaultOptButtons(['edit', 'delete']),
+                buttons: optButtons,
                 operator: false,
             },
         ],

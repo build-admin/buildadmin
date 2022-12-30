@@ -223,10 +223,12 @@ class Admin extends Backend
         Db::startTrans();
         try {
             foreach ($data as $v) {
-                $count += $v->delete();
-                Db::name('admin_group_access')
-                    ->where('uid', $v['id'])
-                    ->delete();
+                if ($v->id != $this->auth->id) {
+                    $count += $v->delete();
+                    Db::name('admin_group_access')
+                        ->where('uid', $v['id'])
+                        ->delete();
+                }
             }
             Db::commit();
         } catch (PDOException|Exception $e) {
