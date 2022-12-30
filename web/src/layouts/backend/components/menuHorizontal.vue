@@ -102,6 +102,9 @@ onBeforeRouteUpdate((to) => {
         background-color: v-bind('config.getColorVal("headerBarHoverBackground")');
     }
 }
+.horizontal-menus-scrollbar {
+    flex: 1;
+}
 .menu-horizontal {
     border: none;
     --el-menu-bg-color: v-bind('config.getColorVal("menuBackground")');
