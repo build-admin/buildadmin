@@ -113,4 +113,6 @@ export default {
         'If it is left blank, the model of the associated table will be generated automatically If the table already has a model, it is recommended to select it to avoid repeated generation',
     'The field comment will be used as the CRUD dictionary, and will be identified as the field title before the colon, and as the data dictionary after the colon':
         'The field comment will be used as the CRUD dictionary, and will be identified as the field title before the colon, and as the data dictionary after the colon',
+    'Field name is invalid It starts with a letter or underscore and cannot contain any character other than letters, digits, or underscores':
+        'Field name {field} is invalid. It starts with a letter or underscore and cannot contain any character other than letters, digits, or underscores',
 }

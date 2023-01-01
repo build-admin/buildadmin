@@ -48,11 +48,14 @@ export function validatorPassword(rule: any, val: string, callback: Function) {
 /**
  * 变量名验证
  */
+export function regularVarName(val: string) {
+    return /^([^\x00-\xff]|[a-zA-Z_$])([^\x00-\xff]|[a-zA-Z0-9_$])*$/.test(val)
+}
 export function validatorVarName(rule: any, val: string, callback: Function) {
     if (!val) {
         return callback()
     }
-    if (!/^([^\x00-\xff]|[a-zA-Z_$])([^\x00-\xff]|[a-zA-Z0-9_$])*$/.test(val)) {
+    if (!regularVarName(val)) {
         return callback(new Error(i18n.global.t('validate.Please enter the correct name')))
     }
     return callback()

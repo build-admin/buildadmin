@@ -494,7 +494,7 @@ import { changeStep, state as crudState, getTableAttr } from '/@/views/backend/c
 import { ElNotification, FormItemRule, FormInstance, ElMessageBox } from 'element-plus'
 import { getDatabaseList, getFileData, generateCheck, generate, parseFieldData, postLogStart } from '/@/api/backend/crud'
 import { getTableFieldList } from '/@/api/common'
-import { buildValidatorData } from '/@/utils/validate'
+import { buildValidatorData, regularVarName } from '/@/utils/validate'
 import { getArrayKey } from '/@/utils/common'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -706,13 +706,29 @@ const startGenerate = () => {
 
 const onGenerate = () => {
     let msg = ''
-    if (!state.table.name) msg = t('crud.crud.Please enter the data table name!')
+
+    // 字段名检查
+    state.fields.find((item) => {
+        if (!regularVarName(item.name)) {
+            msg = t(
+                'crud.crud.Field name is invalid It starts with a letter or underscore and cannot contain any character other than letters, digits, or underscores',
+                { field: item.name }
+            )
+            return true
+        }
+    })
+
+    // 主键检查
     const pkIndex = state.fields.findIndex((item) => {
         return item.primaryKey
     })
     if (pkIndex === -1) {
         msg = t('crud.crud.Please design the primary key field!')
     }
+
+    // 表名检查
+    if (!state.table.name) msg = t('crud.crud.Please enter the data table name!')
+
     if (msg) {
         ElNotification({
             type: 'error',

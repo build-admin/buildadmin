@@ -112,4 +112,6 @@ export default {
         '留空则自动生成关联表的模型，若该表已有模型，建议选择好以免重复生成',
     'The field comment will be used as the CRUD dictionary, and will be identified as the field title before the colon, and as the data dictionary after the colon':
         '字段注释将作为 CRUD字典，冒号前将识别为字段标题，冒号后识别为数据字典',
+    'Field name is invalid It starts with a letter or underscore and cannot contain any character other than letters, digits, or underscores':
+        '字段名 {field} 不符合规范，请以 字母、_ 开头，不能出现 字母、数字、下划线 以外的字符',
 }
