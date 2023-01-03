@@ -199,8 +199,7 @@ class Backend extends Api
         }
 
         // 通用搜索组装
-        foreach ($search as $item) {
-            $field = json_decode($item, true);
+        foreach ($search as $field) {
             if (!is_array($field) || !isset($field['operator']) || !isset($field['field'])) {
                 continue;
             }

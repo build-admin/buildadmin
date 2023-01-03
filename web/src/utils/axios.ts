@@ -1,5 +1,5 @@
-import axios, { AxiosPromise, Method } from 'axios'
-import type { AxiosRequestConfig } from 'axios'
+import axios from 'axios'
+import type { AxiosRequestConfig, AxiosPromise, Method } from 'axios'
 import { ElLoading, LoadingOptions, ElNotification } from 'element-plus'
 import { useConfig } from '/@/stores/config'
 import { isAdminApp } from '/@/utils/common'
@@ -47,7 +47,6 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
         baseURL: getUrl(),
         timeout: 1000 * 10,
         headers: {
-            'Content-Type': 'application/json',
             'think-lang': config.lang.defaultLang,
             server: true,
         },
@@ -83,9 +82,9 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             // 自动携带token
             if (config.headers) {
                 const token = adminInfo.getToken()
-                if (token) config.headers.batoken = token
+                if (token) (config.headers as anyObj).batoken = token
                 const userToken = options.anotherToken || userInfo.getToken()
-                if (userToken) config.headers['ba-user-token'] = userToken
+                if (userToken) (config.headers as anyObj)['ba-user-token'] = userToken
             }
 
             return config
@@ -200,8 +199,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             return Promise.reject(error) // 错误继续返回给到具体页面
         }
     )
-
-    return Axios(axiosConfig)
+    return options.reductDataFormat ? (Axios(axiosConfig) as ApiPromise) : (Axios(axiosConfig) as AxiosPromise)
 }
 
 export default createAxios
@@ -317,8 +315,8 @@ function getPendingKey(config: AxiosRequestConfig) {
     return [
         url,
         method,
-        headers && headers.batoken ? headers.batoken : '',
-        headers && headers['ba-user-token'] ? headers['ba-user-token'] : '',
+        headers && (headers as anyObj).batoken ? (headers as anyObj).batoken : '',
+        headers && (headers as anyObj)['ba-user-token'] ? (headers as anyObj)['ba-user-token'] : '',
         JSON.stringify(params),
         JSON.stringify(data),
     ].join('&')

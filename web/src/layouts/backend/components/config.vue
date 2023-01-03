@@ -216,7 +216,8 @@ const onCommitState = (value: any, name: any) => {
     configStore.setLayout(name, value)
 }
 
-const onCommitColorState = (value: string, name: keyof Layout) => {
+const onCommitColorState = (value: string | null, name: keyof Layout) => {
+    if (value === null) return
     const colors = configStore.layout[name] as string[]
     if (configStore.layout.isDark) {
         colors[1] = value

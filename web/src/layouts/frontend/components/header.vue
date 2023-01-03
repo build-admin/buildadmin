@@ -49,7 +49,7 @@
             </el-col>
         </el-row>
         <el-drawer
-            custom-class="aside-drawer"
+            class="aside-drawer"
             :append-to-body="true"
             v-model="memberCenter.state.menuExpand"
             :with-header="false"

@@ -15,7 +15,7 @@ import Streamline from '/@/layouts/backend/container/streamline.vue'
 import { onMounted, onBeforeMount } from 'vue'
 import { Session } from '/@/utils/storage'
 import { index } from '/@/api/backend'
-import { handleAdminRoute, getMenuPaths, getFirstRoute, routePush } from '/@/utils/router'
+import { handleAdminRoute, getFirstRoute, routePush } from '/@/utils/router'
 import router from '/@/router/index'
 import { adminBaseRoute } from '/@/router/static'
 import { useEventListener } from '@vueuse/core'
@@ -52,20 +52,11 @@ const init = () => {
             handleAdminRoute(res.data.menus)
 
             // 预跳转到上次路径
-            if (route.query && route.query.url && route.query.url != adminBaseRoute.path) {
-                let query = JSON.parse(route.query.query as string)
-                query = !isEmpty(query) ? query : {}
-                const lastRouter = router.getRoutes().find((value) => {
-                    return value.path == route.query.url
-                })
-                if (lastRouter) {
-                    routePush({ path: lastRouter.path, query: query })
-                    return
-                }
-                // 检查路径是否有权限
-                let menuPaths = getMenuPaths(navTabs.state.tabsViewRoutes)
-                if (menuPaths.indexOf(route.query.url as string) !== -1) {
-                    routePush({ path: route.query.url as string, query: query })
+            if (route.params.to) {
+                const lastRoute = JSON.parse(route.params.to as string)
+                if (lastRoute.path != adminBaseRoute.path) {
+                    let query = !isEmpty(lastRoute.query) ? lastRoute.query : {}
+                    routePush({ path: lastRoute.path, query: query })
                     return
                 }
             }

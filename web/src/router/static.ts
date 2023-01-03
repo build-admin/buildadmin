@@ -52,14 +52,30 @@ const staticRoutes: Array<RouteRecordRaw> = [
         // 后台找不到页面了-可能是路由未加载上
         path: '/admin:path(.*)*',
         redirect: (to) => {
-            return { name: 'adminMainLoading', query: { url: to.path, query: JSON.stringify(to.query) } }
+            return {
+                name: 'adminMainLoading',
+                params: {
+                    to: JSON.stringify({
+                        path: to.path,
+                        query: to.query,
+                    }),
+                },
+            }
         },
     },
     {
         // 会员中心找不到页面了
         path: '/user:path(.*)*',
         redirect: (to) => {
-            return { name: 'userMainLoading', query: { url: to.path, query: JSON.stringify(to.query) } }
+            return {
+                name: 'userMainLoading',
+                params: {
+                    to: JSON.stringify({
+                        path: to.path,
+                        query: to.query,
+                    }),
+                },
+            }
         },
     },
     {
@@ -86,7 +102,7 @@ const adminBaseRoute: RouteRecordRaw = {
     },
     children: [
         {
-            path: 'loading',
+            path: 'loading/:to?',
             name: 'adminMainLoading',
             component: () => import('/@/layouts/common/components/loading.vue'),
             meta: {
@@ -109,7 +125,7 @@ const memberCenterBaseRoute: RouteRecordRaw = {
     },
     children: [
         {
-            path: 'loading',
+            path: 'loading/:to?',
             name: 'userMainLoading',
             component: () => import('/@/layouts/common/components/loading.vue'),
             meta: {

@@ -138,7 +138,7 @@ const onElChange = (file: UploadFileExt) => {
     if (!file || !file.raw) return
     if (typeof state.events['beforeUpload'] == 'function' && state.events['beforeUpload'](file) === false) return
     let fd = new FormData()
-    fd.append('file', file.raw!)
+    fd.append('file', file.raw)
     fd = formDataAppend(fd)
     state.uploading++
     fileUpload(fd, { uuid: uuid() })
@@ -214,15 +214,17 @@ onMounted(() => {
         state.attr = { ...state.attr, accept: 'image/*', listType: 'picture-card' }
     }
 
+    const addProps: anyObj = {}
     const evtArr = ['onPreview', 'onRemove', 'onSuccess', 'onError', 'onChange', 'onExceed', 'beforeUpload', 'beforeRemove', 'onProgress']
     for (const key in props.attr) {
         if (evtArr.includes(key)) {
             state.events[key] = props.attr[key as keyof typeof props.attr]
-            delete props.attr[key as keyof typeof props.attr]
+        } else {
+            addProps[key] = props.attr[key as keyof typeof props.attr]
         }
     }
 
-    state.attr = { ...state.attr, ...props.attr }
+    state.attr = { ...state.attr, ...addProps }
     if (state.attr.limit) state.selectFile.limit = state.attr.limit
 
     init(props.modelValue)

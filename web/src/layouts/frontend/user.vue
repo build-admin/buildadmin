@@ -7,12 +7,13 @@ import { onMounted } from 'vue'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { index } from '/@/api/frontend/user/index'
-import { handleMemberCenterRoute, getMenuPaths, getFirstRoute } from '/@/utils/router'
+import { handleMemberCenterRoute, getFirstRoute, routePush } from '/@/utils/router'
 import { memberCenterBaseRoute } from '/@/router/static'
 import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import userMounted from '/@/layouts/common/mixins/userMounted'
+import { isEmpty } from 'lodash-es'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -40,12 +41,11 @@ onMounted(async () => {
             if (ret.type == 'jump') return router.push(ret.url)
 
             // 预跳转到上次路径
-            if (route.query && route.query.url && route.query.url != memberCenterBaseRoute.path) {
-                // 检查路径是否有权限
-                let menuPaths = getMenuPaths(memberCenter.state.viewRoutes)
-                if (menuPaths.indexOf(route.query.url as string) !== -1) {
-                    let query = JSON.parse(route.query.query as string)
-                    router.push({ path: route.query.url as string, query: Object.keys(query).length ? query : {} })
+            if (route.params.to) {
+                const lastRoute = JSON.parse(route.params.to as string)
+                if (lastRoute.path != memberCenterBaseRoute.path) {
+                    let query = !isEmpty(lastRoute.query) ? lastRoute.query : {}
+                    routePush({ path: lastRoute.path, query: query })
                     return
                 }
             }

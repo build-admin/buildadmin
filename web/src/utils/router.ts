@@ -90,7 +90,7 @@ export const onClickMenu = (menu: RouteRecordRaw) => {
  * 处理会员中心的路由
  */
 export const handleMemberCenterRoute = (routes: any) => {
-    const viewsComponent = import.meta.globEager('/src/views/frontend/**/*.vue')
+    const viewsComponent = import.meta.glob('/src/views/frontend/**/*.vue')
     addRouteAll(viewsComponent, routes, memberCenterBaseRoute.name as string)
     const menuMemberCenterBaseRoute = '/' + (memberCenterBaseRoute.name as string) + '/'
     const menuRule = handleMenuRule(routes, menuMemberCenterBaseRoute, menuMemberCenterBaseRoute)
@@ -104,7 +104,7 @@ export const handleMemberCenterRoute = (routes: any) => {
  * 处理后台的路由
  */
 export const handleAdminRoute = (routes: any) => {
-    const viewsComponent = import.meta.globEager('/src/views/backend/**/*.vue')
+    const viewsComponent = import.meta.glob('/src/views/backend/**/*.vue')
     addRouteAll(viewsComponent, routes, adminBaseRoute.name as string)
     const menuAdminBaseRoute = '/' + (adminBaseRoute.name as string) + '/'
     const menuRule = handleMenuRule(routes, menuAdminBaseRoute, menuAdminBaseRoute)
@@ -179,7 +179,7 @@ const handleMenuRule = (routes: any, pathPrefix = '/', parent = '/', module = 'a
 /**
  * 动态添加路由-带子路由
  */
-export const addRouteAll = (viewsComponent: Record<string, { [key: string]: any }>, routes: any, parentName: string) => {
+export const addRouteAll = (viewsComponent: Record<string, any>, routes: any, parentName: string) => {
     for (const idx in routes) {
         if (routes[idx].extend == 'add_menu_only') {
             continue
@@ -200,7 +200,7 @@ export const addRouteAll = (viewsComponent: Record<string, { [key: string]: any 
 /**
  * 动态添加路由
  */
-export const addRouteItem = (viewsComponent: Record<string, { [key: string]: any }>, route: any, parentName: string) => {
+export const addRouteItem = (viewsComponent: Record<string, any>, route: any, parentName: string) => {
     let path = '',
         component
     if (route.menu_type == 'iframe') {
@@ -208,7 +208,7 @@ export const addRouteItem = (viewsComponent: Record<string, { [key: string]: any
         component = () => import('/@/layouts/common/router-view/iframe.vue')
     } else {
         path = parentName ? route.path : '/' + route.path
-        component = viewsComponent[route.component].default
+        component = viewsComponent[route.component]
     }
     const routeBaseInfo: RouteRecordRaw = {
         path: path,
