@@ -148,8 +148,12 @@ export const buildJsonToElTreeData = (data: any): ElTreeData[] => {
 
 /**
  * 是否在后台应用内
+ * @param path 不传递则通过当前路由 path 检查
  */
-export const isAdminApp = () => {
+export const isAdminApp = (path = '') => {
+    if (path) {
+        return /^\/admin/.test(path)
+    }
     if (/^\/admin/.test(router.currentRoute.value.fullPath) || window.location.hash.indexOf('#/admin') === 0) {
         return true
     }
