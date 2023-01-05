@@ -5,4 +5,5 @@
  */
 export default {
     '/': ['./frontend/${lang}/index.ts'],
+    '/admin/moduleStore': ['./backend/${lang}/module.ts'],
 }
