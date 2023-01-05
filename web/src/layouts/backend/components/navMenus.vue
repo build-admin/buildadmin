@@ -1,6 +1,6 @@
 <template>
     <div class="nav-menus" :class="configStore.layout.layoutMode">
-        <router-link class="h100" target="_blank" :title="t('home')" to="/">
+        <router-link class="h100" target="_blank" :title="t('Home')" to="/">
             <div class="nav-menu-item">
                 <Icon :color="configStore.getColorVal('headerBarTabColor')" class="nav-menu-icon" name="el-icon-Monitor" size="18" />
             </div>

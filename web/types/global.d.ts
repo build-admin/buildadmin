@@ -5,6 +5,7 @@ interface Window {
     tokenRefreshing: boolean
     requests: Function[]
     eventSource: EventSource
+    loadLangHandle: Record<string, any>
 }
 
 interface anyObj {

@@ -2,6 +2,7 @@ import type { App } from 'vue'
 import { createI18n } from 'vue-i18n'
 import type { I18n, Composer } from 'vue-i18n'
 import { useConfig } from '/@/stores/config'
+import { isEmpty } from 'lodash-es'
 
 /*
  * 默认只引入 element-plus 的中英文语言包
@@ -26,19 +27,44 @@ export async function loadLang(app: App) {
     const config = useConfig()
     const locale = config.lang.defaultLang
 
-    // 加载框架语言包
+    // 加载框架全局语言包
     const lang = await import(`./globs-${locale}.ts`)
     const message = lang.default ?? {}
 
+    // 按需加载语言包文件的句柄
+    if (locale == 'zh-cn') {
+        window.loadLangHandle = {
+            ...import.meta.glob('./backend/zh-cn/**/*.ts'),
+            ...import.meta.glob('./frontend/zh-cn/**/*.ts'),
+            ...import.meta.glob('./backend/zh-cn.ts'),
+            ...import.meta.glob('./frontend/zh-cn.ts'),
+        }
+    } else {
+        window.loadLangHandle = {
+            ...import.meta.glob('./backend/en/**/*.ts'),
+            ...import.meta.glob('./frontend/en/**/*.ts'),
+            ...import.meta.glob('./backend/en.ts'),
+            ...import.meta.glob('./frontend/en.ts'),
+        }
+    }
+
     /*
      * 0、加载页面语言包 import.meta.glob 的路径不能使用变量 import() 在 Vite 中目录名不能使用变量(编译后,文件名可以)
-     * 1、vue3 setup 内只能使用 useI18n({messages:{}}) 来动态载入当前页面单独的语言包，不方便使用
-     * 2、直接载入所有 /@/lang/pages/语言/*.ts 文件，若某页面有特别大量的语言配置，可在其他位置单独建立语言包文件，并在对应页面加载语言包
+     * 1、暂时兼容以前的版本，加载 /@/lang/pages 内的所有文件，将在 v1.1.5 废弃，同时框架已经不再内置该文件夹
      */
+    let localeMessage = {}
     if (locale == 'zh-cn') {
-        assignLocale[locale].push(getLangFileMessage(import.meta.glob('./pages/zh-cn/**/*.ts', { eager: true }), locale))
+        localeMessage = getLangFileMessage(import.meta.glob('./pages/zh-cn/**/*.ts', { eager: true }), locale)
+        assignLocale[locale].push(getLangFileMessage(import.meta.glob('./common/zh-cn/**/*.ts', { eager: true }), locale))
     } else if (locale == 'en') {
-        assignLocale[locale].push(getLangFileMessage(import.meta.glob('./pages/en/**/*.ts', { eager: true }), locale))
+        localeMessage = getLangFileMessage(import.meta.glob('./pages/en/**/*.ts', { eager: true }), locale)
+        assignLocale[locale].push(getLangFileMessage(import.meta.glob('./common/en/**/*.ts', { eager: true }), locale))
+    }
+    assignLocale[locale].push(localeMessage)
+    if (!isEmpty(localeMessage)) {
+        console.warn(
+            '从 BuildAdmin v1.1.2 版本开始，已经可以实现语言包的按需加载，我们对 /@/lang 目录的结构进行了修改，不再使用 pages 目录，您应该移动其内语言包文件到正确的位置并删除该目录，请参考：https://wonderful-code.gitee.io/guide/other/incompatibleUpdate/v112.html'
+        )
     }
 
     const messages = {
@@ -79,6 +105,20 @@ function getLangFileMessage(mList: any, locale: string) {
     return msg
 }
 
+export function mergeMessage(message: anyObj, pathName = '') {
+    if (isEmpty(message)) return
+    if (!pathName) {
+        return i18n.global.mergeLocaleMessage(i18n.global.locale.value, message)
+    }
+    let msg: anyObj = {}
+    if (pathName.indexOf('/') > 0) {
+        msg = handleMsglist(msg, message, pathName)
+    } else {
+        msg[pathName] = message
+    }
+    i18n.global.mergeLocaleMessage(i18n.global.locale.value, msg)
+}
+
 export function handleMsglist(msg: anyObj, mList: anyObj, pathName: string) {
     const pathNameTmp = pathName.split('/')
     let obj: anyObj = {}
@@ -112,9 +152,7 @@ export function editDefaultLang(lang: string): void {
     config.setLang(lang)
 
     /*
-     * 语言包是按需加载的,比如默认语言为中文,则只在app实例内加载了中文语言包
-     * 查阅文档无数遍,无耐接受当前的 Vite 版本并不支持动态的导入当前路由语言包数据，参第35行注释(或需要在 setup 内动态添加,无法满足全局替换的需求)
-     * 故 reload;如果您有已经实现的无需一次性加载全部语言包且无需 reload 的方案,请一定@我
+     * 语言包是按需加载的,比如默认语言为中文,则只在app实例内加载了中文语言包,所以切换语言需要进行 reload
      */
     location.reload()
 }

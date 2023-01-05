@@ -10,7 +10,7 @@
                     <Icon name="fa fa-indent" color="var(--el-color-primary)" size="20" />
                 </div>
                 <el-menu :default-active="state.activeMenu" class="frontend-header-menu" mode="horizontal" :ellipsis="false">
-                    <el-menu-item @click="router.push({ name: '/' })" v-blur index="index">{{ $t('index.index') }}</el-menu-item>
+                    <el-menu-item @click="router.push({ name: '/' })" v-blur index="index">{{ $t('Home') }}</el-menu-item>
 
                     <template v-if="memberCenter.state.open">
                         <el-sub-menu v-if="userInfo.isLogin()" v-blur index="user">
@@ -25,15 +25,15 @@
                                 </div>
                             </template>
                             <el-menu-item @click="router.push({ name: 'user' })" v-blur index="user-index">{{
-                                $t('index.Member Center')
+                                $t('Member Center')
                             }}</el-menu-item>
                             <el-menu-item @click="userInfo.logout()" v-blur index="user-logout">{{ $t('user.user.Logout login') }}</el-menu-item>
                         </el-sub-menu>
-                        <el-menu-item v-else @click="router.push({ name: 'user' })" v-blur index="user">{{ $t('index.Member Center') }}</el-menu-item>
+                        <el-menu-item v-else @click="router.push({ name: 'user' })" v-blur index="user">{{ $t('Member Center') }}</el-menu-item>
                     </template>
 
                     <el-sub-menu v-blur index="switch-language">
-                        <template #title>{{ $t('index.language') }}</template>
+                        <template #title>{{ $t('Language') }}</template>
                         <el-menu-item
                             @click="editDefaultLang(item.name)"
                             v-for="item in config.lang.langArray"

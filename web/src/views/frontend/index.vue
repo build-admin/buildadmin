@@ -16,7 +16,7 @@
                             color="#ffffff"
                             size="large"
                         >
-                            {{ $t('index.Member Center') }}
+                            {{ $t('Member Center') }}
                         </el-button>
                     </div>
                     <div class="main-right">

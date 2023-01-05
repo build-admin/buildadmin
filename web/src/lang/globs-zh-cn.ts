@@ -1,7 +1,11 @@
+/**
+ * 全局公共语言包
+ * 覆盖风险：请避免使用页面语言包的目录名、文件名作为翻译 key
+ */
 export default {
     id: 'ID',
     state: '状态',
-    home: '首页',
+    Home: '首页',
     complete: '完成',
     edit: '编辑',
     add: '添加',

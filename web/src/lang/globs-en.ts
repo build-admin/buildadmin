@@ -1,7 +1,10 @@
+/**
+ * Global common language package
+ */
 export default {
     id: 'ID',
     state: 'State',
-    home: 'Home',
+    Home: 'Home',
     complete: 'Completed',
     edit: 'Edit',
     add: 'Add',
