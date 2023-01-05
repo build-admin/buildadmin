@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { staticRoutes } from '/@/router/static'
+import { staticRoutes, adminBaseRoute } from '/@/router/static'
 import { loading } from '/@/utils/loading'
 import langAutoLoadMap from '/@/lang/autoload'
 import { mergeMessage } from '/@/lang/index'
@@ -27,8 +27,17 @@ router.beforeEach((to, from, next) => {
     if (to.path in langAutoLoadMap) {
         loadPath.push(...langAutoLoadMap[to.path as keyof typeof langAutoLoadMap])
     }
-    const prefix = (isAdminApp(to.fullPath) ? './backend/' : './frontend/') + config.lang.defaultLang
-    loadPath.push(prefix + to.path + '.ts')
+    let prefix = ''
+    if (isAdminApp(to.fullPath)) {
+        prefix = './backend/' + config.lang.defaultLang
+
+        // 去除 path 中的 /admin
+        const adminPath = to.path.slice(to.path.lastIndexOf(adminBaseRoute.path) + adminBaseRoute.path.length)
+        if (adminPath) loadPath.push(prefix + adminPath + '.ts')
+    } else {
+        prefix = './frontend/' + config.lang.defaultLang
+        loadPath.push(prefix + to.path + '.ts')
+    }
 
     if (!window.loadLangHandle.publicMessageLoaded) window.loadLangHandle.publicMessageLoaded = []
     const publicMessagePath = prefix + '.ts'

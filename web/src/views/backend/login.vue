@@ -30,7 +30,7 @@
                                     type="text"
                                     clearable
                                     v-model="form.username"
-                                    :placeholder="t('admin.login.Please enter an account')"
+                                    :placeholder="t('login.Please enter an account')"
                                 >
                                     <template #prefix>
                                         <Icon name="fa fa-user" class="form-item-icon" size="16" color="var(--el-input-icon-color)" />
@@ -42,7 +42,7 @@
                                     ref="passwordRef"
                                     v-model="form.password"
                                     type="password"
-                                    :placeholder="t('admin.login.Please input a password')"
+                                    :placeholder="t('login.Please input a password')"
                                     show-password
                                 >
                                     <template #prefix>
@@ -56,7 +56,7 @@
                                         <el-input
                                             ref="captchaRef"
                                             type="text"
-                                            :placeholder="t('admin.login.Please enter the verification code')"
+                                            :placeholder="t('login.Please enter the verification code')"
                                             v-model="form.captcha"
                                             clearable
                                             autocomplete="off"
@@ -76,10 +76,10 @@
                                     </el-col>
                                 </el-row>
                             </el-form-item>
-                            <el-checkbox v-model="form.keep" :label="t('admin.login.Hold session')" size="default"></el-checkbox>
+                            <el-checkbox v-model="form.keep" :label="t('login.Hold session')" size="default"></el-checkbox>
                             <el-form-item>
                                 <el-button :loading="form.loading" class="submit-button" round type="primary" size="large" @click="onSubmit(formRef)">
-                                    {{ t('admin.login.Sign in') }}
+                                    {{ t('login.Sign in') }}
                                 </el-button>
                             </el-form-item>
                         </el-form>
@@ -136,14 +136,14 @@ const { t } = useI18n()
 
 // 表单验证规则
 const rules = reactive({
-    username: [buildValidatorData({ name: 'required', message: t('admin.login.Please enter an account') }), buildValidatorData({ name: 'account' })],
-    password: [buildValidatorData({ name: 'required', message: t('admin.login.Please input a password') }), buildValidatorData({ name: 'password' })],
+    username: [buildValidatorData({ name: 'required', message: t('login.Please enter an account') }), buildValidatorData({ name: 'account' })],
+    password: [buildValidatorData({ name: 'required', message: t('login.Please input a password') }), buildValidatorData({ name: 'password' })],
     captcha: [
-        buildValidatorData({ name: 'required', title: t('admin.login.Please enter the verification code') }),
+        buildValidatorData({ name: 'required', title: t('login.Please enter the verification code') }),
         {
             min: 4,
             max: 6,
-            message: t('admin.login.The verification code length must be between 4 and 6 bits'),
+            message: t('login.The verification code length must be between 4 and 6 bits'),
             trigger: 'blur',
         },
     ],
