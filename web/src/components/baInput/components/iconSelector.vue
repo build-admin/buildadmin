@@ -4,28 +4,28 @@
             <transition name="el-zoom-in-center">
                 <div class="icon-selector-box">
                     <div class="selector-header">
-                        <div class="selector-title">{{ title ? title : $t('iconSelector.Please select an icon') }}</div>
+                        <div class="selector-title">{{ title ? title : $t('utils.Please select an icon') }}</div>
                         <div class="selector-tab">
                             <span
-                                :title="'Element Puls ' + $t('iconSelector.Icon')"
+                                :title="'Element Puls ' + $t('utils.Icon')"
                                 @click="onChangeTab('ele')"
                                 :class="state.iconType == 'ele' ? 'active' : ''"
                                 >ele</span
                             >
                             <span
-                                :title="'Font Awesome ' + $t('iconSelector.Icon')"
+                                :title="'Font Awesome ' + $t('utils.Icon')"
                                 @click="onChangeTab('awe')"
                                 :class="state.iconType == 'awe' ? 'active' : ''"
                                 >awe</span
                             >
                             <span
-                                :title="$t('iconSelector.Ali iconcont Icon')"
+                                :title="$t('utils.Ali iconcont Icon')"
                                 @click="onChangeTab('ali')"
                                 :class="state.iconType == 'ali' ? 'active' : ''"
                                 >ali</span
                             >
                             <span
-                                :title="$t('iconSelector.Local icon title')"
+                                :title="$t('utils.Local icon title')"
                                 @click="onChangeTab('local')"
                                 :class="state.iconType == 'local' ? 'active' : ''"
                                 >local</span
@@ -55,7 +55,7 @@
                 v-model="state.inputValue"
                 :size="size"
                 :disabled="disabled"
-                :placeholder="$t('search') + $t('iconSelector.Icon')"
+                :placeholder="$t('search') + $t('utils.Icon')"
                 ref="selectorInput"
                 @focus="onInputFocus"
                 @blur="onInputBlur"
