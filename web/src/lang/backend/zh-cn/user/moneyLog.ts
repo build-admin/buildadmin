@@ -13,6 +13,4 @@ export default {
     'Balance after change': '变更后余额',
     'Please enter change remarks / description': '请输入变更备注/说明',
     User: '用户',
-    'Change time': '变更时间',
-    'Balance change record': '余额变更记录',
 }

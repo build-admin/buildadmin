@@ -5,6 +5,4 @@ export default {
     'Please enter the change amount of points': 'Please enter the change amount of points',
     'Points after change': 'Points after change',
     'Please enter change remarks / description': 'Please enter change remarks/description',
-    'Change time': 'Change time',
-    'Score change record': 'Point change record',
 }

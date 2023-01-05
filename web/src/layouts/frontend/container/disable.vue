@@ -4,7 +4,7 @@
         <el-scrollbar :style="layoutMainScrollbarStyle()" ref="mainScrollbarRef">
             <el-row class="frontend-footer-brother" justify="center">
                 <el-col class="user-layouts" :span="16" :xs="24">
-                    <el-alert :center="true" :title="$t('user.user.Member center disabled')" type="error" />
+                    <el-alert :center="true" :title="$t('Member center disabled')" type="error" />
                 </el-col>
             </el-row>
             <Footer />

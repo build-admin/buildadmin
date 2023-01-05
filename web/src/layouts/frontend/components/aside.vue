@@ -11,21 +11,21 @@
                     @click="routerPush('account/integral')"
                     v-blur
                     class="userinfo-button-item"
-                    :title="$t('user.user.integral') + ' ' + userInfo.score"
+                    :title="$t('Integral') + ' ' + userInfo.score"
                     size="default"
                     plain
                 >
-                    <span>{{ $t('user.user.integral') + ' ' + userInfo.score }}</span>
+                    <span>{{ $t('Integral') + ' ' + userInfo.score }}</span>
                 </el-button>
                 <el-button
                     @click="routerPush('account/balance')"
                     v-blur
                     class="userinfo-button-item"
-                    :title="$t('user.user.balance') + ' ' + userInfo.money"
+                    :title="$t('Balance') + ' ' + userInfo.money"
                     size="default"
                     plain
                 >
-                    <span>{{ $t('user.user.balance') + ' ' + userInfo.money }}</span>
+                    <span>{{ $t('Balance') + ' ' + userInfo.money }}</span>
                 </el-button>
             </el-button-group>
         </div>

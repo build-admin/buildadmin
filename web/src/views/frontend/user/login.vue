@@ -7,7 +7,7 @@
                     <el-col :span="16" :xs="24">
                         <div v-if="memberCenter.state.open" class="login-box">
                             <div class="login-title">
-                                {{ t('user.user.' + state.form.tab) + t('user.user.reach') + siteConfig.siteName }}
+                                {{ t('user.login.' + state.form.tab) + t('user.login.reach') + siteConfig.siteName }}
                             </div>
                             <el-form ref="formRef" @keyup.enter="onSubmit(formRef)" :rules="rules" :model="state.form">
                                 <!-- 注册验证方式 -->
@@ -18,14 +18,14 @@
                                             label="email"
                                             :disabled="!state.accountVerificationType.includes('email')"
                                             border
-                                            >{{ t('user.user.Via email') + t('user.user.register') }}</el-radio
+                                            >{{ t('user.login.Via email') + t('user.login.register') }}</el-radio
                                         >
                                         <el-radio
                                             class="register-verification-radio"
                                             label="mobile"
                                             :disabled="!state.accountVerificationType.includes('mobile')"
                                             border
-                                            >{{ t('user.user.Via mobile number') + t('user.user.register') }}</el-radio
+                                            >{{ t('user.login.Via mobile number') + t('user.login.register') }}</el-radio
                                         >
                                     </el-radio-group>
                                 </el-form-item>
@@ -36,8 +36,8 @@
                                         v-model="state.form.username"
                                         :placeholder="
                                             state.form.tab == 'register'
-                                                ? t('Please input field', { field: t('user.user.User name') })
-                                                : t('Please input field', { field: t('user.user.account') })
+                                                ? t('Please input field', { field: t('user.login.User name') })
+                                                : t('Please input field', { field: t('user.login.account') })
                                         "
                                         :clearable="true"
                                         size="large"
@@ -52,7 +52,7 @@
                                 <el-form-item prop="password">
                                     <el-input
                                         v-model="state.form.password"
-                                        :placeholder="t('Please input field', { field: t('user.user.password') })"
+                                        :placeholder="t('Please input field', { field: t('user.login.password') })"
                                         type="password"
                                         show-password
                                         size="large"
@@ -71,7 +71,7 @@
                                                 v-model="state.form.captcha"
                                                 clearable
                                                 autocomplete="off"
-                                                :placeholder="t('Please input field', { field: t('user.user.Verification Code') })"
+                                                :placeholder="t('Please input field', { field: t('user.login.Verification Code') })"
                                                 size="large"
                                             >
                                                 <template #prefix>
@@ -94,7 +94,7 @@
                                 <el-form-item v-if="state.form.tab == 'register' && state.form.registerType == 'mobile'" prop="mobile">
                                     <el-input
                                         v-model="state.form.mobile"
-                                        :placeholder="t('Please input field', { field: t('user.user.mobile') })"
+                                        :placeholder="t('Please input field', { field: t('user.login.mobile') })"
                                         :clearable="true"
                                         size="large"
                                     >
@@ -108,7 +108,7 @@
                                 <el-form-item v-if="state.form.tab == 'register' && state.form.registerType == 'email'" prop="email">
                                     <el-input
                                         v-model="state.form.email"
-                                        :placeholder="t('Please input field', { field: t('user.user.email') })"
+                                        :placeholder="t('Please input field', { field: t('user.login.email') })"
                                         :clearable="true"
                                         size="large"
                                     >
@@ -125,7 +125,7 @@
                                             <el-input
                                                 size="large"
                                                 v-model="state.form.captcha"
-                                                :placeholder="t('Please input field', { field: t('user.user.Verification Code') })"
+                                                :placeholder="t('Please input field', { field: t('user.login.Verification Code') })"
                                                 autocomplete="off"
                                             >
                                                 <template #prefix>
@@ -142,8 +142,8 @@
                                                 type="primary"
                                                 >{{
                                                     state.codeSendCountdown <= 0
-                                                        ? t('user.user.send')
-                                                        : state.codeSendCountdown + t('user.user.seconds')
+                                                        ? t('user.login.send')
+                                                        : state.codeSendCountdown + t('user.login.seconds')
                                                 }}</el-button
                                             >
                                         </el-col>
@@ -151,13 +151,13 @@
                                 </el-form-item>
 
                                 <div v-if="state.form.tab != 'register'" class="form-footer">
-                                    <el-checkbox v-model="state.form.keep" :label="t('user.user.Remember me')" size="default"></el-checkbox>
+                                    <el-checkbox v-model="state.form.keep" :label="t('user.login.Remember me')" size="default"></el-checkbox>
                                     <div
                                         v-if="state.accountVerificationType.length > 0"
                                         @click="state.showRetrievePasswordDialog = true"
                                         class="forgot-password"
                                     >
-                                        {{ t('user.user.Forgot your password?') }}
+                                        {{ t('user.login.Forgot your password?') }}
                                     </div>
                                 </div>
                                 <el-form-item class="form-buttons">
@@ -169,7 +169,7 @@
                                         type="primary"
                                         size="large"
                                     >
-                                        {{ t('user.user.' + state.form.tab) }}
+                                        {{ t('user.login.' + state.form.tab) }}
                                     </el-button>
                                     <el-button
                                         v-if="state.form.tab == 'register'"
@@ -178,16 +178,16 @@
                                         plain
                                         type="info"
                                         size="large"
-                                        >{{ t('user.user.Back to login') }}</el-button
+                                        >{{ t('user.login.Back to login') }}</el-button
                                     >
                                     <el-button v-else @click="switchTab(formRef, 'register')" round plain type="info" size="large">
-                                        {{ t('user.user.No account yet? Click Register') }}
+                                        {{ t('user.login.No account yet? Click Register') }}
                                     </el-button>
                                 </el-form-item>
                                 <LoginFooterMixin />
                             </el-form>
                         </div>
-                        <el-alert v-else :center="true" :title="$t('user.user.Member center disabled')" type="error" />
+                        <el-alert v-else :center="true" :title="$t('Member center disabled')" type="error" />
                     </el-col>
                 </el-row>
             </el-main>
@@ -198,7 +198,7 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
             v-model="state.showRetrievePasswordDialog"
-            :title="t('user.user.Retrieve password')"
+            :title="t('user.login.Retrieve password')"
             :width="state.dialogWidth + '%'"
             :draggable="true"
         >
@@ -210,22 +210,22 @@
                     :model="state.retrievePasswordForm"
                     :label-width="100"
                 >
-                    <el-form-item :label="t('user.user.Retrieval method')">
+                    <el-form-item :label="t('user.login.Retrieval method')">
                         <el-radio-group v-model="state.retrievePasswordForm.type">
                             <el-radio label="email" :disabled="!state.accountVerificationType.includes('email')" border>{{
-                                t('user.user.Via email')
+                                t('user.login.Via email')
                             }}</el-radio>
                             <el-radio label="mobile" :disabled="!state.accountVerificationType.includes('mobile')" border>{{
-                                t('user.user.Via mobile number')
+                                t('user.login.Via mobile number')
                             }}</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item prop="account" :label="state.retrievePasswordForm.type == 'email' ? t('user.user.email') : t('user.user.mobile')">
+                    <el-form-item prop="account" :label="state.retrievePasswordForm.type == 'email' ? t('user.login.email') : t('user.login.mobile')">
                         <el-input
                             v-model="state.retrievePasswordForm.account"
                             :placeholder="
                                 t('Please input field', {
-                                    field: state.retrievePasswordForm.type == 'email' ? t('user.user.email') : t('user.user.mobile'),
+                                    field: state.retrievePasswordForm.type == 'email' ? t('user.login.email') : t('user.login.mobile'),
                                 })
                             "
                             :clearable="true"
@@ -235,12 +235,12 @@
                             </template>
                         </el-input>
                     </el-form-item>
-                    <el-form-item prop="captcha" :label="t('user.user.Verification Code')">
+                    <el-form-item prop="captcha" :label="t('user.login.Verification Code')">
                         <el-row class="w100">
                             <el-col :span="16">
                                 <el-input
                                     v-model="state.retrievePasswordForm.captcha"
-                                    :placeholder="t('Please input field', { field: t('user.user.Verification Code') })"
+                                    :placeholder="t('Please input field', { field: t('user.login.Verification Code') })"
                                     autocomplete="off"
                                 >
                                     <template #prefix>
@@ -255,16 +255,16 @@
                                     :disabled="state.codeSendCountdown <= 0 ? false : true"
                                     type="primary"
                                     >{{
-                                        state.codeSendCountdown <= 0 ? t('user.user.send') : state.codeSendCountdown + t('user.user.seconds')
+                                        state.codeSendCountdown <= 0 ? t('user.login.send') : state.codeSendCountdown + t('user.login.seconds')
                                     }}</el-button
                                 >
                             </el-col>
                         </el-row>
                     </el-form-item>
-                    <el-form-item prop="password" :label="t('user.user.New password')">
+                    <el-form-item prop="password" :label="t('user.login.New password')">
                         <el-input
                             v-model="state.retrievePasswordForm.password"
-                            :placeholder="t('Please input field', { field: t('user.user.New password') })"
+                            :placeholder="t('Please input field', { field: t('user.login.New password') })"
                             show-password
                         >
                             <template #prefix>
@@ -275,7 +275,7 @@
                     <el-form-item>
                         <el-button @click="state.showRetrievePasswordDialog = false">{{ t('Cancel') }}</el-button>
                         <el-button :loading="state.submitRetrieveLoading" @click="onSubmitRetrieve(retrieveFormRef)" type="primary">{{
-                            t('user.user.second')
+                            t('user.login.second')
                         }}</el-button>
                     </el-form-item>
                 </el-form>
@@ -372,11 +372,11 @@ const state: State = reactive({
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     email: [
-        buildValidatorData({ name: 'required', title: t('user.user.email') }),
-        buildValidatorData({ name: 'email', title: t('user.user.email') }),
+        buildValidatorData({ name: 'required', title: t('user.login.email') }),
+        buildValidatorData({ name: 'email', title: t('user.login.email') }),
     ],
     username: [
-        buildValidatorData({ name: 'required', title: t('user.user.User name') }),
+        buildValidatorData({ name: 'required', title: t('user.login.User name') }),
         {
             validator: (rule: any, val: string, callback: Function) => {
                 if (state.form.tab == 'register') {
@@ -388,15 +388,15 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
             trigger: 'blur',
         },
     ],
-    password: [buildValidatorData({ name: 'required', title: t('user.user.password') }), buildValidatorData({ name: 'password' })],
-    mobile: [buildValidatorData({ name: 'required', title: t('user.user.mobile') }), buildValidatorData({ name: 'mobile' })],
-    captcha: [buildValidatorData({ name: 'required', title: t('user.user.Verification Code') })],
+    password: [buildValidatorData({ name: 'required', title: t('user.login.password') }), buildValidatorData({ name: 'password' })],
+    mobile: [buildValidatorData({ name: 'required', title: t('user.login.mobile') }), buildValidatorData({ name: 'mobile' })],
+    captcha: [buildValidatorData({ name: 'required', title: t('user.login.Verification Code') })],
 })
 
 const retrieveRules: Partial<Record<string, FormItemRule[]>> = reactive({
-    account: [buildValidatorData({ name: 'required', title: t('user.user.Account name') })],
-    captcha: [buildValidatorData({ name: 'required', title: t('user.user.Verification Code') })],
-    password: [buildValidatorData({ name: 'required', title: t('user.user.password') }), buildValidatorData({ name: 'password' })],
+    account: [buildValidatorData({ name: 'required', title: t('user.login.Account name') })],
+    captcha: [buildValidatorData({ name: 'required', title: t('user.login.Verification Code') })],
+    password: [buildValidatorData({ name: 'required', title: t('user.login.password') }), buildValidatorData({ name: 'password' })],
 })
 
 const resize = () => {

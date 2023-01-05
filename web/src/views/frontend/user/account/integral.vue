@@ -3,17 +3,19 @@
         <el-card class="user-views-card" shadow="hover">
             <template #header>
                 <div class="card-header">
-                    <span>{{ $t('user.scoreLog.Score change record') }}</span>
-                    <span class="right-title">{{ $t('user.scoreLog.Current points') + ' ' + userInfo.score }}</span>
+                    <span>{{ $t('user.account.integral.Score change record') }}</span>
+                    <span class="right-title">{{ $t('user.account.integral.Current points') + ' ' + userInfo.score }}</span>
                 </div>
             </template>
             <div v-loading="state.pageLoading" class="logs">
                 <div class="log-item" v-for="(item, idx) in state.logs" :key="idx">
                     <div class="log-title">{{ item.memo }}</div>
-                    <div v-if="item.score > 0" class="log-change-amount increase">{{ $t('user.scoreLog.integral') + '：+' + item.score }}</div>
-                    <div v-else class="log-change-amount reduce">{{ $t('user.scoreLog.integral') + '：' + item.score }}</div>
-                    <div class="log-after">{{ $t('user.scoreLog.Points after change') + '：' + item.after }}</div>
-                    <div class="log-change-time">{{ $t('user.scoreLog.Change time') + '：' + timeFormat(item.createtime) }}</div>
+                    <div v-if="item.score > 0" class="log-change-amount increase">
+                        {{ $t('Integral') + '：+' + item.score }}
+                    </div>
+                    <div v-else class="log-change-amount reduce">{{ $t('Integral') + '：' + item.score }}</div>
+                    <div class="log-after">{{ $t('user.account.integral.Points after change') + '：' + item.after }}</div>
+                    <div class="log-change-time">{{ $t('user.account.integral.Change time') + '：' + timeFormat(item.createtime) }}</div>
                 </div>
             </div>
             <div v-if="state.total > 0" class="log-footer">

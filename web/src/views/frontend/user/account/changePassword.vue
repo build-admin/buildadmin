@@ -1,33 +1,33 @@
 <template>
     <div class="user-views">
-        <el-card class="user-views-card" shadow="hover" :header="t('user.user.Change Password')">
+        <el-card class="user-views-card" shadow="hover" :header="t('user.account.changePassword.Change Password')">
             <div class="change-password">
                 <el-form :model="state.form" :rules="state.rules" label-position="top" ref="formRef" @keyup.enter="onSubmit(formRef)">
                     <FormItem
-                        :label="t('user.user.Old password')"
+                        :label="t('user.account.changePassword.Old password')"
                         type="password"
                         v-model="state.form.oldPassword"
                         prop="oldPassword"
                         :input-attr="{ 'show-password': true }"
-                        :placeholder="t('user.user.Please enter your current password')"
+                        :placeholder="t('user.account.changePassword.Please enter your current password')"
                     />
                     <FormItem
-                        :label="t('user.user.New password')"
+                        :label="t('user.account.changePassword.New password')"
                         type="password"
                         v-model="state.form.newPassword"
                         prop="newPassword"
                         :input-attr="{ 'show-password': true }"
-                        :placeholder="t('Please input field', { field: t('user.user.New password') })"
+                        :placeholder="t('Please input field', { field: t('user.account.changePassword.New password') })"
                     />
                     <FormItem
-                        :label="t('user.user.Confirm new password')"
+                        :label="t('user.account.changePassword.Confirm new password')"
                         type="password"
                         v-model="state.form.confirmPassword"
                         prop="confirmPassword"
                         :input-attr="{
                             'show-password': true,
                         }"
-                        :placeholder="t('Please input field', { field: t('user.user.Confirm new password') })"
+                        :placeholder="t('Please input field', { field: t('user.account.changePassword.Confirm new password') })"
                     />
                     <el-form-item class="submit-buttons">
                         <el-button @click="onResetForm(formRef)">{{ $t('Reset') }}</el-button>
@@ -61,10 +61,13 @@ const state = reactive({
         confirmPassword: '',
     },
     rules: {
-        oldPassword: [buildValidatorData({ name: 'required', title: t('user.user.Old password') })],
-        newPassword: [buildValidatorData({ name: 'required', title: t('user.user.New password') }), buildValidatorData({ name: 'password' })],
+        oldPassword: [buildValidatorData({ name: 'required', title: t('user.account.changePassword.Old password') })],
+        newPassword: [
+            buildValidatorData({ name: 'required', title: t('user.account.changePassword.New password') }),
+            buildValidatorData({ name: 'password' }),
+        ],
         confirmPassword: [
-            buildValidatorData({ name: 'required', title: t('user.user.Confirm new password') }),
+            buildValidatorData({ name: 'required', title: t('user.account.changePassword.Confirm new password') }),
             buildValidatorData({ name: 'password' }),
             {
                 validator: (rule: any, val: string, callback: Function) => {
@@ -72,7 +75,7 @@ const state = reactive({
                         if (state.form.newPassword == state.form.confirmPassword) {
                             callback()
                         } else {
-                            callback(new Error(t('user.user.The duplicate password does not match the new password')))
+                            callback(new Error(t('user.account.changePassword.The duplicate password does not match the new password')))
                         }
                     }
                     callback()

@@ -3,17 +3,17 @@
         <el-card class="user-views-card" shadow="hover">
             <template #header>
                 <div class="card-header">
-                    <span>{{ $t('user.moneyLog.Balance change record') }}</span>
-                    <span class="right-title">{{ $t('user.moneyLog.Current balance') + ' ' + userInfo.money }}</span>
+                    <span>{{ $t('user.account.balance.Balance change record') }}</span>
+                    <span class="right-title">{{ $t('user.account.balance.Current balance') + ' ' + userInfo.money }}</span>
                 </div>
             </template>
             <div v-loading="state.pageLoading" class="logs">
                 <div class="log-item" v-for="(item, idx) in state.logs" :key="idx">
                     <div class="log-title">{{ item.memo }}</div>
-                    <div v-if="item.money > 0" class="log-change-amount increase">{{ $t('user.moneyLog.balance') + '：+' + item.money }}</div>
-                    <div v-else class="log-change-amount reduce">{{ $t('user.moneyLog.balance') + '：' + item.money }}</div>
-                    <div class="log-after">{{ $t('user.moneyLog.Balance after change') + '：' + item.after }}</div>
-                    <div class="log-change-time">{{ $t('user.moneyLog.Change time') + '：' + timeFormat(item.createtime) }}</div>
+                    <div v-if="item.money > 0" class="log-change-amount increase">{{ $t('Balance') + '：+' + item.money }}</div>
+                    <div v-else class="log-change-amount reduce">{{ $t('Balance') + '：' + item.money }}</div>
+                    <div class="log-after">{{ $t('user.account.balance.Balance after change') + '：' + item.after }}</div>
+                    <div class="log-change-time">{{ $t('user.account.balance.Change time') + '：' + timeFormat(item.createtime) }}</div>
                 </div>
             </div>
             <div v-if="state.total > 0" class="log-footer">

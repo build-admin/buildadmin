@@ -3,16 +3,16 @@
         <el-card class="user-views-card" shadow="hover">
             <template #header>
                 <div class="card-header">
-                    <span>{{ $t('user.user.personal data') }}</span>
-                    <el-button @click="router.push({ name: 'account/changePassword' })" type="info" v-blur plain>{{
-                        $t('user.user.Change Password')
-                    }}</el-button>
+                    <span>{{ $t('user.account.profile.personal data') }}</span>
+                    <el-button @click="router.push({ name: 'account/changePassword' })" type="info" v-blur plain>
+                        {{ $t('user.account.profile.Change Password') }}
+                    </el-button>
                 </div>
             </template>
             <div class="user-profile">
                 <el-form :model="state.form" :rules="state.rules" :label-width="100" ref="formRef" @keyup.enter="onSubmit(formRef)">
                     <FormItem
-                        :label="$t('user.user.head portrait')"
+                        :label="$t('user.account.profile.head portrait')"
                         :input-attr="{
                             'hide-select-file': true,
                         }"
@@ -21,51 +21,55 @@
                         prop="avatar"
                     />
                     <FormItem
-                        :label="$t('user.user.User name')"
+                        :label="$t('user.account.profile.User name')"
                         type="string"
                         v-model="state.form.username"
-                        :placeholder="$t('Please input field', { field: $t('user.user.User name') })"
+                        :placeholder="$t('Please input field', { field: $t('user.account.profile.User name') })"
                         prop="username"
                     />
                     <FormItem
-                        :label="$t('user.user.User nickname')"
+                        :label="$t('user.account.profile.User nickname')"
                         type="string"
                         v-model="state.form.nickname"
-                        :placeholder="$t('Please input field', { field: $t('user.user.User nickname') })"
+                        :placeholder="$t('Please input field', { field: $t('user.account.profile.User nickname') })"
                         prop="nickname"
                     />
-                    <el-form-item v-if="state.accountVerificationType.includes('email')" :label="t('user.user.email')">
-                        <el-input v-model="state.form.email" readonly :placeholder="t('user.user.Operation via right button')">
+                    <el-form-item v-if="state.accountVerificationType.includes('email')" :label="t('user.account.profile.email')">
+                        <el-input v-model="state.form.email" readonly :placeholder="t('user.account.profile.Operation via right button')">
                             <template #append>
                                 <el-button type="primary" @click="onChangeBindInfo('email')">
-                                    {{ state.form.email ? t('user.user.Click Modify') : t('user.user.bind') }}
+                                    {{ state.form.email ? t('user.account.profile.Click Modify') : t('user.account.profile.bind') }}
                                 </el-button>
                             </template>
                         </el-input>
                     </el-form-item>
-                    <el-form-item v-if="state.accountVerificationType.includes('mobile')" :label="t('user.user.mobile')">
-                        <el-input v-model="state.form.mobile" readonly :placeholder="t('user.user.Operation via right button')">
+                    <el-form-item v-if="state.accountVerificationType.includes('mobile')" :label="t('user.account.profile.mobile')">
+                        <el-input v-model="state.form.mobile" readonly :placeholder="t('user.account.profile.Operation via right button')">
                             <template #append>
                                 <el-button type="primary" @click="onChangeBindInfo('mobile')">
-                                    {{ state.form.mobile ? t('user.user.Click Modify') : t('user.user.bind') }}
+                                    {{ state.form.mobile ? t('user.account.profile.Click Modify') : t('user.account.profile.bind') }}
                                 </el-button>
                             </template>
                         </el-input>
                     </el-form-item>
                     <FormItem
-                        :label="$t('user.user.Gender')"
+                        :label="$t('user.account.profile.Gender')"
                         type="radio"
                         v-model="state.form.gender"
                         :data="{
                             childrenAttr: { border: true },
-                            content: { '0': $t('user.user.secrecy'), '1': $t('user.user.male'), '2': $t('user.user.female') },
+                            content: {
+                                '0': $t('user.account.profile.secrecy'),
+                                '1': $t('user.account.profile.male'),
+                                '2': $t('user.account.profile.female'),
+                            },
                         }"
                     />
-                    <FormItem :label="$t('user.user.birthday')" type="date" v-model="state.form.birthday" />
+                    <FormItem :label="$t('user.account.profile.birthday')" type="date" v-model="state.form.birthday" />
                     <FormItem
-                        :label="$t('user.user.Personal signature')"
+                        :label="$t('user.account.profile.Personal signature')"
                         type="textarea"
-                        :placeholder="$t('Please input field', { field: $t('user.user.Personal signature') })"
+                        :placeholder="$t('Please input field', { field: $t('user.account.profile.Personal signature') })"
                         v-model="state.form.motto"
                         :input-attr="{ 'show-word-limit': true, rows: 3 }"
                     />
@@ -80,7 +84,7 @@
 
         <!-- 账户验证 -->
         <el-dialog
-            :title="t('user.user.Account verification')"
+            :title="t('user.account.profile.Account verification')"
             v-model="state.dialog.verification.show"
             class="ba-change-bind-dialog ba-verification-dialog"
             :destroy-on-close="true"
@@ -95,29 +99,29 @@
                 @keyup.enter="onSubmitVerification(verificationFormRef)"
             >
                 <FormItem
-                    :label="t('user.user.Account password verification')"
+                    :label="t('user.account.profile.Account password verification')"
                     type="password"
                     v-model="state.dialog.verification.form.password"
                     prop="password"
                     :input-attr="{ 'show-password': true }"
-                    :placeholder="$t('Please input field', { field: $t('user.user.password') })"
+                    :placeholder="$t('Please input field', { field: $t('user.account.profile.password') })"
                 />
                 <el-form-item prop="captcha">
                     <template #label>
                         <span v-if="state.dialog.type == 'email'">
-                            {{ t('user.user.Mail verification') }}
-                            ({{ t('user.user.accept') + t('user.user.mail') + '：' + userInfo.email }})
+                            {{ t('user.account.profile.Mail verification') }}
+                            ({{ t('user.account.profile.accept') + t('user.account.profile.mail') + '：' + userInfo.email }})
                         </span>
                         <span v-else>
-                            {{ t('user.user.SMS verification') }}
-                            ({{ t('user.user.accept') + t('user.user.mobile') + '：' + userInfo.mobile }})
+                            {{ t('user.account.profile.SMS verification') }}
+                            ({{ t('user.account.profile.accept') + t('user.account.profile.mobile') + '：' + userInfo.mobile }})
                         </span>
                     </template>
                     <el-row class="w100" :gutter="10">
                         <el-col :span="18">
                             <el-input
                                 v-model="state.dialog.verification.form.captcha"
-                                :placeholder="t('Please input field', { field: t('user.user.Verification Code') })"
+                                :placeholder="t('Please input field', { field: t('user.account.profile.Verification Code') })"
                                 autocomplete="off"
                             />
                         </el-col>
@@ -129,8 +133,8 @@
                                 type="primary"
                                 >{{
                                     state.dialog.codeSendCountdown <= 0
-                                        ? t('user.user.send')
-                                        : state.dialog.codeSendCountdown + t('user.user.seconds')
+                                        ? t('user.account.profile.send')
+                                        : state.dialog.codeSendCountdown + t('user.account.profile.seconds')
                                 }}</el-button
                             >
                         </el-col>
@@ -141,7 +145,7 @@
                 <div :style="'width: calc(100% - 20px)'">
                     <el-button @click="state.dialog.verification.show = false">{{ t('Cancel') }}</el-button>
                     <el-button v-blur :loading="state.dialog.submitLoading" @click="onSubmitVerification(verificationFormRef)" type="primary">
-                        {{ t('user.user.next step') }}
+                        {{ t('user.account.profile.next step') }}
                     </el-button>
                 </div>
             </template>
@@ -149,7 +153,7 @@
 
         <!-- 绑定 -->
         <el-dialog
-            :title="t('user.user.bind') + t('user.user.' + state.dialog.type)"
+            :title="t('user.account.profile.bind') + t('user.account.profile.' + state.dialog.type)"
             v-model="state.dialog.bind.show"
             class="ba-change-bind-dialog ba-bind-dialog"
             :destroy-on-close="true"
@@ -165,38 +169,38 @@
             >
                 <FormItem
                     v-if="!state.dialog.verification.accountVerificationToken"
-                    :label="t('user.user.Account password verification')"
+                    :label="t('user.account.profile.Account password verification')"
                     type="password"
                     v-model="state.dialog.bind.form.password"
                     prop="password"
                     :input-attr="{ 'show-password': true }"
-                    :placeholder="$t('Please input field', { field: $t('user.user.password') })"
+                    :placeholder="$t('Please input field', { field: $t('user.account.profile.password') })"
                 />
                 <FormItem
                     v-if="state.dialog.type == 'email'"
-                    :label="t('user.user.New ' + state.dialog.type)"
+                    :label="t('user.account.profile.New ' + state.dialog.type)"
                     type="string"
                     v-model="state.dialog.bind.form.email"
                     prop="email"
-                    :placeholder="$t('Please input field', { field: t('user.user.New ' + state.dialog.type) })"
+                    :placeholder="$t('Please input field', { field: t('user.account.profile.New ' + state.dialog.type) })"
                 />
                 <FormItem
                     v-if="state.dialog.type == 'mobile'"
-                    :label="t('user.user.New ' + state.dialog.type)"
+                    :label="t('user.account.profile.New ' + state.dialog.type)"
                     type="string"
                     v-model="state.dialog.bind.form.mobile"
                     prop="mobile"
-                    :placeholder="$t('Please input field', { field: t('user.user.New ' + state.dialog.type) })"
+                    :placeholder="$t('Please input field', { field: t('user.account.profile.New ' + state.dialog.type) })"
                 />
                 <el-form-item
-                    :label="state.dialog.type == 'email' ? t('user.user.Mail verification') : t('user.user.SMS verification')"
+                    :label="state.dialog.type == 'email' ? t('user.account.profile.Mail verification') : t('user.account.profile.SMS verification')"
                     prop="captcha"
                 >
                     <el-row class="w100" :gutter="10">
                         <el-col :span="18">
                             <el-input
                                 v-model="state.dialog.bind.form.captcha"
-                                :placeholder="t('Please input field', { field: t('user.user.Verification Code') })"
+                                :placeholder="t('Please input field', { field: t('user.account.profile.Verification Code') })"
                                 autocomplete="off"
                             />
                         </el-col>
@@ -208,8 +212,8 @@
                                 type="primary"
                                 >{{
                                     state.dialog.codeSendCountdown <= 0
-                                        ? t('user.user.send')
-                                        : state.dialog.codeSendCountdown + t('user.user.seconds')
+                                        ? t('user.account.profile.send')
+                                        : state.dialog.codeSendCountdown + t('user.account.profile.seconds')
                                 }}</el-button
                             >
                         </el-col>
@@ -220,7 +224,7 @@
                 <div :style="'width: calc(100% - 20px)'">
                     <el-button @click="state.dialog.bind.show = false">{{ t('Cancel') }}</el-button>
                     <el-button v-blur :loading="state.dialog.submitLoading" @click="onSubmitBind(bindFormRef)" type="primary">
-                        {{ t('user.user.bind') }}
+                        {{ t('user.account.profile.bind') }}
                     </el-button>
                 </div>
             </template>
@@ -283,9 +287,9 @@ const state: {
     formSubmitLoading: false,
     form: userInfo.$state,
     rules: {
-        avatar: [buildValidatorData({ name: 'required', message: t('Please select field', { field: t('user.user.head portrait') }) })],
-        username: [buildValidatorData({ name: 'required', title: t('user.user.User name') }), buildValidatorData({ name: 'account' })],
-        nickname: [buildValidatorData({ name: 'required', title: t('user.user.nickname') })],
+        avatar: [buildValidatorData({ name: 'required', message: t('Please select field', { field: t('user.account.profile.head portrait') }) })],
+        username: [buildValidatorData({ name: 'required', title: t('user.account.profile.User name') }), buildValidatorData({ name: 'account' })],
+        nickname: [buildValidatorData({ name: 'required', title: t('user.account.profile.nickname') })],
     },
     accountVerificationType: [],
     dialog: {
@@ -296,8 +300,11 @@ const state: {
         verification: {
             show: false,
             rules: {
-                password: [buildValidatorData({ name: 'required', title: t('user.user.password') }), buildValidatorData({ name: 'password' })],
-                captcha: [buildValidatorData({ name: 'required', title: t('user.user.Verification Code') })],
+                password: [
+                    buildValidatorData({ name: 'required', title: t('user.account.profile.password') }),
+                    buildValidatorData({ name: 'password' }),
+                ],
+                captcha: [buildValidatorData({ name: 'required', title: t('user.account.profile.Verification Code') })],
             },
             form: {
                 password: '',
@@ -308,16 +315,19 @@ const state: {
         bind: {
             show: false,
             rules: {
-                password: [buildValidatorData({ name: 'required', title: t('user.user.password') }), buildValidatorData({ name: 'password' })],
+                password: [
+                    buildValidatorData({ name: 'required', title: t('user.account.profile.password') }),
+                    buildValidatorData({ name: 'password' }),
+                ],
                 email: [
-                    buildValidatorData({ name: 'required', title: t('user.user.email') }),
-                    buildValidatorData({ name: 'email', title: t('user.user.email') }),
+                    buildValidatorData({ name: 'required', title: t('user.account.profile.email') }),
+                    buildValidatorData({ name: 'email', title: t('user.account.profile.email') }),
                 ],
                 mobile: [
-                    buildValidatorData({ name: 'required', title: t('user.user.mobile') }),
-                    buildValidatorData({ name: 'mobile', title: t('user.user.mobile') }),
+                    buildValidatorData({ name: 'required', title: t('user.account.profile.mobile') }),
+                    buildValidatorData({ name: 'mobile', title: t('user.account.profile.mobile') }),
                 ],
-                captcha: [buildValidatorData({ name: 'required', title: t('user.user.Verification Code') })],
+                captcha: [buildValidatorData({ name: 'required', title: t('user.account.profile.Verification Code') })],
             },
             form: {
                 password: '',

@@ -6,4 +6,6 @@
 export default {
     '/': ['./frontend/${lang}/index.ts'],
     '/admin/moduleStore': ['./backend/${lang}/module.ts'],
+    '/admin/user/rule': ['./backend/${lang}/auth/menu.ts'],
+    '/admin/user/scoreLog': ['./backend/${lang}/user/moneyLog.ts'],
 }

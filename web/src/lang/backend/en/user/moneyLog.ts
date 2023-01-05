@@ -13,6 +13,4 @@ export default {
     'Balance after change': 'Balance after change',
     'Please enter change remarks / description': 'Please enter change remarks/description',
     User: 'User',
-    'Change time': 'Change time',
-    'Balance change record': 'Balance change record',
 }

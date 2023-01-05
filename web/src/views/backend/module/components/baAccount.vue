@@ -14,12 +14,12 @@
                     </div>
                     <p class="username">{{ baAccount.nickname }}</p>
                     <p class="user-integral">
-                        <span>{{ $t('user.user.integral') + ' ' + baAccount.score }}</span>
-                        <span>{{ $t('user.user.balance') + ' ' + baAccount.money }}</span>
+                        <span>{{ $t('module.Integral') + ' ' + baAccount.score }}</span>
+                        <span>{{ $t('module.Balance') + ' ' + baAccount.money }}</span>
                     </p>
                     <div class="userinfo-buttons">
                         <!-- <el-button v-blur size="default" type="primary">{{ $('module.My module') }}</el-button> -->
-                        <el-button @click="baAccount.logout()" v-blur size="default" type="warning">{{ $t('user.user.Logout login') }}</el-button>
+                        <el-button @click="baAccount.logout()" v-blur size="default" type="warning">{{ $t('module.Logout login') }}</el-button>
                     </div>
                 </div>
             </template>
@@ -121,9 +121,9 @@ const user: {
 })
 
 const baAccountFormRules: Partial<Record<string, FormItemRule[]>> = reactive({
-    username: [buildValidatorData({ name: 'required', title: t('user.user.User name') })],
-    captcha: [buildValidatorData({ name: 'required', title: t('user.user.Verification Code') })],
-    password: [buildValidatorData({ name: 'required', title: t('user.user.password') }), buildValidatorData({ name: 'password' })],
+    username: [buildValidatorData({ name: 'required', title: t('module.User name') })],
+    captcha: [buildValidatorData({ name: 'required', title: t('module.Verification Code') })],
+    password: [buildValidatorData({ name: 'required', title: t('module.Password') }), buildValidatorData({ name: 'password' })],
 })
 
 const onBaAccountSubmit = (formRef: FormInstance | undefined = undefined) => {

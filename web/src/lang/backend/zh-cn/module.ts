@@ -124,4 +124,10 @@ export default {
     'Update Log': '更新日志',
     'No detailed update log': '无详细更新日志',
     'Use WeChat to scan QR code for payment': '使用微信扫描二维码支付',
+    'Logout login': '注销登录',
+    Integral: '积分',
+    Balance: '余额',
+    Password: '密码',
+    'User name': '用户名',
+    'Verification Code': '验证码',
 }

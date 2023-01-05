@@ -129,4 +129,10 @@ export default {
     'Update Log': 'Update Log',
     'No detailed update log': 'No detailed update log',
     'Use WeChat to scan QR code for payment': 'Use WeChat to scan QR code for payment',
+    'Logout login': 'Logout',
+    Integral: 'Integral',
+    Balance: 'Balance',
+    Password: 'password',
+    'User name': 'User name',
+    'Verification Code': 'Captcha',
 }

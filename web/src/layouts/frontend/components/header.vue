@@ -27,7 +27,7 @@
                             <el-menu-item @click="router.push({ name: 'user' })" v-blur index="user-index">{{
                                 $t('Member Center')
                             }}</el-menu-item>
-                            <el-menu-item @click="userInfo.logout()" v-blur index="user-logout">{{ $t('user.user.Logout login') }}</el-menu-item>
+                            <el-menu-item @click="userInfo.logout()" v-blur index="user-logout">{{ $t('Logout login') }}</el-menu-item>
                         </el-sub-menu>
                         <el-menu-item v-else @click="router.push({ name: 'user' })" v-blur index="user">{{ $t('Member Center') }}</el-menu-item>
                     </template>

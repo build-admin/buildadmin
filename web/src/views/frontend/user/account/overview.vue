@@ -3,10 +3,10 @@
         <el-card class="user-views-card" shadow="hover">
             <template #header>
                 <div class="card-header">
-                    <span>{{ $t('user.user.Account information') }}</span>
-                    <el-button @click="router.push({ name: 'account/profile' })" type="info" v-blur plain>{{
-                        $t('user.user.personal data')
-                    }}</el-button>
+                    <span>{{ $t('user.account.overview.Account information') }}</span>
+                    <el-button @click="router.push({ name: 'account/profile' })" type="info" v-blur plain>
+                        {{ $t('user.account.overview.personal data') }}
+                    </el-button>
                 </div>
             </template>
             <div class="overview-userinfo">
@@ -17,7 +17,10 @@
                             <el-tooltip
                                 effect="light"
                                 placement="right"
-                                :content="(userInfo.mobile ? $t('user.user.Filled in') : $t('user.user.Not filled in')) + $t('user.user.mobile')"
+                                :content="
+                                    (userInfo.mobile ? $t('user.account.overview.Filled in') : $t('user.account.overview.Not filled in')) +
+                                    $t('user.account.overview.mobile')
+                                "
                             >
                                 <Icon
                                     name="fa fa-tablet"
@@ -30,7 +33,10 @@
                             <el-tooltip
                                 effect="light"
                                 placement="right"
-                                :content="(userInfo.email ? $t('user.user.Filled in') : $t('user.user.Not filled in')) + $t('user.user.email')"
+                                :content="
+                                    (userInfo.email ? $t('user.account.overview.Filled in') : $t('user.account.overview.Not filled in')) +
+                                    $t('user.account.overview.email')
+                                "
                             >
                                 <Icon
                                     name="fa fa-envelope-square"
@@ -44,25 +50,25 @@
                 <div class="user-data">
                     <div class="welcome-words">{{ userInfo.nickname + $t('utils.comma') + getGreet() }}</div>
                     <el-row class="data-item">
-                        <el-col :span="4">{{ $t('user.user.integral') }}</el-col>
+                        <el-col :span="4">{{ $t('Integral') }}</el-col>
                         <el-col :span="8">
                             <el-link @click="router.push({ name: 'account/integral' })" type="primary">{{ userInfo.score }}</el-link>
                         </el-col>
-                        <el-col :span="4">{{ $t('user.user.balance') }}</el-col>
+                        <el-col :span="4">{{ $t('Balance') }}</el-col>
                         <el-col :span="8">
                             <el-link @click="router.push({ name: 'account/balance' })" type="primary">{{ userInfo.money }}</el-link>
                         </el-col>
                     </el-row>
                     <el-row class="data-item">
-                        <el-col class="lastlogin title" :span="4">{{ $t('user.user.Last login') }}</el-col>
+                        <el-col class="lastlogin title" :span="4">{{ $t('user.account.overview.Last login') }}</el-col>
                         <el-col class="lastlogin value" :span="8">{{ timeFormat(userInfo.lastlogintime) }}</el-col>
-                        <el-col class="lastip" :span="4">{{ $t('user.user.Last login IP') }}</el-col>
+                        <el-col class="lastip" :span="4">{{ $t('user.account.overview.Last login IP') }}</el-col>
                         <el-col class="lastip" :span="8">{{ userInfo.lastloginip }}</el-col>
                     </el-row>
                 </div>
             </div>
         </el-card>
-        <el-card class="user-views-card" shadow="hover" :header="$t('user.user.Growth statistics')">
+        <el-card class="user-views-card" shadow="hover" :header="$t('user.account.overview.Growth statistics')">
             <div class="account-growth" ref="accountGrowthChartRef"></div>
         </el-card>
     </div>
@@ -110,11 +116,11 @@ const initUserGrowthChart = () => {
         },
         yAxis: {},
         legend: {
-            data: [t('user.user.integral'), t('user.user.balance')],
+            data: [t('Integral'), t('Balance')],
         },
         series: [
             {
-                name: t('user.user.integral'),
+                name: t('Integral'),
                 data: state.score,
                 type: 'line',
                 smooth: true,
@@ -128,7 +134,7 @@ const initUserGrowthChart = () => {
                 areaStyle: {},
             },
             {
-                name: t('user.user.balance'),
+                name: t('Balance'),
                 data: state.money,
                 type: 'line',
                 smooth: true,
