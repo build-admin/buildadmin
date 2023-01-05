@@ -7,6 +7,7 @@ import langAutoLoadMap from '/@/lang/autoload'
 import { mergeMessage } from '/@/lang/index'
 import { useConfig } from '/@/stores/config'
 import { isAdminApp } from '/@/utils/common'
+import { uniq } from 'lodash-es'
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -22,7 +23,7 @@ router.beforeEach((to, from, next) => {
     }
 
     // 按需动态加载页面的语言包-start
-    const loadPath: string[] = []
+    let loadPath: string[] = []
     const config = useConfig()
     if (to.path in langAutoLoadMap) {
         loadPath.push(...langAutoLoadMap[to.path as keyof typeof langAutoLoadMap])
@@ -32,11 +33,16 @@ router.beforeEach((to, from, next) => {
         prefix = './backend/' + config.lang.defaultLang
 
         // 去除 path 中的 /admin
-        const adminPath = to.path.slice(to.path.lastIndexOf(adminBaseRoute.path) + adminBaseRoute.path.length)
+        const adminPath = to.path.slice(to.path.indexOf(adminBaseRoute.path) + adminBaseRoute.path.length)
         if (adminPath) loadPath.push(prefix + adminPath + '.ts')
     } else {
         prefix = './frontend/' + config.lang.defaultLang
         loadPath.push(prefix + to.path + '.ts')
+    }
+
+    // 根据路由 name 加载的语言包
+    if (to.name) {
+        loadPath.push(prefix + '/' + to.name.toString() + '.ts')
     }
 
     if (!window.loadLangHandle.publicMessageLoaded) window.loadLangHandle.publicMessageLoaded = []
@@ -45,6 +51,9 @@ router.beforeEach((to, from, next) => {
         loadPath.push(publicMessagePath)
         window.loadLangHandle.publicMessageLoaded.push(publicMessagePath)
     }
+
+    // 去重
+    loadPath = uniq(loadPath)
 
     for (const key in loadPath) {
         loadPath[key] = loadPath[key].replaceAll('${lang}', config.lang.defaultLang)
