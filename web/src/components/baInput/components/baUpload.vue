@@ -19,7 +19,7 @@
             <template v-else #default>
                 <template v-if="type == 'image' || type == 'images'">
                     <div v-if="!hideSelectFile" @click.stop="state.selectFile.show = true" class="ba-upload-select-image">
-                        {{ $t('routine.attachment.choice') }}
+                        {{ $t('utils.choice') }}
                     </div>
                     <Icon class="ba-upload-icon" name="el-icon-Plus" size="30" color="#c0c4cc" />
                 </template>
@@ -30,7 +30,7 @@
                     </el-button>
                     <el-button v-if="!hideSelectFile" @click.stop="state.selectFile.show = true" type="success">
                         <Icon name="fa fa-th-list" size="14px" color="#ffffff" />
-                        <span class="ml-6">{{ $t('routine.attachment.choice') }}</span>
+                        <span class="ml-6">{{ $t('utils.choice') }}</span>
                     </el-button>
                 </template>
             </template>

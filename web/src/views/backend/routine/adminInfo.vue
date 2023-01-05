@@ -22,7 +22,7 @@
                     <div class="admin-info-base">
                         <div class="admin-nickname">{{ state.adminInfo.nickname }}</div>
                         <div class="admin-other">
-                            <div>{{ t('adminInfo.Last logged in on') }} {{ state.adminInfo.lastlogintime }}</div>
+                            <div>{{ t('routine.adminInfo.Last logged in on') }} {{ state.adminInfo.lastlogintime }}</div>
                         </div>
                     </div>
                     <div class="admin-info-form">
@@ -34,43 +34,43 @@
                             ref="formRef"
                             :model="state.adminInfo"
                         >
-                            <el-form-item :label="t('adminInfo.user name')">
+                            <el-form-item :label="t('routine.adminInfo.user name')">
                                 <el-input disabled v-model="state.adminInfo.username"></el-input>
                             </el-form-item>
-                            <el-form-item :label="t('adminInfo.User nickname')" prop="nickname">
-                                <el-input :placeholder="t('adminInfo.Please enter a nickname')" v-model="state.adminInfo.nickname"></el-input>
+                            <el-form-item :label="t('routine.adminInfo.User nickname')" prop="nickname">
+                                <el-input :placeholder="t('routine.adminInfo.Please enter a nickname')" v-model="state.adminInfo.nickname"></el-input>
                             </el-form-item>
-                            <el-form-item :label="t('adminInfo.e-mail address')" prop="email">
+                            <el-form-item :label="t('routine.adminInfo.e-mail address')" prop="email">
                                 <el-input
-                                    :placeholder="t('Please input field', { field: t('adminInfo.e-mail address') })"
+                                    :placeholder="t('Please input field', { field: t('routine.adminInfo.e-mail address') })"
                                     v-model="state.adminInfo.email"
                                 ></el-input>
                             </el-form-item>
-                            <el-form-item :label="t('adminInfo.phone number')" prop="mobile">
+                            <el-form-item :label="t('routine.adminInfo.phone number')" prop="mobile">
                                 <el-input
-                                    :placeholder="t('Please input field', { field: t('adminInfo.phone number') })"
+                                    :placeholder="t('Please input field', { field: t('routine.adminInfo.phone number') })"
                                     v-model="state.adminInfo.mobile"
                                 ></el-input>
                             </el-form-item>
-                            <el-form-item :label="t('adminInfo.autograph')" prop="motto">
+                            <el-form-item :label="t('routine.adminInfo.autograph')" prop="motto">
                                 <el-input
                                     @keyup.enter.stop=""
                                     @keyup.ctrl.enter="onSubmit(formRef)"
-                                    :placeholder="t('adminInfo.This guy is lazy and doesn write anything')"
+                                    :placeholder="t('routine.adminInfo.This guy is lazy and doesn write anything')"
                                     type="textarea"
                                     v-model="state.adminInfo.motto"
                                 ></el-input>
                             </el-form-item>
-                            <el-form-item :label="t('adminInfo.New password')" prop="password">
+                            <el-form-item :label="t('routine.adminInfo.New password')" prop="password">
                                 <el-input
                                     type="password"
-                                    :placeholder="t('adminInfo.Please leave blank if not modified')"
+                                    :placeholder="t('routine.adminInfo.Please leave blank if not modified')"
                                     v-model="state.adminInfo.password"
                                 ></el-input>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" :loading="state.buttonLoading" @click="onSubmit(formRef)">{{
-                                    t('adminInfo.Save changes')
+                                    t('routine.adminInfo.Save changes')
                                 }}</el-button>
                                 <el-button @click="onResetForm(formRef)">{{ t('Reset') }}</el-button>
                             </el-form-item>
@@ -79,7 +79,7 @@
                 </div>
             </el-col>
             <el-col v-loading="state.logLoading" :xs="24" :sm="24" :md="24" :lg="12">
-                <el-card :header="t('adminInfo.Operation log')" shadow="never">
+                <el-card :header="t('routine.adminInfo.Operation log')" shadow="never">
                     <el-timeline>
                         <el-timeline-item v-for="(item, idx) in state.log" :key="idx" size="large" :timestamp="timeFormat(item.createtime)">
                             {{ item.title }}
@@ -187,9 +187,9 @@ const onLogCurrentChange = (page: number) => {
 }
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    nickname: [buildValidatorData({ name: 'required', title: t('adminInfo.User nickname') })],
-    email: [buildValidatorData({ name: 'email', title: t('adminInfo.e-mail address') })],
-    mobile: [buildValidatorData({ name: 'mobile', message: t('Please enter the correct field', { field: t('adminInfo.phone number') }) })],
+    nickname: [buildValidatorData({ name: 'required', title: t('routine.adminInfo.User nickname') })],
+    email: [buildValidatorData({ name: 'email', title: t('routine.adminInfo.e-mail address') })],
+    mobile: [buildValidatorData({ name: 'mobile', message: t('Please enter the correct field', { field: t('routine.adminInfo.phone number') }) })],
     password: [buildValidatorData({ name: 'password' })],
 })
 

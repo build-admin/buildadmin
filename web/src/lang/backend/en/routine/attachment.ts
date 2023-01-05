@@ -1,16 +1,7 @@
 export default {
-    'Original name': 'Original name',
-    Breakdown: 'Detailed catalogue',
     'Upload administrator': 'Upload administrator',
     'Upload user': 'Upload member',
-    size: 'Size',
-    type: 'Type',
-    preview: 'Preview',
-    choice: 'Choice',
-    'Select File': 'Select File',
-    'Upload (Reference) times': 'Upload (Reference) times',
     'Storage mode': 'Storage mode',
-    'Last upload time': 'Last upload time',
     'Physical path': 'Physical path',
     'image width': 'Picture width',
     'Picture height': 'Picture height',
@@ -31,6 +22,4 @@ export default {
         'When the same file is uploaded many times, only one attachment record will be saved and added.',
     'SHA1 encoding of file': 'The SHA1 encoding of file',
     'Files and records will be deleted at the same time Are you sure?': 'Files and records will be deleted at the same time Are you sure?',
-    'You can also select': 'You can also select',
-    items: 'items',
 }

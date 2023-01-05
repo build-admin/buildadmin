@@ -1,16 +1,7 @@
 export default {
-    'Original name': '原始名称',
-    Breakdown: '细目',
     'Upload administrator': '上传管理员',
     'Upload user': '上传会员',
-    size: '大小',
-    type: '类型',
-    preview: '预览',
-    choice: '选择',
-    'Select File': '选择文件',
-    'Upload (Reference) times': '上传(引用)次数',
     'Storage mode': '存储方式',
-    'Last upload time': '最后上传时间',
     'Physical path': '物理路径',
     'image width': '图片宽度',
     'Picture height': '图片高度',
@@ -30,6 +21,4 @@ export default {
         '同一文件被多次上传时，只会保存一份和增加一条附件记录',
     'SHA1 encoding of file': '文件的sha1编码',
     'Files and records will be deleted at the same time Are you sure?': '将同时删除文件和记录，确认吗？',
-    'You can also select': '还可以选择',
-    items: '项',
 }

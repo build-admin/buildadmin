@@ -18,14 +18,14 @@
                     label-position="right"
                     :label-width="baTable.form.labelWidth + 'px'"
                 >
-                    <el-form-item :label="t('routine.attachment.preview')">
+                    <el-form-item :label="t('utils.preview')">
                         <el-image
                             class="preview-img"
                             :preview-src-list="[baTable.form.items!.full_url]"
                             :src="previewRenderFormatter(baTable.form.items!, {}, baTable.form.items!.suffix)"
                         ></el-image>
                     </el-form-item>
-                    <el-form-item :label="t('routine.attachment.Breakdown')">
+                    <el-form-item :label="t('utils.Breakdown')">
                         <el-input
                             v-model="baTable.form.items!.topic"
                             type="string"
@@ -59,7 +59,7 @@
                             :placeholder="t('routine.attachment.Height of picture file')"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item :label="t('routine.attachment.Original name')">
+                    <el-form-item :label="t('utils.Original name')">
                         <el-input
                             v-model="baTable.form.items!.name"
                             type="string"
@@ -80,7 +80,7 @@
                             :placeholder="t('routine.attachment.File MIME type')"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item :label="t('routine.attachment.Upload (Reference) times')">
+                    <el-form-item :label="t('utils.Upload (Reference) times')">
                         <el-input
                             v-model="baTable.form.items!.quote"
                             type="number"

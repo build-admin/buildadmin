@@ -5,16 +5,16 @@
             width="60%"
             :model-value="modelValue"
             class="ba-upload-select-dialog"
-            :title="t('routine.attachment.Select File')"
+            :title="t('utils.Select File')"
             :append-to-body="true"
             :destroy-on-close="true"
             top="4vh"
         >
             <TableHeader
                 :buttons="['refresh', 'comSearch', 'quickSearch', 'columnDisplay']"
-                :quick-search-placeholder="t('quick Search Placeholder', { fields: t('routine.attachment.Original name') })"
+                :quick-search-placeholder="t('quick Search Placeholder', { fields: t('utils.Original name') })"
             >
-                <el-tooltip :content="t('routine.attachment.choice')" placement="top">
+                <el-tooltip :content="t('utils.choice')" placement="top">
                     <el-button
                         @click="onChoice"
                         :disabled="baTable.table.selection!.length > 0 ? false : true"
@@ -23,13 +23,13 @@
                         type="primary"
                     >
                         <Icon name="fa fa-check" />
-                        <span class="table-header-operate-text">{{ t('routine.attachment.choice') }}</span>
+                        <span class="table-header-operate-text">{{ t('utils.choice') }}</span>
                     </el-button>
                 </el-tooltip>
                 <div class="ml-10" v-if="limit !== 0">
-                    {{ t('routine.attachment.You can also select') }}
+                    {{ t('utils.You can also select') }}
                     <span class="selection-count">{{ limit - baTable.table.selection!.length }}</span>
-                    {{ t('routine.attachment.items') }}
+                    {{ t('utils.items') }}
                 </div>
             </TableHeader>
 
@@ -78,7 +78,7 @@ const optBtn: OptButton[] = [
     {
         render: 'tipButton',
         name: 'choice',
-        text: t('routine.attachment.choice'),
+        text: t('utils.choice'),
         type: 'primary',
         icon: 'fa fa-check',
         class: 'table-row-choice',
@@ -109,9 +109,9 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             operator: false,
         },
         { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
-        { label: t('routine.attachment.Breakdown'), prop: 'topic', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
+        { label: t('utils.Breakdown'), prop: 'topic', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
         {
-            label: t('routine.attachment.preview'),
+            label: t('utils.preview'),
             prop: 'suffix',
             align: 'center',
             renderFormatter: previewRenderFormatter,
@@ -119,7 +119,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             operator: false,
         },
         {
-            label: t('routine.attachment.type'),
+            label: t('utils.type'),
             prop: 'mimetype',
             align: 'center',
             operator: 'LIKE',
@@ -127,7 +127,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             operatorPlaceholder: t('Fuzzy query'),
         },
         {
-            label: t('routine.attachment.size'),
+            label: t('utils.size'),
             prop: 'size',
             align: 'center',
             formatter: (row: TableRow, column: TableColumn, cellValue: string) => {
@@ -140,7 +140,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             operatorPlaceholder: 'bytes',
         },
         {
-            label: t('routine.attachment.Last upload time'),
+            label: t('utils.Last upload time'),
             prop: 'lastuploadtime',
             align: 'center',
             render: 'datetime',
@@ -150,7 +150,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
         },
         {
             show: false,
-            label: t('routine.attachment.Upload (Reference) times'),
+            label: t('utils.Upload (Reference) times'),
             prop: 'quote',
             align: 'center',
             width: 150,
@@ -158,7 +158,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             sortable: 'custom',
         },
         {
-            label: t('routine.attachment.Original name'),
+            label: t('utils.Original name'),
             prop: 'name',
             align: 'center',
             'show-overflow-tooltip': true,

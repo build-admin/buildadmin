@@ -6,7 +6,7 @@
             <!-- 表格顶部菜单 -->
             <TableHeader
                 :buttons="['refresh', 'edit', 'comSearch', 'quickSearch', 'columnDisplay']"
-                :quick-search-placeholder="t('quick Search Placeholder', { fields: t('routine.attachment.Original name') })"
+                :quick-search-placeholder="t('quick Search Placeholder', { fields: t('utils.Original name') })"
             >
                 <el-popconfirm
                     v-if="auth('del')"
@@ -68,7 +68,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
     column: [
         { type: 'selection', align: 'center', operator: false },
         { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
-        { label: t('routine.attachment.Breakdown'), prop: 'topic', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
+        { label: t('utils.Breakdown'), prop: 'topic', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
         {
             label: t('routine.attachment.Upload administrator'),
             prop: 'admin.nickname',
@@ -84,7 +84,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             operatorPlaceholder: t('Fuzzy query'),
         },
         {
-            label: t('routine.attachment.size'),
+            label: t('utils.size'),
             prop: 'size',
             align: 'center',
             formatter: (row: TableRow, column: TableColumn, cellValue: string) => {
@@ -97,7 +97,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             operatorPlaceholder: 'bytes',
         },
         {
-            label: t('routine.attachment.type'),
+            label: t('utils.type'),
             prop: 'mimetype',
             align: 'center',
             operator: 'LIKE',
@@ -105,7 +105,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             operatorPlaceholder: t('Fuzzy query'),
         },
         {
-            label: t('routine.attachment.preview'),
+            label: t('utils.preview'),
             prop: 'suffix',
             align: 'center',
             renderFormatter: previewRenderFormatter,
@@ -113,7 +113,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             operator: false,
         },
         {
-            label: t('routine.attachment.Upload (Reference) times'),
+            label: t('utils.Upload (Reference) times'),
             prop: 'quote',
             align: 'center',
             width: 150,
@@ -121,7 +121,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             sortable: 'custom',
         },
         {
-            label: t('routine.attachment.Original name'),
+            label: t('utils.Original name'),
             prop: 'name',
             align: 'center',
             'show-overflow-tooltip': true,
@@ -137,7 +137,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             operatorPlaceholder: t('Fuzzy query'),
         },
         {
-            label: t('routine.attachment.Last upload time'),
+            label: t('utils.Last upload time'),
             prop: 'lastuploadtime',
             align: 'center',
             render: 'datetime',
