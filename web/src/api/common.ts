@@ -5,7 +5,7 @@ import { useAdminInfo } from '/@/stores/adminInfo'
 import { useUserInfo } from '/@/stores/userInfo'
 import { ElNotification, UploadRawFile } from 'element-plus'
 import { useSiteConfig } from '/@/stores/siteConfig'
-import { state as uploadExpandState, fileUpload as uploadExpand } from '/@/components/baInput/components/baUpload'
+import { state as uploadExpandState, fileUpload as uploadExpand } from '/@/components/mixins/baUpload'
 import { i18n } from '../lang'
 
 /*

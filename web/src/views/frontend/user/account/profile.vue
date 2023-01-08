@@ -241,7 +241,7 @@ import { useUserInfo } from '/@/stores/userInfo'
 import { onResetForm } from '/@/utils/common'
 import { buildValidatorData } from '/@/utils/validate'
 import { getProfile, postProfile, postVerification, postChangeBind } from '/@/api/frontend/user/index'
-import UserProfileMixin from '/@/layouts/common/mixins/userProfile.vue'
+import UserProfileMixin from '/@/components/mixins/userProfile.vue'
 import { useI18n } from 'vue-i18n'
 import { sendEms, sendSms } from '/@/api/common'
 let timer: NodeJS.Timer

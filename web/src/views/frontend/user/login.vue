@@ -300,8 +300,8 @@ import { onResetForm } from '/@/utils/common'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
-import loginMounted from '/@/layouts/common/mixins/loginMounted'
-import LoginFooterMixin from '/@/layouts/common/mixins/loginFooter.vue'
+import loginMounted from '/@/components/mixins/loginMounted'
+import LoginFooterMixin from '/@/components/mixins/loginFooter.vue'
 import type { FormItemRule, FormInstance } from 'element-plus'
 let timer: NodeJS.Timer
 

@@ -12,7 +12,7 @@ import { memberCenterBaseRoute } from '/@/router/static'
 import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
-import userMounted from '/@/layouts/common/mixins/userMounted'
+import userMounted from '/@/components/mixins/userMounted'
 import { isEmpty } from 'lodash-es'
 
 const { t } = useI18n()
