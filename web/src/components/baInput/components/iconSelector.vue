@@ -18,10 +18,7 @@
                                 :class="state.iconType == 'awe' ? 'active' : ''"
                                 >awe</span
                             >
-                            <span
-                                :title="$t('utils.Ali iconcont Icon')"
-                                @click="onChangeTab('ali')"
-                                :class="state.iconType == 'ali' ? 'active' : ''"
+                            <span :title="$t('utils.Ali iconcont Icon')" @click="onChangeTab('ali')" :class="state.iconType == 'ali' ? 'active' : ''"
                                 >ali</span
                             >
                             <span
