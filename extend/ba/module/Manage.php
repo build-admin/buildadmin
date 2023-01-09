@@ -193,8 +193,10 @@ class Manage
 
         $this->download($token, $orderId);
 
-        // 执行更新脚本
-        Server::execEvent($this->uid, 'update');
+        // 标记需要执行更新脚本，并在安装请求执行（当前请求未自动加载到新文件不方便执行）
+        $info           = $this->getInfo();
+        $info['update'] = 1;
+        $this->setInfo([], $info);
     }
 
     /**
@@ -218,13 +220,21 @@ class Manage
         // 导入sql
         Server::importSql($this->modulesDir);
 
+        // 如果是更新，先执行更新脚本
+        $info = $this->getInfo();
+        if (isset($info['update']) && $info['update']) {
+            Server::execEvent($this->uid, 'update');
+            unset($info['update']);
+            $this->setInfo([], $info);
+        }
+
         // 执行安装脚本
         Server::execEvent($this->uid, 'install');
 
         // 启用插件
         $this->enable('install');
 
-        return $this->getInfo();
+        return $info;
     }
 
     public function uninstall()
