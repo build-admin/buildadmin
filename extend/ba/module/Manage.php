@@ -112,6 +112,9 @@ class Manage
             'installed'     => $installedUids ?? [],
         ]);
 
+        // 删除旧版本代码
+        deldir($this->modulesDir);
+
         // 解压
         Server::unzip($zipFile);
 
