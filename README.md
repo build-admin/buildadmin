@@ -21,10 +21,10 @@
         <img src="https://img.shields.io/badge/Element--Plus-%3E2.2-brightgreen?color=91aac3&labelColor=439EFD" alt="element plus">
     </a>
     <a href="https://www.tslang.cn/" target="_blank">
-        <img src="https://img.shields.io/badge/TypeScript-%3E4.4-blue?color=91aac3&labelColor=439EFD" alt="typescript">
+        <img src="https://img.shields.io/badge/TypeScript-%3E4.9-blue?color=91aac3&labelColor=439EFD" alt="typescript">
     </a>
     <a href="https://vitejs.dev/" target="_blank">
-        <img src="https://img.shields.io/badge/Vite-%3E2.9-blue?color=91aac3&labelColor=439EFD" alt="vite">
+        <img src="https://img.shields.io/badge/Vite-%3E4.0-blue?color=91aac3&labelColor=439EFD" alt="vite">
     </a>
     <a href="https://pinia.vuejs.org/" target="_blank">
         <img src="https://img.shields.io/badge/Pinia-%3E2.0-blue?color=91aac3&labelColor=439EFD" alt="vite">
