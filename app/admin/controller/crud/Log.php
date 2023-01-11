@@ -29,9 +29,7 @@ class Log extends Backend
         $this->model = new CrudLog;
 
         if (!$this->auth->check('crud/crud/index')) {
-            $this->error(__('You have no permission'), [
-                'routePath' => '/admin'
-            ], 302);
+            $this->error(__('You have no permission'), [], 401);
         }
     }
 

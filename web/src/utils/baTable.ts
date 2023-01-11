@@ -129,9 +129,15 @@ export default class baTable {
                 [this.table.pk!]: id,
             })
             .then((res) => {
-                this.form.loading = false
                 this.form.items = res.data.row
                 this.runAfter('requestEdit', { res })
+            })
+            .catch((err) => {
+                this.toggleForm()
+                this.runAfter('requestEdit', { err })
+            })
+            .finally(() => {
+                this.form.loading = false
             })
     }
     /* API请求方法-e */
@@ -448,7 +454,7 @@ export default class baTable {
                     return
                 }
 
-                this.api.sortableApi(moveRow[this.table.pk!], replaceRow[this.table.pk!]).then(() => {
+                this.api.sortableApi(moveRow[this.table.pk!], replaceRow[this.table.pk!]).finally(() => {
                     this.onTableHeaderAction('refresh', {})
                 })
             },
