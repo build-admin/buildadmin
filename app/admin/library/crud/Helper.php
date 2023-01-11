@@ -406,7 +406,7 @@ class Helper
             $webDir['lang'] = array_merge($pathArr, [$lastName]);
             $langDir        = ['en', 'zh-cn'];
             foreach ($langDir as $item) {
-                $webDir[$item] = "web/src/lang/pages/$item" . ($pathArr ? '/' . implode('/', $pathArr) : '') . "/$lastName";
+                $webDir[$item] = "web/src/lang/backend/$item" . ($pathArr ? '/' . implode('/', $pathArr) : '') . "/$lastName";
             }
         }
         foreach ($webDir as &$item) {
