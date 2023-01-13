@@ -18,7 +18,9 @@
                         <span>{{ $t('module.Balance') + ' ' + baAccount.money }}</span>
                     </p>
                     <div class="userinfo-buttons">
-                        <!-- <el-button v-blur size="default" type="primary">{{ $('module.My module') }}</el-button> -->
+                        <el-button @click="openUrl('https://buildadmin.com/user/account/moduleOrders')" v-blur size="default" type="primary">
+                            {{ $t('module.My module') }}
+                        </el-button>
                         <el-button @click="baAccount.logout()" v-blur size="default" type="warning">{{ $t('module.Logout login') }}</el-button>
                     </div>
                 </div>
@@ -125,6 +127,10 @@ const baAccountFormRules: Partial<Record<string, FormItemRule[]>> = reactive({
     captcha: [buildValidatorData({ name: 'required', title: t('module.Verification Code') })],
     password: [buildValidatorData({ name: 'required', title: t('module.Password') }), buildValidatorData({ name: 'password' })],
 })
+
+const openUrl = (url: string) => {
+    window.open(url)
+}
 
 const onBaAccountSubmit = (formRef: FormInstance | undefined = undefined) => {
     formRef!.validate((valid) => {
