@@ -240,6 +240,10 @@ class Auth extends \ba\Auth
             $this->setError('Password is incorrect');
             return false;
         }
+        if (Config::get('buildadmin.user_sso')) {
+            Token::clear('user', $this->model->id);
+            Token::clear('user-refresh', $this->model->id);
+        }
 
         if ($keeptime) {
             $this->setRefreshToken(2592000);
