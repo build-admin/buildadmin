@@ -151,7 +151,12 @@
                         <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
                     </el-button>
                 </el-tooltip>
-                <el-popconfirm v-if="btn.render == 'confirmButton'" :disabled="btn.disabled && btn.disabled(row, field)" v-bind="btn.popconfirm" @confirm="onButtonClick(btn)">
+                <el-popconfirm
+                    v-if="btn.render == 'confirmButton'"
+                    :disabled="btn.disabled && btn.disabled(row, field)"
+                    v-bind="btn.popconfirm"
+                    @confirm="onButtonClick(btn)"
+                >
                     <template #reference>
                         <div class="ml-6">
                             <el-tooltip :disabled="btn.title ? false : true" :content="btn.title ? t(btn.title) : ''" placement="top">
