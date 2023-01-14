@@ -13,6 +13,7 @@
                     <div class="goods" v-for="item in state.table.modules[state.table.params.activeTab]" :key="item.uid">
                         <div @click="showInfo(item.uid)" class="goods-item suspension">
                             <el-image
+                                loading="lazy"
                                 fit="contain"
                                 class="goods-img"
                                 :src="item.logo ? item.logo : fullUrl('/static/images/local-module-logo.png')"
