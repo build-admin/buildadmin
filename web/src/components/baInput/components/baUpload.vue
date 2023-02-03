@@ -149,10 +149,15 @@ const onElChange = (file: UploadFileExt) => {
                 const urls = getAllUrls()
                 typeof state.events['onSuccess'] == 'function' && state.events['onSuccess'](res, file, urls)
                 emits('update:modelValue', urls)
+            } else {
+                file.status = 'fail'
+                state.fileList.splice(state.fileList.indexOf(file), 1)
+                typeof state.events['onError'] == 'function' && state.events['onError'](res, file, getAllUrls())
             }
         })
         .catch((res) => {
             file.status = 'fail'
+            state.fileList.splice(state.fileList.indexOf(file), 1)
             typeof state.events['onError'] == 'function' && state.events['onError'](res, file, getAllUrls())
         })
         .finally(() => {
