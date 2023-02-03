@@ -23,7 +23,7 @@
             :value="item[state.primaryKey].toString()"
             :key="item[state.primaryKey]"
         >
-            <el-tooltip placement="right" effect="light" v-if="Object.keys(tooltipParams).length!==0">
+            <el-tooltip placement="right" effect="light" v-if="!isEmpty(tooltipParams)">
                 <template #content>
                     <p v-for="(tooltipParam, key) in tooltipParams" :key="key">{{ key }}: {{ item[tooltipParam] }}</p>
                 </template>
@@ -47,6 +47,7 @@ import { reactive, watch, onMounted, ref, nextTick } from 'vue'
 import { getSelectData } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import type { ElSelect } from 'element-plus'
+import { isEmpty } from 'lodash-es'
 
 const selectRef = ref<InstanceType<typeof ElSelect> | undefined>()
 type valType = string | number | string[] | number[]

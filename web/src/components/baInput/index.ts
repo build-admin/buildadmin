@@ -118,6 +118,7 @@ export interface InputAttr {
     pk?: string
     field?: string
     'remote-url'?: string
+    'tooltip-params'?: anyObj
     // 图标选择器属性
     'show-icon-name'?: boolean
     placement?: string
