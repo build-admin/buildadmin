@@ -665,6 +665,17 @@ const showRemoteSelectPre = (index: number, hideDelField = false) => {
                 state.remoteSelectPre.form.controllerFile = state.fields[index].form['remote-controller'].value
                 state.remoteSelectPre.form.modelFile = state.fields[index].form['remote-model'].value
                 state.remoteSelectPre.form.joinField = state.fields[index].form['relation-fields'].value.split(',')
+                getTableFieldList(state.fields[index].form['remote-table'].value).then((res) => {
+                    const fieldSelect: anyObj = {}
+                    for (const key in res.data.fieldList) {
+                        fieldSelect[key] = (key ? key + ' - ' : '') + res.data.fieldList[key]
+                    }
+                    state.remoteSelectPre.fieldList = fieldSelect
+                })
+                getFileData(state.fields[index].form['remote-table'].value).then((res) => {
+                    state.remoteSelectPre.modelFileList = res.data.modelFileList
+                    state.remoteSelectPre.controllerFileList = res.data.controllerFileList
+                })
             }
         })
         .finally(() => {
