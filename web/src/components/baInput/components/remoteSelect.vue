@@ -210,7 +210,7 @@ onMounted(() => {
 watch(
     () => props.modelValue,
     (newVal) => {
-        if (state.value.toString() != newVal.toString()) {
+        if (String(state.value) != String(newVal)) {
             state.value = newVal ? newVal : ''
             initDefaultValue()
         }
