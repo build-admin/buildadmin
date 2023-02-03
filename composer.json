@@ -24,14 +24,14 @@
         "topthink/framework": "^6.0.0",
         "topthink/think-orm": "^2.0",
         "topthink/think-multi-app": "^1.0",
-        "ext-mysqli": "*",
         "topthink/think-throttle": "^1.3",
         "phpmailer/phpmailer": "^6.6",
         "w7corp/easywechat": "^4.6",
         "nelexa/zip": "^3.3 || ^4.0.0",
+        "ext-calendar": "*",
         "ext-bcmath": "*",
-        "ext-json": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
         "ext-gd": "*"
     },
     "require-dev": {
