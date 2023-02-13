@@ -64,7 +64,7 @@ export const onClickMenu = (menu: RouteRecordRaw) => {
     switch (menu.meta?.type) {
         case 'iframe':
         case 'tab':
-            routePush({ name: menu.name })
+            routePush({ path: menu.path })
             break
         case 'link':
             window.open(menu.path, '_blank')
