@@ -541,10 +541,10 @@ class Helper
     {
         $dataType = (isset($field['dataType']) && $field['dataType']) ? $field['dataType'] : $field['type'];
         if (stripos($dataType, '(') !== false) {
-            $typeName = explode('(', $field['dataType']);
+            $typeName = explode('(', $dataType);
             return trim($typeName[0]);
         }
-        return trim($field['type']);
+        return trim($dataType);
     }
 
     /**
