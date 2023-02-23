@@ -5,6 +5,7 @@ namespace app\common\controller;
 use think\facade\Event;
 use think\facade\Cookie;
 use app\common\library\Auth;
+use think\exception\HttpResponseException;
 
 class Frontend extends Api
 {
@@ -43,9 +44,10 @@ class Frontend extends Api
                     $this->error(__('You have no permission'), [], 401);
                 }
             }
-        } else {
-            if ($token) {
+        } elseif ($token) {
+            try {
                 $this->auth->init($token);
+            } catch (HttpResponseException $e) {
             }
         }
 

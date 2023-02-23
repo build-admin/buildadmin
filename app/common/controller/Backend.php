@@ -4,6 +4,7 @@ namespace app\common\controller;
 
 use app\admin\library\Auth;
 use think\db\exception\PDOException;
+use think\exception\HttpResponseException;
 use think\facade\Cookie;
 use think\facade\Db;
 use think\facade\Event;
@@ -136,9 +137,10 @@ class Backend extends Api
                     $this->error(__('You have no permission'), [], 401);
                 }
             }
-        } else {
-            if ($token) {
+        } elseif ($token) {
+            try {
                 $this->auth->init($token);
+            } catch (HttpResponseException $e) {
             }
         }
 
