@@ -68,7 +68,7 @@ class Mysql extends Driver
         $data['expires_in'] = $this->getExpiredIn($data['expiretime'] ?? 0);
         if ($data['expiretime'] && $data['expiretime'] <= time() && $expirationException) {
             // token过期-触发前端刷新token
-            $response = Response::create(['code' => 409, 'msg' => 'Token expiration', 'data' => $data], 'json');
+            $response = Response::create(['code' => 409, 'msg' => __('Token expiration'), 'data' => $data], 'json');
             throw new HttpResponseException($response);
         }
         return $data;

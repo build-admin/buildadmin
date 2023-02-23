@@ -90,7 +90,7 @@ class Redis extends Driver
 
         if ($data['expiretime'] && $data['expiretime'] <= time() && $expirationException) {
             // token过期-触发前端刷新token
-            $response = Response::create(['code' => 409, 'msg' => 'Token expiration', 'data' => $data], 'json');
+            $response = Response::create(['code' => 409, 'msg' => __('Token expiration'), 'data' => $data], 'json');
             throw new HttpResponseException($response);
         }
         return $data;
