@@ -12,6 +12,7 @@ import { useRoute } from 'vue-router'
 import Default from '/@/layouts/backend/container/default.vue'
 import Classic from '/@/layouts/backend/container/classic.vue'
 import Streamline from '/@/layouts/backend/container/streamline.vue'
+import Double from '/@/layouts/backend/container/double.vue'
 import { onMounted, onBeforeMount } from 'vue'
 import { Session } from '/@/utils/storage'
 import { index } from '/@/api/backend'
@@ -106,6 +107,6 @@ const onSetNavTabsMinWidth = () => {
 <!-- 只有在 components 选项中的组件可以被动态组件使用-->
 <script lang="ts">
 export default {
-    components: { Default, Classic, Streamline },
+    components: { Default, Classic, Streamline, Double },
 }
 </script>

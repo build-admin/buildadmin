@@ -56,6 +56,22 @@
                                         <div class="layout-mode-style-name">{{ t('layouts.Single column') }}</div>
                                     </div>
                                 </el-col>
+                                <el-col :span="12">
+                                    <div
+                                        @click="setLayoutMode('Double')"
+                                        class="layout-mode-style double"
+                                        :class="configStore.layout.layoutMode == 'Double' ? 'active' : ''"
+                                    >
+                                        <div class="layout-mode-style-box">
+                                            <div class="layout-mode-style-aside"></div>
+                                            <div class="layout-mode-style-container-box">
+                                                <div class="layout-mode-style-header"></div>
+                                                <div class="layout-mode-style-container"></div>
+                                            </div>
+                                        </div>
+                                        <div class="layout-mode-style-name">{{ t('layouts.Double column') }}</div>
+                                    </div>
+                                </el-col>
                             </el-row>
                         </div>
                         <el-divider border-style="dashed">{{ t('layouts.overall situation') }}</el-divider>
@@ -359,6 +375,30 @@ const restoreDefault = () => {
         justify-content: center;
         .layout-mode-style-container-box {
             width: 100%;
+            height: 100%;
+            .layout-mode-style-header {
+                width: 100%;
+                height: 10%;
+                background-color: var(--el-border-color);
+            }
+            .layout-mode-style-container {
+                width: 100%;
+                height: 90%;
+                background-color: var(--el-border-color-extra-light);
+            }
+        }
+    }
+    &.double {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .layout-mode-style-aside {
+            width: 18%;
+            height: 100%;
+            background-color: var(--el-border-color-lighter);
+        }
+        .layout-mode-style-container-box {
+            width: 82%;
             height: 100%;
             .layout-mode-style-header {
                 width: 100%;
