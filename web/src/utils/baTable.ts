@@ -419,33 +419,25 @@ export default class baTable {
      */
     dragSort = () => {
         const buttonsKey = getArrayKey(this.table.column, 'render', 'buttons')
-        if (buttonsKey === false) {
-            return
-        }
+        if (buttonsKey === false) return
         const moveButton = getArrayKey(this.table.column[buttonsKey]?.buttons, 'render', 'moveButton')
-        if (moveButton === false) {
-            return
-        }
-        const disabledTip = this.table.column[buttonsKey].buttons![moveButton].disabledTip
+        if (moveButton === false) return
         if (!this.table.ref) {
             console.warn('Failed to initialize drag sort because table ref is not defined. Please assign table ref when onMounted')
             return
         }
 
         const el = this.table.ref.getRef().$el.querySelector('.el-table__body-wrapper .el-table__body tbody')
+        const disabledTip = this.table.column[buttonsKey].buttons![moveButton].disabledTip
         Sortable.create(el, {
             animation: 200,
             handle: '.table-row-weigh-sort',
             ghostClass: 'ba-table-row',
             onStart: () => {
-                if (!disabledTip) {
-                    this.table.column[buttonsKey].buttons![moveButton].disabledTip = true
-                }
+                this.table.column[buttonsKey].buttons![moveButton].disabledTip = true
             },
             onEnd: (evt: Sortable.SortableEvent) => {
-                if (!disabledTip) {
-                    this.table.column[buttonsKey].buttons![moveButton].disabledTip = disabledTip
-                }
+                this.table.column[buttonsKey].buttons![moveButton].disabledTip = disabledTip
                 // 找到对应行id
                 const moveRow = findIndexRow(this.table.data!, evt.oldIndex!) as TableRow
                 const replaceRow = findIndexRow(this.table.data!, evt.newIndex!) as TableRow
