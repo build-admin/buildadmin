@@ -9,6 +9,7 @@ import { useNavTabs } from '/@/stores/navTabs'
 import DefaultNavBar from './navBar/default.vue'
 import ClassicNavBar from './navBar/classic.vue'
 import StreamlineNavBar from './menuHorizontal.vue'
+import DoubleNavBar from './navBar/double.vue'
 
 const config = useConfig()
 const navTabs = useNavTabs()
@@ -18,7 +19,7 @@ const navTabs = useNavTabs()
 import { defineComponent } from 'vue'
 export default defineComponent({
     name: 'layout/header',
-    components: { DefaultNavBar, ClassicNavBar, StreamlineNavBar },
+    components: { DefaultNavBar, ClassicNavBar, StreamlineNavBar, DoubleNavBar },
 })
 </script>
 
