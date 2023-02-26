@@ -1,5 +1,5 @@
 <template>
-    <div class="layouts-menu-horizontal1">
+    <div class="layouts-menu-horizontal-double">
         <el-scrollbar ref="horizontalMenusRef" class="double-menus-scrollbar">
             <el-menu class="menu-horizontal" mode="horizontal" :default-active="state.defaultActive" :key="state.menuKey">
                 <!-- 横向菜单直接使用 <MenuTree :menus="menus" /> 会报警告 -->
@@ -17,7 +17,7 @@
                         </el-sub-menu>
                     </template>
                     <template v-else>
-                        <el-menu-item :index="menu.path" :key="menu.path" @click="onClickMenu(menu)">
+                        <el-menu-item v-blur :index="menu.path" :key="menu.path" @click="onClickMenu(menu)">
                             <Icon
                                 :color="config.getColorVal('menuColor')"
                                 :name="menu.meta?.icon ? menu.meta?.icon : config.layout.menuDefaultIcon"
@@ -34,15 +34,15 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
-import Logo from '../logo.vue'
-import MenuTree from '../menuTree.vue'
-import { useRoute, onBeforeRouteUpdate, RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { useConfig } from '/@/stores/config'
-import { useNavTabs } from '/@/stores/navTabs'
-import type { ElScrollbar } from 'element-plus'
+import { useRoute, onBeforeRouteUpdate, RouteLocationNormalizedLoaded } from 'vue-router'
+import { currentRouteTopActivity } from '/@/layouts/backend/components/menus/helper'
+import MenuTree from '/@/layouts/backend/components/menus/menuTree.vue'
 import NavMenus from '/@/layouts/backend/components/navMenus.vue'
+import type { ElScrollbar } from 'element-plus'
+import { useNavTabs } from '/@/stores/navTabs'
+import { useConfig } from '/@/stores/config'
 import { onClickMenu } from '/@/utils/router'
-import { uuid } from '../../../../utils/random'
+import { uuid } from '/@/utils/random'
 
 const horizontalMenusRef = ref<InstanceType<typeof ElScrollbar>>()
 
@@ -60,32 +60,10 @@ const menus = computed(() => {
     return navTabs.state.tabsViewRoutes
 })
 
-// 查找菜单的顶级菜单
-const currentRouteTopActivity = (path:String, menus:RouteRecordRaw[], result:String[] = []) => {
-    for(let i = 0; i < menus.length; i++){
-        const item:anyObj = menus[i];
-        // 找到目标
-        if(item.path == path){
-            result.push(item.path);
-            return item;
-        }
-        if(item.children.length > 0){
-            result.push(item.id)
-            const find = currentRouteTopActivity(path, item.children, result);
-            if(find){
-                return item;
-            }
-        }
-    }
-    return false;
-}
-
 // 激活当前路由的菜单
 const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
-    let routeChildren = currentRouteTopActivity(currentRoute.path, navTabs.state.tabsViewRoutes);
-    if(routeChildren){
-        state.defaultActive = currentRoute.path
-    }
+    let routeChildren = currentRouteTopActivity(currentRoute.path, navTabs.state.tabsViewRoutes)
+    if (routeChildren) state.defaultActive = currentRoute.path
 }
 
 // 滚动条滚动到激活菜单所在位置
@@ -104,15 +82,13 @@ onMounted(() => {
 
 onBeforeRouteUpdate((to) => {
     currentRouteActive(to)
-    // console.log(to.path);
 })
 </script>
 
 <style scoped lang="scss">
-.layouts-menu-horizontal1 {
+.layouts-menu-horizontal-double {
     display: flex;
     align-items: center;
-    //width: 80vw;
     height: 60px;
     background-color: var(--ba-bg-color-overlay);
     border-bottom: solid 1px var(--el-color-info-light-8);
@@ -120,12 +96,6 @@ onBeforeRouteUpdate((to) => {
 .double-menus-scrollbar {
     width: 70vw;
 }
-//.menu-horizontal-logo {
-//    width: 180px;
-//    &:hover {
-//        background-color: v-bind('config.getColorVal("headerBarHoverBackground")');
-//    }
-//}
 .menu-horizontal {
     border: none;
     --el-menu-bg-color: v-bind('config.getColorVal("menuBackground")');

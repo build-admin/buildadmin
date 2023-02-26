@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import Aside from '/@/layouts/backend/components/asideMenu.vue'
+import Aside from '/@/layouts/backend/components/aside.vue'
 import Header from '/@/layouts/backend/components/header.vue'
 import Main from '/@/layouts/backend/router-view/main.vue'
 import CloseFullScreen from '/@/layouts/backend/components/closeFullScreen.vue'

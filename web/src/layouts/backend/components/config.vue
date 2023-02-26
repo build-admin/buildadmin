@@ -395,7 +395,7 @@ const restoreDefault = () => {
         .layout-mode-style-aside {
             width: 18%;
             height: 100%;
-            background-color: var(--el-border-color-lighter);
+            background-color: var(--el-border-color);
         }
         .layout-mode-style-container-box {
             width: 82%;

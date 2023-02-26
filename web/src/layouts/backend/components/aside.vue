@@ -1,14 +1,16 @@
 <template>
     <el-aside v-if="!navTabs.state.tabFullScreen" :class="'layout-aside-' + config.layout.layoutMode + ' ' + (config.layout.shrink ? 'shrink' : '')">
         <Logo v-if="config.layout.menuShowTopBar" />
-        <MenuVertical />
+        <MenuVerticalChildren v-if="config.layout.layoutMode == 'Double'" />
+        <MenuVertical v-else />
     </el-aside>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import Logo from './logo.vue'
-import MenuVertical from './menuVertical.vue'
+import Logo from '/@/layouts/backend/components/logo.vue'
+import MenuVertical from '/@/layouts/backend/components/menus/menuVertical.vue'
+import MenuVerticalChildren from '/@/layouts/backend/components/menus/menuVerticalChildren.vue'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 
@@ -36,7 +38,8 @@ export default defineComponent({
     transition: width 0.3s ease;
     width: v-bind(menuWidth);
 }
-.layout-aside-Classic {
+.layout-aside-Classic,
+.layout-aside-Double {
     background: var(--ba-bg-color-overlay);
     margin: 0;
     height: 100vh;

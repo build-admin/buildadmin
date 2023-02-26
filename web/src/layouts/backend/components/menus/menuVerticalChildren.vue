@@ -1,24 +1,25 @@
 <template>
-    <el-scrollbar ref="verticalMenusRef" class="vertical-menus-scrollbar">
+    <el-scrollbar ref="verticalMenusRef" class="children-vertical-menus-scrollbar">
         <el-menu
-            class="layouts-menu-vertical"
+            class="layouts-menu-vertical-children"
             :collapse-transition="false"
             :unique-opened="config.layout.menuUniqueOpened"
             :default-active="state.defaultActive"
             :collapse="config.layout.menuCollapse"
         >
-            <MenuTree :menus="navTabs.state.tabsViewRoutes" />
+            <MenuTree v-if="state.routeChildren.length > 0" :menus="state.routeChildren" />
         </el-menu>
     </el-scrollbar>
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
-import MenuTree from './menuTree.vue'
-import { useRoute, onBeforeRouteUpdate, RouteLocationNormalizedLoaded } from 'vue-router'
+import MenuTree from '/@/layouts/backend/components/menus/menuTree.vue'
+import { useRoute, onBeforeRouteUpdate, RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
 import type { ElScrollbar } from 'element-plus'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
+import { currentRouteTopActivity } from '/@/layouts/backend/components/menus/helper'
 
 const config = useConfig()
 const navTabs = useNavTabs()
@@ -26,8 +27,12 @@ const route = useRoute()
 
 const verticalMenusRef = ref<InstanceType<typeof ElScrollbar>>()
 
-const state = reactive({
+const state: {
+    defaultActive: string
+    routeChildren: RouteRecordRaw[]
+} = reactive({
     defaultActive: '',
+    routeChildren: [],
 })
 
 const verticalMenusScrollbarHeight = computed(() => {
@@ -42,15 +47,30 @@ const verticalMenusScrollbarHeight = computed(() => {
     }
 })
 
-// 激活当前路由的菜单
+/**
+ * 激活当前路由的菜单
+ * @param currentRoute 当前路由
+ */
 const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
-    state.defaultActive = currentRoute.path
+    let routeChildren = currentRouteTopActivity(currentRoute.path, navTabs.state.tabsViewRoutes)
+    if (routeChildren) {
+        state.defaultActive = currentRoute.path
+        if (routeChildren.children && routeChildren.children.length > 0) {
+            state.routeChildren = routeChildren.children
+        } else {
+            state.routeChildren = [routeChildren]
+        }
+    } else if (!state.routeChildren) {
+        state.routeChildren = navTabs.state.tabsViewRoutes
+    }
 }
 
-// 滚动条滚动到激活菜单所在位置
+/**
+ * 侧栏菜单滚动条滚动到激活菜单所在位置
+ */
 const verticalMenusScroll = () => {
     nextTick(() => {
-        let activeMenu: HTMLElement | null = document.querySelector('.el-menu.layouts-menu-vertical li.is-active')
+        let activeMenu: HTMLElement | null = document.querySelector('.el-menu.layouts-menu-vertical-children li.is-active')
         if (!activeMenu) return false
         verticalMenusRef.value?.setScrollTop(activeMenu.offsetTop)
     })
@@ -66,11 +86,11 @@ onBeforeRouteUpdate((to) => {
 })
 </script>
 <style>
-.vertical-menus-scrollbar {
+.children-vertical-menus-scrollbar {
     height: v-bind(verticalMenusScrollbarHeight);
     background-color: v-bind('config.getColorVal("menuBackground")');
 }
-.layouts-menu-vertical {
+.layouts-menu-vertical-children {
     border: 0;
     --el-menu-bg-color: v-bind('config.getColorVal("menuBackground")');
     --el-menu-text-color: v-bind('config.getColorVal("menuColor")');
