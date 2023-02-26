@@ -132,7 +132,7 @@
                 </el-button>
                 <el-tooltip
                     v-if="btn.render == 'tipButton'"
-                    :disabled="btn.title ? false : true"
+                    :disabled="btn.title && !btn.disabledTip ? false : true"
                     :content="btn.title ? t(btn.title) : ''"
                     placement="top"
                 >

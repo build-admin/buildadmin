@@ -419,10 +419,14 @@ export default class baTable {
      */
     dragSort = () => {
         const buttonsKey = getArrayKey(this.table.column, 'render', 'buttons')
+        if (buttonsKey === false) {
+            return
+        }
         const moveButton = getArrayKey(this.table.column[buttonsKey]?.buttons, 'render', 'moveButton')
         if (moveButton === false) {
             return
         }
+        const disabledTip = this.table.column[buttonsKey].buttons![moveButton].disabledTip
         if (!this.table.ref) {
             console.warn('Failed to initialize drag sort because table ref is not defined. Please assign table ref when onMounted')
             return
@@ -434,14 +438,14 @@ export default class baTable {
             handle: '.table-row-weigh-sort',
             ghostClass: 'ba-table-row',
             onStart: () => {
-                this.table.column[buttonsKey].buttons?.forEach((item) => {
-                    item.disabledTip = true
-                })
+                if (!disabledTip) {
+                    this.table.column[buttonsKey].buttons![moveButton].disabledTip = true
+                }
             },
             onEnd: (evt: Sortable.SortableEvent) => {
-                this.table.column[buttonsKey].buttons?.forEach((item) => {
-                    item.disabledTip = false
-                })
+                if (!disabledTip) {
+                    this.table.column[buttonsKey].buttons![moveButton].disabledTip = disabledTip
+                }
                 // 找到对应行id
                 const moveRow = findIndexRow(this.table.data!, evt.oldIndex!) as TableRow
                 const replaceRow = findIndexRow(this.table.data!, evt.newIndex!) as TableRow
