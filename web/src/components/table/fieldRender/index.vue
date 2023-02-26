@@ -117,6 +117,19 @@
     <div v-if="field.render == 'buttons' && field.buttons">
         <template v-for="(btn, idx) in field.buttons" :key="idx">
             <template v-if="btn.display ? btn.display(row, field) : true">
+                <el-button
+                    v-if="btn.render == 'basicButton'"
+                    v-blur
+                    @click="onButtonClick(btn)"
+                    :class="btn.class"
+                    class="table-operate"
+                    :type="btn.type"
+                    :disabled="btn.disabled && btn.disabled(row, field)"
+                    v-bind="btn.attr"
+                >
+                    <Icon :name="btn.icon" />
+                    <div v-if="btn.text" class="table-operate-text">{{ btn.text }}</div>
+                </el-button>
                 <el-tooltip
                     v-if="btn.render == 'tipButton'"
                     :disabled="btn.title ? false : true"
