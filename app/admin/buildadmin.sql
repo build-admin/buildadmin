@@ -90,7 +90,7 @@ CREATE TABLE `__PREFIX__admin_log` (
     `username` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '管理员用户名',
     `url` varchar(1500) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '操作Url',
     `title` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '日志标题',
-    `data` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '请求数据',
+    `data` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '请求数据',
     `ip` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT 'IP',
     `useragent` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT 'User-Agent',
     `createtime` int(10) DEFAULT NULL COMMENT '操作时间',
