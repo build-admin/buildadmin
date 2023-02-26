@@ -2,6 +2,7 @@ import type { TagProps, ButtonType, ElForm, FormInstance, ButtonProps } from 'el
 import { Component, ComponentPublicInstance } from 'vue'
 import Table from '/@/components/table/index.vue'
 import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
+import type { PopconfirmProps } from 'element-plus'
 
 declare global {
     /* baTable */
@@ -199,7 +200,7 @@ declare global {
         class?: string
         type: ButtonType
         icon: string
-        popconfirm?: any
+        popconfirm?: Partial<PopconfirmProps>
         disabledTip?: boolean
         // 自定义点击事件
         click?: (row: TableRow, field: TableColumn) => void
