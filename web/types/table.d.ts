@@ -3,6 +3,7 @@ import { Component, ComponentPublicInstance } from 'vue'
 import Table from '/@/components/table/index.vue'
 import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
 import type { PopconfirmProps } from 'element-plus'
+import { Mutable } from 'element-plus/es/utils'
 
 declare global {
     /* baTable */
@@ -200,7 +201,7 @@ declare global {
         class?: string
         type: ButtonType
         icon: string
-        popconfirm?: Partial<PopconfirmProps>
+        popconfirm?: Partial<Mutable<PopconfirmProps>>
         disabledTip?: boolean
         // 自定义点击事件
         click?: (row: TableRow, field: TableColumn) => void
@@ -209,7 +210,7 @@ declare global {
         // 按钮是否禁用，请返回布尔值
         disabled?: (row: TableRow, field: TableColumn) => boolean
         // 自定义el-button属性
-        attr?: Partial<ButtonProps>
+        attr?: Partial<Mutable<ButtonProps>>
     }
 
     /* 表格行 */
