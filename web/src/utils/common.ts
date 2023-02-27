@@ -11,6 +11,7 @@ import { i18n } from '../lang'
 import { getUrl } from './axios'
 import { adminBaseRoute } from '/@/router/static'
 import { trim, trimStart } from 'lodash-es'
+import { TranslateOptions } from 'vue-i18n'
 
 export function registerIcons(app: App) {
     /*
@@ -217,8 +218,11 @@ export const fullUrl = (relativeUrl: string, domain = '') => {
 /**
  * 获取根据当前路由路径动态加载的语言翻译
  * @param key 无需语言路径的翻译key，亦可使用完整路径
+ * @param named — 命名插值的值
+ * @param options — 其他翻译选项
+ * @returns — Translated message
  */
-export const __ = (key: string) => {
+export const __ = (key: string, named?: Record<string, unknown>, options?: TranslateOptions<string>) => {
     let path = router.currentRoute.value.path
     if (path == '/') path = trimStart(window.location.hash, '#')
     let langPath = ''
@@ -229,7 +233,7 @@ export const __ = (key: string) => {
         langPath = trim(path, '/').replaceAll('/', '.')
     }
     langPath = langPath ? langPath + '.' + key : key
-    return i18n.global.te(langPath) ? i18n.global.t(langPath) : i18n.global.t(key)
+    return i18n.global.te(langPath) ? i18n.global.t(langPath, named ?? {}, options) : i18n.global.t(key, named ?? {}, options)
 }
 
 /**
