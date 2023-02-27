@@ -7,6 +7,7 @@ import { useMemberCenter } from '/@/stores/memberCenter'
 import { closeShade } from '/@/utils/pageShade'
 import { adminBaseRoute, memberCenterBaseRoute } from '/@/router/static'
 import { i18n } from '/@/lang/index'
+import { isAdminApp } from '/@/utils/common'
 
 /**
  * 导航失败有错误消息的路由push
@@ -204,7 +205,7 @@ export const addRouteItem = (viewsComponent: Record<string, any>, route: any, pa
     let path = '',
         component
     if (route.menu_type == 'iframe') {
-        path = '/admin/iframe/' + encodeURIComponent(route.url)
+        path = (isAdminApp() ? '/admin' : '/user') + '/iframe/' + encodeURIComponent(route.url)
         component = () => import('/@/layouts/common/router-view/iframe.vue')
     } else {
         path = parentName ? route.path : '/' + route.path
