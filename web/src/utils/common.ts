@@ -9,6 +9,8 @@ import { useSiteConfig } from '../stores/siteConfig'
 import { useTitle } from '@vueuse/core'
 import { i18n } from '../lang'
 import { getUrl } from './axios'
+import { adminBaseRoute } from '/@/router/static'
+import { trim, trimStart } from 'lodash-es'
 
 export function registerIcons(app: App) {
     /*
@@ -210,6 +212,24 @@ export const fullUrl = (relativeUrl: string, domain = '') => {
         return relativeUrl
     }
     return domain + relativeUrl
+}
+
+/**
+ * 获取根据当前路由路径动态加载的语言翻译
+ * @param key 无需语言路径的翻译key，亦可使用完整路径
+ */
+export const __ = (key: string) => {
+    let path = router.currentRoute.value.path
+    if (path == '/') path = trimStart(window.location.hash, '#')
+    let langPath = ''
+    if (isAdminApp()) {
+        langPath = path.slice(path.indexOf(adminBaseRoute.path) + adminBaseRoute.path.length)
+        langPath = trim(langPath, '/').replaceAll('/', '.')
+    } else {
+        langPath = trim(path, '/').replaceAll('/', '.')
+    }
+    langPath = langPath ? langPath + '.' + key : key
+    return i18n.global.te(langPath) ? i18n.global.t(langPath) : i18n.global.t(key)
 }
 
 /**
