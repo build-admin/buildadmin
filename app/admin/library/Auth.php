@@ -145,7 +145,7 @@ class Auth extends \ba\Auth
             return false;
         }
         $adminLoginRetry = Config::get('buildadmin.admin_login_retry');
-        if ($adminLoginRetry && $this->model->loginfailure >= $adminLoginRetry && time() - $this->model->lastlogintime < 86400) {
+        if ($adminLoginRetry && $this->model->loginfailure >= $adminLoginRetry && time() - $this->model->getData('lastlogintime') < 86400) {
             $this->setError('Please try again after 1 day');
             return false;
         }
