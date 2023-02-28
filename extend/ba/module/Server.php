@@ -193,6 +193,7 @@ class Server
             'public',
             'vendor',
             'web',
+            'web-nuxt',
         ];
     }
 

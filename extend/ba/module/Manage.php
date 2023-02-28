@@ -615,17 +615,23 @@ class Manage
             ) {
                 $destDirItem = $destDir . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
                 if ($item->isDir()) {
-                    if (!is_dir($destDirItem)) {
-                        mkdir($destDirItem, 0755, true);
-                    }
+                    $this->createDirectory($destDirItem);
                 } else {
                     if (!in_array(str_replace(root_path(), '', $destDirItem), $discardFiles)) {
+                        $this->createDirectory(dirname($destDirItem));
                         copy($item, $destDirItem);
                     }
                 }
             }
         }
         return true;
+    }
+
+    public function createDirectory(string $dirName)
+    {
+        if (!is_dir($dirName)) {
+            mkdir($dirName, 0755, true);
+        }
     }
 
     public function dependUpdateHandle()
