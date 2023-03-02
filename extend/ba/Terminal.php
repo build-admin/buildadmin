@@ -295,6 +295,11 @@ class Terminal
             if ($type == 'module-install' && $value) {
                 Manage::instance($value)->dependentInstallComplete('composer');
             }
+        } elseif ($commandPKey == 'nuxt-install' && $this->extend) {
+            [$type, $value] = explode(':', $this->extend);
+            if ($type == 'module-install' && $value) {
+                Manage::instance($value)->dependentInstallComplete('nuxt_npm');
+            }
         }
         return true;
     }

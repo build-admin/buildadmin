@@ -263,6 +263,11 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
                         terminalTaskExecComplete(res, 'npm_dependent_wait_install')
                     })
                 }
+                if (res.data.wait_install.includes('nuxt_npm_dependent_wait_install')) {
+                    terminal.addTaskPM('nuxt-install', true, 'module-install:' + res.data.uid, (res: number) => {
+                        terminalTaskExecComplete(res, 'nuxt_npm_dependent_wait_install')
+                    })
+                }
                 if (res.data.wait_install.includes('composer_dependent_wait_install')) {
                     terminal.addTask('composer.update', true, 'module-install:' + res.data.uid, (res: number) => {
                         terminalTaskExecComplete(res, 'composer_dependent_wait_install')

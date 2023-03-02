@@ -71,6 +71,29 @@ return [
                 'command' => 'ni install',
             ],
         ],
+        // 安装 Web-Nuxt 依赖包
+        'nuxt-install' => [
+            'npm'  => [
+                'cwd'     => 'web-nuxt',
+                'command' => 'npm install',
+            ],
+            'cnpm' => [
+                'cwd'     => 'web-nuxt',
+                'command' => 'cnpm install',
+            ],
+            'yarn' => [
+                'cwd'     => 'web-nuxt',
+                'command' => 'yarn install',
+            ],
+            'pnpm' => [
+                'cwd'     => 'web-nuxt',
+                'command' => 'pnpm install',
+            ],
+            'ni'   => [
+                'cwd'     => 'web-nuxt',
+                'command' => 'ni install',
+            ],
+        ],
         // 构建 WEB 端
         'web-build'    => [
             'npm'  => [

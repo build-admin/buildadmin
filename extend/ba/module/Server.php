@@ -2,7 +2,7 @@
 
 namespace ba\module;
 
-use ba\Depend;
+use ba\Depends;
 use PhpZip\ZipFile;
 use think\Exception;
 use think\facade\Db;
@@ -102,7 +102,7 @@ class Server
             return self::getConfig($dir, $key);
         }
         $configContent = self::getConfig($dir);
-        $dependKey     = ['require', 'require-dev', 'dependencies', 'devDependencies'];
+        $dependKey     = ['require', 'require-dev', 'dependencies', 'devDependencies', 'nuxtDependencies', 'nuxtDevDependencies'];
         $dependArray   = [];
         foreach ($dependKey as $item) {
             if (array_key_exists($item, $configContent) && $configContent[$item]) {
@@ -114,13 +114,17 @@ class Server
 
     public static function dependConflictCheck(string $dir): array
     {
-        $depend    = self::getDepend($dir);
-        $dependObj = new Depend();
-        $sysDepend = [
-            'require'         => $dependObj->getComposerRequire(),
-            'require-dev'     => $dependObj->getComposerRequire(true),
-            'dependencies'    => $dependObj->getNpmDependencies(),
-            'devDependencies' => $dependObj->getNpmDependencies(true),
+        $depend     = self::getDepend($dir);
+        $serverDep  = new Depends(root_path() . 'composer.json', 'composer');
+        $webDep     = new Depends(root_path() . 'web' . DIRECTORY_SEPARATOR . 'package.json');
+        $webNuxtDep = new Depends(root_path() . 'web-nuxt' . DIRECTORY_SEPARATOR . 'package.json');
+        $sysDepend  = [
+            'require'             => $serverDep->getDepends(),
+            'require-dev'         => $serverDep->getDepends(true),
+            'dependencies'        => $webDep->getDepends(),
+            'devDependencies'     => $webDep->getDepends(true),
+            'nuxtDependencies'    => $webNuxtDep->getDepends(),
+            'nuxtDevDependencies' => $webNuxtDep->getDepends(true),
         ];
 
         $conflict = [];

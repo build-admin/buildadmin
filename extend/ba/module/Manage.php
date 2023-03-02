@@ -2,7 +2,7 @@
 
 namespace ba\module;
 
-use ba\Depend;
+use ba\Depends;
 use think\Exception;
 use think\facade\Config;
 use FilesystemIterator;
@@ -342,6 +342,7 @@ class Manage
 
         // 是否需要备份依赖？
         $delNpmDepend      = false;
+        $delNuxtNpmDepend  = false;
         $delComposerDepend = false;
         foreach ($dependConflictSolution as $env => $depends) {
             if (!$depends) continue;
@@ -349,6 +350,8 @@ class Manage
                 $delComposerDepend = true;
             } elseif ($env == 'dependencies' || $env == 'devDependencies') {
                 $delNpmDepend = true;
+            } elseif ($env == 'nuxtDependencies' || $env == 'nuxtDevDependencies') {
+                $delNuxtNpmDepend = true;
             }
         }
 
@@ -370,20 +373,32 @@ class Manage
                 'type'    => 'npm_dependent_wait_install',
             ];
         }
+        if ($delNuxtNpmDepend) {
+            $conflictFile[]      = 'web-nuxt' . DIRECTORY_SEPARATOR . 'package.json';
+            $dependWaitInstall[] = [
+                'pm'      => true,
+                'command' => 'nuxt-install',
+                'type'    => 'nuxt_npm_dependent_wait_install',
+            ];
+        }
         if ($conflictFile) {
             $ebakZip = $this->ebakDir . $this->uid . '-disable-' . date('YmdHis') . '.zip';
             Server::createZip($conflictFile, $ebakZip);
         }
 
         // 删除依赖
-        $sysDepend = new Depend();
+        $serverDepend = new Depends(root_path() . 'composer.json', 'composer');
+        $webDep       = new Depends(root_path() . 'web' . DIRECTORY_SEPARATOR . 'package.json');
+        $webNuxtDep   = new Depends(root_path() . 'web-nuxt' . DIRECTORY_SEPARATOR . 'package.json');
         foreach ($dependConflictSolution as $env => $depends) {
             if (!$depends) continue;
             $dev = !(stripos($env, 'dev') === false);
             if ($env == 'require' || $env == 'require-dev') {
-                $sysDepend->removeComposerRequire($depends, $dev);
+                $serverDepend->removeDepends($depends, $dev);
             } elseif ($env == 'dependencies' || $env == 'devDependencies') {
-                $sysDepend->removeNpmDependencies($depends, $dev);
+                $webDep->removeDepends($depends, $dev);
+            } elseif ($env == 'nuxtDependencies' || $env == 'nuxtDevDependencies') {
+                $webNuxtDep->removeDepends($depends, $dev);
             }
         }
 
@@ -470,7 +485,9 @@ class Manage
 
         $coverFiles   = [];// 要覆盖的文件-备份
         $discardFiles = [];// 抛弃的文件-复制时不覆盖
-        $dependObj    = new Depend();
+        $serverDep    = new Depends(root_path() . 'composer.json', 'composer');
+        $webDep       = new Depends(root_path() . 'web' . DIRECTORY_SEPARATOR . 'package.json');
+        $webNuxtDep   = new Depends(root_path() . 'web-nuxt' . DIRECTORY_SEPARATOR . 'package.json');
         if ($fileConflict || !self::emptyArray($dependConflict)) {
             $extend = request()->post('extend/a', []);
             if (!$extend) {
@@ -487,10 +504,18 @@ class Manage
                 foreach ($dependConflict as $env => $item) {
                     $dev = !(stripos($env, 'dev') === false);
                     foreach ($item as $depend => $v) {
+                        $oldDepend = '';
+                        if (in_array($env, ['require', 'require-dev'])) {
+                            $oldDepend = $depend . ' ' . $serverDep->hasDepend($depend, $dev);
+                        } elseif (in_array($env, ['dependencies', 'devDependencies'])) {
+                            $oldDepend = $depend . ' ' . $webDep->hasDepend($depend, $dev);
+                        } elseif (in_array($env, ['nuxtDependencies', 'nuxtDevDependencies'])) {
+                            $oldDepend = $depend . ' ' . $webNuxtDep->hasDepend($depend, $dev);
+                        }
                         $dependConflictTemp[] = [
                             'env'       => $env,
                             'newDepend' => $depend . ' ' . $v,
-                            'oldDepend' => $depend . ' ' . (stripos($env, 'require') === false ? $dependObj->hasNpmDependencies($depend, $dev) : $dependObj->hasComposerRequire($depend, $dev)),
+                            'oldDepend' => $oldDepend,
                             'depend'    => $depend,
                             'solution'  => 'cover',
                         ];
@@ -558,22 +583,29 @@ class Manage
         if ($depends) {
             $npm      = false;
             $composer = false;
+            $nuxtNpm  = false;
             foreach ($depends as $key => $item) {
                 if (!$item) {
                     continue;
                 }
                 if ($key == 'require') {
                     $composer = true;
-                    $dependObj->addComposerRequire($item, false, true);
+                    $serverDep->addDepends($item, false, true);
                 } elseif ($key == 'require-dev') {
                     $composer = true;
-                    $dependObj->addComposerRequire($item, true, true);
+                    $serverDep->addDepends($item, true, true);
                 } elseif ($key == 'dependencies') {
                     $npm = true;
-                    $dependObj->addNpmDependencies($item, false, true);
+                    $webDep->addDepends($item, false, true);
                 } elseif ($key == 'devDependencies') {
                     $npm = true;
-                    $dependObj->addNpmDependencies($item, true, true);
+                    $webDep->addDepends($item, true, true);
+                } elseif ($key == 'nuxtDependencies') {
+                    $nuxtNpm = true;
+                    $webNuxtDep->addDepends($item, false, true);
+                } elseif ($key == 'nuxtDevDependencies') {
+                    $nuxtNpm = true;
+                    $webNuxtDep->addDepends($item, true, true);
                 }
             }
             if ($npm) {
@@ -582,6 +614,10 @@ class Manage
             }
             if ($composer) {
                 $info['composer_dependent_wait_install'] = 1;
+                $info['state']                           = self::DEPENDENT_WAIT_INSTALL;
+            }
+            if ($nuxtNpm) {
+                $info['nuxt_npm_dependent_wait_install'] = 1;
                 $info['state']                           = self::DEPENDENT_WAIT_INSTALL;
             }
             if ($info['state'] != self::DEPENDENT_WAIT_INSTALL) {
@@ -645,6 +681,9 @@ class Manage
             if (isset($info['npm_dependent_wait_install'])) {
                 $waitInstall[] = 'npm_dependent_wait_install';
             }
+            if (isset($info['nuxt_npm_dependent_wait_install'])) {
+                $waitInstall[] = 'nuxt_npm_dependent_wait_install';
+            }
             if ($waitInstall) {
                 throw new moduleException('dependent wait install', -2, [
                     'uid'          => $this->uid,
@@ -666,13 +705,16 @@ class Manage
             if ($type == 'npm') {
                 unset($info['npm_dependent_wait_install']);
             }
+            if ($type == 'nuxt_npm') {
+                unset($info['nuxt_npm_dependent_wait_install']);
+            }
             if ($type == 'composer') {
                 unset($info['composer_dependent_wait_install']);
             }
             if ($type == 'all') {
-                unset($info['npm_dependent_wait_install'], $info['composer_dependent_wait_install']);
+                unset($info['npm_dependent_wait_install'], $info['composer_dependent_wait_install'], $info['nuxt_npm_dependent_wait_install']);
             }
-            if (!isset($info['npm_dependent_wait_install']) && !isset($info['composer_dependent_wait_install'])) {
+            if (!isset($info['npm_dependent_wait_install']) && !isset($info['composer_dependent_wait_install']) && !isset($info['nuxt_npm_dependent_wait_install'])) {
                 $info['state'] = self::INSTALLED;
             }
             $this->setInfo([], $info);
@@ -688,19 +730,28 @@ class Manage
         }
 
         // 读取所有依赖中，系统上已经安装的依赖
-        $sysDepend = new Depend();
+        $serverDep  = new Depends(root_path() . 'composer.json', 'composer');
+        $webDep     = new Depends(root_path() . 'web' . DIRECTORY_SEPARATOR . 'package.json');
+        $webNuxtDep = new Depends(root_path() . 'web-nuxt' . DIRECTORY_SEPARATOR . 'package.json');
         foreach ($depend as $key => $depends) {
             $dev = !(stripos($key, 'dev') === false);
             if ($key == 'require' || $key == 'require-dev') {
                 foreach ($depends as $dependKey => $dependItem) {
-                    if (!$sysDepend->hasComposerRequire($dependKey, $dev)) {
+                    if (!$serverDep->hasDepend($dependKey, $dev)) {
                         unset($depends[$dependKey]);
                     }
                 }
                 $depend[$key] = $depends;
             } elseif ($key == 'dependencies' || $key == 'devDependencies') {
                 foreach ($depends as $dependKey => $dependItem) {
-                    if (!$sysDepend->hasNpmDependencies($dependKey, $dev)) {
+                    if (!$webDep->hasDepend($dependKey, $dev)) {
+                        unset($depends[$dependKey]);
+                    }
+                }
+                $depend[$key] = $depends;
+            } elseif ($key == 'nuxtDependencies' || $key == 'nuxtDevDependencies') {
+                foreach ($depends as $dependKey => $dependItem) {
+                    if (!$webNuxtDep->hasDepend($dependKey, $dev)) {
                         unset($depends[$dependKey]);
                     }
                 }
