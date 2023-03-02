@@ -6,6 +6,8 @@ export default {
     'env require-dev': '后端开发环境依赖（composer）',
     'env dependencies': '前端依赖（NPM）',
     'env devDependencies': '前端开发环境依赖（NPM）',
+    'env nuxtDependencies': '前端依赖（Nuxt-NPM）',
+    'env nuxtDevDependencies': '前端开发环境依赖（Nuxt-NPM）',
     // user
     'Member information': '会员信息',
     'My module': '我的模块',

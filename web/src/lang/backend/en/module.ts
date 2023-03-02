@@ -6,6 +6,8 @@ export default {
     'env require-dev': 'Composer-dev',
     'env dependencies': 'NPM',
     'env devDependencies': 'NPM-dev',
+    'env nuxtDependencies': 'Nuxt NPM',
+    'env nuxtDevDependencies': 'Nuxt NPM Dev',
     // user
     'Member information': 'Member information',
     'My module': 'My module',
