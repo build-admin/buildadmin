@@ -2,6 +2,12 @@
 
 🔥🔥基于 Vue3.x setup + ThinkPHP6 + TypeScript + Vite + Pinia + Element Plus等流行技术栈的后台管理系统，自适应多端、支持CRUD代码生成、自带WEB终端、同时提供Web和Server端、内置全局数据回收站和字段级数据修改保护、自动注册路由、无限子级权限管理等，无需授权即可免费商用，希望能帮助大家实现快速开发。
 
+## v1.1.4-Release
+### 新增
+- 模块安装增加依赖模块检测
+- 新的依赖管理类
+- 通过模块市场为`WebNuxt工程`安装模块的实现
+
 ## v1.1.3-Release
 ### 新增
 - `WebNuxt`工程发布，可通过模块市场安装，亦可直接访问[代码仓库](https://gitee.com/wonderful-code/build-admin-nuxt)
