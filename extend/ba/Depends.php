@@ -75,7 +75,12 @@ class Depends
      */
     public function getDepends(bool $devEnv = false)
     {
-        $content = $this->getContent();
+        try {
+            $content = $this->getContent();
+        } catch (Exception $e) {
+            return [];
+        }
+
         if ($this->type == 'npm') {
             return $devEnv ? $content['devDependencies'] : $content['dependencies'];
         } else {
