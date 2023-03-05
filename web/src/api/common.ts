@@ -67,6 +67,7 @@ export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false
         method: 'POST',
         data: fd,
         params: params,
+        timeout: 0,
     }) as ApiPromise
 }
 
