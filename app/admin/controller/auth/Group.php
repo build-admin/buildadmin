@@ -107,6 +107,10 @@ class Group extends Backend
                 if ($superAdmin) {
                     $data['rules'] = '*';
                 } else {
+                    // 禁止添加`拥有自己全部权限`的分组
+                    if (!array_diff($this->auth->getRuleIds(), $data['rules'])) {
+                        $this->error(__('Role group has all your rights, please contact the upper administrator to add or do not need to add!'));
+                    }
                     $data['rules'] = implode(',', $data['rules']);
                 }
             } else {
@@ -173,6 +177,10 @@ class Group extends Backend
                 if ($superAdmin) {
                     $data['rules'] = '*';
                 } else {
+                    // 禁止添加`拥有自己全部权限`的分组
+                    if (!array_diff($this->auth->getRuleIds(), $data['rules'])) {
+                        $this->error(__('Role group has all your rights, please contact the upper administrator to add or do not need to add!'));
+                    }
                     $data['rules'] = implode(',', $data['rules']);
                 }
             } else {
