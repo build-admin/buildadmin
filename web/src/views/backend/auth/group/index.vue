@@ -1,5 +1,6 @@
 <template>
     <div class="default-main ba-table-box">
+        <el-alert class="ba-table-alert" v-if="!adminInfo.super" :title="t('auth.group.Manage subordinate role groups here')" type="info" show-icon />
         <el-alert class="ba-table-alert" v-if="baTable.table.remark" :title="baTable.table.remark" type="info" show-icon />
 
         <!-- 表格顶部菜单 -->
@@ -29,10 +30,12 @@ import { defaultOptButtons } from '/@/components/table'
 import { useI18n } from 'vue-i18n'
 import { cloneDeep } from 'lodash-es'
 import { getArrayKey } from '/@/utils/common'
+import { useAdminInfo } from '/@/stores/adminInfo'
 
 const formRef = ref()
 const tableRef = ref()
 const { t } = useI18n()
+const adminInfo = useAdminInfo()
 
 const baTable: baTableClass = new baTableClass(
     new baTableApi(authGroup),
