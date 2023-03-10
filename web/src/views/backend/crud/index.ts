@@ -863,7 +863,7 @@ export const designTypes: anyObj = {
         },
     },
     selects: {
-        name: i18n.global.t('utils.select'),
+        name: i18n.global.t('utils.select') + i18n.global.t('crud.state.Multi'),
         table: {
             ...tableBaseAttr,
             render: getTableAttr('render', 'tags'),
@@ -919,7 +919,7 @@ export const designTypes: anyObj = {
         },
     },
     remoteSelects: {
-        name: i18n.global.t('utils.remote select') + i18n.global.t('utils.choice'),
+        name: i18n.global.t('utils.remote select') + i18n.global.t('utils.choice') + i18n.global.t('crud.state.Multi'),
         table: {
             operator: getTableAttr('operator', 'LIKE'),
         },
@@ -992,7 +992,7 @@ export const designTypes: anyObj = {
         },
     },
     images: {
-        name: i18n.global.t('utils.image') + i18n.global.t('Upload'),
+        name: i18n.global.t('utils.image') + i18n.global.t('Upload') + i18n.global.t('crud.state.Multi'),
         table: {
             render: getTableAttr('render', 'images'),
             operator: getTableAttr('operator', 'false'),
@@ -1020,7 +1020,7 @@ export const designTypes: anyObj = {
         },
     },
     files: {
-        name: i18n.global.t('utils.file') + i18n.global.t('Upload'),
+        name: i18n.global.t('utils.file') + i18n.global.t('Upload') + i18n.global.t('crud.state.Multi'),
         table: {
             render: getTableAttr('render', 'none'),
             operator: getTableAttr('operator', 'false'),
