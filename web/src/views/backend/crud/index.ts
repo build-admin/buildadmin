@@ -1,5 +1,6 @@
 import { reactive } from 'vue'
 import { i18n } from '/@/lang/index'
+import { validatorType } from '/@/utils/validate'
 
 export const state: {
     step: 'Start' | 'Design'
@@ -643,20 +644,7 @@ const formBaseAttr = {
     validator: {
         type: 'selects',
         value: [],
-        options: {
-            required: i18n.global.t('validate.required'),
-            mobile: i18n.global.t('utils.mobile'),
-            account: i18n.global.t('utils.account'),
-            password: i18n.global.t('utils.password'),
-            varName: i18n.global.t('utils.variable name'),
-            editorRequired: i18n.global.t('validate.editor required'),
-            number: i18n.global.t('utils.number'),
-            integer: i18n.global.t('utils.integer'),
-            float: i18n.global.t('utils.float'),
-            date: i18n.global.t('utils.date'),
-            url: 'URL',
-            email: i18n.global.t('utils.email'),
-        },
+        options: validatorType,
     },
     validatorMsg: {
         type: 'textarea',

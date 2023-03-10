@@ -68,12 +68,16 @@ export function validatorEditorRequired(rule: any, val: string, callback: Functi
     return callback()
 }
 
+/**
+ * 支持的表单验证规则
+ */
 export const validatorType = {
     required: i18n.global.t('validate.required'),
     mobile: i18n.global.t('utils.mobile'),
     account: i18n.global.t('utils.account'),
     password: i18n.global.t('utils.password'),
     varName: i18n.global.t('utils.variable name'),
+    editorRequired: i18n.global.t('validate.editor required'),
     url: 'URL',
     email: i18n.global.t('utils.email'),
     date: i18n.global.t('utils.date'),
