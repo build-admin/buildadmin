@@ -68,4 +68,13 @@ export default {
     preview: '预览',
     'Upload (Reference) times': '上传(引用)次数',
     'Last upload time': '最后上传时间',
+    'One attribute per line without quotation marks': '一行一个属性，无需引号，比如：class=config-item',
+    'One line at a time, without quotation marks, for example: key1=value1': '一行一个，无需引号，比如：key1=value1',
+    Var: '变量',
+    Name: '名',
+    Title: '标题',
+    Tip: '提示信息',
+    Rule: '验证规则',
+    Extend: '扩展属性',
+    Dict: '字典数据',
 }
