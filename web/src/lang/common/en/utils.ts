@@ -68,7 +68,10 @@ export default {
     preview: 'Preview',
     'Upload (Reference) times': 'Upload (Reference) times',
     'Last upload time': 'Last upload time',
-    'One attribute per line without quotation marks': 'One attribute per line, no quotation marks required, such as: class=config-item',
+    'One attribute per line without quotation marks(formitem)':
+        'Extensions to FormItem, One attribute per line, no quotation marks required, such as: class=config-item',
+    'Extended properties of Input, one line without quotation marks, such as: size=large':
+        'Extended properties of Input, one line without quotation marks, such as: size=large',
     'One line at a time, without quotation marks, for example: key1=value1': 'One per line, no quotation marks required, such as: key1=value1',
     Var: 'Var ',
     Name: 'Name',

@@ -3,6 +3,7 @@
 <template>
     <div>
         <!-- 本组件不被 el-form 包含，方便您在其他 el-form 的任意位置使用，且没有带了一个 el-form 时会出现的负担 -->
+        <!-- formitem 已经设置了 prop 属性，以便外部 el-form 添加表单验证规则 -->
         <FormItem
             v-if="form.name.show"
             :label="form.name.title"
@@ -80,9 +81,21 @@
             v-model="form.extend.value"
             :input-attr="{
                 onChange: updateValue,
-                placeholder: t('utils.One attribute per line without quotation marks'),
+                placeholder: t('utils.One attribute per line without quotation marks(formitem)'),
             }"
             prop="extend"
+            @keyup.enter.stop=""
+        />
+        <FormItem
+            v-if="form.inputExtend.show"
+            :label="form.inputExtend.title"
+            type="textarea"
+            v-model="form.inputExtend.value"
+            :input-attr="{
+                onChange: updateValue,
+                placeholder: t('utils.Extended properties of Input, one line without quotation marks, such as: size=large'),
+            }"
+            prop="inputExtend"
             @keyup.enter.stop=""
         />
     </div>
@@ -120,6 +133,7 @@ interface Props {
         rule?: string[]
         extend?: string
         dict?: string
+        inputExtend?: string
     }
     // 表单项配置
     options?: {
@@ -133,10 +147,12 @@ interface Props {
         tip?: OptionItem
         // 验证规则
         rule?: ValidatesOptionItem
-        // 扩展属性
+        // FormItem 的扩展属性
         extend?: OptionItem
         // 字典数据（单选、复选等类型的字典）
         dict?: OptionItem
+        // Input 的扩展属性
+        inputExtend?: OptionItem
     }
     excludeInputTypes?: string[]
     excludeValidatorRule?: string[]
@@ -153,6 +169,7 @@ const props = withDefaults(defineProps<Props>(), {
             rule: [],
             extend: '',
             dict: '',
+            inputExtend: '',
         }
     },
     name: () => {
@@ -174,6 +191,9 @@ const props = withDefaults(defineProps<Props>(), {
         return {}
     },
     dict: () => {
+        return {}
+    },
+    inputExtend: () => {
         return {}
     },
     excludeInputTypes: () => [],
@@ -199,22 +219,27 @@ const form = reactive({
     tip: {
         show: props.options?.tip?.show === false ? false : true,
         value: props.modelValue.tip,
-        title: props.options?.tip?.title ?? props.dataTitle + t('utils.Tip'), // 变量提示信息
+        title: props.options?.tip?.title ?? t('utils.Tip'), // 提示信息
     },
     rule: {
         show: props.options?.rule?.show === false ? false : true,
         value: props.modelValue.rule,
-        title: props.options?.rule?.title ?? props.dataTitle + t('utils.Rule'), // 变量验证规则
+        title: props.options?.rule?.title ?? t('utils.Rule'), // 验证规则
     },
     extend: {
         show: props.options?.extend?.show === false ? false : true,
         value: props.modelValue.extend,
-        title: props.options?.extend?.title ?? props.dataTitle + t('utils.Extend'), // 变量扩展属性
+        title: props.options?.extend?.title ?? 'FormItem ' + t('utils.Extend'), // FormItem 扩展属性
     },
     dict: {
         show: props.options?.dict?.show === false ? false : true,
         value: props.modelValue.dict,
-        title: props.options?.dict?.title ?? props.dataTitle + t('utils.Dict'), // 变量字典数据
+        title: props.options?.dict?.title ?? t('utils.Dict'), // 字典数据
+    },
+    inputExtend: {
+        show: props.options?.inputExtend?.show === false ? false : true,
+        value: props.modelValue.inputExtend,
+        title: props.options?.inputExtend?.title ?? 'Input ' + t('utils.Extend'), // Input 扩展属性
     },
 })
 
@@ -236,6 +261,7 @@ const updateValue = () => {
         rule: form.rule.value ?? [],
         extend: form.extend.value ?? '',
         dict: form.dict.value ?? '',
+        inputExtend: form.inputExtend.value ?? '',
     })
 }
 
