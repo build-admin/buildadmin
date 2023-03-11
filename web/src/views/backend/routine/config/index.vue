@@ -20,9 +20,9 @@
                                         :label="item.title"
                                         :type="item.type"
                                         v-model.number="state.form[item.name]"
-                                        :input-attr="{ placeholder: item.tip }"
+                                        :attr="{ prop: item.name, ...item.extend }"
+                                        :input-attr="{ placeholder: item.tip, ...item.input_extend }"
                                         :data="{ tip: item.tip }"
-                                        :attr="Object.assign({ prop: item.name }, item.extend)"
                                         :key="'number-' + item.id"
                                     />
                                     <!-- 富文本在dialog内全屏编辑器时必须拥有很高的z-index，此处选择单独为editor设定较小的z-index -->
@@ -33,14 +33,15 @@
                                         @keyup.enter.stop=""
                                         @keyup.ctrl.enter="onSubmit(formRef)"
                                         v-model="state.form[item.name]"
+                                        :attr="{ prop: item.name, ...item.extend }"
                                         :input-attr="{
                                             placeholder: item.tip,
                                             style: {
                                                 zIndex: 99,
                                             },
+                                            ...item.input_extend,
                                         }"
                                         :data="{ tip: item.tip }"
-                                        :attr="Object.assign({ prop: item.name }, item.extend)"
                                         :key="'editor-' + item.id"
                                     />
                                     <FormItem
@@ -50,9 +51,9 @@
                                         @keyup.enter.stop=""
                                         @keyup.ctrl.enter="onSubmit(formRef)"
                                         v-model="state.form[item.name]"
-                                        :input-attr="{ placeholder: item.tip, rows: 3 }"
+                                        :attr="{ prop: item.name, ...item.extend }"
+                                        :input-attr="{ placeholder: item.tip, rows: 3, ...item.input_extend }"
                                         :data="{ tip: item.tip }"
-                                        :attr="Object.assign({ prop: item.name }, item.extend)"
                                         :key="'textarea-' + item.id"
                                     />
                                     <FormItem
@@ -60,9 +61,9 @@
                                         :label="item.title"
                                         :type="item.type"
                                         v-model="state.form[item.name]"
-                                        :input-attr="{ placeholder: item.tip }"
+                                        :attr="{ prop: item.name, ...item.extend }"
+                                        :input-attr="{ placeholder: item.tip, ...item.input_extend }"
                                         :data="{ tip: item.tip, content: item.content ? item.content : {} }"
-                                        :attr="Object.assign({ prop: item.name }, item.extend)"
                                         :key="'other-' + item.id"
                                     />
                                     <div class="config-form-item-name">${{ item.name }}</div>

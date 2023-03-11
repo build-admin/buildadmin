@@ -12,8 +12,8 @@
                     @keyup.enter="onAddSubmit(formRef)"
                     :rules="rules"
                     :model="{ ...state.addConfig, ...state.formItemData }"
-                    :label-position="'left'"
-                    :label-width="120"
+                    label-position="right"
+                    :label-width="160"
                 >
                     <FormItem
                         :label="t('routine.config.Variable grouping')"
@@ -79,7 +79,7 @@ const state: {
     formItemData: anyObj
 } = reactive({
     inputTypes: {},
-    labelWidth: 160,
+    labelWidth: 180,
     submitLoading: false,
     addConfig: {
         group: '',

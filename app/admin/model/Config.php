@@ -12,6 +12,7 @@ class Config extends Model
         'value',
         'content',
         'extend',
+        'input_extend',
     ];
 
     protected $jsonDecodeType = ['checkbox', 'array', 'selects'];
@@ -27,8 +28,11 @@ class Config extends Model
         if (is_array($model->rule)) {
             $model->rule = implode(',', $model->rule);
         }
-        if ($model->getData('extend')) {
-            $model->extend = json_encode($model->handleTextAreaData($model->getData('extend')));
+        if ($model->getData('extend') || $model->getData('inputExtend')) {
+            $extend      = $model->handleTextAreaData($model->getData('extend'));
+            $inputExtend = $model->handleTextAreaData($model->getData('inputExtend'));
+            if ($inputExtend) $extend['baInputExtend'] = $inputExtend;
+            if ($extend) $model->extend = json_encode($extend);
         }
         $model->allow_del = 1;
     }
@@ -104,9 +108,22 @@ class Config extends Model
     {
         if ($value) {
             $arr = json_decode($value, true);
-            return $arr ?: [];
+            if ($arr) {
+                unset($arr['baInputExtend']);
+                return $arr;
+            }
         }
+        return [];
+    }
 
+    public function getInputExtendAttr($value, $row)
+    {
+        if ($row['extend']) {
+            $arr = json_decode($row['extend'], true);
+            if ($arr && isset($arr['baInputExtend'])) {
+                return $arr['baInputExtend'];
+            }
+        }
         return [];
     }
 }
