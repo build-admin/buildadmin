@@ -2,7 +2,7 @@ import { Component, CSSProperties } from 'vue'
 
 /**
  * 支持的输入框类型
- * 若您正在设计数据表，可以找到 src\views\backend\crud\index.ts 文件来参考对应类型的：数据字段设计示例
+ * 若您正在设计数据表，可以找到 ./helper.ts 文件来参考对应类型的：数据字段设计示例
  */
 export const inputTypes = [
     'string',
@@ -173,4 +173,20 @@ export interface InputAttr {
     onPanelChange?: Function
     onActiveChange?: Function
     [key: string]: any
+}
+
+/**
+ * Input 支持的类型对应的数据字段设计数据
+ */
+export interface FieldData {
+    [key: string]: {
+        type: string // 数据类型
+        length: number // 长度
+        precision: number // 小数点
+        default: string // 默认值
+        null: boolean // 允许 null
+        primaryKey: boolean // 主键
+        unsigned: boolean // 无符号
+        autoIncrement: boolean // 自动递增
+    }
 }
