@@ -1,6 +1,9 @@
 import { Component, CSSProperties } from 'vue'
 
-// 支持的输入框类型
+/**
+ * 支持的输入框类型
+ * 若您正在设计数据表，可以找到 src\views\backend\crud\index.ts 文件来参考对应类型的：数据字段设计示例
+ */
 export const inputTypes = [
     'string',
     'password',
