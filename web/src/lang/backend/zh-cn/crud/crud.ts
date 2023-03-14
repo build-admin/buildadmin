@@ -38,6 +38,7 @@ export default {
     'Please enter the table creation SQL': '请输入建表SQL',
     'experience 1 1': '准备好',
     'experience 1 2': '开发环境',
+    'experience 1 3': '（站点端口为：1818）',
     'experience 2 1': '在本页点击',
     'experience 2 2': '选择数据表',
     'experience 2 3': '，并选择',

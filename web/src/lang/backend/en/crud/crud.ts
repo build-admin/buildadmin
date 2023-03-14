@@ -38,6 +38,7 @@ export default {
     'Please enter the table creation SQL': 'Please enter the table creation SQL',
     'experience 1 1': 'Prepare the ',
     'experience 1 2': 'development environment',
+    'experience 1 3': '(The site port is 1818)',
     'experience 2 1': 'On this page, click to',
     'experience 2 2': 'select data table',
     'experience 2 3': 'and select',

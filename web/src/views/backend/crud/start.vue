@@ -31,6 +31,7 @@
                             <a target="_blank" href="https://wonderful-code.gitee.io/guide/other/developerMustSee.html">
                                 {{ t('crud.crud.experience 1 2') }}
                             </a>
+                            {{ t('crud.crud.experience 1 3') }}
                         </li>
                         <li>
                             {{ t('crud.crud.experience 2 1') }}
