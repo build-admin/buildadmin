@@ -1,0 +1,2 @@
+        $pk         = $model->getPk();
+        $model->$pk = \app\common\library\SnowFlake::generateParticle();

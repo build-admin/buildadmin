@@ -14,5 +14,5 @@ class {%className%} extends Model
 
     // 自动写入时间戳字段
     protected $autoWriteTimestamp = {%autoWriteTimestamp%};{%createTime%}{%updateTime%}
-{%append%}{%fieldType%}{%afterInsert%}{%methods%}
+{%append%}{%fieldType%}{%beforeInsert%}{%afterInsert%}{%methods%}
 }

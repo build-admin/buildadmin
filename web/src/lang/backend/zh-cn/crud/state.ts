@@ -1,6 +1,7 @@
 export default {
     remarks: '备注',
     'Primary key': '主键',
+    'Primary key (Snowflake ID)': '主键（雪花ID）',
     'Disable Search': '禁用搜索',
     'Weight (drag and drop sorting)': '权重（拖拽排序）',
     'Status:0=Disabled,1=Enabled': '状态:0=禁用,1=启用',

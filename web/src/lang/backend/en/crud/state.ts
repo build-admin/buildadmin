@@ -1,6 +1,7 @@
 export default {
     remarks: 'remarks',
     'Primary key': 'Primary key',
+    'Primary key (Snowflake ID)': 'Primary key (Snowflake ID)',
     'Disable Search': 'Disable Search',
     'Weight (drag and drop sorting)': 'Weight (drag and drop sorting)',
     'Status:0=Disabled,1=Enabled': 'Status:0=Disabled,1=Enabled',

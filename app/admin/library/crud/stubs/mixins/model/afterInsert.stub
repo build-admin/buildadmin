@@ -3,6 +3,10 @@
     {
         if ($model->{%field%} == 0) {
             $pk = $model->getPk();
-            $model->where($pk, $model[$pk])->update(['{%field%}' => $model[$pk]]);
+            if (strlen($model[$pk]) >= 19) {
+                $model->where($pk, $model[$pk])->update(['{%field%}' => $model->count()]);
+            } else {
+                $model->where($pk, $model[$pk])->update(['{%field%}' => $model[$pk]]);
+            }
         }
     }

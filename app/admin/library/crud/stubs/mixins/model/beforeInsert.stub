@@ -1,0 +1,5 @@
+
+    protected static function onBeforeInsert($model)
+    {
+{%setSnowFlakeIdCode%}
+    }

@@ -108,6 +108,8 @@ class Crud extends Backend
             $this->modelData['fieldType']          = [];
             $this->modelData['createTime']         = '';
             $this->modelData['updateTime']         = '';
+            $this->modelData['beforeInsertMixins'] = [];
+            $this->modelData['beforeInsert']       = '';
             $this->modelData['afterInsert']        = '';
             $this->modelData['name']               = $tableName;
             $this->modelData['className']          = $modelFile['lastName'];
@@ -485,17 +487,19 @@ class Crud extends Backend
             if (!$field['form']['remote-model'] || !file_exists(root_path() . $field['form']['remote-model'])) {
                 $joinModelFile = Helper::parseNameData('admin', $tableName, '', 'model', $field['form']['remote-model']);
                 if (!file_exists(root_path() . $joinModelFile['rootFileName'])) {
-                    $joinModelData['append']      = [];
-                    $joinModelData['methods']     = [];
-                    $joinModelData['fieldType']   = [];
-                    $joinModelData['createTime']  = '';
-                    $joinModelData['updateTime']  = '';
-                    $joinModelData['afterInsert'] = '';
-                    $joinModelData['name']        = $tableName;
-                    $joinModelData['className']   = $joinModelFile['lastName'];
-                    $joinModelData['namespace']   = $joinModelFile['namespace'];
-                    $joinTablePk                  = 'id';
-                    $joinFieldsMap                = [];
+                    $joinModelData['append']             = [];
+                    $joinModelData['methods']            = [];
+                    $joinModelData['fieldType']          = [];
+                    $joinModelData['createTime']         = '';
+                    $joinModelData['updateTime']         = '';
+                    $joinModelData['beforeInsertMixins'] = [];
+                    $joinModelData['beforeInsert']       = '';
+                    $joinModelData['afterInsert']        = '';
+                    $joinModelData['name']               = $tableName;
+                    $joinModelData['className']          = $joinModelFile['lastName'];
+                    $joinModelData['namespace']          = $joinModelFile['namespace'];
+                    $joinTablePk                         = 'id';
+                    $joinFieldsMap                       = [];
                     foreach ($columns as $column) {
                         $joinFieldsMap[$column['name']] = $column['designType'];
                         $this->parseModelMethods($column, $joinModelData);
@@ -579,6 +583,11 @@ class Crud extends Backend
             $modelData['fieldType'][$field['name']] = 'timestamp:Y-m-d H:i:s';
         }
 
+        // beforeInsertMixins
+        if ($field['designType'] == 'spk') {
+            $modelData['beforeInsertMixins']['snowflake'] = Helper::assembleStub('mixins/model/mixins/beforeInsertWithSnowflake', []);
+        }
+
         // methods
         $fieldName = parse_name($field['name'], 1);
         if (in_array($field['designType'], $this->dtStringToArray)) {
@@ -598,6 +607,10 @@ class Crud extends Backend
             ]);
         } elseif ($field['designType'] == 'editor') {
             $modelData['methods'][] = Helper::assembleStub('mixins/model/getters/htmlDecode', [
+                'field' => $fieldName
+            ]);
+        } elseif ($field['designType'] == 'spk') {
+            $modelData['methods'][] = Helper::assembleStub('mixins/model/getters/string', [
                 'field' => $fieldName
             ]);
         } elseif ($field['originalDesignType'] == 'float') {

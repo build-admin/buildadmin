@@ -74,6 +74,21 @@ export const fieldItem: {
             autoIncrement: true,
         },
         {
+            title: i18n.global.t('crud.state.Primary key (Snowflake ID)'),
+            name: 'id',
+            comment: 'ID',
+            designType: 'spk',
+            formBuildExclude: true,
+            table: {},
+            form: {},
+            ...fieldData.number,
+            type: 'bigint',
+            length: 20,
+            default: '',
+            primaryKey: true,
+            unsigned: true,
+        },
+        {
             title: i18n.global.t('crud.state.Weight (drag and drop sorting)'),
             name: 'weigh',
             comment: i18n.global.t('weigh'),
@@ -476,6 +491,18 @@ export const designTypes: anyObj = {
             width: {
                 type: 'number',
                 value: 70,
+            },
+            operator: getTableAttr('operator', 'RANGE'),
+            sortable: getTableAttr('sortable', 'custom'),
+        },
+        form: {},
+    },
+    spk: {
+        name: i18n.global.t('crud.state.Primary key (Snowflake ID)'),
+        table: {
+            width: {
+                type: 'number',
+                value: 180,
             },
             operator: getTableAttr('operator', 'RANGE'),
             sortable: getTableAttr('sortable', 'custom'),

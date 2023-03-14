@@ -722,7 +722,19 @@ class Helper
         $modelData['methods']   = $modelMethodList ? "\n" . implode("\n", $modelMethodList) : '';
         $modelData['append']    = self::buildModelAppend($modelData['append']);
         $modelData['fieldType'] = self::buildModelFieldType($modelData['fieldType']);
-        $modelFileContent       = self::assembleStub('mixins/model/model', $modelData);
+
+        // 生成雪花ID？
+        if (isset($modelData['beforeInsertMixins']['snowflake'])) {
+            // beforeInsert 组装
+            $modelData['beforeInsert'] = Helper::assembleStub('mixins/model/beforeInsert', [
+                'setSnowFlakeIdCode' => $modelData['beforeInsertMixins']['snowflake']
+            ]);
+        }
+        if ($modelData['afterInsert'] && $modelData['beforeInsert']) {
+            $modelData['afterInsert'] = "\n" . $modelData['afterInsert'];
+        }
+
+        $modelFileContent = self::assembleStub('mixins/model/model', $modelData);
         self::writeFile($modelFile['parseFile'], $modelFileContent);
     }
 
