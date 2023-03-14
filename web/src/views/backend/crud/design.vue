@@ -234,6 +234,7 @@
                                 type="textarea"
                                 :input-attr="{
                                     rows: 2,
+                                    onChange: onFieldCommentChange,
                                 }"
                                 :placeholder="
                                     t(
@@ -811,6 +812,37 @@ const handleFieldAttr = (field: FieldItem) => {
     field.form = designTypeAttr.form
     field.table = designTypeAttr.table
     return field
+}
+
+/**
+ * 根据字段字典重新生成字段的数据类型
+ */
+const onFieldCommentChange = (comment: string) => {
+    if (['enum', 'set'].includes(state.fields[state.activateField].type)) {
+        if (!comment) {
+            state.fields[state.activateField].dataType = `${state.fields[state.activateField].type}()`
+            return
+        }
+        comment = comment.replaceAll('：', ':')
+        comment = comment.replaceAll('，', ',')
+        let comments = comment.split(':')
+        if (comments[1]) {
+            comments = comments[1].split(',')
+            comments = comments
+                .map((value) => {
+                    if (!value) return ''
+                    let temp = value.split('=')
+                    if (temp[0] && temp[1]) {
+                        return `'${temp[0]}'`
+                    }
+                    return ''
+                })
+                .filter((str: string) => str != '')
+
+            // 字段数据类型
+            state.fields[state.activateField].dataType = `${state.fields[state.activateField].type}(${comments.join(',')})`
+        }
+    }
 }
 
 const loadData = () => {
