@@ -104,10 +104,10 @@ export const fieldData: FieldData = {
         null: true,
     },
     select: {
-        type: 'tinyint',
-        length: 1,
+        type: 'enum',
+        length: 0,
         precision: 0,
-        default: '0',
+        default: '',
         ...npuaFalse(),
     },
     selects: {

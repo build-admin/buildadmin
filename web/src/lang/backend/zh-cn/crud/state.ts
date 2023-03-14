@@ -10,7 +10,7 @@ export default {
     'Radio:opt0=Option1,opt1=Option2': '单选框:opt0=选项一,opt1=选项二',
     'Checkbox:opt0=Option1,opt1=Option2': '复选框:opt0=选项一,opt1=选项二',
     Multi: '（多选）',
-    'Select:0=Option1,1=Option2': '下拉框:0=选项一,1=选项二',
+    'Select:opt0=Option1,opt1=Option2': '下拉框:opt0=选项一,opt1=选项二',
     'Switch:0=off,1=on': '开关:0=关,1=开',
     'Time date (timestamp storage)': '时间日期（时间戳存储）',
     'If left blank, the verifier title attribute will be filled in automatically': '留空则自动填写验证器title属性(看不懂请直接填写完整错误消息)',

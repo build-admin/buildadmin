@@ -203,11 +203,13 @@ export const fieldItem: {
         {
             title: i18n.global.t('utils.select'),
             name: 'select',
-            comment: i18n.global.t('crud.state.Select:0=Option1,1=Option2'),
+            dataType: "enum('opt0','opt1')",
+            comment: i18n.global.t('crud.state.Select:opt0=Option1,opt1=Option2'),
             designType: 'select',
             table: {},
             form: {},
             ...fieldData.select,
+            default: 'opt0',
         },
         {
             title: i18n.global.t('utils.switch'),
@@ -381,7 +383,7 @@ export const fieldItem: {
         {
             title: i18n.global.t('utils.select') + i18n.global.t('crud.state.Multi'),
             name: 'selects',
-            comment: i18n.global.t('crud.state.Select:0=Option1,1=Option2'),
+            comment: i18n.global.t('crud.state.Select:opt0=Option1,opt1=Option2'),
             designType: 'selects',
             table: {},
             form: {},

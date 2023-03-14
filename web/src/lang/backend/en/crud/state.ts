@@ -10,7 +10,7 @@ export default {
     'Radio:opt0=Option1,opt1=Option2': 'Radio:opt0=Option1,opt1=Option2',
     'Checkbox:opt0=Option1,opt1=Option2': 'Checkbox:opt0=Option1,opt1=Option2',
     Multi: '(Multi)',
-    'Select:0=Option1,1=Option2': 'Select:0=Option1,1=Option2',
+    'Select:opt0=Option1,opt1=Option2': 'Select:opt0=Option1,opt1=Option2',
     'Switch:0=off,1=on': 'Switch:0=off,1=on',
     'Time date (timestamp storage)': 'Time date (timestamp storage)',
     'If left blank, the verifier title attribute will be filled in automatically':
