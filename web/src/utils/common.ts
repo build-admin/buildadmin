@@ -225,6 +225,7 @@ export const fullUrl = (relativeUrl: string, domain = '') => {
 export const __ = (key: string, named?: Record<string, unknown>, options?: TranslateOptions<string>) => {
     let path = router.currentRoute.value.path
     if (path == '/') path = trimStart(window.location.hash, '#')
+    if (path.indexOf('?') !== -1) path = path.replace(/\?.*/, '')
     let langPath = ''
     if (isAdminApp()) {
         langPath = path.slice(path.indexOf(adminBaseRoute.path) + adminBaseRoute.path.length)
