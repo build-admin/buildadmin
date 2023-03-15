@@ -58,11 +58,14 @@
                                             :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:new Date()"
                                         ></el-date-picker>
 
-                                        <!-- tag、select -->
+                                        <!-- tag、tags、select -->
                                         <el-select
                                             class="w100"
                                             :placeholder="item.operatorPlaceholder"
-                                            v-else-if="(item.render == 'tag' || item.comSearchRender == 'select') && item.replaceValue"
+                                            v-else-if="
+                                                (item.render == 'tag' || item.render == 'tags' || item.comSearchRender == 'select') &&
+                                                item.replaceValue
+                                            "
                                             v-model="baTable.comSearch.form[item.prop!]"
                                             :clearable="true"
                                         >
