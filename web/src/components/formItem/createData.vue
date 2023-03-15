@@ -42,7 +42,7 @@
             prop="type"
         />
         <FormItem
-            v-if="form.dict.show && ['radio', 'checkbox', 'select', 'selects'].includes(form.type.value!)"
+            v-if="form.dict.show && dictExistsType.includes(form.type.value!)"
             :label="form.dict.title"
             type="textarea"
             v-model="form.dict.value"
@@ -211,6 +211,8 @@ const props = withDefaults(defineProps<Props>(), {
     excludeValidatorRule: () => [],
 })
 
+const dictExistsType = ['radio', 'checkbox', 'select', 'selects']
+
 const form = reactive({
     name: {
         show: props.options?.name?.show === false ? false : true,
@@ -271,7 +273,7 @@ const updateValue = () => {
         tip: form.tip.value ?? '',
         rule: form.rule.value ?? [],
         extend: form.extend.value ?? '',
-        dict: form.dict.value ?? '',
+        dict: dictExistsType.includes(form.type.value ?? '') ? form.dict.value ?? '' : '',
         inputExtend: form.inputExtend.value ?? '',
     })
 }
