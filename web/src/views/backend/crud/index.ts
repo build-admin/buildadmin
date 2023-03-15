@@ -600,6 +600,7 @@ export const designTypes: anyObj = {
         table: {
             ...tableBaseAttr,
             render: getTableAttr('render', 'tags'),
+            operator: getTableAttr('operator', 'FIND_IN_SET'),
         },
         form: formBaseAttr,
     },
@@ -680,7 +681,7 @@ export const designTypes: anyObj = {
         name: i18n.global.t('utils.select'),
         table: {
             ...tableBaseAttr,
-            render: getTableAttr('render', 'tags'),
+            render: getTableAttr('render', 'tag'),
         },
         form: {
             ...formBaseAttr,
@@ -695,6 +696,7 @@ export const designTypes: anyObj = {
         table: {
             ...tableBaseAttr,
             render: getTableAttr('render', 'tags'),
+            operator: getTableAttr('operator', 'FIND_IN_SET'),
         },
         form: {
             ...formBaseAttr,
