@@ -12,6 +12,7 @@
             :placeholder="t('Please input field', { field: form.name.title })"
             :input-attr="{
                 onChange: updateValue,
+                ...props.options?.name?.inputAttr,
             }"
             prop="name"
         />
@@ -23,6 +24,7 @@
             :placeholder="t('Please input field', { field: form.title.title })"
             :input-attr="{
                 onChange: updateValue,
+                ...props.options?.title?.inputAttr,
             }"
             prop="title"
         />
@@ -35,6 +37,7 @@
             :placeholder="t('Please select field', { field: form.type.title })"
             :input-attr="{
                 onChange: updateValue,
+                ...props.options?.type?.inputAttr,
             }"
             prop="type"
         />
@@ -47,6 +50,7 @@
                 rows: 3,
                 placeholder: t('utils.One line at a time, without quotation marks, for example: key1=value1'),
                 onChange: updateValue,
+                ...props.options?.dict?.inputAttr,
             }"
             prop="dict"
             @keyup.enter.stop=""
@@ -59,6 +63,7 @@
             :placeholder="t('Please input field', { field: form.tip.title })"
             :input-attr="{
                 onChange: updateValue,
+                ...props.options?.tip?.inputAttr,
             }"
             prop="tip"
         />
@@ -71,6 +76,7 @@
             :placeholder="t('Please select field', { field: form.rule.title })"
             :input-attr="{
                 onChange: updateValue,
+                ...props.options?.rule?.inputAttr,
             }"
             prop="rule"
         />
@@ -82,6 +88,7 @@
             :input-attr="{
                 onChange: updateValue,
                 placeholder: t('utils.One attribute per line without quotation marks(formitem)'),
+                ...props.options?.extend?.inputAttr,
             }"
             prop="extend"
             @keyup.enter.stop=""
@@ -94,6 +101,7 @@
             :input-attr="{
                 onChange: updateValue,
                 placeholder: t('utils.Extended properties of Input, one line without quotation marks, such as: size=large'),
+                ...props.options?.inputExtend?.inputAttr,
             }"
             prop="inputExtend"
             @keyup.enter.stop=""
@@ -106,6 +114,7 @@ import { reactive } from 'vue'
 import FormItem from '/@/components/formItem/index.vue'
 import { inputTypes } from '/@/components/baInput'
 import { validatorType } from '/@/utils/validate'
+import { InputAttr } from '/@/components/baInput'
 import { i18n } from '/@/lang'
 
 const { t } = i18n.global
@@ -115,6 +124,8 @@ type OptionItem = {
     show?: boolean
     // 被创建数据的标题（默认使用：props.dataTitle + 本 title，自定义此 title 后，单使用此 title）
     title?: string
+    // 输入框额外属性
+    inputAttr?: InputAttr
 }
 
 type ValidatesOptionItem = Omit<OptionItem, 'value'> & {
