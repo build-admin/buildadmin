@@ -200,7 +200,7 @@ class Backend extends Api
 
         // 通用搜索组装
         foreach ($search as $field) {
-            if (!is_array($field) || !isset($field['operator']) || !isset($field['field'])) {
+            if (!is_array($field) || !isset($field['operator']) || !isset($field['field']) || !isset($field['val'])) {
                 continue;
             }
 
