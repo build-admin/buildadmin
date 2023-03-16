@@ -27,7 +27,9 @@
                             :row="scope.row"
                             :column="scope.column"
                             :index="scope.$index"
-                            :key="item.render == 'switch' ? 'sw-' + item.prop + '-' + key + '-' + scope.row[item.prop!] : key"
+                            :key="
+                                key + '-' + scope.$index + '-' + item.render + '-' + (item.prop ? '-' + item.prop + '-' + scope.row[item.prop] : '')
+                            "
                         />
                     </template>
                 </Column>
