@@ -118,7 +118,7 @@ class Config extends Model
 
     public function getInputExtendAttr($value, $row)
     {
-        if ($row['extend']) {
+        if ($row && $row['extend']) {
             $arr = json_decode($row['extend'], true);
             if ($arr && isset($arr['baInputExtend'])) {
                 return $arr['baInputExtend'];
