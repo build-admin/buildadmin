@@ -1,22 +1,43 @@
-/nbproject
-/runtime/*
-/install
+# 通过 Git 部署项目至线上时建议删除的忽略规则
 /vendor
 /modules
-node_modules
-dist
-dist-ssr
 /public/*.lock
 /public/index.html
 /public/assets
+
+# 通过 Git 部署项目至线上时可以考虑删除的忽略规则
 /public/storage/*
-.DS_Store
 composer.lock
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
+
+# common
+/nbproject
+/runtime/*
+/install
+node_modules
+dist
+dist-ssr
+.DS_Store
 /.env
 Desktop.ini
+
+# 部署到线上时，如果您已经删除了 /modules 的忽略规则，那么以下规则可以帮您排除多余的模块文件（已知的多余/重复文件）
+# 提示:在不修改以下规则的前提下，您可以在无需排除的目录中建立一个名为 .gitkeep 的文件，作为列外（逃生舱）
+/modules/ebak
+/modules/*/app
+/modules/*/config
+/modules/*/extend
+/modules/*/public
+/modules/*/vendor
+/modules/*/web
+/modules/*/web-nuxt
+/modules/*/install.sql
+/modules/*/config.json
+/modules/*/LICENSE
+/modules/*/README.md
+/modules/*/uniapp.zip
 
 # Log files
 *.log
