@@ -938,10 +938,10 @@ class Helper
                     $jsonStr .= $keyStr . self::getJsonFromArray($item) . ',';
                 } elseif ($item === 'false' || $item === 'true') {
                     $jsonStr .= $keyStr . ($item === 'false' ? 'false' : 'true') . ',';
-                } elseif (strpos($item, "t('") === 0 || strpos($item, "t(\"") === 0 || $item == '[]' || in_array($key, ['step', 'rows'], true)) {
-                    $jsonStr .= $keyStr . $item . ',';
                 } elseif ($item === null) {
                     $jsonStr .= $keyStr . 'null,';
+                } elseif (strpos($item, "t('") === 0 || strpos($item, "t(\"") === 0 || $item == '[]' || in_array($key, ['step', 'rows'], true)) {
+                    $jsonStr .= $keyStr . $item . ',';
                 } elseif (isset($item[0]) && $item[0] == '[' && substr($item, -1, 1) == ']') {
                     $jsonStr .= $keyStr . $item . ',';
                 } else {
