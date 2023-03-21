@@ -666,7 +666,7 @@ class Crud extends Backend
                 'content' => $columnDict,
             ];
         } elseif ($field['designType'] == 'textarea') {
-            $formField[':input-attr']['rows'] = $field['form']['rows'] ?? 3;
+            $formField[':input-attr']['rows'] = (int)($field['form']['rows'] ?? 3);
             $formField['@keyup.enter.stop']   = '';
             $formField['@keyup.ctrl.enter']   = 'baTable.onSubmit(formRef)';
         } elseif ($field['designType'] == 'remoteSelect' || $field['designType'] == 'remoteSelects') {
@@ -678,7 +678,7 @@ class Crud extends Backend
                 $formField[':input-attr']['multiple'] = 'true';
             }
         } elseif ($field['designType'] == 'number') {
-            $formField[':input-attr']['step'] = $field['form']['step'] ?? 1;
+            $formField[':input-attr']['step'] = (int)($field['form']['step'] ?? 1);
             $formField['v-model.number']      = $formField['v-model'];
             unset($formField['v-model']);
         } elseif ($field['designType'] == 'icon') {
@@ -704,12 +704,15 @@ class Crud extends Backend
         if ($field['default'] == 'null') {
             $this->indexVueData['defaultItems'][$field['name']] = null;
         } elseif ($field['default'] == '0' && in_array($field['designType'], ['radio', 'checkbox', 'select', 'selects'])) {
+            // 防止为`0`时无法设置上默认值
             $this->indexVueData['defaultItems'][$field['name']] = '0';
         }
         if ($field['designType'] == 'array') {
             $this->indexVueData['defaultItems'][$field['name']] = "[]";
         } elseif (in_array($field['designType'], $this->dtStringToArray) && stripos($field['default'], ',') !== false) {
             $this->indexVueData['defaultItems'][$field['name']] = Helper::buildSimpleArray(explode(',', $field['default']));
+        } elseif (in_array($field['designType'], ['weigh', 'number', 'float'])) {
+            $this->indexVueData['defaultItems'][$field['name']] = (float)$field['default'];
         }
         return $formField;
     }
