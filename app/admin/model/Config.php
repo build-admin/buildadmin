@@ -23,31 +23,18 @@ class Config extends Model
         if (!in_array($model->getData('type'), $model->needContent)) {
             $model->content = null;
         } else {
-            $model->content = json_encode($model->handleTextAreaData($model->getData('content')));
+            $model->content = json_encode(str_attr_to_array($model->getData('content')));
         }
         if (is_array($model->rule)) {
             $model->rule = implode(',', $model->rule);
         }
         if ($model->getData('extend') || $model->getData('inputExtend')) {
-            $extend      = $model->handleTextAreaData($model->getData('extend'));
-            $inputExtend = $model->handleTextAreaData($model->getData('inputExtend'));
+            $extend      = str_attr_to_array($model->getData('extend'));
+            $inputExtend = str_attr_to_array($model->getData('inputExtend'));
             if ($inputExtend) $extend['baInputExtend'] = $inputExtend;
             if ($extend) $model->extend = json_encode($extend);
         }
         $model->allow_del = 1;
-    }
-
-    public function handleTextAreaData($data)
-    {
-        $content     = explode("\n", trim($data));
-        $contentTemp = [];
-        foreach ($content as $item) {
-            $item = explode('=', $item);
-            if (isset($item[0]) && isset($item[1])) {
-                $contentTemp[$item[0]] = $item[1];
-            }
-        }
-        return $contentTemp;
     }
 
     public function getValueAttr($value, $row)

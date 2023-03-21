@@ -227,6 +227,34 @@ if (!function_exists('encrypt_password')) {
     }
 }
 
+if (!function_exists('str_attr_to_array')) {
+    /**
+     * 将字符串属性列表转为数组
+     * @param string $attr 属性，一行一个，无需引号，比如：class=input-class
+     * @return array
+     */
+    function str_attr_to_array(string $attr): array
+    {
+        if (!$attr) return [];
+        $attr     = explode("\n", trim(str_replace("\r\n", "\n", $attr)));
+        $attrTemp = [];
+        foreach ($attr as $item) {
+            $item = explode('=', $item);
+            if (!empty($item[0]) && isset($item[1])) {
+                if (strpos($item[0], '.')) {
+                    $attrKey = explode('.', $item[0]);
+                    if (!empty($attrKey[0]) && !empty($attrKey[1])) {
+                        $attrTemp[$attrKey[0]][$attrKey[1]] = $item[1];
+                        continue;
+                    }
+                }
+                $attrTemp[$item[0]] = $item[1];
+            }
+        }
+        return $attrTemp;
+    }
+}
+
 if (!function_exists('action_in_arr')) {
     /**
      * 检测一个方法是否在传递的数组内
