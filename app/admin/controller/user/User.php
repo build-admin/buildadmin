@@ -68,6 +68,8 @@ class User extends Backend
             $result = false;
             Db::startTrans();
             try {
+                $data['salt']     = $salt;
+                $data['password'] = $passwd;
                 // 模型验证
                 if ($this->modelValidate) {
                     $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
@@ -77,9 +79,7 @@ class User extends Backend
                         $validate->check($data);
                     }
                 }
-                $data['salt']     = $salt;
-                $data['password'] = $passwd;
-                $result           = $this->model->save($data);
+                $result = $this->model->save($data);
                 Db::commit();
             } catch (ValidateException|Exception|PDOException $e) {
                 Db::rollback();
