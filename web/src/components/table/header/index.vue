@@ -63,6 +63,7 @@
 
         <!-- 右侧搜索框和工具按钮 -->
         <div class="table-search">
+            <slot name="prefixQuickSearch"></slot>
             <el-input
                 v-if="props.buttons.includes('quickSearch')"
                 v-model="state.quickSearch"
@@ -209,6 +210,7 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
         background-color: var(--el-color-info-light-7);
     }
     .table-search-button-item {
+        height: 30px;
         border: none;
         border-radius: 0;
     }
