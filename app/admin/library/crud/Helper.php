@@ -505,12 +505,13 @@ class Helper
         $columns     = [];
         $tableColumn = Db::query($sql, [config('database.connections.mysql.database'), self::getTableName($table)]);
         foreach ($tableColumn as $item) {
-            $column = [
+            $isNullAble = $item['IS_NULLABLE'] == 'YES';
+            $column     = [
                 'name'          => $item['COLUMN_NAME'],
                 'type'          => $item['DATA_TYPE'],
                 'dataType'      => stripos($item['COLUMN_TYPE'], '(') !== false ? substr_replace($item['COLUMN_TYPE'], '', stripos($item['COLUMN_TYPE'], ')') + 1) : $item['COLUMN_TYPE'],
-                'default'       => $item['COLUMN_DEFAULT'],
-                'null'          => $item['IS_NULLABLE'] == 'YES',
+                'default'       => ($isNullAble && is_null($item['COLUMN_DEFAULT'])) ? 'null' : $item['COLUMN_DEFAULT'],
+                'null'          => $isNullAble,
                 'primaryKey'    => $item['COLUMN_KEY'] == 'PRI',
                 'unsigned'      => (bool)stripos($item['COLUMN_TYPE'], 'unsigned'),
                 'autoIncrement' => stripos($item['EXTRA'], 'auto_increment') !== false,
