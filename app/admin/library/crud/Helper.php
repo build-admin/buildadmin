@@ -280,7 +280,7 @@ class Helper
             $null          = $field['null'] ? ' NULL' : ' NOT NULL';
             $autoIncrement = $field['autoIncrement'] ? ' AUTO_INCREMENT' : '';
             $default       = '';
-            if (strtolower($field['default']) == 'null') {
+            if (strtolower((string)$field['default']) == 'null') {
                 $default = ' DEFAULT NULL';
             } elseif ($field['default'] == '0') {
                 $default = " DEFAULT '0'";
