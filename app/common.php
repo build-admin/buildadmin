@@ -241,14 +241,20 @@ if (!function_exists('str_attr_to_array')) {
         foreach ($attr as $item) {
             $item = explode('=', $item);
             if (!empty($item[0]) && isset($item[1])) {
+                $attrVal = $item[1];
+                if ($item[1] === 'false' || $item[1] === 'true') {
+                    $attrVal = !($item[1] === 'false');
+                } elseif (is_numeric($item[1])) {
+                    $attrVal = (float)$item[1];
+                }
                 if (strpos($item[0], '.')) {
                     $attrKey = explode('.', $item[0]);
                     if (!empty($attrKey[0]) && !empty($attrKey[1])) {
-                        $attrTemp[$attrKey[0]][$attrKey[1]] = $item[1];
+                        $attrTemp[$attrKey[0]][$attrKey[1]] = $attrVal;
                         continue;
                     }
                 }
-                $attrTemp[$item[0]] = $item[1];
+                $attrTemp[$item[0]] = $attrVal;
             }
         }
         return $attrTemp;
