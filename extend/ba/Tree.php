@@ -136,7 +136,7 @@ class Tree
         if (!$data) return [];
         foreach ($data as $key => $item) {
             if (array_key_exists($item[$pk], $this->childrens)) {
-                $data[$key]['children'] = $this->getChildren($this->childrens[$item[$pk]]);
+                $data[$key]['children'] = $this->getChildren($this->childrens[$item[$pk]], $pk);
             }
         }
         return $data;
