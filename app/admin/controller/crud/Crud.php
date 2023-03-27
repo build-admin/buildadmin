@@ -564,6 +564,7 @@ class Crud extends Backend
                 // 表格列
                 $columns[$relationField]['table']['render']   = 'tags';
                 $columns[$relationField]['table']['operator'] = 'LIKE';
+                $columns[$relationField]['designType']        = $field['designType'];
                 $this->indexVueData['tableColumn'][]          = $this->getTableColumn($columns[$relationField], $columnDict, $relationFieldPrefix, $relationFieldLangPrefix);
             }
         }
