@@ -463,6 +463,7 @@ class Crud extends Backend
         $tables    = get_table_list();
         $pattern   = '/^' . $tablePrefix . '/i';
         foreach ($tables as $table => $tableComment) {
+            if (!preg_match($pattern, $table)) continue;
             $table = preg_replace($pattern, '', $table);
             if (!in_array($table, $outExcludeTable)) {
                 $outTables[$table] = $tableComment;

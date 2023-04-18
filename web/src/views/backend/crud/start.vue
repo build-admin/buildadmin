@@ -76,6 +76,9 @@
                             :data="{
                                 content: state.dialog.dbList,
                             }"
+                            :attr="{
+                                'block-help': t('crud.crud.data sheet help'),
+                            }"
                             prop="db"
                         />
                     </template>

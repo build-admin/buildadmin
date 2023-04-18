@@ -33,6 +33,7 @@ export default {
     'Fast experience': '快速体验',
     'Please enter SQL': '请输入SQL',
     'Please select a data table': '请选择数据表',
+    'data sheet help': '数据表前缀需要同项目配置的数据表前缀一致',
     'data sheet': '数据表',
     'table create SQL': '建表SQL',
     'Please enter the table creation SQL': '请输入建表SQL',

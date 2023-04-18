@@ -33,6 +33,7 @@ export default {
     'Fast experience': 'Fast experience',
     'Please enter SQL': 'Please enter SQL',
     'Please select a data table': 'Please select a data table',
+    'data sheet help': 'The table prefix must be the same as the table prefix configured for the project',
     'data sheet': 'data sheet',
     'table create SQL': 'table creation SQL',
     'Please enter the table creation SQL': 'Please enter the table creation SQL',
