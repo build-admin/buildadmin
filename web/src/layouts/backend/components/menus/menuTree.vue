@@ -39,6 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
     margin-right: 5px;
     width: 24px;
     text-align: center;
+    flex-shrink: 0;
 }
 .is-active > .icon {
     color: var(--el-menu-active-color) !important;
