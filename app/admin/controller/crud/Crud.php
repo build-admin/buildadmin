@@ -449,6 +449,12 @@ class Crud extends Backend
             'config',
             'admin_log',
             // 不建议生成crud的表
+            'user',
+            'admin',
+            'admin_group',
+            'user_group',
+            'user_rule',
+            'menu_rule',
             'user_money_log',
             'user_score_log',
         ];
