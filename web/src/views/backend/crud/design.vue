@@ -26,7 +26,10 @@
                         <el-button type="primary" :loading="state.loading.generate" @click="onGenerate" v-blur>
                             {{ t('crud.crud.Generate CRUD code') }}
                         </el-button>
-                        <el-button @click="onAbandonDesign" type="danger" v-blur>{{ t('crud.crud.give up') }}</el-button>
+                        <el-button @click="onAbandonDesign" type="danger" v-blur>{{
+                                t('crud.crud.give up')
+                            }}
+                        </el-button>
                     </div>
                 </div>
             </el-row>
@@ -34,7 +37,8 @@
                 <div v-if="state.showHeaderSeniorConfig" class="header-senior-config-box">
                     <div class="header-senior-config-form">
                         <el-form-item :label-width="140" :label="t('crud.crud.Table Quick Search Fields')">
-                            <el-select :clearable="true" :multiple="true" class="w100" v-model="state.table.quickSearchField" placement="bottom">
+                            <el-select :clearable="true" :multiple="true" class="w100"
+                                       v-model="state.table.quickSearchField" placement="bottom">
                                 <el-option
                                     v-for="(item, idx) in state.fields"
                                     :key="idx"
@@ -44,7 +48,8 @@
                             </el-select>
                         </el-form-item>
                         <div class="default-sort-field-box">
-                            <el-form-item :label-width="140" class="default-sort-field" :label="t('crud.crud.Table Default Sort Fields')">
+                            <el-form-item :label-width="140" class="default-sort-field"
+                                          :label="t('crud.crud.Table Default Sort Fields')">
                                 <el-select :clearable="true" v-model="state.table.defaultSortField" placement="bottom">
                                     <el-option
                                         v-for="(item, idx) in state.fields"
@@ -65,7 +70,8 @@
                             />
                         </div>
                         <el-form-item :label-width="140" :label="t('crud.crud.Fields as Table Columns')">
-                            <el-select :clearable="true" :multiple="true" class="w100" v-model="state.table.columnFields" placement="bottom">
+                            <el-select :clearable="true" :multiple="true" class="w100"
+                                       v-model="state.table.columnFields" placement="bottom">
                                 <el-option
                                     v-for="(item, idx) in state.fields"
                                     :key="idx"
@@ -75,7 +81,8 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item :label-width="140" :label="t('crud.crud.Fields as form items')">
-                            <el-select :clearable="true" :multiple="true" class="w100" v-model="state.table.formFields" placement="bottom">
+                            <el-select :clearable="true" :multiple="true" class="w100" v-model="state.table.formFields"
+                                       placement="bottom">
                                 <el-option
                                     v-for="(item, idx) in state.fields"
                                     :key="idx"
@@ -131,32 +138,37 @@
         </div>
         <el-row v-loading="state.loading.init" class="fields-box" :gutter="20">
             <el-col :xs="24" :span="6">
-                <el-collapse class="field-collapse" v-model="state.fieldCollapseName">
-                    <el-collapse-item :title="t('crud.crud.Common Fields')" name="common">
-                        <div class="field-box" :ref="tabsRefs.set">
-                            <div v-for="(field, index) in fieldItem.common" :key="index" class="field-item">
-                                <span>{{ field.title }}</span>
-                            </div>
-                        </div>
-                    </el-collapse-item>
-                    <el-collapse-item :title="t('crud.crud.Base Fields')" name="base">
-                        <div class="field-box" :ref="tabsRefs.set">
-                            <div v-for="(field, index) in fieldItem.base" :key="index" class="field-item">
-                                <span>{{ field.title }}</span>
-                            </div>
-                        </div>
-                    </el-collapse-item>
-                    <el-collapse-item :title="t('crud.crud.Advanced Fields')" name="senior">
-                        <div class="field-box" :ref="tabsRefs.set">
-                            <div v-for="(field, index) in fieldItem.senior" :key="index" class="field-item">
-                                <span>{{ field.title }}</span>
-                            </div>
-                        </div>
-                    </el-collapse-item>
-                </el-collapse>
+                <div style="height: calc(100vh - 200px);">
+                    <el-scrollbar>
+                        <el-collapse class="field-collapse" v-model="state.fieldCollapseName">
+                            <el-collapse-item :title="t('crud.crud.Common Fields')" name="common">
+                                <div class="field-box" :ref="tabsRefs.set">
+                                    <div v-for="(field, index) in fieldItem.common" :key="index" class="field-item">
+                                        <span>{{ field.title }}</span>
+                                    </div>
+                                </div>
+                            </el-collapse-item>
+                            <el-collapse-item :title="t('crud.crud.Base Fields')" name="base">
+                                <div class="field-box" :ref="tabsRefs.set">
+                                    <div v-for="(field, index) in fieldItem.base" :key="index" class="field-item">
+                                        <span>{{ field.title }}</span>
+                                    </div>
+                                </div>
+                            </el-collapse-item>
+                            <el-collapse-item :title="t('crud.crud.Advanced Fields')" name="senior">
+                                <div class="field-box" :ref="tabsRefs.set">
+                                    <div v-for="(field, index) in fieldItem.senior" :key="index" class="field-item">
+                                        <span>{{ field.title }}</span>
+                                    </div>
+                                </div>
+                            </el-collapse-item>
+                        </el-collapse>
+                    </el-scrollbar>
+                </div>
             </el-col>
             <el-col :xs="24" :span="12">
-                <div ref="designWindowRef" class="design-window ba-scroll-style" :class="state.fields.length ? '' : 'design-window-empty'">
+                <div ref="designWindowRef" class="design-window ba-scroll-style"
+                     :class="state.fields.length ? '' : 'design-window-empty'">
                     <div
                         v-for="(field, index) in state.fields"
                         :key="index"
@@ -199,10 +211,10 @@
                                 v-blur
                                 circle
                             >
-                                <Icon color="var(--el-color-white)" size="15" name="fa fa-pencil icon" />
+                                <Icon color="var(--el-color-white)" size="15" name="fa fa-pencil icon"/>
                             </el-button>
                             <el-button @click.stop="onDelField(index)" type="danger" size="small" v-blur circle>
-                                <Icon color="var(--el-color-white)" size="15" name="fa fa-trash" />
+                                <Icon color="var(--el-color-white)" size="15" name="fa fa-trash"/>
                             </el-button>
                         </div>
                     </div>
@@ -226,7 +238,8 @@
                                     v-model="state.fields[state.activateField].designType"
                                     placement="bottom"
                                 >
-                                    <el-option v-for="(item, idx) in designTypes" :key="idx" :label="item.name" :value="idx" />
+                                    <el-option v-for="(item, idx) in designTypes" :key="idx" :label="item.name"
+                                               :value="idx"/>
                                 </el-select>
                             </el-form-item>
                             <FormItem
@@ -253,10 +266,12 @@
                                 }"
                             />
                             <template v-if="state.fields[state.activateField].dataType">
-                                <FormItem :label="t('crud.crud.Field Type')" type="textarea" v-model="state.fields[state.activateField].dataType" />
+                                <FormItem :label="t('crud.crud.Field Type')" type="textarea"
+                                          v-model="state.fields[state.activateField].dataType"/>
                             </template>
                             <template v-else>
-                                <FormItem :label="t('crud.crud.Field Type')" type="string" v-model="state.fields[state.activateField].type" />
+                                <FormItem :label="t('crud.crud.Field Type')" type="string"
+                                          v-model="state.fields[state.activateField].type"/>
                                 <div class="field-inline">
                                     <FormItem
                                         :label="t('crud.crud.length')"
@@ -305,7 +320,10 @@
                                 />
                             </div>
                             <template v-if="!isEmpty(state.fields[state.activateField].table)">
-                                <el-divider content-position="left">{{ t('crud.crud.Field Table Properties') }}</el-divider>
+                                <el-divider content-position="left">{{
+                                        t('crud.crud.Field Table Properties')
+                                    }}
+                                </el-divider>
                                 <template v-for="(item, idx) in state.fields[state.activateField].table" :key="idx">
                                     <FormItem
                                         :label="$t('crud.crud.' + idx)"
@@ -320,7 +338,10 @@
                                 </template>
                             </template>
                             <template v-if="!isEmpty(state.fields[state.activateField].form)">
-                                <el-divider content-position="left">{{ t('crud.crud.Field Form Properties') }}</el-divider>
+                                <el-divider content-position="left">{{
+                                        t('crud.crud.Field Form Properties')
+                                    }}
+                                </el-divider>
                                 <template v-for="(item, idx) in state.fields[state.activateField].form" :key="idx">
                                     <FormItem
                                         :label="$t('crud.crud.' + idx)"
@@ -458,7 +479,7 @@
                     center
                     type="error"
                 />
-                <br />
+                <br/>
                 <el-alert
                     v-if="state.confirmGenerate.table"
                     :title="
@@ -483,24 +504,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, nextTick } from 'vue'
+import {ref, reactive, onMounted, nextTick} from 'vue'
 import BaInput from '/@/components/baInput/index.vue'
 import FormItem from '/@/components/formItem/index.vue'
-import { fieldItem, designTypes, tableFieldsKey } from '/@/views/backend/crud/index'
-import type { FieldItem } from '/@/views/backend/crud/index'
-import { cloneDeep, range, isEmpty } from 'lodash-es'
-import Sortable, { SortableEvent } from 'sortablejs'
-import { useTemplateRefsList } from '@vueuse/core'
-import { changeStep, state as crudState, getTableAttr } from '/@/views/backend/crud/index'
-import { ElNotification, FormItemRule, FormInstance, ElMessageBox } from 'element-plus'
-import { getDatabaseList, getFileData, generateCheck, generate, parseFieldData, postLogStart } from '/@/api/backend/crud'
-import { getTableFieldList } from '/@/api/common'
-import { buildValidatorData, regularVarName } from '/@/utils/validate'
-import { getArrayKey } from '/@/utils/common'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+import {fieldItem, designTypes, tableFieldsKey} from '/@/views/backend/crud/index'
+import type {FieldItem} from '/@/views/backend/crud/index'
+import {cloneDeep, range, isEmpty} from 'lodash-es'
+import Sortable, {SortableEvent} from 'sortablejs'
+import {useTemplateRefsList} from '@vueuse/core'
+import {changeStep, state as crudState, getTableAttr} from '/@/views/backend/crud/index'
+import {ElNotification, FormItemRule, FormInstance, ElMessageBox} from 'element-plus'
+import {getDatabaseList, getFileData, generateCheck, generate, parseFieldData, postLogStart} from '/@/api/backend/crud'
+import {getTableFieldList} from '/@/api/common'
+import {buildValidatorData, regularVarName} from '/@/utils/validate'
+import {getArrayKey} from '/@/utils/common'
+import {useRouter} from 'vue-router'
+import {useI18n} from 'vue-i18n'
 
-const { t } = useI18n()
+const {t} = useI18n()
 const router = useRouter()
 const designWindowRef = ref()
 const formRef = ref<FormInstance>()
@@ -728,7 +749,7 @@ const onGenerate = () => {
         if (!regularVarName(item.name)) {
             msg = t(
                 'crud.crud.Field name is invalid It starts with a letter or underscore and cannot contain any character other than letters, digits, or underscores',
-                { field: item.name }
+                {field: item.name}
             )
             return true
         }
@@ -788,7 +809,8 @@ const onAbandonDesign = () => {
         .then(() => {
             changeStep('start')
         })
-        .catch(() => {})
+        .catch(() => {
+        })
 }
 
 interface SortableEvt extends SortableEvent {
@@ -1078,11 +1100,11 @@ const resetRemoteSelectForm = () => {
 }
 
 const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reactive({
-    table: [buildValidatorData({ name: 'required', title: t('crud.crud.remote-table') })],
-    pk: [buildValidatorData({ name: 'required', title: t('crud.crud.Drop down value field') })],
-    label: [buildValidatorData({ name: 'required', title: t('crud.crud.Drop down label field') })],
-    joinField: [buildValidatorData({ name: 'required', title: t('crud.crud.Fields displayed in the table') })],
-    controllerFile: [buildValidatorData({ name: 'required', title: t('crud.crud.Controller position') })],
+    table: [buildValidatorData({name: 'required', title: t('crud.crud.remote-table')})],
+    pk: [buildValidatorData({name: 'required', title: t('crud.crud.Drop down value field')})],
+    label: [buildValidatorData({name: 'required', title: t('crud.crud.Drop down label field')})],
+    joinField: [buildValidatorData({name: 'required', title: t('crud.crud.Fields displayed in the table')})],
+    controllerFile: [buildValidatorData({name: 'required', title: t('crud.crud.Controller position')})],
 })
 </script>
 
@@ -1090,23 +1112,29 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
 .form-item-position-right {
     display: flex !important;
     align-items: center;
+
     :deep(.el-form-item__label) {
         margin-bottom: 0 !important;
     }
 }
+
 .default-main {
     margin-bottom: 0;
 }
+
 .mr-20 {
     margin-right: 20px;
 }
+
 .field-collapse :deep(.el-collapse-item__header) {
     padding-left: 10px;
     user-select: none;
 }
+
 .field-box {
     padding: 10px;
 }
+
 .field-item {
     display: inline-block;
     padding: 4px 18px;
@@ -1115,12 +1143,15 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
     margin: 6px;
     cursor: pointer;
     user-select: none;
+
     &:hover {
         border-color: var(--el-color-primary);
     }
 }
+
 .header-config-box {
     position: relative;
+
     .header-senior-config {
         display: flex;
         align-items: center;
@@ -1138,22 +1169,27 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
         color: var(--el-color-info);
         cursor: pointer;
         user-select: none;
+
         .senior-config-arrow-icon {
             margin-left: 4px;
         }
     }
 }
+
 .header-senior-config-box {
     width: 100%;
     padding: 10px;
     background-color: var(--ba-bg-color-overlay);
 }
+
 .header-senior-config-form {
     width: 50%;
+
     :deep(.el-form-item__label) {
         justify-content: flex-start;
     }
 }
+
 .header-box {
     display: flex;
     align-items: center;
@@ -1161,6 +1197,7 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
     padding: 10px;
     background-color: var(--ba-bg-color-overlay);
     border-radius: var(--el-border-radius-base);
+
     .header,
     .header-item-box {
         display: flex;
@@ -1168,38 +1205,49 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
         align-items: center;
         justify-content: center;
         white-space: nowrap;
+
         :deep(.el-form-item) {
             margin-bottom: 0;
         }
     }
+
     .header-item-box {
         width: 50%;
     }
+
     .table-name-item {
         flex: 3;
     }
+
     .table-comment-item {
         flex: 4;
     }
+
     .header-right {
         margin-left: auto;
     }
 }
+
 .default-sort-field-box {
     display: flex;
+
     .default-sort-field {
         flex: 6;
     }
+
     .default-sort-field-type {
         flex: 3;
     }
 }
+
 .fields-box {
     margin-top: 36px;
 }
+
 .design-window.design-window-empty {
     border: 1px dashed var(--el-border-color);
 }
+
 .design-field-empty {
     display: flex;
     height: 100%;
@@ -1208,11 +1256,13 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
     align-items: center;
     justify-content: center;
 }
+
 .design-window {
     overflow-x: auto;
     height: calc(100vh - 200px);
     border-radius: var(--el-border-radius-base);
     background-color: var(--ba-bg-color-overlay);
+
     .design-field-box {
         display: flex;
         padding: 10px;
@@ -1222,45 +1272,57 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
         margin-bottom: 2px;
         cursor: pointer;
         user-select: none;
+
         .design-field {
             padding-right: 10px;
         }
+
         .design-field-name-input {
             width: 200px;
         }
+
         .design-field-name-comment {
             width: 100px;
         }
+
         .design-field-right {
             margin-left: auto;
         }
+
         &:hover {
             border-color: var(--el-color-primary);
         }
     }
+
     .design-field-box.activate {
         border-color: var(--el-color-primary);
     }
 }
+
 .field-inline {
     display: flex;
+
     :deep(.el-form-item) {
         width: 46%;
         margin-right: 2%;
     }
 }
+
 .field-config {
     overflow-x: auto;
     height: calc(100vh - 200px);
     padding: 20px;
     background-color: var(--ba-bg-color-overlay);
 }
+
 :deep(.confirm-generate-dialog) .el-dialog__body {
     height: unset;
 }
+
 .confirm-generate-dialog-body {
     padding: 30px;
 }
+
 .confirm-generate-dialog-footer {
     display: flex;
     align-items: center;
