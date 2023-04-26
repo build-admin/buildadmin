@@ -11,12 +11,14 @@
                 <Icon name="fa fa-refresh" />
             </el-button>
         </el-tooltip>
-        <el-tooltip v-if="props.buttons.includes('add') && auth('add')" :content="t('add')" placement="top">
-            <el-button v-blur @click="onAction('add')" class="table-header-operate" type="primary">
-                <Icon name="fa fa-plus" />
-                <span class="table-header-operate-text">{{ t('add') }}</span>
-            </el-button>
-        </el-tooltip>
+        <slot name="add_button">
+            <el-tooltip v-if="props.buttons.includes('add') && auth('add')" :content="t('add')" placement="top">
+                <el-button v-blur @click="onAction('add')" class="table-header-operate" type="primary">
+                    <Icon name="fa fa-plus"/>
+                    <span class="table-header-operate-text">{{ t('add') }}</span>
+                </el-button>
+            </el-tooltip>
+        </slot>
         <el-tooltip v-if="props.buttons.includes('edit') && auth('edit')" :content="t('Edit selected row')" placement="top">
             <el-button v-blur @click="onAction('edit')" :disabled="!enableBatchOpt" class="table-header-operate" type="primary">
                 <Icon name="fa fa-pencil" />
