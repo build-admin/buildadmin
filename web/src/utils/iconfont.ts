@@ -2,9 +2,17 @@ import { nextTick } from 'vue'
 import { loadCss, loadJs } from './common'
 import * as elIcons from '@element-plus/icons-vue'
 
+/**
+ * 动态的加载样式表，以实现：获取样式表内容（图标名称列表等）
+ */
 const cssUrls: Array<string> = [
-    '//at.alicdn.com/t/font_3135462_5axiswmtpj.css', // 示例链接，建议替换
-    '//cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
+    '//at.alicdn.com/t/font_3135462_5axiswmtpj.css',
+
+    // font-awesome 图标库CDN地址，任取其一即可，若图标无法显示，可尝试更换CDN地址
+    // 1. Bootstrap 中文网同款
+    // '//cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
+    // 2. cdnjs
+    '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
 ]
 const jsUrls: Array<string> = []
 
