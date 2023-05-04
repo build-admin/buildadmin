@@ -78,7 +78,7 @@ export function getAwesomeIconfontNames() {
     return new Promise<string[]>((resolve, reject) => {
         nextTick(() => {
             const iconfonts = []
-            const sheets = getStylesFromDomain('cdn.bootcdn.net/ajax/libs/font-awesome/')
+            const sheets = getStylesFromDomain('/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
             for (const key in sheets) {
                 const rules: any = sheets[key].cssRules
                 for (const k in rules) {
