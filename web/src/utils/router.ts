@@ -94,7 +94,7 @@ export const handleMemberCenterRoute = (routes: any) => {
     const viewsComponent = import.meta.glob('/src/views/frontend/**/*.vue')
     addRouteAll(viewsComponent, routes, memberCenterBaseRoute.name as string)
     const menuMemberCenterBaseRoute = '/' + (memberCenterBaseRoute.name as string) + '/'
-    const menuRule = handleMenuRule(routes, menuMemberCenterBaseRoute, menuMemberCenterBaseRoute)
+    const menuRule = handleMenuRule(routes, menuMemberCenterBaseRoute, menuMemberCenterBaseRoute, 'user')
 
     const memberCenter = useMemberCenter()
     memberCenter.setViewRoutes(menuRule)
@@ -146,7 +146,7 @@ const handleMenuRule = (routes: any, pathPrefix = '/', parent = '/', module = 'a
             const currentPath = routes[key].menu_type == 'link' || routes[key].menu_type == 'iframe' ? routes[key].url : pathPrefix + routes[key].path
             let children: RouteRecordRaw[] = []
             if (routes[key].children && routes[key].children.length > 0) {
-                children = handleMenuRule(routes[key].children, pathPrefix, currentPath)
+                children = handleMenuRule(routes[key].children, pathPrefix, currentPath, module)
             }
             menuRule.push({
                 path: currentPath,
