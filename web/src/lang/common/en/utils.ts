@@ -26,6 +26,7 @@ export default {
     'Please install editor': 'Please install editor',
     // 输入框类型
     mobile: 'Mobile Number',
+    'Id number': 'Id Number',
     account: 'Account name',
     password: 'password',
     'variable name': 'Variable Name',

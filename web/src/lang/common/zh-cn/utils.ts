@@ -26,6 +26,7 @@ export default {
     'Please install editor': '请先于模块市场安装富文本编辑器。',
     // 输入框类型
     mobile: '手机号',
+    'Id number': '身份证号',
     account: '账户名',
     password: '密码',
     'variable name': '变量名',
