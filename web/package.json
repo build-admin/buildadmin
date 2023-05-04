@@ -36,7 +36,7 @@
         "@types/sortablejs": "^1.15.1",
         "@typescript-eslint/eslint-plugin": "^5.59.0",
         "@typescript-eslint/parser": "^5.59.0",
-        "@vitejs/plugin-vue": "~4.1.0",
+        "@vitejs/plugin-vue": "~4.2.1",
         "async-validator": "^4.2.5",
         "dotenv": "~16.0.3",
         "eslint": "^8.38.0",
@@ -45,7 +45,7 @@
         "prettier": "^2.8.7",
         "sass": "^1.62.0",
         "typescript": "^5.0.4",
-        "vite": "~4.2.1",
+        "vite": "~4.3.4",
         "vue-eslint-parser": "^9.1.1"
     }
 }
