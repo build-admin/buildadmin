@@ -65,6 +65,7 @@ export default {
     'Generated Controller Location': 'Generated Controller Location',
     'Generated Data Model Location': 'Generated Data Model Location',
     'Generated Validator Location': 'Generated Validator Location',
+    'Common model': 'Common model',
     'WEB end view directory': 'WEB end view directory',
     'Advanced Configuration': 'Advanced Configuration',
     'Common Fields': 'Common Fields',

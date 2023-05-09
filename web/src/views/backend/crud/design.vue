@@ -104,14 +104,20 @@
                                 'label-width': 140,
                             }"
                         />
-                        <FormItem
-                            :label="t('crud.crud.Generated Data Model Location')"
-                            v-model="state.table.modelFile"
-                            type="string"
-                            :attr="{
-                                'label-width': 140,
-                            }"
-                        />
+                        <el-form-item :label="t('crud.crud.Generated Data Model Location')" :label-width="140">
+                            <el-input v-model="state.table.modelFile" type="string">
+                                <template #append>
+                                    <el-checkbox
+                                        @change="onChangeCommonModel"
+                                        v-model="state.table.isCommonModel"
+                                        :label="t('crud.crud.Common model')"
+                                        size="small"
+                                        :true-label="1"
+                                        :false-label="0"
+                                    />
+                                </template>
+                            </el-input>
+                        </el-form-item>
                         <FormItem
                             :label="t('crud.crud.Generated Validator Location')"
                             v-model="state.table.validateFile"
@@ -533,6 +539,7 @@ const state: {
         columnFields: string[]
         defaultSortType: string
         generateRelativePath: string
+        isCommonModel: number
         modelFile: string
         controllerFile: string
         validateFile: string
@@ -580,6 +587,7 @@ const state: {
         columnFields: [],
         defaultSortType: 'desc',
         generateRelativePath: '',
+        isCommonModel: 0,
         modelFile: '',
         controllerFile: '',
         validateFile: '',
@@ -634,7 +642,7 @@ const onFieldDesignTypeChange = () => {
 const onFieldNameChange = (val: string) => {
     for (const key in tableFieldsKey) {
         for (const idx in state.table[tableFieldsKey[key] as TableKey] as string[]) {
-            if (!getArrayKey(state.fields, 'name', state.table[tableFieldsKey[key] as TableKey][idx])) {
+            if (!getArrayKey(state.fields, 'name', (state.table[tableFieldsKey[key] as TableKey] as string[])[idx])) {
                 ;(state.table[tableFieldsKey[key] as TableKey] as string[])[idx] = val
             }
         }
@@ -869,6 +877,7 @@ const loadData = () => {
         postLogStart(parseInt(crudState.startData.logId))
             .then((res) => {
                 state.table = res.data.table
+                state.table.isCommonModel = parseInt(res.data.table.isCommonModel)
                 const fields = res.data.fields
                 for (const key in fields) {
                     const field = handleFieldAttr(cloneDeep(fields[key]))
@@ -1002,13 +1011,17 @@ onMounted(() => {
 
 const onTableChange = (val: string) => {
     if (!val) return
-    getFileData(val).then((res) => {
+    getFileData(val, state.table.isCommonModel).then((res) => {
         state.table.modelFile = res.data.modelFile
         state.table.controllerFile = res.data.controllerFile
         state.table.validateFile = res.data.validateFile
         state.table.webViewsDir = res.data.webViewsDir
         state.table.generateRelativePath = val.replaceAll('/', '\\')
     })
+}
+
+const onChangeCommonModel = () => {
+    onTableChange(state.table.generateRelativePath)
 }
 
 const onJoinTableChange = (val: string) => {

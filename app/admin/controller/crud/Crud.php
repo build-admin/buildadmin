@@ -87,7 +87,7 @@ class Crud extends Backend
             $tableComment = mb_substr($table['comment'], -1) == '表' ? mb_substr($table['comment'], 0, -1) . '管理' : $table['comment'];
 
             // 生成文件信息解析
-            $modelFile      = Helper::parseNameData('admin', $tableName, 'model', $table['modelFile']);
+            $modelFile      = Helper::parseNameData($table['isCommonModel'] ? 'common' : 'admin', $tableName, 'model', $table['modelFile']);
             $validateFile   = Helper::parseNameData('admin', $tableName, 'validate', $table['validateFile']);
             $controllerFile = Helper::parseNameData('admin', $tableName, 'controller', $table['controllerFile']);
             $webViewsDir    = Helper::parseWebDirNameData($tableName, 'views', $table['webViewsDir']);
@@ -326,14 +326,15 @@ class Crud extends Backend
 
     public function getFileData()
     {
-        $table = $this->request->get('table');
+        $table       = $this->request->get('table');
+        $commonModel = $this->request->get('commonModel/b');
 
         if (!$table) {
             $this->error(__('Parameter error'));
         }
 
         try {
-            $modelFile      = Helper::parseNameData('admin', $table, 'model');
+            $modelFile      = Helper::parseNameData($commonModel ? 'common' : 'admin', $table, 'model');
             $validateFile   = Helper::parseNameData('admin', $table, 'validate');
             $controllerFile = Helper::parseNameData('admin', $table, 'controller');
             $webViewsDir    = Helper::parseWebDirNameData($table, 'views');

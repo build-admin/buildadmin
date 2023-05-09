@@ -22,12 +22,13 @@ export function getDatabaseList() {
     })
 }
 
-export function getFileData(table: string) {
+export function getFileData(table: string, commonModel = 0) {
     return createAxios({
         url: controllerUrl + 'getFileData',
         method: 'get',
         params: {
             table: table,
+            commonModel: commonModel,
         },
     })
 }

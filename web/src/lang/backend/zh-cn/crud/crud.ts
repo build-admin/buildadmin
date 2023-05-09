@@ -65,6 +65,7 @@ export default {
     'Generated Data Model Location': '生成的数据模型位置',
     'Generated Validator Location': '生成的验证器位置',
     'WEB end view directory': 'WEB端视图目录',
+    'Common model': '公共模型',
     'Advanced Configuration': '高级配置',
     'Common Fields': '常用字段',
     'Base Fields': '基础字段',
