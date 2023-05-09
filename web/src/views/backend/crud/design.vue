@@ -85,6 +85,18 @@
                             </el-select>
                         </el-form-item>
                         <FormItem
+                            :label="t('crud.crud.The relative path to the generated code')"
+                            v-model="state.table.generateRelativePath"
+                            type="string"
+                            :attr="{
+                                'label-width': 140,
+                            }"
+                            :input-attr="{
+                                onChange: onTableChange,
+                            }"
+                            :placeholder="t('crud.crud.For quick combination code generation location, please fill in the relative path')"
+                        />
+                        <FormItem
                             :label="t('crud.crud.Generated Controller Location')"
                             v-model="state.table.controllerFile"
                             type="string"
@@ -520,6 +532,7 @@ const state: {
         formFields: string[]
         columnFields: string[]
         defaultSortType: string
+        generateRelativePath: string
         modelFile: string
         controllerFile: string
         validateFile: string
@@ -566,6 +579,7 @@ const state: {
         formFields: [],
         columnFields: [],
         defaultSortType: 'desc',
+        generateRelativePath: '',
         modelFile: '',
         controllerFile: '',
         validateFile: '',
@@ -993,6 +1007,7 @@ const onTableChange = (val: string) => {
         state.table.controllerFile = res.data.controllerFile
         state.table.validateFile = res.data.validateFile
         state.table.webViewsDir = res.data.webViewsDir
+        state.table.generateRelativePath = val.replaceAll('/', '\\')
     })
 }
 

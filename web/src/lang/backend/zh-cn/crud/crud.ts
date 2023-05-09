@@ -59,6 +59,8 @@ export default {
     'sort order desc': 'desc-倒序',
     'Fields as Table Columns': '作为表格列的字段',
     'Fields as form items': '作为表单项的字段',
+    'The relative path to the generated code': '生成代码的相对位置',
+    'For quick combination code generation location, please fill in the relative path': '快速的组合代码生成位置，请填写相对路径',
     'Generated Controller Location': '生成的控制器位置',
     'Generated Data Model Location': '生成的数据模型位置',
     'Generated Validator Location': '生成的验证器位置',

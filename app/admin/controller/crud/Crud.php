@@ -87,11 +87,11 @@ class Crud extends Backend
             $tableComment = mb_substr($table['comment'], -1) == '表' ? mb_substr($table['comment'], 0, -1) . '管理' : $table['comment'];
 
             // 生成文件信息解析
-            $modelFile      = Helper::parseNameData('admin', $tableName, '', 'model', $table['modelFile']);
-            $validateFile   = Helper::parseNameData('admin', $tableName, '', 'validate', $table['validateFile']);
-            $controllerFile = Helper::parseNameData('admin', $tableName, '', 'controller', $table['controllerFile']);
-            $webViewsDir    = Helper::parseWebDirNameData($tableName, '', 'views', $table['webViewsDir']);
-            $webLangDir     = Helper::parseWebDirNameData($tableName, '', 'lang', $table['webViewsDir']);
+            $modelFile      = Helper::parseNameData('admin', $tableName, 'model', $table['modelFile']);
+            $validateFile   = Helper::parseNameData('admin', $tableName, 'validate', $table['validateFile']);
+            $controllerFile = Helper::parseNameData('admin', $tableName, 'controller', $table['controllerFile']);
+            $webViewsDir    = Helper::parseWebDirNameData($tableName, 'views', $table['webViewsDir']);
+            $webLangDir     = Helper::parseWebDirNameData($tableName, 'lang', $table['webViewsDir']);
 
             // 语言翻译前缀
             $this->webTranslate = implode('.', $webLangDir['lang']) . '.';
@@ -292,7 +292,7 @@ class Crud extends Backend
         if (!$info) {
             $this->error(__('Record not found'));
         }
-        $webLangDir = Helper::parseWebDirNameData($info['table']['name'], '', 'lang', $info['table']['webViewsDir']);
+        $webLangDir = Helper::parseWebDirNameData($info['table']['name'], 'lang', $info['table']['webViewsDir']);
         $files      = [
             $webLangDir['en'] . '.ts',
             $webLangDir['zh-cn'] . '.ts',
@@ -333,10 +333,10 @@ class Crud extends Backend
         }
 
         try {
-            $modelFile      = Helper::parseNameData('admin', $table, '', 'model');
-            $validateFile   = Helper::parseNameData('admin', $table, '', 'validate');
-            $controllerFile = Helper::parseNameData('admin', $table, '', 'controller');
-            $webViewsDir    = Helper::parseWebDirNameData($table, '', 'views');
+            $modelFile      = Helper::parseNameData('admin', $table, 'model');
+            $validateFile   = Helper::parseNameData('admin', $table, 'validate');
+            $controllerFile = Helper::parseNameData('admin', $table, 'controller');
+            $webViewsDir    = Helper::parseWebDirNameData($table, 'views');
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
@@ -418,7 +418,7 @@ class Crud extends Backend
 
         try {
             if (!$controllerFile) {
-                $controllerFile = Helper::parseNameData('admin', $table, '', 'controller')['rootFileName'];
+                $controllerFile = Helper::parseNameData('admin', $table, 'controller')['rootFileName'];
             }
         } catch (Exception $e) {
             $this->error($e->getMessage());
@@ -486,7 +486,7 @@ class Crud extends Backend
 
             // 建立关联模型代码文件
             if (!$field['form']['remote-model'] || !file_exists(root_path() . $field['form']['remote-model'])) {
-                $joinModelFile = Helper::parseNameData('admin', $tableName, '', 'model', $field['form']['remote-model']);
+                $joinModelFile = Helper::parseNameData('admin', $tableName, 'model', $field['form']['remote-model']);
                 if (!file_exists(root_path() . $joinModelFile['rootFileName'])) {
                     $joinModelData['append']             = [];
                     $joinModelData['methods']            = [];

@@ -59,6 +59,9 @@ export default {
     'sort order desc': 'desc',
     'Fields as Table Columns': 'Fields as Table Columns',
     'Fields as form items': 'Fields as form items',
+    'The relative path to the generated code': 'The relative path to the generated code',
+    'For quick combination code generation location, please fill in the relative path':
+        'For quick combination code generation location, please fill in the relative path',
     'Generated Controller Location': 'Generated Controller Location',
     'Generated Data Model Location': 'Generated Data Model Location',
     'Generated Validator Location': 'Generated Validator Location',

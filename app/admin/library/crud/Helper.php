@@ -301,7 +301,7 @@ class Helper
         return [$pk];
     }
 
-    public static function parseNameData($app, $table, $name, $type, $value = ''): array
+    public static function parseNameData($app, $table, $type, $value = ''): array
     {
         $pathArr = [];
         if ($value) {
@@ -318,24 +318,17 @@ class Helper
                     $pathArr[] = $item;
                 }
             }
-            $originalLastName = array_pop($pathArr);
-            $lastName         = ucfirst($originalLastName);
         } else {
-            if (!$name) {
-                if (isset(self::$parseNamePresets[$type]) && array_key_exists($table, self::$parseNamePresets[$type])) {
-                    $pathArr          = self::$parseNamePresets[$type][$table];
-                    $originalLastName = array_pop($pathArr);
-                    $lastName         = ucfirst($originalLastName);
-                } else {
-                    $originalLastName = $lastName = parse_name($table, 1);
-                }
+            if (isset(self::$parseNamePresets[$type]) && array_key_exists($table, self::$parseNamePresets[$type])) {
+                $pathArr = self::$parseNamePresets[$type][$table];
             } else {
-                $name             = str_replace(['.', '/', '\\', '_'], '/', $name);
-                $pathArr          = explode('/', $name);
-                $originalLastName = array_pop($pathArr);
-                $lastName         = ucfirst($originalLastName);
+                $table   = str_replace(['.', '/', '\\', '_'], '/', $table);
+                $pathArr = explode('/', $table);
             }
         }
+        $originalLastName = array_pop($pathArr);
+        $pathArr          = array_map('strtolower', $pathArr);
+        $lastName         = ucfirst($originalLastName);
 
         // 类名不能为内部关键字
         if (in_array(strtolower($originalLastName), self::$reservedKeywords)) {
@@ -357,7 +350,7 @@ class Helper
         ];
     }
 
-    public static function parseWebDirNameData($table, $name, $type, $value = ''): array
+    public static function parseWebDirNameData($table, $type, $value = ''): array
     {
         $pathArr = [];
         if ($value) {
@@ -378,24 +371,17 @@ class Helper
                     $pathArr[] = $item;
                 }
             }
-            $originalLastName = array_pop($pathArr);
-            $lastName         = lcfirst($originalLastName);
         } else {
-            if (!$name) {
-                if (array_key_exists($table, self::$parseWebDirPresets[$type])) {
-                    $pathArr          = self::$parseWebDirPresets[$type][$table];
-                    $originalLastName = array_pop($pathArr);
-                    $lastName         = lcfirst($originalLastName);
-                } else {
-                    $originalLastName = $lastName = parse_name($table, 1, false);
-                }
+            if (array_key_exists($table, self::$parseWebDirPresets[$type])) {
+                $pathArr = self::$parseWebDirPresets[$type][$table];
             } else {
-                $name             = str_replace(['.', '/', '\\', '_'], '/', $name);
-                $pathArr          = explode('/', $name);
-                $originalLastName = array_pop($pathArr);
-                $lastName         = lcfirst($originalLastName);
+                $table   = str_replace(['.', '/', '\\', '_'], '/', $table);
+                $pathArr = explode('/', $table);
             }
         }
+        $originalLastName = array_pop($pathArr);
+        $pathArr          = array_map('strtolower', $pathArr);
+        $lastName         = lcfirst($originalLastName);
 
         $webDir['path']             = $pathArr;
         $webDir['lastName']         = $lastName;
