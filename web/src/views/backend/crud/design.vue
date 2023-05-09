@@ -90,11 +90,11 @@
                             type="string"
                             :attr="{
                                 'label-width': 140,
+                                'block-help': t('crud.crud.For quick combination code generation location, please fill in the relative path'),
                             }"
                             :input-attr="{
                                 onChange: onTableChange,
                             }"
-                            :placeholder="t('crud.crud.For quick combination code generation location, please fill in the relative path')"
                         />
                         <FormItem
                             :label="t('crud.crud.Generated Controller Location')"
