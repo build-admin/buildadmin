@@ -49,22 +49,12 @@ export async function loadLang(app: App) {
     }
 
     /*
-     * 0、加载页面语言包 import.meta.glob 的路径不能使用变量 import() 在 Vite 中目录名不能使用变量(编译后,文件名可以)
-     * 1、暂时兼容以前的版本，加载 /@/lang/pages 内的所有文件，将在 v1.1.5 废弃，同时框架已经不再内置该文件夹
+     * 加载页面语言包 import.meta.glob 的路径不能使用变量 import() 在 Vite 中目录名不能使用变量(编译后,文件名可以)
      */
-    let localeMessage = {}
     if (locale == 'zh-cn') {
-        localeMessage = getLangFileMessage(import.meta.glob('./pages/zh-cn/**/*.ts', { eager: true }), locale)
         assignLocale[locale].push(getLangFileMessage(import.meta.glob('./common/zh-cn/**/*.ts', { eager: true }), locale))
     } else if (locale == 'en') {
-        localeMessage = getLangFileMessage(import.meta.glob('./pages/en/**/*.ts', { eager: true }), locale)
         assignLocale[locale].push(getLangFileMessage(import.meta.glob('./common/en/**/*.ts', { eager: true }), locale))
-    }
-    assignLocale[locale].push(localeMessage)
-    if (!isEmpty(localeMessage)) {
-        console.warn(
-            '从 BuildAdmin v1.1.2 版本开始，已经可以实现语言包的按需加载，我们对 /@/lang 目录的结构进行了修改，不再使用 pages 目录，您应该移动其内语言包文件到正确的位置并删除该目录，请参考：https://wonderful-code.gitee.io/guide/other/incompatibleUpdate/v112.html'
-        )
     }
 
     const messages = {
