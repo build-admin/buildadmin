@@ -41,8 +41,7 @@ class Config extends Model
     {
         if (!isset($row['type'])) return $value;
         if (in_array($row['type'], $this->jsonDecodeType)) {
-            $arr = json_decode($value, true);
-            return $arr ?: [];
+            return empty($value) ? [] : json_decode($value, true);
         } elseif ($row['type'] == 'switch') {
             return (bool)$value;
         } elseif ($row['type'] == 'editor') {
