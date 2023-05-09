@@ -299,7 +299,16 @@ export class baTableApi {
 
     postData(action: string, data: anyObj) {
         if (!this.actionUrl.has(action)) {
-            throw new Error('action does not exist')
+             return createAxios(
+                {
+                    url: this.controllerUrl + action,
+                    method: 'post',
+                    data: data,
+                },
+                {
+                    showSuccessMessage: true,
+                }
+            )
         }
         return createAxios(
             {
