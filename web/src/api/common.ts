@@ -298,21 +298,9 @@ export class baTableApi {
     }
 
     postData(action: string, data: anyObj) {
-        if (!this.actionUrl.has(action)) {
-             return createAxios(
-                {
-                    url: this.controllerUrl + action,
-                    method: 'post',
-                    data: data,
-                },
-                {
-                    showSuccessMessage: true,
-                }
-            )
-        }
         return createAxios(
             {
-                url: this.actionUrl.get(action),
+                url: this.actionUrl.has(action) ? this.actionUrl.get(action) : this.controllerUrl + action,
                 method: 'post',
                 data: data,
             },
