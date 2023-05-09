@@ -21,6 +21,7 @@
             >
                 <el-form
                     ref="formRef"
+                    @submit.prevent=""
                     @keyup.enter="baTable.onSubmit(formRef)"
                     :model="baTable.form.items"
                     label-position="right"
