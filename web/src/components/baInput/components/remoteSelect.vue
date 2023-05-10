@@ -233,6 +233,24 @@ watch(
         }
     }
 )
+
+const getSelectRef = () => {
+    return selectRef.value
+}
+
+const focus = () => {
+    selectRef.value?.focus()
+}
+
+const blur = () => {
+    selectRef.value?.blur()
+}
+
+defineExpose({
+    blur,
+    focus,
+    getSelectRef,
+})
 </script>
 
 <style scoped lang="scss">
