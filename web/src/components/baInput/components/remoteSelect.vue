@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, onMounted, ref, nextTick, getCurrentInstance, toRaw } from 'vue'
+import { reactive, watch, onMounted, onUnmounted, ref, nextTick, getCurrentInstance, toRaw } from 'vue'
 import { getSelectData } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import type { ElSelect } from 'element-plus'
@@ -106,6 +106,7 @@ const state: {
     accidentBlur: false,
 })
 
+let io: null | IntersectionObserver = null
 const instance = getCurrentInstance()
 
 const emits = defineEmits<{
@@ -222,6 +223,21 @@ onMounted(() => {
         state.primaryKey = pk[1] ? pk[1] : pk[0]
     }
     initDefaultValue()
+
+    setTimeout(() => {
+        if (window?.IntersectionObserver) {
+            io = new IntersectionObserver((entries) => {
+                for (const key in entries) {
+                    if (!entries[key].isIntersecting) selectRef.value?.blur()
+                }
+            })
+            io.observe(selectRef.value?.$el)
+        }
+    }, 500)
+})
+
+onUnmounted(() => {
+    io?.disconnect()
 })
 
 watch(
