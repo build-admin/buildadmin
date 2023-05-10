@@ -43,11 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, onMounted, ref, nextTick } from 'vue'
+import { reactive, watch, onMounted, ref, nextTick, getCurrentInstance, toRaw } from 'vue'
 import { getSelectData } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import type { ElSelect } from 'element-plus'
 import { isEmpty } from 'lodash-es'
+import { getArrayKey } from '/@/utils/common'
 
 const selectRef = ref<InstanceType<typeof ElSelect> | undefined>()
 type valType = string | number | string[] | number[]
@@ -105,12 +106,28 @@ const state: {
     accidentBlur: false,
 })
 
+const instance = getCurrentInstance()
+
 const emits = defineEmits<{
     (e: 'update:modelValue', value: valType): void
+    (e: 'row', value: any): void
 }>()
 
 const onChangeSelect = (val: valType) => {
     emits('update:modelValue', val)
+    if (typeof instance?.vnode.props?.onRow == 'function') {
+        if (typeof val == 'number' || typeof val == 'string') {
+            const dataKey = getArrayKey(state.options, props.pk, val.toString())
+            emits('row', dataKey ? toRaw(state.options[dataKey]) : {})
+        } else {
+            const valueArr = []
+            for (const key in val) {
+                let dataKey = getArrayKey(state.options, props.pk, val[key].toString())
+                if (dataKey) valueArr.push(toRaw(state.options[dataKey]))
+            }
+            emits('row', valueArr)
+        }
+    }
 }
 
 const onVisibleChange = (val: boolean) => {
