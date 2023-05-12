@@ -256,12 +256,12 @@ export const addRouteItem = (viewsComponent: Record<string, any>, route: any, pa
     }
 }
 
-export const handleHeadNav = (rules: anyObj) => {
+export const handleHeadNav = (rules: anyObj, prefix = '/') => {
     const headNav: HeadNav[] = []
     for (const key in rules) {
         let children: HeadNav[] = []
         if (rules[key].children && rules[key].children.length > 0) {
-            children = handleHeadNav(rules[key].children)
+            children = handleHeadNav(rules[key].children, prefix)
         }
 
         if (rules[key].type == 'nav') {
@@ -272,6 +272,7 @@ export const handleHeadNav = (rules: anyObj) => {
                 meta: {
                     type: rules[key].menu_type,
                 },
+                path: prefix + rules[key].path,
                 children: children,
             })
         }
