@@ -8,6 +8,7 @@ import { closeShade } from '/@/utils/pageShade'
 import { adminBaseRoute, memberCenterBaseRoute } from '/@/router/static'
 import { i18n } from '/@/lang/index'
 import { isAdminApp } from '/@/utils/common'
+import { HeadNav } from '/@/stores/interface'
 
 /**
  * 导航失败有错误消息的路由push
@@ -89,16 +90,29 @@ export const onClickMenu = (menu: RouteRecordRaw) => {
 
 /**
  * 处理会员中心的路由
+ * 会员中心虽然也是前台的路由，但需要动态注册的路由是根据登录会员的权限来的，所以需要单独处理
  */
 export const handleMemberCenterRoute = (routes: any) => {
     const viewsComponent = import.meta.glob('/src/views/frontend/**/*.vue')
     addRouteAll(viewsComponent, routes, memberCenterBaseRoute.name as string)
     const menuMemberCenterBaseRoute = '/' + (memberCenterBaseRoute.name as string) + '/'
-    const menuRule = handleMenuRule(routes, menuMemberCenterBaseRoute, menuMemberCenterBaseRoute, 'user')
+    const menuRule = handleMenuRule(routes, menuMemberCenterBaseRoute, 'user')
 
     const memberCenter = useMemberCenter()
     memberCenter.setViewRoutes(menuRule)
     memberCenter.setShowHeadline(routes.length > 1 ? true : false)
+    memberCenter.mergeAuthNode(handleAuthNode(routes, menuMemberCenterBaseRoute))
+}
+
+/**
+ * 处理前台的路由
+ */
+export const handleFrontendRoute = (routes: any) => {
+    const viewsComponent = import.meta.glob('/src/views/frontend/**/*.vue')
+    addRouteAll(viewsComponent, routes, '')
+
+    const memberCenter = useMemberCenter()
+    memberCenter.mergeAuthNode(handleAuthNode(routes, '/'))
 }
 
 /**
@@ -108,11 +122,12 @@ export const handleAdminRoute = (routes: any) => {
     const viewsComponent = import.meta.glob('/src/views/backend/**/*.vue')
     addRouteAll(viewsComponent, routes, adminBaseRoute.name as string)
     const menuAdminBaseRoute = '/' + (adminBaseRoute.name as string) + '/'
-    const menuRule = handleMenuRule(routes, menuAdminBaseRoute, menuAdminBaseRoute)
+    const menuRule = handleMenuRule(routes, menuAdminBaseRoute, 'admin')
 
     // 更新stores中的路由菜单数据
     const navTabs = useNavTabs()
     navTabs.setTabsViewRoutes(menuRule)
+    navTabs.fillAuthNode(handleAuthNode(routes, menuAdminBaseRoute))
 }
 
 /**
@@ -130,11 +145,10 @@ export const getMenuPaths = (menus: RouteRecordRaw[]): string[] => {
 }
 
 /**
- * 菜单处理
+ * 会员中心和后台的菜单处理
  */
-const handleMenuRule = (routes: any, pathPrefix = '/', parent = '/', module = 'admin') => {
+const handleMenuRule = (routes: any, pathPrefix = '/', module = 'admin') => {
     const menuRule: RouteRecordRaw[] = []
-    const authNode: string[] = []
     for (const key in routes) {
         if (routes[key].extend == 'add_rules_only') {
             continue
@@ -146,7 +160,7 @@ const handleMenuRule = (routes: any, pathPrefix = '/', parent = '/', module = 'a
             const currentPath = routes[key].menu_type == 'link' || routes[key].menu_type == 'iframe' ? routes[key].url : pathPrefix + routes[key].path
             let children: RouteRecordRaw[] = []
             if (routes[key].children && routes[key].children.length > 0) {
-                children = handleMenuRule(routes[key].children, pathPrefix, currentPath, module)
+                children = handleMenuRule(routes[key].children, pathPrefix, module)
             }
             menuRule.push({
                 path: currentPath,
@@ -160,21 +174,33 @@ const handleMenuRule = (routes: any, pathPrefix = '/', parent = '/', module = 'a
                 },
                 children: children,
             })
-        } else {
-            // 权限节点
-            authNode.push(pathPrefix + routes[key].name)
-        }
-    }
-    if (authNode.length) {
-        if (module == 'admin') {
-            const navTabs = useNavTabs()
-            navTabs.setAuthNode(parent, authNode)
-        } else if (module == 'user') {
-            const memberCenter = useMemberCenter()
-            memberCenter.setAuthNode(parent, authNode)
         }
     }
     return menuRule
+}
+
+/**
+ * 处理权限节点
+ * @param routes 路由数据
+ * @param prefix 节点前缀
+ * @returns 组装好的权限节点
+ */
+const handleAuthNode = (routes: any, prefix = '/') => {
+    const authNode: Map<string, string[]> = new Map([])
+    assembleAuthNode(routes, authNode, prefix, prefix)
+    return authNode
+}
+const assembleAuthNode = (routes: any, authNode: Map<string, string[]>, prefix = '/', parent = '/') => {
+    const authNodeTemp = []
+    for (const key in routes) {
+        if (routes[key].type == 'button') authNodeTemp.push(prefix + routes[key].name)
+        if (routes[key].children && routes[key].children.length > 0) {
+            assembleAuthNode(routes[key].children, authNode, prefix, prefix + routes[key].name)
+        }
+    }
+    if (authNodeTemp && authNodeTemp.length > 0) {
+        authNode.set(parent, authNodeTemp)
+    }
 }
 
 /**
@@ -185,10 +211,7 @@ export const addRouteAll = (viewsComponent: Record<string, any>, routes: any, pa
         if (routes[idx].extend == 'add_menu_only') {
             continue
         }
-        if (
-            routes[idx].type == 'menu' &&
-            ((routes[idx].menu_type == 'tab' && viewsComponent[routes[idx].component]) || routes[idx].menu_type == 'iframe')
-        ) {
+        if ((routes[idx].menu_type == 'tab' && viewsComponent[routes[idx].component]) || routes[idx].menu_type == 'iframe') {
             addRouteItem(viewsComponent, routes[idx], parentName)
         }
 
@@ -231,4 +254,27 @@ export const addRouteItem = (viewsComponent: Record<string, any>, route: any, pa
     } else {
         router.addRoute(routeBaseInfo)
     }
+}
+
+export const handleHeadNav = (rules: anyObj) => {
+    const headNav: HeadNav[] = []
+    for (const key in rules) {
+        let children: HeadNav[] = []
+        if (rules[key].children && rules[key].children.length > 0) {
+            children = handleHeadNav(rules[key].children)
+        }
+
+        if (rules[key].type == 'nav') {
+            if ('link' == rules[key].menu_type) rules[key].path = rules[key].url
+            if ('iframe' == rules[key].menu_type) rules[key].path = '/user/iframe/' + encodeURIComponent(rules[key].url)
+            headNav.push({
+                ...rules[key],
+                meta: {
+                    type: rules[key].menu_type,
+                },
+                children: children,
+            })
+        }
+    }
+    return headNav
 }

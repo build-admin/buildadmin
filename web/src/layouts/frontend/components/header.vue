@@ -12,6 +12,28 @@
                 <el-menu :default-active="state.activeMenu" class="frontend-header-menu" mode="horizontal" :ellipsis="false">
                     <el-menu-item @click="router.push({ name: '/' })" v-blur index="index">{{ $t('Home') }}</el-menu-item>
 
+                    <template v-for="(item, idx) in siteConfig.headNav" :key="idx">
+                        <template v-if="!isEmpty(item.children)">
+                            <el-sub-menu v-blur :index="`column-${item.id}`">
+                                <template #title>{{ item.title }}</template>
+                                <el-menu-item
+                                    v-for="(subItem, subIndex) in item.children"
+                                    :key="subIndex"
+                                    @click="onClickMenu(subItem)"
+                                    v-blur
+                                    :index="'column-' + subItem.id"
+                                >
+                                    {{ subItem.title }}
+                                </el-menu-item>
+                            </el-sub-menu>
+                        </template>
+                        <template v-else>
+                            <el-menu-item @click="onClickMenu(item)" v-blur :index="'column-' + item.id">
+                                {{ item.title }}
+                            </el-menu-item>
+                        </template>
+                    </template>
+
                     <template v-if="memberCenter.state.open">
                         <el-sub-menu v-if="userInfo.isLogin()" v-blur index="user">
                             <template #title>
@@ -73,6 +95,8 @@ import Aside from '/@/layouts/frontend/components/aside.vue'
 import DarkSwitch from '/@/layouts/common/components/darkSwitch.vue'
 import toggleDark from '/@/utils/useDark'
 import { fullUrl } from '/@/utils/common'
+import { isEmpty } from 'lodash-es'
+import { onClickMenu } from '/@/utils/router'
 
 const state = reactive({
     activeMenu: '',
@@ -94,6 +118,9 @@ switch (route.name) {
         break
 }
 
+/**
+ * 前端初始化请求，获取站点配置信息，动态路由信息等
+ */
 index()
 </script>
 

@@ -77,11 +77,15 @@ export const useNavTabs = defineStore(
             state.authNode.set(key, data)
         }
 
+        const fillAuthNode = (data: Map<string, string[]>) => {
+            state.authNode = data
+        }
+
         const setFullScreen = (fullScreen: boolean): void => {
             state.tabFullScreen = fullScreen
         }
 
-        return { state, addTab, closeTab, closeTabs, setActiveRoute, setTabsViewRoutes, setAuthNode, setFullScreen }
+        return { state, addTab, closeTab, closeTabs, setActiveRoute, setTabsViewRoutes, setAuthNode, fillAuthNode, setFullScreen }
     },
     {
         persist: {

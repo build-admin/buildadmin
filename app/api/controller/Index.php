@@ -2,6 +2,8 @@
 
 namespace app\api\controller;
 
+use ba\Tree;
+use think\facade\Db;
 use think\facade\Config;
 use app\common\controller\Frontend;
 
@@ -16,6 +18,25 @@ class Index extends Frontend
 
     public function index()
     {
+        if ($this->auth->isLogin()) {
+            $rule = $this->auth->getMenus();
+
+            // 首页加载的规则，验权，但过滤掉会员中心菜单
+            foreach ($rule as $key => $item) {
+                if (in_array($item['type'], ['menu_dir', 'menu'])) unset($rule[$key]);
+            }
+            $rule = array_values($rule);
+        } else {
+            $rule = Db::name('user_rule')
+                ->where('status', '1')
+                ->where('no_login_valid', 1)
+                ->where('type', 'in', ['route', 'nav', 'button'])
+                ->order('weigh', 'desc')
+                ->select()
+                ->toArray();
+            $rule = Tree::instance()->assembleChild($rule);
+        }
+
         $this->success('', [
             'site'             => [
                 'siteName'     => get_sys_config('site_name'),
@@ -25,6 +46,7 @@ class Index extends Frontend
                 'upload'       => get_upload_config(),
             ],
             'openMemberCenter' => Config::get('buildadmin.open_member_center'),
+            'rules'            => $rule
         ]);
     }
 }

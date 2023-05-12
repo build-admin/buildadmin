@@ -27,6 +27,10 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         state.authNode.set(key, data)
     }
 
+    const mergeAuthNode = (authNode: Map<string, string[]>) => {
+        state.authNode = new Map([...state.authNode, ...authNode])
+    }
+
     const setViewRoutes = (data: RouteRecordRaw[]): void => {
         state.viewRoutes = encodeRoutesURI(data)
     }
@@ -55,7 +59,18 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         state.menuExpand = expand
     }
 
-    return { state, setAuthNode, setViewRoutes, setShowHeadline, setActiveRoute, setShrink, setStatus, setLayoutMode, toggleMenuExpand }
+    return {
+        state,
+        setAuthNode,
+        mergeAuthNode,
+        setViewRoutes,
+        setShowHeadline,
+        setActiveRoute,
+        setShrink,
+        setStatus,
+        setLayoutMode,
+        toggleMenuExpand,
+    }
 })
 
 function encodeRoutesURI(data: RouteRecordRaw[]) {

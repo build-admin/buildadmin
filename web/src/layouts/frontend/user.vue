@@ -32,6 +32,9 @@ onMounted(async () => {
 
     if (!userInfo.token) return router.push({ name: 'userLogin' })
 
+    /**
+     * 会员中心初始化请求，获取会员中心菜单信息等
+     */
     index().then((res) => {
         res.data.userInfo.refreshToken = userInfo.refreshToken
         userInfo.dataFill(res.data.userInfo)

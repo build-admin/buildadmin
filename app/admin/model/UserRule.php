@@ -20,4 +20,10 @@ class UserRule extends model
         $pk = $model->getPk();
         $model->where($pk, $model[$pk])->update(['weigh' => $model[$pk]]);
     }
+
+    public function setComponentAttr($value)
+    {
+        if ($value) $value = str_replace('\\', '/', $value);
+        return $value;
+    }
 }

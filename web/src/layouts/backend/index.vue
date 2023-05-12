@@ -43,6 +43,9 @@ onBeforeMount(() => {
 })
 
 const init = () => {
+    /**
+     * 后台初始化请求，获取站点配置，动态路由等信息
+     */
     index().then((res) => {
         siteConfig.dataFill(res.data.siteConfig)
         terminal.changePort(res.data.terminal.installServicePort)

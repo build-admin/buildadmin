@@ -106,6 +106,19 @@ export interface Terminal {
     port: string
 }
 
+export interface HeadNav {
+    id: number
+    name: string
+    type: string
+    path: string
+    title: string
+    url: string
+    meta: {
+        type: 'tab' | 'link' | 'iframe'
+    }
+    children: HeadNav[]
+}
+
 export interface SiteConfig {
     siteName: string
     recordNumber?: string
@@ -120,4 +133,5 @@ export interface SiteConfig {
         url?: string
         params?: anyObj
     }
+    headNav: HeadNav[]
 }

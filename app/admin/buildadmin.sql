@@ -527,7 +527,7 @@ DROP TABLE IF EXISTS `__PREFIX__user_rule`;
 CREATE TABLE `__PREFIX__user_rule` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
     `pid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '上级菜单',
-    `type` enum('route','menu_dir','menu') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'menu' COMMENT '类型:route=路由,menu_dir=菜单目录,menu=菜单项',
+    `type` enum('route','menu_dir','menu','nav','button') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'menu' COMMENT '类型:route=路由,menu_dir=菜单目录,menu=菜单项,nav=顶栏菜单项,button=页面按钮',
     `title` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '标题',
     `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '规则名称',
     `path` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '路由路径',
@@ -535,6 +535,7 @@ CREATE TABLE `__PREFIX__user_rule` (
     `menu_type` enum('tab','link','iframe') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'tab' COMMENT '菜单类型:tab=选项卡,link=链接,iframe=Iframe',
     `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Url',
     `component` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '组件路径',
+    `no_login_valid` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '未登录有效:0=否,1=是',
     `extend` enum('none','add_rules_only','add_menu_only') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'none' COMMENT '扩展属性:none=无,add_rules_only=只添加为路由,add_menu_only=只添加为菜单',
     `remark` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '备注',
     `weigh` int(10) NOT NULL DEFAULT '0' COMMENT '权重(排序)',
