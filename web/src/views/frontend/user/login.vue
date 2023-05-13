@@ -220,7 +220,7 @@
                             </el-col>
                             <el-col class="captcha-box" :span="8">
                                 <el-button
-                                    @click="sendRetrieveCaptcha(retrieveFormRef)"
+                                    @click="sendRetrieveCaptchaPre"
                                     :loading="state.sendCaptchaLoading"
                                     :disabled="state.codeSendCountdown <= 0 ? false : true"
                                     type="primary"
@@ -446,21 +446,26 @@ const sendRegisterCaptcha = (captchaInfo: string) => {
         })
 }
 
-const sendRetrieveCaptcha = (formRef: FormInstance | undefined = undefined) => {
+const sendRetrieveCaptchaPre = () => {
     if (state.codeSendCountdown > 0) return
-    formRef!.validateField('account').then((valid) => {
-        if (valid) {
-            state.sendCaptchaLoading = true
-            const func = state.retrievePasswordForm.type == 'email' ? sendEms : sendSms
-            func(state.retrievePasswordForm.account, 'user_retrieve_pwd')
-                .then((res) => {
-                    if (res.code == 1) startTiming(60)
-                })
-                .finally(() => {
-                    state.sendCaptchaLoading = false
-                })
-        }
+    retrieveFormRef.value!.validateField('account').then((valid) => {
+        if (!valid) return
+        clickCaptcha(state.form.captchaId, (captchaInfo: string) => sendRetrieveCaptcha(captchaInfo))
     })
+}
+const sendRetrieveCaptcha = (captchaInfo: string) => {
+    state.sendCaptchaLoading = true
+    const func = state.retrievePasswordForm.type == 'email' ? sendEms : sendSms
+    func(state.retrievePasswordForm.account, 'user_retrieve_pwd', {
+        captchaInfo,
+        captchaId: state.form.captchaId,
+    })
+        .then((res) => {
+            if (res.code == 1) startTiming(60)
+        })
+        .finally(() => {
+            state.sendCaptchaLoading = false
+        })
 }
 
 const switchTab = (formRef: FormInstance | undefined = undefined, tab: 'login' | 'register') => {
