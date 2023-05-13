@@ -127,16 +127,17 @@
                         </el-col>
                         <el-col class="captcha-box" :span="6">
                             <el-button
-                                @click="sendVerificationCaptcha(verificationFormRef)"
+                                @click="sendVerificationCaptchaPre"
                                 :loading="state.dialog.sendCaptchaLoading"
                                 :disabled="state.dialog.codeSendCountdown <= 0 ? false : true"
                                 type="primary"
-                                >{{
+                            >
+                                {{
                                     state.dialog.codeSendCountdown <= 0
                                         ? t('user.account.profile.send')
                                         : state.dialog.codeSendCountdown + t('user.account.profile.seconds')
-                                }}</el-button
-                            >
+                                }}
+                            </el-button>
                         </el-col>
                     </el-row>
                 </el-form-item>
@@ -206,16 +207,17 @@
                         </el-col>
                         <el-col class="captcha-box" :span="6">
                             <el-button
-                                @click="sendBindCaptcha(bindFormRef)"
+                                @click="sendBindCaptchaPre"
                                 :loading="state.dialog.sendCaptchaLoading"
                                 :disabled="state.dialog.codeSendCountdown <= 0 ? false : true"
                                 type="primary"
-                                >{{
+                            >
+                                {{
                                     state.dialog.codeSendCountdown <= 0
                                         ? t('user.account.profile.send')
                                         : state.dialog.codeSendCountdown + t('user.account.profile.seconds')
-                                }}</el-button
-                            >
+                                }}
+                            </el-button>
                         </el-col>
                     </el-row>
                 </el-form-item>
@@ -244,6 +246,8 @@ import { getProfile, postProfile, postVerification, postChangeBind } from '/@/ap
 import UserProfileMixin from '/@/components/mixins/userProfile.vue'
 import { useI18n } from 'vue-i18n'
 import { sendEms, sendSms } from '/@/api/common'
+import { uuid } from '/@/utils/random'
+import clickCaptcha from '/@/components/clickCaptcha'
 let timer: number
 
 const { t } = useI18n()
@@ -263,6 +267,7 @@ const state: {
         submitLoading: boolean
         sendCaptchaLoading: boolean
         codeSendCountdown: number
+        captchaId: string
         verification: {
             show: boolean
             rules: Partial<Record<string, FormItemRule[]>>
@@ -297,6 +302,7 @@ const state: {
         submitLoading: false,
         sendCaptchaLoading: false,
         codeSendCountdown: 0,
+        captchaId: uuid(),
         verification: {
             show: false,
             rules: {
@@ -362,40 +368,49 @@ const onChangeBindInfo = (type: 'email' | 'mobile') => {
     state.dialog.type = type
 }
 
-const sendVerificationCaptcha = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
+const sendVerificationCaptchaPre = () => {
     if (state.dialog.codeSendCountdown > 0) return
-    formEl.validateField('password').then((res) => {
-        if (res) {
-            state.dialog.sendCaptchaLoading = true
-            const func = state.dialog.type == 'email' ? sendEms : sendSms
-            func(userInfo[state.dialog.type], `user_${state.dialog.type}_verify`, { password: state.dialog.verification.form.password })
-                .then((res) => {
-                    if (res.code == 1) startTiming(60)
-                })
-                .finally(() => {
-                    state.dialog.sendCaptchaLoading = false
-                })
-        }
+    verificationFormRef.value!.validateField('password').then((res) => {
+        if (!res) return
+        clickCaptcha(state.dialog.captchaId, (captchaInfo: string) => sendVerificationCaptcha(captchaInfo))
     })
 }
-
-const sendBindCaptcha = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    if (state.dialog.codeSendCountdown > 0) return
-    formEl.validateField(state.dialog.type).then((res) => {
-        if (res) {
-            state.dialog.sendCaptchaLoading = true
-            const func = state.dialog.type == 'email' ? sendEms : sendSms
-            func(state.dialog.bind.form[state.dialog.type], `user_change_${state.dialog.type}`)
-                .then((res) => {
-                    if (res.code == 1) startTiming(60)
-                })
-                .finally(() => {
-                    state.dialog.sendCaptchaLoading = false
-                })
-        }
+const sendVerificationCaptcha = (captchaInfo: string) => {
+    state.dialog.sendCaptchaLoading = true
+    const func = state.dialog.type == 'email' ? sendEms : sendSms
+    func(userInfo[state.dialog.type], `user_${state.dialog.type}_verify`, {
+        password: state.dialog.verification.form.password,
+        captchaId: state.dialog.captchaId,
+        captchaInfo,
     })
+        .then((res) => {
+            if (res.code == 1) startTiming(60)
+        })
+        .finally(() => {
+            state.dialog.sendCaptchaLoading = false
+        })
+}
+
+const sendBindCaptchaPre = () => {
+    if (state.dialog.codeSendCountdown > 0) return
+    bindFormRef.value!.validateField(state.dialog.type).then((res) => {
+        if (!res) return
+        clickCaptcha(state.dialog.captchaId, (captchaInfo: string) => sendBindCaptcha(captchaInfo))
+    })
+}
+const sendBindCaptcha = (captchaInfo: string) => {
+    state.dialog.sendCaptchaLoading = true
+    const func = state.dialog.type == 'email' ? sendEms : sendSms
+    func(state.dialog.bind.form[state.dialog.type], `user_change_${state.dialog.type}`, {
+        captchaId: state.dialog.captchaId,
+        captchaInfo,
+    })
+        .then((res) => {
+            if (res.code == 1) startTiming(60)
+        })
+        .finally(() => {
+            state.dialog.sendCaptchaLoading = false
+        })
 }
 
 const onSubmitVerification = (formEl: FormInstance | undefined) => {
