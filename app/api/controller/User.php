@@ -2,6 +2,7 @@
 
 namespace app\api\controller;
 
+use ba\Captcha;
 use ba\ClickCaptcha;
 use think\facade\Config;
 use app\common\facade\Token;
@@ -70,13 +71,14 @@ class User extends Frontend
                 $this->error($e->getMessage());
             }
 
-            $captchaObj = new ClickCaptcha();
             if ($params['tab'] == 'login') {
+                $captchaObj = new ClickCaptcha();
                 if (!$captchaObj->check($params['captchaId'], $params['captchaInfo'])) {
                     $this->error(__('Captcha error'));
                 }
                 $res = $this->auth->login($params['username'], $params['password'], (bool)$params['keep']);
             } elseif ($params['tab'] == 'register') {
+                $captchaObj = new Captcha();
                 if (!$captchaObj->check($params['captcha'], ($params['registerType'] == 'email' ? $params['email'] : $params['mobile']) . 'user_register')) {
                     $this->error(__('Please enter the correct verification code'));
                 }

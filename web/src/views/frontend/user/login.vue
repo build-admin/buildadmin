@@ -111,7 +111,7 @@
                                         <el-col class="captcha-box" :span="8">
                                             <el-button
                                                 size="large"
-                                                @click="sendRegisterCaptcha(formRef)"
+                                                @click="sendRegisterCaptchaPre"
                                                 :loading="state.sendCaptchaLoading"
                                                 :disabled="state.codeSendCountdown <= 0 ? false : true"
                                                 type="primary"
@@ -385,10 +385,14 @@ const resize = () => {
 const onSubmitPre = () => {
     formRef.value?.validate((valid) => {
         if (!valid) return
-        clickCaptcha(state.form.captchaId, (captchaInfo: string) => onSubmit(captchaInfo))
+        if (state.form.tab == 'login') {
+            clickCaptcha(state.form.captchaId, (captchaInfo: string) => onSubmit(captchaInfo))
+        } else {
+            onSubmit()
+        }
     })
 }
-const onSubmit = (captchaInfo: string) => {
+const onSubmit = (captchaInfo = '') => {
     state.formLoading = true
     state.form.captchaInfo = captchaInfo
     checkIn('post', state.form)
@@ -420,21 +424,26 @@ const onSubmitRetrieve = (formRef: FormInstance | undefined = undefined) => {
     })
 }
 
-const sendRegisterCaptcha = (formRef: FormInstance | undefined = undefined) => {
+const sendRegisterCaptchaPre = () => {
     if (state.codeSendCountdown > 0) return
-    formRef!.validateField([state.form.registerType, 'username', 'password']).then((valid) => {
-        if (valid) {
-            state.sendCaptchaLoading = true
-            const func = state.form.registerType == 'email' ? sendEms : sendSms
-            func(state.form[state.form.registerType], 'user_register')
-                .then((res) => {
-                    if (res.code == 1) startTiming(60)
-                })
-                .finally(() => {
-                    state.sendCaptchaLoading = false
-                })
-        }
+    formRef.value!.validateField([state.form.registerType, 'username', 'password']).then((valid) => {
+        if (!valid) return
+        clickCaptcha(state.form.captchaId, (captchaInfo: string) => sendRegisterCaptcha(captchaInfo))
     })
+}
+const sendRegisterCaptcha = (captchaInfo: string) => {
+    state.sendCaptchaLoading = true
+    const func = state.form.registerType == 'email' ? sendEms : sendSms
+    func(state.form[state.form.registerType], 'user_register', {
+        captchaInfo,
+        captchaId: state.form.captchaId,
+    })
+        .then((res) => {
+            if (res.code == 1) startTiming(60)
+        })
+        .finally(() => {
+            state.sendCaptchaLoading = false
+        })
 }
 
 const sendRetrieveCaptcha = (formRef: FormInstance | undefined = undefined) => {
