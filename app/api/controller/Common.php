@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use ba\Captcha;
+use ba\ClickCaptcha;
 use ba\Random;
 use app\common\facade\Token;
 use app\common\controller\Api;
@@ -23,6 +24,23 @@ class Common extends Api
 
         $captcha = new Captcha($config);
         return $captcha->entry($captchaId);
+    }
+
+    public function clickCaptcha()
+    {
+        $id      = $this->request->request('id/s');
+        $captcha = new ClickCaptcha();
+        $this->success('', $captcha->creat($id));
+    }
+
+    public function checkClickCaptcha()
+    {
+        $id      = $this->request->post('id/s');
+        $info    = $this->request->post('info/s');
+        $unset   = $this->request->post('unset/b', false);
+        $captcha = new ClickCaptcha();
+        if ($captcha->check($id, $info, $unset)) $this->success();
+        $this->error();
     }
 
     public function refreshToken()

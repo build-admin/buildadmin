@@ -124,6 +124,7 @@
 - [countUp](https://github.com/inorganik/countUp.js)
 - [Sortable](https://github.com/SortableJS/Sortable)
 - [v-code-diff](https://github.com/Shimada666/v-code-diff)
+- [clicaptcha](https://github.com/hooray/clicaptcha)
 
 ### 版权信息
 🔐 BuildAdmin 遵循`Apache2.0`开源协议发布，提供无需授权的免费使用。\

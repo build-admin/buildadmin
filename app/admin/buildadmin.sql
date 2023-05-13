@@ -148,11 +148,11 @@ CREATE TABLE `__PREFIX__attachment` (
 DROP TABLE IF EXISTS `__PREFIX__captcha`;
 CREATE TABLE `__PREFIX__captcha` (
     `key` varchar(32) NOT NULL DEFAULT '' COMMENT '验证码Key',
-    `code` varchar(32) NOT NULL DEFAULT '' COMMENT '验证码(加密后的,用于验证)',
-    `captcha` varchar(6) NOT NULL DEFAULT '' COMMENT '验证码(供UniApp安卓二次生成图片)',
+    `code` varchar(32) NOT NULL DEFAULT '' COMMENT '验证码(加密后)',
+    `captcha` text NULL COMMENT '验证码数据',
     `createtime` int(10) unsigned DEFAULT NULL COMMENT '创建时间',
     `expiretime` int(10) unsigned DEFAULT NULL COMMENT '过期时间',
-    PRIMARY KEY (`key`)
+    PRIMARY KEY (`key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='验证码表';
 
 -- ----------------------------

@@ -1,4 +1,8 @@
 export default {
+    'Captcha loading failed, please click refresh button': '验证码加载失败，请点击刷新按钮',
+    'The correct area is not clicked, please try again!': '未点中正确区域，请重试！',
+    'Verification is successful!': '验证成功！',
+    'Please click': '请依次点击',
     'Please enter the correct mobile number': '请输入正确的手机号',
     'Please enter the correct account': '要求3到15位，字母开头且只含字母、数字、下划线',
     'Please enter the correct password': '密码要求6到32位，不能包含 & < > " \'',
