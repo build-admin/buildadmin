@@ -18,15 +18,17 @@
                                             label="email"
                                             :disabled="!state.accountVerificationType.includes('email')"
                                             border
-                                            >{{ t('user.login.Via email') + t('user.login.register') }}</el-radio
                                         >
+                                            {{ t('user.login.Via email') + t('user.login.register') }}
+                                        </el-radio>
                                         <el-radio
                                             class="register-verification-radio"
                                             label="mobile"
                                             :disabled="!state.accountVerificationType.includes('mobile')"
                                             border
-                                            >{{ t('user.login.Via mobile number') + t('user.login.register') }}</el-radio
                                         >
+                                            {{ t('user.login.Via mobile number') + t('user.login.register') }}
+                                        </el-radio>
                                     </el-radio-group>
                                 </el-form-item>
 
@@ -140,12 +142,13 @@
                                                 :loading="state.sendCaptchaLoading"
                                                 :disabled="state.codeSendCountdown <= 0 ? false : true"
                                                 type="primary"
-                                                >{{
+                                            >
+                                                {{
                                                     state.codeSendCountdown <= 0
                                                         ? t('user.login.send')
                                                         : state.codeSendCountdown + t('user.login.seconds')
-                                                }}</el-button
-                                            >
+                                                }}
+                                            </el-button>
                                         </el-col>
                                     </el-row>
                                 </el-form-item>
@@ -178,8 +181,9 @@
                                         plain
                                         type="info"
                                         size="large"
-                                        >{{ t('user.login.Back to login') }}</el-button
                                     >
+                                        {{ t('user.login.Back to login') }}
+                                    </el-button>
                                     <el-button v-else @click="switchTab(formRef, 'register')" round plain type="info" size="large">
                                         {{ t('user.login.No account yet? Click Register') }}
                                     </el-button>
@@ -212,12 +216,12 @@
                 >
                     <el-form-item :label="t('user.login.Retrieval method')">
                         <el-radio-group v-model="state.retrievePasswordForm.type">
-                            <el-radio label="email" :disabled="!state.accountVerificationType.includes('email')" border>{{
-                                t('user.login.Via email')
-                            }}</el-radio>
-                            <el-radio label="mobile" :disabled="!state.accountVerificationType.includes('mobile')" border>{{
-                                t('user.login.Via mobile number')
-                            }}</el-radio>
+                            <el-radio label="email" :disabled="!state.accountVerificationType.includes('email')" border>
+                                {{ t('user.login.Via email') }}
+                            </el-radio>
+                            <el-radio label="mobile" :disabled="!state.accountVerificationType.includes('mobile')" border>
+                                {{ t('user.login.Via mobile number') }}
+                            </el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item prop="account" :label="state.retrievePasswordForm.type == 'email' ? t('user.login.email') : t('user.login.mobile')">
@@ -254,10 +258,9 @@
                                     :loading="state.sendCaptchaLoading"
                                     :disabled="state.codeSendCountdown <= 0 ? false : true"
                                     type="primary"
-                                    >{{
-                                        state.codeSendCountdown <= 0 ? t('user.login.send') : state.codeSendCountdown + t('user.login.seconds')
-                                    }}</el-button
                                 >
+                                    {{ state.codeSendCountdown <= 0 ? t('user.login.send') : state.codeSendCountdown + t('user.login.seconds') }}
+                                </el-button>
                             </el-col>
                         </el-row>
                     </el-form-item>
@@ -274,9 +277,9 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button @click="state.showRetrievePasswordDialog = false">{{ t('Cancel') }}</el-button>
-                        <el-button :loading="state.submitRetrieveLoading" @click="onSubmitRetrieve(retrieveFormRef)" type="primary">{{
-                            t('user.login.second')
-                        }}</el-button>
+                        <el-button :loading="state.submitRetrieveLoading" @click="onSubmitRetrieve(retrieveFormRef)" type="primary">
+                            {{ t('user.login.second') }}
+                        </el-button>
                     </el-form-item>
                 </el-form>
             </div>
