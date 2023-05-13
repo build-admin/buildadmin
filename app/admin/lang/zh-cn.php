@@ -10,6 +10,7 @@ return [
     'Captcha'                                                                             => '验证码',
     'CaptchaId'                                                                           => '验证码ID',
     'Please enter the correct verification code'                                          => '请输入正确的验证码！',
+    'Captcha error'                                                                       => '验证码错误！',
     'Parameter %s can not be empty'                                                       => '参数%s不能为空',
     'Record not found'                                                                    => '记录未找到',
     'No rows were added'                                                                  => '未添加任何行',

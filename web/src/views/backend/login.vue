@@ -23,7 +23,7 @@
                 <div class="form">
                     <img class="profile-avatar" src="~assets/avatar.png" alt="" />
                     <div class="content">
-                        <el-form @keyup.enter="onSubmit(formRef)" ref="formRef" :rules="rules" size="large" :model="form">
+                        <el-form @keyup.enter="onSubmitPre()" ref="formRef" :rules="rules" size="large" :model="form">
                             <el-form-item prop="username">
                                 <el-input
                                     ref="usernameRef"
@@ -50,35 +50,16 @@
                                     </template>
                                 </el-input>
                             </el-form-item>
-                            <el-form-item v-if="state.showCaptcha" prop="captcha">
-                                <el-row class="w100" :gutter="15">
-                                    <el-col :span="16">
-                                        <el-input
-                                            ref="captchaRef"
-                                            type="text"
-                                            :placeholder="t('login.Please enter the verification code')"
-                                            v-model="form.captcha"
-                                            clearable
-                                            autocomplete="off"
-                                        >
-                                            <template #prefix>
-                                                <Icon name="fa fa-ellipsis-h" class="form-item-icon" size="16" color="var(--el-input-icon-color)" />
-                                            </template>
-                                        </el-input>
-                                    </el-col>
-                                    <el-col :span="8">
-                                        <img
-                                            @click="onChangeCaptcha"
-                                            class="captcha-img"
-                                            :src="buildCaptchaUrl() + '&id=' + state.captchaId"
-                                            alt=""
-                                        />
-                                    </el-col>
-                                </el-row>
-                            </el-form-item>
                             <el-checkbox v-model="form.keep" :label="t('login.Hold session')" size="default"></el-checkbox>
                             <el-form-item>
-                                <el-button :loading="form.loading" class="submit-button" round type="primary" size="large" @click="onSubmit(formRef)">
+                                <el-button
+                                    :loading="state.submitLoading"
+                                    class="submit-button"
+                                    round
+                                    type="primary"
+                                    size="large"
+                                    @click="onSubmitPre()"
+                                >
                                     {{ t('login.Sign in') }}
                                 </el-button>
                             </el-form-item>
@@ -100,36 +81,28 @@ import { editDefaultLang } from '/@/lang/index'
 import { useConfig } from '/@/stores/config'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { login } from '/@/api/backend'
-import { buildCaptchaUrl } from '/@/api/common'
-import { uuid } from '../../utils/random'
+import { uuid } from '/@/utils/random'
 import { buildValidatorData } from '/@/utils/validate'
 import router from '/@/router'
+import clickCaptcha from '/@/components/clickCaptcha'
 var timer: NodeJS.Timer
 
 const config = useConfig()
 const adminInfo = useAdminInfo()
 
-const state = reactive({
-    showCaptcha: false,
-    captchaId: uuid(),
-})
-
-const onChangeCaptcha = () => {
-    form.captcha = ''
-    state.captchaId = uuid()
-}
-
 const formRef = ref<InstanceType<typeof ElForm>>()
 const usernameRef = ref<InstanceType<typeof ElInput>>()
 const passwordRef = ref<InstanceType<typeof ElInput>>()
-const captchaRef = ref<InstanceType<typeof ElInput>>()
+const state = reactive({
+    showCaptcha: false,
+    submitLoading: false,
+})
 const form = reactive({
     username: '',
     password: '',
-    captcha: '',
     keep: false,
-    loading: false,
-    captcha_id: '',
+    captchaId: uuid(),
+    captchaInfo: '',
 })
 
 const { t } = useI18n()
@@ -138,15 +111,6 @@ const { t } = useI18n()
 const rules = reactive({
     username: [buildValidatorData({ name: 'required', message: t('login.Please enter an account') }), buildValidatorData({ name: 'account' })],
     password: [buildValidatorData({ name: 'required', message: t('login.Please input a password') }), buildValidatorData({ name: 'password' })],
-    captcha: [
-        buildValidatorData({ name: 'required', title: t('login.Please enter the verification code') }),
-        {
-            min: 4,
-            max: 6,
-            message: t('login.The verification code length must be between 4 and 6 bits'),
-            trigger: 'blur',
-        },
-    ],
 })
 
 const focusInput = () => {
@@ -154,8 +118,6 @@ const focusInput = () => {
         usernameRef.value!.focus()
     } else if (form.password === '') {
         passwordRef.value!.focus()
-    } else if (form.captcha === '') {
-        captchaRef.value!.focus()
     }
 }
 
@@ -167,9 +129,7 @@ onMounted(() => {
     login('get')
         .then((res) => {
             state.showCaptcha = res.data.captcha
-            nextTick(() => {
-                focusInput()
-            })
+            nextTick(() => focusInput())
         })
         .catch((err) => {
             console.log(err)
@@ -181,31 +141,33 @@ onBeforeUnmount(() => {
     pageBubble.removeListeners()
 })
 
-const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
-    if (!formEl) return
-    formEl.validate((valid) => {
+const onSubmitPre = () => {
+    formRef.value?.validate((valid) => {
         if (valid) {
-            form.loading = true
-            form.captcha_id = state.captchaId
-            login('post', form)
-                .then((res) => {
-                    form.loading = false
-                    adminInfo.dataFill(res.data.userInfo)
-                    ElNotification({
-                        message: res.msg,
-                        type: 'success',
-                    })
-                    router.push({ path: res.data.routePath })
-                })
-                .catch(() => {
-                    onChangeCaptcha()
-                    form.loading = false
-                })
-        } else {
-            onChangeCaptcha()
-            return false
+            if (state.showCaptcha) {
+                clickCaptcha(form.captchaId, (captchaInfo: string) => onSubmit(captchaInfo))
+            } else {
+                onSubmit()
+            }
         }
     })
+}
+
+const onSubmit = (captchaInfo = '') => {
+    state.submitLoading = true
+    form.captchaInfo = captchaInfo
+    login('post', form)
+        .then((res) => {
+            adminInfo.dataFill(res.data.userInfo)
+            ElNotification({
+                message: res.msg,
+                type: 'success',
+            })
+            router.push({ path: res.data.routePath })
+        })
+        .finally(() => {
+            state.submitLoading = false
+        })
 }
 </script>
 
@@ -292,9 +254,6 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     display: flex;
     align-items: center;
 }
-.captcha-img {
-    width: 100%;
-}
 
 // 暗黑样式
 @at-root .dark {
@@ -316,9 +275,6 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
                 --el-button-border-color: rgba(240, 252, 241, 0.1);
             }
         }
-    }
-    .captcha-img {
-        filter: brightness(61%);
     }
 }
 @media screen and (max-height: 800px) {

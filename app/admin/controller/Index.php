@@ -4,7 +4,7 @@ declare (strict_types=1);
 namespace app\admin\controller;
 
 use app\common\facade\Token;
-use ba\Captcha;
+use ba\ClickCaptcha;
 use think\facade\Config;
 use think\facade\Validate;
 use app\common\controller\Backend;
@@ -68,11 +68,11 @@ class Index extends Backend
                 'password' => $password,
             ];
             if ($captchaSwitch) {
-                $rule['captcha|' . __('Captcha')]     = 'require|length:4,6';
                 $rule['captchaId|' . __('CaptchaId')] = 'require';
+                $rule['captchaInfo|' . __('Captcha')] = 'require';
 
-                $data['captcha']   = $this->request->post('captcha');
-                $data['captchaId'] = $this->request->post('captcha_id');
+                $data['captchaId']   = $this->request->post('captchaId');
+                $data['captchaInfo'] = $this->request->post('captchaInfo');
             }
             $validate = Validate::rule($rule);
             if (!$validate->check($data)) {
@@ -80,9 +80,9 @@ class Index extends Backend
             }
 
             if ($captchaSwitch) {
-                $captchaObj = new Captcha();
-                if (!$captchaObj->check($data['captcha'], $data['captchaId'])) {
-                    $this->error(__('Please enter the correct verification code'));
+                $captchaObj = new ClickCaptcha();
+                if (!$captchaObj->check($data['captchaId'], $data['captchaInfo'])) {
+                    $this->error(__('Captcha error'));
                 }
             }
 
