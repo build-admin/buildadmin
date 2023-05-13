@@ -9,7 +9,7 @@
                             <div class="login-title">
                                 {{ t('user.login.' + state.form.tab) + t('user.login.reach') + siteConfig.siteName }}
                             </div>
-                            <el-form ref="formRef" @keyup.enter="onSubmit(formRef)" :rules="rules" :model="state.form">
+                            <el-form ref="formRef" @keyup.enter="onSubmitPre" :rules="rules" :model="state.form">
                                 <!-- 注册验证方式 -->
                                 <el-form-item v-if="state.form.tab == 'register'">
                                     <el-radio-group size="large" v-model="state.form.registerType">
@@ -63,33 +63,6 @@
                                             <Icon name="fa fa-unlock-alt" size="16" color="var(--el-input-icon-color)" />
                                         </template>
                                     </el-input>
-                                </el-form-item>
-
-                                <!-- 登录验证码 -->
-                                <el-form-item v-if="state.form.tab == 'login'" prop="captcha">
-                                    <el-row class="w100">
-                                        <el-col :span="16">
-                                            <el-input
-                                                v-model="state.form.captcha"
-                                                clearable
-                                                autocomplete="off"
-                                                :placeholder="t('Please input field', { field: t('user.login.Verification Code') })"
-                                                size="large"
-                                            >
-                                                <template #prefix>
-                                                    <Icon name="fa fa-ellipsis-h" size="16" color="var(--el-input-icon-color)" />
-                                                </template>
-                                            </el-input>
-                                        </el-col>
-                                        <el-col class="captcha-box" :span="8">
-                                            <img
-                                                @click="onChangeCaptcha"
-                                                class="captcha-img"
-                                                :src="buildCaptchaUrl() + '&id=' + state.form.captchaId"
-                                                alt=""
-                                            />
-                                        </el-col>
-                                    </el-row>
                                 </el-form-item>
 
                                 <!-- 注册手机号 -->
@@ -164,14 +137,7 @@
                                     </div>
                                 </div>
                                 <el-form-item class="form-buttons">
-                                    <el-button
-                                        class="login-btn"
-                                        @click="onSubmit(formRef)"
-                                        :loading="state.formLoading"
-                                        round
-                                        type="primary"
-                                        size="large"
-                                    >
+                                    <el-button class="login-btn" @click="onSubmitPre" :loading="state.formLoading" round type="primary" size="large">
                                         {{ t('user.login.' + state.form.tab) }}
                                     </el-button>
                                     <el-button
@@ -293,7 +259,7 @@ import Header from '/@/layouts/frontend/components/header.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
-import { buildCaptchaUrl, sendEms, sendSms } from '/@/api/common'
+import { sendEms, sendSms } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import { useI18n } from 'vue-i18n'
 import { buildValidatorData, validatorAccount } from '/@/utils/validate'
@@ -306,6 +272,7 @@ import { useRoute } from 'vue-router'
 import loginMounted from '/@/components/mixins/loginMounted'
 import LoginFooterMixin from '/@/components/mixins/loginFooter.vue'
 import type { FormItemRule, FormInstance } from 'element-plus'
+import clickCaptcha from '/@/components/clickCaptcha'
 let timer: number
 
 const { t } = useI18n()
@@ -327,10 +294,10 @@ interface State {
         captcha: string
         keep: boolean
         captchaId: string
+        captchaInfo: string
         registerType: 'email' | 'mobile'
     }
     formLoading: boolean
-    showCaptcha: boolean
     showRetrievePasswordDialog: boolean
     retrievePasswordForm: {
         type: 'email' | 'mobile'
@@ -355,10 +322,10 @@ const state: State = reactive({
         captcha: '',
         keep: false,
         captchaId: uuid(),
+        captchaInfo: '',
         registerType: 'email',
     },
     formLoading: false,
-    showCaptcha: false,
     showRetrievePasswordDialog: false,
     retrievePasswordForm: {
         type: 'email',
@@ -415,28 +382,23 @@ const resize = () => {
     state.dialogWidth = width
 }
 
-const onChangeCaptcha = () => {
-    state.form.captcha = ''
-    state.form.captchaId = uuid()
-}
-const onSubmit = (formRef: FormInstance | undefined = undefined) => {
-    formRef!.validate((valid) => {
-        if (valid) {
-            state.formLoading = true
-            checkIn('post', state.form)
-                .then((res) => {
-                    state.formLoading = false
-                    userInfo.dataFill(res.data.userInfo)
-                    router.push({ path: res.data.routePath })
-                })
-                .catch(() => {
-                    state.formLoading = false
-                    onChangeCaptcha()
-                })
-        } else {
-            onChangeCaptcha()
-        }
+const onSubmitPre = () => {
+    formRef.value?.validate((valid) => {
+        if (!valid) return
+        clickCaptcha(state.form.captchaId, (captchaInfo: string) => onSubmit(captchaInfo))
     })
+}
+const onSubmit = (captchaInfo: string) => {
+    state.formLoading = true
+    state.form.captchaInfo = captchaInfo
+    checkIn('post', state.form)
+        .then((res) => {
+            userInfo.dataFill(res.data.userInfo)
+            router.push({ path: res.data.routePath })
+        })
+        .finally(() => {
+            state.formLoading = false
+        })
 }
 const onSubmitRetrieve = (formRef: FormInstance | undefined = undefined) => {
     formRef!.validate((valid) => {
@@ -447,7 +409,6 @@ const onSubmitRetrieve = (formRef: FormInstance | undefined = undefined) => {
                     state.submitRetrieveLoading = false
                     if (res.code == 1) {
                         state.showRetrievePasswordDialog = false
-                        onChangeCaptcha()
                         endTiming()
                         onResetForm(formRef)
                     }
@@ -565,10 +526,6 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    .captcha-img {
-        width: 90%;
-        margin-left: auto;
-    }
     .el-button {
         width: 90%;
         height: 100%;
@@ -606,9 +563,6 @@ onUnmounted(() => {
             --el-button-bg-color: var(--el-color-primary-light-5);
             --el-button-border-color: rgba(240, 252, 241, 0.1);
         }
-    }
-    .captcha-img {
-        filter: brightness(61%);
     }
 }
 </style>

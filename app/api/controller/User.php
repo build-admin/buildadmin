@@ -2,7 +2,7 @@
 
 namespace app\api\controller;
 
-use ba\Captcha;
+use ba\ClickCaptcha;
 use think\facade\Config;
 use app\common\facade\Token;
 use app\common\controller\Frontend;
@@ -58,8 +58,8 @@ class User extends Frontend
         }
 
         if ($this->request->isPost()) {
-            $params = $this->request->post(['tab', 'email', 'mobile', 'username', 'password', 'keep', 'captcha', 'captchaId', 'registerType']);
-            if ($params['tab'] != 'login' && $params['tab'] != 'register') {
+            $params = $this->request->post(['tab', 'email', 'mobile', 'username', 'password', 'keep', 'captcha', 'captchaId', 'captchaInfo', 'registerType']);
+            if (!in_array($params['tab'], ['login', 'register'])) {
                 $this->error(__('Unknown operation'));
             }
 
@@ -69,11 +69,11 @@ class User extends Frontend
             } catch (ValidateException $e) {
                 $this->error($e->getMessage());
             }
-            $captchaObj = new Captcha();
 
+            $captchaObj = new ClickCaptcha();
             if ($params['tab'] == 'login') {
-                if (!$captchaObj->check($params['captcha'], $params['captchaId'])) {
-                    $this->error(__('Please enter the correct verification code'));
+                if (!$captchaObj->check($params['captchaId'], $params['captchaInfo'])) {
+                    $this->error(__('Captcha error'));
                 }
                 $res = $this->auth->login($params['username'], $params['password'], (bool)$params['keep']);
             } elseif ($params['tab'] == 'register') {

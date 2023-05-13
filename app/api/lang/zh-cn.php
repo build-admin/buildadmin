@@ -30,4 +30,5 @@ return [
     'You have no permission'                                 => '没有权限操作！',
     'Parameter error'                                        => '参数错误!',
     'Token expiration'                                       => '登录态过期，请重新登录！',
+    'Captcha error'                                          => '验证码错误！',
 ];

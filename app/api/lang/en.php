@@ -12,4 +12,5 @@ return [
     'No action available, please contact the administrator~' => 'There is no action available, please contact the administrator~',
     'Please login first'                                     => 'Please login first！',
     'You have no permission'                                 => 'No permission to operate！',
+    'Captcha error'                                          => 'Captcha error!',
 ];
