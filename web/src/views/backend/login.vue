@@ -85,7 +85,7 @@ import { uuid } from '/@/utils/random'
 import { buildValidatorData } from '/@/utils/validate'
 import router from '/@/router'
 import clickCaptcha from '/@/components/clickCaptcha'
-var timer: NodeJS.Timer
+let timer: number
 
 const config = useConfig()
 const adminInfo = useAdminInfo()
@@ -122,7 +122,7 @@ const focusInput = () => {
 }
 
 onMounted(() => {
-    timer = setTimeout(() => {
+    timer = window.setTimeout(() => {
         pageBubble.init()
     }, 1000)
 

@@ -101,7 +101,7 @@ export const debounce = (fn: Function, ms: number) => {
         if (window.lazy) {
             clearTimeout(window.lazy)
         }
-        window.lazy = setTimeout(() => {
+        window.lazy = window.setTimeout(() => {
             fn(...args)
         }, ms)
     }

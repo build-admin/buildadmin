@@ -19,7 +19,7 @@ import { useMemberCenter } from '/@/stores/memberCenter'
 import { useNavTabs } from '/@/stores/navTabs'
 import { isAdminApp } from '/@/utils/common'
 import { getFirstRoute, routePush } from '/@/utils/router'
-let timer: NodeJS.Timer
+let timer: number
 
 const navTabs = useNavTabs()
 const memberCenter = useMemberCenter()
@@ -40,7 +40,7 @@ if (isAdminApp() && navTabs.state.tabsViewRoutes) {
     if (firstRoute) routePush(firstRoute.path)
 }
 
-timer = setTimeout(() => {
+timer = window.setTimeout(() => {
     state.showReload = true
 }, state.maximumWait)
 

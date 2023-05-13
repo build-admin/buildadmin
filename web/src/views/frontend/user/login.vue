@@ -306,7 +306,7 @@ import { useRoute } from 'vue-router'
 import loginMounted from '/@/components/mixins/loginMounted'
 import LoginFooterMixin from '/@/components/mixins/loginFooter.vue'
 import type { FormItemRule, FormInstance } from 'element-plus'
-let timer: NodeJS.Timer
+let timer: number
 
 const { t } = useI18n()
 const route = useRoute()
@@ -501,7 +501,7 @@ const switchTab = (formRef: FormInstance | undefined = undefined, tab: 'login' |
 
 const startTiming = (seconds: number) => {
     state.codeSendCountdown = seconds
-    timer = setInterval(() => {
+    timer = window.setInterval(() => {
         state.codeSendCountdown--
         if (state.codeSendCountdown <= 0) {
             endTiming()

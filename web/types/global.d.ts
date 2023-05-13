@@ -1,6 +1,6 @@
 interface Window {
     existLoading: boolean
-    lazy: NodeJS.Timer
+    lazy: number
     unique: number
     tokenRefreshing: boolean
     requests: Function[]

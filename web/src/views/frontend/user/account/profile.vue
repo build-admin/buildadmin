@@ -244,7 +244,7 @@ import { getProfile, postProfile, postVerification, postChangeBind } from '/@/ap
 import UserProfileMixin from '/@/components/mixins/userProfile.vue'
 import { useI18n } from 'vue-i18n'
 import { sendEms, sendSms } from '/@/api/common'
-let timer: NodeJS.Timer
+let timer: number
 
 const { t } = useI18n()
 const router = useRouter()
@@ -341,7 +341,7 @@ const state: {
 
 const startTiming = (seconds: number) => {
     state.dialog.codeSendCountdown = seconds
-    timer = setInterval(() => {
+    timer = window.setInterval(() => {
         state.dialog.codeSendCountdown--
         if (state.dialog.codeSendCountdown <= 0) {
             endTiming()

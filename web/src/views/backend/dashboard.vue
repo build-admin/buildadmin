@@ -163,7 +163,7 @@ import { useAdminInfo } from '/@/stores/adminInfo'
 import { WORKING_TIME } from '/@/stores/constant/cacheKey'
 import { getGreet } from '/@/utils/common'
 import { useEventListener } from '@vueuse/core'
-var workTimer: NodeJS.Timer
+let workTimer: number
 
 const d = new Date()
 const { t } = useI18n()
@@ -535,7 +535,7 @@ const startWork = () => {
 
     state.workingTimeFormat = formatSeconds(workingSeconds)
     if (!state.pauseWork) {
-        workTimer = setInterval(() => {
+        workTimer = window.setInterval(() => {
             workingSeconds++
             state.workingTimeFormat = formatSeconds(workingSeconds)
         }, 1000)
