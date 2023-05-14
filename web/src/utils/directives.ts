@@ -1,9 +1,8 @@
 import { App, nextTick } from 'vue'
 import horizontalScroll from '/@/utils/horizontalScroll'
-import router from '/@/router/index'
-import { useNavTabs } from '../stores/navTabs'
 import { useEventListener } from '@vueuse/core'
 import { isString } from 'lodash-es'
+import { auth } from '/@/utils/common'
 
 export function directives(app: App) {
     // 鉴权指令
@@ -26,16 +25,7 @@ function authDirective(app: App) {
     app.directive('auth', {
         mounted(el, binding) {
             if (!binding.value) return false
-            const navTabs = useNavTabs()
-            if (navTabs.state.authNode.has(router.currentRoute.value.path)) {
-                if (
-                    !navTabs.state.authNode
-                        .get(router.currentRoute.value.path)!
-                        .some((v: string) => v == router.currentRoute.value.path + '/' + binding.value)
-                ) {
-                    el.parentNode.removeChild(el)
-                }
-            }
+            if (!auth(binding.value)) el.parentNode.removeChild(el)
         },
     })
 }
