@@ -69,7 +69,7 @@ class ClickCaptcha
         // 创建图片的实例
         $image = imagecreatefromstring(file_get_contents($imagePath));
         foreach ($textArr['text'] as $v) {
-            list($r, $g, $b) = $this->getImageColor($imagePath, $v['x'] + $v['width'] / 2, $v['y'] - $v['height'] / 2);
+            list($r, $g, $b) = $this->getImageColor($imagePath, intval($v['x'] + $v['width'] / 2), intval($v['y'] - $v['height'] / 2));
             // 字体颜色
             $color = imagecolorallocate($image, $r, $g, $b);
             // 阴影字体颜色
