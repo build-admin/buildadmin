@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { MemberCenter } from '/@/stores/interface/index'
+import { MemberCenter, Menus } from '/@/stores/interface/index'
 import { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 
 export const useMemberCenter = defineStore('memberCenter', () => {
@@ -21,7 +21,13 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         shrink: false,
         // 菜单展开（小屏设备）
         menuExpand: false,
+        // 顶栏会员菜单下拉项
+        navUserMenus: [],
     })
+
+    const setNavUserMenus = (menus: Menus[]) => {
+        state.navUserMenus = menus
+    }
 
     const setAuthNode = (key: string, data: string[]) => {
         state.authNode.set(key, data)
@@ -61,6 +67,7 @@ export const useMemberCenter = defineStore('memberCenter', () => {
 
     return {
         state,
+        setNavUserMenus,
         setAuthNode,
         mergeAuthNode,
         setViewRoutes,

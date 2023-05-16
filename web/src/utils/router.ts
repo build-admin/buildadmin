@@ -8,7 +8,7 @@ import { closeShade } from '/@/utils/pageShade'
 import { adminBaseRoute, memberCenterBaseRoute } from '/@/router/static'
 import { i18n } from '/@/lang/index'
 import { isAdminApp } from '/@/utils/common'
-import { HeadNav } from '/@/stores/interface'
+import { Menus } from '/@/stores/interface'
 
 /**
  * 导航失败有错误消息的路由push
@@ -92,7 +92,7 @@ export const onClickMenu = (menu: RouteRecordRaw) => {
  * 处理会员中心的路由
  * 会员中心虽然也是前台的路由，但需要动态注册的路由是根据登录会员的权限来的，所以需要单独处理
  */
-export const handleMemberCenterRoute = (routes: any) => {
+export const handleMemberCenterRoute = (routes: any, navUserMenus: any) => {
     const viewsComponent = import.meta.glob('/src/views/frontend/**/*.vue')
     addRouteAll(viewsComponent, routes, memberCenterBaseRoute.name as string)
     const menuMemberCenterBaseRoute = '/' + (memberCenterBaseRoute.name as string) + '/'
@@ -102,6 +102,7 @@ export const handleMemberCenterRoute = (routes: any) => {
     memberCenter.setViewRoutes(menuRule)
     memberCenter.setShowHeadline(routes.length > 1 ? true : false)
     memberCenter.mergeAuthNode(handleAuthNode(routes, menuMemberCenterBaseRoute))
+    memberCenter.setNavUserMenus(handleMenus(navUserMenus, '/', 'nav_user_menu'))
 }
 
 /**
@@ -256,15 +257,18 @@ export const addRouteItem = (viewsComponent: Record<string, any>, route: any, pa
     }
 }
 
-export const handleHeadNav = (rules: anyObj, prefix = '/') => {
-    const headNav: HeadNav[] = []
+export const handleMenus = (rules: anyObj, prefix = '/', type = 'nav') => {
+    const menus: Menus[] = []
     for (const key in rules) {
-        let children: HeadNav[] = []
+        if (rules[key].extend == 'add_rules_only') {
+            continue
+        }
+        let children: Menus[] = []
         if (rules[key].children && rules[key].children.length > 0) {
-            children = handleHeadNav(rules[key].children, prefix)
+            children = handleMenus(rules[key].children, prefix)
         }
 
-        if (rules[key].type == 'nav') {
+        if (rules[key].type == type) {
             if ('link' == rules[key].menu_type) {
                 rules[key].path = rules[key].url
             } else if ('iframe' == rules[key].menu_type) {
@@ -272,7 +276,7 @@ export const handleHeadNav = (rules: anyObj, prefix = '/') => {
             } else {
                 rules[key].path = prefix + rules[key].path
             }
-            headNav.push({
+            menus.push({
                 ...rules[key],
                 meta: {
                     type: rules[key].menu_type,
@@ -282,5 +286,5 @@ export const handleHeadNav = (rules: anyObj, prefix = '/') => {
             })
         }
     }
-    return headNav
+    return menus
 }

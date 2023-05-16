@@ -2,7 +2,7 @@ import createAxios from '/@/utils/axios'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { setTitle } from '/@/utils/common'
-import { handleFrontendRoute, handleHeadNav } from '/@/utils/router'
+import { handleFrontendRoute, handleMenus } from '/@/utils/router'
 
 const controllerUrl = '/api/index/'
 
@@ -24,10 +24,11 @@ export function index() {
         setTitle(res.data.site.siteName)
         if (res.data.rules) {
             handleFrontendRoute(res.data.rules)
-            res.data.site.headNav = handleHeadNav(res.data.rules)
+            res.data.site.headNav = handleMenus(res.data.rules, '/', 'nav')
         }
         siteConfig.dataFill(res.data.site)
         memberCenter.setStatus(res.data.openMemberCenter)
+        memberCenter.setNavUserMenus(handleMenus(res.data.rules, '/', 'nav_user_menu'))
         if (!res.data.openMemberCenter) memberCenter.setLayoutMode('Disable')
     })
 }

@@ -42,6 +42,7 @@ export interface MemberCenter {
     authNode: Map<string, string[]>
     shrink: boolean
     menuExpand: boolean
+    navUserMenus: Menus[]
 }
 
 export interface AdminInfo {
@@ -106,7 +107,7 @@ export interface Terminal {
     port: string
 }
 
-export interface HeadNav {
+export interface Menus {
     id: number
     name: string
     type: string
@@ -116,7 +117,7 @@ export interface HeadNav {
     meta: {
         type: 'tab' | 'link' | 'iframe'
     }
-    children: HeadNav[]
+    children: Menus[]
 }
 
 export interface SiteConfig {
@@ -133,5 +134,5 @@ export interface SiteConfig {
         url?: string
         params?: anyObj
     }
-    headNav: HeadNav[]
+    headNav: Menus[]
 }

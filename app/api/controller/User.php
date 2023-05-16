@@ -29,15 +29,16 @@ class User extends Frontend
             $this->error(__('No action available, please contact the administrator~'));
         }
 
-        $userMenus = [];
+        $userMenus    = [];
+        $navUserMenus = [];
         foreach ($menus as $menu) {
-            if ($menu['type'] == 'menu_dir') {
-                $userMenus[] = $menu;
-            }
+            if ($menu['type'] == 'menu_dir') $userMenus[] = $menu;
+            if ($menu['type'] == 'nav_user_menu') $navUserMenus[] = $menu;
         }
         $this->success('', [
-            'userInfo' => $userInfo,
-            'menus'    => $userMenus,
+            'userInfo'     => $userInfo,
+            'menus'        => $userMenus,
+            'navUserMenus' => $navUserMenus,
         ]);
     }
 
