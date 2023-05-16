@@ -269,19 +269,20 @@ export const handleMenus = (rules: anyObj, prefix = '/', type = 'nav') => {
         }
 
         if (rules[key].type == type) {
+            let path = ''
             if ('link' == rules[key].menu_type) {
-                rules[key].path = rules[key].url
+                path = rules[key].url
             } else if ('iframe' == rules[key].menu_type) {
-                rules[key].path = '/user/iframe/' + encodeURIComponent(rules[key].url)
+                path = '/user/iframe/' + encodeURIComponent(rules[key].url)
             } else {
-                rules[key].path = prefix + rules[key].path
+                path = prefix + rules[key].path
             }
             menus.push({
                 ...rules[key],
                 meta: {
                     type: rules[key].menu_type,
                 },
-                path: rules[key].path,
+                path: path,
                 children: children,
             })
         }
