@@ -47,6 +47,7 @@
                             <el-radio class="ba-el-radio" label="menu" :border="true">{{ t('user.rule.Member center menu items') }}</el-radio>
                             <el-radio class="ba-el-radio" label="nav" :border="true">{{ t('user.rule.Top bar menu items') }}</el-radio>
                             <el-radio class="ba-el-radio" label="button" :border="true">{{ t('user.rule.Page button') }}</el-radio>
+                            <el-radio class="ba-el-radio" label="nav_user_menu" :border="true">{{ t('user.rule.Top bar user dropdown') }}</el-radio>
                         </el-radio-group>
                         <div class="block-help">{{ t('user.rule.Type ' + baTable.form.items!.type + ' tips') }}</div>
                     </el-form-item>
@@ -69,7 +70,7 @@
 
                     <!-- 规则图标 -->
                     <FormItem
-                        v-if="!['nav', 'button'].includes(baTable.form.items!.type)"
+                        v-if="!['nav', 'button', 'nav_user_menu'].includes(baTable.form.items!.type)"
                         type="icon"
                         :label="t('auth.menu.Rule Icon')"
                         v-model="baTable.form.items!.icon"
@@ -128,7 +129,7 @@
                         </div>
                     </el-form-item>
                     <FormItem
-                        v-if="!['menu_dir', 'menu'].includes(baTable.form.items!.type)"
+                        v-if="!['menu_dir', 'menu', 'nav_user_menu'].includes(baTable.form.items!.type)"
                         :label="t('user.rule.no_login_valid')"
                         v-model="baTable.form.items!.no_login_valid"
                         type="radio"
