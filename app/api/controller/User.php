@@ -4,11 +4,13 @@ namespace app\api\controller;
 
 use ba\Captcha;
 use ba\ClickCaptcha;
+use ba\Tree;
 use think\facade\Config;
 use app\common\facade\Token;
 use app\common\controller\Frontend;
 use think\exception\ValidateException;
 use app\api\validate\User as UserValidate;
+use think\facade\Db;
 
 class User extends Frontend
 {
@@ -29,16 +31,19 @@ class User extends Frontend
             $this->error(__('No action available, please contact the administrator~'));
         }
 
-        $userMenus    = [];
-        $navUserMenus = [];
+        $rules     = [];
+        $userMenus = [];
         foreach ($menus as $menu) {
-            if ($menu['type'] == 'menu_dir') $userMenus[] = $menu;
-            if ($menu['type'] == 'nav_user_menu') $navUserMenus[] = $menu;
+            if ($menu['type'] == 'menu_dir') {
+                $userMenus[] = $menu;
+            } else {
+                $rules[] = $menu;
+            }
         }
         $this->success('', [
-            'userInfo'     => $userInfo,
-            'menus'        => $userMenus,
-            'navUserMenus' => $navUserMenus,
+            'userInfo' => $userInfo,
+            'menus'    => $userMenus,
+            'rules'    => $rules,
         ]);
     }
 

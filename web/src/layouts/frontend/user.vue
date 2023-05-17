@@ -39,7 +39,7 @@ onMounted(async () => {
         res.data.userInfo.refreshToken = userInfo.refreshToken
         userInfo.dataFill(res.data.userInfo)
         if (res.data.menus) {
-            handleMemberCenterRoute(res.data.menus, res.data.navUserMenus)
+            handleMemberCenterRoute(res.data.menus, res.data.rules)
 
             if (ret.type == 'jump') return router.push(ret.url)
 

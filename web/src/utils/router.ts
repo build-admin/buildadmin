@@ -3,6 +3,7 @@ import { isNavigationFailure, NavigationFailureType, RouteRecordRaw, RouteLocati
 import { ElNotification } from 'element-plus'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
+import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { closeShade } from '/@/utils/pageShade'
 import { adminBaseRoute, memberCenterBaseRoute } from '/@/router/static'
@@ -92,17 +93,22 @@ export const onClickMenu = (menu: RouteRecordRaw) => {
  * 处理会员中心的路由
  * 会员中心虽然也是前台的路由，但需要动态注册的路由是根据登录会员的权限来的，所以需要单独处理
  */
-export const handleMemberCenterRoute = (routes: any, navUserMenus: any) => {
+export const handleMemberCenterRoute = (routes: any, rules: any) => {
     const viewsComponent = import.meta.glob('/src/views/frontend/**/*.vue')
     addRouteAll(viewsComponent, routes, memberCenterBaseRoute.name as string)
     const menuMemberCenterBaseRoute = '/' + (memberCenterBaseRoute.name as string) + '/'
     const menuRule = handleMenuRule(routes, menuMemberCenterBaseRoute, 'user')
 
+    const siteConfig = useSiteConfig()
     const memberCenter = useMemberCenter()
     memberCenter.setViewRoutes(menuRule)
     memberCenter.setShowHeadline(routes.length > 1 ? true : false)
     memberCenter.mergeAuthNode(handleAuthNode(routes, menuMemberCenterBaseRoute))
-    memberCenter.setNavUserMenus(handleMenus(navUserMenus, '/', 'nav_user_menu'))
+
+    addRouteAll(viewsComponent, rules, '')
+    memberCenter.mergeAuthNode(handleAuthNode(rules, '/'))
+    memberCenter.setNavUserMenus(handleMenus(rules, '/', 'nav_user_menu'))
+    siteConfig.setHeadNav(handleMenus(rules, '/', 'nav'))
 }
 
 /**
@@ -112,8 +118,11 @@ export const handleFrontendRoute = (routes: any) => {
     const viewsComponent = import.meta.glob('/src/views/frontend/**/*.vue')
     addRouteAll(viewsComponent, routes, '')
 
+    const siteConfig = useSiteConfig()
     const memberCenter = useMemberCenter()
     memberCenter.mergeAuthNode(handleAuthNode(routes, '/'))
+    memberCenter.setNavUserMenus(handleMenus(routes, '/', 'nav_user_menu'))
+    siteConfig.setHeadNav(handleMenus(routes, '/', 'nav'))
 }
 
 /**
