@@ -5,7 +5,7 @@ import Sortable from 'sortablejs'
 import { findIndexRow } from '/@/components/table'
 import { ElNotification, ElForm } from 'element-plus'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { isUndefined } from 'lodash-es'
+import { cloneDeep, isUndefined } from 'lodash-es'
 import { i18n } from '/@/lang/index'
 import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
 
@@ -171,7 +171,7 @@ export default class baTable {
             }
             this.requestEdit(operateIds[0])
         } else if (operate == 'add') {
-            this.form.items = Object.assign({}, this.form.defaultItems)
+            this.form.items = cloneDeep(this.form.defaultItems)
         }
         this.form.operate = operate
         this.form.operateIds = operateIds
