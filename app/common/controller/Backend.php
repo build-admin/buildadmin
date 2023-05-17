@@ -277,7 +277,7 @@ class Backend extends Api
                     break;
                 case 'NULL':
                 case 'NOT NULL':
-                    $where[] = [$fieldName, strtolower($field['operator'])];
+                    $where[] = [$fieldName, strtolower($field['operator']), ''];
                     break;
             }
         }
