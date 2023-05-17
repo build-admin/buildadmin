@@ -54,14 +54,16 @@ onMounted(async () => {
             }
 
             // 跳转到第一个菜单
-            let firstRoute = getFirstRoute(memberCenter.state.viewRoutes)
-            if (firstRoute) {
-                router.push({ path: firstRoute.path })
-            } else {
-                ElNotification({
-                    type: 'error',
-                    message: t('No route found to jump~'),
-                })
+            if (route.name == 'userMainLoading') {
+                let firstRoute = getFirstRoute(memberCenter.state.viewRoutes)
+                if (firstRoute) {
+                    router.push({ path: firstRoute.path })
+                } else {
+                    ElNotification({
+                        type: 'error',
+                        message: t('No route found to jump~'),
+                    })
+                }
             }
         }
     })
