@@ -10,6 +10,7 @@ import { adminBaseRoute, memberCenterBaseRoute } from '/@/router/static'
 import { i18n } from '/@/lang/index'
 import { isAdminApp } from '/@/utils/common'
 import { Menus } from '/@/stores/interface'
+import { compact, reverse } from 'lodash-es'
 
 /**
  * 导航失败有错误消息的路由push
@@ -105,7 +106,7 @@ export const handleMemberCenterRoute = (routes: any, rules: any) => {
     memberCenter.setShowHeadline(routes.length > 1 ? true : false)
     memberCenter.mergeAuthNode(handleAuthNode(routes, menuMemberCenterBaseRoute))
 
-    addRouteAll(viewsComponent, rules, '')
+    addRouteAll(viewsComponent, rules, '', true)
     memberCenter.mergeAuthNode(handleAuthNode(rules, '/'))
     memberCenter.setNavUserMenus(handleMenus(rules, '/', 'nav_user_menu'))
     siteConfig.setHeadNav(handleMenus(rules, '/', 'nav'))
@@ -116,7 +117,7 @@ export const handleMemberCenterRoute = (routes: any, rules: any) => {
  */
 export const handleFrontendRoute = (routes: any) => {
     const viewsComponent = import.meta.glob('/src/views/frontend/**/*.vue')
-    addRouteAll(viewsComponent, routes, '')
+    addRouteAll(viewsComponent, routes, '', true)
 
     const siteConfig = useSiteConfig()
     const memberCenter = useMemberCenter()
@@ -215,26 +216,34 @@ const assembleAuthNode = (routes: any, authNode: Map<string, string[]>, prefix =
 
 /**
  * 动态添加路由-带子路由
+ * @param viewsComponent
+ * @param routes
+ * @param parentName
+ * @param analyticRelation 根据 name 从已注册路由分析父级路由
  */
-export const addRouteAll = (viewsComponent: Record<string, any>, routes: any, parentName: string) => {
+export const addRouteAll = (viewsComponent: Record<string, any>, routes: any, parentName: string, analyticRelation = false) => {
     for (const idx in routes) {
         if (routes[idx].extend == 'add_menu_only') {
             continue
         }
         if ((routes[idx].menu_type == 'tab' && viewsComponent[routes[idx].component]) || routes[idx].menu_type == 'iframe') {
-            addRouteItem(viewsComponent, routes[idx], parentName)
+            addRouteItem(viewsComponent, routes[idx], parentName, analyticRelation)
         }
 
         if (routes[idx].children && routes[idx].children.length > 0) {
-            addRouteAll(viewsComponent, routes[idx].children, parentName)
+            addRouteAll(viewsComponent, routes[idx].children, parentName, analyticRelation)
         }
     }
 }
 
 /**
  * 动态添加路由
+ * @param viewsComponent
+ * @param route
+ * @param parentName
+ * @param analyticRelation 根据 name 从已注册路由分析父级路由
  */
-export const addRouteItem = (viewsComponent: Record<string, any>, route: any, parentName: string) => {
+export const addRouteItem = (viewsComponent: Record<string, any>, route: any, parentName: string, analyticRelation: boolean) => {
     let path = '',
         component
     if (route.menu_type == 'iframe') {
@@ -244,6 +253,19 @@ export const addRouteItem = (viewsComponent: Record<string, any>, route: any, pa
         path = parentName ? route.path : '/' + route.path
         component = viewsComponent[route.component]
     }
+
+    if (route.menu_type == 'tab' && analyticRelation) {
+        const parentNames = getParentNames(route.name)
+        if (parentNames.length) {
+            for (const key in parentNames) {
+                if (router.hasRoute(parentNames[key])) {
+                    parentName = parentNames[key]
+                    break
+                }
+            }
+        }
+    }
+
     const routeBaseInfo: RouteRecordRaw = {
         path: path,
         name: route.name,
@@ -264,6 +286,23 @@ export const addRouteItem = (viewsComponent: Record<string, any>, route: any, pa
     } else {
         router.addRoute(routeBaseInfo)
     }
+}
+
+/**
+ * 根据name字符串，获取父级name组合的数组
+ * @param name
+ */
+const getParentNames = (name: string) => {
+    const names = compact(name.split('/'))
+    const tempNames = []
+    const parentNames = []
+    for (const key in names) {
+        tempNames.push(names[key])
+        if (parseInt(key) != names.length - 1) {
+            parentNames.push(tempNames.join('/'))
+        }
+    }
+    return reverse(parentNames)
 }
 
 export const handleMenus = (rules: anyObj, prefix = '/', type = 'nav') => {
