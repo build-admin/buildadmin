@@ -17,10 +17,10 @@ async function start() {
     app.use(pinia)
 
     // 全局语言包加载
-    const i18n = await loadLang(app)
+    await loadLang(app)
 
     app.use(router)
-    app.use(ElementPlus, { i18n: i18n.global.t })
+    app.use(ElementPlus)
 
     // 全局注册
     directives(app) // 指令
