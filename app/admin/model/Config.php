@@ -46,6 +46,8 @@ class Config extends Model
             return (bool)$value;
         } elseif ($row['type'] == 'editor') {
             return !$value ? '' : htmlspecialchars_decode($value);
+        } elseif ($row['type'] == 'remoteSelect' && strpos($value, ',')) {
+            return explode(',', $value);
         } elseif ($row['type'] == 'city') {
             if ($value == '') {
                 return [];
