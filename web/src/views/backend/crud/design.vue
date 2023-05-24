@@ -174,7 +174,7 @@
                 </el-collapse>
             </el-col>
             <el-col :xs="24" :span="12">
-                <div ref="designWindowRef" class="design-window ba-scroll-style" :class="state.fields.length ? '' : 'design-window-empty'">
+                <div ref="designWindowRef" class="design-window ba-scroll-style">
                     <div
                         v-for="(field, index) in state.fields"
                         :key="index"
@@ -224,7 +224,7 @@
                             </el-button>
                         </div>
                     </div>
-                    <div class="design-field-empty" v-if="!state.fields.length">
+                    <div class="design-field-empty" v-if="!state.fields.length && !state.draggingField">
                         {{ t('crud.crud.Drag the left element here to start designing CRUD') }}
                     </div>
                 </div>
@@ -572,6 +572,7 @@ const state: {
         table: boolean
         controller: boolean
     }
+    draggingField: boolean
 } = reactive({
     loading: {
         init: false,
@@ -620,6 +621,7 @@ const state: {
         table: false,
         controller: false,
     },
+    draggingField: false,
 })
 
 type TableKey = keyof typeof state.table
@@ -1005,6 +1007,12 @@ onMounted(() => {
             setData: (dataTransfer) => {
                 dataTransfer.setData('name', Object.keys(fieldItem)[index])
             },
+            onStart: () => {
+                state.draggingField = true
+            },
+            onEnd: () => {
+                state.draggingField = false
+            },
         })
     })
 })
@@ -1225,9 +1233,6 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
 .fields-box {
     margin-top: 36px;
 }
-.design-window.design-window-empty {
-    border: 1px dashed var(--el-border-color);
-}
 .design-field-empty {
     display: flex;
     height: 100%;
@@ -1241,6 +1246,7 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
     height: calc(100vh - 200px);
     border-radius: var(--el-border-radius-base);
     background-color: var(--ba-bg-color-overlay);
+    border: v-bind('state.draggingField ? "1px dashed var(--el-color-primary)":(state.fields.length ? "none":"1px dashed var(--el-border-color)")');
     .design-field-box {
         display: flex;
         padding: 10px;
