@@ -125,6 +125,13 @@ export const fieldData: FieldData = {
         ...npuaFalse(),
         unsigned: true,
     },
+    remoteSelects: {
+        type: 'varchar',
+        length: 100,
+        precision: 0,
+        default: 'empty string',
+        ...npuaFalse(),
+    },
     editor: {
         type: 'text',
         length: 0,
