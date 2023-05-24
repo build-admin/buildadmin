@@ -392,17 +392,12 @@ export const fieldItem: {
         {
             title: i18n.global.t('crud.state.Remote Select (Multi)'),
             name: 'user_ids',
-            type: 'varchar',
-            length: 100,
-            precision: 0,
-            default: 'empty string',
-            ...npuaFalse(),
-            unsigned: true,
             comment: i18n.global.t('utils.remote select'),
             designType: 'remoteSelects',
             tableBuildExclude: true,
             table: {},
             form: {},
+            ...fieldData.remoteSelects,
         },
     ],
 }
