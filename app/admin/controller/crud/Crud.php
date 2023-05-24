@@ -676,10 +676,6 @@ class Crud extends Backend
             $formField[':input-attr']['pk']         = Helper::getTableName($field['form']['remote-table'], false) . '.' . ($field['form']['remote-pk'] ?? 'id');
             $formField[':input-attr']['field']      = $field['form']['remote-field'] ?? 'name';
             $formField[':input-attr']['remote-url'] = $this->getRemoteSelectUrl($field);
-            if ($field['designType'] == 'remoteSelects') {
-                $formField['type']                    = 'remoteSelect';
-                $formField[':input-attr']['multiple'] = 'true';
-            }
         } elseif ($field['designType'] == 'number') {
             $formField[':input-attr']['step'] = (int)($field['form']['step'] ?? 1);
             $formField['v-model.number']      = $formField['v-model'];
