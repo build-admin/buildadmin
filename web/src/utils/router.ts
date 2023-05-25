@@ -308,7 +308,7 @@ const getParentNames = (name: string) => {
 export const handleMenus = (rules: anyObj, prefix = '/', type = 'nav') => {
     const menus: Menus[] = []
     for (const key in rules) {
-        if (rules[key].extend == 'add_rules_only') {
+        if (rules[key].extend == 'add_rules_only' || !rules[key].component) {
             continue
         }
         let children: Menus[] = []
