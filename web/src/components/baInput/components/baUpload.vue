@@ -23,11 +23,11 @@
                     <Icon class="ba-upload-icon" name="el-icon-Plus" size="30" color="#c0c4cc" />
                 </template>
                 <template v-else>
-                    <el-button type="primary">
+                    <el-button v-blur type="primary">
                         <Icon name="el-icon-Plus" color="#ffffff" />
                         <span>{{ $t('Upload') }}</span>
                     </el-button>
-                    <el-button v-if="!hideSelectFile" @click.stop="state.selectFile.show = true" type="success">
+                    <el-button v-blur v-if="!hideSelectFile" @click.stop="state.selectFile.show = true" type="success">
                         <Icon name="fa fa-th-list" size="14px" color="#ffffff" />
                         <span class="ml-6">{{ $t('utils.choice') }}</span>
                     </el-button>
@@ -55,6 +55,7 @@ import { fileUpload } from '/@/api/common'
 import SelectFile from '/@/components/baInput/components/selectFile.vue'
 import { uuid } from '/@/utils/random'
 import { cloneDeep, isEmpty } from 'lodash-es'
+import { AxiosProgressEvent } from 'axios'
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] }
 interface Props {
@@ -73,6 +74,9 @@ interface Props {
 }
 interface UploadFileExt extends UploadUserFile {
     serverUrl?: string
+}
+interface UploadProgressEvent extends AxiosProgressEvent {
+    percent: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -147,7 +151,17 @@ const onElChange = (file: UploadFileExt, files: UploadFiles) => {
     fd.append('file', file.raw)
     fd = formDataAppend(fd)
     state.uploading++
-    fileUpload(fd, { uuid: uuid() }, props.forceLocal)
+    fileUpload(fd, { uuid: uuid() }, props.forceLocal, {
+        onUploadProgress: (evt: AxiosProgressEvent) => {
+            const progressEvt = evt as UploadProgressEvent
+            if (evt.total && evt.total > 0) {
+                progressEvt.percent = evt.total > 0 ? (evt.loaded / evt.total) * 100 : 0
+                file.status = 'uploading'
+                file.percentage = Math.round(progressEvt.percent)
+                typeof state.events['onProgress'] == 'function' && state.events['onProgress'](progressEvt, file, files)
+            }
+        },
+    })
         .then((res) => {
             if (res.code == 1) {
                 file.serverUrl = res.data.file.url
