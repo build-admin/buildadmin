@@ -165,13 +165,13 @@ export default defineComponent({
             return () =>
                 createVNode(BaUpload, {
                     type: props.type,
-                    data: props.attr.data,
+                    data: props.attr ? props.attr.data : {},
                     modelValue: props.modelValue,
                     'onUpdate:modelValue': onValueUpdate,
-                    returnFullUrl: props.attr.returnFullUrl || props.attr['return-full-url'],
-                    hideSelectFile: props.attr.hideSelectFile || props.attr['hide-select-file'],
+                    returnFullUrl: props.attr ? props.attr.returnFullUrl || props.attr['return-full-url'] : false,
+                    hideSelectFile: props.attr ? props.attr.hideSelectFile || props.attr['hide-select-file'] : false,
                     attr: props.attr,
-                    forceLocal: props.attr.forceLocal || props.attr['force-local'],
+                    forceLocal: props.attr ? props.attr.forceLocal || props.attr['force-local'] : false,
                 })
         }
 
