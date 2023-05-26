@@ -95,7 +95,7 @@ const selectNavTab = function (dom: HTMLDivElement) {
 const toLastTab = () => {
     const lastTab = navTabs.state.tabsView.slice(-1)[0]
     if (lastTab) {
-        router.push(lastTab.path)
+        router.push(lastTab)
     } else {
         router.push('/admin')
     }
