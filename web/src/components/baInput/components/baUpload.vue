@@ -155,7 +155,7 @@ const onElChange = (file: UploadFileExt, files: UploadFiles) => {
         onUploadProgress: (evt: AxiosProgressEvent) => {
             const progressEvt = evt as UploadProgressEvent
             if (evt.total && evt.total > 0) {
-                progressEvt.percent = evt.total > 0 ? (evt.loaded / evt.total) * 100 : 0
+                progressEvt.percent = (evt.loaded / evt.total) * 100
                 file.status = 'uploading'
                 file.percentage = Math.round(progressEvt.percent)
                 typeof state.events['onProgress'] == 'function' && state.events['onProgress'](progressEvt, file, files)
