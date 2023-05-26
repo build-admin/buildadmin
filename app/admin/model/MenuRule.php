@@ -15,4 +15,10 @@ class MenuRule extends Model
     protected $createTime = 'createtime';
     protected $updateTime = 'updatetime';
 
+    public function setComponentAttr($value)
+    {
+        if ($value) $value = str_replace('\\', '/', $value);
+        return $value;
+    }
+
 }
