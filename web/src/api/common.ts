@@ -6,6 +6,7 @@ import { useUserInfo } from '/@/stores/userInfo'
 import { ElNotification, UploadRawFile } from 'element-plus'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { state as uploadExpandState, fileUpload as uploadExpand } from '/@/components/mixins/baUpload'
+import { AxiosRequestConfig } from 'axios'
 import { i18n } from '../lang'
 
 /*
@@ -38,7 +39,7 @@ export const apiSendEms = '/api/Ems/send'
 /**
  * 上传文件
  */
-export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false): ApiPromise {
+export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false, config: AxiosRequestConfig = {}): ApiPromise {
     let errorMsg = ''
     const file = fd.get('file') as UploadRawFile
     const siteConfig = useSiteConfig()
@@ -70,6 +71,7 @@ export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false
         data: fd,
         params: params,
         timeout: 0,
+        ...config,
     }) as ApiPromise
 }
 
