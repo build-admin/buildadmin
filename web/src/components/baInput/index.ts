@@ -56,13 +56,13 @@ export interface InputAttr {
     placeholder?: string
     maxlength?: string | number
     minlength?: string | number
-    'show-word-limit'?: boolean
+    showWordLimit?: boolean
     clearable?: boolean
-    'show-password'?: boolean
+    showPassword?: boolean
     disabled?: boolean
     size?: 'large' | 'default' | 'small'
-    'prefix-icon'?: string | Component
-    'suffix-icon'?: string | Component
+    prefixIcon?: string | Component
+    suffixIcon?: string | Component
     rows?: number
     border?: boolean
     autosize?: boolean | anyObj
@@ -76,76 +76,76 @@ export interface InputAttr {
     form?: string
     label?: string
     tabindex?: string | number
-    'validate-event'?: boolean
-    'input-style'?: anyObj
+    validateEvent?: boolean
+    inputStyle?: anyObj
     // DateTimePicker属性
     editable?: boolean
-    'start-placeholder'?: string
-    'end-placeholder'?: string
-    'time-arrow-control'?: boolean
+    startPlaceholder?: string
+    endPlaceholder?: string
+    timeArrowControl?: boolean
     format?: string
-    'popper-class'?: string
-    'range-separator'?: string
-    'default-value'?: Date
-    'default-time'?: Date | Date[]
-    'value-format'?: string
-    'unlink-panels'?: boolean
-    'clear-icon'?: string | Component
+    popperClass?: string
+    rangeSeparator?: string
+    defaultValue?: Date
+    defaultTime?: Date | Date[]
+    valueFormat?: string
+    unlinkPanels?: boolean
+    clearIcon?: string | Component
     shortcuts?: { text: string; value: Date | Function }[]
     disabledDate?: Function
     cellClassName?: Function
     teleported?: boolean
     // select属性
     multiple?: boolean
-    'value-key'?: string
-    'collapse-tags'?: string
-    'collapse-tags-tooltip'?: boolean
-    'multiple-limit'?: number
+    valueKey?: string
+    collapseTags?: string
+    collapseTagsTooltip?: boolean
+    multipleLimit?: number
     effect?: 'dark' | 'light'
     filterable?: boolean
-    'allow-create'?: boolean
-    'filter-method'?: Function
+    allowCreate?: boolean
+    filterMethod?: Function
     remote?: false // 禁止使用远程搜索,如需使用请使用单独封装好的 remoteSelect 组件
-    'remote-method'?: false
-    'label-formatter'?: (optionData: anyObj, optionKey: string) => string
-    'no-match-text'?: string
-    'no-data-text'?: string
-    'reserve-keyword'?: boolean
-    'default-first-option'?: boolean
-    'popper-append-to-body'?: boolean
+    remoteMethod?: false
+    labelFormatter?: (optionData: anyObj, optionKey: string) => string
+    noMatchText?: string
+    noDataText?: string
+    reserveKeyword?: boolean
+    defaultFirstOption?: boolean
+    popperAppendToBody?: boolean
     persistent?: boolean
-    'automatic-dropdown'?: boolean
-    'fit-input-width'?: boolean
-    'tag-type'?: 'success' | 'info' | 'warning' | 'danger'
+    automaticDropdown?: boolean
+    fitInputWidth?: boolean
+    tagType?: 'success' | 'info' | 'warning' | 'danger'
     params?: anyObj
     // 远程select属性
     pk?: string
     field?: string
-    'remote-url'?: string
-    'tooltip-params'?: anyObj
+    remoteUrl?: string
+    tooltipParams?: anyObj
     // 图标选择器属性
-    'show-icon-name'?: boolean
+    showIconName?: boolean
     placement?: string
     title?: string
     // 颜色选择器
-    'show-alpha'?: boolean
-    'color-format'?: string
+    showAlpha?: boolean
+    colorFormat?: string
     predefine?: string[]
     // 图片文件上传属性
     action?: string
     headers?: anyObj
     method?: string
     data?: anyObj
-    'with-credentials'?: boolean
-    'show-file-list'?: boolean
+    withCredentials?: boolean
+    showFileList?: boolean
     drag?: boolean
     accept?: string
-    'list-type'?: string
-    'auto-upload'?: boolean
+    listType?: string
+    autoUpload?: boolean
     limit?: number
-    'hide-select-file'?: boolean
-    'return-full-url'?: boolean
-    'force-local'?: boolean
+    hideSelectFile?: boolean
+    returnFullUrl?: boolean
+    forceLocal?: boolean
     // editor属性
     height?: string
     mode?: string
@@ -154,7 +154,7 @@ export interface InputAttr {
     toolbarConfig?: anyObj
     editorConfig?: anyObj
     // 返回数据类型
-    'data-type'?: string
+    dataType?: string
     // 事件
     onPreview?: Function
     onRemove?: Function
