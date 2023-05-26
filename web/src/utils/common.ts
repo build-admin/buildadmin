@@ -113,7 +113,7 @@ export const debounce = (fn: Function, ms: number) => {
  * @param pk
  * @param value
  */
-export const getArrayKey = (arr: any, pk: string, value: string): any => {
+export const getArrayKey = (arr: any, pk: string, value: any): any => {
     for (const key in arr) {
         if (arr[key][pk] == value) {
             return key
