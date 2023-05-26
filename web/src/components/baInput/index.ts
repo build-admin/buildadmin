@@ -145,6 +145,7 @@ export interface InputAttr {
     limit?: number
     'hide-select-file'?: boolean
     'return-full-url'?: boolean
+    'force-local'?: boolean
     // editor属性
     height?: string
     mode?: string

@@ -69,6 +69,8 @@ interface Props {
     hideSelectFile?: boolean
     // 可自定义el-upload的其他属性
     attr?: Partial<Writeable<UploadProps>>
+    // 强制上传到本地存储
+    forceLocal?: boolean
 }
 interface UploadFileExt extends UploadUserFile {
     serverUrl?: string
@@ -85,6 +87,7 @@ const props = withDefaults(defineProps<Props>(), {
     attr: () => {
         return {}
     },
+    forceLocal: false,
 })
 
 const emits = defineEmits<{
@@ -141,7 +144,7 @@ const onElChange = (file: UploadFileExt) => {
     fd.append('file', file.raw)
     fd = formDataAppend(fd)
     state.uploading++
-    fileUpload(fd, { uuid: uuid() })
+    fileUpload(fd, { uuid: uuid() }, props.forceLocal)
         .then((res) => {
             if (res.code == 1) {
                 file.serverUrl = res.data.file.url
