@@ -231,7 +231,9 @@ onMounted(() => {
                     if (!entries[key].isIntersecting) selectRef.value?.blur()
                 }
             })
-            io.observe(selectRef.value?.$el)
+            if (selectRef.value?.$el instanceof Element) {
+                io.observe(selectRef.value.$el)
+            }
         }
     }, 500)
 })
