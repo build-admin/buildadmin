@@ -240,7 +240,7 @@ if (!function_exists('str_attr_to_array')) {
         $attrTemp = [];
         foreach ($attr as $item) {
             $item = explode('=', $item);
-            if (!empty($item[0]) && isset($item[1])) {
+            if (isset($item[0]) && isset($item[1])) {
                 $attrVal = $item[1];
                 if ($item[1] === 'false' || $item[1] === 'true') {
                     $attrVal = !($item[1] === 'false');
@@ -249,7 +249,7 @@ if (!function_exists('str_attr_to_array')) {
                 }
                 if (strpos($item[0], '.')) {
                     $attrKey = explode('.', $item[0]);
-                    if (!empty($attrKey[0]) && !empty($attrKey[1])) {
+                    if (isset($attrKey[0]) && isset($attrKey[1])) {
                         $attrTemp[$attrKey[0]][$attrKey[1]] = $attrVal;
                         continue;
                     }
