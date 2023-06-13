@@ -160,6 +160,7 @@ export function postInstallModule(uid: string, orderId: number, extend: anyObj =
             data: {
                 extend: extend,
             },
+            timeout: 3000 * 10,
         },
         {
             showCodeMessage: false,
@@ -180,6 +181,7 @@ export function postUpdate(uid: string, orderId: number, extend: anyObj = {}) {
         data: {
             extend: extend,
         },
+        timeout: 3000 * 10,
     })
 }
 
