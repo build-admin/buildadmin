@@ -472,6 +472,19 @@ class Server
         }
     }
 
+    public static function getNuxtVersion()
+    {
+        $nuxtPackageJsonPath = path_transform(root_path() . 'web-nuxt/package.json');
+        if (is_file($nuxtPackageJsonPath)) {
+            $nuxtPackageJson = file_get_contents($nuxtPackageJsonPath);
+            $nuxtPackageJson = json_decode($nuxtPackageJson, true);
+            if ($nuxtPackageJson && isset($nuxtPackageJson['version'])) {
+                return $nuxtPackageJson['version'];
+            }
+        }
+        return false;
+    }
+
     /**
      * 获取请求对象
      * @return Client

@@ -106,6 +106,7 @@ class Manage
         unset($installed);
         $zipFile = Server::download($this->uid, $this->installDir, [
             'sysVersion'    => $sysVersion,
+            'nuxtVersion'   => Server::getNuxtVersion(),
             'ba-user-token' => $token,
             'order_id'      => $orderId,
             // 传递已安装模块，做互斥检测
