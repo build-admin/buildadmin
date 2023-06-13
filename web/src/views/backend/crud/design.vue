@@ -143,7 +143,7 @@
                 <Icon
                     class="senior-config-arrow-icon"
                     size="14"
-                    color="var(--el-color-info)"
+                    color="var(--el-text-color-primary)"
                     :name="state.showHeaderSeniorConfig ? 'el-icon-ArrowUp' : 'el-icon-ArrowDown'"
                 />
             </div>
@@ -1185,7 +1185,7 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
         border-bottom-left-radius: 50px;
         border-bottom-right-radius: 50px;
         background-color: var(--ba-bg-color-overlay);
-        color: var(--el-color-info);
+        color: var(--el-text-color-primary);
         cursor: pointer;
         user-select: none;
         .senior-config-arrow-icon {
