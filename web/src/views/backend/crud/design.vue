@@ -11,8 +11,9 @@
                             type="string"
                             :placeholder="t('crud.crud.Name of the data table')"
                             :input-attr="{
-                                onChange: onTableChange,
+                                onChange: onTableCheck,
                             }"
+                            :error="state.tableNameError"
                         />
                         <FormItem
                             class="table-comment-item"
@@ -573,6 +574,7 @@ const state: {
         controller: boolean
     }
     draggingField: boolean
+    tableNameError: string
 } = reactive({
     loading: {
         init: false,
@@ -622,6 +624,7 @@ const state: {
         controller: false,
     },
     draggingField: false,
+    tableNameError: '',
 })
 
 type TableKey = keyof typeof state.table
@@ -768,6 +771,7 @@ const onGenerate = () => {
 
     // 表名检查
     if (!state.table.name) msg = t('crud.crud.Please enter the data table name!')
+    if (state.tableNameError) msg = t('crud.crud.Please enter the correct table name!')
 
     if (msg) {
         ElNotification({
@@ -1017,6 +1021,16 @@ onMounted(() => {
     })
 })
 
+const onTableCheck = (val: string) => {
+    if (!val) return (state.tableNameError = '')
+    if (/^[a-z_][a-z0-9_]*$/.test(val)) {
+        state.tableNameError = ''
+        onTableChange(val)
+    } else {
+        state.tableNameError = t('crud.crud.Use lower case underlined for table names')
+    }
+}
+
 const onTableChange = (val: string) => {
     if (!val) return
     getFileData(val, state.table.isCommonModel).then((res) => {
@@ -1193,10 +1207,11 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
 .header-box {
     display: flex;
     align-items: center;
-    height: 60px;
+    height: v-bind("state.tableNameError ? '70px':'60px'");
     padding: 10px;
     background-color: var(--ba-bg-color-overlay);
     border-radius: var(--el-border-radius-base);
+    transition: 0.1s;
     .header,
     .header-item-box {
         display: flex;

@@ -102,6 +102,8 @@ export default {
     'Confirm CRUD code generation': '确认生成CRUD代码',
     'Continue building': '继续生成',
     'Please enter the data table name!': '请输入数据表名！',
+    'Please enter the correct table name!': '请输入正确的数据表名！',
+    'Use lower case underlined for table names': '请使用小写加下划线作为表名，小写字母开头，可以带有数字',
     'Please design the primary key field!': '请设计主键字段！',
     'It is irreversible to give up the design Are you sure you want to give up?': '放弃设计不可逆，确定要放弃吗？',
     'There can only be one primary key field': '只可以有一个主键字段。',

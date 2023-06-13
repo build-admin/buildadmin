@@ -103,6 +103,8 @@ export default {
     'Confirm CRUD code generation': 'Confirm CRUD code generation',
     'Continue building': 'Continue building',
     'Please enter the data table name!': 'Please enter the data table name!',
+    'Please enter the correct table name!': 'Please enter the correct table name!',
+    'Use lower case underlined for table names': 'Use lower case underlined for table names',
     'Please design the primary key field!': 'Please design the primary key field!',
     'It is irreversible to give up the design Are you sure you want to give up?':
         'It is irreversible to give up the design. Are you sure you want to give up?',
