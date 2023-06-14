@@ -19,6 +19,7 @@
                                             :start-placeholder="$t('el.datepicker.startDate')"
                                             :end-placeholder="$t('el.datepicker.endDate')"
                                             :value-format="item.comSearchRender == 'date' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'"
+                                            :teleported="false"
                                         />
                                     </div>
                                 </div>
@@ -55,8 +56,9 @@
                                             :type="item.comSearchRender == 'date' ? 'date' : 'datetime'"
                                             :value-format="item.comSearchRender == 'date' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'"
                                             :placeholder="item.operatorPlaceholder"
-                                            :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:new Date()"
-                                        ></el-date-picker>
+                                            :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:new Date()" 
+                                            :teleported="false"
+                                        />
 
                                         <!-- tag、tags、select -->
                                         <el-select
@@ -197,7 +199,6 @@ const onResetForm = () => {
 
 <style scoped lang="scss">
 .table-com-search {
-    overflow: hidden;
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
