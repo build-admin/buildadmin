@@ -29,16 +29,19 @@ class Config extends Backend
     {
         $configGroup = get_sys_config('config_group');
         $config      = $this->model->order('weigh desc')->select()->toArray();
-        $list        = [];
-        foreach ($config as $item) {
-            $item['title']                  = __($item['title']);
-            $list[$item['group']]['list'][] = $item;
-        }
-        foreach ($configGroup as $item) {
-            $list[$item['key']]['name']  = $item['key'];
-            $list[$item['key']]['title'] = __($item['value']);
 
+        $list           = [];
+        $newConfigGroup = [];
+        foreach ($configGroup as $item) {
+            $list[$item['key']]['name']   = $item['key'];
+            $list[$item['key']]['title']  = __($item['value']);
             $newConfigGroup[$item['key']] = $list[$item['key']]['title'];
+        }
+        foreach ($config as $item) {
+            if (array_key_exists($item['group'], $newConfigGroup)) {
+                $item['title']                  = __($item['title']);
+                $list[$item['group']]['list'][] = $item;
+            }
         }
 
         $this->success('', [
