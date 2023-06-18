@@ -183,7 +183,7 @@ load()
         color: var(--el-color-info);
         span {
             margin-left: 10px;
-            font-size: 18px;
+            font-size: var(--el-font-size-medium);
             font-weight: bold;
             color: var(--el-color-error);
             &.clicaptcha-clicked {

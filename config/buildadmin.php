@@ -20,6 +20,15 @@ return [
     'auto_sort_eq_weight'  => false,
     // 开启前台会员中心
     'open_member_center'   => true,
+    // 点选验证码配置
+    'click_captcha'        => [
+        // 模式:text=文字,icon=图标(若只有icon则适用于国际化站点)
+        'mode'           => ['text', 'icon'],
+        // 长度
+        'length'         => 2,
+        // 混淆点长度
+        'confuse_length' => 2,
+    ],
     // Token 配置
     'token'                => [
         // 默认驱动方式
