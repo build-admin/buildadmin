@@ -1,22 +1,17 @@
 {
-    "name": "topthink/think",
-    "description": "the new thinkphp framework",
+    "name": "wonderful-code/buildadmin",
+    "description": "Build your admin framework",
     "type": "project",
     "keywords": [
-        "framework",
-        "thinkphp",
-        "ORM"
+        "buildadmin",
+        "thinkphp"
     ],
-    "homepage": "http://thinkphp.cn/",
+    "homepage": "https://buildadmin.com",
     "license": "Apache-2.0",
     "authors": [
         {
-            "name": "liu21st",
-            "email": "liu21st@gmail.com"
-        },
-        {
-            "name": "yunwuxin",
-            "email": "448901948@qq.com"
+            "name": "妙码生花",
+            "email": "hi@buildadmin.com"
         }
     ],
     "require": {
