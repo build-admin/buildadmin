@@ -40,4 +40,5 @@ return [
     'Failed to switch package manager. Please modify the configuration file manually:%s'                                 => '包管理器切换失败，请手动修改配置文件：%s',
     'Please upgrade %s version'                                                                                          => '请升级%s版本',
     'nothing'                                                                                                            => '无',
+    'The gd extension and freeType library need to be installed'                                                         => '需要gd2扩展和freeType库',
 ];

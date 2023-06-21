@@ -190,6 +190,24 @@ class Install extends Api
         }
         // PDO-end
 
+        // GD2和freeType-start
+        $phpGd2 = extension_loaded('gd') && function_exists('imagettftext');
+        if (!$phpGd2) {
+            $phpGd2Link = [
+                [
+                    'name' => __('The gd extension and freeType library need to be installed'),
+                    'type' => 'text'
+                ],
+                [
+                    'name'  => __('How to solve?'),
+                    'title' => __('Click to see how to solve it'),
+                    'type'  => 'faq',
+                    'url'   => 'https://wonderful-code.gitee.io/guide/install/gdFail.html'
+                ]
+            ];
+        }
+        // GD2和freeType-end
+
         // proc_open
         $phpProc = function_exists('proc_open') && function_exists('proc_close') && function_exists('proc_get_status');
         if (!$phpProc) {
@@ -236,6 +254,11 @@ class Install extends Api
                 'describe' => $phpPdo ? __('already installed') : __('Not installed'),
                 'state'    => $phpPdo ? self::$ok : self::$fail,
                 'link'     => $phpPdoLink ?? []
+            ],
+            'php_gd2'            => [
+                'describe' => $phpGd2 ? __('already installed') : __('Not installed'),
+                'state'    => $phpGd2 ? self::$ok : self::$fail,
+                'link'     => $phpGd2Link ?? []
             ],
             'php_proc'           => [
                 'describe' => $phpProc ? __('Allow execution') : __('disabled'),

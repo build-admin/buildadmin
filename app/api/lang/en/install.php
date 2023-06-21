@@ -40,4 +40,5 @@ return [
     'Failed to switch package manager. Please modify the configuration file manually:%s'                                 => 'Package manager switch failed, please modify the configuration file manually：%s.',
     'Please upgrade %s version'                                                                                          => 'Please upgrade the %s version',
     'nothing'                                                                                                            => 'Nothing',
+    'The gd extension and freeType library need to be installed'                                                         => 'The gd2 extension and freeType library need to be installed',
 ];
