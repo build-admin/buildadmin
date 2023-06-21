@@ -25,30 +25,30 @@ class Install extends Api
     /**
      * 环境检查状态
      */
-    static $ok   = 'ok';
-    static $fail = 'fail';
-    static $warn = 'warn';
+    static string $ok   = 'ok';
+    static string $fail = 'fail';
+    static string $warn = 'warn';
 
     /**
      * 安装锁文件名称
      */
-    static $lockFileName = 'install.lock';
+    static string $lockFileName = 'install.lock';
 
     /**
      * 配置文件
      */
-    static $dbConfigFileName    = 'database.php';
-    static $buildConfigFileName = 'buildadmin.php';
+    static string $dbConfigFileName    = 'database.php';
+    static string $buildConfigFileName = 'buildadmin.php';
 
     /**
      * 自动构建的前端文件的 outDir 相对于根目录
      */
-    static $distDir = 'web' . DIRECTORY_SEPARATOR . 'dist';
+    static string $distDir = 'web' . DIRECTORY_SEPARATOR . 'dist';
 
     /**
      * 需要的依赖版本
      */
-    static $needDependentVersion = [
+    static array $needDependentVersion = [
         'php'  => '7.1.0',
         'npm'  => '6.14.0',
         'cnpm' => '7.1.0',
@@ -63,7 +63,7 @@ class Install extends Api
      * 执行命令成功执行再写入标记到lock文件
      * 实现命令执行失败，重载页面可重新执行
      */
-    static $InstallationCompletionMark = 'install-end';
+    static string $InstallationCompletionMark = 'install-end';
 
 
     /**
@@ -592,7 +592,7 @@ class Install extends Api
      * @param $database
      * @return array
      */
-    private function testConnectDatabase($database)
+    private function testConnectDatabase($database): array
     {
         try {
             $dbConfig                         = Config::get('database');
