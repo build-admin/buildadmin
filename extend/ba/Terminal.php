@@ -17,59 +17,71 @@ use think\facade\Config;
 use think\facade\Cookie;
 use app\admin\library\Auth;
 use think\exception\HttpResponseException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 class Terminal
 {
     /**
-     * @var object 对象实例
+     * @var Terminal|null 对象实例
      */
-    protected static $instance;
+    protected static Terminal|null $instance = null;
 
     /**
-     * 当前执行的命令,$command 的 key
+     * @var string 当前执行的命令 $command 的 key
      */
-    protected $commandKey = null;
+    protected string $commandKey = '';
 
     /**
-     * proc_open 的参数
+     * @var array proc_open 的参数
      */
-    protected $descriptorsPec = [];
-
-    protected $process = null;
-
-    protected $pipes = null;
-
-    protected $procStatus = null;
+    protected array $descriptorsPec = [];
 
     /**
-     * 命令在前台的uuid
+     * @var resource|false proc_open 返回的 resource
      */
-    protected $uuid = null;
+    protected $process = false;
 
     /**
-     * 扩展信息
+     * @var array proc_open 的管道
      */
-    protected $extend = null;
+    protected array $pipes = [];
 
     /**
-     * 命令执行输出文件
+     * @var int proc 执行状态
      */
-    protected $outputFile = null;
+    protected int $procStatus = 0;
 
     /**
-     * 命令执行实时输出内容
+     * @var string 命令在前台的uuid
      */
-    protected $outputContent = '';
+    protected string $uuid = '';
 
     /**
-     * 自动构建的前端文件的 outDir（相对于根目录）
+     * @var string 扩展信息
      */
-    protected static $distDir = 'web' . DIRECTORY_SEPARATOR . 'dist';
+    protected string $extend = '';
 
     /**
-     * 状态标识
+     * @var string 命令执行输出文件
      */
-    protected $flag = [
+    protected string $outputFile = '';
+
+    /**
+     * @var string 命令执行实时输出内容
+     */
+    protected string $outputContent = '';
+
+    /**
+     * @var string 自动构建的前端文件的 outDir（相对于根目录）
+     */
+    protected static string $distDir = 'web' . DIRECTORY_SEPARATOR . 'dist';
+
+    /**
+     * @var array 状态标识
+     */
+    protected array $flag = [
         // 连接成功
         'link-success'   => 'command-link-success',
         // 执行成功
@@ -83,7 +95,7 @@ class Terminal
     /**
      * 初始化
      */
-    public static function instance()
+    public static function instance(): Terminal
     {
         if (is_null(self::$instance)) {
             self::$instance = new static();
@@ -96,8 +108,8 @@ class Terminal
      */
     public function __construct()
     {
-        $this->uuid   = request()->param('uuid');
-        $this->extend = request()->param('extend');
+        $this->uuid   = request()->param('uuid', '');
+        $this->extend = request()->param('extend', '');
 
         // 初始化日志文件
         $outputDir        = root_path() . 'runtime' . DIRECTORY_SEPARATOR . 'terminal';
@@ -119,7 +131,7 @@ class Terminal
      * @param string $key 命令key
      * @return array|false
      */
-    public static function getCommand(string $key)
+    public static function getCommand(string $key): bool|array
     {
         if (!$key) {
             return false;
@@ -153,7 +165,14 @@ class Terminal
         return $command;
     }
 
-    public function exec(bool $authentication = true)
+    /**
+     * 执行命令
+     * @param bool $authentication 是否鉴权
+     * @throws ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     */
+    public function exec(bool $authentication = true): void
     {
         header('Content-Type: text/event-stream');
         header('Cache-Control: no-cache');
@@ -233,7 +252,7 @@ class Terminal
      * @param string $data
      * @param bool   $callback
      */
-    public function output(string $data, bool $callback = true)
+    public function output(string $data, bool $callback = true): void
     {
         $data = self::outputFilter($data);
         $data = [
@@ -254,7 +273,7 @@ class Terminal
      * 输出状态标记
      * @param string $flag
      */
-    public function outputFlag(string $flag)
+    public function outputFlag(string $flag): void
     {
         $this->output($this->flag[$flag], false);
     }
@@ -262,7 +281,7 @@ class Terminal
     /**
      * 输出后回调
      */
-    public function outputCallback($data)
+    public function outputCallback($data): void
     {
 
     }
@@ -307,7 +326,7 @@ class Terminal
     /**
      * 执行前埋点
      */
-    public function beforeExecution()
+    public function beforeExecution(): void
     {
         if ($this->commandKey == 'test.pnpm') {
             @unlink(root_path() . 'public' . DIRECTORY_SEPARATOR . 'npm-install-test' . DIRECTORY_SEPARATOR . 'pnpm-lock.yaml');
@@ -319,19 +338,19 @@ class Terminal
     /**
      * 输出过滤
      */
-    public static function outputFilter($str)
+    public static function outputFilter($str): string
     {
         $str  = trim($str);
         $preg = '/\[(.*?)m/i';
         $str  = preg_replace($preg, '', $str);
-        $str  = str_replace(["\r\n", "\r", "\n"], "", $str);
+        $str  = str_replace(["\r\n", "\r", "\n"], "\n", $str);
         return mb_convert_encoding($str, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5');
     }
 
     /**
      * 执行错误
      */
-    public function execError($error, $break = false)
+    public function execError($error, $break = false): void
     {
         $this->output('Error:' . $error);
         $this->outputFlag('exec-error');
@@ -341,7 +360,7 @@ class Terminal
     /**
      * 退出执行
      */
-    public function break()
+    public function break(): void
     {
         throw new HttpResponseException(Response::create()->contentType('text/event-stream'));
     }
@@ -352,7 +371,7 @@ class Terminal
      * @param $commandKey
      * @return string | bool
      */
-    public static function getOutputFromProc($commandKey)
+    public static function getOutputFromProc($commandKey): bool|string
     {
         if (!function_exists('proc_open') || !function_exists('proc_close')) {
             return false;
