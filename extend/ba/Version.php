@@ -12,10 +12,10 @@ class Version
     /**
      * 比较两个版本号
      * @param $v1 string 要求的版本号
-     * @param $v2 string | bool 被比较版本号
+     * @param $v2 bool | string 被比较版本号
      * @return bool 是否达到要求的版本号
      */
-    public static function compare(string $v1, $v2): bool
+    public static function compare(string $v1, bool|string $v2): bool
     {
         if (!$v2) {
             return false;
@@ -34,8 +34,8 @@ class Version
         }
 
         // 丢弃'-'后面的内容
-        if (strpos($v1, '-') !== false) $v1 = explode('-', $v1)[0];
-        if (strpos($v2, '-') !== false) $v2 = explode('-', $v2)[0];
+        if (str_contains($v1, '-')) $v1 = explode('-', $v1)[0];
+        if (str_contains($v2, '-')) $v2 = explode('-', $v2)[0];
 
         $v1 = explode('.', $v1);
         $v2 = explode('.', $v2);
