@@ -5,12 +5,11 @@ namespace app\api\controller;
 
 use ba\Random;
 use ba\Version;
-use app\common\controller\Api;
 use think\App;
 use ba\Terminal;
-use think\Exception;
-use think\facade\Config;
 use think\facade\Db;
+use think\facade\Config;
+use app\common\controller\Api;
 use think\db\exception\PDOException;
 use app\admin\model\Admin as AdminModel;
 use app\admin\model\User as UserModel;
@@ -80,12 +79,8 @@ class Install extends Api
      */
     public function terminal()
     {
-        // 安装锁
-        if (is_file(public_path() . self::$lockFileName)) {
-            $contents = @file_get_contents(public_path() . self::$lockFileName);
-            if ($contents == self::$InstallationCompletionMark) {
-                return;
-            }
+        if ($this->isInstallComplete()) {
+            return;
         }
 
         Terminal::instance()->exec(false);
@@ -93,12 +88,8 @@ class Install extends Api
 
     public function changePackageManager()
     {
-        // 安装锁
-        if (is_file(public_path() . self::$lockFileName)) {
-            $contents = @file_get_contents(public_path() . self::$lockFileName);
-            if ($contents == self::$InstallationCompletionMark) {
-                return;
-            }
+        if ($this->isInstallComplete()) {
+            return;
         }
 
         $newPackageManager = request()->post('manager', Config::get('terminal.npm_package_manager'));
@@ -116,8 +107,7 @@ class Install extends Api
      */
     public function envBaseCheck()
     {
-        // 安装锁
-        if (is_file(public_path() . self::$lockFileName)) {
+        if ($this->isInstallComplete()) {
             $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]), []);
         }
 
@@ -273,7 +263,7 @@ class Install extends Api
      */
     public function envNpmCheck()
     {
-        if (is_file(public_path() . self::$lockFileName)) {
+        if ($this->isInstallComplete()) {
             $this->error('', [], 2);
         }
 
@@ -398,7 +388,7 @@ class Install extends Api
             'database' => '',
         ];
 
-        $conn = $this->testConnectDatabase($database);
+        $conn = $this->connectDb($database);
         if ($conn['code'] == 0) {
             $this->error($conn['msg']);
         } else {
@@ -414,56 +404,39 @@ class Install extends Api
      */
     public function baseConfig()
     {
-        if (is_file(public_path() . self::$lockFileName)) {
-            $contents = @file_get_contents(public_path() . self::$lockFileName);
-            if ($contents != self::$InstallationCompletionMark) {
-                $this->error('Retry Build', [], 302);
-            }
+        if ($this->isInstallComplete()) {
             $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]));
         }
 
-        $envOk = $this->commandExecutionCheck();
+        $envOk    = $this->commandExecutionCheck();
+        $rootPath = str_replace('\\', '/', root_path());
         if ($this->request->isGet()) {
-            $this->success('', ['envOk' => $envOk]);
+            $this->success('', [
+                'rootPath'            => $rootPath,
+                'executionWebCommand' => $envOk
+            ]);
         }
 
-        $param = $this->request->only(['hostname', 'username', 'password', 'hostport', 'database', 'prefix', 'adminname', 'adminpassword', 'sitename']);
+        $connectData = $databaseParam = $this->request->only(['hostname', 'username', 'password', 'hostport', 'database', 'prefix']);
 
         // 数据库配置测试
-        try {
-            $dbConfig                                     = Config::get('database');
-            $dbConfig['connections']['mysql']['hostname'] = $param['hostname'];
-            $dbConfig['connections']['mysql']['database'] = $param['database'];
-            $dbConfig['connections']['mysql']['username'] = $param['username'];
-            $dbConfig['connections']['mysql']['password'] = $param['password'];
-            $dbConfig['connections']['mysql']['hostport'] = $param['hostport'];
-            $dbConfig['connections']['mysql']['prefix']   = $param['prefix'];
-            Config::set(['connections' => $dbConfig['connections']], 'database');
-
-            $connect = Db::connect('mysql');
-            $connect->execute("SELECT 1");
-        } catch (PDOException $e) {
-            $this->error(__('Database connection failed:%s', [mb_convert_encoding($e->getMessage(), 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')]));
+        $connectData['database'] = '';
+        $connect                 = $this->connectDb($connectData, true);
+        if ($connect['code'] == 0) {
+            $this->error($connect['msg']);
         }
 
-        // 导入安装sql
-        try {
-            $sql = file_get_contents(root_path() . 'app' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'buildadmin.sql');
-            $sql = str_replace("__PREFIX__", $param['prefix'], $sql);
-            $connect->getPdo()->exec($sql);
-        } catch (PDOException $e) {
-            $errorMsg = $e->getMessage();
-            $this->error(__('Failed to install SQL execution:%s', [mb_convert_encoding($errorMsg ?: 'unknown', 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')]));
-        } catch (Exception $e) {
-            $errorMsg = $e->getMessage();
-            $this->error(__('Installation error:%s', [mb_convert_encoding($errorMsg ?: 'unknown', 'UTF-8', 'UTF-8,GBK,GB2312,BIG5')]));
+        // 建立数据库
+        if (!in_array($databaseParam['database'], $connect['databases'])) {
+            $sql = "CREATE DATABASE IF NOT EXISTS `{$databaseParam['database']}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+            $connect['pdo']->exec($sql);
         }
 
         // 写入数据库配置文件
         $dbConfigFile    = config_path() . self::$dbConfigFileName;
         $dbConfigContent = @file_get_contents($dbConfigFile);
-        $callback        = function ($matches) use ($param) {
-            $value = $param[$matches[1]] ?? '';
+        $callback        = function ($matches) use ($databaseParam) {
+            $value = $databaseParam[$matches[1]] ?? '';
             return "'{$matches[1]}'{$matches[2]}=>{$matches[3]}env('database.{$matches[1]}', '{$value}'),";
         };
         $dbConfigText    = preg_replace_callback("/'(hostname|database|username|password|hostport|prefix)'(\s+)=>(\s+)env\('database\.(.*)',\s+'(.*)'\)\,/", $callback, $dbConfigContent);
@@ -478,12 +451,12 @@ class Install extends Api
         if ($envFileContent && stripos($envFileContent, '[DATABASE]') === false) {
             $envFileContent .= "\n" . '[DATABASE]' . "\n";
             $envFileContent .= 'TYPE = mysql' . "\n";
-            $envFileContent .= 'HOSTNAME = ' . $param['hostname'] . "\n";
-            $envFileContent .= 'DATABASE = ' . $param['database'] . "\n";
-            $envFileContent .= 'USERNAME = ' . $param['username'] . "\n";
-            $envFileContent .= 'PASSWORD = ' . $param['password'] . "\n";
-            $envFileContent .= 'HOSTPORT = ' . $param['hostport'] . "\n";
-            $envFileContent .= 'CHARSET = utf8' . "\n";
+            $envFileContent .= 'HOSTNAME = ' . $databaseParam['hostname'] . "\n";
+            $envFileContent .= 'DATABASE = ' . $databaseParam['database'] . "\n";
+            $envFileContent .= 'USERNAME = ' . $databaseParam['username'] . "\n";
+            $envFileContent .= 'PASSWORD = ' . $databaseParam['password'] . "\n";
+            $envFileContent .= 'HOSTPORT = ' . $databaseParam['hostport'] . "\n";
+            $envFileContent .= 'CHARSET = utf8mb4' . "\n";
             $envFileContent .= 'DEBUG = true' . "\n";
             $result         = @file_put_contents($envFile, $envFileContent);
             if (!$result) {
@@ -502,26 +475,6 @@ class Install extends Api
             $this->error(__('File has no write permission:%s', ['config/' . self::$buildConfigFileName]));
         }
 
-        // 管理员配置入库
-        $adminModel             = new AdminModel();
-        $defaultAdmin           = $adminModel->where('username', 'admin')->find();
-        $defaultAdmin->username = $param['adminname'];
-        $defaultAdmin->nickname = ucfirst($param['adminname']);
-        $defaultAdmin->save();
-
-        if (isset($param['adminpassword']) && $param['adminpassword']) {
-            $adminModel->resetPassword($defaultAdmin->id, $param['adminpassword']);
-        }
-
-        // 默认用户密码修改
-        $user = new UserModel();
-        $user->resetPassword(1, Random::build());
-
-        // 修改站点名称
-        $connect->table($param['prefix'] . 'config')->where('name', 'site_name')->update([
-            'value' => $param['sitename']
-        ]);
-
         // 建立安装锁文件
         $result = @file_put_contents(public_path() . self::$lockFileName, date('Y-m-d H:i:s'));
         if (!$result) {
@@ -529,8 +482,20 @@ class Install extends Api
         }
 
         $this->success('', [
-            'execution' => $envOk
+            'rootPath'            => $rootPath,
+            'executionWebCommand' => $envOk
         ]);
+    }
+
+    protected function isInstallComplete(): bool
+    {
+        if (is_file(public_path() . self::$lockFileName)) {
+            $contents = @file_get_contents(public_path() . self::$lockFileName);
+            if ($contents == self::$InstallationCompletionMark) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -538,16 +503,36 @@ class Install extends Api
      */
     public function commandExecComplete()
     {
-        if (is_file(public_path() . self::$lockFileName)) {
-            $contents = @file_get_contents(public_path() . self::$lockFileName);
-            if ($contents == self::$InstallationCompletionMark) {
-                $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]));
-            }
+        if ($this->isInstallComplete()) {
+            $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]));
         }
 
-        $result = @file_put_contents(public_path() . self::$lockFileName, self::$InstallationCompletionMark);
-        if (!$result) {
-            $this->error(__('File has no write permission:%s', ['public/' . self::$lockFileName]));
+        $param = $this->request->only(['type', 'adminname', 'adminpassword', 'sitename']);
+        if ($param['type'] == 'web') {
+            $result = @file_put_contents(public_path() . self::$lockFileName, self::$InstallationCompletionMark);
+            if (!$result) {
+                $this->error(__('File has no write permission:%s', ['public/' . self::$lockFileName]));
+            }
+        } else {
+            // 管理员配置入库
+            $adminModel             = new AdminModel();
+            $defaultAdmin           = $adminModel->where('username', 'admin')->find();
+            $defaultAdmin->username = $param['adminname'];
+            $defaultAdmin->nickname = ucfirst($param['adminname']);
+            $defaultAdmin->save();
+
+            if (isset($param['adminpassword']) && $param['adminpassword']) {
+                $adminModel->resetPassword($defaultAdmin->id, $param['adminpassword']);
+            }
+
+            // 默认用户密码修改
+            $user = new UserModel();
+            $user->resetPassword(1, Random::build());
+
+            // 修改站点名称
+            \app\admin\model\Config::where('name', 'site_name')->update([
+                'value' => $param['sitename']
+            ]);
         }
         $this->success();
     }
@@ -612,10 +597,11 @@ class Install extends Api
 
     /**
      * 数据库连接-获取数据表列表
-     * @param $database
+     * @param array $database
+     * @param bool  $returnPdo
      * @return array
      */
-    private function testConnectDatabase($database): array
+    private function connectDb(array $database, bool $returnPdo = false): array
     {
         try {
             $dbConfig                         = Config::get('database');
@@ -646,6 +632,7 @@ class Install extends Api
             'code'      => 1,
             'msg'       => '',
             'databases' => $databases,
+            'pdo'       => $returnPdo ? $connect->getPdo() : '',
         ];
     }
 }

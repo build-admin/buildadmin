@@ -10,6 +10,12 @@ return [
     'install_service_port' => '8000',
     // 允许执行的命令
     'commands'             => [
+        // 数据库迁移命令
+        'migrate'      => [
+            'run'        => 'php think migrate:run',
+            'rollback'   => 'php think migrate:rollback',
+            'breakpoint' => 'php think migrate:breakpoint',
+        ],
         // 安装包管理器的命令
         'install'      => [
             'cnpm' => 'npm install cnpm -g --registry=https://registry.npmmirror.com',
