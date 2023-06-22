@@ -22,7 +22,7 @@
                     <div class="admin-info-base">
                         <div class="admin-nickname">{{ state.adminInfo.nickname }}</div>
                         <div class="admin-other">
-                            <div>{{ t('routine.adminInfo.Last logged in on') }} {{ state.adminInfo.lastlogintime }}</div>
+                            <div>{{ t('routine.adminInfo.Last logged in on') }} {{ state.adminInfo.last_login_time }}</div>
                         </div>
                     </div>
                     <div class="admin-info-form">
@@ -214,7 +214,7 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
     formEl.validate((valid) => {
         if (valid) {
             let data = { ...state.adminInfo }
-            delete data.lastlogintime
+            delete data.last_login_time
             delete data.username
             delete data.avatar
             state.buttonLoading = true

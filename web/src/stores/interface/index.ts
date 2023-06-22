@@ -50,7 +50,7 @@ export interface AdminInfo {
     username: string
     nickname: string
     avatar: string
-    lastlogintime: string
+    last_login_time: string
     token: string
     refreshToken: string
     super: boolean

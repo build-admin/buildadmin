@@ -53,8 +53,8 @@ class Install extends Migrator
                 ->addColumn('salt', 'string', ['limit' => 30, 'default' => '', 'comment' => '密码盐'])
                 ->addColumn('motto', 'string', ['limit' => 255, 'default' => '', 'comment' => '签名'])
                 ->addColumn('status', 'enum', ['values' => '0,1', 'default' => '1', 'comment' => '状态:0=禁用,1=启用'])
-                ->addColumn('createtime', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '更新时间'])
-                ->addColumn('updatetime', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '创建时间'])
+                ->addColumn('createtime', 'integer', ['limit' => 10, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '更新时间'])
+                ->addColumn('updatetime', 'integer', ['limit' => 10, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '创建时间'])
                 ->addIndex(['username'], [
                     'unique' => true,
                     'type'   => 'BTREE',

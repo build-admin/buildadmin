@@ -17,7 +17,7 @@ class Admin extends Backend
      */
     protected $model = null;
 
-    protected $preExcludeFields = ['createtime', 'updatetime', 'password', 'salt', 'loginfailure', 'lastlogintime', 'lastloginip'];
+    protected $preExcludeFields = ['create_time', 'update_time', 'password', 'salt', 'login_failure', 'last_login_time', 'last_login_ip'];
 
     protected $quickSearchField = ['username', 'nickname'];
 
@@ -46,7 +46,7 @@ class Admin extends Backend
 
         list($where, $alias, $limit, $order) = $this->queryBuilder();
         $res = $this->model
-            ->withoutField('loginfailure,password,salt')
+            ->withoutField('login_failure,password,salt')
             ->withJoin($this->withJoinTable, $this->withJoinType)
             ->alias($alias)
             ->where($where)
@@ -195,7 +195,7 @@ class Admin extends Backend
             }
         }
 
-        unset($row['salt'], $row['loginfailure']);
+        unset($row['salt'], $row['login_failure']);
         $row['password'] = '';
         $this->success('', [
             'row' => $row

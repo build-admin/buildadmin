@@ -16,16 +16,7 @@ class Admin extends Model
     /**
      * @var string 自动写入时间戳
      */
-    protected $autoWriteTimestamp = 'int';
-
-    /**
-     * @var string 自动写入创建时间
-     */
-    protected $createTime = 'createtime';
-    /**
-     * @var string 自动写入更新时间
-     */
-    protected $updateTime = 'updatetime';
+    protected $autoWriteTimestamp = true;
 
     /**
      * 追加属性
@@ -55,9 +46,9 @@ class Admin extends Model
         return full_url($value, true, Config::get('buildadmin.default_avatar'));
     }
 
-    public function getLastlogintimeAttr($value)
+    public function getLastLoginTimeAttr($value): string
     {
-        return $value ? date('Y-m-d H:i:s', $value) : 'none';
+        return $value ? date('Y-m-d H:i:s', $value) : '';
     }
 
     /**

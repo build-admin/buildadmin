@@ -13,9 +13,9 @@ class AdminInfo extends Backend
     protected $model = null;
 
     // 排除字段
-    protected $preExcludeFields = ['username', 'lastlogintime', 'password', 'salt', 'status'];
+    protected $preExcludeFields = ['username', 'last_login_time', 'password', 'salt', 'status'];
     // 输出字段
-    protected $authAllowFields = ['id', 'username', 'nickname', 'avatar', 'email', 'mobile', 'motto', 'lastlogintime'];
+    protected $authAllowFields = ['id', 'username', 'nickname', 'avatar', 'email', 'mobile', 'motto', 'last_login_time'];
 
     public function initialize()
     {

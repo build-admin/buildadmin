@@ -15,6 +15,7 @@ class InstallData extends Migrator
 
     public function up()
     {
+        parent::up();
         $this->admin();
         $this->adminGroup();
         $this->adminGroupAccess();
