@@ -58,7 +58,7 @@ const baTable = new baTableClass(
             { label: t('user.user.mobile'), prop: 'mobile', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
                 label: t('user.user.Last login IP'),
-                prop: 'lastloginip',
+                prop: 'last_login_ip',
                 align: 'center',
                 operator: 'LIKE',
                 operatorPlaceholder: t('Fuzzy query'),
@@ -66,14 +66,14 @@ const baTable = new baTableClass(
             },
             {
                 label: t('user.user.Last login'),
-                prop: 'lastlogintime',
+                prop: 'last_login_time',
                 align: 'center',
                 render: 'datetime',
                 sortable: 'custom',
                 operator: 'RANGE',
                 width: 160,
             },
-            { label: t('createtime'), prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('createtime'), prop: 'create_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
             {
                 label: t('state'),
                 prop: 'status',

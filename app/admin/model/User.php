@@ -11,10 +11,7 @@ use think\Model;
  */
 class User extends Model
 {
-    protected $autoWriteTimestamp = 'int';
-
-    protected $createTime = 'createtime';
-    protected $updateTime = 'updatetime';
+    protected $autoWriteTimestamp = true;
 
     public function getAvatarAttr($value)
     {

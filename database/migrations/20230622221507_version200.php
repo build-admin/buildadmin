@@ -18,17 +18,19 @@ class Version200 extends Migrator
                 ->changeColumn('create_time', 'biginteger', ['after' => 'update_time', 'limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '创建时间'])
                 ->save();
         }
-    }
 
-    public function down()
-    {
-        parent::down();
-        $admin = $this->table('admin');
-        $admin->renameColumn('login_failure', 'loginfailure')
-            ->renameColumn('last_login_time', 'lastlogintime')
-            ->renameColumn('last_login_ip', 'lastloginip')
-            ->renameColumn('update_time', 'updatetime')
-            ->renameColumn('create_time', 'createtime')
-            ->save();
+        $user = $this->table('user');
+        if ($user->hasColumn('loginfailure')) {
+            $user->renameColumn('lastlogintime', 'last_login_time')
+                ->renameColumn('lastloginip', 'last_login_ip')
+                ->renameColumn('loginfailure', 'login_failure')
+                ->renameColumn('joinip', 'join_ip')
+                ->renameColumn('jointime', 'join_time')
+                ->renameColumn('updatetime', 'update_time')
+                ->renameColumn('createtime', 'create_time')
+                ->changeColumn('update_time', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '更新时间'])
+                ->changeColumn('create_time', 'biginteger', ['after' => 'update_time', 'limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '创建时间'])
+                ->save();
+        }
     }
 }

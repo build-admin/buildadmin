@@ -17,7 +17,7 @@ class User extends Backend
     protected $withJoinTable = ['group'];
 
     // 排除字段
-    protected $preExcludeFields = ['lastlogintime', 'loginfailure', 'password', 'salt'];
+    protected $preExcludeFields = ['last_login_time', 'login_failure', 'password', 'salt'];
 
     protected $quickSearchField = ['username', 'nickname', 'id'];
 

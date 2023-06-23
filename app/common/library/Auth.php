@@ -58,7 +58,7 @@ class Auth extends \ba\Auth
     /**
      * @var string[] 允许输出的字段
      */
-    protected $allowFields = ['id', 'username', 'nickname', 'email', 'mobile', 'avatar', 'gender', 'birthday', 'money', 'score', 'jointime', 'motto', 'lastlogintime', 'lastloginip'];
+    protected $allowFields = ['id', 'username', 'nickname', 'email', 'mobile', 'avatar', 'gender', 'birthday', 'money', 'score', 'join_time', 'motto', 'last_login_time', 'last_login_ip'];
 
     public function __construct(array $config = [])
     {
@@ -167,15 +167,15 @@ class Auth extends \ba\Auth
         $time = time();
         $salt = Random::build('alnum', 16);
         $data = [
-            'password'      => encrypt_password($password, $salt),
-            'group_id'      => $group,
-            'nickname'      => preg_match("/^1[3-9]\d{9}$/", $username) ? substr_replace($username, '****', 3, 4) : $username,
-            'joinip'        => $ip,
-            'jointime'      => $time,
-            'lastloginip'   => $ip,
-            'lastlogintime' => $time,
-            'salt'          => $salt,
-            'status'        => 'enable',
+            'password'        => encrypt_password($password, $salt),
+            'group_id'        => $group,
+            'nickname'        => preg_match("/^1[3-9]\d{9}$/", $username) ? substr_replace($username, '****', 3, 4) : $username,
+            'join_ip'         => $ip,
+            'join_time'       => $time,
+            'last_login_ip'   => $ip,
+            'last_login_time' => $time,
+            'salt'            => $salt,
+            'status'          => 'enable',
         ];
         $data = array_merge($params, $data);
         $data = array_merge($data, $extend);
@@ -231,7 +231,7 @@ class Auth extends \ba\Auth
             return false;
         }
         $userLoginRetry = Config::get('buildadmin.user_login_retry');
-        if ($userLoginRetry && $this->model->loginfailure >= $userLoginRetry && time() - $this->model->lastlogintime < 86400) {
+        if ($userLoginRetry && $this->model->login_failure >= $userLoginRetry && time() - $this->model->last_login_time < 86400) {
             $this->setError('Please try again after 1 day');
             return false;
         }
@@ -296,9 +296,9 @@ class Auth extends \ba\Auth
         }
         Db::startTrans();
         try {
-            $this->model->loginfailure  = 0;
-            $this->model->lastlogintime = time();
-            $this->model->lastloginip   = request()->ip();
+            $this->model->login_failure   = 0;
+            $this->model->last_login_time = time();
+            $this->model->last_login_ip   = request()->ip();
             $this->model->save();
             $this->logined = true;
 
@@ -326,9 +326,9 @@ class Auth extends \ba\Auth
         }
         Db::startTrans();
         try {
-            $this->model->loginfailure++;
-            $this->model->lastlogintime = time();
-            $this->model->lastloginip   = request()->ip();
+            $this->model->login_failure++;
+            $this->model->last_login_time = time();
+            $this->model->last_login_ip   = request()->ip();
             $this->model->save();
 
             $this->token   = '';

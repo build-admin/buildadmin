@@ -67,9 +67,9 @@ export interface UserInfo {
     money: number
     score: number
     avatar: string
-    lastlogintime: string
-    lastloginip: string
-    jointime: string
+    last_login_time: string
+    last_login_ip: string
+    join_time: string
     motto: string
     token: string
     refreshToken: string
