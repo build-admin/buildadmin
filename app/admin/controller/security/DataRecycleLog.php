@@ -2,30 +2,38 @@
 
 namespace app\admin\controller\security;
 
+use Throwable;
+use think\facade\Db;
 use app\common\controller\Backend;
 use app\admin\model\DataRecycleLog as DataRecycleLogModel;
-use think\db\exception\PDOException;
-use Exception;
-use think\facade\Db;
 
 class DataRecycleLog extends Backend
 {
-    protected $model = null;
+    /**
+     * @var object
+     * @phpstan-var DataRecycleLogModel
+     */
+    protected object $model;
 
     // 排除字段
-    protected $preExcludeFields = [];
+    protected string|array $preExcludeFields = [];
 
-    protected $quickSearchField = 'recycle.name';
+    protected string|array $quickSearchField = 'recycle.name';
 
-    protected $withJoinTable = ['recycle', 'admin'];
+    protected array $withJoinTable = ['recycle', 'admin'];
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new DataRecycleLogModel();
     }
 
-    public function restore($ids = null)
+    /**
+     * 还原
+     * @param array|null $ids
+     * @throws Throwable
+     */
+    public function restore(array $ids = null): void
     {
         $data = $this->model->where('id', 'in', $ids)->select();
         if (!$data) {
@@ -33,18 +41,18 @@ class DataRecycleLog extends Backend
         }
 
         $count = 0;
-        Db::startTrans();
+        $this->model->startTrans();
         try {
             foreach ($data as $row) {
-                $recycleData = json_decode($row->data, true);
+                $recycleData = json_decode($row['data'], true);
                 if (is_array($recycleData) && Db::name($row->data_table)->insert($recycleData)) {
                     $row->delete();
                     $count++;
                 }
             }
-            Db::commit();
-        } catch (PDOException|Exception $e) {
-            Db::rollback();
+            $this->model->commit();
+        } catch (Throwable $e) {
+            $this->model->rollback();
             $this->error($e->getMessage());
         }
 
@@ -55,7 +63,12 @@ class DataRecycleLog extends Backend
         }
     }
 
-    public function info($id = null)
+    /**
+     * 详情
+     * @param string|int|null $id
+     * @throws Throwable
+     */
+    public function info(string|int $id = null)
     {
         $row = $this->model
             ->withJoin($this->withJoinTable, $this->withJoinType)
@@ -64,13 +77,13 @@ class DataRecycleLog extends Backend
         if (!$row) {
             $this->error(__('Record not found'));
         }
-        $data = $this->jsonToArray($row->data);
+        $data = $this->jsonToArray($row['data']);
         if (is_array($data)) {
             foreach ($data as $key => $item) {
                 $data[$key] = $this->jsonToArray($item);
             }
         }
-        $row->data = $data;
+        $row['data'] = $data;
 
         $this->success('', [
             'row' => $row

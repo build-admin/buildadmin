@@ -2,24 +2,27 @@
 
 namespace app\admin\controller\security;
 
+use Throwable;
+use think\facade\Db;
 use app\common\controller\Backend;
 use app\admin\model\SensitiveDataLog as SensitiveDataLogModel;
-use think\db\exception\PDOException;
-use think\facade\Db;
-use Exception;
 
 class SensitiveDataLog extends Backend
 {
-    protected $model = null;
+    /**
+     * @var object
+     * @phpstan-var SensitiveDataLogModel
+     */
+    protected object $model;
 
     // 排除字段
-    protected $preExcludeFields = [];
+    protected string|array $preExcludeFields = [];
 
-    protected $quickSearchField = 'sensitive.name';
+    protected string|array $quickSearchField = 'sensitive.name';
 
-    protected $withJoinTable = ['sensitive', 'admin'];
+    protected array $withJoinTable = ['sensitive', 'admin'];
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new SensitiveDataLogModel();
@@ -27,8 +30,9 @@ class SensitiveDataLog extends Backend
 
     /**
      * 查看
+     * @throws Throwable
      */
-    public function index()
+    public function index(): void
     {
         $this->request->filter(['strip_tags', 'trim']);
         if ($this->request->param('select')) {
@@ -54,7 +58,12 @@ class SensitiveDataLog extends Backend
         ]);
     }
 
-    public function info($id = null)
+    /**
+     * 详情
+     * @param string|int|null $id
+     * @throws Throwable
+     */
+    public function info(string|int $id = null): void
     {
         $row = $this->model
             ->withJoin($this->withJoinTable, $this->withJoinType)
@@ -69,7 +78,12 @@ class SensitiveDataLog extends Backend
         ]);
     }
 
-    public function rollback($ids = null)
+    /**
+     * 回滚
+     * @param array|null $ids
+     * @throws Throwable
+     */
+    public function rollback(array $ids = null): void
     {
         $data = $this->model->where('id', 'in', $ids)->select();
         if (!$data) {
@@ -77,7 +91,7 @@ class SensitiveDataLog extends Backend
         }
 
         $count = 0;
-        Db::startTrans();
+        $this->model->startTrans();
         try {
             foreach ($data as $row) {
                 if (Db::name($row->data_table)->where($row->primary_key, $row->id_value)->update([
@@ -87,9 +101,9 @@ class SensitiveDataLog extends Backend
                     $count++;
                 }
             }
-            Db::commit();
-        } catch (PDOException|Exception $e) {
-            Db::rollback();
+            $this->model->commit();
+        } catch (Throwable $e) {
+            $this->model->rollback();
             $this->error($e->getMessage());
         }
 

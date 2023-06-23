@@ -2,23 +2,24 @@
 
 namespace app\admin\controller\security;
 
+use Throwable;
 use app\common\controller\Backend;
 use app\admin\model\DataRecycle as DataRecycleModel;
-use think\db\exception\PDOException;
-use think\exception\ValidateException;
-use think\facade\Db;
-use Exception;
 
 class DataRecycle extends Backend
 {
-    protected $model = null;
+    /**
+     * @var object
+     * @phpstan-var DataRecycleModel
+     */
+    protected object $model;
 
     // 排除字段
-    protected $preExcludeFields = ['update_time', 'create_time'];
+    protected string|array $preExcludeFields = ['update_time', 'create_time'];
 
-    protected $quickSearchField = 'name';
+    protected string|array $quickSearchField = 'name';
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new DataRecycleModel();
@@ -26,8 +27,9 @@ class DataRecycle extends Backend
 
     /**
      * 添加
+     * @throws Throwable
      */
-    public function add()
+    public function add(): void
     {
         if ($this->request->isPost()) {
             $data = $this->request->post();
@@ -40,7 +42,7 @@ class DataRecycle extends Backend
             $data['controller_as'] = strtolower(str_ireplace(['\\', '.'], '/', $data['controller_as']));
 
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -52,9 +54,9 @@ class DataRecycle extends Backend
                     }
                 }
                 $result = $this->model->save($data);
-                Db::commit();
-            } catch (ValidateException|Exception|PDOException $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -73,9 +75,10 @@ class DataRecycle extends Backend
 
     /**
      * 编辑
-     * @param null $id
+     * @param int|string|null $id
+     * @throws Throwable
      */
-    public function edit($id = null)
+    public function edit(int|string $id = null): void
     {
         $row = $this->model->find($id);
         if (!$row) {
@@ -93,7 +96,7 @@ class DataRecycle extends Backend
             $data['controller_as'] = strtolower(str_ireplace(['\\', '.'], '/', $data['controller_as']));
 
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -105,9 +108,9 @@ class DataRecycle extends Backend
                     }
                 }
                 $result = $row->save($data);
-                Db::commit();
-            } catch (ValidateException|Exception|PDOException $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -122,7 +125,7 @@ class DataRecycle extends Backend
         ]);
     }
 
-    protected function getControllerList()
+    protected function getControllerList(): array
     {
         $outExcludeController = [
             'Addon.php',
@@ -145,7 +148,7 @@ class DataRecycle extends Backend
         return $outControllers;
     }
 
-    protected function getTableList()
+    protected function getTableList(): array
     {
         $tablePrefix     = config('database.connections.mysql.prefix');
         $outExcludeTable = [

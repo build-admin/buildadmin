@@ -2,23 +2,24 @@
 
 namespace app\admin\controller\security;
 
+use Throwable;
 use app\common\controller\Backend;
 use app\admin\model\SensitiveData as SensitiveDataModel;
-use think\db\exception\PDOException;
-use think\exception\ValidateException;
-use think\facade\Db;
-use Exception;
 
 class SensitiveData extends Backend
 {
-    protected $model = null;
+    /**
+     * @var object
+     * @phpstan-var SensitiveDataModel
+     */
+    protected object $model;
 
     // 排除字段
-    protected $preExcludeFields = ['update_time', 'create_time'];
+    protected string|array $preExcludeFields = ['update_time', 'create_time'];
 
-    protected $quickSearchField = 'controller';
+    protected string|array $quickSearchField = 'controller';
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new SensitiveDataModel();
@@ -26,8 +27,9 @@ class SensitiveData extends Backend
 
     /**
      * 查看
+     * @throws Throwable
      */
-    public function index()
+    public function index(): void
     {
         $this->request->filter(['strip_tags', 'trim']);
         if ($this->request->param('select')) {
@@ -62,7 +64,7 @@ class SensitiveData extends Backend
     /**
      * 添加重写
      */
-    public function add()
+    public function add(): void
     {
         if ($this->request->isPost()) {
             $data = $this->request->post();
@@ -75,7 +77,7 @@ class SensitiveData extends Backend
             $data['controller_as'] = strtolower(str_ireplace(['\\', '.'], '/', $data['controller_as']));
 
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -95,9 +97,9 @@ class SensitiveData extends Backend
                 }
 
                 $result = $this->model->save($data);
-                Db::commit();
-            } catch (ValidateException|Exception|PDOException $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -116,9 +118,10 @@ class SensitiveData extends Backend
 
     /**
      * 编辑重写
-     * @param null $id
+     * @param string|int|null $id
+     * @throws Throwable
      */
-    public function edit($id = null)
+    public function edit(string|int $id = null): void
     {
         $row = $this->model->find($id);
         if (!$row) {
@@ -136,7 +139,7 @@ class SensitiveData extends Backend
             $data['controller_as'] = strtolower(str_ireplace(['\\', '.'], '/', $data['controller_as']));
 
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -156,9 +159,9 @@ class SensitiveData extends Backend
                 }
 
                 $result = $row->save($data);
-                Db::commit();
-            } catch (ValidateException|Exception|PDOException $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -175,7 +178,7 @@ class SensitiveData extends Backend
         ]);
     }
 
-    protected function getControllerList()
+    protected function getControllerList(): array
     {
         $outExcludeController = [
             'Addon.php',
@@ -200,7 +203,7 @@ class SensitiveData extends Backend
         return $outControllers;
     }
 
-    protected function getTableList()
+    protected function getTableList(): array
     {
         $tablePrefix     = config('database.connections.mysql.prefix');
         $outExcludeTable = [

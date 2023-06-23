@@ -2,21 +2,21 @@
 
 namespace app\admin\controller;
 
+use Throwable;
 use ba\Terminal;
-use think\Exception;
+use think\Response;
 use think\facade\Db;
 use think\facade\Cache;
 use think\facade\Event;
 use app\admin\model\AdminLog;
 use app\common\library\Upload;
-use think\exception\FileException;
 use app\common\controller\Backend;
 
 class Ajax extends Backend
 {
-    protected $noNeedPermission = ['*'];
+    protected array $noNeedPermission = ['*'];
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
     }
@@ -29,7 +29,7 @@ class Ajax extends Backend
             $upload     = new Upload($file);
             $attachment = $upload->upload(null, $this->auth->id);
             unset($attachment['create_time'], $attachment['quote']);
-        } catch (Exception|FileException $e) {
+        } catch (Throwable $e) {
             $this->error($e->getMessage());
         }
 
@@ -43,7 +43,7 @@ class Ajax extends Backend
         $this->success('', get_area());
     }
 
-    public function buildSuffixSvg()
+    public function buildSuffixSvg(): Response
     {
         $suffix     = $this->request->param('suffix', 'file');
         $background = $this->request->param('background');
@@ -51,15 +51,20 @@ class Ajax extends Backend
         return response($content, 200, ['Content-Length' => strlen($content)])->contentType('image/svg+xml');
     }
 
-    public function getTablePk($table = null)
+    /**
+     * 获取表主键字段
+     * @param ?string $table
+     * @throws Throwable
+     */
+    public function getTablePk(?string $table = null)
     {
         if (!$table) {
             $this->error(__('Parameter error'));
         }
-        $tablePk = Db::query("SHOW TABLE STATUS LIKE '{$table}'", [], true);
+        $tablePk = Db::query("SHOW TABLE STATUS LIKE `$table`", [], true);
         if (!$tablePk) {
             $table   = config('database.connections.mysql.prefix') . $table;
-            $tablePk = Db::query("SHOW TABLE STATUS LIKE '{$table}'", [], true);
+            $tablePk = Db::query("SHOW TABLE STATUS LIKE `$table`", [], true);
             if (!$tablePk) {
                 $this->error(__('Data table does not exist'));
             }
