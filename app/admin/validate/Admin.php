@@ -39,7 +39,7 @@ class Admin extends Validate
     /**
      * 验证场景-前台自己修改自己资料
      */
-    public function sceneInfo()
+    public function sceneInfo(): Admin
     {
         return $this->only(['nickname', 'password', 'email', 'mobile'])
             ->remove('password', 'require');
@@ -48,7 +48,7 @@ class Admin extends Validate
     /**
      * 验证场景-编辑资料
      */
-    public function sceneEdit()
+    public function sceneEdit(): Admin
     {
         return $this->only(['username', 'nickname', 'password', 'email', 'mobile', 'group_arr'])
             ->remove('password', 'require');

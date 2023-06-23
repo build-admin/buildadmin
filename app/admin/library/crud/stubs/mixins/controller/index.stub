@@ -1,6 +1,7 @@
 
     /**
      * 查看
+     * @throws Throwable
      */
     public function index(): void
     {

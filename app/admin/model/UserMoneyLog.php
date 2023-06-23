@@ -2,8 +2,10 @@
 
 namespace app\admin\model;
 
+use Throwable;
 use think\model;
 use think\Exception;
+use think\model\relation\BelongsTo;
 
 /**
  * UserMoneyLog 模型
@@ -14,6 +16,10 @@ class UserMoneyLog extends model
     protected $autoWriteTimestamp = true;
     protected $updateTime         = false;
 
+    /**
+     * 入库前
+     * @throws Throwable
+     */
     public static function onBeforeInsert($model)
     {
         $user = User::where('id', $model->user_id)->find();
@@ -27,6 +33,10 @@ class UserMoneyLog extends model
         $model->after  = $user->money + $model->money;
     }
 
+    /**
+     * 入库后
+     * @throws Throwable
+     */
     public static function onAfterInsert($model)
     {
         $user = User::where('id', $model->user_id)->find();
@@ -38,42 +48,42 @@ class UserMoneyLog extends model
         $user->save();
     }
 
-    public static function onBeforeDelete()
+    public static function onBeforeDelete(): bool
     {
         return false;
     }
 
-    public function getMoneyAttr($value)
+    public function getMoneyAttr($value): string
     {
         return bcdiv($value, 100, 2);
     }
 
-    public function setMoneyAttr($value)
+    public function setMoneyAttr($value): string
     {
         return bcmul($value, 100, 2);
     }
 
-    public function getBeforeAttr($value)
+    public function getBeforeAttr($value): string
     {
         return bcdiv($value, 100, 2);
     }
 
-    public function setBeforeAttr($value)
+    public function setBeforeAttr($value): string
     {
         return bcmul($value, 100, 2);
     }
 
-    public function getAfterAttr($value)
+    public function getAfterAttr($value): string
     {
         return bcdiv($value, 100, 2);
     }
 
-    public function setAfterAttr($value)
+    public function setAfterAttr($value): string
     {
         return bcmul($value, 100, 2);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }

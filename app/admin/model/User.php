@@ -4,6 +4,7 @@ namespace app\admin\model;
 
 use ba\Random;
 use think\Model;
+use think\model\relation\BelongsTo;
 
 /**
  * User 模型
@@ -13,34 +14,34 @@ class User extends Model
 {
     protected $autoWriteTimestamp = true;
 
-    public function getAvatarAttr($value)
+    public function getAvatarAttr($value): string
     {
         return htmlspecialchars_decode($value);
     }
 
-    public function getMoneyAttr($value)
+    public function getMoneyAttr($value): string
     {
         return bcdiv($value, 100, 2);
     }
 
-    public function setMoneyAttr($value)
+    public function setMoneyAttr($value): string
     {
         return bcmul($value, 100, 2);
     }
 
     /**
      * 重置用户密码
-     * @param int    $uid         用户ID
-     * @param string $newPassword 新密码
+     * @param int|string $uid         用户ID
+     * @param string     $newPassword 新密码
      */
-    public function resetPassword($uid, $newPassword)
+    public function resetPassword(int|string $uid, string $newPassword): User
     {
         $salt   = Random::build('alnum', 16);
         $passwd = encrypt_password($newPassword, $salt);
         return $this->where(['id' => $uid])->update(['password' => $passwd, 'salt' => $salt]);
     }
 
-    public function group()
+    public function group(): BelongsTo
     {
         return $this->belongsTo(UserGroup::class, 'group_id');
     }

@@ -2,11 +2,12 @@
 
 namespace app\admin\model;
 
+use Throwable;
 use think\Model;
 
 class Config extends Model
 {
-    public static $cacheTag = 'sys_config';
+    public static string $cacheTag = 'sys_config';
 
     protected $append = [
         'value',
@@ -15,9 +16,13 @@ class Config extends Model
         'input_extend',
     ];
 
-    protected $jsonDecodeType = ['checkbox', 'array', 'selects'];
-    protected $needContent    = ['radio', 'checkbox', 'select', 'selects'];
+    protected array $jsonDecodeType = ['checkbox', 'array', 'selects'];
+    protected array $needContent    = ['radio', 'checkbox', 'select', 'selects'];
 
+    /**
+     * 入库前
+     * @throws Throwable
+     */
     public static function onBeforeInsert($model)
     {
         if (!in_array($model->getData('type'), $model->needContent)) {
@@ -59,7 +64,7 @@ class Config extends Model
         }
     }
 
-    public function setValueAttr($value, $row)
+    public function setValueAttr($value, $row): string
     {
         if (in_array($row['type'], $this->jsonDecodeType)) {
             return $value ? json_encode($value) : '';

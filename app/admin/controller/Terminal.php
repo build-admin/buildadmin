@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use Throwable;
 use ba\Terminal as T;
 
 /**
@@ -10,7 +11,11 @@ use ba\Terminal as T;
  */
 class Terminal
 {
-    public function index()
+    /**
+     * 终端
+     * @throws Throwable
+     */
+    public function index(): void
     {
         T::instance()->exec();
     }

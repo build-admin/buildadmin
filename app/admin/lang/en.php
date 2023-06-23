@@ -35,5 +35,5 @@ return [
     'Please try again after 1 day'                                                        => 'The number of login failures exceeds the limit, please try again after 24 hours',
     'Password is incorrect'                                                               => 'Wrong password',
     'You are not logged in'                                                               => 'You are not logged in',
-    'Cache cleaned~'                                                                      => 'The cache has been cleaned up, please refresh the backgroun.',
+    'Cache cleaned~'                                                                      => 'The cache has been cleaned up, please refresh the page.',
 ];

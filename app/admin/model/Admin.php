@@ -2,10 +2,10 @@
 
 namespace app\admin\model;
 
-use think\facade\Config;
-use think\facade\Db;
-use think\Model;
 use ba\Random;
+use think\Model;
+use think\facade\Db;
+use think\facade\Config;
 
 /**
  * Admin模型
@@ -26,14 +26,14 @@ class Admin extends Model
         'group_name_arr',
     ];
 
-    public function getGroupArrAttr($value, $row)
+    public function getGroupArrAttr($value, $row): array
     {
         return Db::name('admin_group_access')
             ->where('uid', $row['id'])
             ->column('group_id');
     }
 
-    public function getGroupNameArrAttr($value, $row)
+    public function getGroupNameArrAttr($value, $row): array
     {
         $groupAccess = Db::name('admin_group_access')
             ->where('uid', $row['id'])
@@ -41,7 +41,7 @@ class Admin extends Model
         return AdminGroup::whereIn('id', $groupAccess)->column('name');
     }
 
-    public function getAvatarAttr($value)
+    public function getAvatarAttr($value): string
     {
         return full_url($value, true, Config::get('buildadmin.default_avatar'));
     }
@@ -53,10 +53,11 @@ class Admin extends Model
 
     /**
      * 重置用户密码
-     * @param int    $uid         管理员ID
-     * @param string $newPassword 新密码
+     * @param int|string $uid         管理员ID
+     * @param string     $newPassword 新密码
+     * @return Admin
      */
-    public function resetPassword($uid, $newPassword)
+    public function resetPassword(int|string $uid, string $newPassword): Admin
     {
         $salt   = Random::build('alnum', 16);
         $passwd = encrypt_password($newPassword, $salt);

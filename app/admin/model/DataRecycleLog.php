@@ -3,6 +3,7 @@
 namespace app\admin\model;
 
 use think\Model;
+use think\model\relation\BelongsTo;
 
 /**
  * DataRecycleLog 模型
@@ -15,12 +16,12 @@ class DataRecycleLog extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime         = false;
 
-    public function recycle()
+    public function recycle(): BelongsTo
     {
         return $this->belongsTo(DataRecycle::class, 'recycle_id');
     }
 
-    public function admin()
+    public function admin(): BelongsTo
     {
         return $this->belongsTo(Admin::class, 'admin_id');
     }
