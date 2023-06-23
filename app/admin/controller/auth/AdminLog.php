@@ -2,21 +2,23 @@
 
 namespace app\admin\controller\auth;
 
+use Throwable;
 use app\common\controller\Backend;
 use app\admin\model\AdminLog as AdminLogModel;
 
 class AdminLog extends Backend
 {
     /**
-     * @var AdminLogModel
+     * @var object
+     * @phpstan-var AdminLogModel
      */
-    protected $model = null;
+    protected object $model;
 
-    protected $preExcludeFields = ['create_time', 'admin_id', 'username'];
+    protected string|array $preExcludeFields = ['create_time', 'admin_id', 'username'];
 
-    protected $quickSearchField = ['title'];
+    protected string|array $quickSearchField = ['title'];
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new AdminLogModel();
@@ -24,8 +26,9 @@ class AdminLog extends Backend
 
     /**
      * 查看
+     * @throws Throwable
      */
-    public function index()
+    public function index(): void
     {
         $this->request->filter(['strip_tags', 'trim']);
         if ($this->request->param('select')) {

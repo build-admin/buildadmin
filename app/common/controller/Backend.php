@@ -173,6 +173,10 @@ class Backend extends Api
         Event::trigger('backendInit', $this->auth);
     }
 
+    /**
+     * 构建查询参数
+     * @throws Throwable
+     */
     public function queryBuilder(): array
     {
         if (empty($this->model)) {

@@ -3,19 +3,25 @@ declare (strict_types=1);
 
 namespace app\admin\controller;
 
-use app\common\facade\Token;
+use Throwable;
 use ba\ClickCaptcha;
 use think\facade\Config;
 use think\facade\Validate;
-use app\common\controller\Backend;
+use app\common\facade\Token;
 use app\admin\model\AdminLog;
+use app\common\controller\Backend;
 
 class Index extends Backend
 {
-    protected $noNeedLogin      = ['logout', 'login'];
-    protected $noNeedPermission = ['index'];
+    protected array $noNeedLogin      = ['logout', 'login'];
+    protected array $noNeedPermission = ['index'];
 
-    public function index()
+    /**
+     * 后台初始化请求
+     * @return void
+     * @throws Throwable
+     */
+    public function index(): void
     {
         $adminInfo          = $this->auth->getInfo();
         $adminInfo['super'] = $this->auth->isSuperAdmin();
@@ -42,7 +48,12 @@ class Index extends Backend
         ]);
     }
 
-    public function login()
+    /**
+     * 管理员登录
+     * @return void
+     * @throws Throwable
+     */
+    public function login(): void
     {
         // 检查登录态
         if ($this->auth->isLogin()) {
@@ -106,7 +117,11 @@ class Index extends Backend
         ]);
     }
 
-    public function logout()
+    /**
+     * 管理员注销
+     * @return void
+     */
+    public function logout(): void
     {
         if ($this->request->isPost()) {
             $refreshToken = $this->request->post('refresh_token', '');

@@ -3,64 +3,68 @@
 namespace app\admin\controller\auth;
 
 use ba\Tree;
-use Exception;
+use Throwable;
 use think\facade\Db;
 use app\admin\model\MenuRule;
 use app\common\controller\Backend;
-use think\db\exception\PDOException;
-use think\exception\ValidateException;
 
 class Menu extends Backend
 {
+    protected string|array $preExcludeFields = ['create_time', 'update_time'];
+
+    protected string|array $quickSearchField = 'title';
+
     /**
-     * @var MenuRule
+     * @var object
+     * @phpstan-var MenuRule
      */
-    protected $model = null;
+    protected object $model;
 
     /**
      * @var Tree
      */
-    protected $tree = null;
-
-    protected $preExcludeFields = ['create_time', 'update_time'];
-
-    protected $quickSearchField = 'title';
+    protected Tree $tree;
 
     /**
      * 远程select初始化传值
      * @var array
      */
-    protected $initValue;
+    protected array $initValue;
 
     /**
      * 搜索关键词
-     * @var array
+     * @var string
      */
-    protected $keyword = false;
+    protected string $keyword;
 
     /**
      * 是否组装Tree
      * @var bool
      */
-    protected $assembleTree;
+    protected bool $assembleTree;
 
-    protected $modelValidate = false;
+    /**
+     * 开启模型验证
+     * @var bool
+     */
+    protected bool $modelValidate = false;
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new MenuRule();
         $this->tree  = Tree::instance();
 
         $isTree          = $this->request->param('isTree', true);
-        $this->initValue = $this->request->get("initValue/a", '');
-        $this->keyword   = $this->request->request("quick_search");
+        $this->initValue = $this->request->get('initValue/a', []);
+        $this->initValue = array_filter($this->initValue);
+        $this->keyword   = $this->request->request('quick_search', '');
 
         // 有初始化值时不组装树状（初始化出来的值更好看）
         $this->assembleTree = $isTree && !$this->initValue;
     }
 
-    public function index()
+    public function index(): void
     {
         if ($this->request->param('select')) {
             $this->select();
@@ -74,8 +78,9 @@ class Menu extends Backend
 
     /**
      * 编辑
+     * @throws Throwable
      */
-    public function edit()
+    public function edit(): void
     {
         $id  = $this->request->param($this->model->getPk());
         $row = $this->model->find($id);
@@ -96,7 +101,7 @@ class Menu extends Backend
 
             $data   = $this->excludeFields($data);
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -116,9 +121,9 @@ class Menu extends Backend
                     }
                 }
                 $result = $row->save($data);
-                Db::commit();
-            } catch (ValidateException|Exception|PDOException $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -136,8 +141,9 @@ class Menu extends Backend
     /**
      * 删除
      * @param array $ids
+     * @throws Throwable
      */
-    public function del(array $ids = [])
+    public function del(array $ids = []): void
     {
         if (!$this->request->isDelete() || !$ids) {
             $this->error(__('Parameter error'));
@@ -157,14 +163,14 @@ class Menu extends Backend
             }
         }
         $count = 0;
-        Db::startTrans();
+        $this->model->startTrans();
         try {
             foreach ($data as $v) {
                 $count += $v->delete();
             }
-            Db::commit();
-        } catch (PDOException|Exception $e) {
-            Db::rollback();
+            $this->model->commit();
+        } catch (Throwable $e) {
+            $this->model->rollback();
             $this->error($e->getMessage());
         }
         if ($count) {
@@ -177,7 +183,7 @@ class Menu extends Backend
     /**
      * 重写select方法
      */
-    public function select()
+    public function select(): void
     {
         $data = $this->getMenus([['type', 'in', ['menu_dir', 'menu']], ['status', '=', '1']]);
 

@@ -3,32 +3,32 @@
 namespace app\admin\controller\auth;
 
 use ba\Random;
-use Exception;
+use Throwable;
+use think\facade\Db;
 use app\common\controller\Backend;
 use app\admin\model\Admin as AdminModel;
-use think\db\exception\PDOException;
-use think\exception\ValidateException;
-use think\facade\Db;
 
 class Admin extends Backend
 {
     /**
-     * @var AdminModel
+     * 模型
+     * @var object
+     * @phpstan-var AdminModel
      */
-    protected $model = null;
+    protected object $model;
 
-    protected $preExcludeFields = ['create_time', 'update_time', 'password', 'salt', 'login_failure', 'last_login_time', 'last_login_ip'];
+    protected array|string $preExcludeFields = ['create_time', 'update_time', 'password', 'salt', 'login_failure', 'last_login_time', 'last_login_ip'];
 
-    protected $quickSearchField = ['username', 'nickname'];
+    protected array|string $quickSearchField = ['username', 'nickname'];
 
     /**
      * 开启数据限制
      */
-    protected $dataLimit = 'allAuthAndOthers';
+    protected string|int|bool $dataLimit = 'allAuthAndOthers';
 
-    protected $dataLimitField = 'id';
+    protected string $dataLimitField = 'id';
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new AdminModel();
@@ -36,8 +36,9 @@ class Admin extends Backend
 
     /**
      * 查看
+     * @throws Throwable
      */
-    public function index()
+    public function index(): void
     {
         $this->request->filter(['strip_tags', 'trim']);
         if ($this->request->param('select')) {
@@ -60,7 +61,11 @@ class Admin extends Backend
         ]);
     }
 
-    public function add()
+    /**
+     * 添加
+     * @throws Throwable
+     */
+    public function add(): void
     {
         if ($this->request->isPost()) {
             $data = $this->request->post();
@@ -77,7 +82,7 @@ class Admin extends Backend
                     $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
                     $validate = new $validate;
                     $validate->scene('add')->check($data);
-                } catch (ValidateException $e) {
+                } catch (Throwable $e) {
                     $this->error($e->getMessage());
                 }
             }
@@ -88,7 +93,7 @@ class Admin extends Backend
             $data   = $this->excludeFields($data);
             $result = false;
             if ($data['group_arr']) $this->checkGroupAuth($data['group_arr']);
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 $data['salt']     = $salt;
                 $data['password'] = $passwd;
@@ -103,9 +108,9 @@ class Admin extends Backend
                     }
                     Db::name('admin_group_access')->insertAll($groupAccess);
                 }
-                Db::commit();
-            } catch (ValidateException|PDOException|Exception $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -118,7 +123,11 @@ class Admin extends Backend
         $this->error(__('Parameter error'));
     }
 
-    public function edit($id = null)
+    /**
+     * 编辑
+     * @throws Throwable
+     */
+    public function edit($id = null): void
     {
         $row = $this->model->find($id);
         if (!$row) {
@@ -145,7 +154,7 @@ class Admin extends Backend
                     $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
                     $validate = new $validate;
                     $validate->scene('edit')->check($data);
-                } catch (ValidateException $e) {
+                } catch (Throwable $e) {
                     $this->error($e->getMessage());
                 }
             }
@@ -179,13 +188,13 @@ class Admin extends Backend
 
             $data   = $this->excludeFields($data);
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 $result = $row->save($data);
                 if ($groupAccess) Db::name('admin_group_access')->insertAll($groupAccess);
-                Db::commit();
-            } catch (PDOException|Exception $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -205,8 +214,9 @@ class Admin extends Backend
     /**
      * 删除
      * @param null $ids
+     * @throws Throwable
      */
-    public function del($ids = null)
+    public function del($ids = null): void
     {
         if (!$this->request->isDelete() || !$ids) {
             $this->error(__('Parameter error'));
@@ -220,7 +230,7 @@ class Admin extends Backend
         $pk    = $this->model->getPk();
         $data  = $this->model->where($pk, 'in', $ids)->select();
         $count = 0;
-        Db::startTrans();
+        $this->model->startTrans();
         try {
             foreach ($data as $v) {
                 if ($v->id != $this->auth->id) {
@@ -230,9 +240,9 @@ class Admin extends Backend
                         ->delete();
                 }
             }
-            Db::commit();
-        } catch (PDOException|Exception $e) {
-            Db::rollback();
+            $this->model->commit();
+        } catch (Throwable $e) {
+            $this->model->rollback();
             $this->error($e->getMessage());
         }
         if ($count) {
@@ -242,7 +252,11 @@ class Admin extends Backend
         }
     }
 
-    public function checkGroupAuth(array $groups)
+    /**
+     * 检查分组权限
+     * @throws Throwable
+     */
+    public function checkGroupAuth(array $groups): void
     {
         if ($this->auth->isSuperAdmin()) {
             return;

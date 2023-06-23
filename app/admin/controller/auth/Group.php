@@ -3,13 +3,11 @@
 namespace app\admin\controller\auth;
 
 use ba\Tree;
-use Exception;
+use Throwable;
 use think\facade\Db;
 use app\admin\model\MenuRule;
 use app\admin\model\AdminGroup;
 use app\common\controller\Backend;
-use think\db\exception\PDOException;
-use think\exception\ValidateException;
 
 class Group extends Backend
 {
@@ -18,54 +16,58 @@ class Group extends Backend
      * 本管理功能部分场景对数据权限有要求，修改此值请额外确定以下的 absoluteAuth 实现的功能
      * allAuthAndOthers=管理员拥有该分组所有权限并拥有额外权限时允许
      */
-    protected $authMethod = 'allAuthAndOthers';
+    protected string $authMethod = 'allAuthAndOthers';
 
     /**
-     * @var AdminGroup
+     * 数据模型
+     * @var object
+     * @phpstan-var AdminGroup
      */
-    protected $model = null;
+    protected object $model;
 
-    protected $preExcludeFields = ['create_time', 'update_time'];
+    protected string|array $preExcludeFields = ['create_time', 'update_time'];
 
-    protected $quickSearchField = 'name';
+    protected string|array $quickSearchField = 'name';
 
     /**
      * @var Tree
      */
-    protected $tree = null;
+    protected Tree $tree;
 
     /**
      * 远程select初始化传值
      * @var array
      */
-    protected $initValue;
+    protected array $initValue;
 
     /**
      * 搜索关键词
-     * @var array
+     * @var string
      */
-    protected $keyword = false;
+    protected string $keyword;
 
     /**
      * 是否组装Tree
      * @var bool
      */
-    protected $assembleTree;
+    protected bool $assembleTree;
 
     /**
      * 登录管理员的角色组
+     * @var array
      */
-    protected $adminGroups = [];
+    protected array $adminGroups = [];
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new AdminGroup();
         $this->tree  = Tree::instance();
 
         $isTree          = $this->request->param('isTree', true);
-        $this->initValue = $this->request->get("initValue/a", '');
-        $this->keyword   = $this->request->request("quick_search");
+        $this->initValue = $this->request->get("initValue/a", []);
+        $this->initValue = array_filter($this->initValue);
+        $this->keyword   = $this->request->request("quick_search", '');
 
         // 有初始化值时不组装树状（初始化出来的值更好看）
         $this->assembleTree = $isTree && !$this->initValue;
@@ -73,7 +75,7 @@ class Group extends Backend
         $this->adminGroups = Db::name('admin_group_access')->where('uid', $this->auth->id)->column('group_id');
     }
 
-    public function index()
+    public function index(): void
     {
         if ($this->request->param('select')) {
             $this->select();
@@ -81,12 +83,16 @@ class Group extends Backend
 
         $this->success('', [
             'list'   => $this->getGroups(),
-            'remark' => get_route_remark(),
             'group'  => $this->adminGroups,
+            'remark' => get_route_remark(),
         ]);
     }
 
-    public function add()
+    /**
+     * 添加
+     * @throws Throwable
+     */
+    public function add(): void
     {
         if ($this->request->isPost()) {
             $data = $this->request->post();
@@ -95,30 +101,10 @@ class Group extends Backend
             }
 
             $data = $this->excludeFields($data);
-            if (is_array($data['rules']) && $data['rules']) {
-                $rules      = MenuRule::select();
-                $superAdmin = true;
-                foreach ($rules as $rule) {
-                    if (!in_array($rule['id'], $data['rules'])) {
-                        $superAdmin = false;
-                    }
-                }
-
-                if ($superAdmin) {
-                    $data['rules'] = '*';
-                } else {
-                    // 禁止添加`拥有自己全部权限`的分组
-                    if (!array_diff($this->auth->getRuleIds(), $data['rules'])) {
-                        $this->error(__('Role group has all your rights, please contact the upper administrator to add or do not need to add!'));
-                    }
-                    $data['rules'] = implode(',', $data['rules']);
-                }
-            } else {
-                unset($data['rules']);
-            }
+            $data = $this->handleRules($data);
 
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -129,9 +115,9 @@ class Group extends Backend
                     }
                 }
                 $result = $this->model->save($data);
-                Db::commit();
-            } catch (ValidateException|Exception|PDOException $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -144,7 +130,13 @@ class Group extends Backend
         $this->error(__('Parameter error'));
     }
 
-    public function edit($id = null)
+    /**
+     * 编辑
+     * @param string|null $id
+     * @return void
+     * @throws Throwable
+     */
+    public function edit(string $id = null): void
     {
         $row = $this->model->find($id);
         if (!$row) {
@@ -165,30 +157,10 @@ class Group extends Backend
             }
 
             $data = $this->excludeFields($data);
-            if (is_array($data['rules']) && $data['rules']) {
-                $rules      = MenuRule::select();
-                $superAdmin = true;
-                foreach ($rules as $rule) {
-                    if (!in_array($rule['id'], $data['rules'])) {
-                        $superAdmin = false;
-                    }
-                }
-
-                if ($superAdmin) {
-                    $data['rules'] = '*';
-                } else {
-                    // 禁止添加`拥有自己全部权限`的分组
-                    if (!array_diff($this->auth->getRuleIds(), $data['rules'])) {
-                        $this->error(__('Role group has all your rights, please contact the upper administrator to add or do not need to add!'));
-                    }
-                    $data['rules'] = implode(',', $data['rules']);
-                }
-            } else {
-                unset($data['rules']);
-            }
+            $data = $this->handleRules($data);
 
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -199,9 +171,9 @@ class Group extends Backend
                     }
                 }
                 $result = $row->save($data);
-                Db::commit();
-            } catch (ValidateException|Exception|PDOException $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -212,12 +184,12 @@ class Group extends Backend
         }
 
         // 读取所有pid，全部从节点数组移除，父级选择状态由子级决定
-        $pids  = MenuRule::field('pid')
+        $pidArr = MenuRule::field('pid')
             ->distinct(true)
             ->where('id', 'in', $row->rules)
             ->select()->toArray();
-        $rules = $row->rules ? explode(',', $row->rules) : [];
-        foreach ($pids as $item) {
+        $rules  = $row->rules ? explode(',', $row->rules) : [];
+        foreach ($pidArr as $item) {
             $ruKey = array_search($item['pid'], $rules);
             if ($ruKey !== false) {
                 unset($rules[$ruKey]);
@@ -232,8 +204,9 @@ class Group extends Backend
     /**
      * 删除
      * @param array $ids
+     * @throws Throwable
      */
-    public function del(array $ids = [])
+    public function del(array $ids = []): void
     {
         if (!$this->request->isDelete() || !$ids) {
             $this->error(__('Parameter error'));
@@ -253,16 +226,16 @@ class Group extends Backend
 
         $adminGroup = Db::name('admin_group_access')->where('uid', $this->auth->id)->column('group_id');
         $count      = 0;
-        Db::startTrans();
+        $this->model->startTrans();
         try {
             foreach ($data as $v) {
                 if (!in_array($v['id'], $adminGroup)) {
                     $count += $v->delete();
                 }
             }
-            Db::commit();
-        } catch (PDOException|Exception $e) {
-            Db::rollback();
+            $this->model->commit();
+        } catch (Throwable $e) {
+            $this->model->rollback();
             $this->error($e->getMessage());
         }
         if ($count) {
@@ -272,7 +245,12 @@ class Group extends Backend
         }
     }
 
-    public function select()
+    /**
+     * 远程下拉
+     * @return void
+     * @throws Throwable
+     */
+    public function select(): void
     {
         $data = $this->getGroups([['status', '=', 1]]);
 
@@ -284,7 +262,43 @@ class Group extends Backend
         ]);
     }
 
-    public function getGroups($where = []): array
+    /**
+     * 权限节点入库前处理
+     * @throws Throwable
+     */
+    public function handleRules(array &$data): array
+    {
+        if (!empty($data['rules']) && is_array($data['rules'])) {
+            $rules      = MenuRule::select();
+            $superAdmin = true;
+            foreach ($rules as $rule) {
+                if (!in_array($rule['id'], $data['rules'])) {
+                    $superAdmin = false;
+                }
+            }
+
+            if ($superAdmin) {
+                $data['rules'] = '*';
+            } else {
+                // 禁止添加`拥有自己全部权限`的分组
+                if (!array_diff($this->auth->getRuleIds(), $data['rules'])) {
+                    $this->error(__('Role group has all your rights, please contact the upper administrator to add or do not need to add!'));
+                }
+                $data['rules'] = implode(',', $data['rules']);
+            }
+        } else {
+            unset($data['rules']);
+        }
+        return $data;
+    }
+
+    /**
+     * 获取分组
+     * @param array $where
+     * @return array
+     * @throws Throwable
+     */
+    public function getGroups(array $where = []): array
     {
         $pk      = $this->model->getPk();
         $initKey = $this->request->get("initKey/s", $pk);
@@ -332,7 +346,13 @@ class Group extends Backend
         return $this->assembleTree ? $this->tree->assembleChild($data) : $data;
     }
 
-    public function checkAuth($groupId)
+    /**
+     * 检查权限
+     * @param $groupId
+     * @return void
+     * @throws Throwable
+     */
+    public function checkAuth($groupId): void
     {
         $authGroups = $this->auth->getAllAuthGroups($this->authMethod);
         if (!$this->auth->isSuperAdmin() && !in_array($groupId, $authGroups)) {
