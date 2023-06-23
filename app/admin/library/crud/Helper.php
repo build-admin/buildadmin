@@ -2,6 +2,7 @@
 
 namespace app\admin\library\crud;
 
+use Throwable;
 use think\Exception;
 use think\facade\Db;
 use app\common\library\Menu;
@@ -12,15 +13,17 @@ class Helper
 {
     /**
      * 内部保留词
+     * @var array
      */
-    protected static $reservedKeywords = [
+    protected static array $reservedKeywords = [
         'abstract', 'and', 'array', 'as', 'break', 'callable', 'case', 'catch', 'class', 'clone', 'const', 'continue', 'declare', 'default', 'die', 'do', 'echo', 'else', 'elseif', 'empty', 'enddeclare', 'endfor', 'endforeach', 'endif', 'endswitch', 'endwhile', 'eval', 'exit', 'extends', 'final', 'for', 'foreach', 'function', 'global', 'goto', 'if', 'implements', 'include', 'include_once', 'instanceof', 'insteadof', 'interface', 'isset', 'list', 'namespace', 'new', 'or', 'print', 'private', 'protected', 'public', 'require', 'require_once', 'return', 'static', 'switch', 'throw', 'trait', 'try', 'unset', 'use', 'var', 'while', 'xor', 'yield'
     ];
 
     /**
      * 预设控制器和模型文件位置
+     * @var array
      */
-    protected static $parseNamePresets = [
+    protected static array $parseNamePresets = [
         'controller' => [
             'user'        => ['user', 'user'],
             'admin'       => ['auth', 'admin'],
@@ -34,9 +37,9 @@ class Helper
 
     /**
      * 子级菜单数组(权限节点)
-     * @var string
+     * @var array
      */
-    protected static $menuChildren = [
+    protected static array $menuChildren = [
         ['type' => 'button', 'title' => '查看', 'name' => '/index', 'status' => '1'],
         ['type' => 'button', 'title' => '添加', 'name' => '/add', 'status' => '1'],
         ['type' => 'button', 'title' => '编辑', 'name' => '/edit', 'status' => '1'],
@@ -46,8 +49,9 @@ class Helper
 
     /**
      * 输入框类型的识别规则
+     * @var array
      */
-    protected static $inputTypeRule = [
+    protected static array $inputTypeRule = [
         // 开关组件
         [
             'type'   => ['tinyint', 'int', 'enum'],
@@ -187,8 +191,9 @@ class Helper
 
     /**
      * 预设WEB端文件位置
+     * @var array
      */
-    protected static $parseWebDirPresets = [
+    protected static array $parseWebDirPresets = [
         'lang'  => [],
         'views' => [
             'user'        => ['user', 'user'],
@@ -203,15 +208,35 @@ class Helper
      * 添加时间字段
      * @var string
      */
-    protected static $createTimeField = 'create_time';
+    protected static string $createTimeField = 'create_time';
 
     /**
      * 更新时间字段
      * @var string
      */
-    protected static $updateTimeField = 'update_time';
+    protected static string $updateTimeField = 'update_time';
 
-    public static function getDictData(&$dict, $field, $lang, $translationPrefix = ''): array
+    /**
+     * 属性的类型对照表
+     * @var array
+     */
+    protected static array $attrType = [
+        'controller' => [
+            'preExcludeFields' => 'array|string',
+            'quickSearchField' => 'string|array',
+            'withJoinTable'    => 'array',
+            'defaultSortField' => 'string|array',
+        ],
+    ];
+
+    /**
+     * 获取字段字典数据
+     * @param array  $dict              存储字典数据的变量
+     * @param array  $field             字段数据
+     * @param string $lang              语言
+     * @param string $translationPrefix 翻译前缀
+     */
+    public static function getDictData(array &$dict, array $field, string $lang, string $translationPrefix = ''): array
     {
         if (!$field['comment']) return [];
         $comment = str_replace(['，', '：'], [',', ':'], $field['comment']);
@@ -231,13 +256,19 @@ class Helper
         return $dict;
     }
 
-    public static function recordCrudStatus(array $data)
+    /**
+     * 记录CRUD状态
+     * @param array $data CRUD记录数据
+     * @return int 记录ID
+     */
+    public static function recordCrudStatus(array $data): int
     {
         if (isset($data['id'])) {
-            return CrudLog::where('id', $data['id'])
+            CrudLog::where('id', $data['id'])
                 ->update([
                     'status' => $data['status'],
                 ]);
+            return $data['id'];
         }
         $log = CrudLog::create([
             'table_name' => $data['table']['name'],
@@ -453,10 +484,10 @@ class Helper
 
     /**
      * 获取转义编码后的值
-     * @param string|array $value
+     * @param array|string $value
      * @return string
      */
-    public static function escape($value): string
+    public static function escape(array|string $value): string
     {
         if (is_array($value)) {
             $value = json_encode($value, JSON_UNESCAPED_UNICODE);
@@ -472,7 +503,7 @@ class Helper
     /**
      * 删除数据表
      */
-    public static function delTable(string $table)
+    public static function delTable(string $table): void
     {
         $sql = 'DROP TABLE IF EXISTS `' . self::getTableName($table) . '`';
         Db::execute($sql);
@@ -519,7 +550,7 @@ class Helper
     /**
      * 解析到的表字段的额外处理
      */
-    public static function handleTableColumn(&$column)
+    public static function handleTableColumn(&$column): void
     {
         // 预留
     }
@@ -537,7 +568,7 @@ class Helper
     /**
      * 分析字段
      */
-    public static function analyseField(&$field)
+    public static function analyseField(&$field): void
     {
         $field['type']               = self::analyseFieldType($field);
         $field['originalDesignType'] = $field['designType'];
@@ -595,11 +626,11 @@ class Helper
     /**
      * 判断是否符合指定后缀
      *
-     * @param string $field     字段名称
-     * @param mixed  $suffixArr 后缀
+     * @param string       $field     字段名称
+     * @param string|array $suffixArr 后缀
      * @return bool
      */
-    protected static function isMatchSuffix(string $field, $suffixArr): bool
+    protected static function isMatchSuffix(string $field, string|array $suffixArr): bool
     {
         $suffixArr = is_array($suffixArr) ? $suffixArr : explode(',', $suffixArr);
         foreach ($suffixArr as $v) {
@@ -610,7 +641,11 @@ class Helper
         return false;
     }
 
-    public static function createMenu($webViewsDir, $tableComment)
+    /**
+     * 创建菜单
+     * @throws Throwable
+     */
+    public static function createMenu($webViewsDir, $tableComment): void
     {
         $menuName = self::getMenuName($webViewsDir);
         if (!MenuRule::where('name', $menuName)->value('id')) {
@@ -651,7 +686,7 @@ class Helper
         }
     }
 
-    public static function writeWebLangFile($langData, $webLangDir)
+    public static function writeWebLangFile($langData, $webLangDir): void
     {
         foreach ($langData as $lang => $langDatum) {
             $langTsContent = '';
@@ -665,7 +700,7 @@ class Helper
         }
     }
 
-    public static function writeFile($path, $content)
+    public static function writeFile($path, $content): bool|int
     {
         $path = path_transform($path);
         if (!is_dir(dirname($path))) {
@@ -697,7 +732,7 @@ class Helper
         return "\n" . self::tab() . "// 字段类型转换" . "\n" . self::tab() . "protected \$type = [\n" . rtrim($str, "\n") . "\n" . self::tab() . "];\n";
     }
 
-    public static function writeModelFile(string $tablePk, array $fieldsMap, array $modelData, array $modelFile)
+    public static function writeModelFile(string $tablePk, array $fieldsMap, array $modelData, array $modelFile): void
     {
         $modelData['pk']                 = $tablePk == 'id' ? '' : "\n" . self::tab() . "// 表主键\n" . self::tab() . 'protected $pk = ' . "'$tablePk';\n" . self::tab();
         $modelData['autoWriteTimestamp'] = array_key_exists(self::$createTimeField, $fieldsMap) || array_key_exists(self::$updateTimeField, $fieldsMap) ? 'true' : 'false';
@@ -725,7 +760,7 @@ class Helper
         self::writeFile($modelFile['parseFile'], $modelFileContent);
     }
 
-    public static function writeControllerFile(array $controllerData, array $controllerFile)
+    public static function writeControllerFile(array $controllerData, array $controllerFile): void
     {
         if (isset($controllerData['relationVisibleFieldList']) && $controllerData['relationVisibleFieldList']) {
             $relationVisibleFields = '$res->visible([';
@@ -742,10 +777,14 @@ class Helper
         }
         $controllerAttr = '';
         foreach ($controllerData['attr'] as $key => $item) {
+            $attrType = '';
+            if (array_key_exists($key, self::$attrType['controller'])) {
+                $attrType = self::$attrType['controller'][$key];
+            }
             if (is_array($item)) {
-                $controllerAttr .= "\n" . self::tab() . "protected \$$key = ['" . implode("', '", $item) . "'];\n";
+                $controllerAttr .= "\n" . self::tab() . "protected $attrType \$$key = ['" . implode("', '", $item) . "'];\n";
             } elseif ($item) {
-                $controllerAttr .= "\n" . self::tab() . "protected \$$key = '$item';\n";
+                $controllerAttr .= "\n" . self::tab() . "protected $attrType \$$key = '$item';\n";
             }
         }
         $controllerData['attr']       = $controllerAttr;
@@ -758,7 +797,7 @@ class Helper
         self::writeFile($controllerFile['parseFile'], $contentFileContent);
     }
 
-    public static function writeFormFile($formVueData, $webViewsDir, $fields, $webTranslate)
+    public static function writeFormFile($formVueData, $webViewsDir, $fields, $webTranslate): void
     {
         $fieldHtml                = "\n";
         $formVueData['bigDialog'] = $formVueData['bigDialog'] ? "\n" . self::tab(2) . 'width="50%"' : '';
@@ -806,7 +845,7 @@ class Helper
         return $rulesHtml ? "\n" . $rulesHtml : '';
     }
 
-    public static function writeIndexFile($indexVueData, $webViewsDir, $controllerFile)
+    public static function writeIndexFile($indexVueData, $webViewsDir, $controllerFile): void
     {
         $indexVueData['optButtons']            = self::buildSimpleArray($indexVueData['optButtons']);
         $indexVueData['defaultItems']          = self::getJsonFromArray($indexVueData['defaultItems']);
@@ -927,9 +966,9 @@ class Helper
                     $jsonStr .= $keyStr . ($item === 'false' ? 'false' : 'true') . ',';
                 } elseif ($item === null) {
                     $jsonStr .= $keyStr . 'null,';
-                } elseif (strpos($item, "t('") === 0 || strpos($item, "t(\"") === 0 || $item == '[]' || in_array(gettype($item), ['integer', 'double'])) {
+                } elseif (str_starts_with($item, "t('") || str_starts_with($item, "t(\"") || $item == '[]' || in_array(gettype($item), ['integer', 'double'])) {
                     $jsonStr .= $keyStr . $item . ',';
-                } elseif (isset($item[0]) && $item[0] == '[' && substr($item, -1, 1) == ']') {
+                } elseif (isset($item[0]) && $item[0] == '[' && str_ends_with($item, ']')) {
                     $jsonStr .= $keyStr . $item . ',';
                 } else {
                     $quote   = self::getQuote($item);

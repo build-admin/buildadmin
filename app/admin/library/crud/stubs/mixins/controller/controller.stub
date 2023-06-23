@@ -12,9 +12,10 @@ class {%className%} extends Backend
 {
     /**
      * {%modelName%}模型对象
-     * @var \{%modelNamespace%}\{%modelName%}
+     * @var object
+     * @phpstan-var \{%modelNamespace%}\{%modelName%}
      */
-    protected $model = null;
+    protected object $model;
     {%attr%}{%initialize%}
 {%methods%}
 

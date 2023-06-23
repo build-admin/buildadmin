@@ -13,17 +13,18 @@ class Log extends Backend
 {
     /**
      * Log模型对象
-     * @var CrudLog
+     * @var object
+     * @phpstan-var CrudLog
      */
-    protected $model = null;
+    protected object $model;
 
-    protected $preExcludeFields = ['id', 'create_time'];
+    protected string|array $preExcludeFields = ['id', 'create_time'];
 
-    protected $quickSearchField = ['id', 'table_name'];
+    protected string|array $quickSearchField = ['id', 'table_name'];
 
-    protected $noNeedPermission = ['index'];
+    protected array $noNeedPermission = ['index'];
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new CrudLog;

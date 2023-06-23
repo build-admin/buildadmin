@@ -2,61 +2,71 @@
 
 namespace app\admin\controller\crud;
 
-use think\Exception;
+use Throwable;
 use think\facade\Db;
 use app\admin\model\CrudLog;
 use app\common\library\Menu;
 use app\common\controller\Backend;
 use app\admin\library\crud\Helper;
-use think\db\exception\PDOException;
 
 class Crud extends Backend
 {
     /**
      * 模型文件数据
+     * @var array
      */
-    protected $modelData = [];
+    protected array $modelData = [];
 
     /**
      * 控制器文件数据
+     * @var array
      */
-    protected $controllerData = [];
+    protected array $controllerData = [];
 
     /**
      * index.vue文件数据
+     * @var array
      */
-    protected $indexVueData = [];
+    protected array $indexVueData = [];
 
     /**
      * form.vue文件数据
+     * @var array
      */
-    protected $formVueData = [];
+    protected array $formVueData = [];
 
     /**
      * 语言翻译前缀
+     * @var string
      */
-    protected $webTranslate = '';
+    protected string $webTranslate = '';
 
     /**
      * 语言包数据
+     * @var array
      */
-    protected $langTsData = [];
+    protected array $langTsData = [];
 
     /**
      * 当designType为以下值时:
      * 1. 出入库字符串到数组转换
      * 2. 默认值转数组
+     * @var array
      */
-    protected $dtStringToArray = ['checkbox', 'selects', 'remoteSelects', 'city', 'images', 'files'];
+    protected array $dtStringToArray = ['checkbox', 'selects', 'remoteSelects', 'city', 'images', 'files'];
 
-    protected $noNeedPermission = ['logStart', 'getFileData', 'parseFieldData', 'generateCheck', 'databaseList'];
+    protected array $noNeedPermission = ['logStart', 'getFileData', 'parseFieldData', 'generateCheck', 'databaseList'];
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->request->filter(['trim']);
     }
 
+    /**
+     * 语言包数据
+     * @throws Throwable
+     */
     public function generate()
     {
         $table  = $this->request->post('table', []);
@@ -260,9 +270,9 @@ class Crud extends Backend
                 'id'     => $crudLogId,
                 'status' => 'success',
             ]);
-        } catch (PDOException|Exception $e) {
+        } catch (Throwable $e) {
             Helper::recordCrudStatus([
-                'id'     => $crudLogId,
+                'id'     => $crudLogId ?? 0,
                 'status' => 'error',
             ]);
             if (env('app_debug', false)) throw $e;
@@ -272,7 +282,10 @@ class Crud extends Backend
         $this->success();
     }
 
-    public function logStart()
+    /**
+     * 从log开始
+     */
+    public function logStart(): void
     {
         $id   = $this->request->post('id');
         $info = CrudLog::find($id)->toArray();
@@ -285,6 +298,10 @@ class Crud extends Backend
         ]);
     }
 
+    /**
+     * 删除CRUD记录和生成的文件
+     * @throws Throwable
+     */
     public function delete()
     {
         $id   = $this->request->post('id');
@@ -318,12 +335,16 @@ class Crud extends Backend
                 'id'     => $id,
                 'status' => 'delete',
             ]);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->error($e->getMessage());
         }
         $this->success(__('Deleted successfully'));
     }
 
+    /**
+     * 获取文件路径数据
+     * @throws Throwable
+     */
     public function getFileData()
     {
         $table       = $this->request->get('table');
@@ -338,7 +359,7 @@ class Crud extends Backend
             $validateFile   = Helper::parseNameData('admin', $table, 'validate');
             $controllerFile = Helper::parseNameData('admin', $table, 'controller');
             $webViewsDir    = Helper::parseWebDirNameData($table, 'views');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->error($e->getMessage());
         }
 
@@ -386,10 +407,12 @@ class Crud extends Backend
         ]);
     }
 
+    /**
+     * 解析字段数据
+     */
     public function parseFieldData()
     {
         $type  = $this->request->post('type');
-        $sql   = $this->request->post('sql');
         $table = $this->request->post('table');
         if ($type == 'db') {
             $sql       = 'SELECT * FROM `information_schema`.`tables` '
@@ -402,12 +425,13 @@ class Crud extends Backend
                 'columns' => Helper::parseTableColumns($table),
                 'comment' => $tableInfo[0]['TABLE_COMMENT'] ?? '',
             ]);
-        } elseif ($type == 'sql') {
-            // TODO
         }
-
     }
 
+    /**
+     * 生成前检查
+     * @throws Throwable
+     */
     public function generateCheck()
     {
         $table          = $this->request->post('table');
@@ -421,7 +445,7 @@ class Crud extends Backend
             if (!$controllerFile) {
                 $controllerFile = Helper::parseNameData('admin', $table, 'controller')['rootFileName'];
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->error($e->getMessage());
         }
 
@@ -472,7 +496,7 @@ class Crud extends Backend
     /**
      * 关联表数据解析
      * @param $field
-     * @throws Exception
+     * @throws Throwable
      */
     private function parseJoinData($field)
     {

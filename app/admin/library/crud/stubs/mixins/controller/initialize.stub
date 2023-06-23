@@ -1,5 +1,5 @@
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new \{%modelNamespace%}\{%modelName%};{%filterRule%}
