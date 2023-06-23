@@ -3,64 +3,63 @@
 namespace app\admin\controller\user;
 
 use ba\Tree;
-use Exception;
-use think\facade\Db;
+use Throwable;
 use app\admin\model\UserRule;
 use app\common\controller\Backend;
-use think\db\exception\PDOException;
-use think\exception\ValidateException;
 
 class Rule extends Backend
 {
     /**
-     * @var UserRule
+     * @var object
+     * @phpstan-var UserRule
      */
-    protected $model = null;
+    protected object $model;
 
     /**
      * @var Tree
      */
-    protected $tree = null;
+    protected Tree $tree;
 
-    protected $noNeedLogin = ['index'];
+    protected array $noNeedLogin = ['index'];
 
-    protected $preExcludeFields = ['create_time', 'update_time'];
+    protected string|array $preExcludeFields = ['create_time', 'update_time'];
 
-    protected $quickSearchField = 'title';
+    protected string|array $quickSearchField = 'title';
 
     /**
      * 远程select初始化传值
      * @var array
      */
-    protected $initValue;
+    protected array $initValue;
 
     /**
      * 是否组装Tree
      * @var bool
      */
-    protected $assembleTree;
+    protected bool $assembleTree;
 
     /**
      * 搜索关键词
-     * @var array
+     * @var string
      */
-    protected $keyword = false;
+    protected string $keyword;
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new UserRule();
         $this->tree  = Tree::instance();
 
         $isTree          = $this->request->param('isTree', true);
-        $this->initValue = $this->request->get("initValue/a", '');
-        $this->keyword   = $this->request->request("quick_search");
+        $this->initValue = $this->request->get("initValue/a", []);
+        $this->initValue = array_filter($this->initValue);
+        $this->keyword   = $this->request->request('quick_search', '');
 
         // 有初始化值时不组装树状（初始化出来的值更好看）
         $this->assembleTree = $isTree && !$this->initValue;
     }
 
-    public function index()
+    public function index(): void
     {
         if ($this->request->param('select')) {
             $this->select();
@@ -74,8 +73,9 @@ class Rule extends Backend
 
     /**
      * 编辑
+     * @throws Throwable
      */
-    public function edit()
+    public function edit(): void
     {
         $id  = $this->request->param($this->model->getPk());
         $row = $this->model->find($id);
@@ -96,7 +96,7 @@ class Rule extends Backend
 
             $data   = $this->excludeFields($data);
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -116,9 +116,9 @@ class Rule extends Backend
                     }
                 }
                 $result = $row->save($data);
-                Db::commit();
-            } catch (ValidateException|Exception|PDOException $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -137,8 +137,9 @@ class Rule extends Backend
     /**
      * 删除
      * @param array $ids
+     * @throws Throwable
      */
-    public function del(array $ids = [])
+    public function del(array $ids = []): void
     {
         if (!$this->request->isDelete() || !$ids) {
             $this->error(__('Parameter error'));
@@ -158,14 +159,14 @@ class Rule extends Backend
             }
         }
         $count = 0;
-        Db::startTrans();
+        $this->model->startTrans();
         try {
             foreach ($data as $v) {
                 $count += $v->delete();
             }
-            Db::commit();
-        } catch (PDOException|Exception $e) {
-            Db::rollback();
+            $this->model->commit();
+        } catch (Throwable $e) {
+            $this->model->rollback();
             $this->error($e->getMessage());
         }
         if ($count) {
@@ -175,7 +176,11 @@ class Rule extends Backend
         }
     }
 
-    public function select()
+    /**
+     * 远程下拉
+     * @throws Throwable
+     */
+    public function select(): void
     {
         $data = $this->getRules([['status', '=', '1']]);
 
@@ -187,7 +192,11 @@ class Rule extends Backend
         ]);
     }
 
-    public function getRules($where = []): array
+    /**
+     * 获取菜单规则
+     * @throws Throwable
+     */
+    public function getRules(array $where = []): array
     {
         $pk      = $this->model->getPk();
         $initKey = $this->request->get("initKey/s", $pk);

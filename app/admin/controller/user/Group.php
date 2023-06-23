@@ -2,30 +2,35 @@
 
 namespace app\admin\controller\user;
 
-use Exception;
-use think\facade\Db;
+use Throwable;
 use app\admin\model\UserRule;
 use app\admin\model\UserGroup;
 use app\common\controller\Backend;
-use think\db\exception\PDOException;
-use think\exception\ValidateException;
 
 class Group extends Backend
 {
-    protected $model = null;
+    /**
+     * @var object
+     * @phpstan-var UserGroup
+     */
+    protected object $model;
 
     // 排除字段
-    protected $preExcludeFields = ['update_time', 'create_time'];
+    protected string|array $preExcludeFields = ['update_time', 'create_time'];
 
-    protected $quickSearchField = 'name';
+    protected string|array $quickSearchField = 'name';
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new UserGroup();
     }
 
-    public function add()
+    /**
+     * 添加
+     * @throws Throwable
+     */
+    public function add(): void
     {
         if ($this->request->isPost()) {
             $data = $this->request->post();
@@ -34,26 +39,10 @@ class Group extends Backend
             }
 
             $data = $this->excludeFields($data);
-            if (is_array($data['rules']) && $data['rules']) {
-                $rules = UserRule::select();
-                $super = true;
-                foreach ($rules as $rule) {
-                    if (!in_array($rule['id'], $data['rules'])) {
-                        $super = false;
-                    }
-                }
-
-                if ($super) {
-                    $data['rules'] = '*';
-                } else {
-                    $data['rules'] = implode(',', $data['rules']);
-                }
-            } else {
-                unset($data['rules']);
-            }
+            $data = $this->handleRules($data);
 
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -64,9 +53,9 @@ class Group extends Backend
                     }
                 }
                 $result = $this->model->save($data);
-                Db::commit();
-            } catch (ValidateException|Exception|PDOException $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -79,7 +68,12 @@ class Group extends Backend
         $this->error(__('Parameter error'));
     }
 
-    public function edit($id = null)
+    /**
+     * 编辑
+     * @param string|int|null $id
+     * @throws Throwable
+     */
+    public function edit(string|int $id = null): void
     {
         $row = $this->model->find($id);
         if (!$row) {
@@ -93,26 +87,10 @@ class Group extends Backend
             }
 
             $data = $this->excludeFields($data);
-            if (is_array($data['rules']) && $data['rules']) {
-                $rules = UserRule::select();
-                $super = true;
-                foreach ($rules as $rule) {
-                    if (!in_array($rule['id'], $data['rules'])) {
-                        $super = false;
-                    }
-                }
-
-                if ($super) {
-                    $data['rules'] = '*';
-                } else {
-                    $data['rules'] = implode(',', $data['rules']);
-                }
-            } else {
-                unset($data['rules']);
-            }
+            $data = $this->handleRules($data);
 
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -123,9 +101,9 @@ class Group extends Backend
                     }
                 }
                 $result = $row->save($data);
-                Db::commit();
-            } catch (ValidateException|Exception|PDOException $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -136,12 +114,13 @@ class Group extends Backend
         }
 
         // 读取所有pid，全部从节点数组移除，父级选择状态由子级决定
-        $pids  = UserRule::field('pid')
+        $pidArr = UserRule::field('pid')
             ->distinct(true)
             ->where('id', 'in', $row->rules)
-            ->select()->toArray();
-        $rules = $row->rules ? explode(',', $row->rules) : [];
-        foreach ($pids as $item) {
+            ->select()
+            ->toArray();
+        $rules  = $row->rules ? explode(',', $row->rules) : [];
+        foreach ($pidArr as $item) {
             $ruKey = array_search($item['pid'], $rules);
             if ($ruKey !== false) {
                 unset($rules[$ruKey]);
@@ -151,5 +130,33 @@ class Group extends Backend
         $this->success('', [
             'row' => $row
         ]);
+    }
+
+    /**
+     * 权限规则入库前处理
+     * @param array $data 接受到的数据
+     * @return array
+     * @throws Throwable
+     */
+    public function handleRules(array &$data): array
+    {
+        if (is_array($data['rules']) && $data['rules']) {
+            $rules = UserRule::select();
+            $super = true;
+            foreach ($rules as $rule) {
+                if (!in_array($rule['id'], $data['rules'])) {
+                    $super = false;
+                }
+            }
+
+            if ($super) {
+                $data['rules'] = '*';
+            } else {
+                $data['rules'] = implode(',', $data['rules']);
+            }
+        } else {
+            unset($data['rules']);
+        }
+        return $data;
     }
 }

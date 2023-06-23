@@ -2,22 +2,27 @@
 
 namespace app\admin\controller\user;
 
-use app\common\controller\Backend;
-use app\admin\model\UserMoneyLog;
+use Throwable;
 use app\admin\model\User;
+use app\admin\model\UserMoneyLog;
+use app\common\controller\Backend;
 
 class MoneyLog extends Backend
 {
-    protected $model = null;
+    /**
+     * @var object
+     * @phpstan-var UserMoneyLog
+     */
+    protected object $model;
 
-    protected $withJoinTable = ['user'];
+    protected array $withJoinTable = ['user'];
 
     // 排除字段
-    protected $preExcludeFields = ['create_time'];
+    protected string|array $preExcludeFields = ['create_time'];
 
-    protected $quickSearchField = ['user.username', 'user.nickname'];
+    protected string|array $quickSearchField = ['user.username', 'user.nickname'];
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new UserMoneyLog();
@@ -25,14 +30,16 @@ class MoneyLog extends Backend
 
     /**
      * 添加
+     * @param int $userId
+     * @throws Throwable
      */
-    public function add($userId = 0)
+    public function add(int $userId = 0): void
     {
         if ($this->request->isPost()) {
             parent::add();
         }
 
-        $user = User::where('id', (int)$userId)->find();
+        $user = User::where('id', $userId)->find();
         if (!$user) {
             $this->error(__("The user can't find it"));
         }
