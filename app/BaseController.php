@@ -4,8 +4,9 @@ declare (strict_types=1);
 namespace app;
 
 use think\App;
-use think\exception\ValidateException;
+use think\Request;
 use think\Validate;
+use think\exception\ValidateException;
 
 /**
  * 控制器基础类
@@ -14,36 +15,29 @@ abstract class BaseController
 {
     /**
      * Request实例
-     * @var \think\Request
+     * @var Request
      */
-    protected $request;
-
-    /**
-     * 应用实例
-     * @var App
-     */
-    protected $app;
+    protected Request $request;
 
     /**
      * 是否批量验证
      * @var bool
      */
-    protected $batchValidate = false;
+    protected bool $batchValidate = false;
 
     /**
      * 控制器中间件
      * @var array
      */
-    protected $middleware = [];
+    protected array $middleware = [];
 
     /**
      * 构造方法
      * @access public
      * @param App $app 应用对象
      */
-    public function __construct(App $app)
+    public function __construct(protected App $app)
     {
-        $this->app                     = $app;
         $this->request                 = $this->app->request;
         $this->request->controllerPath = str_replace('.', '/', $this->request->controller(true));
 
@@ -51,8 +45,11 @@ abstract class BaseController
         $this->initialize();
     }
 
-    // 初始化
-    protected function initialize()
+    /**
+     * 初始化
+     * @access protected
+     */
+    protected function initialize(): void
     {
     }
 
@@ -60,13 +57,13 @@ abstract class BaseController
      * 验证数据
      * @access protected
      * @param array        $data     数据
-     * @param string|array $validate 验证器名或者验证规则数组
+     * @param array|string $validate 验证器名或者验证规则数组
      * @param array        $message  提示信息
      * @param bool         $batch    是否批量验证
      * @return array|string|true
      * @throws ValidateException
      */
-    protected function validate(array $data, $validate, array $message = [], bool $batch = false)
+    protected function validate(array $data, array|string $validate, array $message = [], bool $batch = false): bool|array|string
     {
         if (is_array($validate)) {
             $v = new Validate();
@@ -76,7 +73,7 @@ abstract class BaseController
                 // 支持场景
                 [$validate, $scene] = explode('.', $validate);
             }
-            $class = false !== strpos($validate, '\\') ? $validate : $this->app->parseClass('validate', $validate);
+            $class = str_contains($validate, '\\') ? $validate : $this->app->parseClass('validate', $validate);
             $v     = new $class();
             if (!empty($scene)) {
                 $v->scene($scene);

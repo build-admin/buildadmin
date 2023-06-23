@@ -2,25 +2,23 @@
 
 namespace app\admin\library\traits;
 
-use Exception;
-use think\facade\Config;
+use Throwable;
 use think\facade\Db;
-use think\db\exception\PDOException;
-use think\exception\ValidateException;
+use think\facade\Config;
 
 /**
  * 后台控制器trait类
- * 已导入到 @var \app\common\controller\Backend 中
+ * 已导入到 @see \app\common\controller\Backend 中
  * 若需修改此类方法：请复制方法至对应控制器后进行重写
  */
 trait Backend
 {
     /**
      * 排除入库字段
-     * @param $params
-     * @return mixed
+     * @param array $params
+     * @return array
      */
-    protected function excludeFields($params)
+    protected function excludeFields(array $params): array
     {
         if (!is_array($this->preExcludeFields)) {
             $this->preExcludeFields = explode(',', (string)$this->preExcludeFields);
@@ -36,8 +34,9 @@ trait Backend
 
     /**
      * 查看
+     * @throws Throwable
      */
-    public function index()
+    public function index(): void
     {
         $this->request->filter(['strip_tags', 'trim']);
         if ($this->request->param('select')) {
@@ -63,7 +62,7 @@ trait Backend
     /**
      * 添加
      */
-    public function add()
+    public function add(): void
     {
         if ($this->request->isPost()) {
             $data = $this->request->post();
@@ -77,7 +76,7 @@ trait Backend
             }
 
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -89,9 +88,9 @@ trait Backend
                     }
                 }
                 $result = $this->model->save($data);
-                Db::commit();
-            } catch (ValidateException|PDOException|Exception $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -106,8 +105,9 @@ trait Backend
 
     /**
      * 编辑
+     * @throws Throwable
      */
-    public function edit()
+    public function edit(): void
     {
         $id  = $this->request->param($this->model->getPk());
         $row = $this->model->find($id);
@@ -128,7 +128,7 @@ trait Backend
 
             $data   = $this->excludeFields($data);
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -140,9 +140,9 @@ trait Backend
                     }
                 }
                 $result = $row->save($data);
-                Db::commit();
-            } catch (ValidateException|PDOException|Exception $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -150,7 +150,6 @@ trait Backend
             } else {
                 $this->error(__('No rows updated'));
             }
-
         }
 
         $this->success('', [
@@ -161,8 +160,9 @@ trait Backend
     /**
      * 删除
      * @param array $ids
+     * @throws Throwable
      */
-    public function del(array $ids = [])
+    public function del(array $ids = []): void
     {
         if (!$this->request->isDelete() || !$ids) {
             $this->error(__('Parameter error'));
@@ -176,14 +176,14 @@ trait Backend
         $pk    = $this->model->getPk();
         $data  = $this->model->where($pk, 'in', $ids)->select();
         $count = 0;
-        Db::startTrans();
+        $this->model->startTrans();
         try {
             foreach ($data as $v) {
                 $count += $v->delete();
             }
-            Db::commit();
-        } catch (PDOException|Exception $e) {
-            Db::rollback();
+            $this->model->commit();
+        } catch (Throwable $e) {
+            $this->model->rollback();
             $this->error($e->getMessage());
         }
         if ($count) {
@@ -197,8 +197,9 @@ trait Backend
      * 排序
      * @param int $id       排序主键值
      * @param int $targetId 排序位置主键值
+     * @throws Throwable
      */
-    public function sortable(int $id, int $targetId)
+    public function sortable(int $id, int $targetId): void
     {
         $dataLimitAdminIds = $this->getDataLimitAdminIds();
         if ($dataLimitAdminIds) {
@@ -229,9 +230,9 @@ trait Backend
             $target = $this->model->find($targetId);
         }
 
-        $ebak                      = $target[$this->weighField];
+        $backup                    = $target[$this->weighField];
         $target[$this->weighField] = $row[$this->weighField];
-        $row[$this->weighField]    = $ebak;
+        $row[$this->weighField]    = $backup;
         $row->save();
         $target->save();
 
@@ -242,7 +243,7 @@ trait Backend
      * 加载为select(远程下拉选择框)数据，默认还是走$this->index()方法
      * 必要时请在对应控制器类中重写
      */
-    public function select()
+    public function select(): void
     {
 
     }

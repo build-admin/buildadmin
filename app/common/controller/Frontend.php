@@ -2,6 +2,7 @@
 
 namespace app\common\controller;
 
+use Throwable;
 use think\facade\Event;
 use think\facade\Cookie;
 use app\common\library\Auth;
@@ -12,21 +13,28 @@ class Frontend extends Api
     /**
      * 无需登录的方法
      * 访问本控制器的此方法，无需会员登录
+     * @var array
      */
-    protected $noNeedLogin = [];
+    protected array $noNeedLogin = [];
 
     /**
      * 无需鉴权的方法
+     * @var array
      */
-    protected $noNeedPermission = [];
+    protected array $noNeedPermission = [];
 
     /**
      * 权限类实例
      * @var Auth
      */
-    protected $auth = null;
+    protected Auth $auth;
 
-    public function initialize()
+    /**
+     * 初始化
+     * @throws Throwable
+     * @throws HttpResponseException
+     */
+    public function initialize(): void
     {
         parent::initialize();
         $this->auth = Auth::instance();
@@ -47,7 +55,7 @@ class Frontend extends Api
         } elseif ($token) {
             try {
                 $this->auth->init($token);
-            } catch (HttpResponseException $e) {
+            } catch (HttpResponseException) {
             }
         }
 

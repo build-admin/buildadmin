@@ -2,81 +2,97 @@
 
 namespace app\common\controller;
 
+use Throwable;
+use think\Model;
+use think\facade\Db;
+use think\facade\Event;
+use think\facade\Cookie;
 use app\admin\library\Auth;
 use think\db\exception\PDOException;
 use think\exception\HttpResponseException;
-use think\facade\Cookie;
-use think\facade\Db;
-use think\facade\Event;
 
 class Backend extends Api
 {
     /**
-     * 无需登录的方法
-     * 访问本控制器的此方法，无需管理员登录
+     * 无需登录的方法，访问本控制器的此方法，无需管理员登录
+     * @var array
      */
-    protected $noNeedLogin = [];
+    protected array $noNeedLogin = [];
 
     /**
      * 无需鉴权的方法
+     * @var array
      */
-    protected $noNeedPermission = [];
+    protected array $noNeedPermission = [];
 
     /**
      * 新增/编辑时，对前端发送的字段进行排除（忽略不入库）
+     * @var array|string
      */
-    protected $preExcludeFields = [];
+    protected array|string $preExcludeFields = [];
 
     /**
      * 权限类实例
      * @var Auth
      */
-    protected $auth = null;
+    protected Auth $auth;
 
-    protected $model = null;
+    /**
+     * 模型类实例
+     * @var object
+     * @phpstan-var Model
+     */
+    protected object $model;
 
     /**
      * 权重字段
+     * @var string
      */
-    protected $weighField = 'weigh';
+    protected string $weighField = 'weigh';
 
     /**
      * 默认排序
+     * @var string|array
      */
-    protected $defaultSortField = 'id,desc';
+    protected string|array $defaultSortField = 'id,desc';
 
     /**
      * 表格拖拽排序时,两个权重相等则自动重新整理
      * config/buildadmin.php文件中的auto_sort_eq_weight为默认值
      * null=取默认值,false=关,true=开
+     * @var null|bool
      */
-    protected $autoSortEqWeight = null;
+    protected null|bool $autoSortEqWeight = null;
 
     /**
      * 快速搜索字段
+     * @var string|array
      */
-    protected $quickSearchField = 'id';
+    protected string|array $quickSearchField = 'id';
 
     /**
      * 是否开启模型验证
+     * @var bool
      */
-    protected $modelValidate = true;
+    protected bool $modelValidate = true;
 
     /**
      * 是否开启模型场景验证
+     * @var bool
      */
-    protected $modelSceneValidate = false;
+    protected bool $modelSceneValidate = false;
 
     /**
-     * 关联查询方法名
-     * 方法应定义在模型中
+     * 关联查询方法名，方法应定义在模型中
+     * @var array
      */
-    protected $withJoinTable = [];
+    protected array $withJoinTable = [];
 
     /**
      * 关联查询JOIN方式
+     * @var string
      */
-    protected $withJoinType = 'LEFT';
+    protected string $withJoinType = 'LEFT';
 
     /**
      * 开启数据限制
@@ -87,23 +103,27 @@ class Backend extends Api
      * parent=上级分组中的管理员可查
      * 指定分组中的管理员可查，比如 $dataLimit = 2;
      * 启用请确保数据表内存在 admin_id 字段，可以查询/编辑数据的管理员为admin_id对应的管理员+数据限制所表示的管理员们
+     * @var bool|string|int
      */
-    protected $dataLimit = false;
+    protected bool|string|int $dataLimit = false;
 
     /**
      * 数据限制字段
+     * @var string
      */
-    protected $dataLimitField = 'admin_id';
+    protected string $dataLimitField = 'admin_id';
 
     /**
      * 数据限制开启时自动填充字段值为当前管理员id
+     * @var bool
      */
-    protected $dataLimitFieldAutoFill = true;
+    protected bool $dataLimitFieldAutoFill = true;
 
     /**
      * 查看请求返回的主表字段控制
+     * @var string|array
      */
-    protected $indexField = ['*'];
+    protected string|array $indexField = ['*'];
 
     /**
      * 引入traits
@@ -111,7 +131,12 @@ class Backend extends Api
      */
     use \app\admin\library\traits\Backend;
 
-    public function initialize()
+    /**
+     * 初始化
+     * @throws Throwable
+     * @throws PDOException
+     */
+    public function initialize(): void
     {
         parent::initialize();
 
@@ -140,7 +165,7 @@ class Backend extends Api
         } elseif ($token) {
             try {
                 $this->auth->init($token);
-            } catch (HttpResponseException $e) {
+            } catch (HttpResponseException) {
             }
         }
 
@@ -291,6 +316,10 @@ class Backend extends Api
         return [$where, $alias, $limit, $order];
     }
 
+    /**
+     * 数据权限控制-获取有权限访问的管理员Ids
+     * @throws Throwable
+     */
     protected function getDataLimitAdminIds(): array
     {
         if (!$this->dataLimit || $this->auth->isSuperAdmin()) {
