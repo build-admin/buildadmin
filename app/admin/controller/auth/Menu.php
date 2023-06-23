@@ -4,7 +4,6 @@ namespace app\admin\controller\auth;
 
 use ba\Tree;
 use Throwable;
-use think\facade\Db;
 use app\admin\model\MenuRule;
 use app\common\controller\Backend;
 
@@ -195,6 +194,10 @@ class Menu extends Backend
         ]);
     }
 
+    /**
+     * 获取菜单列表
+     * @throws Throwable
+     */
     protected function getMenus($where = []): array
     {
         $pk      = $this->model->getPk();
