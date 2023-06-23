@@ -2,30 +2,31 @@
 
 namespace app\admin\controller\routine;
 
-use app\common\controller\Backend;
-use app\admin\model\Config as ConfigModel;
-use think\db\exception\PDOException;
-use think\exception\ValidateException;
+use Throwable;
 use think\facade\Cache;
-use think\facade\Db;
-use Exception;
 use app\common\library\Email;
 use PHPMailer\PHPMailer\PHPMailer;
+use app\common\controller\Backend;
+use app\admin\model\Config as ConfigModel;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 class Config extends Backend
 {
-    protected $model = null;
+    /**
+     * @var object
+     * @phpstan-var ConfigModel
+     */
+    protected object $model;
 
-    protected $noNeedLogin = ['index'];
+    protected array $noNeedLogin = ['index'];
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->model = new ConfigModel();
     }
 
-    public function index()
+    public function index(): void
     {
         $configGroup = get_sys_config('config_group');
         $config      = $this->model->order('weigh desc')->select()->toArray();
@@ -54,9 +55,9 @@ class Config extends Backend
 
     /**
      * 编辑
-     * @param null $id
+     * @throws Throwable
      */
-    public function edit($id = null)
+    public function edit(): void
     {
         $all = $this->model->select();
         foreach ($all as $item) {
@@ -86,7 +87,7 @@ class Config extends Backend
             }
 
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -99,9 +100,9 @@ class Config extends Backend
                 }
                 $result = $this->model->saveAll($configValue);
                 Cache::tag(ConfigModel::$cacheTag)->clear();
-                Db::commit();
-            } catch (ValidateException|Exception|PDOException $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -113,7 +114,7 @@ class Config extends Backend
         }
     }
 
-    public function add()
+    public function add(): void
     {
         if ($this->request->isPost()) {
             $data = $this->request->post();
@@ -123,7 +124,7 @@ class Config extends Backend
 
             $data   = $this->excludeFields($data);
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 // 模型验证
                 if ($this->modelValidate) {
@@ -136,9 +137,9 @@ class Config extends Backend
                 }
                 $result = $this->model->save($data);
                 Cache::tag(ConfigModel::$cacheTag)->clear();
-                Db::commit();
-            } catch (ValidateException|Exception|PDOException $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
@@ -151,7 +152,11 @@ class Config extends Backend
         $this->error(__('Parameter error'));
     }
 
-    public function sendTestMail()
+    /**
+     * 发送邮件测试
+     * @throws Throwable
+     */
+    public function sendTestMail(): void
     {
         $data = $this->request->post();
         $mail = new Email();

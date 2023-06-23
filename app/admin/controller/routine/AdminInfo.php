@@ -2,29 +2,30 @@
 
 namespace app\admin\controller\routine;
 
-use Exception;
+use Throwable;
+use app\admin\model\Admin;
 use app\common\controller\Backend;
-use think\db\exception\PDOException;
-use think\exception\ValidateException;
-use think\facade\Db;
 
 class AdminInfo extends Backend
 {
-    protected $model = null;
+    /**
+     * @var object
+     * @phpstan-var Admin
+     */
+    protected object $model;
 
-    // 排除字段
-    protected $preExcludeFields = ['username', 'last_login_time', 'password', 'salt', 'status'];
-    // 输出字段
-    protected $authAllowFields = ['id', 'username', 'nickname', 'avatar', 'email', 'mobile', 'motto', 'last_login_time'];
+    protected string|array $preExcludeFields = ['username', 'last_login_time', 'password', 'salt', 'status'];
 
-    public function initialize()
+    protected array $authAllowFields = ['id', 'username', 'nickname', 'avatar', 'email', 'mobile', 'motto', 'last_login_time'];
+
+    public function initialize(): void
     {
         parent::initialize();
         $this->auth->setAllowFields($this->authAllowFields);
         $this->model = $this->auth->getAdmin();
     }
 
-    public function index()
+    public function index(): void
     {
         $info = $this->auth->getInfo();
         $this->success('', [
@@ -32,7 +33,7 @@ class AdminInfo extends Backend
         ]);
     }
 
-    public function edit($id = null)
+    public function edit($id = null): void
     {
         $row = $this->model->find($id);
         if (!$row) {
@@ -58,7 +59,7 @@ class AdminInfo extends Backend
                     $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
                     $validate = new $validate;
                     $validate->scene('info')->check($data);
-                } catch (ValidateException $e) {
+                } catch (Throwable $e) {
                     $this->error($e->getMessage());
                 }
             }
@@ -69,12 +70,12 @@ class AdminInfo extends Backend
 
             $data   = $this->excludeFields($data);
             $result = false;
-            Db::startTrans();
+            $this->model->startTrans();
             try {
                 $result = $row->save($data);
-                Db::commit();
-            } catch (PDOException|Exception $e) {
-                Db::rollback();
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
                 $this->error($e->getMessage());
             }
             if ($result !== false) {
