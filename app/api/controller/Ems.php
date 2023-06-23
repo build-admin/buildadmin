@@ -56,7 +56,7 @@ class Ems extends Frontend
 
         // 检查频繁发送
         $captcha = $captchaObj->getCaptchaData($params['email'] . $params['event']);
-        if ($captcha && time() - $captcha['createtime'] < 60) {
+        if ($captcha && time() - $captcha['create_time'] < 60) {
             $this->error(__('Frequent email sending'));
         }
 

@@ -13,7 +13,7 @@ class MoneyLog extends Backend
     protected $withJoinTable = ['user'];
 
     // 排除字段
-    protected $preExcludeFields = ['createtime'];
+    protected $preExcludeFields = ['create_time'];
 
     protected $quickSearchField = ['user.username', 'user.nickname'];
 

@@ -6,10 +6,8 @@ use think\model;
 
 class UserMoneyLog extends model
 {
-    protected $autoWriteTimestamp = 'int';
-
-    protected $createTime = 'createtime';
-    protected $updateTime = false;
+    protected $autoWriteTimestamp = true;
+    protected $updateTime         = false;
 
     public function getMoneyAttr($value)
     {

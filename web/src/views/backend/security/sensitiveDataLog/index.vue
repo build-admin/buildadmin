@@ -158,7 +158,7 @@ const baTable = new baTableClass(
             { label: 'IP', prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
                 label: t('security.sensitiveDataLog.Modification time'),
-                prop: 'createtime',
+                prop: 'create_time',
                 align: 'center',
                 render: 'datetime',
                 sortable: 'custom',

@@ -19,7 +19,7 @@
                         {{ baTable.form.extend!.info.data_table }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Modification time')">
-                        {{ timeFormat(baTable.form.extend!.info.createtime) }}
+                        {{ timeFormat(baTable.form.extend!.info.create_time) }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Operator IP')">
                         {{ baTable.form.extend!.info.ip }}

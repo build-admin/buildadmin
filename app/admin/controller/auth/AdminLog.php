@@ -12,7 +12,7 @@ class AdminLog extends Backend
      */
     protected $model = null;
 
-    protected $preExcludeFields = ['createtime', 'admin_id', 'username'];
+    protected $preExcludeFields = ['create_time', 'admin_id', 'username'];
 
     protected $quickSearchField = ['title'];
 

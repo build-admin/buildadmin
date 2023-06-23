@@ -25,7 +25,7 @@
                         {{ baTable.form.extend!.info.ip }}
                     </el-descriptions-item>
                     <el-descriptions-item :width="120" :span="2" :label="t('security.dataRecycleLog.Delete time')">
-                        {{ timeFormat(baTable.form.extend!.info.createtime) }}
+                        {{ timeFormat(baTable.form.extend!.info.create_time) }}
                     </el-descriptions-item>
                     <el-descriptions-item :width="120" :span="2" label="User Agent">
                         {{ baTable.form.extend!.info.useragent }}

@@ -15,7 +15,7 @@ class Group extends Backend
     protected $model = null;
 
     // 排除字段
-    protected $preExcludeFields = ['updatetime', 'createtime'];
+    protected $preExcludeFields = ['update_time', 'create_time'];
 
     protected $quickSearchField = 'name';
 

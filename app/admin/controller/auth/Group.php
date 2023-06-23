@@ -25,7 +25,7 @@ class Group extends Backend
      */
     protected $model = null;
 
-    protected $preExcludeFields = ['createtime', 'updatetime'];
+    protected $preExcludeFields = ['create_time', 'update_time'];
 
     protected $quickSearchField = 'name';
 

@@ -22,7 +22,7 @@ class Ajax extends Frontend
         try {
             $upload     = new Upload($file);
             $attachment = $upload->upload(null, 0, $this->auth->id);
-            unset($attachment['createtime'], $attachment['quote']);
+            unset($attachment['create_time'], $attachment['quote']);
         } catch (Exception|FileException $e) {
             $this->error($e->getMessage());
         }

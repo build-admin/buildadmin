@@ -11,10 +11,8 @@ use app\admin\library\Auth;
  */
 class AdminLog extends Model
 {
-    protected $autoWriteTimestamp = 'int';
-
-    protected $createTime = 'createtime';
-    protected $updateTime = false;
+    protected $autoWriteTimestamp = true;
+    protected $updateTime         = false;
 
     // 自定义日志标题
     protected static $title = '';

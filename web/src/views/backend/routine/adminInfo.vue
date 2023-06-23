@@ -81,7 +81,7 @@
             <el-col v-loading="state.logLoading" :xs="24" :sm="24" :md="24" :lg="12">
                 <el-card :header="t('routine.adminInfo.Operation log')" shadow="never">
                     <el-timeline>
-                        <el-timeline-item v-for="(item, idx) in state.log" :key="idx" size="large" :timestamp="timeFormat(item.createtime)">
+                        <el-timeline-item v-for="(item, idx) in state.log" :key="idx" size="large" :timestamp="timeFormat(item.create_time)">
                             {{ item.title }}
                         </el-timeline-item>
                     </el-timeline>
@@ -124,7 +124,7 @@ const state: {
     buttonLoading: boolean
     log: {
         title: string
-        createtime: string
+        create_time: string
         url: string
     }[]
     logFilter: anyObj

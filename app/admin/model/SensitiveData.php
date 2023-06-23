@@ -12,9 +12,7 @@ class SensitiveData extends Model
 {
     protected $name = 'security_sensitive_data';
 
-    protected $autoWriteTimestamp = 'int';
-    protected $createTime         = 'createtime';
-    protected $updateTime         = 'updatetime';
+    protected $autoWriteTimestamp = true;
 
     protected $type = [
         'data_fields' => 'array',

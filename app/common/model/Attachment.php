@@ -11,10 +11,8 @@ use app\admin\model\Admin;
  */
 class Attachment extends Model
 {
-    protected $autoWriteTimestamp = 'int';
-
-    protected $createTime = 'createtime';
-    protected $updateTime = null;
+    protected $autoWriteTimestamp = true;
+    protected $updateTime         = false;
 
     protected $append = [
         'suffix',
@@ -49,7 +47,7 @@ class Attachment extends Model
                 return true;
             } else {
                 $repeat->quote++;
-                $repeat->lastuploadtime = time();
+                $repeat->last_upload_time = time();
                 $repeat->save();
                 return false;
             }
@@ -59,9 +57,9 @@ class Attachment extends Model
 
     protected static function onAfterInsert($model)
     {
-        if (!$model->lastuploadtime) {
-            $model->quote          = 1;
-            $model->lastuploadtime = time();
+        if (!$model->last_upload_time) {
+            $model->quote            = 1;
+            $model->last_upload_time = time();
             $model->save();
         }
     }

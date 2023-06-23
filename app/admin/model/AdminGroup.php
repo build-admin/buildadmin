@@ -10,8 +10,5 @@ use think\Model;
  */
 class AdminGroup extends Model
 {
-    protected $autoWriteTimestamp = 'int';
-
-    protected $createTime = 'createtime';
-    protected $updateTime = 'updatetime';
+    protected $autoWriteTimestamp = true;
 }

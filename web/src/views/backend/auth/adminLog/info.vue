@@ -26,7 +26,7 @@
                         {{ baTable.form.extend!.info.useragent }}
                     </el-descriptions-item>
                     <el-descriptions-item :width="120" :span="2" :label="t('createtime')">
-                        {{ timeFormat(baTable.form.extend!.info.createtime) }}
+                        {{ timeFormat(baTable.form.extend!.info.create_time) }}
                     </el-descriptions-item>
                     <el-descriptions-item :width="120" :span="2" :label="t('auth.adminLog.Request data')">
                         <el-tree class="table-el-tree" :data="baTable.form.extend!.info.data" :props="{ label: 'label', children: 'children' }" />

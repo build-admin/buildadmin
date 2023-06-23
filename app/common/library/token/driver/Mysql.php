@@ -42,16 +42,16 @@ class Mysql extends Driver
         if (is_null($expire)) {
             $expire = $this->options['expire'];
         }
-        $expiretime = $expire !== 0 ? time() + $expire : 0;
+        $expireTime = $expire !== 0 ? time() + $expire : 0;
         $token      = $this->getEncryptedToken($token);
-        $this->handler->insert(['token' => $token, 'type' => $type, 'user_id' => $user_id, 'createtime' => time(), 'expiretime' => $expiretime]);
+        $this->handler->insert(['token' => $token, 'type' => $type, 'user_id' => $user_id, 'create_time' => time(), 'expire_time' => $expireTime]);
 
         // 每隔48小时清理一次过期缓存
         $time                 = time();
         $lastCacheCleanupTime = Cache::get('last_cache_cleanup_time');
         if (!$lastCacheCleanupTime || $lastCacheCleanupTime < $time - 172800) {
             Cache::set('last_cache_cleanup_time', $time);
-            $this->handler->where('expiretime', '<', time())->where('expiretime', '>', 0)->delete();
+            $this->handler->where('expire_time', '<', time())->where('expire_time', '>', 0)->delete();
         }
         return true;
     }
@@ -65,8 +65,8 @@ class Mysql extends Driver
         // 返回未加密的token给客户端使用
         $data['token'] = $token;
         // 返回剩余有效时间
-        $data['expires_in'] = $this->getExpiredIn($data['expiretime'] ?? 0);
-        if ($data['expiretime'] && $data['expiretime'] <= time() && $expirationException) {
+        $data['expires_in'] = $this->getExpiredIn($data['expire_time'] ?? 0);
+        if ($data['expire_time'] && $data['expire_time'] <= time() && $expirationException) {
             // token过期-触发前端刷新token
             $response = Response::create(['code' => 409, 'msg' => __('Token expiration'), 'data' => $data], 'json');
             throw new HttpResponseException($response);
@@ -77,7 +77,7 @@ class Mysql extends Driver
     public function check(string $token, string $type, int $user_id, bool $expirationException = true): bool
     {
         $data = $this->get($token, $expirationException);
-        if (!$data || (!$expirationException && $data['expiretime'] && $data['expiretime'] <= time())) return false;
+        if (!$data || (!$expirationException && $data['expire_time'] && $data['expire_time'] <= time())) return false;
         return $data['type'] == $type && $data['user_id'] == $user_id;
     }
 

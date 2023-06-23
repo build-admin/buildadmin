@@ -22,7 +22,7 @@ class Menu extends Backend
      */
     protected $tree = null;
 
-    protected $preExcludeFields = ['createtime', 'updatetime'];
+    protected $preExcludeFields = ['create_time', 'update_time'];
 
     protected $quickSearchField = 'title';
 

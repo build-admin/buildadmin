@@ -52,14 +52,14 @@ class Redis extends Driver
         if (is_null($expire)) {
             $expire = $this->options['expire'];
         }
-        $expiretime = $expire !== 0 ? time() + $expire : 0;
+        $expireTime = $expire !== 0 ? time() + $expire : 0;
         $token      = $this->getEncryptedToken($token);
         $tokenInfo  = [
-            'token'      => $token,
-            'type'       => $type,
-            'user_id'    => $user_id,
-            'createtime' => time(),
-            'expiretime' => $expiretime,
+            'token'       => $token,
+            'type'        => $type,
+            'user_id'     => $user_id,
+            'create_time' => time(),
+            'expire_time' => $expireTime,
         ];
         $tokenInfo  = json_encode($tokenInfo, JSON_UNESCAPED_UNICODE);
         if ($expire) {
@@ -86,9 +86,9 @@ class Redis extends Driver
         // 返回未加密的token给客户端使用
         $data['token'] = $token;
         // 过期时间
-        $data['expires_in'] = $this->getExpiredIn($data['expiretime'] ?? 0);
+        $data['expires_in'] = $this->getExpiredIn($data['expire_time'] ?? 0);
 
-        if ($data['expiretime'] && $data['expiretime'] <= time() && $expirationException) {
+        if ($data['expire_time'] && $data['expire_time'] <= time() && $expirationException) {
             // token过期-触发前端刷新token
             $response = Response::create(['code' => 409, 'msg' => __('Token expiration'), 'data' => $data], 'json');
             throw new HttpResponseException($response);
@@ -99,7 +99,7 @@ class Redis extends Driver
     public function check(string $token, string $type, int $user_id, bool $expirationException = true): bool
     {
         $data = $this->get($token, $expirationException);
-        if (!$data || (!$expirationException && $data['expiretime'] && $data['expiretime'] <= time())) return false;
+        if (!$data || (!$expirationException && $data['expire_time'] && $data['expire_time'] <= time())) return false;
         return $data['type'] == $type && $data['user_id'] == $user_id;
     }
 

@@ -13,7 +13,7 @@
                     <div v-if="item.money > 0" class="log-change-amount increase">{{ $t('Balance') + '：+' + item.money }}</div>
                     <div v-else class="log-change-amount reduce">{{ $t('Balance') + '：' + item.money }}</div>
                     <div class="log-after">{{ $t('user.account.balance.Balance after change') + '：' + item.after }}</div>
-                    <div class="log-change-time">{{ $t('user.account.balance.Change time') + '：' + timeFormat(item.createtime) }}</div>
+                    <div class="log-change-time">{{ $t('user.account.balance.Change time') + '：' + timeFormat(item.create_time) }}</div>
                 </div>
             </div>
             <div v-if="state.total > 0" class="log-footer">
@@ -45,7 +45,7 @@ const memberCenter = useMemberCenter()
 const state: {
     logs: {
         memo: string
-        createtime: number
+        create_time: number
         money: number
         after: number
     }[]

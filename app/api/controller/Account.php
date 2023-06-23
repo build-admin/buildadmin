@@ -36,11 +36,11 @@ class Account extends Frontend
             $tempToday0  = strtotime($days[$i]);
             $temptoday24 = strtotime('+1 day', $tempToday0) - 1;
             $score[$i]   = UserScoreLog::where('user_id', $this->auth->id)
-                ->where('createtime', 'BETWEEN', $tempToday0 . ',' . $temptoday24)
+                ->where('create_time', 'BETWEEN', $tempToday0 . ',' . $temptoday24)
                 ->sum('score');
 
             $userMoneyTemp = UserMoneyLog::where('user_id', $this->auth->id)
-                ->where('createtime', 'BETWEEN', $tempToday0 . ',' . $temptoday24)
+                ->where('create_time', 'BETWEEN', $tempToday0 . ',' . $temptoday24)
                 ->sum('money');
             $money[$i]     = bcdiv($userMoneyTemp, 100, 2);
         }
@@ -179,7 +179,7 @@ class Account extends Frontend
         $limit         = $this->request->request('limit');
         $integralModel = new UserScoreLog();
         $res           = $integralModel->where('user_id', $this->auth->id)
-            ->order('createtime desc')
+            ->order('create_time desc')
             ->paginate($limit);
 
         $this->success('', [
@@ -193,7 +193,7 @@ class Account extends Frontend
         $limit      = $this->request->request('limit');
         $moneyModel = new UserMoneyLog();
         $res        = $moneyModel->where('user_id', $this->auth->id)
-            ->order('createtime desc')
+            ->order('create_time desc')
             ->paginate($limit);
 
         $this->success('', [

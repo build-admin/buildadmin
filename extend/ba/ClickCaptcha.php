@@ -65,7 +65,7 @@ class ClickCaptcha
         $this->config = array_merge($clickConfig, $this->config, $config);
 
         // 清理过期的验证码
-        Db::name('captcha')->where('expiretime', '<', time())->delete();
+        Db::name('captcha')->where('expire_time', '<', time())->delete();
     }
 
     /**
@@ -133,11 +133,11 @@ class ClickCaptcha
         Db::name('captcha')
             ->replace()
             ->insert([
-                'key'        => md5($id),
-                'code'       => md5(implode(',', $text)),
-                'captcha'    => json_encode($textArr, JSON_UNESCAPED_UNICODE),
-                'createtime' => $nowTime,
-                'expiretime' => $nowTime + $this->expire
+                'key'         => md5($id),
+                'code'        => md5(implode(',', $text)),
+                'captcha'     => json_encode($textArr, JSON_UNESCAPED_UNICODE),
+                'create_time' => $nowTime,
+                'expire_time' => $nowTime + $this->expire
             ]);
 
         // 输出图片
@@ -186,7 +186,7 @@ class ClickCaptcha
         $captcha = Db::name('captcha')->where('key', $key)->find();
         if ($captcha) {
             // 验证码过期
-            if (time() > $captcha['expiretime']) {
+            if (time() > $captcha['expire_time']) {
                 Db::name('captcha')->where('key', $key)->delete();
                 return false;
             }

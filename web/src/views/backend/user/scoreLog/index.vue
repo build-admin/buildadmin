@@ -74,7 +74,7 @@ const baTable = new baTableClass(
                 operatorPlaceholder: t('Fuzzy query'),
                 'show-overflow-tooltip': true,
             },
-            { label: t('createtime'), prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('createtime'), prop: 'create_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
         ],
         dblClickNotEditColumn: ['all'],
     },

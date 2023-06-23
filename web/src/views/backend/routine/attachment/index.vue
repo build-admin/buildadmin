@@ -138,7 +138,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
         },
         {
             label: t('utils.Last upload time'),
-            prop: 'lastuploadtime',
+            prop: 'last_upload_time',
             align: 'center',
             render: 'datetime',
             operator: 'RANGE',
@@ -154,7 +154,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             operator: false,
         },
     ],
-    defaultOrder: { prop: 'lastuploadtime', order: 'desc' },
+    defaultOrder: { prop: 'last_upload_time', order: 'desc' },
 })
 
 provide('baTable', baTable)

@@ -145,7 +145,7 @@ const baTable = new baTableClass(
             },
             {
                 label: t('security.dataRecycleLog.Delete time'),
-                prop: 'createtime',
+                prop: 'create_time',
                 align: 'center',
                 render: 'datetime',
                 sortable: 'custom',

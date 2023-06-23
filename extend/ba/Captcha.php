@@ -77,7 +77,7 @@ class Captcha
 
         // 清理过期的验证码
         Db::name('captcha')
-            ->where('expiretime', '<', time())
+            ->where('expire_time', '<', time())
             ->delete();
     }
 
@@ -138,7 +138,7 @@ class Captcha
             return false;
         }
         // 验证码过期
-        if (time() > $secode['expiretime']) {
+        if (time() > $secode['expire_time']) {
             Db::name('captcha')
                 ->where('key', $key)
                 ->delete();
@@ -176,11 +176,11 @@ class Captcha
         $code    = $this->authcode($captcha, $id);
         Db::name('captcha')
             ->insert([
-                'key'        => $key,
-                'code'       => $code,
-                'captcha'    => $captcha,
-                'createtime' => $nowTime,
-                'expiretime' => $nowTime + $this->expire
+                'key'         => $key,
+                'code'        => $code,
+                'captcha'     => $captcha,
+                'create_time' => $nowTime,
+                'expire_time' => $nowTime + $this->expire
             ]);
         return $captcha;
     }
@@ -260,7 +260,7 @@ class Captcha
             ->where('key', $key)
             ->find();
         // 绘验证码
-        if ($captcha && $nowTime <= $captcha['expiretime']) {
+        if ($captcha && $nowTime <= $captcha['expire_time']) {
             $this->writeText($captcha['captcha']);
         } else {
             $captcha = $this->writeText();
@@ -268,11 +268,11 @@ class Captcha
             $code = $this->authcode(strtoupper(implode('', $captcha)), $id);
             Db::name('captcha')
                 ->insert([
-                    'key'        => $key,
-                    'code'       => $code,
-                    'captcha'    => strtoupper(implode('', $captcha)),// 兼容uniApp安卓端,它加载图片会请求两次(非预请求),此字段仅供二次请求时生成图片
-                    'createtime' => $nowTime,
-                    'expiretime' => $nowTime + $this->expire
+                    'key'         => $key,
+                    'code'        => $code,
+                    'captcha'     => strtoupper(implode('', $captcha)),// 兼容uniApp安卓端,它加载图片会请求两次(非预请求),此字段仅供二次请求时生成图片
+                    'create_time' => $nowTime,
+                    'expire_time' => $nowTime + $this->expire
                 ]);
         }
 

@@ -99,8 +99,8 @@ const baTable = new baTableClass(
                 'show-overflow-tooltip': true,
             },
             {
-                label: t('auth.adminLog.createtime'),
-                prop: 'createtime',
+                label: t('createtime'),
+                prop: 'create_time',
                 align: 'center',
                 render: 'datetime',
                 sortable: 'custom',

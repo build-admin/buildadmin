@@ -28,7 +28,7 @@ class Ajax extends Backend
         try {
             $upload     = new Upload($file);
             $attachment = $upload->upload(null, $this->auth->id);
-            unset($attachment['createtime'], $attachment['quote']);
+            unset($attachment['create_time'], $attachment['quote']);
         } catch (Exception|FileException $e) {
             $this->error($e->getMessage());
         }

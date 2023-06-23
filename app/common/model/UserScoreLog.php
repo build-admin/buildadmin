@@ -6,8 +6,6 @@ use think\model;
 
 class UserScoreLog extends model
 {
-    protected $autoWriteTimestamp = 'int';
-
-    protected $createTime = 'createtime';
-    protected $updateTime = false;
+    protected $autoWriteTimestamp = true;
+    protected $updateTime         = false;
 }

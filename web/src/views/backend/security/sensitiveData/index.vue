@@ -76,8 +76,8 @@ const baTable = new sensitiveDataClass(
                 custom: { '0': 'danger', '1': 'success' },
                 replaceValue: { '0': t('Disable'), '1': t('security.sensitiveData.Modifying monitoring') },
             },
-            { label: t('updatetime'), prop: 'updatetime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
-            { label: t('createtime'), prop: 'createtime', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('updatetime'), prop: 'update_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('createtime'), prop: 'create_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
             {
                 label: t('operate'),
                 align: 'center',

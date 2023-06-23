@@ -49,7 +49,7 @@ const baTable = new baTableClass(
             },
             { label: t('auth.menu.cache'), prop: 'keepalive', align: 'center', width: '80', render: 'switch' },
             { label: t('state'), prop: 'status', align: 'center', width: '80', render: 'switch' },
-            { label: t('updatetime'), prop: 'updatetime', align: 'center', width: '160', render: 'datetime' },
+            { label: t('updatetime'), prop: 'update_time', align: 'center', width: '160', render: 'datetime' },
             {
                 label: t('operate'),
                 align: 'center',

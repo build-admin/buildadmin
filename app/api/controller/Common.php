@@ -48,7 +48,7 @@ class Common extends Api
         $refreshToken = $this->request->post('refresh_token');
         $refreshToken = Token::get($refreshToken, false);
 
-        if (!$refreshToken || $refreshToken['expiretime'] < time()) {
+        if (!$refreshToken || $refreshToken['expire_time'] < time()) {
             $this->error(__('Login expired, please login again.'));
         }
 
