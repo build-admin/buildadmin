@@ -1,8 +1,10 @@
 <?php
 
+use ba\Filesystem;
 use app\admin\library\module\Server;
 
 if (!function_exists('get_account_verification_type')) {
+
     /**
      * 获取可用的账户验证方式
      * 用于：用户找回密码|用户注册
@@ -26,7 +28,7 @@ if (!function_exists('get_account_verification_type')) {
         }
 
         // 手机号，检查是否安装短信模块
-        $sms = Server::getIni(path_transform(root_path() . 'modules/sms/'));
+        $sms = Server::getIni(Filesystem::fsFit(root_path() . 'modules/sms/'));
         if ($sms && $sms['state'] == 1) {
             $types[] = 'mobile';
         }

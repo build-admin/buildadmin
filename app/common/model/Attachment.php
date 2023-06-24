@@ -3,6 +3,7 @@
 namespace app\common\model;
 
 use think\Model;
+use ba\Filesystem;
 use app\admin\model\Admin;
 
 /**
@@ -41,7 +42,7 @@ class Attachment extends Model
             ['storage', '=', $model->storage],
         ])->find();
         if ($repeat) {
-            $storageFile = path_transform(public_path() . ltrim($repeat['url'], '/'));
+            $storageFile = Filesystem::fsFit(public_path() . ltrim($repeat['url'], '/'));
             if ($model->storage == 'local' && !file_exists($storageFile)) {
                 $repeat->delete();
                 return true;

@@ -405,10 +405,10 @@ class Terminal
         $toIndexHtmlPath = root_path() . 'public' . DIRECTORY_SEPARATOR . 'index.html';
         $toAssetsPath    = root_path() . 'public' . DIRECTORY_SEPARATOR . 'assets';
         @unlink($toIndexHtmlPath);
-        deldir($toAssetsPath);
+        Filesystem::delDir($toAssetsPath);
 
         if (rename($indexHtmlPath, $toIndexHtmlPath) && rename($assetsPath, $toAssetsPath)) {
-            deldir($distPath);
+            Filesystem::delDir($distPath);
             return true;
         } else {
             return false;

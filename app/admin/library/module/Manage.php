@@ -150,7 +150,7 @@ class Manage
      */
     public function upload(string $file): array
     {
-        $file = path_transform(root_path() . 'public' . $file);
+        $file = Filesystem::fsFit(root_path() . 'public' . $file);
         if (!is_file($file)) {
             throw new Exception('Zip file not found');
         }
@@ -442,18 +442,18 @@ class Manage
         // 删除模块文件
         $protectedFiles = Server::getConfig($this->modulesDir, 'protectedFiles');
         foreach ($protectedFiles as &$protectedFile) {
-            $protectedFile = path_transform(root_path() . $protectedFile);
+            $protectedFile = Filesystem::fsFit(root_path() . $protectedFile);
         }
         $moduleFile = Server::getFileList($this->modulesDir);
         foreach ($moduleFile as $item) {
-            $file = path_transform(root_path() . $item);
+            $file = Filesystem::fsFit(root_path() . $item);
             if (in_array($file, $protectedFiles)) {
                 continue;
             }
             if (file_exists($file)) {
                 unlink($file);
             }
-            del_empty_dir(dirname($file));
+            Filesystem::delEmptyDir(dirname($file));
         }
 
         // 恢复备份文件
@@ -464,13 +464,13 @@ class Manage
                     RecursiveIteratorIterator::SELF_FIRST
                 ) as $item
             ) {
-                $backupsFile = path_transform(root_path() . $iterator->getSubPathName());
+                $backupsFile = Filesystem::fsFit(root_path() . $iterator->getSubPathName());
                 if ($item->isDir()) {
                     if (!is_dir($backupsFile)) {
                         mkdir($backupsFile, 0755, true);
                     }
                 } else {
-                    if ($backupsFile != path_transform(root_path() . 'composer.json') && $backupsFile != path_transform(root_path() . 'web/package.json')) {
+                    if ($backupsFile != Filesystem::fsFit(root_path() . 'composer.json') && $backupsFile != Filesystem::fsFit(root_path() . 'web/package.json')) {
                         copy($item, $backupsFile);
                     }
                 }
@@ -809,12 +809,12 @@ class Manage
             return [];
         }
         $dependFile = [
-            path_transform($backupsDir . DIRECTORY_SEPARATOR . 'composer.json')    => [
-                'path' => path_transform(root_path() . 'composer.json'),
+            Filesystem::fsFit($backupsDir . DIRECTORY_SEPARATOR . 'composer.json')    => [
+                'path' => Filesystem::fsFit(root_path() . 'composer.json'),
                 'type' => 'composer',
             ],
-            path_transform($backupsDir . DIRECTORY_SEPARATOR . 'web/package.json') => [
-                'path' => path_transform(root_path() . 'web/package.json'),
+            Filesystem::fsFit($backupsDir . DIRECTORY_SEPARATOR . 'web/package.json') => [
+                'path' => Filesystem::fsFit(root_path() . 'web/package.json'),
                 'type' => 'npm',
             ],
         ];

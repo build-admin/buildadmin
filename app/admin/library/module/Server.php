@@ -5,6 +5,7 @@ namespace app\admin\library\module;
 use Throwable;
 use ba\Depends;
 use ba\Exception;
+use ba\Filesystem;
 use think\facade\Db;
 use GuzzleHttp\Client;
 use FilesystemIterator;
@@ -428,7 +429,7 @@ class Server
 
     public static function getNuxtVersion()
     {
-        $nuxtPackageJsonPath = path_transform(root_path() . 'web-nuxt/package.json');
+        $nuxtPackageJsonPath = Filesystem::fsFit(root_path() . 'web-nuxt/package.json');
         if (is_file($nuxtPackageJsonPath)) {
             $nuxtPackageJson = file_get_contents($nuxtPackageJsonPath);
             $nuxtPackageJson = json_decode($nuxtPackageJson, true);

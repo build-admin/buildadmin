@@ -7,6 +7,7 @@ use ba\Random;
 use ba\Version;
 use think\App;
 use ba\Terminal;
+use ba\Filesystem;
 use think\facade\Db;
 use think\facade\Config;
 use app\common\controller\Api;
@@ -134,7 +135,7 @@ class Install extends Api
 
         // 配置文件-start
         $dbConfigFile     = config_path() . self::$dbConfigFileName;
-        $configIsWritable = path_is_writable(config_path()) && path_is_writable($dbConfigFile);
+        $configIsWritable = Filesystem::pathIsWritable(config_path()) && Filesystem::pathIsWritable($dbConfigFile);
         if (!$configIsWritable) {
             $configIsWritableLink = [
                 [
@@ -149,7 +150,7 @@ class Install extends Api
         // 配置文件-end
 
         // public-start
-        $publicIsWritable = path_is_writable(public_path());
+        $publicIsWritable = Filesystem::pathIsWritable(public_path());
         if (!$publicIsWritable) {
             $publicIsWritableLink = [
                 [

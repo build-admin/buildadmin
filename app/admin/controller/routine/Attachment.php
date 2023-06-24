@@ -3,6 +3,7 @@
 namespace app\admin\controller\routine;
 
 use Throwable;
+use ba\Filesystem;
 use think\facade\Event;
 use app\common\controller\Backend;
 use app\common\model\Attachment as AttachmentModel;
@@ -49,10 +50,10 @@ class Attachment extends Backend
         try {
             foreach ($data as $v) {
                 Event::trigger('AttachmentDel', $v);
-                $filePath = path_transform(public_path() . ltrim($v->url, '/'));
+                $filePath = Filesystem::fsFit(public_path() . ltrim($v->url, '/'));
                 if (file_exists($filePath)) {
                     unlink($filePath);
-                    del_empty_dir(dirname($filePath));
+                    Filesystem::delEmptyDir(dirname($filePath));
                 }
                 $count += $v->delete();
             }

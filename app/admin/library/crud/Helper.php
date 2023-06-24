@@ -3,6 +3,7 @@
 namespace app\admin\library\crud;
 
 use Throwable;
+use ba\Filesystem;
 use think\Exception;
 use think\facade\Db;
 use app\common\library\Menu;
@@ -376,8 +377,8 @@ class Helper
             'originalLastName' => $originalLastName,
             'path'             => $pathArr,
             'namespace'        => $namespace,
-            'parseFile'        => path_transform($parseFile),
-            'rootFileName'     => path_transform($rootFileName),
+            'parseFile'        => Filesystem::fsFit($parseFile),
+            'rootFileName'     => Filesystem::fsFit($rootFileName),
         ];
     }
 
@@ -427,7 +428,7 @@ class Helper
             }
         }
         foreach ($webDir as &$item) {
-            if (is_string($item)) $item = path_transform($item);
+            if (is_string($item)) $item = Filesystem::fsFit($item);
         }
         return $webDir;
     }
@@ -456,7 +457,7 @@ class Helper
      */
     public static function getStubFilePath(string $name): string
     {
-        return app_path() . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'crud' . DIRECTORY_SEPARATOR . 'stubs' . DIRECTORY_SEPARATOR . path_transform($name) . '.stub';
+        return app_path() . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'crud' . DIRECTORY_SEPARATOR . 'stubs' . DIRECTORY_SEPARATOR . Filesystem::fsFit($name) . '.stub';
     }
 
     /**
@@ -702,7 +703,7 @@ class Helper
 
     public static function writeFile($path, $content): bool|int
     {
-        $path = path_transform($path);
+        $path = Filesystem::fsFit($path);
         if (!is_dir(dirname($path))) {
             mkdir(dirname($path), 0755, true);
         }

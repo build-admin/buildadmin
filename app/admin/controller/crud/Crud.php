@@ -3,6 +3,7 @@
 namespace app\admin\controller\crud;
 
 use Throwable;
+use ba\Filesystem;
 use think\facade\Db;
 use app\admin\model\CrudLog;
 use app\common\library\Menu;
@@ -321,11 +322,11 @@ class Crud extends Backend
         ];
         try {
             foreach ($files as &$file) {
-                $file = path_transform(root_path() . $file);
+                $file = Filesystem::fsFit(root_path() . $file);
                 if (file_exists($file)) {
                     unlink($file);
                 }
-                del_empty_dir(dirname($file));
+                Filesystem::delEmptyDir(dirname($file));
             }
 
             // 删除菜单
@@ -364,18 +365,18 @@ class Crud extends Backend
         }
 
         // 模型和控制器文件和文件列表
-        $adminModelFiles      = get_dir_files(root_path() . 'app' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR);
-        $commonModelFiles     = get_dir_files(root_path() . 'app' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR);
+        $adminModelFiles      = Filesystem::getDirFiles(root_path() . 'app' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR);
+        $commonModelFiles     = Filesystem::getDirFiles(root_path() . 'app' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR);
         $adminControllerFiles = get_controller_list();
 
         $modelFileList   = [];
         $controllerFiles = [];
         foreach ($adminModelFiles as $item) {
-            $item                 = path_transform('app/admin/model/' . $item);
+            $item                 = Filesystem::fsFit('app/admin/model/' . $item);
             $modelFileList[$item] = $item;
         }
         foreach ($commonModelFiles as $item) {
-            $item                 = path_transform('app/common/model/' . $item);
+            $item                 = Filesystem::fsFit('app/common/model/' . $item);
             $modelFileList[$item] = $item;
         }
 
@@ -393,7 +394,7 @@ class Crud extends Backend
             if (in_array($item, $outExcludeController)) {
                 continue;
             }
-            $item                   = path_transform('app/admin/controller/' . $item);
+            $item                   = Filesystem::fsFit('app/admin/controller/' . $item);
             $controllerFiles[$item] = $item;
         }
 

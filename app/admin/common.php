@@ -1,32 +1,13 @@
 <?php
 
+use ba\Filesystem;
 use think\facade\Db;
 
 if (!function_exists('get_controller_list')) {
     function get_controller_list($app = 'admin'): array
     {
         $controllerDir = root_path() . 'app' . DIRECTORY_SEPARATOR . $app . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR;
-        return get_dir_files($controllerDir);
-    }
-}
-
-if (!function_exists('get_dir_files')) {
-    function get_dir_files($dir): array
-    {
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY
-        );
-
-        $fileList = [];
-        foreach ($files as $file) {
-            if (!$file->isDir() && $file->getExtension() == 'php') {
-                $filePath        = $file->getRealPath();
-                $name            = str_replace($dir, '', $filePath);
-                $name            = str_replace(DIRECTORY_SEPARATOR, "/", $name);
-                $fileList[$name] = $name;
-            }
-        }
-        return $fileList;
+        return Filesystem::getDirFiles($controllerDir);
     }
 }
 
@@ -73,12 +54,5 @@ if (!function_exists('get_table_fields')) {
             $fieldList[$item['COLUMN_NAME']] = $item;
         }
         return $fieldList;
-    }
-}
-
-if (!function_exists('mb_ucfirst')) {
-    function mb_ucfirst($string): string
-    {
-        return mb_strtoupper(mb_substr($string, 0, 1)) . mb_strtolower(mb_substr($string, 1));
     }
 }
