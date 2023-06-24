@@ -55,9 +55,9 @@ class Admin extends Model
      * 重置用户密码
      * @param int|string $uid         管理员ID
      * @param string     $newPassword 新密码
-     * @return Admin
+     * @return int|Admin
      */
-    public function resetPassword(int|string $uid, string $newPassword): Admin
+    public function resetPassword(int|string $uid, string $newPassword): int|Admin
     {
         $salt   = Random::build('alnum', 16);
         $passwd = encrypt_password($newPassword, $salt);

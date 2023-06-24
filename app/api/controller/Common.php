@@ -2,15 +2,21 @@
 
 namespace app\api\controller;
 
-use ba\Captcha;
-use ba\ClickCaptcha;
 use ba\Random;
+use Throwable;
+use ba\Captcha;
+use think\Response;
+use ba\ClickCaptcha;
 use app\common\facade\Token;
 use app\common\controller\Api;
 
 class Common extends Api
 {
-    public function captcha()
+    /**
+     * 图形验证码
+     * @throws Throwable
+     */
+    public function captcha(): Response
     {
         $captchaId = $this->request->request('id');
         $config    = array(
@@ -26,6 +32,9 @@ class Common extends Api
         return $captcha->entry($captchaId);
     }
 
+    /**
+     * 点选验证码
+     */
     public function clickCaptcha()
     {
         $id      = $this->request->request('id/s');
@@ -33,6 +42,10 @@ class Common extends Api
         $this->success('', $captcha->creat($id));
     }
 
+    /**
+     * 点选验证码检查
+     * @throws Throwable
+     */
     public function checkClickCaptcha()
     {
         $id      = $this->request->post('id/s');

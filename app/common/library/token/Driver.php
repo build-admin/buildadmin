@@ -10,13 +10,15 @@ use think\facade\Config;
 abstract class Driver
 {
     /**
-     * @var null 具体驱动的句柄 Mysql|Redis
+     * 具体驱动的句柄 Mysql|Redis
+     * @var object
      */
-    protected $handler = null;
+    protected object $handler;
+
     /**
      * @var array 配置数据
      */
-    protected $options = [];
+    protected array $options = [];
 
     /**
      * 设置 token

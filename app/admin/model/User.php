@@ -33,8 +33,9 @@ class User extends Model
      * 重置用户密码
      * @param int|string $uid         用户ID
      * @param string     $newPassword 新密码
+     * @return int|User
      */
-    public function resetPassword(int|string $uid, string $newPassword): User
+    public function resetPassword(int|string $uid, string $newPassword): int|User
     {
         $salt   = Random::build('alnum', 16);
         $passwd = encrypt_password($newPassword, $salt);

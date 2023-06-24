@@ -1,10 +1,13 @@
 <?php
 
+use ba\module\Server;
+
 if (!function_exists('get_account_verification_type')) {
     /**
      * 获取可用的账户验证方式
      * 用于：用户找回密码|用户注册
      * @return string[] email=电子邮件,mobile=手机短信验证
+     * @throws Throwable
      */
     function get_account_verification_type(): array
     {
@@ -23,7 +26,7 @@ if (!function_exists('get_account_verification_type')) {
         }
 
         // 手机号，检查是否安装短信模块
-        $sms = \ba\module\Server::getIni(path_transform(root_path() . 'modules/sms/'));
+        $sms = Server::getIni(path_transform(root_path() . 'modules/sms/'));
         if ($sms && $sms['state'] == 1) {
             $types[] = 'mobile';
         }

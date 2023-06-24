@@ -3,26 +3,23 @@
 namespace app\api\controller;
 
 use ba\Date;
+use Throwable;
 use ba\Captcha;
 use ba\Random;
 use think\facade\Db;
 use app\common\model\User;
+use think\facade\Validate;
 use app\common\facade\Token;
 use app\common\model\UserScoreLog;
 use app\common\model\UserMoneyLog;
 use app\common\controller\Frontend;
-use think\db\exception\PDOException;
-use think\exception\ValidateException;
 use app\api\validate\Account as AccountValidate;
-use think\facade\Validate;
 
 class Account extends Frontend
 {
-    protected $noNeedLogin = ['retrievePassword'];
+    protected array $noNeedLogin = ['retrievePassword'];
 
-    protected $model = null;
-
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
     }
@@ -34,13 +31,13 @@ class Account extends Frontend
         for ($i = 0; $i < 7; $i++) {
             $days[$i]    = date("Y-m-d", $sevenDays + ($i * 86400));
             $tempToday0  = strtotime($days[$i]);
-            $temptoday24 = strtotime('+1 day', $tempToday0) - 1;
+            $tempToday24 = strtotime('+1 day', $tempToday0) - 1;
             $score[$i]   = UserScoreLog::where('user_id', $this->auth->id)
-                ->where('create_time', 'BETWEEN', $tempToday0 . ',' . $temptoday24)
+                ->where('create_time', 'BETWEEN', $tempToday0 . ',' . $tempToday24)
                 ->sum('score');
 
             $userMoneyTemp = UserMoneyLog::where('user_id', $this->auth->id)
-                ->where('create_time', 'BETWEEN', $tempToday0 . ',' . $temptoday24)
+                ->where('create_time', 'BETWEEN', $tempToday0 . ',' . $tempToday24)
                 ->sum('money');
             $money[$i]     = bcdiv($userMoneyTemp, 100, 2);
         }
@@ -64,7 +61,7 @@ class Account extends Frontend
                 $validate->scene('edit')->check($data);
                 $this->auth->getUser()->where('id', $this->auth->id)->update($data);
                 Db::commit();
-            } catch (ValidateException|PDOException $e) {
+            } catch (Throwable $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -164,7 +161,7 @@ class Account extends Frontend
                 $validate->scene('changePassword')->check(['password' => $params['newPassword']]);
                 $this->auth->getUser()->resetPassword($this->auth->id, $params['newPassword']);
                 Db::commit();
-            } catch (ValidateException|PDOException $e) {
+            } catch (Throwable $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -208,7 +205,7 @@ class Account extends Frontend
         try {
             $validate = new AccountValidate();
             $validate->scene('retrievePassword')->check($params);
-        } catch (ValidateException $e) {
+        } catch (Throwable $e) {
             $this->error($e->getMessage());
         }
 

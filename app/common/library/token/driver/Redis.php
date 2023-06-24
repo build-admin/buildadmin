@@ -16,7 +16,7 @@ class Redis extends Driver
      * 默认配置
      * @var array
      */
-    protected $options = [];
+    protected array $options = [];
 
     /**
      * 构造函数

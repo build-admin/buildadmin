@@ -2,27 +2,29 @@
 
 namespace app\api\controller;
 
+use Throwable;
 use ba\Captcha;
 use ba\ClickCaptcha;
-use ba\Tree;
 use think\facade\Config;
 use app\common\facade\Token;
 use app\common\controller\Frontend;
-use think\exception\ValidateException;
 use app\api\validate\User as UserValidate;
-use think\facade\Db;
 
 class User extends Frontend
 {
-    protected $noNeedLogin = ['checkIn', 'logout'];
+    protected array $noNeedLogin = ['checkIn', 'logout'];
 
-    protected $noNeedPermission = ['index'];
+    protected array $noNeedPermission = ['index'];
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
     }
 
+    /**
+     * 会员首页初始化请求
+     * @throws Throwable
+     */
     public function index()
     {
         $userInfo = $this->auth->getUserInfo();
@@ -49,6 +51,7 @@ class User extends Frontend
 
     /**
      * 会员签入(登录和注册)
+     * @throws Throwable
      */
     public function checkIn()
     {
@@ -73,7 +76,7 @@ class User extends Frontend
             $validate = new UserValidate();
             try {
                 $validate->scene($params['tab'])->check($params);
-            } catch (ValidateException $e) {
+            } catch (Throwable $e) {
                 $this->error($e->getMessage());
             }
 

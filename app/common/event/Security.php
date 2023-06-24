@@ -2,12 +2,11 @@
 
 namespace app\common\event;
 
-use Exception;
+use Throwable;
 use think\Request;
 use think\facade\Db;
 use think\facade\Log;
 use app\admin\library\Auth;
-use think\db\exception\PDOException;
 use app\admin\model\SensitiveDataLog;
 use app\admin\model\DataRecycle;
 use app\admin\model\DataRecycleLog;
@@ -15,7 +14,7 @@ use app\admin\model\SensitiveData;
 
 class Security
 {
-    protected $listenAction = ['edit', 'del'];
+    protected array $listenAction = ['edit', 'del'];
 
     public function handle(Request $request): bool
     {
@@ -60,7 +59,7 @@ class Security
                 if (!$dataRecycleLogModel->saveAll($recycleDataArr)) {
                     Log::record('[ DataSecurity ] Failed to recycle data:' . var_export($recycleDataArr, true), 'warning');
                 }
-            } catch (PDOException|Exception $e) {
+            } catch (Throwable $e) {
                 Log::record('[ DataSecurity ]' . $e->getMessage(), 'warning');
             }
             return true;
@@ -126,7 +125,7 @@ class Security
             if (!$sensitiveDataLogModel->saveAll($sensitiveDataLog)) {
                 Log::record('[ DataSecurity ] Sensitive data recording failed:' . var_export($sensitiveDataLog, true), 'warning');
             }
-        } catch (PDOException|Exception $e) {
+        } catch (Throwable $e) {
             Log::record('[ DataSecurity ]' . $e->getMessage(), 'warning');
         }
         return true;

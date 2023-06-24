@@ -3,19 +3,24 @@
 namespace app\api\controller;
 
 use ba\Tree;
+use Throwable;
 use think\facade\Db;
 use think\facade\Config;
 use app\common\controller\Frontend;
 
 class Index extends Frontend
 {
-    protected $noNeedLogin = ['index'];
+    protected array $noNeedLogin = ['index'];
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
     }
 
+    /**
+     * 前台初始化请求
+     * @throws Throwable
+     */
     public function index()
     {
         if ($this->auth->isLogin()) {
