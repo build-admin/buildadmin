@@ -1,6 +1,6 @@
 <?php
 
-use ba\module\Server;
+use app\admin\library\module\Server;
 
 if (!function_exists('get_account_verification_type')) {
     /**

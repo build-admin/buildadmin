@@ -1,28 +1,31 @@
 <?php
 
-namespace ba\module;
+namespace app\admin\library\module;
 
+use Throwable;
 use ba\Depends;
-use PhpZip\ZipFile;
-use think\Exception;
+use ba\Exception;
 use think\facade\Db;
 use GuzzleHttp\Client;
-use think\facade\Config;
 use FilesystemIterator;
+use think\facade\Config;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
-use PhpZip\Exception\ZipException;
-use GuzzleHttp\Exception\TransferException;
 use think\db\exception\PDOException;
 use app\admin\library\crud\Helper;
+use GuzzleHttp\Exception\TransferException;
 
 /**
  * 模块服务类
  */
 class Server
 {
-    private static $client = null;
+    private static ?Client $client = null;
 
+    /**
+     * 下载
+     * @throws Throwable
+     */
     public static function download(string $uid, string $dir, array $extend = []): string
     {
         $tmpFile = $dir . $uid . ".zip";
@@ -32,14 +35,14 @@ class Server
             $body     = $response->getBody();
             $content  = $body->getContents();
             if ($content == '' || stripos($content, '<title>系统发生错误</title>') !== false) {
-                throw new moduleException('package download failed', 0);
+                throw new Exception('package download failed', 0);
             }
-            if (substr($content, 0, 1) === '{') {
+            if (str_starts_with($content, '{')) {
                 $json = (array)json_decode($content, true);
-                throw new moduleException($json['msg'], $json['code'], $json['data']);
+                throw new Exception($json['msg'], $json['code'], $json['data']);
             }
         } catch (TransferException $e) {
-            throw new moduleException('package download failed', 0, ['msg' => $e->getMessage()]);
+            throw new Exception('package download failed', 0, ['msg' => $e->getMessage()]);
         }
 
         if ($write = fopen($tmpFile, 'w')) {
@@ -50,36 +53,7 @@ class Server
         throw new Exception("No permission to write temporary files");
     }
 
-    public static function unzip(string $file, string $dir = ''): string
-    {
-        if (!file_exists($file)) {
-            throw new Exception("Zip file not found");
-        }
-
-        $zip = new ZipFile();
-        try {
-            $zip->openFile($file);
-        } catch (ZipException $e) {
-            $zip->close();
-            throw new moduleException('Unable to open the zip file', 0, ['msg' => $e->getMessage()]);
-        }
-
-        $dir = $dir ?: substr($file, 0, strripos($file, '.zip'));
-        if (!is_dir($dir)) {
-            @mkdir($dir, 0755);
-        }
-
-        try {
-            $zip->extractTo($dir);
-        } catch (ZipException $e) {
-            throw new moduleException('Unable to extract ZIP file', 0, ['msg' => $e->getMessage()]);
-        } finally {
-            $zip->close();
-        }
-        return $dir;
-    }
-
-    public static function getConfig(string $dir, $key = '')
+    public static function getConfig(string $dir, $key = ''): array
     {
         $configFile = $dir . 'config.json';
         if (!is_dir($dir) || !is_file($configFile)) {
@@ -96,7 +70,7 @@ class Server
         return $configContent;
     }
 
-    public static function getDepend(string $dir, $key = '')
+    public static function getDepend(string $dir, string $key = ''): array
     {
         if ($key) {
             return self::getConfig($dir, $key);
@@ -112,6 +86,10 @@ class Server
         return $dependArray;
     }
 
+    /**
+     * 依赖冲突检查
+     * @throws Throwable
+     */
     public static function dependConflictCheck(string $dir): array
     {
         $depend     = self::getDepend($dir);
@@ -134,22 +112,6 @@ class Server
             });
         }
         return $conflict;
-    }
-
-    public static function createZip(array $files, string $fileName): bool
-    {
-        $zip = new ZipFile();
-        try {
-            foreach ($files as $v) {
-                $zip->addFile(root_path() . $v, $v);
-            }
-            $zip->saveAsFile($fileName);
-        } catch (ZipException $e) {
-            throw new moduleException('Unable to package zip file', 0, ['msg' => $e->getMessage(), 'file' => $fileName]);
-        } finally {
-            $zip->close();
-        }
-        return true;
     }
 
     public static function getFileList(string $dir, bool $onlyConflict = false): array
@@ -208,17 +170,17 @@ class Server
         if (is_file($sqlFile)) {
             $lines = file($sqlFile);
             foreach ($lines as $line) {
-                if (substr($line, 0, 2) == '--' || $line == '' || substr($line, 0, 2) == '/*') {
+                if (str_starts_with($line, '--') || $line == '' || str_starts_with($line, '/*')) {
                     continue;
                 }
 
                 $tempLine .= $line;
-                if (substr(trim($line), -1, 1) == ';') {
+                if (str_ends_with(trim($line), ';')) {
                     $tempLine = str_ireplace('__PREFIX__', Config::get('database.connections.mysql.prefix'), $tempLine);
                     $tempLine = str_ireplace('INSERT INTO ', 'INSERT IGNORE INTO ', $tempLine);
                     try {
                         Db::execute($tempLine);
-                    } catch (PDOException $e) {
+                    } catch (PDOException) {
                         // $e->getMessage();
                     }
                     $tempLine = '';
@@ -252,16 +214,28 @@ class Server
         return $installedList;
     }
 
-    public static function getIni($dir)
+    /**
+     * 获取模块ini
+     * @param string $dir 模块目录路径
+     */
+    public static function getIni(string $dir): array
     {
         $infoFile = $dir . 'info.ini';
         $info     = [];
         if (is_file($infoFile)) {
             $info = parse_ini_file($infoFile, true, INI_SCANNER_TYPED) ?: [];
+            if (!$info) return [];
         }
         return $info;
     }
 
+    /**
+     * 设置模块ini
+     * @param string $dir 模块目录路径
+     * @param array  $arr 新的ini数据
+     * @return bool
+     * @throws Throwable
+     */
     public static function setIni(string $dir, array $arr): bool
     {
         $infoFile = $dir . 'info.ini';
@@ -292,17 +266,14 @@ class Server
         } else {
             $class = parse_name(is_null($class) ? $name : $class, 1);
         }
-        switch ($type) {
-            case 'controller':
-                $namespace = '\\modules\\' . $name . '\\controller\\' . $class;
-                break;
-            default:
-                $namespace = '\\modules\\' . $name . '\\' . $class;
-        }
+        $namespace = match ($type) {
+            'controller' => '\\modules\\' . $name . '\\controller\\' . $class,
+            default => '\\modules\\' . $name . '\\' . $class,
+        };
         return class_exists($namespace) ? $namespace : '';
     }
 
-    public static function execEvent(string $uid, string $event, array $params = [])
+    public static function execEvent(string $uid, string $event, array $params = []): void
     {
         $eventClass = self::getClass($uid);
         if (class_exists($eventClass)) {
@@ -356,7 +327,7 @@ class Server
     /**
      * 安装 WebBootstrap
      */
-    public static function installWebBootstrap(string $uid, string $dir)
+    public static function installWebBootstrap(string $uid, string $dir): void
     {
         $mainTsKeys    = ['mainTsImport', 'mainTsStart'];
         $bootstrapCode = self::analysisWebBootstrap($uid, $dir);
@@ -386,7 +357,7 @@ class Server
     /**
      * 卸载 WebBootstrap
      */
-    public static function uninstallWebBootstrap(string $uid, string $dir)
+    public static function uninstallWebBootstrap(string $uid): void
     {
         $mainTsKeys = ['mainTsImport', 'mainTsStart'];
         $basePath   = root_path() . 'web' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR;
@@ -437,39 +408,22 @@ class Server
     public static function buildMarkStr(string $type, string $uid = '', string $extend = ''): string
     {
         $importKeys = ['mti', 'avi'];
-        switch ($extend) {
-            case 'mainTsImport':
-                $extend = 'mti';
-                break;
-            case 'mainTsStart':
-                $extend = 'mts';
-                break;
-            case 'appVueImport':
-                $extend = 'avi';
-                break;
-            case 'appVueOnMounted':
-                $extend = 'avo';
-                break;
-            default:
-                $extend = '';
-                break;
-        }
-        switch ($type) {
-            case 'import-root-mark':
-                return '// modules import mark, Please do not remove.';
-            case 'start-root-mark':
-                return '// modules start mark, Please do not remove.';
-            case 'onMounted-root-mark':
-                return '// Modules onMounted mark, Please do not remove.';
-            case 'module-line-mark':
-                return ' // Code from module \'' . $uid . "'" . ($extend ? "($extend)" : '');
-            case 'module-multi-line-mark-start':
-                return (in_array($extend, $importKeys) ? '' : Helper::tab()) . "// Code from module '$uid' start" . ($extend ? "($extend)" : '') . "\n";
-            case 'module-multi-line-mark-end':
-                return (in_array($extend, $importKeys) ? '' : Helper::tab()) . "// Code from module '$uid' end";
-            default:
-                return '';
-        }
+        $extend     = match ($extend) {
+            'mainTsImport' => 'mti',
+            'mainTsStart' => 'mts',
+            'appVueImport' => 'avi',
+            'appVueOnMounted' => 'avo',
+            default => '',
+        };
+        return match ($type) {
+            'import-root-mark' => '// modules import mark, Please do not remove.',
+            'start-root-mark' => '// modules start mark, Please do not remove.',
+            'onMounted-root-mark' => '// Modules onMounted mark, Please do not remove.',
+            'module-line-mark' => ' // Code from module \'' . $uid . "'" . ($extend ? "($extend)" : ''),
+            'module-multi-line-mark-start' => (in_array($extend, $importKeys) ? '' : Helper::tab()) . "// Code from module '$uid' start" . ($extend ? "($extend)" : '') . "\n",
+            'module-multi-line-mark-end' => (in_array($extend, $importKeys) ? '' : Helper::tab()) . "// Code from module '$uid' end",
+            default => '',
+        };
     }
 
     public static function getNuxtVersion()

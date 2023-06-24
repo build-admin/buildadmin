@@ -1,11 +1,13 @@
 <?php
 
-namespace ba\module;
+namespace app\admin\library\module;
 
+use Throwable;
 use ba\Depends;
-use think\Exception;
-use think\facade\Config;
+use ba\Exception;
+use ba\Filesystem;
 use FilesystemIterator;
+use think\facade\Config;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
@@ -23,29 +25,29 @@ class Manage
     public const DISABLE                = 6;
 
     /**
-     * @var Manage 对象实例
+     * @var ?Manage 对象实例
      */
-    protected static $instance;
+    protected static ?Manage $instance = null;
 
     /**
      * @var string 安装目录
      */
-    protected $installDir = null;
+    protected string $installDir;
 
     /**
      * @var string 备份目录
      */
-    protected $ebakDir = null;
+    protected string $backupsDir;
 
     /**
      * @var string 模板唯一标识
      */
-    protected $uid = null;
+    protected string $uid;
 
     /**
      * @var string 模板根目录
      */
-    protected $modulesDir = null;
+    protected string $modulesDir;
 
     /**
      * 初始化
@@ -64,12 +66,12 @@ class Manage
     public function __construct(string $uid)
     {
         $this->installDir = root_path() . 'modules' . DIRECTORY_SEPARATOR;
-        $this->ebakDir    = $this->installDir . 'ebak' . DIRECTORY_SEPARATOR;
+        $this->backupsDir = $this->installDir . 'backups' . DIRECTORY_SEPARATOR;
         if (!is_dir($this->installDir)) {
             mkdir($this->installDir, 0755, true);
         }
-        if (!is_dir($this->ebakDir)) {
-            mkdir($this->ebakDir, 0755, true);
+        if (!is_dir($this->backupsDir)) {
+            mkdir($this->backupsDir, 0755, true);
         }
 
         if ($uid) {
@@ -89,10 +91,17 @@ class Manage
         }
 
         // 目录已存在，但非正常的模块
-        return dir_is_empty($this->modulesDir) ? self::UNINSTALLED : self::DIRECTORY_OCCUPIED;
+        return Filesystem::dirIsEmpty($this->modulesDir) ? self::UNINSTALLED : self::DIRECTORY_OCCUPIED;
     }
 
-    public function download(string $token, int $orderId)
+    /**
+     * 下载模块文件
+     * @param string $token   官网会员token
+     * @param int    $orderId 订单号
+     * @return string 下载文件路径
+     * @throws Throwable
+     */
+    public function download(string $token, int $orderId): string
     {
         if (!$orderId) {
             throw new Exception('Order not found');
@@ -101,7 +110,7 @@ class Manage
         $sysVersion = Config::get('buildadmin.version');
         $installed  = Server::installedList($this->installDir);
         foreach ($installed as $item) {
-            $installedUids[] = $item['uid'];
+            $installedIds[] = $item['uid'];
         }
         unset($installed);
         $zipFile = Server::download($this->uid, $this->installDir, [
@@ -110,14 +119,14 @@ class Manage
             'ba-user-token' => $token,
             'order_id'      => $orderId,
             // 传递已安装模块，做互斥检测
-            'installed'     => $installedUids ?? [],
+            'installed'     => $installedIds ?? [],
         ]);
 
         // 删除旧版本代码
-        deldir($this->modulesDir);
+        Filesystem::delDir($this->modulesDir);
 
         // 解压
-        Server::unzip($zipFile);
+        Filesystem::unzip($zipFile);
 
         // 删除下载的zip
         @unlink($zipFile);
@@ -133,7 +142,13 @@ class Manage
         return $zipFile;
     }
 
-    public function upload(string $file)
+    /**
+     * 上传安装
+     * @param string $file 已经上传完成的文件
+     * @return array 模块的基本信息
+     * @throws Throwable
+     */
+    public function upload(string $file): array
     {
         $file = path_transform(root_path() . 'public' . $file);
         if (!is_file($file)) {
@@ -144,7 +159,7 @@ class Manage
         copy($file, $copyTo);
 
         // 解压
-        $copyToDir = Server::unzip($copyTo);
+        $copyToDir = Filesystem::unzip($copyTo);
         $copyToDir .= DIRECTORY_SEPARATOR;
 
         // 删除zip
@@ -153,7 +168,7 @@ class Manage
         // 读取ini
         $info = Server::getIni($copyToDir);
         if (!isset($info['uid']) || !$info['uid']) {
-            deldir($copyToDir);
+            Filesystem::delDir($copyToDir);
             throw new Exception('Basic configuration of the Module is incomplete');
         }
         $this->uid        = $info['uid'];
@@ -162,12 +177,12 @@ class Manage
         if (is_dir($this->modulesDir)) {
             $info = $this->getInfo();
             if ($info && isset($info['uid'])) {
-                deldir($copyToDir);
+                Filesystem::delDir($copyToDir);
                 throw new Exception('Module already exists');
             }
 
-            if (!dir_is_empty($this->modulesDir)) {
-                deldir($copyToDir);
+            if (!Filesystem::dirIsEmpty($this->modulesDir)) {
+                Filesystem::delDir($copyToDir);
                 throw new Exception('The directory required by the module is occupied');
             }
         }
@@ -185,7 +200,11 @@ class Manage
         return $info;
     }
 
-    public function update(string $token, int $orderId)
+    /**
+     * 更新
+     * @throws Throwable
+     */
+    public function update(string $token, int $orderId): void
     {
         $state = $this->getInstallState();
         if ($state != self::DISABLE) {
@@ -201,13 +220,13 @@ class Manage
     }
 
     /**
-     * 安装模板或案例
+     * 安装模块
      * @param string $token   用户token
      * @param int    $orderId 订单号
-     * @throws moduleException
-     * @throws Exception
+     * @return array 模块基本信息
+     * @throws Throwable
      */
-    public function install(string $token, int $orderId)
+    public function install(string $token, int $orderId): array
     {
         $state = $this->getInstallState();
         if ($state == self::INSTALLED || $state == self::DIRECTORY_OCCUPIED || $state == self::DISABLE) {
@@ -238,11 +257,15 @@ class Manage
         return $info;
     }
 
-    public function uninstall()
+    /**
+     * 卸载
+     * @throws Throwable
+     */
+    public function uninstall(): void
     {
         $info = $this->getInfo();
         if ($info['state'] != self::DISABLE) {
-            throw new moduleException('Please disable the module first', 0, [
+            throw new Exception('Please disable the module first', 0, [
                 'uid' => $this->uid,
             ]);
         }
@@ -250,23 +273,26 @@ class Manage
         // 执行卸载脚本
         Server::execEvent($this->uid, 'uninstall');
 
-        deldir($this->modulesDir);
+        Filesystem::delDir($this->modulesDir);
     }
 
     /**
-     * 启禁用模块
+     * 修改模块状态
+     * @param bool $state 新状态
+     * @return array 模块基本信息
+     * @throws Throwable
      */
-    public function changeState(bool $state)
+    public function changeState(bool $state): array
     {
-        $info       = $this->getInfo();
-        $canDisable = [
-            self::INSTALLED,
-            self::CONFLICT_PENDING,
-            self::DEPENDENT_WAIT_INSTALL,
-        ];
+        $info = $this->getInfo();
         if (!$state) {
+            $canDisable = [
+                self::INSTALLED,
+                self::CONFLICT_PENDING,
+                self::DEPENDENT_WAIT_INSTALL,
+            ];
             if (!in_array($info['state'], $canDisable)) {
-                throw new moduleException('The current state of the module cannot be set to disabled', 0, [
+                throw new Exception('The current state of the module cannot be set to disabled', 0, [
                     'uid'   => $this->uid,
                     'state' => $info['state'],
                 ]);
@@ -275,7 +301,7 @@ class Manage
         }
 
         if ($info['state'] != self::DISABLE) {
-            throw new moduleException('The current state of the module cannot be set to enabled', 0, [
+            throw new Exception('The current state of the module cannot be set to enabled', 0, [
                 'uid'   => $this->uid,
                 'state' => $info['state'],
             ]);
@@ -286,11 +312,17 @@ class Manage
         return $info;
     }
 
-    public function enable(string $trigger)
+    /**
+     * 启用
+     * @param string $trigger 触发启用的标志，比如:install=安装
+     * @throws Throwable
+     */
+    public function enable(string $trigger): void
     {
         // 安装 WebBootstrap
         Server::installWebBootstrap($this->uid, $this->modulesDir);
 
+        // 冲突检查
         $this->conflictHandle($trigger);
 
         // 执行启用脚本
@@ -299,29 +331,33 @@ class Manage
         $this->dependUpdateHandle();
     }
 
-    public function disable()
+    /**
+     * 禁用
+     * @return array 模块基本信息
+     * @throws Throwable
+     */
+    public function disable(): array
     {
         $update                 = request()->post("update/b", false);
         $confirmConflict        = request()->post("confirmConflict/b", false);
         $dependConflictSolution = request()->post("dependConflictSolution/a", []);
 
         $info    = $this->getInfo();
-        $zipFile = $this->ebakDir . $this->uid . '-install.zip';
+        $zipFile = $this->backupsDir . $this->uid . '-install.zip';
         $zipDir  = false;
         if (is_file($zipFile)) {
             try {
-                $zipDir = Server::unzip($zipFile);
-            } catch (moduleException|Exception $e) {
+                $zipDir = Filesystem::unzip($zipFile);
+            } catch (Exception) {
                 // skip
             }
         }
 
         $conflictFile   = Server::getFileList($this->modulesDir, true);
         $dependConflict = $this->disableDependCheck();
-        if (($conflictFile || !self::emptyArray($dependConflict)) && !$confirmConflict) {
+        if (($conflictFile || !self::isEmptyArray($dependConflict)) && !$confirmConflict) {
             $dependConflictTemp = [];
             foreach ($dependConflict as $env => $item) {
-                $dev = !(stripos($env, 'dev') === false);
                 foreach ($item as $depend => $v) {
                     $dependConflictTemp[] = [
                         'env'         => $env,
@@ -331,7 +367,7 @@ class Manage
                     ];
                 }
             }
-            throw new moduleException('Module file updated', -1, [
+            throw new Exception('Module file updated', -1, [
                 'uid'            => $this->uid,
                 'conflictFile'   => $conflictFile,
                 'dependConflict' => $dependConflictTemp,
@@ -383,8 +419,8 @@ class Manage
             ];
         }
         if ($conflictFile) {
-            $ebakZip = $this->ebakDir . $this->uid . '-disable-' . date('YmdHis') . '.zip';
-            Server::createZip($conflictFile, $ebakZip);
+            $backupsZip = $this->backupsDir . $this->uid . '-disable-' . date('YmdHis') . '.zip';
+            Filesystem::zip($conflictFile, $backupsZip);
         }
 
         // 删除依赖
@@ -428,24 +464,24 @@ class Manage
                     RecursiveIteratorIterator::SELF_FIRST
                 ) as $item
             ) {
-                $ebakFile = path_transform(root_path() . $iterator->getSubPathName());
+                $backupsFile = path_transform(root_path() . $iterator->getSubPathName());
                 if ($item->isDir()) {
-                    if (!is_dir($ebakFile)) {
-                        mkdir($ebakFile, 0755, true);
+                    if (!is_dir($backupsFile)) {
+                        mkdir($backupsFile, 0755, true);
                     }
                 } else {
-                    if ($ebakFile != path_transform(root_path() . 'composer.json') && $ebakFile != path_transform(root_path() . 'web/package.json')) {
-                        copy($item, $ebakFile);
+                    if ($backupsFile != path_transform(root_path() . 'composer.json') && $backupsFile != path_transform(root_path() . 'web/package.json')) {
+                        copy($item, $backupsFile);
                     }
                 }
             }
         }
 
         // 删除解压后的备份文件
-        deldir($zipDir);
+        Filesystem::delDir($zipDir);
 
         // 卸载 WebBootstrap
-        Server::uninstallWebBootstrap($this->uid, $this->modulesDir);
+        Server::uninstallWebBootstrap($this->uid);
 
         $this->setInfo([
             'state' => self::DISABLE,
@@ -455,13 +491,13 @@ class Manage
             $token = request()->post("token/s", '');
             $order = request()->post("order/d", 0);
             $this->update($token, $order);
-            throw new moduleException('update', -3, [
+            throw new Exception('update', -3, [
                 'uid' => $this->uid,
             ]);
         }
 
         if ($dependWaitInstall) {
-            throw new moduleException('dependent wait install', -2, [
+            throw new Exception('dependent wait install', -2, [
                 'uid'          => $this->uid,
                 'wait_install' => $dependWaitInstall,
             ]);
@@ -471,7 +507,7 @@ class Manage
 
     /**
      * 处理依赖和文件冲突，并完成与前端的冲突处理交互
-     * @throws moduleException|Exception
+     * @throws Throwable
      */
     public function conflictHandle(string $trigger): bool
     {
@@ -489,7 +525,7 @@ class Manage
         $serverDep    = new Depends(root_path() . 'composer.json', 'composer');
         $webDep       = new Depends(root_path() . 'web' . DIRECTORY_SEPARATOR . 'package.json');
         $webNuxtDep   = new Depends(root_path() . 'web-nuxt' . DIRECTORY_SEPARATOR . 'package.json');
-        if ($fileConflict || !self::emptyArray($dependConflict)) {
+        if ($fileConflict || !self::isEmptyArray($dependConflict)) {
             $extend = request()->post('extend/a', []);
             if (!$extend) {
                 // 发现冲突->手动处理->转换为方便前端使用的格式
@@ -525,7 +561,7 @@ class Manage
                 $this->setInfo([
                     'state' => self::CONFLICT_PENDING,
                 ]);
-                throw new moduleException('Module file conflicts', -1, [
+                throw new Exception('Module file conflicts', -1, [
                     'fileConflict'   => $fileConflictTemp,
                     'dependConflict' => $dependConflictTemp,
                     'uid'            => $this->uid,
@@ -546,7 +582,7 @@ class Manage
                     }
                 }
             }
-            if (!self::emptyArray($dependConflict) && isset($extend['dependConflict'])) {
+            if (!self::isEmptyArray($dependConflict) && isset($extend['dependConflict'])) {
                 foreach ($depends as $fKey => $fItem) {
                     foreach ($fItem as $cKey => $cItem) {
                         if (isset($extend['dependConflict'][$fKey][$cKey])) {
@@ -577,8 +613,8 @@ class Manage
 
         // 备份将被覆盖的文件
         if ($coverFiles) {
-            $ebakZip = $trigger == 'install' ? $this->ebakDir . $this->uid . '-install.zip' : $this->ebakDir . $this->uid . '-cover-' . date('YmdHis') . '.zip';
-            Server::createZip($coverFiles, $ebakZip);
+            $backupsZip = $trigger == 'install' ? $this->backupsDir . $this->uid . '-install.zip' : $this->backupsDir . $this->uid . '-cover-' . date('YmdHis') . '.zip';
+            Filesystem::zip($coverFiles, $backupsZip);
         }
 
         if ($depends) {
@@ -652,10 +688,10 @@ class Manage
             ) {
                 $destDirItem = $destDir . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
                 if ($item->isDir()) {
-                    $this->createDirectory($destDirItem);
+                    Filesystem::mkdir($destDirItem);
                 } else {
                     if (!in_array(str_replace(root_path(), '', $destDirItem), $discardFiles)) {
-                        $this->createDirectory(dirname($destDirItem));
+                        Filesystem::mkdir(dirname($destDirItem));
                         copy($item, $destDirItem);
                     }
                 }
@@ -664,14 +700,11 @@ class Manage
         return true;
     }
 
-    public function createDirectory(string $dirName)
-    {
-        if (!is_dir($dirName)) {
-            mkdir($dirName, 0755, true);
-        }
-    }
-
-    public function dependUpdateHandle()
+    /**
+     * 依赖升级处理
+     * @throws Throwable
+     */
+    public function dependUpdateHandle(): void
     {
         $info = $this->getInfo();
         if ($info['state'] == self::DEPENDENT_WAIT_INSTALL) {
@@ -686,7 +719,7 @@ class Manage
                 $waitInstall[] = 'nuxt_npm_dependent_wait_install';
             }
             if ($waitInstall) {
-                throw new moduleException('dependent wait install', -2, [
+                throw new Exception('dependent wait install', -2, [
                     'uid'          => $this->uid,
                     'state'        => self::DEPENDENT_WAIT_INSTALL,
                     'wait_install' => $waitInstall,
@@ -699,7 +732,11 @@ class Manage
         }
     }
 
-    public function dependentInstallComplete(string $type)
+    /**
+     * 依赖安装完成标记
+     * @throws Throwable
+     */
+    public function dependentInstallComplete(string $type): void
     {
         $info = $this->getInfo();
         if ($info['state'] == self::DEPENDENT_WAIT_INSTALL) {
@@ -722,7 +759,11 @@ class Manage
         }
     }
 
-    public function disableDependCheck()
+    /**
+     * 禁用依赖检查
+     * @throws Throwable
+     */
+    public function disableDependCheck(): array
     {
         // 读取模块所有依赖
         $depend = Server::getDepend($this->modulesDir);
@@ -762,17 +803,17 @@ class Manage
         return $depend;
     }
 
-    public function disableDependConflictCheck(string $ebakDir): array
+    public function disableDependConflictCheck(string $backupsDir): array
     {
-        if (!$ebakDir) {
+        if (!$backupsDir) {
             return [];
         }
         $dependFile = [
-            path_transform($ebakDir . DIRECTORY_SEPARATOR . 'composer.json')    => [
+            path_transform($backupsDir . DIRECTORY_SEPARATOR . 'composer.json')    => [
                 'path' => path_transform(root_path() . 'composer.json'),
                 'type' => 'composer',
             ],
-            path_transform($ebakDir . DIRECTORY_SEPARATOR . 'web/package.json') => [
+            path_transform($backupsDir . DIRECTORY_SEPARATOR . 'web/package.json') => [
                 'path' => path_transform(root_path() . 'web/package.json'),
                 'type' => 'npm',
             ],
@@ -786,6 +827,10 @@ class Manage
         return $conflict;
     }
 
+    /**
+     * 检查包是否完整
+     * @throws Throwable
+     */
     public function checkPackage(): bool
     {
         if (!is_dir($this->modulesDir)) {
@@ -795,18 +840,25 @@ class Manage
         $infoKeys = ['uid', 'title', 'intro', 'author', 'version', 'state'];
         foreach ($infoKeys as $value) {
             if (!array_key_exists($value, $info)) {
-                deldir($this->modulesDir);
+                Filesystem::delDir($this->modulesDir);
                 throw new Exception('Basic configuration of the Module is incomplete');
             }
         }
         return true;
     }
 
-    public function getInfo()
+    /**
+     * 获取模块基本信息
+     */
+    public function getInfo(): array
     {
         return Server::getIni($this->modulesDir);
     }
 
+    /**
+     * 设置模块基本信息
+     * @throws Throwable
+     */
     public function setInfo(array $kv = [], array $arr = []): bool
     {
         if ($kv) {
@@ -823,19 +875,18 @@ class Manage
 
 
     /**
-     * 检查多维数组是否为空
+     * 检查多维数组是否全部为空
      */
-    public static function emptyArray($arr)
+    public static function isEmptyArray($arr): bool
     {
-        $empty = true;
         foreach ($arr as $item) {
             if (is_array($item)) {
-                $empty = self::emptyArray($item);
+                $empty = self::isEmptyArray($item);
                 if (!$empty) return false;
             } elseif ($item) {
                 return false;
             }
         }
-        return $empty;
+        return true;
     }
 }

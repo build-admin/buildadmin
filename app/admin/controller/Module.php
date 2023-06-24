@@ -3,9 +3,9 @@
 namespace app\admin\controller;
 
 use Throwable;
-use ba\module\Server;
-use ba\module\Manage;
-use ba\module\moduleException;
+use ba\Exception;
+use app\admin\library\module\Server;
+use app\admin\library\module\Manage;
 use app\common\controller\Backend;
 
 class Module extends Backend
@@ -46,7 +46,7 @@ class Module extends Backend
         $res = [];
         try {
             $res = Manage::instance($uid)->install($token, $orderId);
-        } catch (moduleException $e) {
+        } catch (Exception $e) {
             $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
         } catch (Throwable $e) {
             $this->error(__($e->getMessage()));
@@ -64,7 +64,7 @@ class Module extends Backend
         }
         try {
             Manage::instance($uid)->dependentInstallComplete('all');
-        } catch (moduleException $e) {
+        } catch (Exception $e) {
             $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
         } catch (Throwable $e) {
             $this->error(__($e->getMessage()));
@@ -82,7 +82,7 @@ class Module extends Backend
         $info = [];
         try {
             $info = Manage::instance($uid)->changeState($state);
-        } catch (moduleException $e) {
+        } catch (Exception $e) {
             $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
         } catch (Throwable $e) {
             $this->error(__($e->getMessage()));
@@ -100,7 +100,7 @@ class Module extends Backend
         }
         try {
             Manage::instance($uid)->uninstall();
-        } catch (moduleException $e) {
+        } catch (Exception $e) {
             $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
         } catch (Throwable $e) {
             $this->error(__($e->getMessage()));
@@ -118,7 +118,7 @@ class Module extends Backend
         }
         try {
             Manage::instance($uid)->update($token, $orderId);
-        } catch (moduleException $e) {
+        } catch (Exception $e) {
             $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
         } catch (Throwable $e) {
             $this->error(__($e->getMessage()));
@@ -135,7 +135,7 @@ class Module extends Backend
         $info = [];
         try {
             $info = Manage::instance()->upload($file);
-        } catch (moduleException $e) {
+        } catch (Exception $e) {
             $this->error(__($e->getMessage()), $e->getData(), $e->getCode());
         } catch (Throwable $e) {
             $this->error(__($e->getMessage()));

@@ -12,7 +12,7 @@
 namespace ba;
 
 use think\Response;
-use ba\module\Manage;
+use app\admin\library\module\Manage;
 use think\facade\Config;
 use think\facade\Cookie;
 use app\admin\library\Auth;

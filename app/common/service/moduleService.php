@@ -2,7 +2,7 @@
 
 namespace app\common\service;
 
-use ba\module\Server;
+use app\admin\library\module\Server;
 use think\Service;
 use think\facade\Event;
 
