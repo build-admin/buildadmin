@@ -24,7 +24,7 @@
                     <FormItem
                         type="remoteSelect"
                         prop="pid"
-                        :label="t('auth.menu.Superior menu rule')"
+                        :label="t('auth.rule.Superior menu rule')"
                         v-model="baTable.form.items!.pid"
                         :placeholder="t('Click Select')"
                         :input-attr="{
@@ -34,88 +34,88 @@
                         }"
                     />
                     <FormItem
-                        :label="t('auth.menu.Rule type')"
+                        :label="t('auth.rule.Rule type')"
                         v-model="baTable.form.items!.type"
                         type="radio"
                         :data="{
-                            content: { menu_dir: t('auth.menu.type menu_dir'), menu: t('auth.menu.type menu'), button: t('auth.menu.type button') },
+                            content: { menu_dir: t('auth.rule.type menu_dir'), menu: t('auth.rule.type menu'), button: t('auth.rule.type button') },
                             childrenAttr: { border: true },
                         }"
                     />
-                    <el-form-item prop="title" :label="t('auth.menu.Rule title')">
+                    <el-form-item prop="title" :label="t('auth.rule.Rule title')">
                         <el-input
                             v-model="baTable.form.items!.title"
                             type="string"
-                            :placeholder="t('Please input field', { field: t('auth.menu.Rule title') })"
+                            :placeholder="t('Please input field', { field: t('auth.rule.Rule title') })"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item prop="name" :label="t('auth.menu.Rule name')">
+                    <el-form-item prop="name" :label="t('auth.rule.Rule name')">
                         <el-input
                             v-model="baTable.form.items!.name"
                             type="string"
-                            :placeholder="t('auth.menu.English name, which does not need to start with `/admin`, such as auth/menu')"
+                            :placeholder="t('auth.rule.English name, which does not need to start with `/admin`, such as auth/menu')"
                         ></el-input>
                         <div class="block-help">
-                            {{ t('auth.menu.It will be registered as the web side routing name and used as the server side API authentication') }}
+                            {{ t('auth.rule.It will be registered as the web side routing name and used as the server side API authentication') }}
                         </div>
                     </el-form-item>
-                    <el-form-item v-if="baTable.form.items!.type != 'button'" :label="t('auth.menu.Routing path')">
+                    <el-form-item v-if="baTable.form.items!.type != 'button'" :label="t('auth.rule.Routing path')">
                         <el-input
                             v-model="baTable.form.items!.path"
                             type="string"
-                            :placeholder="t('auth.menu.The web side routing path (path) does not need to start with `/admin`, such as auth/menu')"
+                            :placeholder="t('auth.rule.The web side routing path (path) does not need to start with `/admin`, such as auth/menu')"
                         ></el-input>
                     </el-form-item>
                     <FormItem
                         v-if="baTable.form.operate && baTable.form.items!.type != 'button'"
                         type="icon"
-                        :label="t('auth.menu.Rule Icon')"
+                        :label="t('auth.rule.Rule Icon')"
                         v-model="baTable.form.items!.icon"
                         :input-attr="{ 'show-icon-name': true }"
                     />
                     <FormItem
                         v-if="baTable.form.items!.type == 'menu'"
-                        :label="t('auth.menu.Menu type')"
+                        :label="t('auth.rule.Menu type')"
                         v-model="baTable.form.items!.menu_type"
                         type="radio"
                         :data="{
-                            content: { tab: t('auth.menu.Menu type tab'), link: t('auth.menu.Menu type link (offsite)'), iframe: 'Iframe' },
+                            content: { tab: t('auth.rule.Menu type tab'), link: t('auth.rule.Menu type link (offsite)'), iframe: 'Iframe' },
                             childrenAttr: { border: true },
                         }"
                     />
-                    <el-form-item prop="url" v-if="baTable.form.items!.menu_type != 'tab'" :label="t('auth.menu.Link address')">
+                    <el-form-item prop="url" v-if="baTable.form.items!.menu_type != 'tab'" :label="t('auth.rule.Link address')">
                         <el-input
                             v-model="baTable.form.items!.url"
                             type="string"
-                            :placeholder="t('auth.menu.Please enter the URL address of the link or iframe')"
+                            :placeholder="t('auth.rule.Please enter the URL address of the link or iframe')"
                         ></el-input>
                     </el-form-item>
                     <el-form-item
                         v-if="baTable.form.items!.type == 'menu' && baTable.form.items!.menu_type == 'tab'"
-                        :label="t('auth.menu.Component path')"
+                        :label="t('auth.rule.Component path')"
                     >
                         <el-input
                             v-model="baTable.form.items!.component"
                             type="string"
-                            :placeholder="t('auth.menu.Web side component path, please start with /src, such as: /src/views/backend/dashboard')"
+                            :placeholder="t('auth.rule.Web side component path, please start with /src, such as: /src/views/backend/dashboard')"
                         ></el-input>
                     </el-form-item>
                     <el-form-item
                         v-if="baTable.form.items!.type == 'menu' && baTable.form.items!.menu_type == 'tab'"
-                        :label="t('auth.menu.Extended properties')"
+                        :label="t('auth.rule.Extended properties')"
                     >
                         <el-select
                             class="w100"
                             v-model="baTable.form.items!.extend"
-                            :placeholder="t('Please select field', { field: t('auth.menu.Extended properties') })"
+                            :placeholder="t('Please select field', { field: t('auth.rule.Extended properties') })"
                         >
-                            <el-option :label="t('auth.menu.none')" value="none"></el-option>
-                            <el-option :label="t('auth.menu.Add as route only')" value="add_rules_only"></el-option>
-                            <el-option :label="t('auth.menu.Add as menu only')" value="add_menu_only"></el-option>
+                            <el-option :label="t('auth.rule.none')" value="none"></el-option>
+                            <el-option :label="t('auth.rule.Add as route only')" value="add_rules_only"></el-option>
+                            <el-option :label="t('auth.rule.Add as menu only')" value="add_menu_only"></el-option>
                         </el-select>
-                        <div class="block-help">{{ t('auth.menu.extend Title') }}</div>
+                        <div class="block-help">{{ t('auth.rule.extend Title') }}</div>
                     </el-form-item>
-                    <el-form-item :label="t('auth.menu.Rule comments')">
+                    <el-form-item :label="t('auth.rule.Rule comments')">
                         <el-input
                             @keyup.enter.stop=""
                             @keyup.ctrl.enter="baTable.onSubmit(formRef)"
@@ -124,20 +124,20 @@
                             :autosize="{ minRows: 2, maxRows: 5 }"
                             :placeholder="
                                 t(
-                                    'auth.menu.Use in controller `get_ route_ Remark()` function, which can obtain the value of this field for your own use, such as the banner file of the console'
+                                    'auth.rule.Use in controller `get_ route_ Remark()` function, which can obtain the value of this field for your own use, such as the banner file of the console'
                                 )
                             "
                         ></el-input>
                     </el-form-item>
-                    <el-form-item :label="t('auth.menu.Rule weight')">
+                    <el-form-item :label="t('auth.rule.Rule weight')">
                         <el-input
                             v-model="baTable.form.items!.weigh"
                             type="number"
-                            :placeholder="t('auth.menu.Please enter the weight of menu rule (sort by)')"
+                            :placeholder="t('auth.rule.Please enter the weight of menu rule (sort by)')"
                         ></el-input>
                     </el-form-item>
                     <FormItem
-                        :label="t('auth.menu.cache')"
+                        :label="t('auth.rule.cache')"
                         v-model="baTable.form.items!.keepalive"
                         type="radio"
                         :data="{
@@ -182,9 +182,9 @@ const baTable = inject('baTable') as baTableClass
 const { t } = useI18n()
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
-    title: [buildValidatorData({ name: 'required', title: t('auth.menu.Rule title') })],
-    name: [buildValidatorData({ name: 'required', title: t('auth.menu.Rule name') })],
-    url: [buildValidatorData({ name: 'url', message: t('auth.menu.Please enter the correct URL') })],
+    title: [buildValidatorData({ name: 'required', title: t('auth.rule.Rule title') })],
+    name: [buildValidatorData({ name: 'required', title: t('auth.rule.Rule name') })],
+    url: [buildValidatorData({ name: 'url', message: t('auth.rule.Please enter the correct URL') })],
     pid: [
         {
             validator: (rule: any, val: string, callback: Function) => {
@@ -192,7 +192,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
                     return callback()
                 }
                 if (parseInt(val) == parseInt(baTable.form.items!.id)) {
-                    return callback(new Error(t('auth.menu.The superior menu rule cannot be the rule itself')))
+                    return callback(new Error(t('auth.rule.The superior menu rule cannot be the rule itself')))
                 }
                 return callback()
             },

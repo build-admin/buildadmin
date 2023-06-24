@@ -5,10 +5,9 @@ namespace app\admin\model;
 use think\Model;
 
 /**
- * MenuRule 模型
- * @controllerUrl 'authMenu'
+ * AdminRule 模型
  */
-class MenuRule extends Model
+class AdminRule extends Model
 {
     protected $autoWriteTimestamp = true;
 

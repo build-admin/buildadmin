@@ -4,10 +4,10 @@ namespace app\admin\controller\auth;
 
 use ba\Tree;
 use Throwable;
-use app\admin\model\MenuRule;
+use app\admin\model\AdminRule;
 use app\common\controller\Backend;
 
-class Menu extends Backend
+class Rule extends Backend
 {
     protected string|array $preExcludeFields = ['create_time', 'update_time'];
 
@@ -15,7 +15,7 @@ class Menu extends Backend
 
     /**
      * @var object
-     * @phpstan-var MenuRule
+     * @phpstan-var AdminRule
      */
     protected object $model;
 
@@ -51,7 +51,7 @@ class Menu extends Backend
     public function initialize(): void
     {
         parent::initialize();
-        $this->model = new MenuRule();
+        $this->model = new AdminRule();
         $this->tree  = Tree::instance();
 
         $isTree          = $this->request->param('isTree', true);

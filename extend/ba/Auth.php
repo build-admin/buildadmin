@@ -24,7 +24,7 @@ class Auth
     protected $config = [
         'auth_group'        => 'admin_group', // 用户组数据表名
         'auth_group_access' => 'admin_group_access', // 用户-用户组关系表
-        'auth_rule'         => 'menu_rule', // 权限规则表
+        'auth_rule'         => 'admin_rule', // 权限规则表
     ];
 
     /**

@@ -74,7 +74,7 @@ if (!function_exists('get_route_remark')) {
         $actionName     = request()->action(true);
         $path           = str_replace('.', '/', $controllerName);
 
-        $remark = Db::name('menu_rule')
+        $remark = Db::name('admin_rule')
             ->where('name', $path)
             ->whereOr('name', $path . '/' . $actionName)
             ->value('remark');

@@ -1,7 +1,7 @@
 /**
  * 通常将表格的控制器URL定义在此处
  */
-export const authMenu = '/admin/auth.menu/'
+export const adminRule = '/admin/auth.rule/'
 export const authAdmin = '/admin/auth.admin/'
 export const authAdminLog = '/admin/auth.adminLog/'
 export const authGroup = '/admin/auth.group/'

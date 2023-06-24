@@ -7,7 +7,7 @@ use ba\Filesystem;
 use think\Exception;
 use think\facade\Db;
 use app\common\library\Menu;
-use app\admin\model\MenuRule;
+use app\admin\model\AdminRule;
 use app\admin\model\CrudLog;
 
 class Helper
@@ -30,7 +30,7 @@ class Helper
             'admin'       => ['auth', 'admin'],
             'admin_group' => ['auth', 'group'],
             'attachment'  => ['routine', 'attachment'],
-            'menu_rule'   => ['auth', 'menu'],
+            'admin_rule'  => ['auth', 'rule'],
         ],
         'model'      => [],
         'validate'   => [],
@@ -201,7 +201,7 @@ class Helper
             'admin'       => ['auth', 'admin'],
             'admin_group' => ['auth', 'group'],
             'attachment'  => ['routine', 'attachment'],
-            'menu_rule'   => ['auth', 'menu'],
+            'admin_rule'  => ['auth', 'rule'],
         ],
     ];
 
@@ -649,10 +649,10 @@ class Helper
     public static function createMenu($webViewsDir, $tableComment): void
     {
         $menuName = self::getMenuName($webViewsDir);
-        if (!MenuRule::where('name', $menuName)->value('id')) {
+        if (!AdminRule::where('name', $menuName)->value('id')) {
             $pid = 0;
             foreach ($webViewsDir['path'] as $item) {
-                $pMenu = MenuRule::where('name', $item)->value('id');
+                $pMenu = AdminRule::where('name', $item)->value('id');
                 if ($pMenu) {
                     $pid = $pMenu;
                     continue;
@@ -664,7 +664,7 @@ class Helper
                     'name'  => $item,
                     'path'  => $item,
                 ];
-                $menu = MenuRule::create($menu);
+                $menu = AdminRule::create($menu);
                 $pid  = $menu->id;
             }
 

@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'unfold', 'quickSearch', 'columnDisplay']"
-            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.menu.title') })"
+            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.rule.title') })"
         />
         <!-- 表格 -->
         <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, provide } from 'vue'
-import { authMenu } from '/@/api/controllerUrls'
+import { adminRule } from '/@/api/controllerUrls'
 import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
@@ -30,24 +30,24 @@ import baTableClass from '/@/utils/baTable'
 const { t } = useI18n()
 const tableRef = ref()
 const baTable = new baTableClass(
-    new baTableApi(authMenu),
+    new baTableApi(adminRule),
     {
         expandAll: false,
         dblClickNotEditColumn: [undefined, 'keepalive', 'status'],
         column: [
             { type: 'selection', align: 'center' },
-            { label: t('auth.menu.title'), prop: 'title', align: 'left', width: '200' },
-            { label: t('auth.menu.Icon'), prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
-            { label: t('auth.menu.name'), prop: 'name', align: 'center', 'show-overflow-tooltip': true },
+            { label: t('auth.rule.title'), prop: 'title', align: 'left', width: '200' },
+            { label: t('auth.rule.Icon'), prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
+            { label: t('auth.rule.name'), prop: 'name', align: 'center', 'show-overflow-tooltip': true },
             {
-                label: t('auth.menu.type'),
+                label: t('auth.rule.type'),
                 prop: 'type',
                 align: 'center',
                 render: 'tag',
                 custom: { menu: 'danger', menu_dir: 'success', button: 'info' },
-                replaceValue: { menu: t('auth.menu.type menu'), menu_dir: t('auth.menu.type menu_dir'), button: t('auth.menu.type button') },
+                replaceValue: { menu: t('auth.rule.type menu'), menu_dir: t('auth.rule.type menu_dir'), button: t('auth.rule.type button') },
             },
-            { label: t('auth.menu.cache'), prop: 'keepalive', align: 'center', width: '80', render: 'switch' },
+            { label: t('auth.rule.cache'), prop: 'keepalive', align: 'center', width: '80', render: 'switch' },
             { label: t('state'), prop: 'status', align: 'center', width: '80', render: 'switch' },
             { label: t('updatetime'), prop: 'update_time', align: 'center', width: '160', render: 'datetime' },
             {
@@ -95,7 +95,7 @@ onMounted(() => {
 <script lang="ts">
 import { defineComponent } from 'vue'
 export default defineComponent({
-    name: 'auth/menu',
+    name: 'auth/rule',
 })
 </script>
 

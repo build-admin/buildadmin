@@ -4,14 +4,14 @@ namespace app\admin\validate;
 
 use think\Validate;
 
-class MenuRule extends Validate
+class AdminRule extends Validate
 {
     protected $failException = true;
 
     protected $rule = [
         'type'  => 'require',
         'title' => 'require',
-        'name'  => 'require|unique:menu_rule',
+        'name'  => 'require|unique:admin_rule',
     ];
 
     /**

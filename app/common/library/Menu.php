@@ -2,7 +2,7 @@
 
 namespace app\common\library;
 
-use app\admin\model\MenuRule;
+use app\admin\model\AdminRule;
 use app\admin\model\UserRule;
 use think\db\exception\DbException;
 use think\db\exception\DataNotFoundException;
@@ -25,7 +25,7 @@ class Menu
     public static function create(array $menu, $parent = 0, string $mode = 'cover', string $position = 'backend')
     {
         $pid        = 0;
-        $model      = $position == 'backend' ? new MenuRule() : new UserRule();
+        $model      = $position == 'backend' ? new AdminRule() : new UserRule();
         $parentRule = $model->where((is_numeric($parent) ? 'id' : 'name'), $parent)->find();
         if ($parentRule) {
             $pid = $parentRule['id'];
@@ -78,7 +78,7 @@ class Menu
         if (!$id) {
             return true;
         }
-        $model    = $position == 'backend' ? new MenuRule() : new UserRule();
+        $model    = $position == 'backend' ? new AdminRule() : new UserRule();
         $menuRule = $model->where((is_numeric($id) ? 'id' : 'name'), $id)->find();
         if (!$menuRule) {
             return true;
@@ -109,7 +109,7 @@ class Menu
      */
     public static function enable($id, string $position = 'backend'): bool
     {
-        $model    = $position == 'backend' ? new MenuRule() : new UserRule();
+        $model    = $position == 'backend' ? new AdminRule() : new UserRule();
         $menuRule = $model->where((is_numeric($id) ? 'id' : 'name'), $id)->find();
         if (!$menuRule) {
             return false;
@@ -130,7 +130,7 @@ class Menu
      */
     public static function disable($id, string $position = 'backend'): bool
     {
-        $model    = $position == 'backend' ? new MenuRule() : new UserRule();
+        $model    = $position == 'backend' ? new AdminRule() : new UserRule();
         $menuRule = $model->where((is_numeric($id) ? 'id' : 'name'), $id)->find();
         if (!$menuRule) {
             return false;

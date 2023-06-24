@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'unfold', 'quickSearch', 'columnDisplay']"
-            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.menu.Rule title') })"
+            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.rule.Rule title') })"
         />
 
         <!-- 表格 -->
@@ -36,11 +36,11 @@ const baTable = new baTableClass(
         expandAll: true,
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: t('auth.menu.title'), prop: 'title', align: 'left', width: '200' },
-            { label: t('auth.menu.Icon'), prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
-            { label: t('auth.menu.name'), prop: 'name', align: 'center', 'show-overflow-tooltip': true },
+            { label: t('auth.rule.title'), prop: 'title', align: 'left', width: '200' },
+            { label: t('auth.rule.Icon'), prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
+            { label: t('auth.rule.name'), prop: 'name', align: 'center', 'show-overflow-tooltip': true },
             {
-                label: t('auth.menu.type'),
+                label: t('auth.rule.type'),
                 prop: 'type',
                 align: 'center',
                 render: 'tag',

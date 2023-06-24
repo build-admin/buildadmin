@@ -5,7 +5,7 @@ namespace app\admin\controller\auth;
 use ba\Tree;
 use Throwable;
 use think\facade\Db;
-use app\admin\model\MenuRule;
+use app\admin\model\AdminRule;
 use app\admin\model\AdminGroup;
 use app\common\controller\Backend;
 
@@ -184,7 +184,7 @@ class Group extends Backend
         }
 
         // 读取所有pid，全部从节点数组移除，父级选择状态由子级决定
-        $pidArr = MenuRule::field('pid')
+        $pidArr = AdminRule::field('pid')
             ->distinct(true)
             ->where('id', 'in', $row->rules)
             ->select()->toArray();
@@ -269,7 +269,7 @@ class Group extends Backend
     public function handleRules(array &$data): array
     {
         if (!empty($data['rules']) && is_array($data['rules'])) {
-            $rules      = MenuRule::select();
+            $rules      = AdminRule::select();
             $superAdmin = true;
             foreach ($rules as $rule) {
                 if (!in_array($rule['id'], $data['rules'])) {
@@ -332,7 +332,7 @@ class Group extends Backend
                 } else {
                     $rules = explode(',', $datum['rules']);
                     if ($rules) {
-                        $rulesFirstTitle = MenuRule::where('id', $rules[0])->value('title');
+                        $rulesFirstTitle = AdminRule::where('id', $rules[0])->value('title');
                         $datum['rules']  = count($rules) == 1 ? $rulesFirstTitle : $rulesFirstTitle . '等 ' . count($rules) . ' 项';
                     }
                 }
