@@ -6,7 +6,6 @@ use think\Model;
 
 /**
  * SensitiveData 模型
- * @controllerUrl 'securitySensitiveData'
  */
 class SensitiveData extends Model
 {

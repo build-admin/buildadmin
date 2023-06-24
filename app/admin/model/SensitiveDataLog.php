@@ -7,7 +7,6 @@ use think\model\relation\BelongsTo;
 
 /**
  * SensitiveDataLog 模型
- * @controllerUrl 'securitySensitiveDataLog'
  */
 class SensitiveDataLog extends Model
 {

@@ -9,7 +9,6 @@ use think\model\relation\BelongsTo;
 
 /**
  * UserScoreLog 模型
- * @controllerUrl 'userScoreLog'
  */
 class UserScoreLog extends model
 {

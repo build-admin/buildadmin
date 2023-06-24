@@ -6,7 +6,6 @@ use think\Model;
 
 /**
  * DataRecycle 模型
- * @controllerUrl 'securityDataRecycle'
  */
 class DataRecycle extends Model
 {

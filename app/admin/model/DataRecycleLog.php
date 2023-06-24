@@ -7,7 +7,6 @@ use think\model\relation\BelongsTo;
 
 /**
  * DataRecycleLog 模型
- * @controllerUrl 'securityDataRecycleLog'
  */
 class DataRecycleLog extends Model
 {

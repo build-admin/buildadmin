@@ -9,7 +9,6 @@ use think\model\relation\BelongsTo;
 
 /**
  * AdminLog模型
- * @controllerUrl 'authAdminLog'
  */
 class AdminLog extends Model
 {
@@ -115,8 +114,8 @@ class AdminLog extends Model
         $data  = self::pureData($data);
         $title = $title ?: self::$title;
         if (!$title) {
-            $controllerTitle = MenuRule::where('name', $controller)->value('title');
-            $title           = MenuRule::where('name', $path)->value('title');
+            $controllerTitle = AdminRule::where('name', $controller)->value('title');
+            $title           = AdminRule::where('name', $path)->value('title');
             $title           = $title ?: __('Unknown') . '(' . $action . ')';
             $title           = $controllerTitle ? ($controllerTitle . '-' . $title) : $title;
         }

@@ -6,7 +6,6 @@ use think\Model;
 
 /**
  * UserGroup 模型
- * @controllerUrl 'userGroup'
  */
 class UserGroup extends Model
 {

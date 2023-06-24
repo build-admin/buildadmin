@@ -8,7 +8,6 @@ use think\model\relation\BelongsTo;
 
 /**
  * User 模型
- * @controllerUrl 'userUser'
  */
 class User extends Model
 {

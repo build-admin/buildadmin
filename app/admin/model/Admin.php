@@ -9,7 +9,6 @@ use think\facade\Config;
 
 /**
  * Admin模型
- * @controllerUrl 'authAdmin'
  */
 class Admin extends Model
 {
