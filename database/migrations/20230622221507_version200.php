@@ -67,26 +67,28 @@ class Version200 extends Migrator
                 ->save();
         }
 
-        $menuRule = $this->table('menu_rule');
-        if ($menuRule->hasColumn('updatetime') && $this->hasTable('menu_rule')) {
-            $menuRule->renameColumn('updatetime', 'update_time')
-                ->renameColumn('createtime', 'create_time')
-                ->changeColumn('update_time', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '更新时间'])
-                ->changeColumn('create_time', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '创建时间'])
-                ->save();
-            $menuRule->rename('admin_rule')->save();
-            Db::name('admin_rule')
-                ->where('name', 'auth/menu')
-                ->update([
-                    'name'      => 'auth/rule',
-                    'path'      => 'auth/rule',
-                    'component' => '/src/views/backend/auth/rule/index.vue',
-                ]);
-            Db::name('admin_rule')->where('name', 'auth/menu/index')->update(['name' => 'auth/rule/index']);
-            Db::name('admin_rule')->where('name', 'auth/menu/add')->update(['name' => 'auth/rule/add']);
-            Db::name('admin_rule')->where('name', 'auth/menu/edit')->update(['name' => 'auth/rule/edit']);
-            Db::name('admin_rule')->where('name', 'auth/menu/del')->update(['name' => 'auth/rule/del']);
-            Db::name('admin_rule')->where('name', 'auth/menu/sortable')->update(['name' => 'auth/rule/sortable']);
+        if ($this->hasTable('menu_rule')) {
+            $menuRule = $this->table('menu_rule');
+            if ($menuRule->hasColumn('updatetime') && $this->hasTable('menu_rule')) {
+                $menuRule->renameColumn('updatetime', 'update_time')
+                    ->renameColumn('createtime', 'create_time')
+                    ->changeColumn('update_time', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '更新时间'])
+                    ->changeColumn('create_time', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '创建时间'])
+                    ->save();
+                $menuRule->rename('admin_rule')->save();
+                Db::name('admin_rule')
+                    ->where('name', 'auth/menu')
+                    ->update([
+                        'name'      => 'auth/rule',
+                        'path'      => 'auth/rule',
+                        'component' => '/src/views/backend/auth/rule/index.vue',
+                    ]);
+                Db::name('admin_rule')->where('name', 'auth/menu/index')->update(['name' => 'auth/rule/index']);
+                Db::name('admin_rule')->where('name', 'auth/menu/add')->update(['name' => 'auth/rule/add']);
+                Db::name('admin_rule')->where('name', 'auth/menu/edit')->update(['name' => 'auth/rule/edit']);
+                Db::name('admin_rule')->where('name', 'auth/menu/del')->update(['name' => 'auth/rule/del']);
+                Db::name('admin_rule')->where('name', 'auth/menu/sortable')->update(['name' => 'auth/rule/sortable']);
+            }
         }
 
         $securityDataRecycle = $this->table('security_data_recycle');

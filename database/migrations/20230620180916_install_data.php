@@ -174,7 +174,7 @@ class InstallData extends Migrator
                 'title' => 'smtp server',
                 'type'  => 'string',
                 'value' => 'smtp.qq.com',
-                'weigh' => 99,
+                'weigh' => 9,
             ],
             [
                 'id'    => 8,
@@ -183,6 +183,7 @@ class InstallData extends Migrator
                 'title' => 'smtp port',
                 'type'  => 'string',
                 'value' => '465',
+                'weigh' => 8,
             ],
             [
                 'id'    => 9,
@@ -190,6 +191,7 @@ class InstallData extends Migrator
                 'group' => 'mail',
                 'title' => 'smtp user',
                 'type'  => 'string',
+                'weigh' => 7,
             ],
             [
                 'id'    => 10,
@@ -197,7 +199,7 @@ class InstallData extends Migrator
                 'group' => 'mail',
                 'title' => 'smtp pass',
                 'type'  => 'string',
-                'weigh' => 99,
+                'weigh' => 6,
             ],
             [
                 'id'      => 11,
@@ -207,6 +209,7 @@ class InstallData extends Migrator
                 'type'    => 'select',
                 'value'   => 'SSL',
                 'content' => '{"SSL":"SSL","TLS":"TLS"}',
+                'weigh'   => 5,
             ],
             [
                 'id'    => 12,
@@ -215,6 +218,7 @@ class InstallData extends Migrator
                 'title' => 'smtp sender mail',
                 'type'  => 'string',
                 'rule'  => 'email',
+                'weigh' => 4,
             ],
             [
                 'id'    => 13,
@@ -233,6 +237,7 @@ class InstallData extends Migrator
 
     public function menuRule()
     {
+        if (!$this->hasTable('menu_rule')) return;
         $table = $this->table('menu_rule');
         $rows  = [
             [

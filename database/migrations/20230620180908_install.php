@@ -238,7 +238,7 @@ class Install extends Migrator
 
     public function menuRule()
     {
-        if (!$this->hasTable('menu_rule')) {
+        if (!$this->hasTable('menu_rule') && !$this->hasTable('admin_rule')) {
             $table = $this->table('menu_rule', [
                 'id'          => false,
                 'comment'     => '菜单和权限规则表',
