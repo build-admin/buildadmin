@@ -14,15 +14,32 @@
 
 namespace ba;
 
-use think\facade\Db;
+use GdImage;
+use Throwable;
 use think\Response;
-use think\db\exception\DbException;
-use think\db\exception\DataNotFoundException;
-use think\db\exception\ModelNotFoundException;
+use think\facade\Db;
 
+/**
+ * 验证码类（图形验证码、继续流程验证码）
+ * @property string $seKey    验证码加密密钥
+ * @property string $codeSet  验证码字符集合
+ * @property int    $expire   验证码过期时间（s）
+ * @property bool   $useZh    使用中文验证码
+ * @property string $zhSet    中文验证码字符串
+ * @property bool   $useImgBg 使用背景图片
+ * @property int    $fontSize 验证码字体大小(px)
+ * @property bool   $useCurve 是否画混淆曲线
+ * @property bool   $useNoise 是否添加杂点
+ * @property int    $imageH   验证码图片高度
+ * @property int    $imageW   验证码图片宽度
+ * @property int    $length   验证码位数
+ * @property string $fontTtf  验证码字体，不设置随机获取
+ * @property array  $bg       背景颜色
+ * @property bool   $reset    验证成功后是否重置
+ */
 class Captcha
 {
-    protected $config = [
+    protected array $config = [
         // 验证码加密密钥
         'seKey'    => 'BuildAdmin',
         // 验证码字符集合
@@ -48,7 +65,7 @@ class Captcha
         // 验证码位数
         'length'   => 4,
         // 验证码字体，不设置随机获取
-        'fontttf'  => '',
+        'fontTtf'  => '',
         // 背景颜色
         'bg'       => [243, 251, 254],
         // 验证成功后是否重置
@@ -56,20 +73,21 @@ class Captcha
     ];
 
     /**
-     * @var \GdImage|resource|null
+     * 验证码图片实例
+     * @var GdImage|resource|null
      */
-    private $image = null; // 验证码图片实例
+    private $image = null;
 
     /**
+     * 验证码字体颜色
      * @var bool|int|null
      */
-    private $color = null; // 验证码字体颜色
+    private bool|int|null $color = null;
 
     /**
      * 架构方法 设置参数
-     * @access public
      * @param array $config 配置参数
-     * @throws DbException
+     * @throws Throwable
      */
     public function __construct(array $config = [])
     {
@@ -83,23 +101,21 @@ class Captcha
 
     /**
      * 使用 $this->name 获取配置
-     * @access public
      * @param string $name 配置名称
      * @return mixed    配置值
      */
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         return $this->config[$name];
     }
 
     /**
      * 设置验证码配置
-     * @access public
      * @param string $name  配置名称
      * @param mixed  $value 配置值
      * @return void
      */
-    public function __set(string $name, $value)
+    public function __set(string $name, mixed $value): void
     {
         if (isset($this->config[$name])) {
             $this->config[$name] = $value;
@@ -108,44 +124,38 @@ class Captcha
 
     /**
      * 检查配置
-     * @access public
      * @param string $name 配置名称
      * @return bool
      */
-    public function __isset(string $name)
+    public function __isset(string $name): bool
     {
         return isset($this->config[$name]);
     }
 
     /**
      * 验证验证码是否正确
-     * @access public
      * @param string $code 用户验证码
      * @param string $id   验证码标识
      * @return bool 用户验证码是否正确
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws Throwable
      */
     public function check(string $code, string $id): bool
     {
-        $key = $this->authcode($this->seKey, $id);
-        // 验证码不能为空
-        $secode = Db::name('captcha')
-            ->where('key', $key)
-            ->find();
-        if (empty($code) || empty($secode)) {
-            return false;
-        }
-        // 验证码过期
-        if (time() > $secode['expire_time']) {
-            Db::name('captcha')
-                ->where('key', $key)
-                ->delete();
+        $key    = $this->authCode($this->seKey, $id);
+        $seCode = Db::name('captcha')->where('key', $key)->find();
+
+        // 验证码为空
+        if (empty($code) || empty($seCode)) {
             return false;
         }
 
-        if ($this->authcode(strtoupper($code), $id) == $secode['code']) {
+        // 验证码过期
+        if (time() > $seCode['expire_time']) {
+            Db::name('captcha')->where('key', $key)->delete();
+            return false;
+        }
+
+        if ($this->authCode(strtoupper($code), $id) == $seCode['code']) {
             $this->reset && Db::name('captcha')->where('key', $key)->delete();
             return true;
         }
@@ -154,26 +164,23 @@ class Captcha
     }
 
     /**
-     * 创建一个验证码（非图形）
-     * @access public
+     * 创建一个逻辑验证码可供后续验证（非图形）
      * @param string      $id      验证码标识
      * @param string|bool $captcha 验证码，不传递则自动生成
-     * @return string 生成的验证码
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @return string 生成的验证码，发送出去或做它用...
+     * @throws Throwable
      */
-    public function create(string $id, $captcha = false)
+    public function create(string $id, string|bool $captcha = false): string
     {
         $nowTime     = time();
-        $key         = $this->authcode($this->seKey, $id);
+        $key         = $this->authCode($this->seKey, $id);
         $captchaTemp = Db::name('captcha')->where('key', $key)->find();
         if ($captchaTemp) {
             // 重复的为同一标识创建验证码
             Db::name('captcha')->where('key', $key)->delete();
         }
         $captcha = $this->generate($captcha);
-        $code    = $this->authcode($captcha, $id);
+        $code    = $this->authCode($captcha, $id);
         Db::name('captcha')
             ->insert([
                 'key'         => $key,
@@ -187,30 +194,22 @@ class Captcha
 
     /**
      * 获取验证码数据
-     * @access public
      * @param string $id 验证码标识
      * @return array
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws Throwable
      */
     public function getCaptchaData(string $id): array
     {
-        $key    = $this->authcode($this->seKey, $id);
-        $secode = Db::name('captcha')
-            ->where('key', $key)
-            ->find();
-        return $secode ?: [];
+        $key    = $this->authCode($this->seKey, $id);
+        $seCode = Db::name('captcha')->where('key', $key)->find();
+        return $seCode ?: [];
     }
 
     /**
      * 输出图形验证码并把验证码的值保存的Mysql中
-     * @access public
      * @param string $id 要生成验证码的标识
      * @return Response
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws Throwable
      */
     public function entry(string $id): Response
     {
@@ -229,18 +228,18 @@ class Captcha
         // 验证码使用随机字体
         $ttfPath = public_path() . 'static' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR . ($this->useZh ? 'zhttfs' : 'ttfs') . DIRECTORY_SEPARATOR;
 
-        if (empty($this->fontttf)) {
-            $dir  = dir($ttfPath);
-            $ttfs = [];
+        if (empty($this->fontTtf)) {
+            $dir      = dir($ttfPath);
+            $ttfFiles = [];
             while (false !== ($file = $dir->read())) {
-                if ('.' != $file[0] && substr($file, -4) == '.ttf') {
-                    $ttfs[] = $file;
+                if ('.' != $file[0] && str_ends_with($file, '.ttf')) {
+                    $ttfFiles[] = $file;
                 }
             }
             $dir->close();
-            $this->fontttf = $ttfs[array_rand($ttfs)];
+            $this->fontTtf = $ttfFiles[array_rand($ttfFiles)];
         }
-        $this->fontttf = $ttfPath . $this->fontttf;
+        $this->fontTtf = $ttfPath . $this->fontTtf;
 
         if ($this->useImgBg) {
             $this->background();
@@ -255,25 +254,24 @@ class Captcha
             $this->writeCurve();
         }
 
-        $key     = $this->authcode($this->seKey, $id);
-        $captcha = Db::name('captcha')
-            ->where('key', $key)
-            ->find();
+        $key     = $this->authCode($this->seKey, $id);
+        $captcha = Db::name('captcha')->where('key', $key)->find();
+
         // 绘验证码
         if ($captcha && $nowTime <= $captcha['expire_time']) {
             $this->writeText($captcha['captcha']);
         } else {
             $captcha = $this->writeText();
+
             // 保存验证码
-            $code = $this->authcode(strtoupper(implode('', $captcha)), $id);
-            Db::name('captcha')
-                ->insert([
-                    'key'         => $key,
-                    'code'        => $code,
-                    'captcha'     => strtoupper(implode('', $captcha)),// 兼容uniApp安卓端,它加载图片会请求两次(非预请求),此字段仅供二次请求时生成图片
-                    'create_time' => $nowTime,
-                    'expire_time' => $nowTime + $this->expire
-                ]);
+            $code = $this->authCode(strtoupper(implode('', $captcha)), $id);
+            Db::name('captcha')->insert([
+                'key'         => $key,
+                'code'        => $code,
+                'captcha'     => strtoupper(implode('', $captcha)),
+                'create_time' => $nowTime,
+                'expire_time' => $nowTime + $this->expire
+            ]);
         }
 
         ob_start();
@@ -290,7 +288,7 @@ class Captcha
      * @param string $captcha 验证码
      * @return array|string 验证码
      */
-    private function writeText(string $captcha = '')
+    private function writeText(string $captcha = ''): array|string
     {
         $code   = []; // 验证码
         $codeNX = 0; // 验证码第N个字符的左边距
@@ -298,13 +296,13 @@ class Captcha
             // 中文验证码
             for ($i = 0; $i < $this->length; $i++) {
                 $code[$i] = $captcha ? $captcha[$i] : iconv_substr($this->zhSet, floor(mt_rand(0, mb_strlen($this->zhSet, 'utf-8') - 1)), 1, 'utf-8');
-                imagettftext($this->image, $this->fontSize, mt_rand(-40, 40), $this->fontSize * ($i + 1) * 1.5, $this->fontSize + mt_rand(10, 20), (int)$this->color, $this->fontttf, $code[$i]);
+                imagettftext($this->image, $this->fontSize, mt_rand(-40, 40), $this->fontSize * ($i + 1) * 1.5, $this->fontSize + mt_rand(10, 20), (int)$this->color, $this->fontTtf, $code[$i]);
             }
         } else {
             for ($i = 0; $i < $this->length; $i++) {
                 $code[$i] = $captcha ? $captcha[$i] : $this->codeSet[mt_rand(0, strlen($this->codeSet) - 1)];
                 $codeNX   += mt_rand((int)($this->fontSize * 1.2), (int)($this->fontSize * 1.6));
-                imagettftext($this->image, $this->fontSize, mt_rand(-40, 40), $codeNX, (int)($this->fontSize * 1.6), (int)$this->color, $this->fontttf, $code[$i]);
+                imagettftext($this->image, $this->fontSize, mt_rand(-40, 40), $codeNX, (int)($this->fontSize * 1.6), (int)$this->color, $this->fontTtf, $code[$i]);
             }
         }
         return $captcha ?: $code;
@@ -312,19 +310,16 @@ class Captcha
 
     /**
      * 画一条由两条连在一起构成的随机正弦函数曲线作干扰线(你可以改成更帅的曲线函数)
-     *
-     *      高中的数学公式咋都忘了涅，写出来
-     *        正弦型函数解析式：y=Asin(ωx+φ)+b
-     *      各常数值对函数图像的影响：
-     *        A：决定峰值（即纵向拉伸压缩的倍数）
-     *        b：表示波形在Y轴的位置关系或纵向移动距离（上加下减）
-     *        φ：决定波形与X轴位置关系或横向移动距离（左加右减）
-     *        ω：决定周期（最小正周期T=2π/∣ω∣）
-     *
+     * 正弦型函数解析式：y=Asin(ωx+φ)+b
+     * 各常数值对函数图像的影响：
+     * A：决定峰值（即纵向拉伸压缩的倍数）
+     * b：表示波形在Y轴的位置关系或纵向移动距离（上加下减）
+     * φ：决定波形与X轴位置关系或横向移动距离（左加右减）
+     * ω：决定周期（最小正周期T=2π/∣ω∣）
      */
-    private function writeCurve()
+    private function writeCurve(): void
     {
-        $px = $py = 0;
+        $py = 0;
 
         // 曲线前部分
         $A = mt_rand(1, $this->imageH / 2); // 振幅
@@ -369,17 +364,16 @@ class Captcha
     }
 
     /**
-     * 画杂点
-     * 往图片上写不同颜色的字母或数字
+     * 绘杂点，往图片上写不同颜色的字母或数字
      */
-    private function writeNoise()
+    private function writeNoise(): void
     {
         $codeSet = '2345678abcdefhijkmnpqrstuvwxyz';
         for ($i = 0; $i < 10; $i++) {
             //杂点颜色
             $noiseColor = imagecolorallocate($this->image, mt_rand(150, 225), mt_rand(150, 225), mt_rand(150, 225));
             for ($j = 0; $j < 5; $j++) {
-                // 绘杂点
+                // 绘制
                 imagestring($this->image, 5, mt_rand(-10, $this->imageW), mt_rand(-10, $this->imageH), $codeSet[mt_rand(0, 29)], $noiseColor);
             }
         }
@@ -387,16 +381,17 @@ class Captcha
 
     /**
      * 绘制背景图片
+     *
      * 注：如果验证码输出图片比较大，将占用比较多的系统资源
      */
-    private function background()
+    private function background(): void
     {
-        $path = public_path() . 'static' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'captcha-bgs' . DIRECTORY_SEPARATOR;
+        $path = Filesystem::fsFit(public_path() . 'static/images/captcha/image/');
         $dir  = dir($path);
 
         $bgs = [];
         while (false !== ($file = $dir->read())) {
-            if ('.' != $file[0] && substr($file, -4) == '.jpg') {
+            if ('.' != $file[0] && str_ends_with($file, '.jpg')) {
                 $bgs[] = $path . $file;
             }
         }
@@ -414,8 +409,10 @@ class Captcha
 
     /**
      * 加密验证码
+     * @param string $str 验证码字符串
+     * @param string $id  验证码标识
      */
-    private function authcode($str, $id): string
+    private function authCode(string $str, string $id): string
     {
         $key = substr(md5($this->seKey), 5, 8);
         $str = substr(md5($str), 8, 10);
@@ -424,8 +421,10 @@ class Captcha
 
     /**
      * 生成验证码随机字符
+     * @param bool|string $captcha
+     * @return string
      */
-    private function generate($captcha = false)
+    private function generate(bool|string $captcha = false): string
     {
         $code = []; // 验证码
         if ($this->useZh) {

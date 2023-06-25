@@ -2,12 +2,10 @@
 
 namespace ba;
 
+use Throwable;
 use think\facade\Db;
-use think\facade\Config;
-use think\db\exception\DbException;
-use think\db\exception\DataNotFoundException;
-use think\db\exception\ModelNotFoundException;
 use think\facade\Lang;
+use think\facade\Config;
 
 /**
  * 点选文字验证码类
@@ -16,20 +14,33 @@ class ClickCaptcha
 {
     /**
      * 验证码过期时间(s)
+     * @var int
      */
-    private $expire = 600;
+    private int $expire = 600;
 
-    private $bgPaths = [
-        'static/images/click-captcha/bgs/1.png',
-        'static/images/click-captcha/bgs/2.png',
-        'static/images/click-captcha/bgs/3.png',
+    /**
+     * 可以使用的背景图片路径
+     * @var array
+     */
+    private array $bgPaths = [
+        'static/images/captcha/click/bgs/1.png',
+        'static/images/captcha/click/bgs/2.png',
+        'static/images/captcha/click/bgs/3.png',
     ];
 
-    private $fontPaths = [
+    /**
+     * 可以使用的字体文件路径
+     * @var array
+     */
+    private array $fontPaths = [
         'static/fonts/zhttfs/SourceHanSansCN-Normal.ttf',
     ];
 
-    private $iconDict = [
+    /**
+     * 验证点 Icon 映射表
+     * @var array
+     */
+    private array $iconDict = [
         'aeroplane' => '飞机',
         'apple'     => '苹果',
         'banana'    => '香蕉',
@@ -52,7 +63,11 @@ class ClickCaptcha
         'wolf head' => '狼头',
     ];
 
-    private $config = [
+    /**
+     * 配置
+     * @var array
+     */
+    private array $config = [
         // 透明度
         'alpha' => 36,
         // 中文字符集
@@ -87,8 +102,8 @@ class ClickCaptcha
                 // 图标
                 $tmp['icon']   = true;
                 $tmp['name']   = $v;
-                $tmp['text']   = $lang == 'zh-cn' ? "<{$this->iconDict[$v]}>" : "<{$v}>";
-                $iconInfo      = getimagesize(Filesystem::fsFit(public_path() . 'static/images/click-captcha/icons/' . $v . '.png'));
+                $tmp['text']   = $lang == 'zh-cn' ? "<{$this->iconDict[$v]}>" : "<$v>";
+                $iconInfo      = getimagesize(Filesystem::fsFit(public_path() . 'static/images/captcha/click/icons/' . $v . '.png'));
                 $tmp['width']  = $iconInfo[0];
                 $tmp['height'] = $iconInfo[1];
             } else {
@@ -176,9 +191,7 @@ class ClickCaptcha
      * @param string $info  验证信息
      * @param bool   $unset 验证成功是否删除验证码
      * @return bool
-     * @throws DbException
-     * @throws DataNotFoundException
-     * @throws ModelNotFoundException
+     * @throws Throwable
      */
     public function check(string $id, string $info, bool $unset = true): bool
     {
@@ -215,9 +228,12 @@ class ClickCaptcha
         }
     }
 
-    protected function iconCover($bgImg, $iconImgData)
+    /**
+     * 绘制Icon
+     */
+    protected function iconCover($bgImg, $iconImgData): void
     {
-        $iconImage      = imagecreatefrompng(Filesystem::fsFit(public_path() . 'static/images/click-captcha/icons/' . $iconImgData['name'] . '.png'));
+        $iconImage      = imagecreatefrompng(Filesystem::fsFit(public_path() . 'static/images/captcha/click/icons/' . $iconImgData['name'] . '.png'));
         $trueColorImage = imagecreatetruecolor($iconImgData['width'], $iconImgData['height']);
         imagecopy($trueColorImage, $bgImg, 0, 0, $iconImgData['x'], $iconImgData['y'], $iconImgData['width'], $iconImgData['height']);
         imagecopy($trueColorImage, $iconImage, 0, 0, 0, 0, $iconImgData['width'], $iconImgData['height']);
