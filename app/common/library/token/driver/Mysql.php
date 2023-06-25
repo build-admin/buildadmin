@@ -2,6 +2,7 @@
 
 namespace app\common\library\token\driver;
 
+use Throwable;
 use think\Response;
 use think\facade\Db;
 use think\facade\Cache;
@@ -37,6 +38,9 @@ class Mysql extends Driver
         }
     }
 
+    /**
+     * @throws Throwable
+     */
     public function set(string $token, string $type, int $user_id, int $expire = null): bool
     {
         if (is_null($expire)) {
@@ -56,6 +60,9 @@ class Mysql extends Driver
         return true;
     }
 
+    /**
+     * @throws Throwable
+     */
     public function get(string $token, bool $expirationException = true): array
     {
         $data = $this->handler->where('token', $this->getEncryptedToken($token))->find();
@@ -74,6 +81,9 @@ class Mysql extends Driver
         return $data;
     }
 
+    /**
+     * @throws Throwable
+     */
     public function check(string $token, string $type, int $user_id, bool $expirationException = true): bool
     {
         $data = $this->get($token, $expirationException);
@@ -81,12 +91,18 @@ class Mysql extends Driver
         return $data['type'] == $type && $data['user_id'] == $user_id;
     }
 
+    /**
+     * @throws Throwable
+     */
     public function delete(string $token): bool
     {
         $this->handler->where('token', $this->getEncryptedToken($token))->delete();
         return true;
     }
 
+    /**
+     * @throws Throwable
+     */
     public function clear(string $type, int $user_id): bool
     {
         $this->handler->where('type', $type)->where('user_id', $user_id)->delete();

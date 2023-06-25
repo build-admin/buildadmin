@@ -176,7 +176,7 @@ class Config extends Backend
             $mail->setSubject(__('This is a test email') . '-' . get_sys_config('site_name'));
             $mail->Body = __('Congratulations, receiving this email means that your email service has been configured correctly');
             $mail->send();
-        } catch (PHPMailerException $e) {
+        } catch (PHPMailerException) {
             $this->error($mail->ErrorInfo);
         }
         $this->success(__('Test mail sent successfully~'));

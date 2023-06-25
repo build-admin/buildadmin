@@ -3,13 +3,9 @@
 namespace app\admin\controller\user;
 
 use Throwable;
-use Exception;
 use ba\Random;
-use think\facade\Db;
 use app\common\controller\Backend;
 use app\admin\model\User as UserModel;
-use think\db\exception\PDOException;
-use think\exception\ValidateException;
 
 class User extends Backend
 {

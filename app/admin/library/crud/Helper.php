@@ -878,15 +878,15 @@ class Helper
         $key = self::formatObjectKey($key);
         if (is_array($item)) {
             $itemJson = ' ' . $key . ': {';
-            foreach ($item as $ik => $iitem) {
-                $itemJson .= self::buildTableColumnKey($ik, $iitem);
+            foreach ($item as $ik => $iItem) {
+                $itemJson .= self::buildTableColumnKey($ik, $iItem);
             }
             $itemJson = rtrim($itemJson, ',');
             $itemJson .= ' }';
         } else {
             if ($item === 'false') {
                 $itemJson = ' ' . $key . ': false,';
-            } elseif (in_array($key, ['label', 'width', 'buttons'], true) || strpos($item, "t('") === 0 || strpos($item, "t(\"") === 0) {
+            } elseif (in_array($key, ['label', 'width', 'buttons'], true) || str_starts_with($item, "t('") || str_starts_with($item, "t(\"")) {
                 $itemJson = ' ' . $key . ': ' . $item . ',';
             } else {
                 $itemJson = ' ' . $key . ': \'' . $item . '\',';

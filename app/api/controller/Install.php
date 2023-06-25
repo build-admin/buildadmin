@@ -78,6 +78,7 @@ class Install extends Api
 
     /**
      * 命令执行窗口
+     * @throws Throwable
      */
     public function terminal()
     {

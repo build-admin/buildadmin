@@ -5,9 +5,6 @@ namespace app\common\library;
 use Throwable;
 use app\admin\model\AdminRule;
 use app\admin\model\UserRule;
-use think\db\exception\DbException;
-use think\db\exception\DataNotFoundException;
-use think\db\exception\ModelNotFoundException;
 
 /**
  * 后台菜单类
