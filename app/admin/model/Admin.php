@@ -9,6 +9,14 @@ use think\facade\Config;
 
 /**
  * Admin模型
+ * @property int    $id              管理员ID
+ * @property string $username        管理员用户名
+ * @property string $nickname        管理员昵称
+ * @property string $email           管理员邮箱
+ * @property string $mobile          管理员手机号
+ * @property string $last_login_ip   上次登录IP
+ * @property string $last_login_time 上次登录时间
+ * @property int    $login_failure   登录失败次数
  */
 class Admin extends Model
 {

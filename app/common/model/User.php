@@ -6,6 +6,15 @@ use ba\Random;
 use think\Model;
 use think\facade\Config;
 
+/**
+ * 会员公共模型
+ * @property int    $id              会员ID
+ * @property string $password        密码密文
+ * @property string $salt            密码盐
+ * @property int    $login_failure   登录失败次数
+ * @property string $last_login_time 上次登录时间
+ * @property string $last_login_ip   上次登录IP
+ */
 class User extends Model
 {
     protected $autoWriteTimestamp = true;

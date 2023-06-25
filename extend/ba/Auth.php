@@ -2,10 +2,8 @@
 
 namespace ba;
 
+use Throwable;
 use think\facade\Db;
-use think\db\exception\DbException;
-use think\db\exception\DataNotFoundException;
-use think\db\exception\ModelNotFoundException;
 
 /**
  * 权限规则检测类
@@ -15,13 +13,13 @@ class Auth
     /**
      * 用户有权限的规则节点
      */
-    protected $rules = [];
+    protected array $rules = [];
 
     /**
      * 默认配置
      * @var array|string[]
      */
-    protected $config = [
+    protected array $config = [
         'auth_group'        => 'admin_group', // 用户组数据表名
         'auth_group_access' => 'admin_group_access', // 用户-用户组关系表
         'auth_rule'         => 'admin_rule', // 权限规则表
@@ -31,9 +29,10 @@ class Auth
      * 子菜单规则数组
      * @var array
      */
-    protected $childrens = [];
+    protected array $children = [];
 
     /**
+     * 构造方法
      * @param array $config
      */
     public function __construct(array $config = [])
@@ -42,10 +41,11 @@ class Auth
     }
 
     /**
+     * 魔术方法-获取当前配置
      * @param $name
-     * @return mixed|string
+     * @return mixed
      */
-    public function __get($name)
+    public function __get($name): mixed
     {
         return $this->config[$name];
     }
@@ -55,37 +55,37 @@ class Auth
      * @access public
      * @param int $uid 用户ID
      * @return array
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws Throwable
      */
     public function getMenus(int $uid): array
     {
         if (!$this->rules) {
             $this->getRuleList($uid);
         }
-        if (!$this->rules) {
-            return [];
-        }
+        if (!$this->rules) return [];
+
         foreach ($this->rules as $rule) {
-            $this->childrens[$rule['pid']][] = $rule;
+            $this->children[$rule['pid']][] = $rule;
         }
-        if (!isset($this->childrens[0])) {
+
+        // 没有根菜单规则
+        if (!isset($this->children[0])) {
             return [];
         }
 
-        return $this->getChildren($this->childrens[0]);
+        return $this->getChildren($this->children[0]);
     }
 
     /**
-     * 获取数组中所有菜单规则的子规则
+     * 获取传递的菜单规则的子规则
      * @param array $rules 菜单规则
+     * @return array
      */
     private function getChildren(array $rules): array
     {
         foreach ($rules as $key => $rule) {
-            if (array_key_exists($rule['id'], $this->childrens)) {
-                $rules[$key]['children'] = $this->getChildren($this->childrens[$rule['id']]);
+            if (array_key_exists($rule['id'], $this->children)) {
+                $rules[$key]['children'] = $this->getChildren($this->children[$rule['id']]);
             }
         }
         return $rules;
@@ -98,21 +98,19 @@ class Auth
      * @param string $relation 如果出现两个 name,是两个都通过(and)还是一个通过即可(or)
      * @param string $mode     如果不使用 url 则菜单规则name匹配到即通过
      * @return bool
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws Throwable
      */
     public function check(string $name, int $uid, string $relation = 'or', string $mode = 'url'): bool
     {
         // 获取用户需要验证的所有有效规则列表
-        $rulelist = $this->getRuleList($uid);
-        if (in_array('*', $rulelist)) {
+        $ruleList = $this->getRuleList($uid);
+        if (in_array('*', $ruleList)) {
             return true;
         }
 
         if ($name) {
             $name = strtolower($name);
-            if (strpos($name, ',') !== false) {
+            if (str_contains($name, ',')) {
                 $name = explode(',', $name);
             } else {
                 $name = [$name];
@@ -122,7 +120,7 @@ class Auth
         if ('url' == $mode) {
             $REQUEST = json_decode(strtolower(json_encode(request()->param(), JSON_UNESCAPED_UNICODE)), true);
         }
-        foreach ($rulelist as $rule) {
+        foreach ($ruleList as $rule) {
             $query = preg_replace('/^.+\?/U', '', $rule);
             if ('url' == $mode && $query != $rule) {
                 parse_str($query, $param); //解析规则中的param
@@ -153,9 +151,7 @@ class Auth
      * 获得权限规则列表
      * @param int $uid 用户id
      * @return array
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws Throwable
      */
     public function getRuleList(int $uid): array
     {
@@ -182,7 +178,8 @@ class Auth
             ->withoutField(['remark', 'status', 'weigh', 'update_time', 'create_time'])
             ->where($where)
             ->order('weigh desc,id asc')
-            ->select()->toArray();
+            ->select()
+            ->toArray();
 
         // 用户规则
         $rules = [];
@@ -203,9 +200,7 @@ class Auth
      * 获取权限规则ids
      * @param int $uid
      * @return array
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws Throwable
      */
     public function getRuleIds(int $uid): array
     {
@@ -222,9 +217,7 @@ class Auth
      * 获取用户所有分组和对应权限规则
      * @param int $uid
      * @return array
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws Throwable
      */
     public function getGroups(int $uid): array
     {
@@ -239,14 +232,16 @@ class Auth
                 ->join($this->config['auth_group'] . ' ag', 'aga.group_id = ag.id', 'LEFT')
                 ->field('aga.uid,aga.group_id,ag.id,ag.pid,ag.name,ag.rules')
                 ->where("aga.uid='$uid' and ag.status='1'")
-                ->select()->toArray();
+                ->select()
+                ->toArray();
         } else {
             $userGroups = Db::name('user')
                 ->alias('u')
                 ->join($this->config['auth_group'] . ' ag', 'u.group_id = ag.id', 'LEFT')
                 ->field('u.id as uid,u.group_id,ag.id,ag.name,ag.rules')
                 ->where("u.id='$uid' and ag.status='1'")
-                ->select()->toArray();
+                ->select()
+                ->toArray();
         }
 
         $groups[$uid] = $userGroups ?: [];
