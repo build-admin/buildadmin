@@ -3,7 +3,7 @@
 namespace ba;
 
 use DateTime;
-use Exception;
+use Throwable;
 use DateTimeZone;
 use DateTimeInterface;
 
@@ -23,18 +23,16 @@ class Date
     /**
      * 计算两个时区间相差的时长,单位为秒
      *
-     * $seconds = self::offset('America/Chicago', 'GMT');
-     *
      * [!!] A list of time zones that PHP supports can be found at
      * <http://php.net/timezones>.
-     *
-     * @param string      $remote timezone that to find the offset of
-     * @param string|null $local  timezone used as the baseline
-     * @param mixed|null  $now    UNIX timestamp or date string
-     * @return  integer
-     * @throws Exception
+     * @param string          $remote timezone that to find the offset of
+     * @param string|null     $local  timezone used as the baseline
+     * @param string|int|null $now    UNIX timestamp or date string
+     * @return  int
+     * @throws Throwable
+     * @example $seconds = self::offset('America/Chicago', 'GMT');
      */
-    public static function offset(string $remote, string $local = null, $now = null): int
+    public static function offset(string $remote, string $local = null, string|int $now = null): int
     {
         if ($local === null) {
             // Use the default timezone
@@ -63,10 +61,10 @@ class Date
      * @param int      $remote timestamp to find the span of
      * @param int|null $local  timestamp to use as the baseline
      * @param string   $output formatting string
-     * @return  array|string    associative list of all outputs requested|when only a single output is requested
+     * @return  bool|array|string    associative list of all outputs requested|when only a single output is requested
      * @from https://github.com/kohana/ohanzee-helpers/blob/master/src/Date.php
      */
-    public static function span(int $remote, int $local = null, string $output = 'years,months,weeks,days,hours,minutes,seconds')
+    public static function span(int $remote, int $local = null, string $output = 'years,months,weeks,days,hours,minutes,seconds'): bool|array|string
     {
         // Normalize output
         $output = trim(strtolower($output));
@@ -119,24 +117,25 @@ class Date
     /**
      * 格式化 UNIX 时间戳为人易读的字符串
      *
-     * @param int   $remote Unix 时间戳
-     * @param mixed $local  本地时间
-     *
-     * @return    string    格式化的日期字符串
+     * @param int  $remote Unix 时间戳
+     * @param ?int $local  本地时间
+     * @return string 格式化的日期字符串
      */
-    public static function human(int $remote, $local = null): string
+    public static function human(int $remote, ?int $local = null): string
     {
         $timeDiff = (is_null($local) ? time() : $local) - $remote;
-        $chunks   = array(
-            array(60 * 60 * 24 * 365, 'year'),
-            array(60 * 60 * 24 * 30, 'month'),
-            array(60 * 60 * 24 * 7, 'week'),
-            array(60 * 60 * 24, 'day'),
-            array(60 * 60, 'hour'),
-            array(60, 'minute'),
-            array(1, 'second')
-        );
+        $chunks   = [
+            [60 * 60 * 24 * 365, 'year'],
+            [60 * 60 * 24 * 30, 'month'],
+            [60 * 60 * 24 * 7, 'week'],
+            [60 * 60 * 24, 'day'],
+            [60 * 60, 'hour'],
+            [60, 'minute'],
+            [1, 'second'],
+        ];
 
+        $count = 0;
+        $name  = '';
         for ($i = 0, $j = count($chunks); $i < $j; $i++) {
             $seconds = $chunks[$i][0];
             $name    = $chunks[$i][1];
@@ -160,45 +159,28 @@ class Date
      * @param int|null $minute   基准分钟，默认为null，即以当前分钟为基准
      * @return int 处理后的Unix时间戳
      */
-    public static function unixtime(string $type = 'day', int $offset = 0, string $position = 'begin', int $year = null, int $month = null, int $day = null, int $hour = null, int $minute = null): int
+    public static function unixTime(string $type = 'day', int $offset = 0, string $position = 'begin', int $year = null, int $month = null, int $day = null, int $hour = null, int $minute = null): int
     {
         $year     = is_null($year) ? date('Y') : $year;
         $month    = is_null($month) ? date('m') : $month;
         $day      = is_null($day) ? date('d') : $day;
         $hour     = is_null($hour) ? date('H') : $hour;
         $minute   = is_null($minute) ? date('i') : $minute;
-        $position = in_array($position, array('begin', 'start', 'first', 'front'));
+        $position = in_array($position, ['begin', 'start', 'first', 'front']);
 
-        switch ($type) {
-            case 'minute':
-                $time = $position ? mktime($hour, $minute + $offset, 0, $month, $day, $year) : mktime($hour, $minute + $offset, 59, $month, $day, $year);
-                break;
-            case 'hour':
-                $time = $position ? mktime($hour + $offset, 0, 0, $month, $day, $year) : mktime($hour + $offset, 59, 59, $month, $day, $year);
-                break;
-            case 'day':
-                $time = $position ? mktime(0, 0, 0, $month, $day + $offset, $year) : mktime(23, 59, 59, $month, $day + $offset, $year);
-                break;
-            case 'week':
-                $time = $position ?
-                    mktime(0, 0, 0, $month, $day - date("w", mktime(0, 0, 0, $month, $day, $year)) + 1 - 7 * (-$offset), $year) :
-                    mktime(23, 59, 59, $month, $day - date("w", mktime(0, 0, 0, $month, $day, $year)) + 7 - 7 * (-$offset), $year);
-                break;
-            case 'month':
-                $time = $position ? mktime(0, 0, 0, $month + $offset, 1, $year) : mktime(23, 59, 59, $month + $offset, cal_days_in_month(CAL_GREGORIAN, $month + $offset, $year), $year);
-                break;
-            case 'quarter':
-                $time = $position ?
-                    mktime(0, 0, 0, 1 + ((ceil(date('n', mktime(0, 0, 0, $month, $day, $year)) / 3) + $offset) - 1) * 3, 1, $year) :
-                    mktime(23, 59, 59, (ceil(date('n', mktime(0, 0, 0, $month, $day, $year)) / 3) + $offset) * 3, cal_days_in_month(CAL_GREGORIAN, (ceil(date('n', mktime(0, 0, 0, $month, $day, $year)) / 3) + $offset) * 3, $year), $year);
-                break;
-            case 'year':
-                $time = $position ? mktime(0, 0, 0, 1, 1, $year + $offset) : mktime(23, 59, 59, 12, 31, $year + $offset);
-                break;
-            default:
-                $time = mktime($hour, $minute, 0, $month, $day, $year);
-                break;
-        }
-        return $time;
+        return match ($type) {
+            'minute' => $position ? mktime($hour, $minute + $offset, 0, $month, $day, $year) : mktime($hour, $minute + $offset, 59, $month, $day, $year),
+            'hour' => $position ? mktime($hour + $offset, 0, 0, $month, $day, $year) : mktime($hour + $offset, 59, 59, $month, $day, $year),
+            'day' => $position ? mktime(0, 0, 0, $month, $day + $offset, $year) : mktime(23, 59, 59, $month, $day + $offset, $year),
+            'week' => $position ?
+                mktime(0, 0, 0, $month, $day - date("w", mktime(0, 0, 0, $month, $day, $year)) + 1 - 7 * (-$offset), $year) :
+                mktime(23, 59, 59, $month, $day - date("w", mktime(0, 0, 0, $month, $day, $year)) + 7 - 7 * (-$offset), $year),
+            'month' => $position ? mktime(0, 0, 0, $month + $offset, 1, $year) : mktime(23, 59, 59, $month + $offset, cal_days_in_month(CAL_GREGORIAN, $month + $offset, $year), $year),
+            'quarter' => $position ?
+                mktime(0, 0, 0, 1 + ((ceil(date('n', mktime(0, 0, 0, $month, $day, $year)) / 3) + $offset) - 1) * 3, 1, $year) :
+                mktime(23, 59, 59, (ceil(date('n', mktime(0, 0, 0, $month, $day, $year)) / 3) + $offset) * 3, cal_days_in_month(CAL_GREGORIAN, (ceil(date('n', mktime(0, 0, 0, $month, $day, $year)) / 3) + $offset) * 3, $year), $year),
+            'year' => $position ? mktime(0, 0, 0, 1, 1, $year + $offset) : mktime(23, 59, 59, 12, 31, $year + $offset),
+            default => mktime($hour, $minute, 0, $month, $day, $year),
+        };
     }
 }

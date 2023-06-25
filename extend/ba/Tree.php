@@ -8,21 +8,22 @@ namespace ba;
 class Tree
 {
     /**
-     * @var Tree
+     * 实例
+     * @var ?Tree
      */
-    protected static $instance;
+    protected static ?Tree $instance = null;
 
     /**
      * 生成树型结构所需修饰符号
      * @var array
      */
-    public static $icon = array('│', '├', '└');
+    public static array $icon = array('│', '├', '└');
 
     /**
      * 子级数据（树枝）
      * @var array
      */
-    protected $childrens = [];
+    protected array $children = [];
 
 
     /**
@@ -44,7 +45,7 @@ class Tree
      * @param array  $arr         要改为树状的数组
      * @param string $field       '树枝'字段
      * @param int    $level       递归数组层次,无需手动维护
-     * @param false  $superiorEnd 递归上一级树枝是否结束,无需手动维护
+     * @param bool   $superiorEnd 递归上一级树枝是否结束,无需手动维护
      * @return array
      */
     public static function getTreeArray(array $arr, string $field = 'name', int $level = 0, bool $superiorEnd = false): array
@@ -98,14 +99,14 @@ class Tree
     {
         if (!$data) return [];
 
-        $pks             = [];
-        $topLevelData    = []; // 顶级数据
-        $this->childrens = []; // 置空子级数据
+        $pks            = [];
+        $topLevelData   = []; // 顶级数据
+        $this->children = []; // 置空子级数据
         foreach ($data as $item) {
             $pks[] = $item[$pk];
 
             // 以pid组成children
-            $this->childrens[$item[$pid]][] = $item;
+            $this->children[$item[$pid]][] = $item;
         }
         // 上级不存在的就是顶级，只获取它们的 children
         foreach ($data as $item) {
@@ -114,9 +115,9 @@ class Tree
             }
         }
 
-        if (count($this->childrens) > 0) {
+        if (count($this->children) > 0) {
             foreach ($topLevelData as $key => $item) {
-                $topLevelData[$key]['children'] = $this->getChildren($this->childrens[$item[$pk]] ?? [], $pk);
+                $topLevelData[$key]['children'] = $this->getChildren($this->children[$item[$pk]] ?? [], $pk);
             }
             return $topLevelData;
         } else {
@@ -135,8 +136,8 @@ class Tree
     {
         if (!$data) return [];
         foreach ($data as $key => $item) {
-            if (array_key_exists($item[$pk], $this->childrens)) {
-                $data[$key]['children'] = $this->getChildren($this->childrens[$item[$pk]], $pk);
+            if (array_key_exists($item[$pk], $this->children)) {
+                $data[$key]['children'] = $this->getChildren($this->children[$item[$pk]], $pk);
             }
         }
         return $data;

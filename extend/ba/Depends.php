@@ -2,6 +2,7 @@
 
 namespace ba;
 
+use Throwable;
 use think\Exception;
 
 /**
@@ -10,33 +11,23 @@ use think\Exception;
 class Depends
 {
     /**
-     * 类型
-     * @value npm | composer
-     */
-    protected $type = '';
-
-    /**
-     * json 文件完整路径
-     */
-    protected $json = null;
-
-    /**
      * json 文件内容
+     * @var array
      */
-    protected $jsonContent = null;
+    protected array $jsonContent = [];
 
-    public function __construct(string $json, string $type = 'npm')
+    public function __construct(protected string $json, protected string $type = 'npm')
     {
-        $this->json = $json;
-        $this->type = $type;
+
     }
 
     /**
      * 获取 json 文件内容
      * @param bool $realTime 获取实时内容
-     * @throws Exception
+     * @return array
+     * @throws Throwable
      */
-    public function getContent(bool $realTime = false)
+    public function getContent(bool $realTime = false): array
     {
         if (!file_exists($this->json)) {
             throw new Exception($this->json . ' file does not exist!');
@@ -53,9 +44,9 @@ class Depends
     /**
      * 设置 json 文件内容
      * @param array $content
-     * @throws Exception
+     * @throws Throwable
      */
-    public function setContent(array $content = [])
+    public function setContent(array $content = []): void
     {
         if (!$content) $content = $this->jsonContent;
         if (!isset($content['name'])) {
@@ -71,13 +62,14 @@ class Depends
     /**
      * 获取依赖项
      * @param bool $devEnv 是否是获取开发环境依赖
-     * @throws Exception
+     * @return array
+     * @throws Throwable
      */
-    public function getDepends(bool $devEnv = false)
+    public function getDepends(bool $devEnv = false): array
     {
         try {
             $content = $this->getContent();
-        } catch (Exception $e) {
+        } catch (Throwable) {
             return [];
         }
 
@@ -92,9 +84,10 @@ class Depends
      * 是否存在某个依赖
      * @param string $name   依赖名称
      * @param bool   $devEnv 是否是获取开发环境依赖
-     * @throws Exception
+     * @return bool|string false或者依赖版本号
+     * @throws Throwable
      */
-    public function hasDepend(string $name, bool $devEnv = false)
+    public function hasDepend(string $name, bool $devEnv = false): bool|string
     {
         $depends = $this->getDepends($devEnv);
         return $depends[$name] ?? false;
@@ -105,16 +98,17 @@ class Depends
      * @param array $depends 要添加的依赖数组["xxx" => ">=7.1.0",]
      * @param bool  $devEnv  是否添加为开发环境依赖
      * @param bool  $cover   覆盖模式
-     * @throws Exception
+     * @return void
+     * @throws Throwable
      */
-    public function addDepends(array $depends, bool $devEnv = false, bool $cover = false)
+    public function addDepends(array $depends, bool $devEnv = false, bool $cover = false): void
     {
         $content = $this->getContent(true);
         $dKey    = $devEnv ? ($this->type == 'npm' ? 'devDependencies' : 'require-dev') : ($this->type == 'npm' ? 'dependencies' : 'require');
         if (!$cover) {
             foreach ($depends as $key => $item) {
                 if (isset($content[$dKey][$key])) {
-                    throw new Exception($key . ' dependencie already exists!');
+                    throw new Exception($key . ' depend already exists!');
                 }
             }
         }
@@ -124,11 +118,12 @@ class Depends
 
     /**
      * 删除依赖
-     * @param array $depends 要删除的依赖数组["php", "w7corp/easywechat"]
+     * @param array $depends 要删除的依赖数组["php", "w7corp/easyWechat"]
      * @param bool  $devEnv  是否为开发环境删除依赖
-     * @throws Exception
+     * @return void
+     * @throws Throwable
      */
-    public function removeDepends(array $depends, bool $devEnv = false)
+    public function removeDepends(array $depends, bool $devEnv = false): void
     {
         $content = $this->getContent(true);
         $dKey    = $devEnv ? ($this->type == 'npm' ? 'devDependencies' : 'require-dev') : ($this->type == 'npm' ? 'dependencies' : 'require');

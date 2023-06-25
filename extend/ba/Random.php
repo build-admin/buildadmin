@@ -22,7 +22,7 @@ class Random
 
     /**
      * 随机字符生成
-     * @param string $type 类型 alpha/alnum/numeric/nozero/unique/md5/encrypt/sha1
+     * @param string $type 类型 alpha/alnum/numeric/noZero/unique/md5/encrypt/sha1
      * @param int    $len  长度
      * @return string
      */
@@ -32,21 +32,14 @@ class Random
             case 'alpha':
             case 'alnum':
             case 'numeric':
-            case 'nozero':
-                switch ($type) {
-                    case 'alpha':
-                        $pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                        break;
-                    case 'alnum':
-                        $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                        break;
-                    case 'numeric':
-                        $pool = '0123456789';
-                        break;
-                    case 'nozero':
-                        $pool = '123456789';
-                        break;
-                }
+            case 'noZero':
+                $pool = match ($type) {
+                    'alpha' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                    'alnum' => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                    'numeric' => '0123456789',
+                    'noZero' => '123456789',
+                    default => '',
+                };
                 return substr(str_shuffle(str_repeat($pool, ceil($len / strlen($pool)))), 0, $len);
             case 'unique':
             case 'md5':

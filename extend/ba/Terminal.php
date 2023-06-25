@@ -11,22 +11,20 @@
 
 namespace ba;
 
+use Throwable;
 use think\Response;
-use app\admin\library\module\Manage;
 use think\facade\Config;
 use think\facade\Cookie;
 use app\admin\library\Auth;
+use app\admin\library\module\Manage;
 use think\exception\HttpResponseException;
-use think\db\exception\DataNotFoundException;
-use think\db\exception\DbException;
-use think\db\exception\ModelNotFoundException;
 
 class Terminal
 {
     /**
-     * @var Terminal|null 对象实例
+     * @var ?Terminal 对象实例
      */
-    protected static Terminal|null $instance = null;
+    protected static ?Terminal $instance = null;
 
     /**
      * @var string 当前执行的命令 $command 的 key
@@ -39,7 +37,7 @@ class Terminal
     protected array $descriptorsPec = [];
 
     /**
-     * @var resource|false proc_open 返回的 resource
+     * @var resource|bool proc_open 返回的 resource
      */
     protected $process = false;
 
@@ -129,7 +127,7 @@ class Terminal
     /**
      * 获取命令
      * @param string $key 命令key
-     * @return array|false
+     * @return array|bool
      */
     public static function getCommand(string $key): bool|array
     {
@@ -168,9 +166,7 @@ class Terminal
     /**
      * 执行命令
      * @param bool $authentication 是否鉴权
-     * @throws ModelNotFoundException
-     * @throws DataNotFoundException
-     * @throws DbException
+     * @throws Throwable
      */
     public function exec(bool $authentication = true): void
     {
@@ -222,6 +218,10 @@ class Terminal
         $this->outputFlag('exec-completed');
     }
 
+    /**
+     * 获取执行状态
+     * @throws Throwable
+     */
     public function getProcStatus(): bool
     {
         $status = proc_get_status($this->process);
@@ -289,6 +289,7 @@ class Terminal
     /**
      * 成功后回调
      * @return bool
+     * @throws Throwable
      */
     public function successCallback(): bool
     {
@@ -369,7 +370,7 @@ class Terminal
      * 执行一个命令并以字符串的方式返回执行输出
      * 代替 exec 使用，这样就只需要解除 proc_open 的函数禁用了
      * @param $commandKey
-     * @return string | bool
+     * @return string|bool
      */
     public static function getOutputFromProc($commandKey): bool|string
     {
