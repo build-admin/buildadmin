@@ -287,6 +287,9 @@ const onButtonClick = (btn: OptButton) => {
 }
 
 const getTagType = (value: string, custom: any): TagProps['type'] => {
+    if (custom && custom['tagType']) {
+        return custom['tagType']
+    }
     return custom && custom[value] ? custom[value] : ''
 }
 </script>
