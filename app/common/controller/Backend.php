@@ -200,7 +200,7 @@ class Backend extends Api
             foreach ($quickSearchArr as $k => $v) {
                 $quickSearchArr[$k] = stripos($v, ".") === false ? $tableAlias . $v : $v;
             }
-            $where[] = [implode("|", $quickSearchArr), "LIKE", "%{$quickSearch}%"];
+            $where[] = [implode("|", $quickSearchArr), "LIKE", '%' . str_replace('%', '\%', $quickSearch) . '%'];
         }
         if ($initValue) {
             $where[] = [$initKey, 'in', $initValue];
@@ -282,7 +282,7 @@ class Backend extends Api
                     break;
                 case 'LIKE':
                 case 'NOT LIKE':
-                    $where[] = [$fieldName, $field['operator'], "%{$field['val']}%"];
+                    $where[] = [$fieldName, $field['operator'], '%' . str_replace('%', '\%', $field['val']) . '%'];
                     break;
                 case '>':
                 case '>=':
