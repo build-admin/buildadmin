@@ -4,6 +4,7 @@ namespace app\common\library;
 
 use Throwable;
 use ba\Random;
+use think\facade\Db;
 use think\facade\Event;
 use think\facade\Config;
 use app\common\model\User;
@@ -187,16 +188,16 @@ class Auth extends \ba\Auth
         ];
         $data = array_merge($params, $data);
         $data = array_merge($data, $extend);
-        $this->model->startTrans();
+        Db::startTrans();
         try {
             $this->model = User::create($data);
             $this->token = Random::uuid();
             Token::set($this->token, 'user', $this->model->id, $this->keepTime);
-            $this->model->commit();
+            Db::commit();
             Event::trigger('userRegisterSuccess', $this->model);
         } catch (Throwable $e) {
             $this->setError($e->getMessage());
-            $this->model->rollback();
+            Db::rollback();
             return false;
         }
         return true;
