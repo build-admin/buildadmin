@@ -61,10 +61,10 @@ class Ajax extends Backend
         if (!$table) {
             $this->error(__('Parameter error'));
         }
-        $tablePk = Db::query("SHOW TABLE STATUS LIKE `$table`", [], true);
+        $tablePk = Db::query("SHOW TABLE STATUS LIKE '$table'", [], true);
         if (!$tablePk) {
             $table   = config('database.connections.mysql.prefix') . $table;
-            $tablePk = Db::query("SHOW TABLE STATUS LIKE `$table`", [], true);
+            $tablePk = Db::query("SHOW TABLE STATUS LIKE '$table'", [], true);
             if (!$tablePk) {
                 $this->error(__('Data table does not exist'));
             }

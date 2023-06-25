@@ -181,6 +181,7 @@ class Rule extends Backend
 
     /**
      * 重写select方法
+     * @throws Throwable
      */
     public function select(): void
     {

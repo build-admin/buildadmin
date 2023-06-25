@@ -2,8 +2,8 @@
 
 namespace app\common\library;
 
+use Throwable;
 use think\facade\Lang;
-use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 /**
@@ -14,13 +14,15 @@ class Email extends PHPMailer
 {
     /**
      * 是否已在管理后台配置好邮件服务
+     * @var bool
      */
-    public $configured = false;
+    public bool $configured = false;
 
     /**
      * 默认配置
+     * @var array
      */
-    public $options = [
+    public array $options = [
         'charset' => 'utf-8', //编码格式
         'debug'   => true, //调式模式
         'lang'    => 'zh_cn',
@@ -29,16 +31,16 @@ class Email extends PHPMailer
     /**
      * 构造函数
      * @param array $options
-     * @throws Exception
+     * @throws Throwable
      */
     public function __construct(array $options = [])
     {
         $this->options = array_merge($this->options, $options);
 
         parent::__construct($this->options['debug']);
-        $langset = Lang::getLangSet();
-        if ($langset == 'zh-cn' || !$langset) $langset = 'zh_cn';
-        $this->options['lang'] = $this->options['lang'] ?: $langset;
+        $langSet = Lang::getLangSet();
+        if ($langSet == 'zh-cn' || !$langSet) $langSet = 'zh_cn';
+        $this->options['lang'] = $this->options['lang'] ?: $langSet;
 
         $this->setLanguage($this->options['lang'], root_path() . 'vendor' . DIRECTORY_SEPARATOR . 'phpmailer' . DIRECTORY_SEPARATOR . 'phpmailer' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR);
         $this->CharSet = $this->options['charset'];

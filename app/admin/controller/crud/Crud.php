@@ -7,6 +7,7 @@ use ba\Filesystem;
 use think\facade\Db;
 use app\admin\model\CrudLog;
 use app\common\library\Menu;
+use app\admin\model\AdminLog;
 use app\common\controller\Backend;
 use app\admin\library\crud\Helper;
 
@@ -293,6 +294,9 @@ class Crud extends Backend
         if (!$info) {
             $this->error(__('Record not found'));
         }
+
+        AdminLog::setTitle(__('Log start'));
+
         $this->success('', [
             'table'  => $info['table'],
             'fields' => $info['fields']
@@ -413,6 +417,7 @@ class Crud extends Backend
      */
     public function parseFieldData()
     {
+        AdminLog::setTitle(__('Parse field data'));
         $type  = $this->request->post('type');
         $table = $this->request->post('table');
         if ($type == 'db') {
@@ -441,6 +446,8 @@ class Crud extends Backend
         if (!$table) {
             $this->error(__('Parameter error'));
         }
+
+        AdminLog::setTitle(__('Generate check'));
 
         try {
             if (!$controllerFile) {

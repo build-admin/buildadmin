@@ -2,6 +2,7 @@
 
 namespace app\common\model;
 
+use Throwable;
 use think\Model;
 use think\facade\Cache;
 use app\admin\model\Config as adminConfigModel;
@@ -10,6 +11,7 @@ class Config extends Model
 {
     /**
      * 添加系统配置分组
+     * @throws Throwable
      */
     public static function addConfigGroup(string $key, string $value): bool
     {
@@ -18,6 +20,7 @@ class Config extends Model
 
     /**
      * 删除系统配置分组
+     * @throws Throwable
      */
     public static function removeConfigGroup(string $key): bool
     {
@@ -26,6 +29,7 @@ class Config extends Model
 
     /**
      * 添加系统快捷配置入口
+     * @throws Throwable
      */
     public static function addQuickEntrance(string $key, string $value): bool
     {
@@ -34,6 +38,7 @@ class Config extends Model
 
     /**
      * 删除系统快捷配置入口
+     * @throws Throwable
      */
     public static function removeQuickEntrance(string $key): bool
     {
@@ -42,6 +47,7 @@ class Config extends Model
 
     /**
      * 为Array类型的配置项添加元素
+     * @throws Throwable
      */
     public static function addArrayItem(string $name, string $key, string $value): bool
     {
@@ -59,6 +65,7 @@ class Config extends Model
 
     /**
      * 删除Array类型配置项的一个元素
+     * @throws Throwable
      */
     public static function removeArrayItem(string $name, string $key): bool
     {

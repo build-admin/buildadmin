@@ -134,7 +134,6 @@ class Backend extends Api
     /**
      * 初始化
      * @throws Throwable
-     * @throws PDOException
      */
     public function initialize(): void
     {

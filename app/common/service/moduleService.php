@@ -2,9 +2,9 @@
 
 namespace app\common\service;
 
-use app\admin\library\module\Server;
 use think\Service;
 use think\facade\Event;
+use app\admin\library\module\Server;
 
 class moduleService extends Service
 {

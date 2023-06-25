@@ -13,26 +13,30 @@ use InvalidArgumentException;
 class Token
 {
     /**
-     * @var Token 实例
+     * Token 实例
+     * @var array
+     * @uses Token 数组项
      */
-    public $instance = [];
+    public array $instance = [];
 
     /**
-     * @var object token驱动类句柄
+     * token驱动类句柄
+     * @var ?object
      */
-    public $handler;
+    public ?object $handler = null;
 
     /**
      * 驱动类命名空间
+     * @var string
      */
-    protected $namespace = '\\app\\common\\library\\token\\driver\\';
+    protected string $namespace = '\\app\\common\\library\\token\\driver\\';
 
     /**
      * 获取驱动句柄
      * @param string|null $name
-     * @return mixed|object
+     * @return object
      */
-    public function getDriver(string $name = null)
+    public function getDriver(string $name = null): object
     {
         if (!is_null($this->handler)) {
             return $this->handler;
@@ -52,11 +56,11 @@ class Token
     /**
      * 创建驱动句柄
      * @param string $name
-     * @return mixed
+     * @return object
      */
-    protected function createDriver(string $name)
+    protected function createDriver(string $name): object
     {
-        $type = (string)$this->resolveType($name);
+        $type = $this->resolveType($name);
 
         $method = 'create' . Str::studly($type) . 'Driver';
 
@@ -86,11 +90,11 @@ class Token
 
     /**
      * 获取驱动配置
-     * @param string|null $name
+     * @param string|null $name 要获取的配置项，不传递获取完整token配置
      * @param null        $default
-     * @return mixed
+     * @return array|string
      */
-    protected function getConfig(string $name = null, $default = null)
+    protected function getConfig(string $name = null, $default = null): array|string
     {
         if (!is_null($name)) {
             return Config::get('buildadmin.token.' . $name, $default);
@@ -117,8 +121,8 @@ class Token
      */
     protected function resolveClass(string $type): string
     {
-        if ($this->namespace || false !== strpos($type, '\\')) {
-            $class = false !== strpos($type, '\\') ? $type : $this->namespace . Str::studly($type);
+        if ($this->namespace || str_contains($type, '\\')) {
+            $class = str_contains($type, '\\') ? $type : $this->namespace . Str::studly($type);
 
             if (class_exists($class)) {
                 return $class;
@@ -135,9 +139,9 @@ class Token
      * @param null        $default
      * @return array|string
      */
-    protected function getStoreConfig(string $store, string $name = null, $default = null)
+    protected function getStoreConfig(string $store, string $name = null, $default = null): array|string
     {
-        if ($config = $this->getConfig("stores.{$store}")) {
+        if ($config = $this->getConfig("stores.$store")) {
             return Arr::get($config, $name, $default);
         }
 
@@ -147,9 +151,9 @@ class Token
     /**
      * 获取驱动类型
      * @param string $name
-     * @return array|string
+     * @return string
      */
-    protected function resolveType(string $name)
+    protected function resolveType(string $name): string
     {
         return $this->getStoreConfig($name, 'type', 'Mysql');
     }

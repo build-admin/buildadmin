@@ -2,6 +2,7 @@
 
 namespace app\common\library;
 
+use Throwable;
 use app\admin\model\AdminRule;
 use app\admin\model\UserRule;
 use think\db\exception\DbException;
@@ -18,11 +19,10 @@ class Menu
      * @param int|string $parent   父级规则name或id
      * @param string     $mode     添加模式(规则重复时):cover=覆盖旧菜单,rename=重命名新菜单,ignore=忽略
      * @param string     $position 位置:backend=后台,frontend=前台
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @return void
+     * @throws Throwable
      */
-    public static function create(array $menu, $parent = 0, string $mode = 'cover', string $position = 'backend')
+    public static function create(array $menu, int|string $parent = 0, string $mode = 'cover', string $position = 'backend'): void
     {
         $pid        = 0;
         $model      = $position == 'backend' ? new AdminRule() : new UserRule();
@@ -69,11 +69,9 @@ class Menu
      * @param bool       $recursion 是否递归删除子级菜单、是否删除自身，是否删除上级空菜单
      * @param string     $position  位置:backend=后台,frontend=前台
      * @return bool
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws Throwable
      */
-    public static function delete($id, bool $recursion = false, string $position = 'backend'): bool
+    public static function delete(string|int $id, bool $recursion = false, string $position = 'backend'): bool
     {
         if (!$id) {
             return true;
@@ -103,11 +101,9 @@ class Menu
      * @param string|int $id       规则name或id
      * @param string     $position 位置:backend=后台,frontend=前台
      * @return bool
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws Throwable
      */
-    public static function enable($id, string $position = 'backend'): bool
+    public static function enable(string|int $id, string $position = 'backend'): bool
     {
         $model    = $position == 'backend' ? new AdminRule() : new UserRule();
         $menuRule = $model->where((is_numeric($id) ? 'id' : 'name'), $id)->find();
@@ -124,11 +120,9 @@ class Menu
      * @param string|int $id       规则name或id
      * @param string     $position 位置:backend=后台,frontend=前台
      * @return bool
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
+     * @throws Throwable
      */
-    public static function disable($id, string $position = 'backend'): bool
+    public static function disable(string|int $id, string $position = 'backend'): bool
     {
         $model    = $position == 'backend' ? new AdminRule() : new UserRule();
         $menuRule = $model->where((is_numeric($id) ? 'id' : 'name'), $id)->find();

@@ -35,7 +35,8 @@ class Security
 
                 $recycleData    = Db::name($recycle['data_table'])
                     ->whereIn($recycle['primary_key'], $dataIds)
-                    ->select()->toArray();
+                    ->select()
+                    ->toArray();
                 $recycleDataArr = [];
                 $auth           = Auth::instance();
                 $adminId        = $auth->isLogin() ? $auth->id : 0;

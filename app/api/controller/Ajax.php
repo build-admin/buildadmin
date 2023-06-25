@@ -32,6 +32,10 @@ class Ajax extends Frontend
         ]);
     }
 
+    /**
+     * 省份地区数据
+     * @throws Throwable
+     */
     public function area()
     {
         $this->success('', get_area());

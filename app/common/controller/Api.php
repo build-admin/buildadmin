@@ -2,6 +2,7 @@
 
 namespace app\common\controller;
 
+use Throwable;
 use think\App;
 use think\Response;
 use app\BaseController;
@@ -34,6 +35,7 @@ class Api extends BaseController
     /**
      * 控制器初始化方法
      * @access protected
+     * @throws Throwable
      */
     protected function initialize(): void
     {

@@ -3,7 +3,6 @@
 namespace app\admin\library\traits;
 
 use Throwable;
-use think\facade\Db;
 use think\facade\Config;
 
 /**

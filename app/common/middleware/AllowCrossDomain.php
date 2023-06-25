@@ -23,7 +23,7 @@ use think\facade\Config;
  */
 class AllowCrossDomain
 {
-    protected $header = [
+    protected array $header = [
         'Access-Control-Allow-Credentials' => 'true',
         'Access-Control-Max-Age'           => 1800,
         'Access-Control-Allow-Methods'     => 'GET, POST, PATCH, PUT, DELETE, OPTIONS',

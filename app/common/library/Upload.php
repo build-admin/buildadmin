@@ -2,6 +2,7 @@
 
 namespace app\common\library;
 
+use Throwable;
 use ba\Random;
 use think\File;
 use think\Exception;
@@ -18,38 +19,38 @@ class Upload
      * 配置信息
      * @var array
      */
-    protected $config = [];
+    protected array $config = [];
 
     /**
-     * @var UploadedFile
+     * @var ?UploadedFile
      */
-    protected $file = null;
+    protected ?UploadedFile $file = null;
 
     /**
      * 是否是图片
      * @var bool
      */
-    protected $isImage = false;
+    protected bool $isImage = false;
 
     /**
      * 文件信息
-     * @var null
+     * @var array
      */
-    protected $fileInfo = null;
+    protected array $fileInfo;
 
     /**
-     * 细目
+     * 细目（存储目录）
      * @var string
      */
-    protected $topic = 'default';
+    protected string $topic = 'default';
 
     /**
      * 构造方法
-     * @param UploadedFile|null $file
-     * @param array             $config
-     * @throws Exception
+     * @param ?UploadedFile $file   上传的文件
+     * @param array         $config 配置
+     * @throws Throwable
      */
-    public function __construct(UploadedFile $file = null, array $config = [])
+    public function __construct(?UploadedFile $file = null, array $config = [])
     {
         $this->config = Config::get('upload');
         if ($config) {
@@ -64,9 +65,10 @@ class Upload
     /**
      * 设置文件
      * @param UploadedFile $file
-     * @throws Exception
+     * @return array 文件信息
+     * @throws Throwable
      */
-    public function setFile(UploadedFile $file)
+    public function setFile(UploadedFile $file): array
     {
         if (empty($file)) {
             throw new Exception(__('No files were uploaded'), 10001);
@@ -82,18 +84,19 @@ class Upload
 
         $this->file     = $file;
         $this->fileInfo = $fileInfo;
+        return $fileInfo;
     }
 
     /**
-     * 检查文件类型
+     * 检查文件类型是否允许上传
      * @return bool
-     * @throws Exception
+     * @throws Throwable
      */
     protected function checkMimetype(): bool
     {
         $mimetypeArr = explode(',', strtolower($this->config['mimetype']));
         $typeArr     = explode('/', $this->fileInfo['type']);
-        //验证文件后缀
+        // 验证文件后缀
         if ($this->config['mimetype'] === '*'
             || in_array($this->fileInfo['suffix'], $mimetypeArr) || in_array('.' . $this->fileInfo['suffix'], $mimetypeArr)
             || in_array($this->fileInfo['type'], $mimetypeArr) || in_array($typeArr[0] . "/*", $mimetypeArr)) {
@@ -105,7 +108,7 @@ class Upload
     /**
      * 是否是图片并设置好相关属性
      * @return bool
-     * @throws Exception
+     * @throws Throwable
      */
     protected function checkIsImage(): bool
     {
@@ -132,10 +135,10 @@ class Upload
     }
 
     /**
-     * 检查文件大小
-     * @throws Exception
+     * 检查文件大小是否允许上传
+     * @throws Throwable
      */
-    protected function checkSize()
+    protected function checkSize(): void
     {
         $size = file_unit_to_byte($this->config['maxsize']);
         if ($this->fileInfo['size'] > $size) {
@@ -148,21 +151,21 @@ class Upload
 
     /**
      * 获取文件后缀
-     * @return mixed|string
+     * @return string
      */
-    public function getSuffix()
+    public function getSuffix(): string
     {
         return $this->fileInfo['suffix'] ?: 'file';
     }
 
     /**
      * 获取文件保存名
-     * @param string|null $saveName
-     * @param string|null $filename
-     * @param string|null $sha1
-     * @return array|mixed|string|string[]
+     * @param ?string $saveName
+     * @param ?string $filename
+     * @param ?string $sha1
+     * @return string
      */
-    public function getSaveName(string $saveName = null, string $filename = null, string $sha1 = null)
+    public function getSaveName(?string $saveName = null, ?string $filename = null, ?string $sha1 = null): string
     {
         if ($filename) {
             $suffix = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
@@ -193,13 +196,13 @@ class Upload
 
     /**
      * 上传文件
-     * @param string|null $saveName
-     * @param int         $adminId
-     * @param int         $userId
+     * @param ?string $saveName
+     * @param int     $adminId
+     * @param int     $userId
      * @return array
-     * @throws Exception
+     * @throws Throwable
      */
-    public function upload(string $saveName = null, int $adminId = 0, int $userId = 0): array
+    public function upload(?string $saveName = null, int $adminId = 0, int $userId = 0): array
     {
         if (empty($this->file)) {
             throw new Exception(__('No files have been uploaded or the file size exceeds the upload limit of the server'));

@@ -235,7 +235,6 @@ class Auth extends \ba\Auth
             $this->model->save();
 
             $this->token   = '';
-            $this->model   = null;
             $this->loginEd = false;
             $this->model->commit();
         } catch (Throwable $e) {
@@ -243,6 +242,7 @@ class Auth extends \ba\Auth
             $this->setError($e->getMessage());
             return false;
         }
+        $this->model = null;
         return true;
     }
 

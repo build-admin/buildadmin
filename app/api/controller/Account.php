@@ -6,7 +6,6 @@ use ba\Date;
 use Throwable;
 use ba\Captcha;
 use ba\Random;
-use think\facade\Db;
 use app\common\model\User;
 use think\facade\Validate;
 use app\common\facade\Token;
@@ -49,20 +48,25 @@ class Account extends Frontend
         ]);
     }
 
+    /**
+     * 会员资料
+     * @throws Throwable
+     */
     public function profile()
     {
         if ($this->request->isPost()) {
             $data = $this->request->only(['id', 'avatar', 'username', 'nickname', 'gender', 'birthday', 'motto']);
             if (!isset($data['birthday'])) $data['birthday'] = null;
 
-            Db::startTrans();
+            $model = $this->auth->getUser();
+            $model->startTrans();
             try {
                 $validate = new AccountValidate();
                 $validate->scene('edit')->check($data);
-                $this->auth->getUser()->where('id', $this->auth->id)->update($data);
-                Db::commit();
+                $model->where('id', $this->auth->id)->update($data);
+                $model->commit();
             } catch (Throwable $e) {
-                Db::rollback();
+                $model->rollback();
                 $this->error($e->getMessage());
             }
 
@@ -79,6 +83,7 @@ class Account extends Frontend
      * 此处检查的验证码是通过 api/Ems或api/Sms发送的
      * 验证成功后，向前端返回一个 email-pass Token或着 mobile-pass Token
      * 在 changBind 方法中，通过 pass Token来确定用户已经通过了账户验证（用户未绑定邮箱/手机时通过账户密码验证）
+     * @throws Throwable
      */
     public function verification()
     {
@@ -98,6 +103,7 @@ class Account extends Frontend
     /**
      * 修改绑定信息（手机号、邮箱）
      * 通过 pass Token来确定用户已经通过了账户验证，也就是以上的 verification 方法，同时用户未绑定邮箱/手机时通过账户密码验证
+     * @throws Throwable
      */
     public function changeBind()
     {
@@ -155,14 +161,15 @@ class Account extends Frontend
                 $this->error(__('Old password error'));
             }
 
-            Db::startTrans();
+            $model = $this->auth->getUser();
+            $model->startTrans();
             try {
                 $validate = new AccountValidate();
                 $validate->scene('changePassword')->check(['password' => $params['newPassword']]);
-                $this->auth->getUser()->resetPassword($this->auth->id, $params['newPassword']);
-                Db::commit();
+                $model->resetPassword($this->auth->id, $params['newPassword']);
+                $model->commit();
             } catch (Throwable $e) {
-                Db::rollback();
+                $model->rollback();
                 $this->error($e->getMessage());
             }
 
@@ -171,6 +178,10 @@ class Account extends Frontend
         }
     }
 
+    /**
+     * 积分日志
+     * @throws Throwable
+     */
     public function integral()
     {
         $limit         = $this->request->request('limit');
@@ -185,6 +196,10 @@ class Account extends Frontend
         ]);
     }
 
+    /**
+     * 余额日志
+     * @throws Throwable
+     */
     public function balance()
     {
         $limit      = $this->request->request('limit');
@@ -199,6 +214,10 @@ class Account extends Frontend
         ]);
     }
 
+    /**
+     * 找回密码
+     * @throws Throwable
+     */
     public function retrievePassword()
     {
         $params = $this->request->only(['type', 'account', 'captcha', 'password']);

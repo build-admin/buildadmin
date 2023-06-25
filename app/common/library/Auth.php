@@ -17,6 +17,8 @@ use app\common\facade\Token;
  * @property string $nickname   会员昵称
  * @property string $email      会员邮箱
  * @property string $mobile     会员手机号
+ * @property string $password   密码密文
+ * @property string $salt       密码盐
  */
 class Auth extends \ba\Auth
 {
@@ -334,7 +336,6 @@ class Auth extends \ba\Auth
             $this->model->save();
 
             $this->token   = '';
-            $this->model   = null;
             $this->loginEd = false;
             $this->model->commit();
         } catch (Throwable $e) {
@@ -342,6 +343,7 @@ class Auth extends \ba\Auth
             $this->setError($e->getMessage());
             return false;
         }
+        $this->model = null;
         return true;
     }
 

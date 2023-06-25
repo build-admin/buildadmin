@@ -1145,6 +1145,15 @@ class InstallData extends Migrator
                 'updatetime' => $this->nowTime,
                 'createtime' => $this->nowTime,
             ],
+            [
+                'id'         => '88',
+                'pid'        => '45',
+                'type'       => 'button',
+                'title'      => '删除',
+                'name'       => 'routine/config/del',
+                'updatetime' => $this->nowTime,
+                'createtime' => $this->nowTime,
+            ],
         ];
         $exist = Db::name('menu_rule')->where('id', 1)->value('id');
         if (!$exist) {

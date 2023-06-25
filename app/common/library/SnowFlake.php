@@ -8,7 +8,8 @@ namespace app\common\library;
 class SnowFlake
 {
     /**
-     * @var int 起始时间戳
+     * 起始时间戳
+     * @var int
      */
     const EPOCH = 1672502400000;
 
@@ -18,30 +19,38 @@ class SnowFlake
     const max41bit = 1099511627775;
 
     /**
-     * @var int 机器节点 10bit
+     * 机器节点 10bit
+     * @var int
      */
-    static $machineId = 1;
+    protected static int $machineId = 1;
 
     /**
      * 序列号
+     * @var int
      */
-    static $count = 0;
+    protected static int $count = 0;
 
     /**
      * 最后一次生成ID的时间偏移量
+     * @var int
      */
-    static $last = 0;
+    protected static int $last = 0;
 
     /**
      * 设置机器节点
      * @param int $mId 机器节点id
+     * @return void
      */
-    public static function setMachineId(int $mId)
+    public static function setMachineId(int $mId): void
     {
         self::$machineId = $mId;
     }
 
-    public static function generateParticle()
+    /**
+     * 生成雪花ID
+     * @return float|int
+     */
+    public static function generateParticle(): float|int
     {
         // 当前时间 42bit
         $time = (int)floor(microtime(true) * 1000);

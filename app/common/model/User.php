@@ -14,6 +14,8 @@ use think\facade\Config;
  * @property int    $login_failure   登录失败次数
  * @property string $last_login_time 上次登录时间
  * @property string $last_login_ip   上次登录IP
+ * @property string $email           会员邮箱
+ * @property string $mobile          会员手机号
  */
 class User extends Model
 {

@@ -2,6 +2,7 @@
 
 namespace app\common\library\token\driver;
 
+use Throwable;
 use think\Response;
 use BadFunctionCallException;
 use app\common\library\token\Driver;
@@ -22,6 +23,7 @@ class Redis extends Driver
      * 构造函数
      * @access public
      * @param array $options 参数
+     * @throws Throwable
      */
     public function __construct(array $options = [])
     {
@@ -47,6 +49,9 @@ class Redis extends Driver
         }
     }
 
+    /**
+     * @throws Throwable
+     */
     public function set(string $token, string $type, int $user_id, int $expire = null): bool
     {
         if (is_null($expire)) {
@@ -75,6 +80,9 @@ class Redis extends Driver
         return $result;
     }
 
+    /**
+     * @throws Throwable
+     */
     public function get(string $token, bool $expirationException = true): array
     {
         $key  = $this->getEncryptedToken($token);
@@ -96,6 +104,9 @@ class Redis extends Driver
         return $data;
     }
 
+    /**
+     * @throws Throwable
+     */
     public function check(string $token, string $type, int $user_id, bool $expirationException = true): bool
     {
         $data = $this->get($token, $expirationException);
@@ -103,6 +114,9 @@ class Redis extends Driver
         return $data['type'] == $type && $data['user_id'] == $user_id;
     }
 
+    /**
+     * @throws Throwable
+     */
     public function delete(string $token): bool
     {
         $data = $this->get($token, false);
@@ -115,6 +129,9 @@ class Redis extends Driver
         return true;
     }
 
+    /**
+     * @throws Throwable
+     */
     public function clear(string $type, int $user_id): bool
     {
         $keys = $this->handler->sMembers($this->getUserKey($user_id));

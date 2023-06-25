@@ -3,6 +3,7 @@ declare (strict_types=1);
 
 namespace app\api\controller;
 
+use Throwable;
 use ba\Random;
 use ba\Version;
 use think\App;
@@ -438,9 +439,9 @@ class Install extends Api
         $dbConfigContent = @file_get_contents($dbConfigFile);
         $callback        = function ($matches) use ($databaseParam) {
             $value = $databaseParam[$matches[1]] ?? '';
-            return "'{$matches[1]}'{$matches[2]}=>{$matches[3]}env('database.{$matches[1]}', '{$value}'),";
+            return "'$matches[1]'$matches[2]=>$matches[3]env('database.$matches[1]', '$value'),";
         };
-        $dbConfigText    = preg_replace_callback("/'(hostname|database|username|password|hostport|prefix)'(\s+)=>(\s+)env\('database\.(.*)',\s+'(.*)'\)\,/", $callback, $dbConfigContent);
+        $dbConfigText    = preg_replace_callback("/'(hostname|database|username|password|hostport|prefix)'(\s+)=>(\s+)env\('database\.(.*)',\s+'(.*)'\),/", $callback, $dbConfigContent);
         $result          = @file_put_contents($dbConfigFile, $dbConfigText);
         if (!$result) {
             $this->error(__('File has no write permission:%s', ['config/' . self::$dbConfigFileName]));
@@ -470,7 +471,7 @@ class Install extends Api
         $newTokenKey        = Random::build('alnum', 32);
         $buildConfigFile    = config_path() . self::$buildConfigFileName;
         $buildConfigContent = @file_get_contents($buildConfigFile);
-        $buildConfigContent = preg_replace("/'key'(\s+)=>(\s+)'{$oldTokenKey}'/", "'key'\$1=>\$2'{$newTokenKey}'", $buildConfigContent);
+        $buildConfigContent = preg_replace("/'key'(\s+)=>(\s+)'$oldTokenKey'/", "'key'\$1=>\$2'$newTokenKey'", $buildConfigContent);
         $result             = @file_put_contents($buildConfigFile, $buildConfigContent);
         if (!$result) {
             $this->error(__('File has no write permission:%s', ['config/' . self::$buildConfigFileName]));
@@ -501,6 +502,7 @@ class Install extends Api
 
     /**
      * 标记命令执行完毕
+     * @throws Throwable
      */
     public function commandExecComplete()
     {
