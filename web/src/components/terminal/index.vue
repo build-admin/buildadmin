@@ -312,11 +312,11 @@ onMounted(() => {
     margin-top: 10px;
     min-height: 30px;
     max-height: 200px;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: auto;
     scrollbar-width: none;
     &::-webkit-scrollbar {
         width: 5px;
+        height: 5px;
     }
     &::-webkit-scrollbar-thumb {
         background: #c8c9cc;
