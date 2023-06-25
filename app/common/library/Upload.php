@@ -5,6 +5,7 @@ namespace app\common\library;
 use Throwable;
 use ba\Random;
 use think\File;
+use ba\Filesystem;
 use think\Exception;
 use think\facade\Config;
 use think\file\UploadedFile;
@@ -140,7 +141,7 @@ class Upload
      */
     protected function checkSize(): void
     {
-        $size = file_unit_to_byte($this->config['maxsize']);
+        $size = Filesystem::fileUnitToByte($this->config['maxsize']);
         if ($this->fileInfo['size'] > $size) {
             throw new Exception(__('The uploaded file is too large (%sMiB), Maximum file size:%sMiB', [
                 round($this->fileInfo['size'] / pow(1024, 2), 2),

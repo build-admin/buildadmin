@@ -221,4 +221,19 @@ class Filesystem
         }
         return $fileList;
     }
+
+    /**
+     * 将一个文件单位转为字节
+     * @param string $unit 将b、kb、m、mb、g、gb的单位转为 byte
+     * @return int byte
+     */
+    public static function fileUnitToByte(string $unit): int
+    {
+        preg_match('/([0-9.]+)(\w+)/', $unit, $matches);
+        if (!$matches) {
+            return 0;
+        }
+        $typeDict = ['b' => 0, 'k' => 1, 'kb' => 1, 'm' => 2, 'mb' => 2, 'gb' => 3, 'g' => 3];
+        return (int)($matches[1] * pow(1024, $typeDict[strtolower($matches[2])] ?? 0));
+    }
 }

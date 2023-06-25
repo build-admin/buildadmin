@@ -1,6 +1,7 @@
 <?php
 // 应用公共文件
 
+use ba\Filesystem;
 use think\Response;
 use think\facade\Db;
 use think\facade\Lang;
@@ -332,7 +333,7 @@ if (!function_exists('get_upload_config')) {
     function get_upload_config(): array
     {
         $uploadConfig            = Config::get('upload');
-        $uploadConfig['maxsize'] = file_unit_to_byte($uploadConfig['maxsize']);
+        $uploadConfig['maxsize'] = Filesystem::fileUnitToByte($uploadConfig['maxsize']);
 
         $upload = request()->upload;
         if (!$upload) {
@@ -341,23 +342,5 @@ if (!function_exists('get_upload_config')) {
         }
         unset($upload['cdn']);
         return array_merge($upload, $uploadConfig);
-    }
-}
-
-if (!function_exists('file_unit_to_byte')) {
-
-    /**
-     * 将一个文件单位转为字节
-     * @param string $unit 将b、kb、m、mb、g、gb的单位转为 byte
-     * @return int byte
-     */
-    function file_unit_to_byte(string $unit): int
-    {
-        preg_match('/([0-9\.]+)(\w+)/', $unit, $matches);
-        if (!$matches) {
-            return 0;
-        }
-        $typeDict = ['b' => 0, 'k' => 1, 'kb' => 1, 'm' => 2, 'mb' => 2, 'gb' => 3, 'g' => 3];
-        return (int)($matches[1] * pow(1024, $typeDict[strtolower($matches[2])] ?? 0));
     }
 }
