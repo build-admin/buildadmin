@@ -36,6 +36,19 @@ class Version200 extends Migrator
                 ->save();
         }
 
+        $area = $this->table('area');
+        if ($area->hasColumn('mergename')) {
+            $area->renameColumn('mergename', 'merge_name')
+                ->changeColumn('merge_name', 'string', ['limit' => 100, 'null' => true, 'default' => null, 'comment' => '全称'])
+                ->changeColumn('pinyin', 'string', ['limit' => 50, 'null' => true, 'default' => null, 'comment' => '拼音'])
+                ->changeColumn('code', 'string', ['limit' => 10, 'null' => true, 'default' => null, 'comment' => '长途区号'])
+                ->changeColumn('zip', 'string', ['limit' => 10, 'null' => true, 'default' => null, 'comment' => '邮编'])
+                ->changeColumn('first', 'char', ['limit' => 1, 'null' => true, 'default' => null, 'comment' => '首字母'])
+                ->changeColumn('lng', 'string', ['limit' => 10, 'null' => true, 'default' => null, 'comment' => '经度'])
+                ->changeColumn('lat', 'string', ['limit' => 10, 'null' => true, 'default' => null, 'comment' => '纬度'])
+                ->save();
+        }
+
         $attachment = $this->table('attachment');
         if ($attachment->hasColumn('createtime')) {
             $attachment->renameColumn('createtime', 'create_time')
@@ -55,7 +68,7 @@ class Version200 extends Migrator
         }
 
         $menuRule = $this->table('menu_rule');
-        if ($menuRule->hasColumn('updatetime')) {
+        if ($menuRule->hasColumn('updatetime') && $this->hasTable('menu_rule')) {
             $menuRule->renameColumn('updatetime', 'update_time')
                 ->renameColumn('createtime', 'create_time')
                 ->changeColumn('update_time', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '更新时间'])

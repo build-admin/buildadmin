@@ -12,6 +12,7 @@ class Install extends Migrator
         $this->adminGroup();
         $this->adminGroupAccess();
         $this->adminLog();
+        $this->area();
         $this->attachment();
         $this->captcha();
         $this->config();
@@ -124,6 +125,35 @@ class Install extends Migrator
                 ->addColumn('ip', 'string', ['limit' => 50, 'default' => '', 'comment' => 'IP'])
                 ->addColumn('useragent', 'string', ['limit' => 255, 'default' => '', 'comment' => 'User-Agent'])
                 ->addColumn('createtime', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '创建时间'])
+                ->create();
+        }
+    }
+
+    public function area()
+    {
+        if (!$this->hasTable('area')) {
+            $table = $this->table('area', [
+                'id'          => false,
+                'comment'     => '省份地区表',
+                'row_format'  => 'DYNAMIC',
+                'primary_key' => 'id',
+                'collation'   => 'utf8mb4_unicode_ci',
+            ]);
+            $table->addColumn('id', 'integer', ['comment' => 'ID', 'signed' => false, 'identity' => true])
+                ->addColumn('pid', 'integer', ['comment' => '父id', 'null' => true, 'default' => null, 'signed' => false])
+                ->addColumn('shortname', 'string', ['limit' => 100, 'null' => true, 'default' => null, 'comment' => '简称'])
+                ->addColumn('name', 'string', ['limit' => 100, 'null' => true, 'default' => null, 'comment' => '名称'])
+                ->addColumn('mergename', 'string', ['limit' => 255, 'null' => true, 'default' => null, 'comment' => '全称'])
+                ->addColumn('level', 'integer', ['signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'null' => true, 'default' => null, 'comment' => '层级:1=省,2=市,3=区/县'])
+                ->addColumn('pinyin', 'string', ['limit' => 100, 'null' => true, 'default' => null, 'comment' => '拼音'])
+                ->addColumn('code', 'string', ['limit' => 100, 'null' => true, 'default' => null, 'comment' => '长途区号'])
+                ->addColumn('zip', 'string', ['limit' => 100, 'null' => true, 'default' => null, 'comment' => '邮编'])
+                ->addColumn('first', 'string', ['limit' => 50, 'null' => true, 'default' => null, 'comment' => '首字母'])
+                ->addColumn('lng', 'string', ['limit' => 50, 'null' => true, 'default' => null, 'comment' => '经度'])
+                ->addColumn('lat', 'string', ['limit' => 50, 'null' => true, 'default' => null, 'comment' => '纬度'])
+                ->addIndex(['pid'], [
+                    'type' => 'BTREE',
+                ])
                 ->create();
         }
     }
