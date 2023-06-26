@@ -39,7 +39,7 @@ export const apiSendEms = '/api/Ems/send'
 /**
  * 上传文件
  */
-export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false, config: AxiosRequestConfig = {}) {
+export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false, config: AxiosRequestConfig = {}): ApiPromise {
     let errorMsg = ''
     const file = fd.get('file') as UploadRawFile
     const siteConfig = useSiteConfig()

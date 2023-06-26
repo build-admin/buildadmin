@@ -15,12 +15,12 @@ import { useRoute, onBeforeRouteUpdate, RouteLocationNormalizedLoaded } from 'vu
 import { currentRouteTopActivity } from '/@/layouts/backend/components/menus/helper'
 import MenuTree from '/@/layouts/backend/components/menus/menuTree.vue'
 import NavMenus from '/@/layouts/backend/components/navMenus.vue'
-import type { ElScrollbar } from 'element-plus'
+import type { ScrollbarInstance } from 'element-plus'
 import { useNavTabs } from '/@/stores/navTabs'
 import { useConfig } from '/@/stores/config'
 import { uuid } from '/@/utils/random'
 
-const horizontalMenusRef = ref<InstanceType<typeof ElScrollbar>>()
+const horizontalMenusRef = ref<ScrollbarInstance>()
 
 const config = useConfig()
 const navTabs = useNavTabs()

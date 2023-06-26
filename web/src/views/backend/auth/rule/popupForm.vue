@@ -180,9 +180,9 @@ import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import FormItem from '/@/components/formItem/index.vue'
 import { buildValidatorData } from '/@/utils/validate'
-import type { ElForm, FormItemRule } from 'element-plus'
+import type { FormInstance, FormItemRule } from 'element-plus'
 
-const formRef = ref<InstanceType<typeof ElForm>>()
+const formRef = ref<FormInstance>()
 const baTable = inject('baTable') as baTableClass
 
 const { t } = useI18n()

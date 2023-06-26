@@ -85,7 +85,7 @@ import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import FormItem from '/@/components/formItem/index.vue'
 import { getAdminRules } from '/@/api/backend/auth/group'
-import type { ElForm, ElTree, FormItemRule } from 'element-plus'
+import type { FormInstance, ElTree, FormItemRule } from 'element-plus'
 import { uuid } from '/@/utils/random'
 import { buildValidatorData } from '/@/utils/validate'
 import type Node from 'element-plus/es/components/tree/src/model/node'
@@ -96,8 +96,8 @@ interface MenuRules {
     children: MenuRules[]
 }
 
+const formRef = ref<FormInstance>()
 const treeRef = ref<InstanceType<typeof ElTree>>()
-const formRef = ref<InstanceType<typeof ElForm>>()
 const baTable = inject('baTable') as baTableClass
 
 const { t } = useI18n()

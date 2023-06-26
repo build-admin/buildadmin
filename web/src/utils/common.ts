@@ -5,7 +5,7 @@ import router from '/@/router/index'
 import Icon from '/@/components/icon/index.vue'
 import { useNavTabs } from '/@/stores/navTabs'
 import { useMemberCenter } from '/@/stores/memberCenter'
-import { ElForm } from 'element-plus'
+import { FormInstance } from 'element-plus'
 import { useSiteConfig } from '../stores/siteConfig'
 import { useTitle } from '@vueuse/core'
 import { i18n } from '../lang'
@@ -126,7 +126,7 @@ export const getArrayKey = (arr: any, pk: string, value: any): any => {
  * 表单重置
  * @param formEl
  */
-export const onResetForm = (formEl: InstanceType<typeof ElForm> | undefined) => {
+export const onResetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.resetFields && formEl.resetFields()
 }

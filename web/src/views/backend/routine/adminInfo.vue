@@ -105,7 +105,7 @@
 import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { index, log, postData } from '/@/api/backend/routine/AdminInfo'
-import { ElForm, FormItemRule } from 'element-plus'
+import { FormInstance, FormItemRule } from 'element-plus'
 import { onResetForm, timeFormat } from '/@/utils/common'
 import { uuid } from '../../../utils/random'
 import { buildValidatorData } from '/@/utils/validate'
@@ -117,7 +117,7 @@ defineOptions({
 })
 
 const { t } = useI18n()
-const formRef = ref<InstanceType<typeof ElForm>>()
+const formRef = ref<FormInstance>()
 
 const adminInfoStore = useAdminInfo()
 
@@ -212,7 +212,7 @@ const onAvatarBeforeUpload = (file: any) => {
     })
 }
 
-const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
+const onSubmit = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {

@@ -3,11 +3,10 @@ import { getArrayKey } from '/@/utils/common'
 import type { baTableApi } from '/@/api/common'
 import Sortable from 'sortablejs'
 import { findIndexRow } from '/@/components/table'
-import { ElNotification, ElForm } from 'element-plus'
+import { ElNotification, FormInstance, TableColumnCtx } from 'element-plus'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { cloneDeep, isUndefined } from 'lodash-es'
 import { i18n } from '/@/lang/index'
-import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
 
 export default class baTable {
     // API实例
@@ -182,7 +181,7 @@ export default class baTable {
      * 提交表单
      * @param formEl 表单组件ref
      */
-    onSubmit = (formEl: InstanceType<typeof ElForm> | undefined = undefined) => {
+    onSubmit = (formEl: FormInstance | undefined = undefined) => {
         if (this.runBefore('onSubmit', { formEl: formEl, operate: this.form.operate!, items: this.form.items! }) === false) return
 
         Object.keys(this.form.items!).forEach((item) => {

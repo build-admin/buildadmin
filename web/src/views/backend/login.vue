@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, reactive, ref, nextTick } from 'vue'
 import * as pageBubble from '/@/utils/pageBubble'
-import type { ElForm, ElInput } from 'element-plus'
+import type { FormInstance, InputInstance } from 'element-plus'
 import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { editDefaultLang } from '/@/lang/index'
@@ -90,9 +90,9 @@ let timer: number
 const config = useConfig()
 const adminInfo = useAdminInfo()
 
-const formRef = ref<InstanceType<typeof ElForm>>()
-const usernameRef = ref<InstanceType<typeof ElInput>>()
-const passwordRef = ref<InstanceType<typeof ElInput>>()
+const formRef = ref<FormInstance>()
+const usernameRef = ref<InputInstance>()
+const passwordRef = ref<InputInstance>()
 const state = reactive({
     showCaptcha: false,
     submitLoading: false,

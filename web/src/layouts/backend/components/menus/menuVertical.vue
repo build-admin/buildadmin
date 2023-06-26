@@ -16,7 +16,7 @@
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import MenuTree from '/@/layouts/backend/components/menus/menuTree.vue'
 import { useRoute, onBeforeRouteUpdate, RouteLocationNormalizedLoaded } from 'vue-router'
-import type { ElScrollbar } from 'element-plus'
+import type { ScrollbarInstance } from 'element-plus'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 
@@ -24,7 +24,7 @@ const config = useConfig()
 const navTabs = useNavTabs()
 const route = useRoute()
 
-const verticalMenusRef = ref<InstanceType<typeof ElScrollbar>>()
+const verticalMenusRef = ref<ScrollbarInstance>()
 
 const state = reactive({
     defaultActive: '',

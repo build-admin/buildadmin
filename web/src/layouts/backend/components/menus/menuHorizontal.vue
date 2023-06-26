@@ -19,11 +19,11 @@ import MenuTree from '/@/layouts/backend/components/menus/menuTree.vue'
 import { useRoute, onBeforeRouteUpdate, RouteLocationNormalizedLoaded } from 'vue-router'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
-import type { ElScrollbar } from 'element-plus'
+import type { ScrollbarInstance } from 'element-plus'
 import NavMenus from '/@/layouts/backend/components/navMenus.vue'
 import { uuid } from '/@/utils/random'
 
-const horizontalMenusRef = ref<InstanceType<typeof ElScrollbar>>()
+const horizontalMenusRef = ref<ScrollbarInstance>()
 
 const config = useConfig()
 const navTabs = useNavTabs()

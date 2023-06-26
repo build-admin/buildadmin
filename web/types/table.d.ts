@@ -1,4 +1,4 @@
-import type { TagProps, ButtonType, ElForm, FormInstance, ButtonProps, TableColumnCtx } from 'element-plus'
+import type { TagProps, ButtonType, FormInstance, ButtonProps, TableColumnCtx } from 'element-plus'
 import { Component, ComponentPublicInstance } from 'vue'
 import Table from '/@/components/table/index.vue'
 import type { PopconfirmProps } from 'element-plus'
@@ -59,7 +59,7 @@ declare global {
     /* baTableForm */
     interface BaTableForm {
         // 表单ref，实例化表格时通常无需传递
-        ref?: InstanceType<typeof ElForm> | undefined
+        ref?: FormInstance | undefined
         // 表单项label的宽度
         labelWidth?: number
         // 当前操作:add=添加,edit=编辑

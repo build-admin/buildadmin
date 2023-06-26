@@ -111,7 +111,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import FormItem from '/@/components/formItem/index.vue'
 import { index, postData, del, postSendTestMail } from '/@/api/backend/routine/config'
-import { ElForm, FormItemRule, ElMessageBox, ElNotification } from 'element-plus'
+import { FormInstance, FormItemRule, ElMessageBox, ElNotification } from 'element-plus'
 import AddFrom from './add.vue'
 import { routePush } from '/@/utils/router'
 import { buildValidatorData, buildValidatorParams } from '/@/utils/validate'
@@ -127,7 +127,7 @@ defineOptions({
 const { t } = useI18n()
 const siteConfig = useSiteConfig()
 
-const formRef = ref<InstanceType<typeof ElForm>>()
+const formRef = ref<FormInstance>()
 
 const state: {
     loading: boolean
@@ -204,7 +204,7 @@ const onBeforeLeave = (newTabName: string | number) => {
     }
 }
 
-const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
+const onSubmit = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
