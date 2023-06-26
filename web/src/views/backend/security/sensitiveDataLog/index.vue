@@ -149,7 +149,7 @@ const baTable = new baTableClass(
                 align: 'center',
                 operator: 'LIKE',
                 operatorPlaceholder: t('Fuzzy query'),
-                'show-overflow-tooltip': true,
+                showOverflowTooltip: true,
             },
             {
                 label: t('security.sensitiveDataLog.After modification'),
@@ -157,7 +157,7 @@ const baTable = new baTableClass(
                 align: 'center',
                 operator: 'LIKE',
                 operatorPlaceholder: t('Fuzzy query'),
-                'show-overflow-tooltip': true,
+                showOverflowTooltip: true,
             },
             { label: 'IP', prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {

@@ -42,7 +42,7 @@ const baTable = new baTableClass(
             { type: 'selection', align: 'center' },
             { label: t('auth.rule.title'), prop: 'title', align: 'left', width: '200' },
             { label: t('auth.rule.Icon'), prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
-            { label: t('auth.rule.name'), prop: 'name', align: 'center', 'show-overflow-tooltip': true },
+            { label: t('auth.rule.name'), prop: 'name', align: 'center', showOverflowTooltip: true },
             {
                 label: t('auth.rule.type'),
                 prop: 'type',

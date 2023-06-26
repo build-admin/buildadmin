@@ -138,7 +138,7 @@
                             childrenAttr: { border: true },
                         }"
                         :attr="{
-                            'block-help': t('user.rule.no_login_valid tips'),
+                            blockHelp: t('user.rule.no_login_valid tips'),
                         }"
                     />
                     <el-form-item :label="t('auth.rule.Rule comments')">

@@ -90,8 +90,8 @@
                             v-model="state.table.generateRelativePath"
                             type="string"
                             :attr="{
-                                'label-width': 140,
-                                'block-help': t('crud.crud.For quick combination code generation location, please fill in the relative path'),
+                                labelWidth: 140,
+                                blockHelp: t('crud.crud.For quick combination code generation location, please fill in the relative path'),
                             }"
                             :input-attr="{
                                 onChange: onTableChange,
@@ -102,7 +102,7 @@
                             v-model="state.table.controllerFile"
                             type="string"
                             :attr="{
-                                'label-width': 140,
+                                labelWidth: 140,
                             }"
                         />
                         <el-form-item :label="t('crud.crud.Generated Data Model Location')" :label-width="140">
@@ -124,7 +124,7 @@
                             v-model="state.table.validateFile"
                             type="string"
                             :attr="{
-                                'label-width': 140,
+                                labelWidth: 140,
                             }"
                         />
                         <FormItem
@@ -132,7 +132,7 @@
                             v-model="state.table.webViewsDir"
                             type="string"
                             :attr="{
-                                'label-width': 140,
+                                labelWidth: 140,
                             }"
                         />
                     </div>
@@ -432,7 +432,7 @@
                                 content: state.remoteSelectPre.controllerFileList,
                             }"
                             :attr="{
-                                'block-help': t(
+                                blockHelp: t(
                                     'crud.crud.The remote pull-down will request the corresponding controller to obtain data, so it is recommended that you create the CRUD of the associated table'
                                 ),
                             }"
@@ -447,7 +447,7 @@
                                 content: state.remoteSelectPre.modelFileList,
                             }"
                             :attr="{
-                                'block-help': t(
+                                blockHelp: t(
                                     'crud.crud.If it is left blank, the model of the associated table will be generated automatically If the table already has a model, it is recommended to select it to avoid repeated generation'
                                 ),
                             }"

@@ -123,7 +123,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             prop: 'mimetype',
             align: 'center',
             operator: 'LIKE',
-            'show-overflow-tooltip': true,
+            showOverflowTooltip: true,
             operatorPlaceholder: t('Fuzzy query'),
         },
         {
@@ -161,7 +161,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             label: t('utils.Original name'),
             prop: 'name',
             align: 'center',
-            'show-overflow-tooltip': true,
+            showOverflowTooltip: true,
             operator: 'LIKE',
             operatorPlaceholder: t('Fuzzy query'),
         },

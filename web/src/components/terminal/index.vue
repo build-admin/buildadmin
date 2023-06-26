@@ -144,14 +144,14 @@
                 v-model="startCommand"
                 type="string"
                 :input-attr="{ disabled: true }"
-                :attr="{ 'block-help': t('terminal.Please execute this command to start the service (add Su under Linux)') }"
+                :attr="{ blockHelp: t('terminal.Please execute this command to start the service (add Su under Linux)') }"
             />
             <FormItem
                 :label="t('terminal.Installation service URL')"
                 v-model="serviceURL"
                 type="string"
                 :input-attr="{ disabled: true }"
-                :attr="{ 'block-help': t('terminal.Please access the site through the installation service URL (except in debug mode)') }"
+                :attr="{ blockHelp: t('terminal.Please access the site through the installation service URL (except in debug mode)') }"
             />
         </el-form>
         <FormItem

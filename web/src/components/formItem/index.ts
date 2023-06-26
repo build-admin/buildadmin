@@ -5,13 +5,13 @@ export interface FormItemAttr {
     id?: string
     class?: string
     prop?: string | string[]
-    'label-width'?: string | number
+    labelWidth?: string | number
     required?: boolean
     rules?: FormItemRule | FormItemRule[]
     error?: string
-    'show-message'?: boolean
-    'inline-message'?: boolean
+    showMessage?: boolean
+    inlineMessage?: boolean
     size?: 'large' | 'default' | 'small'
     style?: CSSProperties
-    'block-help'?: string
+    blockHelp?: string
 }

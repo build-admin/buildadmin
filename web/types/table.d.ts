@@ -1,7 +1,6 @@
-import type { TagProps, ButtonType, ElForm, FormInstance, ButtonProps } from 'element-plus'
+import type { TagProps, ButtonType, ElForm, FormInstance, ButtonProps, TableColumnCtx } from 'element-plus'
 import { Component, ComponentPublicInstance } from 'vue'
 import Table from '/@/components/table/index.vue'
-import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
 import type { PopconfirmProps } from 'element-plus'
 import { Mutable } from 'element-plus/es/utils'
 
@@ -129,7 +128,7 @@ declare global {
     }
 
     /* 表格列 */
-    interface TableColumn extends ElTableColumn {
+    interface TableColumn extends Partial<TableColumnCtx<TableRow>> {
         // 是否显示
         show?: boolean
         // 是否在下拉菜单的复选框显示 默认为true显示
@@ -254,39 +253,4 @@ declare global {
         label: string
         children?: ElTreeData[]
     }
-}
-
-/*
- * ElTableColumn可用属性
- * 未找到方法直接导出tableColumn的props类型定义
- * https://element-plus.org/zh-CN/component/table.html#table-column-attributes
- */
-interface ElTableColumn {
-    type?: 'selection' | 'index' | 'expand'
-    index?: number | Function
-    label?: string
-    'column-key'?: string
-    prop?: string
-    width?: string | number
-    'min-width'?: string | number
-    fixed?: string | boolean
-    'render-header'?: Function
-    sortable?: string | boolean
-    'sort-method'?: Function
-    'sort-by'?: Function
-    'sort-orders'?: string[] | null[]
-    resizable?: boolean
-    formatter?: Function
-    'show-overflow-tooltip'?: boolean
-    align?: 'left' | 'center' | 'right'
-    'header-align'?: 'left' | 'center' | 'right'
-    'class-name'?: string
-    'label-class-name'?: string
-    selectable?: Function
-    'reserve-selection'?: boolean
-    filters?: { key: string; value: string }[]
-    'filter-placement'?: string
-    'filter-multiple'?: boolean
-    'filter-method'?: Function
-    'filtered-value'?: any[]
 }
