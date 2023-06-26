@@ -152,7 +152,7 @@ export function sendEms(email: string, event: string, extend: anyObj = {}) {
     )
 }
 
-/*
+/**
  * 缓存清理接口
  */
 export function postClearCache(type: string) {

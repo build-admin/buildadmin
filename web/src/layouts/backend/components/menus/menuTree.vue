@@ -1,7 +1,7 @@
 <template>
     <template v-for="menu in props.menus">
         <template v-if="menu.children && menu.children.length > 0">
-            <el-sub-menu :index="menu.path" :key="menu.path">
+            <el-sub-menu @click="onClickSubMenu(menu)" :index="menu.path" :key="menu.path">
                 <template #title>
                     <Icon :color="config.getColorVal('menuColor')" :name="menu.meta?.icon ? menu.meta?.icon : config.layout.menuDefaultIcon" />
                     <span>{{ menu.meta?.title ? menu.meta?.title : $t('noTitle') }}</span>
@@ -30,6 +30,12 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     menus: () => [],
 })
+
+const onClickSubMenu = (menu: RouteRecordRaw) => {
+    if (['Streamline', 'Double'].includes(config.layout.layoutMode) && menu.children?.length) {
+        onClickMenu(menu.children[0])
+    }
+}
 </script>
 
 <style scoped lang="scss">

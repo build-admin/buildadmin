@@ -54,7 +54,7 @@ export default defineComponent({
         }
 
         const blockHelp = computed(() => {
-            return props.attr && props.attr['block-help'] ? props.attr['block-help'] : ''
+            return props.attr && props.attr['blockHelp'] ? props.attr['blockHelp'] : ''
         })
 
         // el-form-item 的默认插槽,生成一个baInput
