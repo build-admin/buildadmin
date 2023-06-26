@@ -21,7 +21,7 @@
                     <el-table-column prop="solution" width="200" :label="$t('module.Treatment scheme')" align="center">
                         <template #default="scope">
                             <el-select v-model="scope.row.solution">
-                                <el-option :label="$t('delete')" value="delete"></el-option>
+                                <el-option :label="$t('Delete')" value="delete"></el-option>
                                 <el-option :label="$t('module.retain')" value="retain"></el-option>
                             </el-select>
                         </template>

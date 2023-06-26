@@ -6,12 +6,12 @@
             <!-- 表格顶部菜单 -->
             <TableHeader
                 :buttons="['refresh', 'edit', 'comSearch', 'quickSearch', 'columnDisplay']"
-                :quick-search-placeholder="t('quick Search Placeholder', { fields: t('utils.Original name') })"
+                :quick-search-placeholder="t('Quick search placeholder', { fields: t('utils.Original name') })"
             >
                 <el-popconfirm
                     v-if="auth('del')"
                     @confirm="baTable.onTableHeaderAction('delete', {})"
-                    :confirm-button-text="t('delete')"
+                    :confirm-button-text="t('Delete')"
                     :cancel-button-text="t('Cancel')"
                     confirmButtonType="danger"
                     :title="t('routine.attachment.Files and records will be deleted at the same time Are you sure?')"
@@ -27,7 +27,7 @@
                                     type="danger"
                                 >
                                     <Icon color="#ffffff" name="fa fa-trash" />
-                                    <span class="table-header-operate-text">{{ t('delete') }}</span>
+                                    <span class="table-header-operate-text">{{ t('Delete') }}</span>
                                 </el-button>
                             </el-tooltip>
                         </div>
@@ -67,7 +67,7 @@ optBtn[1].popconfirm!.title = t('routine.attachment.Files and records will be de
 const baTable = new baTableClass(new baTableApi(routineAttachment), {
     column: [
         { type: 'selection', align: 'center', operator: false },
-        { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+        { label: t('Id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
         { label: t('utils.Breakdown'), prop: 'topic', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
         {
             label: t('routine.attachment.Upload administrator'),
@@ -146,7 +146,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             sortable: 'custom',
         },
         {
-            label: t('operate'),
+            label: t('Operate'),
             align: 'center',
             width: '100',
             render: 'buttons',

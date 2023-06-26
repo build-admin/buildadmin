@@ -4,7 +4,7 @@
         class="ba-operate-dialog"
         top="10vh"
         :close-on-click-modal="false"
-        :model-value="baTable.form.operate ? true : false"
+        :model-value="['Add', 'Edit'].includes(baTable.form.operate!)"
         @close="baTable.toggleForm"
         :destroy-on-close="true"
     >
@@ -48,7 +48,7 @@
                         />
                     </el-form-item>
                     <FormItem
-                        :label="t('state')"
+                        :label="t('State')"
                         v-model="baTable.form.items!.status"
                         type="radio"
                         :data="{ content: { '0': t('Disable'), '1': t('Enable') }, childrenAttr: { border: true } }"

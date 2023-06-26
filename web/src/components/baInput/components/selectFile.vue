@@ -12,7 +12,7 @@
         >
             <TableHeader
                 :buttons="['refresh', 'comSearch', 'quickSearch', 'columnDisplay']"
-                :quick-search-placeholder="t('quick Search Placeholder', { fields: t('utils.Original name') })"
+                :quick-search-placeholder="t('Quick search placeholder', { fields: t('utils.Original name') })"
             >
                 <el-tooltip :content="t('utils.choice')" placement="top">
                     <el-button
@@ -108,7 +108,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             align: 'center',
             operator: false,
         },
-        { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+        { label: t('Id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
         { label: t('utils.Breakdown'), prop: 'topic', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
         {
             label: t('utils.preview'),
@@ -166,7 +166,7 @@ const baTable = new baTableClass(new baTableApi(routineAttachment), {
             operatorPlaceholder: t('Fuzzy query'),
         },
         {
-            label: t('operate'),
+            label: t('Operate'),
             align: 'center',
             width: '100',
             render: 'buttons',

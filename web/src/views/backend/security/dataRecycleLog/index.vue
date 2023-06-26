@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'delete', 'comSearch', 'quickSearch', 'columnDisplay']"
-            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('security.dataRecycleLog.Rule name') })"
+            :quick-search-placeholder="t('Quick search placeholder', { fields: t('security.dataRecycleLog.Rule name') })"
         >
             <el-popconfirm
                 @confirm="onRestoreAction"
@@ -60,7 +60,7 @@ let optButtons: OptButton[] = [
     {
         render: 'tipButton',
         name: 'info',
-        title: 'info',
+        title: 'Info',
         text: '',
         type: 'primary',
         icon: 'fa fa-search-plus',
@@ -96,7 +96,7 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            { label: t('Id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
             {
                 label: t('security.dataRecycleLog.Operation administrator'),
                 prop: 'admin.nickname',
@@ -153,7 +153,7 @@ const baTable = new baTableClass(
                 width: 160,
             },
             {
-                label: t('operate'),
+                label: t('Operate'),
                 align: 'center',
                 width: 120,
                 render: 'buttons',
@@ -184,7 +184,7 @@ const onRestoreAction = () => {
 
 const infoButtonClick = (id: string) => {
     baTable.form.extend!['info'] = {}
-    baTable.form.operate = 'info'
+    baTable.form.operate = 'Info'
     baTable.form.loading = true
     info(id).then((res) => {
         res.data.row.data = res.data.row.data

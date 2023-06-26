@@ -30,7 +30,7 @@
             </div>
             <div class="captcha-refresh-box">
                 <div class="captcha-refresh-line captcha-refresh-line-l"></div>
-                <i class="fa fa-refresh captcha-refresh-btn" :title="i18n.global.t('refresh')" @click="load"></i>
+                <i class="fa fa-refresh captcha-refresh-btn" :title="i18n.global.t('Refresh')" @click="load"></i>
                 <div class="captcha-refresh-line captcha-refresh-line-r"></div>
             </div>
         </div>

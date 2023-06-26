@@ -52,7 +52,7 @@
                 v-model="state.inputValue"
                 :size="size"
                 :disabled="disabled"
-                :placeholder="$t('search') + $t('utils.Icon')"
+                :placeholder="$t('Search') + $t('utils.Icon')"
                 ref="selectorInput"
                 @focus="onInputFocus"
                 @blur="onInputBlur"

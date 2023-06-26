@@ -1,12 +1,12 @@
 <template>
     <el-dialog class="ba-operate-dialog" :model-value="baTable.form.operate ? true : false" @close="baTable.toggleForm">
         <template #header>
-            <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">{{ t('info') }}</div>
+            <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">{{ t('Info') }}</div>
         </template>
         <el-scrollbar v-loading="baTable.form.loading" class="ba-table-form-scrollbar">
             <div class="ba-operate-form" :class="'ba-' + baTable.form.operate + '-form'">
                 <el-descriptions v-if="!isEmpty(baTable.form.extend!.info)" :column="2" border>
-                    <el-descriptions-item :label="t('id')">
+                    <el-descriptions-item :label="t('Id')">
                         {{ baTable.form.extend!.info.id }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Operation administrator')">

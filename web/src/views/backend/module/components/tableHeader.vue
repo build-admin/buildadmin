@@ -3,7 +3,7 @@
         <el-alert class="ba-table-alert" v-if="state.table.remark" :title="state.table.remark" type="info" show-icon />
         <div class="modules-header">
             <div class="table-header-buttons">
-                <el-button :title="$t('refresh')" @click="onRefreshTableData" v-blur color="#40485b" type="info">
+                <el-button :title="$t('Refresh')" @click="onRefreshTableData" v-blur color="#40485b" type="info">
                     <Icon name="fa fa-refresh" color="#ffffff" size="14" />
                 </el-button>
                 <el-button-group class="ml10">

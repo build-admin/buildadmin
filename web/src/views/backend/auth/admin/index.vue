@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'comSearch', 'quickSearch', 'columnDisplay']"
-            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.admin.username') + '/' + t('auth.admin.nickname') })"
+            :quick-search-placeholder="t('Quick search placeholder', { fields: t('auth.admin.username') + '/' + t('auth.admin.nickname') })"
         />
 
         <!-- 表格 -->
@@ -42,7 +42,7 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            { label: t('Id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
             { label: t('auth.admin.username'), prop: 'username', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             { label: t('auth.admin.nickname'), prop: 'nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             { label: t('auth.admin.grouping'), prop: 'group_name_arr', align: 'center', operator: false, render: 'tags' },
@@ -58,9 +58,9 @@ const baTable = new baTableClass(
                 operator: 'RANGE',
                 width: 160,
             },
-            { label: t('createtime'), prop: 'create_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('Create time'), prop: 'create_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
             {
-                label: t('state'),
+                label: t('State'),
                 prop: 'status',
                 align: 'center',
                 render: 'tag',
@@ -68,7 +68,7 @@ const baTable = new baTableClass(
                 replaceValue: { '0': t('Disable'), '1': t('Enable') },
             },
             {
-                label: t('operate'),
+                label: t('Operate'),
                 align: 'center',
                 width: '100',
                 render: 'buttons',

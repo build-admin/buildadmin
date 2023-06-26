@@ -4,7 +4,7 @@
             <div class="font-h1">:(</div>
             <div class="tip">{{ $t('404.problems tip') }}</div>
             <div class="complete">
-                {{ $t('complete') }} <span class="percentage">{{ complete }}</span
+                {{ $t('Complete') }} <span class="percentage">{{ complete }}</span
                 >%
             </div>
             <div class="details">

@@ -23,14 +23,14 @@
                         :data="{ content: configGroup }"
                     />
                     <CreateFormItemData v-model="state.formItemData" />
-                    <FormItem :label="t('weigh')" type="number" v-model.number="state.addConfig.weigh" prop="weigh" />
+                    <FormItem :label="t('Weigh')" type="number" v-model.number="state.addConfig.weigh" prop="weigh" />
                 </el-form>
             </div>
         </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + state.labelWidth / 1.8 + 'px)'">
                 <el-button @click="closeForm">{{ t('Cancel') }}</el-button>
-                <el-button v-blur :loading="state.submitLoading" @click="onAddSubmit(formRef)" type="primary"> {{ t('add') }} </el-button>
+                <el-button v-blur :loading="state.submitLoading" @click="onAddSubmit(formRef)" type="primary"> {{ t('Add') }} </el-button>
             </div>
         </template>
     </el-dialog>

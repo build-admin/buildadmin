@@ -11,7 +11,7 @@
         >
             <TableHeader
                 :buttons="['refresh', 'quickSearch', 'columnDisplay']"
-                :quick-search-placeholder="t('quick Search Placeholder', { fields: t('crud.log.quick Search Fields') })"
+                :quick-search-placeholder="t('Quick search placeholder', { fields: t('crud.log.quick Search Fields') })"
             />
             <Table ref="tableRef" />
         </el-dialog>
@@ -73,7 +73,7 @@ const optButtons: OptButton[] = [
     {
         render: 'confirmButton',
         name: 'del',
-        title: 'delete',
+        title: 'Delete',
         text: '',
         type: 'danger',
         icon: 'fa fa-trash',
@@ -136,7 +136,7 @@ const baTable = new baTableClass(
                 width: 160,
                 timeFormat: 'yyyy-mm-dd hh:MM:ss',
             },
-            { label: t('operate'), align: 'center', width: 100, render: 'buttons', buttons: optButtons, operator: false },
+            { label: t('Operate'), align: 'center', width: 100, render: 'buttons', buttons: optButtons, operator: false },
         ],
         dblClickNotEditColumn: [undefined],
     },

@@ -6,7 +6,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'unfold', 'quickSearch', 'columnDisplay']"
-            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.group.GroupName') })"
+            :quick-search-placeholder="t('Quick search placeholder', { fields: t('auth.group.GroupName') })"
         />
 
         <!-- 表格 -->
@@ -47,16 +47,16 @@ const baTable: baTableClass = new baTableClass(
             { label: t('auth.group.Group name'), prop: 'name', align: 'left', width: '200' },
             { label: t('auth.group.jurisdiction'), prop: 'rules', align: 'center' },
             {
-                label: t('state'),
+                label: t('State'),
                 prop: 'status',
                 align: 'center',
                 render: 'tag',
                 custom: { '0': 'danger', '1': 'success' },
                 replaceValue: { '0': t('Disable'), '1': t('Enable') },
             },
-            { label: t('updatetime'), prop: 'update_time', align: 'center', width: '160', render: 'datetime' },
-            { label: t('createtime'), prop: 'create_time', align: 'center', width: '160', render: 'datetime' },
-            { label: t('operate'), align: 'center', width: '130', render: 'buttons', buttons: defaultOptButtons(['edit', 'delete']) },
+            { label: t('Update time'), prop: 'update_time', align: 'center', width: '160', render: 'datetime' },
+            { label: t('Create time'), prop: 'create_time', align: 'center', width: '160', render: 'datetime' },
+            { label: t('Operate'), align: 'center', width: '130', render: 'buttons', buttons: defaultOptButtons(['edit', 'delete']) },
         ],
     },
     {
@@ -87,7 +87,7 @@ const baTable: baTableClass = new baTableClass(
                         baTable.form.submitLoading = false
                         baTable.form.operateIds?.shift()
                         if (baTable.form.operateIds!.length > 0) {
-                            baTable.toggleForm('edit', baTable.form.operateIds)
+                            baTable.toggleForm('Edit', baTable.form.operateIds)
                         } else {
                             baTable.toggleForm()
                         }

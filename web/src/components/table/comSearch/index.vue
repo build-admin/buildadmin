@@ -15,7 +15,7 @@
                                             v-model="baTable.comSearch.form[item.prop!]"
                                             :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:[new Date(), new Date()]"
                                             :type="item.comSearchRender == 'date' ? 'daterange' : 'datetimerange'"
-                                            :range-separator="$t('to')"
+                                            :range-separator="$t('To')"
                                             :start-placeholder="$t('el.datepicker.startDate')"
                                             :end-placeholder="$t('el.datepicker.endDate')"
                                             :value-format="item.comSearchRender == 'date' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'"
@@ -35,7 +35,7 @@
                                             v-model="baTable.comSearch.form[item.prop! + '-start']"
                                             :clearable="true"
                                         ></el-input>
-                                        <div class="range-separator">{{ $t('to') }}</div>
+                                        <div class="range-separator">{{ $t('To') }}</div>
                                         <el-input
                                             :placeholder="item.operatorPlaceholder"
                                             type="string"
@@ -129,7 +129,7 @@
                     </template>
                     <el-col :xs="24" :sm="6">
                         <div class="com-search-col pl-20">
-                            <el-button v-blur @click="onComSearch" type="primary">{{ $t('search') }}</el-button>
+                            <el-button v-blur @click="onComSearch" type="primary">{{ $t('Search') }}</el-button>
                             <el-button @click="onResetForm()">{{ $t('Reset') }}</el-button>
                         </div>
                     </el-col>

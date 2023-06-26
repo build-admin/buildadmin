@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'unfold', 'quickSearch', 'columnDisplay']"
-            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.rule.title') })"
+            :quick-search-placeholder="t('Quick search placeholder', { fields: t('auth.rule.title') })"
         />
         <!-- 表格 -->
         <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
@@ -48,10 +48,10 @@ const baTable = new baTableClass(
                 replaceValue: { menu: t('auth.rule.type menu'), menu_dir: t('auth.rule.type menu_dir'), button: t('auth.rule.type button') },
             },
             { label: t('auth.rule.cache'), prop: 'keepalive', align: 'center', width: '80', render: 'switch' },
-            { label: t('state'), prop: 'status', align: 'center', width: '80', render: 'switch' },
-            { label: t('updatetime'), prop: 'update_time', align: 'center', width: '160', render: 'datetime' },
+            { label: t('State'), prop: 'status', align: 'center', width: '80', render: 'switch' },
+            { label: t('Update time'), prop: 'update_time', align: 'center', width: '160', render: 'datetime' },
             {
-                label: t('operate'),
+                label: t('Operate'),
                 align: 'center',
                 width: '130',
                 render: 'buttons',

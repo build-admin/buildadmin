@@ -150,27 +150,27 @@ export default class baTable {
     onTableDblclick = (row: TableRow, column: TableColumnCtx<TableRow>) => {
         if (!this.table.dblClickNotEditColumn!.includes('all') && !this.table.dblClickNotEditColumn!.includes(column.property)) {
             if (this.runBefore('onTableDblclick', { row, column }) === false) return
-            this.toggleForm('edit', [row[this.table.pk!]])
+            this.toggleForm('Edit', [row[this.table.pk!]])
             this.runAfter('onTableDblclick', { row, column })
         }
     }
 
     /**
      * 打开表单
-     * @param operate 操作:add=添加,edit=编辑
-     * @param operateIds 被操作项的数组:add=[],edit=[1,2,...]
+     * @param operate 操作:Add=添加,Edit=编辑
+     * @param operateIds 被操作项的数组:Add=[],Edit=[1,2,...]
      */
     toggleForm = (operate = '', operateIds: string[] = []) => {
         if (this.runBefore('toggleForm', { operate, operateIds }) === false) return
         if (this.form.ref) {
             this.form.ref.resetFields()
         }
-        if (operate == 'edit') {
+        if (operate == 'Edit') {
             if (!operateIds.length) {
                 return false
             }
             this.requestEdit(operateIds[0])
-        } else if (operate == 'add') {
+        } else if (operate == 'Add') {
             this.form.items = cloneDeep(this.form.defaultItems)
         }
         this.form.operate = operate
@@ -198,7 +198,7 @@ export default class baTable {
                     this.onTableHeaderAction('refresh', {})
                     this.form.operateIds?.shift()
                     if (this.form.operateIds!.length > 0) {
-                        this.toggleForm('edit', this.form.operateIds)
+                        this.toggleForm('Edit', this.form.operateIds)
                     } else {
                         this.toggleForm()
                     }
@@ -276,7 +276,7 @@ export default class baTable {
             [
                 'edit',
                 () => {
-                    this.toggleForm('edit', [data.row[this.table.pk!]])
+                    this.toggleForm('Edit', [data.row[this.table.pk!]])
                 },
             ],
             [
@@ -341,13 +341,13 @@ export default class baTable {
             [
                 'add',
                 () => {
-                    this.toggleForm('add')
+                    this.toggleForm('Add')
                 },
             ],
             [
                 'edit',
                 () => {
-                    this.toggleForm('edit', this.getSelectionIds())
+                    this.toggleForm('Edit', this.getSelectionIds())
                 },
             ],
             [

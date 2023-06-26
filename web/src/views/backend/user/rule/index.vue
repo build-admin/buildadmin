@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'unfold', 'quickSearch', 'columnDisplay']"
-            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.rule.Rule title') })"
+            :quick-search-placeholder="t('Quick search placeholder', { fields: t('auth.rule.Rule title') })"
         />
 
         <!-- 表格 -->
@@ -54,10 +54,10 @@ const baTable = new baTableClass(
                     nav_user_menu: t('user.rule.Top bar user dropdown'),
                 },
             },
-            { label: t('state'), prop: 'status', align: 'center', width: '80', render: 'switch' },
-            { label: t('updatetime'), prop: 'update_time', align: 'center', width: '160', render: 'datetime' },
-            { label: t('createtime'), prop: 'create_time', align: 'center', width: '160', render: 'datetime' },
-            { label: t('operate'), align: 'center', width: '130', render: 'buttons', buttons: defaultOptButtons() },
+            { label: t('State'), prop: 'status', align: 'center', width: '80', render: 'switch' },
+            { label: t('Update time'), prop: 'update_time', align: 'center', width: '160', render: 'datetime' },
+            { label: t('Create time'), prop: 'create_time', align: 'center', width: '160', render: 'datetime' },
+            { label: t('Operate'), align: 'center', width: '130', render: 'buttons', buttons: defaultOptButtons() },
         ],
         dblClickNotEditColumn: [undefined, 'status'],
     },

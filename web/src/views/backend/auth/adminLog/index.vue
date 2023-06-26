@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'delete', 'comSearch', 'quickSearch', 'columnDisplay']"
-            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('auth.adminLog.title') })"
+            :quick-search-placeholder="t('Quick search placeholder', { fields: t('auth.adminLog.title') })"
         />
         <!-- 表格 -->
         <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
@@ -34,7 +34,7 @@ let optButtons: OptButton[] = [
     {
         render: 'tipButton',
         name: 'info',
-        title: 'info',
+        title: 'Info',
         text: '',
         type: 'primary',
         icon: 'fa fa-search-plus',
@@ -53,7 +53,7 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            { label: t('Id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
             {
                 label: t('auth.adminLog.admin_id'),
                 prop: 'admin_id',
@@ -99,7 +99,7 @@ const baTable = new baTableClass(
                 'show-overflow-tooltip': true,
             },
             {
-                label: t('createtime'),
+                label: t('Create time'),
                 prop: 'create_time',
                 align: 'center',
                 render: 'datetime',
@@ -108,7 +108,7 @@ const baTable = new baTableClass(
                 width: 160,
             },
             {
-                label: t('operate'),
+                label: t('Operate'),
                 align: 'center',
                 width: '100',
                 render: 'buttons',
@@ -139,7 +139,7 @@ const infoButtonClick = (row: TableRow) => {
     let rowClone = cloneDeep(row)
     rowClone.data = rowClone.data ? [{ label: '点击展开', children: buildJsonToElTreeData(JSON.parse(rowClone.data)) }] : []
     baTable.form.extend!['info'] = rowClone
-    baTable.form.operate = 'info'
+    baTable.form.operate = 'Info'
 }
 </script>
 

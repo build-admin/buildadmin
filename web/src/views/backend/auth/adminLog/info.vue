@@ -2,12 +2,12 @@
     <!-- 查看详情 -->
     <el-dialog class="ba-operate-dialog" :model-value="baTable.form.operate ? true : false" @close="baTable.toggleForm">
         <template #header>
-            <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">{{ t('info') }}</div>
+            <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">{{ t('Info') }}</div>
         </template>
         <el-scrollbar v-loading="baTable.form.loading" class="ba-table-form-scrollbar">
             <div class="ba-operate-form" :class="'ba-' + baTable.form.operate + '-form'">
                 <el-descriptions :column="2" border>
-                    <el-descriptions-item :label="t('id')">
+                    <el-descriptions-item :label="t('Id')">
                         {{ baTable.form.extend!.info.id }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('auth.adminLog.Operation administrator')">
@@ -25,7 +25,7 @@
                     <el-descriptions-item :width="120" :span="2" label="User Agent">
                         {{ baTable.form.extend!.info.useragent }}
                     </el-descriptions-item>
-                    <el-descriptions-item :width="120" :span="2" :label="t('createtime')">
+                    <el-descriptions-item :width="120" :span="2" :label="t('Create time')">
                         {{ timeFormat(baTable.form.extend!.info.create_time) }}
                     </el-descriptions-item>
                     <el-descriptions-item :width="120" :span="2" :label="t('auth.adminLog.Request data')">

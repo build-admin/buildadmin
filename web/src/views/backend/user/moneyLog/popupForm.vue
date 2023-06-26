@@ -1,6 +1,6 @@
 <template>
     <!-- 对话框表单 -->
-    <el-dialog class="ba-operate-dialog" :close-on-click-modal="false" :model-value="baTable.form.operate ? true : false" @close="baTable.toggleForm">
+    <el-dialog class="ba-operate-dialog" :close-on-click-modal="false" :model-value="['Add', 'Edit'].includes(baTable.form.operate!)" @close="baTable.toggleForm">
         <template #header>
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">
                 {{ baTable.form.operate ? t(baTable.form.operate) : '' }}
@@ -26,7 +26,7 @@
                         prop="user_id"
                         :label="t('user.moneyLog.User ID')"
                         v-model="baTable.form.items!.user_id"
-                        :placeholder="t('Click Select')"
+                        :placeholder="t('Click select')"
                         :input-attr="{
                             pk: 'user.id',
                             field: 'nickname_text',

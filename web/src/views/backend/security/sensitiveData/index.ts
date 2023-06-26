@@ -92,12 +92,12 @@ export class sensitiveDataClass extends baTableClass {
 
         if (this.form.extend!.parentRef) this.form.extend!.parentRef.setDataFields([])
 
-        if (operate == 'edit') {
+        if (operate == 'Edit') {
             if (!operateIds.length) {
                 return false
             }
             this.requestEdit(operateIds[0])
-        } else if (operate == 'add') {
+        } else if (operate == 'Add') {
             this.form.loading = true
             add().then((res) => {
                 this.form.extend = Object.assign(this.form.extend!, {

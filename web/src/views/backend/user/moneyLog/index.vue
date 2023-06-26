@@ -6,7 +6,7 @@
         <TableHeader
             :buttons="['refresh', 'add', 'comSearch', 'quickSearch', 'columnDisplay']"
             :quick-search-placeholder="
-                t('quick Search Placeholder', { fields: t('user.moneyLog.User name') + '/' + t('user.moneyLog.User nickname') })
+                t('Quick search placeholder', { fields: t('user.moneyLog.User name') + '/' + t('user.moneyLog.User nickname') })
             "
         >
             <el-button v-if="!isEmpty(state.userInfo)" v-blur class="table-header-operate">
@@ -53,7 +53,7 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            { label: t('Id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
             { label: t('user.moneyLog.User ID'), prop: 'user_id', align: 'center', operator: '=', width: 70 },
             { label: t('user.moneyLog.User name'), prop: 'user.username', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
@@ -74,7 +74,7 @@ const baTable = new baTableClass(
                 operatorPlaceholder: t('Fuzzy query'),
                 'show-overflow-tooltip': true,
             },
-            { label: t('createtime'), prop: 'create_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('Create time'), prop: 'create_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
         ],
         dblClickNotEditColumn: ['all'],
     },

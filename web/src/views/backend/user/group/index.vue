@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'comSearch', 'quickSearch', 'columnDisplay']"
-            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('user.group.GroupName') })"
+            :quick-search-placeholder="t('Quick search placeholder', { fields: t('user.group.GroupName') })"
         />
 
         <!-- 表格 -->
@@ -37,20 +37,20 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            { label: t('Id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
             { label: t('user.group.Group name'), prop: 'name', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
-                label: t('state'),
+                label: t('State'),
                 prop: 'status',
                 align: 'center',
                 render: 'tag',
                 custom: { '0': 'danger', '1': 'success' },
                 replaceValue: { '0': t('Disable'), '1': t('Enable') },
             },
-            { label: t('updatetime'), prop: 'update_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
-            { label: t('createtime'), prop: 'create_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('Update time'), prop: 'update_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('Create time'), prop: 'create_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
             {
-                label: t('operate'),
+                label: t('Operate'),
                 align: 'center',
                 width: '130',
                 render: 'buttons',
@@ -87,7 +87,7 @@ const baTable = new baTableClass(
                         baTable.form.submitLoading = false
                         baTable.form.operateIds?.shift()
                         if (baTable.form.operateIds!.length > 0) {
-                            baTable.toggleForm('edit', baTable.form.operateIds)
+                            baTable.toggleForm('Edit', baTable.form.operateIds)
                         } else {
                             baTable.toggleForm()
                         }

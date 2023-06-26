@@ -91,7 +91,7 @@ export const fieldItem: {
         {
             title: i18n.global.t('crud.state.Weight (drag and drop sorting)'),
             name: 'weigh',
-            comment: i18n.global.t('weigh'),
+            comment: i18n.global.t('Weigh'),
             designType: 'weigh',
             table: {},
             form: {},
@@ -100,7 +100,7 @@ export const fieldItem: {
             null: true,
         },
         {
-            title: i18n.global.t('state'),
+            title: i18n.global.t('State'),
             name: 'status',
             comment: i18n.global.t('crud.state.Status:0=Disabled,1=Enabled'),
             designType: 'switch',
@@ -119,9 +119,9 @@ export const fieldItem: {
             ...fieldData.textarea,
         },
         {
-            title: i18n.global.t('updatetime'),
+            title: i18n.global.t('Update time'),
             name: 'update_time',
-            comment: i18n.global.t('updatetime'),
+            comment: i18n.global.t('Update time'),
             designType: 'timestamp',
             formBuildExclude: true,
             table: {},
@@ -129,9 +129,9 @@ export const fieldItem: {
             ...fieldData.datetime,
         },
         {
-            title: i18n.global.t('createtime'),
+            title: i18n.global.t('Create time'),
             name: 'create_time',
-            comment: i18n.global.t('createtime'),
+            comment: i18n.global.t('Create time'),
             designType: 'timestamp',
             formBuildExclude: true,
             table: {},
@@ -407,7 +407,7 @@ const tableBaseAttr = {
         type: 'select',
         value: 'none',
         options: {
-            none: i18n.global.t('none'),
+            none: i18n.global.t('None'),
             icon: 'Icon',
             switch: i18n.global.t('utils.switch'),
             image: i18n.global.t('utils.image'),

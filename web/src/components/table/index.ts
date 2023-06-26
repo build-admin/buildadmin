@@ -21,7 +21,7 @@ export const defaultOptButtons = (optButType: DefaultOptButType[] = ['weigh-sort
             {
                 render: 'moveButton',
                 name: 'weigh-sort',
-                title: 'weigh-sort',
+                title: 'Drag sort',
                 text: '',
                 type: 'info',
                 icon: 'fa fa-arrows',
@@ -34,7 +34,7 @@ export const defaultOptButtons = (optButType: DefaultOptButType[] = ['weigh-sort
             {
                 render: 'tipButton',
                 name: 'edit',
-                title: 'edit',
+                title: 'Edit',
                 text: '',
                 type: 'primary',
                 icon: 'fa fa-pencil',
@@ -47,13 +47,13 @@ export const defaultOptButtons = (optButType: DefaultOptButType[] = ['weigh-sort
             {
                 render: 'confirmButton',
                 name: 'delete',
-                title: 'delete',
+                title: 'Delete',
                 text: '',
                 type: 'danger',
                 icon: 'fa fa-trash',
                 class: 'table-row-delete',
                 popconfirm: {
-                    confirmButtonText: i18n.global.t('delete'),
+                    confirmButtonText: i18n.global.t('Delete'),
                     cancelButtonText: i18n.global.t('Cancel'),
                     confirmButtonType: 'danger',
                     title: i18n.global.t('Are you sure to delete the selected record?'),
@@ -76,7 +76,7 @@ export const defaultOptButtons = (optButType: DefaultOptButType[] = ['weigh-sort
  * 格式化时间戳
  */
 export const timeFormat = (dateTime: string | number | null = null, fmt = 'yyyy-mm-dd hh:MM:ss') => {
-    if (dateTime == 'none') return i18n.global.t('none')
+    if (dateTime == 'none') return i18n.global.t('None')
     if (!dateTime) dateTime = Number(new Date())
     if (dateTime.toString().length === 10) {
         dateTime = +dateTime * 1000

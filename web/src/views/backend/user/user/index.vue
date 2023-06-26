@@ -5,7 +5,7 @@
         <!-- 表格顶部菜单 -->
         <TableHeader
             :buttons="['refresh', 'add', 'edit', 'delete', 'comSearch', 'quickSearch', 'columnDisplay']"
-            :quick-search-placeholder="t('quick Search Placeholder', { fields: t('user.user.User name') + '/' + t('user.user.nickname') })"
+            :quick-search-placeholder="t('Quick search placeholder', { fields: t('user.user.User name') + '/' + t('user.user.nickname') })"
         />
 
         <!-- 表格 -->
@@ -35,7 +35,7 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: t('id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            { label: t('Id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
             { label: t('user.user.User name'), prop: 'username', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             { label: t('user.user.nickname'), prop: 'nickname', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
@@ -53,7 +53,7 @@ const baTable = new baTableClass(
                 align: 'center',
                 render: 'tag',
                 custom: { '0': 'info', '1': '', '2': 'success' },
-                replaceValue: { '0': t('unknown'), '1': t('user.user.male'), '2': t('user.user.female') },
+                replaceValue: { '0': t('Unknown'), '1': t('user.user.male'), '2': t('user.user.female') },
             },
             { label: t('user.user.mobile'), prop: 'mobile', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
@@ -73,9 +73,9 @@ const baTable = new baTableClass(
                 operator: 'RANGE',
                 width: 160,
             },
-            { label: t('createtime'), prop: 'create_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
+            { label: t('Create time'), prop: 'create_time', align: 'center', render: 'datetime', sortable: 'custom', operator: 'RANGE', width: 160 },
             {
-                label: t('state'),
+                label: t('State'),
                 prop: 'status',
                 align: 'center',
                 render: 'tag',
@@ -83,7 +83,7 @@ const baTable = new baTableClass(
                 replaceValue: { disable: t('Disable'), enable: t('Enable') },
             },
             {
-                label: t('operate'),
+                label: t('Operate'),
                 align: 'center',
                 width: '100',
                 render: 'buttons',

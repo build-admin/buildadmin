@@ -3,7 +3,7 @@
     <el-dialog
         class="ba-operate-dialog"
         :close-on-click-modal="false"
-        :model-value="baTable.form.operate ? true : false"
+        :model-value="['Add', 'Edit'].includes(baTable.form.operate!)"
         @close="baTable.toggleForm"
         :destroy-on-close="true"
     >
@@ -36,7 +36,7 @@
                             params: { isTree: true },
                             field: 'name',
                             'remote-url': baTable.api.actionUrl.get('index'),
-                            placeholder: t('Click Select'),
+                            placeholder: t('Click select'),
                         }"
                     />
 
@@ -60,7 +60,7 @@
                         />
                     </el-form-item>
                     <FormItem
-                        :label="t('state')"
+                        :label="t('State')"
                         v-model="baTable.form.items!.status"
                         type="radio"
                         :data="{ content: { '0': t('Disable'), '1': t('Enable') }, childrenAttr: { border: true } }"

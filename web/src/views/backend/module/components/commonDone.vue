@@ -82,7 +82,7 @@
             v-loading="state.loading.common"
             @click="onSubmitInstallDone"
         >
-            {{ state.common.moduleState == moduleInstallState.DISABLE ? t('complete') : t('module.End of installation') }}
+            {{ state.common.moduleState == moduleInstallState.DISABLE ? t('Complete') : t('module.End of installation') }}
         </el-button>
     </div>
 </template>

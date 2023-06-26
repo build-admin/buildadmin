@@ -4,7 +4,7 @@
         class="ba-operate-dialog"
         :close-on-click-modal="false"
         :destroy-on-close="true"
-        :model-value="baTable.form.operate ? true : false"
+        :model-value="['Add', 'Edit'].includes(baTable.form.operate!)"
         @close="baTable.toggleForm"
     >
         <template #header>
@@ -32,7 +32,7 @@
                         prop="pid"
                         :label="t('auth.rule.Superior menu rule')"
                         v-model="baTable.form.items!.pid"
-                        :placeholder="t('Click Select')"
+                        :placeholder="t('Click select')"
                         :input-attr="{
                             params: { isTree: true },
                             field: 'title',
@@ -152,7 +152,7 @@
                         }"
                     />
                     <FormItem
-                        :label="t('state')"
+                        :label="t('State')"
                         v-model="baTable.form.items!.status"
                         type="radio"
                         :data="{

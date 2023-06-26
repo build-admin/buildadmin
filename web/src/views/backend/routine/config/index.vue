@@ -71,7 +71,7 @@
                                         <el-popconfirm
                                             @confirm="onDelConfig(item)"
                                             v-if="item.allow_del"
-                                            :confirmButtonText="t('delete')"
+                                            :confirmButtonText="t('Delete')"
                                             :title="t('routine.config.Are you sure to delete the configuration item?')"
                                         >
                                             <template #reference>

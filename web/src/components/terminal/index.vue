@@ -43,7 +43,7 @@
                             />
                             <el-button
                                 @click="terminal.delTask(idx)"
-                                :title="t('delete')"
+                                :title="t('Delete')"
                                 size="small"
                                 v-blur
                                 type="danger"

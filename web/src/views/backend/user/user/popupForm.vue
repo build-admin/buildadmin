@@ -4,7 +4,7 @@
         class="ba-operate-dialog"
         :close-on-click-modal="false"
         :destroy-on-close="true"
-        :model-value="baTable.form.operate ? true : false"
+        :model-value="['Add', 'Edit'].includes(baTable.form.operate!)"
         @close="baTable.toggleForm"
     >
         <template #header>
@@ -72,7 +72,7 @@
                         v-model="baTable.form.items!.gender"
                         type="radio"
                         :data="{
-                            content: { 0: t('unknown'), 1: t('user.user.male'), 2: t('user.user.female') },
+                            content: { 0: t('Unknown'), 1: t('user.user.male'), 2: t('user.user.female') },
                             childrenAttr: { border: true },
                         }"
                     />
@@ -85,14 +85,14 @@
                             :placeholder="t('Please select field', { field: t('user.user.birthday') })"
                         />
                     </el-form-item>
-                    <el-form-item v-if="baTable.form.operate == 'edit'" :label="t('user.user.balance')">
+                    <el-form-item v-if="baTable.form.operate == 'Edit'" :label="t('user.user.balance')">
                         <el-input v-model="baTable.form.items!.money" readonly>
                             <template #append>
                                 <el-button @click="changeAccount('money')">{{ t('user.user.Adjustment balance') }}</el-button>
                             </template>
                         </el-input>
                     </el-form-item>
-                    <el-form-item v-if="baTable.form.operate == 'edit'" :label="t('user.user.integral')">
+                    <el-form-item v-if="baTable.form.operate == 'Edit'" :label="t('user.user.integral')">
                         <el-input v-model="baTable.form.items!.score" readonly>
                             <template #append>
                                 <el-button @click="changeAccount('score')">{{ t('user.user.Adjust integral') }}</el-button>
@@ -104,7 +104,7 @@
                             v-model="baTable.form.items!.password"
                             type="password"
                             :placeholder="
-                                baTable.form.operate == 'add'
+                                baTable.form.operate == 'Add'
                                     ? t('Please input field', { field: t('user.user.password') })
                                     : t('user.user.Please leave blank if not modified')
                             "
@@ -120,7 +120,7 @@
                         ></el-input>
                     </el-form-item>
                     <FormItem
-                        :label="t('state')"
+                        :label="t('State')"
                         v-model="baTable.form.items!.status"
                         type="radio"
                         :data="{ content: { disable: t('Disable'), enable: t('Enable') }, childrenAttr: { border: true } }"
@@ -163,7 +163,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     password: [
         {
             validator: (rule: any, val: string, callback: Function) => {
-                if (baTable.form.operate == 'add') {
+                if (baTable.form.operate == 'Add') {
                     if (!val) {
                         return callback(new Error(t('Please input field', { field: t('user.user.password') })))
                     }
@@ -195,7 +195,7 @@ const changeAccount = (type: string) => {
 watch(
     () => baTable.form.operate,
     (newVal) => {
-        rules.password![0].required = newVal == 'add'
+        rules.password![0].required = newVal == 'Add'
     }
 )
 </script>
