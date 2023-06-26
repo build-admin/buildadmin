@@ -1,19 +1,12 @@
 import { nextTick } from 'vue'
 import { loadCss, loadJs } from './common'
 import * as elIcons from '@element-plus/icons-vue'
+import { getUrl } from '/@/utils/axios'
 
 /**
- * 动态的加载样式表，以实现：获取样式表内容（图标名称列表等）
+ * 动态加载的 css 和 js
  */
-const cssUrls: Array<string> = [
-    '//at.alicdn.com/t/font_3135462_5axiswmtpj.css',
-
-    // font-awesome 图标库CDN地址，任取其一即可，若图标无法显示，可尝试更换CDN地址
-    // 1. Bootstrap 中文网同款
-    // '//cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
-    // 2. cdnjs
-    '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
-]
+const cssUrls: Array<string> = ['//at.alicdn.com/t/font_3135462_5axiswmtpj.css']
 const jsUrls: Array<string> = []
 
 /*
@@ -42,6 +35,31 @@ function getStylesFromDomain(domain: string) {
     const styles: StyleSheetList = document.styleSheets
     for (const key in styles) {
         if (styles[key].href && (styles[key].href as string).indexOf(domain) > -1) {
+            sheets.push(styles[key])
+        }
+    }
+    return sheets
+}
+
+/**
+ * 获取Vite开发服务/编译后的样式表内容
+ * @param devID style 标签的 viteDevId，只开发服务有
+ */
+function getStylesFromVite(devId: string) {
+    const sheets = []
+    const styles: StyleSheetList = document.styleSheets
+    if (import.meta.env.MODE == 'production') {
+        const url = getUrl()
+        for (const key in styles) {
+            if (styles[key].href && styles[key].href?.indexOf(url) === 0) {
+                sheets.push(styles[key])
+            }
+        }
+        return sheets
+    }
+    for (const key in styles) {
+        const ownerNode = styles[key].ownerNode as HTMLMapElement
+        if (ownerNode && ownerNode.dataset?.viteDevId && ownerNode.dataset.viteDevId!.indexOf(devId) > -1) {
             sheets.push(styles[key])
         }
     }
@@ -78,18 +96,16 @@ export function getAwesomeIconfontNames() {
     return new Promise<string[]>((resolve, reject) => {
         nextTick(() => {
             const iconfonts = []
-            const sheets = getStylesFromDomain('/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+            const sheets = getStylesFromVite('font-awesome.min.css')
             for (const key in sheets) {
                 const rules: any = sheets[key].cssRules
                 for (const k in rules) {
-                    if (rules[k].selectorText && /^\.fa-(.*)::before$/g.test(rules[k].selectorText)) {
+                    if (!rules[k].selectorText || rules[k].selectorText.indexOf('.fa-') !== 0) {
+                        continue
+                    }
+                    if (/^\.fa-(.*)::before$/g.test(rules[k].selectorText)) {
                         if (rules[k].selectorText.indexOf(', ') > -1) {
                             const iconNames = rules[k].selectorText.split(', ')
-                            /*
-                            // 含图标别名
-                            for (const i_k in iconNames) {
-                                iconfonts.push(`${iconNames[i_k].substring(1, iconNames[i_k].length).replace(/\:\:before/gi, '')}`)
-                            } */
                             iconfonts.push(`${iconNames[0].substring(1, iconNames[0].length).replace(/\:\:before/gi, '')}`)
                         } else {
                             iconfonts.push(`${rules[k].selectorText.substring(1, rules[k].selectorText.length).replace(/\:\:before/gi, '')}`)

@@ -9,6 +9,7 @@ import pinia from '/@/stores/index'
 import { directives } from '/@/utils/directives'
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/display.css'
+import 'font-awesome/css/font-awesome.min.css'
 import '/@/styles/index.scss'
 // modules import mark, Please do not remove.
 
