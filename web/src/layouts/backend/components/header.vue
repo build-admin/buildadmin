@@ -11,16 +11,13 @@ import ClassicNavBar from '/@/layouts/backend/components/navBar/classic.vue'
 import StreamlineNavBar from '/@/layouts/backend/components/menus/menuHorizontal.vue'
 import DoubleNavBar from '/@/layouts/backend/components/navBar/double.vue'
 
-const config = useConfig()
-const navTabs = useNavTabs()
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
+defineOptions({
     name: 'layout/header',
     components: { DefaultNavBar, ClassicNavBar, StreamlineNavBar, DoubleNavBar },
 })
+
+const config = useConfig()
+const navTabs = useNavTabs()
 </script>
 
 <style scoped lang="scss">

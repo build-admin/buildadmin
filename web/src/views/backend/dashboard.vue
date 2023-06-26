@@ -165,6 +165,10 @@ import { getGreet } from '/@/utils/common'
 import { useEventListener } from '@vueuse/core'
 let workTimer: number
 
+defineOptions({
+    name: 'dashboard',
+})
+
 const d = new Date()
 const { t } = useI18n()
 const navTabs = useNavTabs()
@@ -612,13 +616,6 @@ watch(
         echartsResize()
     }
 )
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'dashboard',
-})
 </script>
 
 <style scoped lang="scss">

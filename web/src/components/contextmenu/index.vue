@@ -23,15 +23,9 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, toRaw } from 'vue'
-import type { ContextMenuItem, Axis, ContextmenuItemClickEmitArg } from './interface'
+import type { Axis, ContextmenuItemClickEmitArg, Props } from './interface'
 import { RouteLocationNormalized } from 'vue-router'
 import { useEventListener } from '@vueuse/core'
-
-// 不能使用导出的 interface vue的issue已存在，尚未解决
-interface Props {
-    width?: number
-    items: ContextMenuItem[]
-}
 
 const props = withDefaults(defineProps<Props>(), {
     width: 150,

@@ -32,6 +32,10 @@ import { cloneDeep } from 'lodash-es'
 import { getArrayKey } from '/@/utils/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
 
+defineOptions({
+    name: 'auth/group',
+})
+
 const formRef = ref()
 const tableRef = ref()
 const { t } = useI18n()
@@ -134,13 +138,6 @@ onMounted(() => {
     baTable.table.ref = tableRef.value
     baTable.mount()
     baTable.getIndex()
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'auth/group',
 })
 </script>
 

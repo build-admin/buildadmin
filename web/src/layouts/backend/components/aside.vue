@@ -14,17 +14,14 @@ import MenuVerticalChildren from '/@/layouts/backend/components/menus/menuVertic
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 
+defineOptions({
+    name: 'layout/aside',
+})
+
 const config = useConfig()
 const navTabs = useNavTabs()
 
 const menuWidth = computed(() => config.menuWidth())
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'layout/aside',
-})
 </script>
 
 <style scoped lang="scss">

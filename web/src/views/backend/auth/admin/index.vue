@@ -29,6 +29,10 @@ import { baTableApi } from '/@/api/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { useI18n } from 'vue-i18n'
 
+defineOptions({
+    name: 'auth/admin',
+})
+
 const { t } = useI18n()
 const adminInfo = useAdminInfo()
 
@@ -89,13 +93,6 @@ provide('baTable', baTable)
 
 baTable.mount()
 baTable.getIndex()
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'auth/admin',
-})
 </script>
 
 <style scoped lang="scss"></style>

@@ -28,6 +28,10 @@ import { useI18n } from 'vue-i18n'
 import Info from './info.vue'
 import { buildJsonToElTreeData } from '/@/utils/common'
 
+defineOptions({
+    name: 'auth/adminLog',
+})
+
 const { t } = useI18n()
 
 let optButtons: OptButton[] = [
@@ -141,13 +145,6 @@ const infoButtonClick = (row: TableRow) => {
     baTable.form.extend!['info'] = rowClone
     baTable.form.operate = 'Info'
 }
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'auth/adminLog',
-})
 </script>
 
 <style scoped lang="scss"></style>

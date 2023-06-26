@@ -23,6 +23,10 @@ import { useEventListener } from '@vueuse/core'
 import { BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
 import { isEmpty } from 'lodash-es'
 
+defineOptions({
+    components: { Default, Classic, Streamline, Double },
+})
+
 const terminal = useTerminal()
 const navTabs = useNavTabs()
 const config = useConfig()
@@ -104,12 +108,5 @@ const onSetNavTabsMinWidth = () => {
     const navMenus = document.querySelector('.nav-menus') as HTMLElement
     const minWidth = navBar.offsetWidth - (navMenus.offsetWidth + 20)
     navTabs.style.width = minWidth.toString() + 'px'
-}
-</script>
-
-<!-- 只有在 components 选项中的组件可以被动态组件使用-->
-<script lang="ts">
-export default {
-    components: { Default, Classic, Streamline, Double },
 }
 </script>

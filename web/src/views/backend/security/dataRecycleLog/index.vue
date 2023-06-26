@@ -55,6 +55,10 @@ import { baTableApi } from '/@/api/common'
 import { buildJsonToElTreeData } from '/@/utils/common'
 import { useI18n } from 'vue-i18n'
 
+defineOptions({
+    name: 'security/dataRecycleLog',
+})
+
 const { t } = useI18n()
 let optButtons: OptButton[] = [
     {
@@ -173,7 +177,7 @@ const baTable = new baTableClass(
 )
 
 const onRestore = (ids: string[]) => {
-    restore(ids).then((res) => {
+    restore(ids).then(() => {
         baTable.onTableHeaderAction('refresh', {})
     })
 }
@@ -200,13 +204,6 @@ provide('baTable', baTable)
 onMounted(() => {
     baTable.mount()
     baTable.getIndex()
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'security/dataRecycleLog',
 })
 </script>
 

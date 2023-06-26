@@ -28,6 +28,10 @@ import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
 import { useI18n } from 'vue-i18n'
 
+defineOptions({
+    name: 'user/user',
+})
+
 const { t } = useI18n()
 const tableRef = ref()
 const baTable = new baTableClass(
@@ -107,13 +111,6 @@ baTable.mount()
 baTable.getIndex()
 
 provide('baTable', baTable)
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'user/user',
-})
 </script>
 
 <style scoped lang="scss"></style>

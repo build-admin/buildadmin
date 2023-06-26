@@ -19,6 +19,10 @@ import GoodsInfo from './components/goodsInfo.vue'
 import CommonDialog from './components/commonDialog.vue'
 import { useI18n } from 'vue-i18n'
 
+defineOptions({
+    name: 'moduleStore/moduleStore',
+})
+
 const { t } = useI18n()
 
 onMounted(() => {
@@ -34,13 +38,6 @@ onMounted(() => {
             if (state.common.disableHmr) throw t('This is a deliberate error thrown to prevent a hot update of Vite')
         })
     }
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'moduleStore/moduleStore',
 })
 </script>
 

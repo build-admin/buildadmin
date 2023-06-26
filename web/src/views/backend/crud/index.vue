@@ -11,6 +11,11 @@ import Design from '/@/views/backend/crud/design.vue'
 import { state } from '/@/views/backend/crud/index'
 import { useI18n } from 'vue-i18n'
 
+defineOptions({
+    name: 'crud/crud',
+    components: { Start, Design },
+})
+
 const { t } = useI18n()
 onMounted(() => {
     if (import.meta.hot) {
@@ -24,14 +29,6 @@ onMounted(() => {
             throw t('This is a deliberate error thrown to prevent a hot update of Vite')
         })
     }
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'crud/crud',
-    components: { Start, Design },
 })
 </script>
 

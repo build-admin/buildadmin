@@ -28,6 +28,10 @@ import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
 import { useI18n } from 'vue-i18n'
 
+defineOptions({
+    name: 'security/dataRecycle',
+})
+
 const { t } = useI18n()
 const tableRef = ref()
 const formRef = ref()
@@ -111,13 +115,6 @@ onMounted(() => {
     baTable.table.ref = tableRef.value
     baTable.mount()
     baTable.getIndex()
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'security/dataRecycle',
 })
 </script>
 

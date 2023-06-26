@@ -58,6 +58,10 @@ import { baTableApi } from '/@/api/common'
 import { useI18n } from 'vue-i18n'
 import { auth } from '/@/utils/common'
 
+defineOptions({
+    name: 'routine/attachment',
+})
+
 const { t } = useI18n()
 const tableRef = ref()
 
@@ -165,13 +169,6 @@ onMounted(() => {
     baTable.getIndex()?.then(() => {
         baTable.initSort()
     })
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'routine/attachment',
 })
 </script>
 

@@ -38,6 +38,10 @@ import { useRoute } from 'vue-router'
 import { add } from '/@/api/backend/user/moneyLog'
 import { useI18n } from 'vue-i18n'
 
+defineOptions({
+    name: 'user/moneyLog',
+})
+
 const { t } = useI18n()
 const tableRef = ref()
 const route = useRoute()
@@ -116,13 +120,6 @@ watch(
         getUserInfo(newVal)
     }
 )
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'user/moneyLog',
-})
 </script>
 
 <style scoped lang="scss"></style>

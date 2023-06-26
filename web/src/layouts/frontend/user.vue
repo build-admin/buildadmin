@@ -9,11 +9,17 @@ import { useMemberCenter } from '/@/stores/memberCenter'
 import { index } from '/@/api/frontend/user/index'
 import { handleMemberCenterRoute, getFirstRoute, routePush } from '/@/utils/router'
 import { memberCenterBaseRoute } from '/@/router/static'
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
+import Default from '/@/layouts/frontend/container/default.vue'
+import Disable from '/@/layouts/frontend/container/disable.vue'
 import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
-import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import userMounted from '/@/components/mixins/userMounted'
 import { isEmpty } from 'lodash-es'
+
+defineOptions({
+    components: { Default, Disable },
+})
 
 const { t } = useI18n()
 const route = useRoute()
@@ -74,15 +80,6 @@ onMounted(async () => {
         memberCenter.setShrink(false)
     }
 })
-</script>
-
-<!-- 只有在 components 选项中的组件可以被动态组件使用-->
-<script lang="ts">
-import Default from '/@/layouts/frontend/container/default.vue'
-import Disable from '/@/layouts/frontend/container/disable.vue'
-export default {
-    components: { Default, Disable },
-}
 </script>
 
 <style scoped lang="scss"></style>

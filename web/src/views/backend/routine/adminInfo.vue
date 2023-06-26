@@ -113,6 +113,10 @@ import { fileUpload } from '/@/api/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { timeFormat } from '/@/components/table'
 
+defineOptions({
+    name: 'routine/adminInfo',
+})
+
 const { t } = useI18n()
 const formRef = ref<InstanceType<typeof ElForm>>()
 
@@ -229,13 +233,6 @@ const onSubmit = (formEl: InstanceType<typeof ElForm> | undefined) => {
         }
     })
 }
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'routine/adminInfo',
-})
 </script>
 
 <style scoped lang="scss">

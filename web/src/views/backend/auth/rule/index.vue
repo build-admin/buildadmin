@@ -27,6 +27,10 @@ import { useI18n } from 'vue-i18n'
 import { baTableApi } from '/@/api/common'
 import baTableClass from '/@/utils/baTable'
 
+defineOptions({
+    name: 'auth/rule',
+})
+
 const { t } = useI18n()
 const tableRef = ref()
 const baTable = new baTableClass(
@@ -89,13 +93,6 @@ onMounted(() => {
     baTable.getIndex()?.then(() => {
         baTable.dragSort()
     })
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'auth/rule',
 })
 </script>
 

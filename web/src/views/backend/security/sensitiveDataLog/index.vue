@@ -54,6 +54,10 @@ import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
 import { useI18n } from 'vue-i18n'
 
+defineOptions({
+    name: 'security/sensitiveDataLog',
+})
+
 const { t } = useI18n()
 
 let optButtons: OptButton[] = [
@@ -210,13 +214,6 @@ provide('baTable', baTable)
 onMounted(() => {
     baTable.mount()
     baTable.getIndex()
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'security/sensitiveDataLog',
 })
 </script>
 

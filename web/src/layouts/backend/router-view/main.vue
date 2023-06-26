@@ -20,6 +20,10 @@ import useCurrentInstance from '/@/utils/useCurrentInstance'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 
+defineOptions({
+    name: 'layout/main',
+})
+
 const { proxy } = useCurrentInstance()
 
 const route = useRoute()
@@ -79,13 +83,6 @@ watch(
         }
     }
 )
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'layout/main',
-})
 </script>
 
 <style scoped lang="scss">

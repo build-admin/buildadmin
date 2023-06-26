@@ -120,6 +120,10 @@ import { SiteConfig } from '/@/stores/interface'
 import { useI18n } from 'vue-i18n'
 import { uuid } from '/@/utils/random'
 
+defineOptions({
+    name: 'routine/config',
+})
+
 const { t } = useI18n()
 const siteConfig = useSiteConfig()
 
@@ -265,13 +269,6 @@ const onTestSendMail = () => {
 
 onMounted(() => {
     getIndex()
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'routine/config',
 })
 </script>
 
