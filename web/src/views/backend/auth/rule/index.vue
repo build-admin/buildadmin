@@ -18,7 +18,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, provide } from 'vue'
-import { adminRule } from '/@/api/controllerUrls'
 import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
@@ -34,7 +33,7 @@ defineOptions({
 const { t } = useI18n()
 const tableRef = ref()
 const baTable = new baTableClass(
-    new baTableApi(adminRule),
+    new baTableApi('/admin/auth.Rule/'),
     {
         expandAll: false,
         dblClickNotEditColumn: [undefined, 'keepalive', 'status'],

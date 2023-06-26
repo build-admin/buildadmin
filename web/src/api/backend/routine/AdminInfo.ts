@@ -1,11 +1,11 @@
 import createAxios from '/@/utils/axios'
-import { authAdminLog } from '/@/api/controllerUrls'
 
-const controllerUrl = '/admin/routine.AdminInfo/'
+export const url = '/admin/routine.AdminInfo/'
+
 export const actionUrl = new Map([
-    ['index', controllerUrl + 'index'],
-    ['edit', controllerUrl + 'edit'],
-    ['log', authAdminLog + 'index'],
+    ['index', url + 'index'],
+    ['edit', url + 'edit'],
+    ['log', '/admin/auth.AdminLog/index'],
 ])
 
 export function index() {
@@ -15,12 +15,12 @@ export function index() {
     })
 }
 
-export function log(filter: anyObj = {}): ApiPromise<TableDefaultData> {
-    return createAxios({
+export function log(filter: anyObj = {}) {
+    return createAxios<TableDefaultData>({
         url: actionUrl.get('log'),
         method: 'get',
         params: filter,
-    }) as ApiPromise
+    })
 }
 
 export function postData(data: anyObj) {

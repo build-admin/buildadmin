@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { AxiosRequestConfig, AxiosPromise, Method } from 'axios'
+import type { AxiosRequestConfig, Method } from 'axios'
 import { ElLoading, LoadingOptions, ElNotification } from 'element-plus'
 import { useConfig } from '/@/stores/config'
 import { isAdminApp } from '/@/utils/common'
@@ -17,7 +17,7 @@ const loadingInstance: LoadingInstance = {
     count: 0,
 }
 
-/*
+/**
  * 根据运行环境获取基础请求URL
  */
 export const getUrl = (): string => {
@@ -25,7 +25,7 @@ export const getUrl = (): string => {
     return value == 'getCurrentDomain' ? window.location.protocol + '//' + window.location.host : value
 }
 
-/*
+/**
  * 根据运行环境获取基础请求URL的端口
  */
 export const getUrlPort = (): string => {
@@ -33,12 +33,12 @@ export const getUrlPort = (): string => {
     return new URL(url).port
 }
 
-/*
- * 创建Axios
+/**
+ * 创建`Axios`
  * 默认开启`reductDataFormat(简洁响应)`,返回类型为`ApiPromise`
  * 关闭`reductDataFormat`,返回类型则为`AxiosPromise`
  */
-function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loading: LoadingOptions = {}): ApiPromise | AxiosPromise {
+function createAxios<Data = any, T = ApiPromise<Data>>(axiosConfig: AxiosRequestConfig, options: Options = {}, loading: LoadingOptions = {}): T {
     const config = useConfig()
     const adminInfo = useAdminInfo()
     const userInfo = useUserInfo()
@@ -199,7 +199,7 @@ function createAxios(axiosConfig: AxiosRequestConfig, options: Options = {}, loa
             return Promise.reject(error) // 错误继续返回给到具体页面
         }
     )
-    return options.reductDataFormat ? (Axios(axiosConfig) as ApiPromise) : (Axios(axiosConfig) as AxiosPromise)
+    return Axios(axiosConfig) as T
 }
 
 export default createAxios

@@ -20,7 +20,6 @@
 <script setup lang="ts">
 import { onMounted, ref, provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
-import { userRule } from '/@/api/controllerUrls'
 import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
@@ -35,7 +34,7 @@ defineOptions({
 const { t } = useI18n()
 const tableRef = ref()
 const baTable = new baTableClass(
-    new baTableApi(userRule),
+    new baTableApi('/admin/user.Rule/'),
     {
         expandAll: true,
         column: [

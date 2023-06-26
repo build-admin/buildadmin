@@ -39,7 +39,7 @@ export function info(params: anyObj) {
     )
 }
 
-export function postLogout(): ApiPromise {
+export function postLogout() {
     const siteConfig = useSiteConfig()
     const baAccount = useBaAccount()
     return createAxios({
@@ -48,7 +48,7 @@ export function postLogout(): ApiPromise {
         data: {
             refresh_token: baAccount.getToken('refresh'),
         },
-    }) as ApiPromise
+    })
 }
 
 export function buildCaptchaUrl() {
@@ -56,7 +56,7 @@ export function buildCaptchaUrl() {
     return siteConfig.apiUrl + captchaUrl + '?server=1'
 }
 
-export function checkIn(method: 'get' | 'post', params: object = {}): ApiPromise {
+export function checkIn(method: 'get' | 'post', params: object = {}) {
     const siteConfig = useSiteConfig()
     return createAxios(
         {
@@ -67,10 +67,10 @@ export function checkIn(method: 'get' | 'post', params: object = {}): ApiPromise
         {
             showSuccessMessage: true,
         }
-    ) as ApiPromise
+    )
 }
 
-export function getUserInfo(): ApiPromise {
+export function getUserInfo() {
     const baAccount = useBaAccount()
     const siteConfig = useSiteConfig()
     return createAxios(
@@ -81,10 +81,10 @@ export function getUserInfo(): ApiPromise {
         {
             anotherToken: baAccount.getToken('auth'),
         }
-    ) as ApiPromise
+    )
 }
 
-export function createOrder(params: object = {}): ApiPromise {
+export function createOrder(params: object = {}) {
     const baAccount = useBaAccount()
     const siteConfig = useSiteConfig()
     return createAxios(
@@ -96,10 +96,10 @@ export function createOrder(params: object = {}): ApiPromise {
         {
             anotherToken: baAccount.getToken('auth'),
         }
-    ) as ApiPromise
+    )
 }
 
-export function payOrder(orderId: number, payType: string): ApiPromise {
+export function payOrder(orderId: number, payType: string) {
     const baAccount = useBaAccount()
     const siteConfig = useSiteConfig()
     return createAxios(
@@ -115,10 +115,10 @@ export function payOrder(orderId: number, payType: string): ApiPromise {
             anotherToken: baAccount.getToken('auth'),
             showSuccessMessage: true,
         }
-    ) as ApiPromise
+    )
 }
 
-export function payCheck(sn: string): ApiPromise {
+export function payCheck(sn: string) {
     const baAccount = useBaAccount()
     const siteConfig = useSiteConfig()
     return createAxios(
@@ -133,7 +133,7 @@ export function payCheck(sn: string): ApiPromise {
             anotherToken: baAccount.getToken('auth'),
             showCodeMessage: false,
         }
-    ) as ApiPromise
+    )
 }
 
 export function getInstallState(uid: string) {
@@ -165,7 +165,7 @@ export function postInstallModule(uid: string, orderId: number, extend: anyObj =
         {
             showCodeMessage: false,
         }
-    ) as ApiPromise
+    )
 }
 
 export function postUpdate(uid: string, orderId: number, extend: anyObj = {}) {
@@ -220,7 +220,7 @@ export function dependentInstallComplete(uid: string) {
         params: {
             uid: uid,
         },
-    }) as ApiPromise
+    })
 }
 
 export function upload(file: string) {
@@ -230,5 +230,5 @@ export function upload(file: string) {
         params: {
             file: file,
         },
-    }) as ApiPromise
+    })
 }

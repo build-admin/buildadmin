@@ -20,7 +20,6 @@
 <script setup lang="ts">
 import { provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
-import { authAdmin } from '/@/api/controllerUrls'
 import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
@@ -42,7 +41,7 @@ optButtons[1].display = (row) => {
 }
 
 const baTable = new baTableClass(
-    new baTableApi(authAdmin),
+    new baTableApi('/admin/auth.Admin/'),
     {
         column: [
             { type: 'selection', align: 'center', operator: false },

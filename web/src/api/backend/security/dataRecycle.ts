@@ -1,9 +1,10 @@
 import createAxios from '/@/utils/axios'
-import { securityDataRecycle } from '/@/api/controllerUrls'
+
+export const url = '/admin/security.DataRecycle/'
 
 export function add() {
     return createAxios({
-        url: securityDataRecycle + 'add',
+        url: url + 'add',
         method: 'get',
     })
 }

@@ -1,6 +1,11 @@
 <template>
     <!-- 对话框表单 -->
-    <el-dialog class="ba-operate-dialog" :close-on-click-modal="false" :model-value="['Add', 'Edit'].includes(baTable.form.operate!)" @close="baTable.toggleForm">
+    <el-dialog
+        class="ba-operate-dialog"
+        :close-on-click-modal="false"
+        :model-value="['Add', 'Edit'].includes(baTable.form.operate!)"
+        @close="baTable.toggleForm"
+    >
         <template #header>
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">
                 {{ baTable.form.operate ? t(baTable.form.operate) : '' }}
@@ -30,7 +35,7 @@
                         :input-attr="{
                             pk: 'user.id',
                             field: 'nickname_text',
-                            'remote-url': userUser + 'index',
+                            'remote-url': '/admin/user.User/index',
                             onChange: getAdd,
                         }"
                     />
@@ -83,7 +88,6 @@ import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import type { ElForm } from 'element-plus'
 import { add } from '/@/api/backend/user/moneyLog'
-import { userUser } from '/@/api/controllerUrls'
 import FormItem from '/@/components/formItem/index.vue'
 import type { FormItemRule } from 'element-plus'
 import { buildValidatorData } from '/@/utils/validate'

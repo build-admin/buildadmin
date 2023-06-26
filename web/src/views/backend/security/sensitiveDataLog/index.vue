@@ -45,8 +45,7 @@
 <script setup lang="ts">
 import { provide, onMounted } from 'vue'
 import baTableClass from '/@/utils/baTable'
-import { securitySensitiveDataLog } from '/@/api/controllerUrls'
-import { info, rollback } from '/@/api/backend/security/sensitiveDataLog'
+import { info, rollback, url } from '/@/api/backend/security/sensitiveDataLog'
 import InfoDialog from './info.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
@@ -96,7 +95,7 @@ let optButtons: OptButton[] = [
 ]
 optButtons = optButtons.concat(defaultOptButtons(['delete']))
 const baTable = new baTableClass(
-    new baTableApi(securitySensitiveDataLog),
+    new baTableApi(url),
     {
         column: [
             { type: 'selection', align: 'center', operator: false },

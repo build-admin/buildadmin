@@ -1,27 +1,27 @@
 import createAxios from '/@/utils/axios'
 import { useAdminInfo } from '/@/stores/adminInfo'
 
-const controllerUrl = '/admin/index/'
+export const url = '/admin/Index/'
 
 export function index() {
     return createAxios({
-        url: controllerUrl + 'index',
+        url: url + 'index',
         method: 'get',
     })
 }
 
-export function login(method: 'get' | 'post', params: object = {}): ApiPromise {
+export function login(method: 'get' | 'post', params: object = {}) {
     return createAxios({
-        url: controllerUrl + 'login',
+        url: url + 'login',
         data: params,
         method: method,
-    }) as ApiPromise
+    })
 }
 
 export function logout() {
     const adminInfo = useAdminInfo()
     return createAxios({
-        url: controllerUrl + 'logout',
+        url: url + 'logout',
         method: 'POST',
         data: {
             refresh_token: adminInfo.getToken('refresh'),

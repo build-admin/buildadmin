@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { onMounted, ref, provide } from 'vue'
 import { sensitiveDataClass } from './index'
-import { securitySensitiveData } from '/@/api/controllerUrls'
+import { url } from '/@/api/backend/security/sensitiveData'
 import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
@@ -36,7 +36,7 @@ const { t } = useI18n()
 const tableRef = ref()
 const formRef = ref()
 const baTable = new sensitiveDataClass(
-    new baTableApi(securitySensitiveData),
+    new baTableApi(url),
     {
         column: [
             { type: 'selection', align: 'center', operator: false },

@@ -1,22 +1,22 @@
 import createAxios from '/@/utils/axios'
 import { useUserInfo } from '/@/stores/userInfo'
 
-const controllerUrl = '/api/user/'
-const accountUrl = '/api/account/'
+export const userUrl = '/api/user/'
+export const accountUrl = '/api/account/'
 
 export function index() {
     return createAxios({
-        url: controllerUrl + 'index',
+        url: userUrl + 'index',
         method: 'get',
     })
 }
 
-export function checkIn(method: 'get' | 'post', params: object = {}): ApiPromise {
+export function checkIn(method: 'get' | 'post', params: object = {}) {
     return createAxios({
-        url: controllerUrl + 'checkIn',
+        url: userUrl + 'checkIn',
         data: params,
         method: method,
-    }) as ApiPromise
+    })
 }
 
 export function overview() {
@@ -67,7 +67,7 @@ export function postChangeBind(data: anyObj) {
     )
 }
 
-export function changePassword(params: anyObj): ApiPromise {
+export function changePassword(params: anyObj) {
     return createAxios(
         {
             url: accountUrl + 'changePassword',
@@ -77,10 +77,10 @@ export function changePassword(params: anyObj): ApiPromise {
         {
             showSuccessMessage: true,
         }
-    ) as ApiPromise
+    )
 }
 
-export function getBalanceLog(page: number, pageSize: number): ApiPromise {
+export function getBalanceLog(page: number, pageSize: number) {
     return createAxios({
         url: accountUrl + 'balance',
         method: 'GET',
@@ -88,10 +88,10 @@ export function getBalanceLog(page: number, pageSize: number): ApiPromise {
             page: page,
             limit: pageSize,
         },
-    }) as ApiPromise
+    })
 }
 
-export function getIntegralLog(page: number, pageSize: number): ApiPromise {
+export function getIntegralLog(page: number, pageSize: number) {
     return createAxios({
         url: accountUrl + 'integral',
         method: 'GET',
@@ -99,21 +99,21 @@ export function getIntegralLog(page: number, pageSize: number): ApiPromise {
             page: page,
             limit: pageSize,
         },
-    }) as ApiPromise
+    })
 }
 
-export function postLogout(): ApiPromise {
+export function postLogout() {
     const userInfo = useUserInfo()
     return createAxios({
-        url: controllerUrl + 'logout',
+        url: userUrl + 'logout',
         method: 'POST',
         data: {
             refresh_token: userInfo.getToken('refresh'),
         },
-    }) as ApiPromise
+    })
 }
 
-export function retrievePassword(params: anyObj): ApiPromise {
+export function retrievePassword(params: anyObj) {
     return createAxios(
         {
             url: accountUrl + 'retrievePassword',
@@ -123,5 +123,5 @@ export function retrievePassword(params: anyObj): ApiPromise {
         {
             showSuccessMessage: true,
         }
-    ) as ApiPromise
+    )
 }

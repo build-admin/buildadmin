@@ -20,8 +20,7 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive, provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
-import { securityDataRecycle } from '/@/api/controllerUrls'
-import { add } from '/@/api/backend/security/dataRecycle'
+import { add, url } from '/@/api/backend/security/dataRecycle'
 import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
@@ -37,7 +36,7 @@ const { t } = useI18n()
 const tableRef = ref()
 const formRef = ref()
 const baTable = new baTableClass(
-    new baTableApi(securityDataRecycle),
+    new baTableApi(url),
     {
         column: [
             { type: 'selection', align: 'center', operator: false },

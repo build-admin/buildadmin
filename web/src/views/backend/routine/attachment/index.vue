@@ -51,7 +51,6 @@ import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import baTableClass from '/@/utils/baTable'
-import { routineAttachment } from '/@/api/controllerUrls'
 import { defaultOptButtons } from '/@/components/table'
 import { previewRenderFormatter } from './index'
 import { baTableApi } from '/@/api/common'
@@ -68,7 +67,7 @@ const tableRef = ref()
 const optBtn = defaultOptButtons(['edit', 'delete'])
 optBtn[1].popconfirm!.title = t('routine.attachment.Files and records will be deleted at the same time Are you sure?')
 
-const baTable = new baTableClass(new baTableApi(routineAttachment), {
+const baTable = new baTableClass(new baTableApi('/admin/routine.Attachment/'), {
     column: [
         { type: 'selection', align: 'center', operator: false },
         { label: t('Id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },

@@ -51,7 +51,7 @@
                             multiple: true,
                             params: { isTree: true, absoluteAuth: adminInfo.id == baTable.form.items!.id ? 0 : 1 },
                             field: 'name',
-                            'remote-url': authGroup + 'index',
+                            'remote-url': '/admin/auth.Group/index',
                             placeholder: t('Click select'),
                         }"
                     />
@@ -117,7 +117,6 @@ import type baTableClass from '/@/utils/baTable'
 import { regularPassword, buildValidatorData } from '/@/utils/validate'
 import type { ElForm, FormItemRule } from 'element-plus'
 import FormItem from '/@/components/formItem/index.vue'
-import { authGroup } from '/@/api/controllerUrls'
 import { useAdminInfo } from '/@/stores/adminInfo'
 
 const adminInfo = useAdminInfo()

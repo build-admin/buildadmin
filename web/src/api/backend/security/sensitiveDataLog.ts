@@ -1,10 +1,11 @@
 import createAxios from '/@/utils/axios'
-import { securitySensitiveDataLog } from '/@/api/controllerUrls'
+
+export const url = '/admin/security.SensitiveDataLog/'
 
 export function rollback(ids: string[]) {
     return createAxios(
         {
-            url: securitySensitiveDataLog + 'rollback',
+            url: url + 'rollback',
             method: 'POST',
             data: {
                 ids: ids,
@@ -18,7 +19,7 @@ export function rollback(ids: string[]) {
 
 export function info(id: string) {
     return createAxios({
-        url: securitySensitiveDataLog + 'info',
+        url: url + 'info',
         method: 'get',
         params: {
             id: id,

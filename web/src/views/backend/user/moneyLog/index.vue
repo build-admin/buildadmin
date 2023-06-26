@@ -29,7 +29,7 @@
 import { isEmpty, parseInt } from 'lodash-es'
 import { ref, provide, reactive, watch } from 'vue'
 import baTableClass from '/@/utils/baTable'
-import { userMoneyLog } from '/@/api/controllerUrls'
+import { url } from '/@/api/backend/user/moneyLog'
 import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
@@ -53,7 +53,7 @@ const state: {
 })
 
 const baTable = new baTableClass(
-    new baTableApi(userMoneyLog),
+    new baTableApi(url),
     {
         column: [
             { type: 'selection', align: 'center', operator: false },

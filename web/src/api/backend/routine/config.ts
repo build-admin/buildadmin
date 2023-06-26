@@ -1,10 +1,13 @@
 import createAxios from '/@/utils/axios'
-const controllerUrl = '/admin/routine.config/'
+
+export const url = '/admin/routine.Config/'
+
 export const actionUrl = new Map([
-    ['index', controllerUrl + 'index'],
-    ['add', controllerUrl + 'add'],
-    ['edit', controllerUrl + 'edit'],
-    ['del', controllerUrl + 'del'],
+    ['index', url + 'index'],
+    ['add', url + 'add'],
+    ['edit', url + 'edit'],
+    ['del', url + 'del'],
+    ['sendTestMail', url + 'sendTestMail'],
 ])
 
 export function index() {
@@ -45,7 +48,7 @@ export function del(ids: string[]) {
 export function postSendTestMail(data: anyObj, mail: string) {
     return createAxios(
         {
-            url: controllerUrl + 'sendTestMail',
+            url: actionUrl.get('sendTestMail'),
             method: 'POST',
             data: Object.assign({}, data, { testMail: mail }),
         },

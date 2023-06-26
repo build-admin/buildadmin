@@ -19,7 +19,6 @@
 import { concat, cloneDeep } from 'lodash-es'
 import { provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
-import { authAdminLog } from '/@/api/controllerUrls'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import { defaultOptButtons } from '/@/components/table'
@@ -53,7 +52,7 @@ let optButtons: OptButton[] = [
 optButtons = concat(optButtons, defaultOptButtons(['delete']))
 
 const baTable = new baTableClass(
-    new baTableApi(authAdminLog),
+    new baTableApi('/admin/auth.AdminLog/'),
     {
         column: [
             { type: 'selection', align: 'center', operator: false },

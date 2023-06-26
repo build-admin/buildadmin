@@ -44,7 +44,6 @@ import { useI18n } from 'vue-i18n'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import baTableClass from '/@/utils/baTable'
-import { routineAttachment } from '/@/api/controllerUrls'
 import { previewRenderFormatter } from '/@/views/backend/routine/attachment'
 import { baTableApi } from '/@/api/common'
 
@@ -90,7 +89,7 @@ const optBtn: OptButton[] = [
         },
     },
 ]
-const baTable = new baTableClass(new baTableApi(routineAttachment), {
+const baTable = new baTableClass(new baTableApi('/admin/routine.Attachment/'), {
     column: [
         {
             type: 'selection',

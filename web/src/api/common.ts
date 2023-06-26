@@ -39,7 +39,7 @@ export const apiSendEms = '/api/Ems/send'
 /**
  * 上传文件
  */
-export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false, config: AxiosRequestConfig = {}): ApiPromise {
+export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false, config: AxiosRequestConfig = {}) {
     let errorMsg = ''
     const file = fd.get('file') as UploadRawFile
     const siteConfig = useSiteConfig()
@@ -72,7 +72,7 @@ export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false
         params: params,
         timeout: 0,
         ...config,
-    }) as ApiPromise
+    })
 }
 
 /**
@@ -129,7 +129,7 @@ export function sendSms(mobile: string, templateCode: string, extend: anyObj = {
         {
             showSuccessMessage: true,
         }
-    ) as ApiPromise
+    )
 }
 
 /**
@@ -149,7 +149,7 @@ export function sendEms(email: string, event: string, extend: anyObj = {}) {
         {
             showSuccessMessage: true,
         }
-    ) as ApiPromise
+    )
 }
 
 /*
@@ -183,7 +183,7 @@ export function buildTerminalUrl(commandKey: string, uuid: string, extend: strin
 /**
  * 请求修改终端配置
  */
-export function postChangeTerminalConfig(data: { manager?: string; port?: string }): ApiPromise {
+export function postChangeTerminalConfig(data: { manager?: string; port?: string }) {
     return createAxios(
         {
             url: changeTerminalConfigUrl,
@@ -193,7 +193,7 @@ export function postChangeTerminalConfig(data: { manager?: string; port?: string
         {
             loading: true,
         }
-    ) as ApiPromise
+    )
 }
 
 /**
@@ -267,7 +267,7 @@ export function getTableFieldList(table: string, clean = true) {
     })
 }
 
-export function refreshToken(): ApiPromise {
+export function refreshToken() {
     const adminInfo = useAdminInfo()
     const userInfo = useUserInfo()
     return createAxios({
@@ -276,7 +276,7 @@ export function refreshToken(): ApiPromise {
         data: {
             refresh_token: isAdminApp() ? adminInfo.getToken('refresh') : userInfo.getToken('refresh'),
         },
-    }) as ApiPromise
+    })
 }
 
 /**
@@ -297,12 +297,12 @@ export class baTableApi {
         ])
     }
 
-    index(filter: anyObj = {}): ApiPromise<TableDefaultData> {
-        return createAxios({
+    index(filter: anyObj = {}) {
+        return createAxios<TableDefaultData>({
             url: this.actionUrl.get('index'),
             method: 'get',
             params: filter,
-        }) as ApiPromise
+        })
     }
 
     edit(params: anyObj) {

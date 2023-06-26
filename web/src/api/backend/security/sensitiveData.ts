@@ -1,9 +1,10 @@
 import createAxios from '/@/utils/axios'
-import { securitySensitiveData } from '/@/api/controllerUrls'
+
+export const url = '/admin/security.SensitiveData/'
 
 export function add() {
     return createAxios({
-        url: securitySensitiveData + 'add',
+        url: url + 'add',
         method: 'get',
     })
 }

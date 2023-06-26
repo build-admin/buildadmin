@@ -1,9 +1,10 @@
 import createAxios from '/@/utils/axios'
-import { userMoneyLog } from '/@/api/controllerUrls'
+
+export const url = '/admin/user.MoneyLog/'
 
 export function add(userId: string) {
     return createAxios({
-        url: userMoneyLog + 'add',
+        url: url + 'add',
         method: 'get',
         params: {
             userId: userId,

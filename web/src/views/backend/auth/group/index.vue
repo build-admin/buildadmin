@@ -22,7 +22,6 @@
 import { onMounted, ref, provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { baTableApi } from '/@/api/common'
-import { authGroup } from '/@/api/controllerUrls'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
 import PopupForm from './popupForm.vue'
@@ -42,7 +41,7 @@ const { t } = useI18n()
 const adminInfo = useAdminInfo()
 
 const baTable: baTableClass = new baTableClass(
-    new baTableApi(authGroup),
+    new baTableApi('/admin/auth.Group/'),
     {
         expandAll: true,
         dblClickNotEditColumn: [undefined],

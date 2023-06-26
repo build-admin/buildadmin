@@ -20,7 +20,6 @@
 <script setup lang="ts">
 import { onMounted, ref, provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
-import { userGroup } from '/@/api/controllerUrls'
 import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
@@ -37,7 +36,7 @@ const { t } = useI18n()
 const tableRef = ref()
 const formRef = ref()
 const baTable = new baTableClass(
-    new baTableApi(userGroup),
+    new baTableApi('/admin/user.Group/'),
     {
         column: [
             { type: 'selection', align: 'center', operator: false },

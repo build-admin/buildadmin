@@ -4,7 +4,7 @@ import { useMemberCenter } from '/@/stores/memberCenter'
 import { setTitle, debounce } from '/@/utils/common'
 import { handleFrontendRoute } from '/@/utils/router'
 
-const controllerUrl = '/api/index/'
+export const indexUrl = '/api/index/'
 
 /**
  * 前台初始化请求，获取站点配置信息，动态路由信息等（非会员中心初始化请求，它们是分开的）
@@ -19,7 +19,7 @@ export function index() {
         }
 
         return createAxios({
-            url: controllerUrl + 'index',
+            url: indexUrl + 'index',
             method: 'get',
         }).then((res) => {
             setTitle(res.data.site.siteName)

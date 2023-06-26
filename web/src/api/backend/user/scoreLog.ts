@@ -1,9 +1,10 @@
 import createAxios from '/@/utils/axios'
-import { userScoreLog } from '/@/api/controllerUrls'
+
+export const url = '/admin/user.ScoreLog/'
 
 export function add(userId: string) {
     return createAxios({
-        url: userScoreLog + 'add',
+        url: url + 'add',
         method: 'get',
         params: {
             userId: userId,

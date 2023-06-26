@@ -49,7 +49,7 @@
                         :input-attr="{
                             params: { isTree: true, search: [{ field: 'status', val: '1', operator: '=' }] },
                             field: 'name',
-                            'remote-url': userGroup + 'index',
+                            'remote-url': '/admin/user.Group/index',
                         }"
                     />
                     <FormItem :label="t('user.user.head portrait')" type="image" v-model="baTable.form.items!.avatar" />
@@ -146,7 +146,6 @@ import type baTableClass from '/@/utils/baTable'
 import { regularPassword } from '/@/utils/validate'
 import type { ElForm, FormItemRule } from 'element-plus'
 import FormItem from '/@/components/formItem/index.vue'
-import { userGroup } from '/@/api/controllerUrls'
 import router from '/@/router/index'
 import { buildValidatorData } from '/@/utils/validate'
 

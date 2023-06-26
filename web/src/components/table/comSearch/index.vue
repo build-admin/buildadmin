@@ -56,7 +56,7 @@
                                             :type="item.comSearchRender == 'date' ? 'date' : 'datetime'"
                                             :value-format="item.comSearchRender == 'date' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'"
                                             :placeholder="item.operatorPlaceholder"
-                                            :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:new Date()" 
+                                            :default-value="baTable.comSearch.form[item.prop! + '-default'] ? baTable.comSearch.form[item.prop! + '-default']:new Date()"
                                             :teleported="false"
                                         />
 

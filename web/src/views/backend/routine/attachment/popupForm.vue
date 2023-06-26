@@ -1,6 +1,11 @@
 <template>
     <!-- 对话框表单 -->
-    <el-dialog class="ba-operate-dialog" :close-on-click-modal="false" :model-value="['Add', 'Edit'].includes(baTable.form.operate!)" @close="baTable.toggleForm">
+    <el-dialog
+        class="ba-operate-dialog"
+        :close-on-click-modal="false"
+        :model-value="['Add', 'Edit'].includes(baTable.form.operate!)"
+        @close="baTable.toggleForm"
+    >
         <template #header>
             <div class="title" v-drag="['.ba-operate-dialog', '.el-dialog__header']" v-zoom="'.ba-operate-dialog'">
                 {{ baTable.form.operate ? t(baTable.form.operate) : '' }}

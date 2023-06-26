@@ -1,11 +1,11 @@
 import createAxios from '/@/utils/axios'
 
-export const controllerUrl = '/admin/crud.Crud/'
+export const url = '/admin/crud.Crud/'
 
 export function generate(data: anyObj) {
     return createAxios(
         {
-            url: controllerUrl + 'generate',
+            url: url + 'generate',
             method: 'post',
             data: data,
         },
@@ -17,14 +17,14 @@ export function generate(data: anyObj) {
 
 export function getDatabaseList() {
     return createAxios({
-        url: controllerUrl + 'databaseList',
+        url: url + 'databaseList',
         method: 'get',
     })
 }
 
 export function getFileData(table: string, commonModel = 0) {
     return createAxios({
-        url: controllerUrl + 'getFileData',
+        url: url + 'getFileData',
         method: 'get',
         params: {
             table: table,
@@ -36,7 +36,7 @@ export function getFileData(table: string, commonModel = 0) {
 export function generateCheck(data: anyObj) {
     return createAxios(
         {
-            url: controllerUrl + 'generateCheck',
+            url: url + 'generateCheck',
             method: 'post',
             data: data,
         },
@@ -48,7 +48,7 @@ export function generateCheck(data: anyObj) {
 
 export function parseFieldData(type: string, table = '', sql = '') {
     return createAxios({
-        url: controllerUrl + 'parseFieldData',
+        url: url + 'parseFieldData',
         method: 'post',
         data: {
             type: type,
@@ -60,7 +60,7 @@ export function parseFieldData(type: string, table = '', sql = '') {
 
 export function postLogStart(id: number) {
     return createAxios({
-        url: controllerUrl + 'logStart',
+        url: url + 'logStart',
         method: 'post',
         data: {
             id: id,
@@ -70,7 +70,7 @@ export function postLogStart(id: number) {
 
 export function postDel(id: number) {
     return createAxios({
-        url: controllerUrl + 'delete',
+        url: url + 'delete',
         method: 'post',
         data: {
             id: id,
