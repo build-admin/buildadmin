@@ -133,7 +133,7 @@ declare global {
         show?: boolean
         // 是否在下拉菜单的复选框显示 默认为true显示
         enableColumnDisplayControl?: boolean
-        // 渲染为:icon|switch|image|images|tag|url|datetime|buttons|customTemplate|customRender
+        // 渲染为:icon|switch|image|images|tag|url|datetime|buttons|customTemplate|customRender|slot
         render?:
             | 'icon'
             | 'switch'
@@ -147,6 +147,7 @@ declare global {
             | 'buttons'
             | 'customTemplate'
             | 'customRender'
+            | 'slot'
         // 操作按钮组
         buttons?: OptButton[]
         // 渲染为Tag时:el-tag 组件的主题
@@ -159,6 +160,8 @@ declare global {
         customTemplate?: (row: TableRow, field: TableColumn, value: any, column: TableColumnCtx<TableRow>, index: number) => string
         // 自定义组件/函数渲染
         customRender?: string | Component
+        // 当前列使用 slot 渲染
+        slotName?: string
         // 渲染为链接时,链接的打开方式
         target?: aTarget
         // 渲染为:url 时的点击事件

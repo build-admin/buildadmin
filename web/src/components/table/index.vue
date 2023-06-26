@@ -20,19 +20,32 @@
         >
             <slot name="columnPrepend"></slot>
             <template v-for="(item, key) in baTable.table.column">
-                <Column v-if="item.show !== false" :attr="item" :key="key + '-column'">
-                    <template v-if="item.render" #default="scope">
-                        <FieldRender
-                            :field="item"
-                            :row="scope.row"
-                            :column="scope.column"
-                            :index="scope.$index"
-                            :key="
-                                key + '-' + scope.$index + '-' + item.render + '-' + (item.prop ? '-' + item.prop + '-' + scope.row[item.prop] : '')
-                            "
-                        />
-                    </template>
-                </Column>
+                <template v-if="item.show !== false">
+                    <!-- 渲染为 slot -->
+                    <slot v-if="item.render == 'slot'" :name="item.slotName"></slot>
+
+                    <!-- Column 组件内部是 el-table-column -->
+                    <Column v-else :attr="item" :key="key + '-column'">
+                        <!-- baTable 预设的列 render 方案 -->
+                        <template v-if="item.render" #default="scope">
+                            <FieldRender
+                                :field="item"
+                                :row="scope.row"
+                                :column="scope.column"
+                                :index="scope.$index"
+                                :key="
+                                    key +
+                                    '-' +
+                                    scope.$index +
+                                    '-' +
+                                    item.render +
+                                    '-' +
+                                    (item.prop ? '-' + item.prop + '-' + scope.row[item.prop] : '')
+                                "
+                            />
+                        </template>
+                    </Column>
+                </template>
             </template>
             <slot name="columnAppend"></slot>
         </el-table>
