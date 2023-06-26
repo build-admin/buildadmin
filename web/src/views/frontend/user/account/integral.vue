@@ -39,7 +39,7 @@
 import { reactive, onMounted } from 'vue'
 import { getIntegralLog } from '/@/api/frontend/user/index'
 import { useMemberCenter } from '/@/stores/memberCenter'
-import { timeFormat } from '/@/components/table'
+import { timeFormat } from '/@/utils/common'
 import { useUserInfo } from '/@/stores/userInfo'
 
 const userInfo = useUserInfo()

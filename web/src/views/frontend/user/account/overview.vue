@@ -77,11 +77,10 @@
 <script setup lang="ts">
 import { ref, reactive, nextTick, onActivated, onMounted, onBeforeMount } from 'vue'
 import { useUserInfo } from '/@/stores/userInfo'
-import { timeFormat } from '/@/components/table'
 import { useRouter } from 'vue-router'
 import * as echarts from 'echarts'
 import { useI18n } from 'vue-i18n'
-import { getGreet } from '/@/utils/common'
+import { getGreet, timeFormat } from '/@/utils/common'
 import { overview } from '/@/api/frontend/user/index'
 import { useEventListener } from '@vueuse/core'
 

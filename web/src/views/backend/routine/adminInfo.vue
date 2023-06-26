@@ -106,12 +106,11 @@ import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { index, log, postData } from '/@/api/backend/routine/AdminInfo'
 import { ElForm, FormItemRule } from 'element-plus'
-import { onResetForm } from '/@/utils/common'
+import { onResetForm, timeFormat } from '/@/utils/common'
 import { uuid } from '../../../utils/random'
 import { buildValidatorData } from '/@/utils/validate'
 import { fileUpload } from '/@/api/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
-import { timeFormat } from '/@/components/table'
 
 defineOptions({
     name: 'routine/adminInfo',

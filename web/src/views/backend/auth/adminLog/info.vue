@@ -41,7 +41,7 @@
 import { inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type BaTable from '/@/utils/baTable'
-import { timeFormat } from '/@/components/table'
+import { timeFormat } from '/@/utils/common'
 
 const baTable = inject('baTable') as BaTable
 

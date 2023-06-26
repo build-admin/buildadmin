@@ -49,7 +49,7 @@
 import { inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type BaTable from '/@/utils/baTable'
-import { timeFormat } from '/@/components/table'
+import { timeFormat } from '/@/utils/common'
 import { isEmpty } from 'lodash-es'
 import { ElMessageBox } from 'element-plus'
 import { restore } from '/@/api/backend/security/dataRecycleLog'
