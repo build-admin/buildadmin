@@ -6,11 +6,13 @@
 
     <!-- 操作按钮组 -->
     <div v-bind="$attrs" class="table-header ba-scroll-style">
+        <slot name="refreshPrepend"></slot>
         <el-tooltip v-if="props.buttons.includes('refresh')" :content="t('Refresh')" placement="top">
             <el-button v-blur @click="onAction('refresh', { loading: true })" color="#40485b" class="table-header-operate" type="info">
                 <Icon name="fa fa-refresh" />
             </el-button>
         </el-tooltip>
+        <slot name="refreshAppend"></slot>
         <el-tooltip v-if="props.buttons.includes('add') && auth('add')" :content="t('Add')" placement="top">
             <el-button v-blur @click="onAction('add')" class="table-header-operate" type="primary">
                 <Icon name="fa fa-plus" />
@@ -63,7 +65,7 @@
 
         <!-- 右侧搜索框和工具按钮 -->
         <div class="table-search">
-            <slot name="prefixQuickSearch"></slot>
+            <slot name="quickSearchPrepend"></slot>
             <el-input
                 v-if="props.buttons.includes('quickSearch')"
                 v-model="state.quickSearch"
