@@ -47,6 +47,10 @@ export default {
     'experience 3 2': '生成CRUD代码',
     'experience 3 3': '，点击',
     'experience 3 4': '继续生成',
+    'experience 4 1': '您当前未在开发环境，请 ',
+    'experience 4 2': '搭建开发环境',
+    'experience 4 3': '，或生成好代码之后点击右上角终端内的',
+    'experience 4 4': '重新发布',
     // design
     'Name of the data table': '数据表的名称',
     'Data Table Notes': '数据表注释',

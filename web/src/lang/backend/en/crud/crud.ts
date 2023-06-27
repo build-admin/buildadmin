@@ -47,6 +47,10 @@ export default {
     'experience 3 2': 'Generate CRUD Code',
     'experience 3 3': ', and click ',
     'experience 3 4': 'Continue to Generate',
+    'experience 4 1': 'You are not currently in the development environment, ',
+    'experience 4 2': 'please set up the development environment',
+    'experience 4 3': ', or after generating the code, click on the upper right corner of the terminal to',
+    'experience 4 4': 'Republish',
     // design
     'Name of the data table': 'Name of the data table',
     'Data Table Notes': 'Data Table Notes',

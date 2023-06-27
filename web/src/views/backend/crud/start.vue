@@ -43,6 +43,17 @@
                             }}<code>{{ t('crud.crud.experience 3 4') }}</code>
                         </li>
                     </ol>
+                    <el-alert v-if="isDev()" class="no-dev" type="warning" :show-icon="true" :closable="false">
+                        <template #title>
+                            <span>{{ t('crud.crud.experience 4 1') }}</span>
+                            <a target="_blank" href="https://wonderful-code.gitee.io/guide/other/developerMustSee.html">
+                                {{ t('crud.crud.experience 4 2') }}
+                            </a>
+                            <span>
+                                {{ t('crud.crud.experience 4 3') }}<code>{{ t('crud.crud.experience 4 4') }}</code>
+                            </span>
+                        </template>
+                    </el-alert>
                 </el-col>
             </el-row>
 
@@ -196,6 +207,10 @@ const onLogStart = () => {
         changeStep('log')
     }
 }
+
+const isDev = () => {
+    return import.meta.env.DEV
+}
 </script>
 
 <style scoped lang="scss">
@@ -257,6 +272,9 @@ const onLogStart = () => {
     b {
         font-size: 15px;
         padding-left: 10px;
+    }
+    .no-dev {
+        margin-top: 10px;
     }
 }
 @at-root .dark {
