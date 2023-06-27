@@ -123,4 +123,7 @@ export default {
         'The field comment will be used as the CRUD dictionary, and will be identified as the field title before the colon, and as the data dictionary after the colon',
     'Field name is invalid It starts with a letter or underscore and cannot contain any character other than letters, digits, or underscores':
         'Field name {field} is invalid. It starts with a letter or underscore and cannot contain any character other than letters, digits, or underscores',
+    'The selected table has already generated records You are advised to start with historical records':
+        'The selected table has already generated records. You are advised to start with historical records',
+    'Start with the historical record': 'Start with the historical record',
 }

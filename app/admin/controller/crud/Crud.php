@@ -414,6 +414,22 @@ class Crud extends Backend
     }
 
     /**
+     * 检查是否已有CRUD记录
+     * @throws Throwable
+     */
+    public function checkCrudLog()
+    {
+        $table   = $this->request->get('table');
+        $crudLog = Db::name('crud_log')
+            ->where('table_name', $table)
+            ->order('create_time desc')
+            ->find();
+        $this->success('', [
+            'id' => ($crudLog && $crudLog['status'] == 'success') ? $crudLog['id'] : 0,
+        ]);
+    }
+
+    /**
      * 解析字段数据
      */
     public function parseFieldData()

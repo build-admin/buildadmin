@@ -121,4 +121,7 @@ export default {
         '字段注释将作为 CRUD字典，冒号前将识别为字段标题，冒号后识别为数据字典',
     'Field name is invalid It starts with a letter or underscore and cannot contain any character other than letters, digits, or underscores':
         '字段名 {field} 不符合规范，请以 字母、_ 开头，不能出现 字母、数字、下划线 以外的字符',
+    'The selected table has already generated records You are advised to start with historical records':
+        '选择的表已有成功生成的记录，建议从历史记录开始~',
+    'Start with the historical record': '从历史记录开始',
 }

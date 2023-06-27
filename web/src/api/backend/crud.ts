@@ -77,3 +77,13 @@ export function postDel(id: number) {
         },
     })
 }
+
+export function checkCrudLog(table: string) {
+    return createAxios({
+        url: url + 'checkCrudLog',
+        method: 'get',
+        params: {
+            table: table,
+        },
+    })
+}

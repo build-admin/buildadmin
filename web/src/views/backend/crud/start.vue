@@ -50,8 +50,16 @@
                 class="ba-operate-dialog select-db-dialog"
                 v-model="state.dialog.visible"
                 :title="state.dialog.type == 'sql' ? t('crud.crud.Please enter SQL') : t('crud.crud.Please select a data table')"
+                :destroy-on-close="true"
             >
-                <el-form :label-width="140" @keyup.enter="onSubmit(formRef)" ref="formRef" :model="crudState.startData" :rules="rules">
+                <el-form
+                    :label-width="140"
+                    @keyup.enter="onSubmit(formRef)"
+                    class="select-db-form"
+                    ref="formRef"
+                    :model="crudState.startData"
+                    :rules="rules"
+                >
                     <template v-if="state.dialog.type == 'sql'">
                         <el-input
                             class="sql-input"
@@ -79,14 +87,28 @@
                             :attr="{
                                 blockHelp: t('crud.crud.data sheet help'),
                             }"
+                            :input-attr="{
+                                onChange: onDbStartChange,
+                            }"
                             prop="db"
+                        />
+                        <el-alert
+                            v-if="state.successRecord"
+                            class="success-record-alert"
+                            :title="t('crud.crud.The selected table has already generated records You are advised to start with historical records')"
+                            :show-icon="true"
+                            :closable="false"
+                            type="warning"
                         />
                     </template>
                 </el-form>
                 <template #footer>
                     <div :style="{ width: 'calc(100% * 0.9)' }">
                         <el-button @click="state.dialog.visible = false">{{ $t('Cancel') }}</el-button>
-                        <el-button @click="onSubmit(formRef)" v-blur type="primary">{{ t('Confirm') }}</el-button>
+                        <el-button :loading="state.loading" @click="onSubmit(formRef)" v-blur type="primary">{{ t('Confirm') }}</el-button>
+                        <el-button v-if="state.successRecord" @click="onLogStart" v-blur type="success">
+                            {{ t('crud.crud.Start with the historical record') }}
+                        </el-button>
                     </div>
                 </template>
             </el-dialog>
@@ -98,7 +120,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { getDatabaseList } from '/@/api/backend/crud'
+import { getDatabaseList, checkCrudLog } from '/@/api/backend/crud'
 import FormItem from '/@/components/formItem/index.vue'
 import { changeStep, state as crudState } from '/@/views/backend/crud/index'
 import { ElNotification, FormInstance, FormItemRule } from 'element-plus'
@@ -116,6 +138,8 @@ const state = reactive({
         dbList: [],
     },
     showLog: false,
+    loading: false,
+    successRecord: 0,
 })
 
 const onShowDialog = (type: string) => {
@@ -151,11 +175,41 @@ const onSubmit = (formEl: FormInstance | undefined = undefined) => {
         }
     })
 }
+
+const onDbStartChange = () => {
+    if (crudState.startData.db) {
+        // 检查是否有CRUD记录
+        state.loading = true
+        checkCrudLog(crudState.startData.db)
+            .then((res) => {
+                state.successRecord = res.data.id
+            })
+            .finally(() => {
+                state.loading = false
+            })
+    }
+}
+
+const onLogStart = () => {
+    if (state.successRecord) {
+        crudState.startData.logId = state.successRecord.toString()
+        changeStep('log')
+    }
+}
 </script>
 
 <style scoped lang="scss">
 :deep(.select-db-dialog) .el-dialog__body {
     height: unset;
+    .select-db-form {
+        width: 88%;
+    }
+    .success-record-alert {
+        width: calc(100% - 140px);
+        margin-left: 140px;
+        margin-bottom: 30px;
+        margin-top: -30px;
+    }
 }
 .crud-title {
     display: flex;
