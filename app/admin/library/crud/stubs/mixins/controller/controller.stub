@@ -1,12 +1,11 @@
 <?php
 
 namespace {%namespace%};
-
+{%use%}
 use app\common\controller\Backend;
 
 /**
  * {%tableComment%}
- *
  */
 class {%className%} extends Backend
 {

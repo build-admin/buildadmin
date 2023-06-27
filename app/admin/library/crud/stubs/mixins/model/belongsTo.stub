@@ -1,5 +1,5 @@
 
-    public function {%relationMethod%}()
+    public function {%relationMethod%}(): \think\model\relation\BelongsTo
     {
         return $this->{%relationMode%}({%relationClassName%}, '{%relationForeignKey%}', '{%relationPrimaryKey%}');
     }

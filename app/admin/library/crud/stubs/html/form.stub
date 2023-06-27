@@ -1,9 +1,11 @@
 <template>
     <!-- 对话框表单 -->
+    <!-- 建议使用 Prettier 格式化代码 -->
+    <!-- el-form 内可以混用 el-form-item、FormItem、ba-input 等输入组件 -->
     <el-dialog
         class="ba-operate-dialog"
         :close-on-click-modal="false"
-        :model-value="['add', 'edit'].includes(baTable.form.operate!)"
+        :model-value="['Add', 'Edit'].includes(baTable.form.operate!)"
         @close="baTable.toggleForm"{%bigDialog%}
     >
         <template #header>
@@ -32,7 +34,7 @@
         </el-scrollbar>
         <template #footer>
             <div :style="'width: calc(100% - ' + baTable.form.labelWidth! / 1.8 + 'px)'">
-                <el-button @click="baTable.toggleForm('')">{{ t('Cancel') }}</el-button>
+                <el-button @click="baTable.toggleForm">{{ t('Cancel') }}</el-button>
                 <el-button v-blur :loading="baTable.form.submitLoading" @click="baTable.onSubmit(formRef)" type="primary">
                     {{ baTable.form.operateIds && baTable.form.operateIds.length > 1 ? t('Save and edit next item') : t('Save') }}
                 </el-button>
@@ -46,10 +48,10 @@ import { reactive, ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import FormItem from '/@/components/formItem/index.vue'
-import type { ElForm, FormItemRule } from 'element-plus'
+import type { FormInstance, FormItemRule } from 'element-plus'
 import { buildValidatorData } from '/@/utils/validate'
 
-const formRef = ref<InstanceType<typeof ElForm>>()
+const formRef = ref<FormInstance>()
 const baTable = inject('baTable') as baTableClass
 
 const { t } = useI18n()

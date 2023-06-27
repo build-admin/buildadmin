@@ -774,6 +774,7 @@ class Helper
             $controllerData['methods']['index'] = self::assembleStub('mixins/controller/index', [
                 'relationVisibleFields' => $relationVisibleFields
             ]);
+            $controllerData['use']['Throwable'] = "\nuse Throwable;";
             unset($controllerData['relationVisibleFieldList']);
         }
         $controllerAttr = '';

@@ -129,6 +129,7 @@ class Crud extends Backend
             $this->modelData['relationMethodList'] = [];
 
             // 控制器数据
+            $this->controllerData['use']            = [];
             $this->controllerData['attr']           = [];
             $this->controllerData['methods']        = [];
             $this->controllerData['filterRule']     = '';
@@ -230,7 +231,7 @@ class Crud extends Backend
 
             // 表格的操作列
             $this->indexVueData['tableColumn'][] = [
-                'label'    => "t('operate')",
+                'label'    => "t('Operate')",
                 'align'    => 'center',
                 'width'    => $this->indexVueData['enableDragSort'] ? 140 : 100,
                 'render'   => 'buttons',
