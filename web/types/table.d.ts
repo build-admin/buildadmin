@@ -1,4 +1,4 @@
-import type { TagProps, ButtonType, FormInstance, ButtonProps, TableColumnCtx } from 'element-plus'
+import type { TagProps, ButtonType, FormInstance, ButtonProps, TableColumnCtx, ColProps } from 'element-plus'
 import { Component, ComponentPublicInstance } from 'vue'
 import Table from '/@/components/table/index.vue'
 import type { PopconfirmProps } from 'element-plus'
@@ -160,7 +160,7 @@ declare global {
         customTemplate?: (row: TableRow, field: TableColumn, value: any, column: TableColumnCtx<TableRow>, index: number) => string
         // 自定义组件/函数渲染
         customRender?: string | Component
-        // 当前列使用 slot 渲染
+        // 自定义渲染为 slot 时，slot的名称
         slotName?: string
         // 渲染为链接时,链接的打开方式
         target?: aTarget
@@ -179,9 +179,15 @@ declare global {
         // 通用搜索框的placeholder
         operatorPlaceholder?: string
         // 公共搜索渲染方式:上方的 render=tag|switch 时公共搜索也会渲染为下拉，数字会渲染为范围筛选，时间渲染为时间选择器等
-        comSearchRender?: 'remoteSelect' | 'select' | 'date' | 'customRender'
+        comSearchRender?: 'remoteSelect' | 'select' | 'date' | 'customRender' | 'slot'
         // 公共搜索自定义组件/函数渲染
         comSearchCustomRender?: string | Component
+        // 公共搜索自定义渲染为 slot 时，slot 的名称
+        comSearchSlotName?: string
+        // 公共搜索自定义渲染时，外层 el-col 的属性（仅 customRender、slot支持）
+        comSearchColAttr?: Partial<ColProps>
+        // 公共搜索，是否显示字段的 label
+        comSearchShowLabel?: boolean
         // 远程属性
         remote?: {
             pk?: string

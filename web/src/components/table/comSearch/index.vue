@@ -5,10 +5,42 @@
                 <el-row>
                     <template v-for="(item, idx) in baTable.table.column" :key="idx">
                         <template v-if="item.operator !== false">
-                            <!-- 时间范围 -->
-                            <el-col v-if="item.render == 'datetime' && (item.operator == 'RANGE' || item.operator == 'NOT RANGE')" :xs="24" :sm="12">
+                            <!-- 自定义渲染 component、slot -->
+                            <el-col
+                                v-if="item.comSearchRender == 'customRender' || item.comSearchRender == 'slot'"
+                                v-bind="{
+                                    xs: item.comSearchColAttr?.xs ? item.comSearchColAttr?.xs : 24,
+                                    sm: item.comSearchColAttr?.sm ? item.comSearchColAttr?.sm : 6,
+                                    ...item.comSearchColAttr,
+                                }"
+                            >
+                                <!-- 外部可以使用 :deep() 选择器修改css样式 -->
                                 <div class="com-search-col">
-                                    <div class="com-search-col-label w16">{{ item.label }}</div>
+                                    <div class="com-search-col-label" v-if="item.comSearchShowLabel !== false">{{ item.label }}</div>
+                                    <div class="com-search-col-input">
+                                        <!-- 自定义组件/函数渲染 -->
+                                        <component
+                                            v-if="item.comSearchRender == 'customRender'"
+                                            :is="item.comSearchCustomRender"
+                                            :renderRow="item"
+                                            :renderField="item.prop!"
+                                            :renderValue="baTable.comSearch.form[item.prop!]"
+                                        />
+
+                                        <!-- 自定义渲染-slot -->
+                                        <slot v-else-if="item.comSearchRender == 'slot'" :name="item.comSearchSlotName"></slot>
+                                    </div>
+                                </div>
+                            </el-col>
+
+                            <!-- 时间范围 -->
+                            <el-col
+                                v-else-if="item.render == 'datetime' && (item.operator == 'RANGE' || item.operator == 'NOT RANGE')"
+                                :xs="24"
+                                :sm="12"
+                            >
+                                <div class="com-search-col">
+                                    <div class="com-search-col-label w16" v-if="item.comSearchShowLabel !== false">{{ item.label }}</div>
                                     <div class="com-search-col-input-range w83">
                                         <el-date-picker
                                             class="datetime-picker"
@@ -26,7 +58,7 @@
                             </el-col>
                             <el-col v-else :xs="24" :sm="6">
                                 <div class="com-search-col">
-                                    <div class="com-search-col-label">{{ item.label }}</div>
+                                    <div class="com-search-col-label" v-if="item.comSearchShowLabel !== false">{{ item.label }}</div>
                                     <!-- 数字范围 -->
                                     <div v-if="item.operator == 'RANGE' || item.operator == 'NOT RANGE'" class="com-search-col-input-range">
                                         <el-input
@@ -81,15 +113,6 @@
                                             v-model="baTable.comSearch.form[item.prop!]"
                                             :attr="item.remote"
                                             :placeholder="item.operatorPlaceholder"
-                                        />
-
-                                        <!-- 自定义组件/函数渲染 -->
-                                        <component
-                                            v-else-if="item.comSearchRender == 'customRender'"
-                                            :is="item.comSearchCustomRender"
-                                            :renderRow="item"
-                                            :renderField="item.prop!"
-                                            :renderValue="baTable.comSearch.form[item.prop!]"
                                         />
 
                                         <!-- 开关 -->
