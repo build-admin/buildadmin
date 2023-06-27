@@ -43,7 +43,7 @@
                             }}<code>{{ t('crud.crud.experience 3 4') }}</code>
                         </li>
                     </ol>
-                    <el-alert v-if="isDev()" class="no-dev" type="warning" :show-icon="true" :closable="false">
+                    <el-alert v-if="!isDev()" class="no-dev" type="warning" :show-icon="true" :closable="false">
                         <template #title>
                             <span>{{ t('crud.crud.experience 4 1') }}</span>
                             <a target="_blank" href="https://wonderful-code.gitee.io/guide/other/developerMustSee.html">
