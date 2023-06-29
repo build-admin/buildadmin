@@ -419,7 +419,7 @@ class Helper
      */
     public static function handleTableDesign(array $table, array $fields): array
     {
-        $name         = self::getTableName($table['name']);
+        $name         = TableManager::tableName($table['name']);
         $comment      = $table['comment'] ?? '';
         $designChange = $table['designChange'] ?? [];
         $adapter      = TableManager::adapter(false);
@@ -584,13 +584,6 @@ class Helper
         return $webDir;
     }
 
-    public static function getTableName(string $table, $fullName = true): string
-    {
-        $tablePrefix = config('database.connections.mysql.prefix');
-        $pattern     = '/^' . $tablePrefix . '/i';
-        return ($fullName ? $tablePrefix : '') . (preg_replace($pattern, '', $table));
-    }
-
     /**
      * 获取菜单name、path
      * @param array $webDir
@@ -657,7 +650,7 @@ class Helper
      */
     public static function delTable(string $table): void
     {
-        $sql = 'DROP TABLE IF EXISTS `' . self::getTableName($table) . '`';
+        $sql = 'DROP TABLE IF EXISTS `' . TableManager::tableName($table) . '`';
         Db::execute($sql);
     }
 
@@ -672,7 +665,7 @@ class Helper
             . 'ORDER BY ORDINAL_POSITION';
 
         $columns     = [];
-        $tableColumn = Db::query($sql, [config('database.connections.mysql.database'), self::getTableName($table)]);
+        $tableColumn = Db::query($sql, [config('database.connections.mysql.database'), TableManager::tableName($table)]);
         foreach ($tableColumn as $item) {
             $isNullAble = $item['IS_NULLABLE'] == 'YES';
             $column     = [

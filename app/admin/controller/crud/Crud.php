@@ -98,7 +98,7 @@ class Crud extends Backend
             [$tablePk] = Helper::handleTableDesign($table, $fields);
 
             // 表名称
-            $tableName = Helper::getTableName($table['name'], false);
+            $tableName = TableManager::tableName($table['name'], false);
 
             // 表注释
             $tableComment = mb_substr($table['comment'], -1) == '表' ? mb_substr($table['comment'], 0, -1) . '管理' : $table['comment'];
@@ -505,7 +505,7 @@ class Crud extends Backend
         }
 
         $tableList       = get_table_list();
-        $tableExist      = array_key_exists(Helper::getTableName($table), $tableList);
+        $tableExist      = array_key_exists(TableManager::tableName($table), $tableList);
         $controllerExist = file_exists(root_path() . $controllerFile);
 
         if ($controllerExist || $tableExist) {
@@ -561,7 +561,7 @@ class Crud extends Backend
         if ($field['form']['relation-fields'] && $field['form']['remote-table']) {
             $columns        = Helper::parseTableColumns($field['form']['remote-table'], true);
             $relationFields = explode(',', $field['form']['relation-fields']);
-            $tableName      = Helper::getTableName($field['form']['remote-table'], false);
+            $tableName      = TableManager::tableName($field['form']['remote-table'], false);
             $relationMethod = parse_name($tableName, 1, false);
 
             // 建立关联模型代码文件
@@ -752,7 +752,7 @@ class Crud extends Backend
             $formField['@keyup.enter.stop']   = '';
             $formField['@keyup.ctrl.enter']   = 'baTable.onSubmit(formRef)';
         } elseif ($field['designType'] == 'remoteSelect' || $field['designType'] == 'remoteSelects') {
-            $formField[':input-attr']['pk']         = Helper::getTableName($field['form']['remote-table'], false) . '.' . ($field['form']['remote-pk'] ?? 'id');
+            $formField[':input-attr']['pk']         = TableManager::tableName($field['form']['remote-table'], false) . '.' . ($field['form']['remote-pk'] ?? 'id');
             $formField[':input-attr']['field']      = $field['form']['remote-field'] ?? 'name';
             $formField[':input-attr']['remote-url'] = $this->getRemoteSelectUrl($field);
         } elseif ($field['designType'] == 'number') {
