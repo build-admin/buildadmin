@@ -525,7 +525,7 @@
                 />
                 <br />
                 <el-alert
-                    v-if="state.confirmGenerate.table"
+                    v-if="state.confirmGenerate.table && (crudState.type == 'create' || state.table.rebuild == 'Yes')"
                     :title="
                         t(
                             'crud.crud.The data table already exists Continuing to generate will automatically delete the original table and create a new one!'
@@ -559,14 +559,27 @@
                         :hollow="true"
                         :hide-timestamp="true"
                     >
-                        {{ getTableDesignChangeContent(item) }}
+                        <div class="design-timeline-box">
+                            <el-checkbox v-model="item.sync" :label="getTableDesignChangeContent(item)" size="small" />
+                        </div>
                     </el-timeline-item>
                 </el-timeline>
+                <span class="design-change-tips">{{ t('crud.crud.designChangeTips') }}</span>
+                <FormItem
+                    :label="t('crud.crud.tableReBuild')"
+                    class="rebuild-form-item"
+                    v-model="state.table.rebuild"
+                    type="radio"
+                    :data="{ content: { No: t('crud.crud.No'), Yes: t('crud.crud.Yes') }, childrenAttr: { border: true } }"
+                    :attr="{
+                        blockHelp: t('crud.crud.tableReBuildBlockHelp'),
+                    }"
+                />
             </el-scrollbar>
             <template #footer>
                 <div class="confirm-generate-dialog-footer">
                     <el-button @click="state.showDesignChangeLog = false">
-                        {{ t('crud.crud.Close') }}
+                        {{ t('Confirm') }}
                     </el-button>
                 </div>
             </template>
@@ -618,6 +631,7 @@ const state: {
         validateFile: string
         webViewsDir: string
         designChange: TableDesignChange[]
+        rebuild: string
     }
     fields: FieldItem[]
     activateField: number
@@ -671,6 +685,7 @@ const state: {
         validateFile: '',
         webViewsDir: '',
         designChange: [],
+        rebuild: 'No',
     },
     fields: [],
     activateField: -1,
@@ -840,6 +855,7 @@ const startGenerate = () => {
         }
     }
     generate({
+        type: crudState.type,
         table: state.table,
         fields: fields,
     })
@@ -980,7 +996,7 @@ const onFieldCommentChange = (comment: string) => {
 }
 
 const loadData = () => {
-    state.table.designChange = []
+    tableDesignChangeInit()
     if (!['db', 'sql', 'log'].includes(crudState.type)) return
 
     state.loading.init = true
@@ -990,6 +1006,7 @@ const loadData = () => {
         postLogStart(parseInt(crudState.startData.logId))
             .then((res) => {
                 state.table = res.data.table
+                tableDesignChangeInit()
                 state.table.isCommonModel = parseInt(res.data.table.isCommonModel)
                 const fields = res.data.fields
                 for (const key in fields) {
@@ -1147,6 +1164,11 @@ const onTableNameChange = (val: string) => {
     } else {
         state.tableNameError = t('crud.crud.Use lower case underlined for table names')
     }
+    tableDesignChangeInit()
+}
+
+const tableDesignChangeInit = () => {
+    state.table.rebuild = 'No'
     state.table.designChange = []
 }
 
@@ -1319,6 +1341,7 @@ const logTableDesignChange = (data: TableDesignChange) => {
             }
         }
     }
+    data.sync = true
     if (push) state.table.designChange.push(data)
 }
 
@@ -1547,6 +1570,19 @@ const getTableDesignTimelineType = (type: TableDesignChangeType): TimelineItemPr
     padding-top: 20px;
     .design-change-log-timeline {
         padding-left: 10px;
+        .el-timeline-item .el-timeline-item__node {
+            top: 3px;
+        }
+    }
+    .design-change-tips {
+        display: block;
+        margin-bottom: 20px;
+        color: var(--el-color-info);
+        font-size: var(--el-font-size-small);
+    }
+    .rebuild-form-item {
+        padding-top: 20px;
+        border-top: 1px solid var(--el-border-color-lighter);
     }
 }
 </style>

@@ -3,6 +3,7 @@
 namespace app\admin\controller\crud;
 
 use Throwable;
+use ba\Exception;
 use ba\Filesystem;
 use think\facade\Db;
 use app\admin\model\CrudLog;
@@ -71,6 +72,7 @@ class Crud extends Backend
      */
     public function generate()
     {
+        $type   = $this->request->post('type', '');
         $table  = $this->request->post('table', []);
         $fields = $this->request->post('fields', []);
 
@@ -85,6 +87,11 @@ class Crud extends Backend
                 'fields' => $fields,
                 'status' => 'start',
             ]);
+
+            if ($type == 'create' || $table['rebuild'] == 'Yes') {
+                // 数据表存在则删除
+                Helper::delTable($table['name']);
+            }
 
             // 处理表设计
             [$tablePk] = Helper::handleTableDesign($table, $fields);
@@ -270,6 +277,12 @@ class Crud extends Backend
                 'id'     => $crudLogId,
                 'status' => 'success',
             ]);
+        } catch (Exception $e) {
+            Helper::recordCrudStatus([
+                'id'     => $crudLogId ?? 0,
+                'status' => 'error',
+            ]);
+            $this->error($e->getMessage());
         } catch (Throwable $e) {
             Helper::recordCrudStatus([
                 'id'     => $crudLogId ?? 0,

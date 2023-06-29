@@ -132,7 +132,11 @@ export default {
     'Modify field properties': '修改字段属性',
     'Modify field name': '修改字段名称',
     'Delete field': '删除字段',
-    Close: '关闭',
     'Table design change': '表设计变更',
     'Data table design changes preview': '数据表设计变更预览',
+    designChangeTips: '取消勾选后，则该项变动不会尝试同步至数据表（通常用于已经手动修改过表结构等情况）',
+    tableReBuild: '删表重建',
+    tableReBuildBlockHelp: '不调整表结构，直接删除已有数据表并重建，此举可以确保CRUD代码/记录与数据表结构一致',
+    Yes: '是',
+    No: '否',
 }

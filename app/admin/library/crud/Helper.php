@@ -10,6 +10,7 @@ use think\facade\Db;
 use app\common\library\Menu;
 use app\admin\model\AdminRule;
 use app\admin\model\CrudLog;
+use ba\Exception as BaException;
 use Phinx\Db\Adapter\MysqlAdapter;
 use Phinx\Db\Adapter\AdapterInterface;
 
@@ -433,6 +434,14 @@ class Helper
             TableManager::changeComment($name, $comment);
             $table = TableManager::instance($name, [], false);
             foreach ($designChange as $item) {
+
+                if (!$item['sync']) continue;
+
+                if (in_array($item['type'], ['change-field-name', 'del-field', 'change-field-attr']) && !$table->hasColumn($item['oldName'])) {
+                    // 字段不存在
+                    throw new BaException(__($item['type'] . ' fail not exist', [$item['oldName']]));
+                }
+
                 if ($item['type'] == 'change-field-name') {
                     $table->renameColumn($item['oldName'], $item['newName']);
                 } elseif ($item['type'] == 'del-field') {
@@ -443,6 +452,12 @@ class Helper
                     }));
                     $table->changeColumn($item['oldName'], $phinxFieldData['type'], $phinxFieldData['options']);
                 } elseif ($item['type'] == 'add-field') {
+
+                    if ($table->hasColumn($item['newName'])) {
+                        // 字段已经存在
+                        throw new BaException(__('add-field fail exist', [$item['newName']]));
+                    }
+
                     $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
                         return $field['name'] == $item['newName'];
                     }));

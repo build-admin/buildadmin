@@ -134,7 +134,12 @@ export default {
     'Modify field properties': 'Modify field properties',
     'Modify field name': 'Modify field name',
     'Delete field': 'Delete field',
-    Close: 'Close',
     'Table design change': 'Table design change',
     'Data table design changes preview': 'Data table design changes preview',
+    designChangeTips: 'When unchecked, the change will not be synchronized to the data table (the table structure has been manually modified, etc)',
+    tableReBuild: 'Delete and rebuild',
+    tableReBuildBlockHelp:
+        'Deleting existing data tables and rebuilding them without adjusting the table structure ensures that CRUD code/records are consistent with the table structure',
+    Yes: 'Yes',
+    No: 'No',
 }
