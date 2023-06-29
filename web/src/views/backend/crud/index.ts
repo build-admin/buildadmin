@@ -44,6 +44,7 @@ export const changeStep = (type: string) => {
 }
 
 export interface FieldItem {
+    index?: number
     title: string
     name: string
     type: string

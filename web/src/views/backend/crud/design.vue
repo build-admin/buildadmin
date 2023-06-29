@@ -201,8 +201,8 @@
                                 type="string"
                                 :attr="{
                                     size: 'small',
-                                    onFocus: onFieldsBackup,
-                                    onChange: onFieldNameChange,
+                                    onFocus: () => onFieldBackup(field, index),
+                                    onChange: ($event: string) => onFieldNameChange($event, index),
                                 }"
                             />
                         </div>
@@ -278,8 +278,8 @@
                                 type="string"
                                 v-model="state.fields[state.activateField].name"
                                 :input-attr="{
-                                    onFocus: onFieldsBackup,
-                                    onChange: onFieldNameChange,
+                                    onFocus: () => onFieldBackup(state.fields[state.activateField], state.activateField),
+                                    onChange: ($event: string) => onFieldNameChange($event, state.activateField)
                                 }"
                             />
                             <template v-if="state.fields[state.activateField].dataType">
@@ -662,7 +662,7 @@ const state: {
     }
     draggingField: boolean
     tableNameError: string
-    fieldsBackup: FieldItem[]
+    fieldBackup: Partial<FieldItem>
     showDesignChangeLog: boolean
 } = reactive({
     loading: {
@@ -716,7 +716,7 @@ const state: {
     },
     draggingField: false,
     tableNameError: '',
-    fieldsBackup: [],
+    fieldBackup: {},
     showDesignChangeLog: false,
 })
 
@@ -740,12 +740,24 @@ const onFieldDesignTypeChange = () => {
 /**
  * 备份 state.fields 数据
  */
-const onFieldsBackup = () => {
-    state.fieldsBackup = cloneDeep(state.fields)
+const onFieldBackup = (field: FieldItem, index: number) => {
+    state.fieldBackup = cloneDeep(field)
+    state.fieldBackup.index = index
 }
 
-const onFieldNameChange = (val: string) => {
-    const oldName = state.fieldsBackup[state.activateField].name
+/**
+ * 字段名修改，调用此函数前先调用 onFieldBackup 备份字段修改前的数据
+ */
+const onFieldNameChange = async (val: string, index: number) => {
+    let count = 0
+    while (state.fieldBackup.index != index) {
+        count++
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        if (count > 3) {
+            throw new Error('数据异常，请重做上步操作')
+        }
+    }
+    const oldName = state.fieldBackup.name!
     for (const key in tableFieldsKey) {
         for (const idx in state.table[tableFieldsKey[key] as TableKey] as string[]) {
             if ((state.table[tableFieldsKey[key] as TableKey] as string[])[idx] == oldName) {
@@ -1296,6 +1308,12 @@ const logTableDesignChange = (data: TableDesignChange) => {
             if (state.table.designChange[key].type == 'change-field-name' && state.table.designChange[key].newName == data.oldName) {
                 data.oldName = state.table.designChange[key].oldName
                 state.table.designChange[key] = data
+
+                // 取消字段改名
+                if (state.table.designChange[key].newName == state.table.designChange[key].oldName) {
+                    state.table.designChange.splice(key as any, 1)
+                }
+
                 push = false
                 break
             }
