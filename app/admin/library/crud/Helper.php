@@ -432,39 +432,41 @@ class Helper
         if ($adapter->hasTable($name)) {
             // 更新表
             TableManager::changeComment($name, $comment);
-            $table = TableManager::instance($name, [], false);
-            foreach ($designChange as $item) {
+            if ($designChange) {
+                $table = TableManager::instance($name, [], false);
+                foreach ($designChange as $item) {
 
-                if (!$item['sync']) continue;
+                    if (!$item['sync']) continue;
 
-                if (in_array($item['type'], ['change-field-name', 'del-field', 'change-field-attr']) && !$table->hasColumn($item['oldName'])) {
-                    // 字段不存在
-                    throw new BaException(__($item['type'] . ' fail not exist', [$item['oldName']]));
-                }
-
-                if ($item['type'] == 'change-field-name') {
-                    $table->renameColumn($item['oldName'], $item['newName']);
-                } elseif ($item['type'] == 'del-field') {
-                    $table->removeColumn($item['oldName']);
-                } elseif ($item['type'] == 'change-field-attr') {
-                    $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
-                        return $field['name'] == $item['oldName'];
-                    }));
-                    $table->changeColumn($item['oldName'], $phinxFieldData['type'], $phinxFieldData['options']);
-                } elseif ($item['type'] == 'add-field') {
-
-                    if ($table->hasColumn($item['newName'])) {
-                        // 字段已经存在
-                        throw new BaException(__('add-field fail exist', [$item['newName']]));
+                    if (in_array($item['type'], ['change-field-name', 'del-field', 'change-field-attr']) && !$table->hasColumn($item['oldName'])) {
+                        // 字段不存在
+                        throw new BaException(__($item['type'] . ' fail not exist', [$item['oldName']]));
                     }
 
-                    $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
-                        return $field['name'] == $item['newName'];
-                    }));
-                    $table->addColumn($item['newName'], $phinxFieldData['type'], $phinxFieldData['options']);
+                    if ($item['type'] == 'change-field-name') {
+                        $table->renameColumn($item['oldName'], $item['newName']);
+                    } elseif ($item['type'] == 'del-field') {
+                        $table->removeColumn($item['oldName']);
+                    } elseif ($item['type'] == 'change-field-attr') {
+                        $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
+                            return $field['name'] == $item['oldName'];
+                        }));
+                        $table->changeColumn($item['oldName'], $phinxFieldData['type'], $phinxFieldData['options']);
+                    } elseif ($item['type'] == 'add-field') {
+
+                        if ($table->hasColumn($item['newName'])) {
+                            // 字段已经存在
+                            throw new BaException(__('add-field fail exist', [$item['newName']]));
+                        }
+
+                        $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
+                            return $field['name'] == $item['newName'];
+                        }));
+                        $table->addColumn($item['newName'], $phinxFieldData['type'], $phinxFieldData['options']);
+                    }
                 }
+                $table->update();
             }
-            $table->update();
         } else {
             // 创建表
             $table = TableManager::instance($name, [
@@ -668,10 +670,16 @@ class Helper
         $tableColumn = Db::query($sql, [config('database.connections.mysql.database'), TableManager::tableName($table)]);
         foreach ($tableColumn as $item) {
             $isNullAble = $item['IS_NULLABLE'] == 'YES';
-            $column     = [
+            if (str_contains($item['COLUMN_TYPE'], '(')) {
+                $dataType = substr_replace($item['COLUMN_TYPE'], '', stripos($item['COLUMN_TYPE'], ')') + 1);
+            } else {
+                $dataType = str_replace(' unsigned', '', $item['COLUMN_TYPE']);
+            }
+
+            $column = [
                 'name'          => $item['COLUMN_NAME'],
                 'type'          => $item['DATA_TYPE'],
-                'dataType'      => stripos($item['COLUMN_TYPE'], '(') !== false ? substr_replace($item['COLUMN_TYPE'], '', stripos($item['COLUMN_TYPE'], ')') + 1) : $item['COLUMN_TYPE'],
+                'dataType'      => $dataType,
                 'default'       => ($isNullAble && is_null($item['COLUMN_DEFAULT'])) ? 'null' : $item['COLUMN_DEFAULT'],
                 'null'          => $isNullAble,
                 'primaryKey'    => $item['COLUMN_KEY'] == 'PRI',
