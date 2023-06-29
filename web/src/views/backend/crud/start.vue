@@ -39,8 +39,9 @@
                             {{ t('crud.crud.experience 2 3') }}<code>test_build</code>{{ t('crud.crud.data sheet') }}
                         </li>
                         <li>
-                            {{ t('crud.crud.experience 3 1') }}<code>{{ t('crud.crud.experience 3 2') }}</code> {{ t('crud.crud.experience 3 3')
-                            }}<code>{{ t('crud.crud.experience 3 4') }}</code>
+                            {{ t('crud.crud.experience 3 1') }}<code>{{ t('crud.crud.experience 3 2') }}</code>
+                            {{ t('crud.crud.experience 3 3') }}
+                            <code>{{ t('crud.crud.experience 3 4') }}</code>
                         </li>
                     </ol>
                     <el-alert v-if="!isDev()" class="no-dev" type="warning" :show-icon="true" :closable="false">
@@ -161,6 +162,8 @@ const onShowDialog = (type: string) => {
             sqlInputRef.value.focus()
         }, 200)
     } else if (type == 'db') {
+        state.successRecord = 0
+        crudState.startData.db = ''
         getDatabaseList().then((res) => {
             state.dialog.dbList = res.data.dbs
         })
