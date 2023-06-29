@@ -11,7 +11,7 @@
                             type="string"
                             :placeholder="t('crud.crud.Name of the data table')"
                             :input-attr="{
-                                onChange: onTableCheck,
+                                onChange: onTableNameChange,
                             }"
                             :error="state.tableNameError"
                         />
@@ -24,6 +24,14 @@
                         />
                     </div>
                     <div class="header-right">
+                        <el-link
+                            v-if="state.table.designChange.length"
+                            @click="state.showDesignChangeLog = true"
+                            class="design-change-log"
+                            type="danger"
+                        >
+                            {{ t('crud.crud.Table design change') }}
+                        </el-link>
                         <el-button type="primary" :loading="state.loading.generate" @click="onGenerate" v-blur>
                             {{ t('crud.crud.Generate CRUD code') }}
                         </el-button>
@@ -193,6 +201,7 @@
                                 type="string"
                                 :attr="{
                                     size: 'small',
+                                    onFocus: onFieldsBackup,
                                     onChange: onFieldNameChange,
                                 }"
                             />
@@ -206,6 +215,7 @@
                                 type="string"
                                 :attr="{
                                     size: 'small',
+                                    onChange: onFieldCommentChange,
                                 }"
                             />
                         </div>
@@ -268,24 +278,45 @@
                                 type="string"
                                 v-model="state.fields[state.activateField].name"
                                 :input-attr="{
+                                    onFocus: onFieldsBackup,
                                     onChange: onFieldNameChange,
                                 }"
                             />
                             <template v-if="state.fields[state.activateField].dataType">
-                                <FormItem :label="t('crud.crud.Field Type')" type="textarea" v-model="state.fields[state.activateField].dataType" />
+                                <FormItem
+                                    :label="t('crud.crud.Field Type')"
+                                    :input-attr="{
+                                        onChange: onFieldAttrChange,
+                                    }"
+                                    type="textarea"
+                                    v-model="state.fields[state.activateField].dataType"
+                                />
                             </template>
                             <template v-else>
-                                <FormItem :label="t('crud.crud.Field Type')" type="string" v-model="state.fields[state.activateField].type" />
+                                <FormItem
+                                    :label="t('crud.crud.Field Type')"
+                                    :input-attr="{
+                                        onChange: onFieldAttrChange,
+                                    }"
+                                    type="string"
+                                    v-model="state.fields[state.activateField].type"
+                                />
                                 <div class="field-inline">
                                     <FormItem
                                         :label="t('crud.crud.length')"
                                         type="number"
                                         v-model.number="state.fields[state.activateField].length"
+                                        :input-attr="{
+                                            onChange: onFieldAttrChange,
+                                        }"
                                     />
                                     <FormItem
                                         :label="t('crud.crud.decimal point')"
                                         type="number"
                                         v-model.number="state.fields[state.activateField].precision"
+                                        :input-attr="{
+                                            onChange: onFieldAttrChange,
+                                        }"
                                     />
                                 </div>
                             </template>
@@ -294,6 +325,9 @@
                                 :placeholder="t('crud.crud.You can directly enter null, 0, empty string')"
                                 type="string"
                                 v-model="state.fields[state.activateField].default"
+                                :input-attr="{
+                                    onChange: onFieldAttrChange,
+                                }"
                             />
                             <div class="field-inline">
                                 <FormItem
@@ -301,12 +335,18 @@
                                     :label="t('crud.state.Primary key')"
                                     type="switch"
                                     v-model="state.fields[state.activateField].primaryKey"
+                                    :input-attr="{
+                                        onChange: onFieldAttrChange,
+                                    }"
                                 />
                                 <FormItem
                                     class="form-item-position-right"
                                     :label="t('crud.crud.Auto increment')"
                                     type="switch"
                                     v-model="state.fields[state.activateField].autoIncrement"
+                                    :input-attr="{
+                                        onChange: onFieldAttrChange,
+                                    }"
                                 />
                             </div>
                             <div class="field-inline">
@@ -315,12 +355,18 @@
                                     :label="t('crud.crud.Unsigned')"
                                     type="switch"
                                     v-model="state.fields[state.activateField].unsigned"
+                                    :input-attr="{
+                                        onChange: onFieldAttrChange,
+                                    }"
                                 />
                                 <FormItem
                                     class="form-item-position-right"
                                     :label="t('crud.crud.Allow NULL')"
                                     type="switch"
                                     v-model="state.fields[state.activateField].null"
+                                    :input-attr="{
+                                        onChange: onFieldAttrChange,
+                                    }"
                                 />
                             </div>
                             <template v-if="!isEmpty(state.fields[state.activateField].table)">
@@ -498,6 +544,33 @@
                 </div>
             </template>
         </el-dialog>
+        <el-dialog class="ba-operate-dialog design-change-log-dialog" width="20%" v-model="state.showDesignChangeLog">
+            <template #header>
+                <div v-drag="['.design-change-log-dialog', '.el-dialog__header']">
+                    {{ t('crud.crud.Data table design changes preview') }}
+                </div>
+            </template>
+            <el-scrollbar max-height="400px">
+                <el-timeline class="design-change-log-timeline">
+                    <el-timeline-item
+                        v-for="(item, idx) in state.table.designChange"
+                        :key="idx"
+                        :type="getTableDesignTimelineType(item.type)"
+                        :hollow="true"
+                        :hide-timestamp="true"
+                    >
+                        {{ getTableDesignChangeContent(item) }}
+                    </el-timeline-item>
+                </el-timeline>
+            </el-scrollbar>
+            <template #footer>
+                <div class="confirm-generate-dialog-footer">
+                    <el-button @click="state.showDesignChangeLog = false">
+                        {{ t('crud.crud.Close') }}
+                    </el-button>
+                </div>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
@@ -505,13 +578,12 @@
 import { ref, reactive, onMounted, nextTick } from 'vue'
 import BaInput from '/@/components/baInput/index.vue'
 import FormItem from '/@/components/formItem/index.vue'
-import { fieldItem, designTypes, tableFieldsKey } from '/@/views/backend/crud/index'
-import type { FieldItem } from '/@/views/backend/crud/index'
+import type { FieldItem, TableDesignChange, TableDesignChangeType } from '/@/views/backend/crud/index'
 import { cloneDeep, range, isEmpty } from 'lodash-es'
 import Sortable, { SortableEvent } from 'sortablejs'
 import { useTemplateRefsList } from '@vueuse/core'
-import { changeStep, state as crudState, getTableAttr } from '/@/views/backend/crud/index'
-import { ElNotification, FormItemRule, FormInstance, ElMessageBox } from 'element-plus'
+import { changeStep, state as crudState, getTableAttr, fieldItem, designTypes, tableFieldsKey } from '/@/views/backend/crud/index'
+import { ElNotification, FormItemRule, FormInstance, ElMessageBox, TimelineItemProps } from 'element-plus'
 import { getDatabaseList, getFileData, generateCheck, generate, parseFieldData, postLogStart } from '/@/api/backend/crud'
 import { getTableFieldList } from '/@/api/common'
 import { buildValidatorData, regularVarName } from '/@/utils/validate'
@@ -545,6 +617,7 @@ const state: {
         controllerFile: string
         validateFile: string
         webViewsDir: string
+        designChange: TableDesignChange[]
     }
     fields: FieldItem[]
     activateField: number
@@ -575,6 +648,8 @@ const state: {
     }
     draggingField: boolean
     tableNameError: string
+    fieldsBackup: FieldItem[]
+    showDesignChangeLog: boolean
 } = reactive({
     loading: {
         init: false,
@@ -595,6 +670,7 @@ const state: {
         controllerFile: '',
         validateFile: '',
         webViewsDir: '',
+        designChange: [],
     },
     fields: [],
     activateField: -1,
@@ -625,6 +701,8 @@ const state: {
     },
     draggingField: false,
     tableNameError: '',
+    fieldsBackup: [],
+    showDesignChangeLog: false,
 })
 
 type TableKey = keyof typeof state.table
@@ -644,19 +722,40 @@ const onFieldDesignTypeChange = () => {
     state.fields[state.activateField] = handleFieldAttr(field)
 }
 
+/**
+ * 备份 state.fields 数据
+ */
+const onFieldsBackup = () => {
+    state.fieldsBackup = cloneDeep(state.fields)
+}
+
 const onFieldNameChange = (val: string) => {
+    const oldName = state.fieldsBackup[state.activateField].name
     for (const key in tableFieldsKey) {
         for (const idx in state.table[tableFieldsKey[key] as TableKey] as string[]) {
-            if (!getArrayKey(state.fields, 'name', (state.table[tableFieldsKey[key] as TableKey] as string[])[idx])) {
+            if ((state.table[tableFieldsKey[key] as TableKey] as string[])[idx] == oldName) {
                 ;(state.table[tableFieldsKey[key] as TableKey] as string[])[idx] = val
             }
         }
     }
-    if (state.table.defaultSortField) {
-        if (!getArrayKey(state.fields, 'name', state.table.defaultSortField)) {
-            state.table.defaultSortField = val
-        }
+    if (state.table.defaultSortField && state.table.defaultSortField == oldName) {
+        state.table.defaultSortField = val
     }
+    logTableDesignChange({
+        type: 'change-field-name',
+        index: state.activateField,
+        oldName: oldName,
+        newName: val,
+    })
+}
+
+const onFieldAttrChange = () => {
+    logTableDesignChange({
+        type: 'change-field-attr',
+        index: state.activateField,
+        oldName: state.fields[state.activateField].name,
+        newName: '',
+    })
 }
 
 const onDelField = (index: number) => {
@@ -665,6 +764,12 @@ const onDelField = (index: number) => {
     if (state.fields[index].name == state.table.defaultSortField) {
         state.table.defaultSortField = ''
     }
+
+    logTableDesignChange({
+        type: 'del-field',
+        oldName: state.fields[index].name,
+        newName: '',
+    })
 
     for (const key in tableFieldsKey) {
         const delIdx = (state.table[tableFieldsKey[key] as TableKey] as string[]).findIndex((item) => {
@@ -846,6 +951,7 @@ const handleFieldAttr = (field: FieldItem) => {
  * 根据字段字典重新生成字段的数据类型
  */
 const onFieldCommentChange = (comment: string) => {
+    onFieldAttrChange()
     if (['enum', 'set'].includes(state.fields[state.activateField].type)) {
         if (!comment) {
             state.fields[state.activateField].dataType = `${state.fields[state.activateField].type}()`
@@ -874,6 +980,7 @@ const onFieldCommentChange = (comment: string) => {
 }
 
 const loadData = () => {
+    state.table.designChange = []
     if (!['db', 'sql', 'log'].includes(crudState.type)) return
 
     state.loading.init = true
@@ -971,6 +1078,13 @@ onMounted(() => {
 
                 state.fields.splice(evt.newIndex!, 0, data)
 
+                logTableDesignChange({
+                    type: 'add-field',
+                    index: evt.newIndex!,
+                    newName: data.name,
+                    oldName: '',
+                })
+
                 // 远程下拉参数预填
                 if (['remoteSelect', 'remoteSelects'].includes(data.designType)) {
                     showRemoteSelectPre(evt.newIndex!, true)
@@ -1021,7 +1135,11 @@ onMounted(() => {
     })
 })
 
-const onTableCheck = (val: string) => {
+/**
+ * 修改表名
+ * @param val 新表名
+ */
+const onTableNameChange = (val: string) => {
     if (!val) return (state.tableNameError = '')
     if (/^[a-z_][a-z0-9_]*$/.test(val)) {
         state.tableNameError = ''
@@ -1029,8 +1147,13 @@ const onTableCheck = (val: string) => {
     } else {
         state.tableNameError = t('crud.crud.Use lower case underlined for table names')
     }
+    state.table.designChange = []
 }
 
+/**
+ * 预获取一个表的生成数据
+ * @param val 新表名
+ */
 const onTableChange = (val: string) => {
     if (!val) return
     getFileData(val, state.table.isCommonModel).then((res) => {
@@ -1134,6 +1257,107 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
     joinField: [buildValidatorData({ name: 'required', title: t('crud.crud.Fields displayed in the table') })],
     controllerFile: [buildValidatorData({ name: 'required', title: t('crud.crud.Controller position') })],
 })
+
+const logTableDesignChange = (data: TableDesignChange) => {
+    if (crudState.type == 'create') return
+    let push = true
+    if (data.type == 'change-field-name') {
+        for (const key in state.table.designChange) {
+            // 有属性修改记录的字段被改名-单独循环防止字段再次改名后造成找不到属性修改记录
+            if (state.table.designChange[key].type == 'change-field-attr' && data.oldName == state.table.designChange[key].oldName) {
+                state.table.designChange[key].oldName = data.newName
+                break
+            }
+        }
+        for (const key in state.table.designChange) {
+            // 字段再次改名
+            if (state.table.designChange[key].type == 'change-field-name' && state.table.designChange[key].newName == data.oldName) {
+                data.oldName = state.table.designChange[key].oldName
+                state.table.designChange[key] = data
+                push = false
+                break
+            }
+            // 新增字段改名
+            if (state.table.designChange[key].type == 'add-field' && state.table.designChange[key].newName == data.oldName) {
+                state.table.designChange[key].newName = data.newName
+                push = false
+                break
+            }
+        }
+    } else if (data.type == 'del-field') {
+        for (const key in state.table.designChange) {
+            // 同一字段名称多次删除（删除后添加再删除）
+            if (state.table.designChange[key].type == 'del-field' && state.table.designChange[key].oldName == data.oldName) {
+                push = false
+                break
+            }
+            // 新增的字段被删除-删除新增记录
+            if (state.table.designChange[key].type == 'add-field' && state.table.designChange[key].newName == data.oldName) {
+                state.table.designChange.splice(key as any, 1)
+                push = false
+                break
+            }
+        }
+        state.table.designChange = state.table.designChange.filter((item) => {
+            // 有改名记录的字段被删除
+            const name = item.type == 'change-field-name' && item.newName == data.oldName
+            // 有属性修改记录的字段被删除
+            const attr = item.type == 'change-field-attr' && data.oldName == item.oldName
+            return !name && !attr
+        })
+    } else if (data.type == 'change-field-attr') {
+        for (const key in state.table.designChange) {
+            // 重复修改属性只记录一次
+            if (state.table.designChange[key].type == 'change-field-attr' && state.table.designChange[key].oldName == data.oldName) {
+                push = false
+                break
+            }
+            // 新增的字段无需记录属性修改
+            if (state.table.designChange[key].type == 'add-field' && state.table.designChange[key].newName == data.oldName) {
+                push = false
+                break
+            }
+        }
+    }
+    if (push) state.table.designChange.push(data)
+}
+
+const getTableDesignChangeContent = (data: TableDesignChange): string => {
+    switch (data.type) {
+        case 'add-field':
+            return t('crud.crud.Add field') + ' ' + data.newName
+        case 'change-field-attr':
+            return t('crud.crud.Modify field properties') + ' ' + data.oldName
+        case 'change-field-name':
+            return t('crud.crud.Modify field name') + ' ' + data.oldName + ' => ' + data.newName
+        case 'del-field':
+            return t('crud.crud.Delete field') + ' ' + data.oldName
+        default:
+            return t('Unknown')
+    }
+}
+
+const getTableDesignTimelineType = (type: TableDesignChangeType): TimelineItemProps['type'] => {
+    let timeline = ''
+    switch (type) {
+        case 'change-field-name':
+            timeline = 'warning'
+            break
+        case 'del-field':
+            timeline = 'danger'
+            break
+        case 'add-field':
+            timeline = 'primary'
+            break
+        case 'change-field-attr':
+            timeline = 'success'
+            break
+        default:
+            timeline = 'success'
+            break
+    }
+    return timeline as TimelineItemProps['type']
+}
 </script>
 
 <style scoped lang="scss">
@@ -1234,6 +1458,9 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
     }
     .header-right {
         margin-left: auto;
+        .design-change-log {
+            margin-right: 10px;
+        }
     }
 }
 .default-sort-field-box {
@@ -1314,5 +1541,12 @@ const remoteSelectPreFormRules: Partial<Record<string, FormItemRule[]>> = reacti
     display: flex;
     align-items: center;
     justify-content: center;
+}
+:deep(.design-change-log-dialog) .el-dialog__body {
+    height: unset;
+    padding-top: 20px;
+    .design-change-log-timeline {
+        padding-left: 10px;
+    }
 }
 </style>

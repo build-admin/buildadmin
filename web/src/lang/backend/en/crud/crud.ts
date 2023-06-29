@@ -130,4 +130,11 @@ export default {
     'The selected table has already generated records You are advised to start with historical records':
         'The selected table has already generated records. You are advised to start with historical records',
     'Start with the historical record': 'Start with the historical record',
+    'Add field': 'Add field',
+    'Modify field properties': 'Modify field properties',
+    'Modify field name': 'Modify field name',
+    'Delete field': 'Delete field',
+    Close: 'Close',
+    'Table design change': 'Table design change',
+    'Data table design changes preview': 'Data table design changes preview',
 }

@@ -128,4 +128,11 @@ export default {
     'The selected table has already generated records You are advised to start with historical records':
         '选择的表已有成功生成的记录，建议从历史记录开始~',
     'Start with the historical record': '从历史记录开始',
+    'Add field': '添加字段',
+    'Modify field properties': '修改字段属性',
+    'Modify field name': '修改字段名称',
+    'Delete field': '删除字段',
+    Close: '关闭',
+    'Table design change': '表设计变更',
+    'Data table design changes preview': '数据表设计变更预览',
 }

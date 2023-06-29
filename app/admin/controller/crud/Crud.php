@@ -66,7 +66,7 @@ class Crud extends Backend
     }
 
     /**
-     * 语言包数据
+     * 开始生成
      * @throws Throwable
      */
     public function generate()
@@ -86,11 +86,8 @@ class Crud extends Backend
                 'status' => 'start',
             ]);
 
-            // 表存在则删除
-            Helper::delTable($table['name']);
-
-            // 创建表
-            [$tablePk] = Helper::createTable($table['name'], $table['comment'] ?? '', $fields);
+            // 处理表设计
+            [$tablePk] = Helper::handleTableDesign($table, $fields);
 
             // 表名称
             $tableName = Helper::getTableName($table['name'], false);

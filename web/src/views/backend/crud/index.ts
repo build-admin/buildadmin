@@ -3,6 +3,15 @@ import { i18n } from '/@/lang/index'
 import { validatorType } from '/@/utils/validate'
 import { npuaFalse, fieldData } from '/@/components/baInput/helper'
 
+export type TableDesignChangeType = 'change-field-name' | 'del-field' | 'add-field' | 'change-field-attr'
+
+export interface TableDesignChange {
+    type: TableDesignChangeType
+    index?: number
+    oldName: string
+    newName: string
+}
+
 export const state: {
     step: 'Start' | 'Design'
     type: string
@@ -68,7 +77,7 @@ export const fieldItem: {
             table: {},
             form: {},
             ...fieldData.number,
-            default: '',
+            default: 'none',
             primaryKey: true,
             unsigned: true,
             autoIncrement: true,
@@ -84,7 +93,7 @@ export const fieldItem: {
             ...fieldData.number,
             type: 'bigint',
             length: 20,
-            default: '',
+            default: 'none',
             primaryKey: true,
             unsigned: true,
         },
@@ -96,7 +105,7 @@ export const fieldItem: {
             table: {},
             form: {},
             ...fieldData.number,
-            default: '',
+            default: '0',
             null: true,
         },
         {

@@ -5,10 +5,13 @@ namespace app\admin\library\crud;
 use Throwable;
 use ba\Filesystem;
 use think\Exception;
+use ba\TableManager;
 use think\facade\Db;
 use app\common\library\Menu;
 use app\admin\model\AdminRule;
 use app\admin\model\CrudLog;
+use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Adapter\AdapterInterface;
 
 class Helper
 {
@@ -280,56 +283,189 @@ class Helper
         return $log->id;
     }
 
-    public static function createTable($name, $comment, $fields): array
+    /**
+     * 获取 Phinx 的字段类型数据
+     * @param string $type  字段类型
+     * @param array  $field 字段数据
+     * @return array
+     */
+    public static function getPhinxFieldType(string $type, array $field): array
     {
-        $fieldType = [
-            'variableLength'  => ['blob', 'date', 'enum', 'geometry', 'geometrycollection', 'json', 'linestring', 'longblob', 'longtext', 'mediumblob', 'mediumtext', 'multilinestring', 'multipoint', 'multipolygon', 'point', 'polygon', 'set', 'text', 'tinyblob', 'tinytext', 'year'],
-            'fixedLength'     => ['int', 'bigint', 'binary', 'bit', 'char', 'datetime', 'mediumint', 'smallint', 'time', 'timestamp', 'tinyint', 'varbinary', 'varchar'],
-            'decimal'         => ['decimal', 'double', 'float'],
-            'supportUnsigned' => ['int', 'tinyint', 'smallint', 'mediumint', 'integer', 'bigint', 'real', 'double', 'float', 'decimal', 'numeric'],
-        ];
-        $name      = self::getTableName($name);
-        $sql       = "CREATE TABLE IF NOT EXISTS `$name` (" . PHP_EOL;
-        $pk        = '';
-        foreach ($fields as $field) {
-            $fieldConciseType = self::analyseFieldType($field);
-            // 组装dateType
-            if (!isset($field['dataType']) || !$field['dataType']) {
-                if (!$field['type']) {
-                    continue;
-                }
-                if (in_array($field['type'], $fieldType['fixedLength'])) {
-                    $field['dataType'] = "{$field['type']}({$field['length']})";
-                } elseif (in_array($field['type'], $fieldType['decimal'])) {
-                    $field['dataType'] = "{$field['type']}({$field['length']},{$field['precision']})";
-                } elseif (in_array($field['type'], $fieldType['variableLength'])) {
-                    $field['dataType'] = $field['type'];
-                } else {
-                    $field['dataType'] = $field['precision'] ? "{$field['type']}({$field['length']},{$field['precision']})" : "{$field['type']}({$field['length']})";
-                }
-            }
-            $unsigned      = ($field['unsigned'] && in_array($fieldConciseType, $fieldType['supportUnsigned'])) ? ' UNSIGNED' : '';
-            $null          = $field['null'] ? ' NULL' : ' NOT NULL';
-            $autoIncrement = $field['autoIncrement'] ? ' AUTO_INCREMENT' : '';
-            $default       = '';
-            if (strtolower((string)$field['default']) == 'null') {
-                $default = ' DEFAULT NULL';
-            } elseif ($field['default'] == '0') {
-                $default = " DEFAULT '0'";
-            } elseif ($field['default'] == 'empty string') {
-                $default = " DEFAULT ''";
-            } elseif ($field['default']) {
-                $default = " DEFAULT '{$field['default']}'";
-            }
-            $fieldComment = $field['comment'] ? " COMMENT '{$field['comment']}'" : '';
-            $sql          .= "`{$field['name']}` {$field['dataType']}$unsigned$null$autoIncrement$default$fieldComment ," . PHP_EOL;
-            if ($field['primaryKey']) {
-                $pk = $field['name'];
+        if ($type == 'tinyint') {
+            if ((isset($field['dataType']) && $field['dataType'] == 'tinyint(1)') || $field['default'] == '1') {
+                $type = 'boolean';
             }
         }
-        $sql .= "PRIMARY KEY (`$pk`)" . PHP_EOL . ") ";
-        $sql .= "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='$comment'";
-        Db::execute($sql);
+        $phinxFieldTypeMap = [
+            // 数字
+            'tinyint'    => ['type' => AdapterInterface::PHINX_TYPE_INTEGER, 'limit' => MysqlAdapter::INT_TINY],
+            'smallint'   => ['type' => AdapterInterface::PHINX_TYPE_INTEGER, 'limit' => MysqlAdapter::INT_SMALL],
+            'mediumint'  => ['type' => AdapterInterface::PHINX_TYPE_INTEGER, 'limit' => MysqlAdapter::INT_MEDIUM],
+            'int'        => ['type' => AdapterInterface::PHINX_TYPE_INTEGER, 'limit' => null],
+            'bigint'     => ['type' => AdapterInterface::PHINX_TYPE_BIG_INTEGER, 'limit' => null],
+            'boolean'    => ['type' => AdapterInterface::PHINX_TYPE_BOOLEAN, 'limit' => null],
+            // 文本
+            'varchar'    => ['type' => AdapterInterface::PHINX_TYPE_STRING, 'limit' => null],
+            'tinytext'   => ['type' => AdapterInterface::PHINX_TYPE_TEXT, 'limit' => MysqlAdapter::TEXT_TINY],
+            'mediumtext' => ['type' => AdapterInterface::PHINX_TYPE_TEXT, 'limit' => MysqlAdapter::TEXT_MEDIUM],
+            'longtext'   => ['type' => AdapterInterface::PHINX_TYPE_TEXT, 'limit' => MysqlAdapter::TEXT_LONG],
+            'tinyblob'   => ['type' => AdapterInterface::PHINX_TYPE_BLOB, 'limit' => MysqlAdapter::BLOB_TINY],
+            'mediumblob' => ['type' => AdapterInterface::PHINX_TYPE_BLOB, 'limit' => MysqlAdapter::BLOB_MEDIUM],
+            'longblob'   => ['type' => AdapterInterface::PHINX_TYPE_BLOB, 'limit' => MysqlAdapter::BLOB_LONG],
+        ];
+        return array_key_exists($type, $phinxFieldTypeMap) ? $phinxFieldTypeMap[$type] : ['type' => $type, 'limit' => null];
+    }
+
+    /**
+     * 分析字段limit和精度
+     * @param string $type  字段类型
+     * @param array  $field 字段数据
+     * @return array ['limit' => 10, 'precision' => null, 'scale' => null]
+     */
+    public static function analyseFieldLimit(string $type, array $field): array
+    {
+        $fieldType = [
+            'decimal' => ['decimal', 'double', 'float'],
+            'values'  => ['enum', 'set'],
+        ];
+
+        $dataTypeLimit = self::dataTypeLimit($field['dataType'] ?? '');
+        if (in_array($type, $fieldType['decimal'])) {
+            if ($dataTypeLimit) {
+                return ['precision' => $dataTypeLimit[0], 'scale' => $dataTypeLimit[1] ?? 0];
+            }
+            $scale = isset($field['precision']) ? intval($field['precision']) : 0;
+            return ['precision' => $field['length'] ?: 10, 'scale' => $scale];
+        } elseif (in_array($type, $fieldType['values'])) {
+            foreach ($dataTypeLimit as &$item) {
+                $item = str_replace(['"', "'"], '', $item);
+            }
+            return ['values' => $dataTypeLimit];
+        } else {
+            if ($dataTypeLimit && $dataTypeLimit[0]) {
+                return ['limit' => $dataTypeLimit[0]];
+            } elseif ($field['length']) {
+                return ['limit' => $field['length']];
+            }
+        }
+        return [];
+    }
+
+    public static function dataTypeLimit(string $dataType): array
+    {
+        preg_match("/\((.*?)\)/", $dataType, $matches);
+        if (isset($matches[1]) && $matches[1]) {
+            return explode(',', trim($matches[1], ','));
+        }
+        return [];
+    }
+
+    public static function analyseFieldDefault(array $field): mixed
+    {
+        if (strtolower((string)$field['default']) == 'null') {
+            return null;
+        }
+        return match ($field['default']) {
+            '0' => 0,
+            'empty string' => '',
+            default => $field['default'],
+        };
+    }
+
+    public static function searchArray($fields, callable $myFunction): array|bool
+    {
+        foreach ($fields as $key => $field) {
+            if (call_user_func($myFunction, $field, $key)) {
+                return $field;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 获取 Phinx 格式的字段数据
+     * @param array $field
+     * @return array
+     */
+    public static function getPhinxFieldData(array $field): array
+    {
+        $conciseType   = self::analyseFieldType($field);
+        $phinxTypeData = self::getPhinxFieldType($conciseType, $field);
+
+        $phinxColumnOptions = self::analyseFieldLimit($conciseType, $field);
+        if (!is_null($phinxTypeData['limit'])) {
+            $phinxColumnOptions['limit'] = $phinxTypeData['limit'];
+        }
+        if ($field['default'] != 'none') {
+            $phinxColumnOptions['default'] = self::analyseFieldDefault($field);
+        }
+        $phinxColumnOptions['null']     = (bool)$field['null'];
+        $phinxColumnOptions['comment']  = $field['comment'];
+        $phinxColumnOptions['signed']   = !$field['unsigned'];
+        $phinxColumnOptions['identity'] = $field['autoIncrement'];
+        return [
+            'type'    => $phinxTypeData['type'],
+            'options' => $phinxColumnOptions,
+        ];
+    }
+
+    /**
+     * 表设计处理
+     * @param array $table  表数据
+     * @param array $fields 字段数据
+     * @return array
+     * @throws Throwable
+     */
+    public static function handleTableDesign(array $table, array $fields): array
+    {
+        $name         = self::getTableName($table['name']);
+        $comment      = $table['comment'] ?? '';
+        $designChange = $table['designChange'] ?? [];
+        $adapter      = TableManager::adapter(false);
+
+        $pk = self::searchArray($fields, function ($item) {
+            return $item['primaryKey'];
+        });
+        $pk = $pk ? $pk['name'] : '';
+
+        if ($adapter->hasTable($name)) {
+            // 更新表
+            TableManager::changeComment($name, $comment);
+            $table = TableManager::instance($name, [], false);
+            foreach ($designChange as $item) {
+                if ($item['type'] == 'change-field-name') {
+                    $table->renameColumn($item['oldName'], $item['newName']);
+                } elseif ($item['type'] == 'del-field') {
+                    $table->removeColumn($item['oldName']);
+                } elseif ($item['type'] == 'change-field-attr') {
+                    $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
+                        return $field['name'] == $item['oldName'];
+                    }));
+                    $table->changeColumn($item['oldName'], $phinxFieldData['type'], $phinxFieldData['options']);
+                } elseif ($item['type'] == 'add-field') {
+                    $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
+                        return $field['name'] == $item['newName'];
+                    }));
+                    $table->addColumn($item['newName'], $phinxFieldData['type'], $phinxFieldData['options']);
+                }
+            }
+            $table->update();
+        } else {
+            // 创建表
+            $table = TableManager::instance($name, [
+                'id'          => false,
+                'comment'     => $comment,
+                'row_format'  => 'DYNAMIC',
+                'primary_key' => $pk,
+                'collation'   => 'utf8mb4_unicode_ci',
+            ], false);
+            foreach ($fields as $field) {
+                $phinxFieldData = self::getPhinxFieldData($field);
+                $table->addColumn($field['name'], $phinxFieldData['type'], $phinxFieldData['options']);
+            }
+            $table->create();
+        }
+
         return [$pk];
     }
 
@@ -556,7 +692,12 @@ class Helper
         // 预留
     }
 
-    public static function analyseFieldType($field): string
+    /**
+     * 分析字段类型
+     * @param array $field 字段数据
+     * @return string 字段类型
+     */
+    public static function analyseFieldType(array $field): string
     {
         $dataType = (isset($field['dataType']) && $field['dataType']) ? $field['dataType'] : $field['type'];
         if (stripos($dataType, '(') !== false) {
