@@ -434,18 +434,28 @@ class Helper
             TableManager::changeComment($name, $comment);
             if ($designChange) {
                 $table = TableManager::instance($name, [], false);
+
+                // 改名操作优先
+                foreach ($designChange as $item) {
+                    if (!$item['sync']) continue;
+                    if ($item['type'] == 'change-field-name') {
+                        if (!$table->hasColumn($item['oldName'])) {
+                            throw new BaException(__($item['type'] . ' fail not exist', [$item['oldName']]));
+                        }
+                        $table->renameColumn($item['oldName'], $item['newName']);
+                    }
+                }
+
                 foreach ($designChange as $item) {
 
                     if (!$item['sync']) continue;
 
-                    if (in_array($item['type'], ['change-field-name', 'del-field', 'change-field-attr']) && !$table->hasColumn($item['oldName'])) {
+                    if (in_array($item['type'], ['del-field', 'change-field-attr']) && !$table->hasColumn($item['oldName'])) {
                         // 字段不存在
                         throw new BaException(__($item['type'] . ' fail not exist', [$item['oldName']]));
                     }
 
-                    if ($item['type'] == 'change-field-name') {
-                        $table->renameColumn($item['oldName'], $item['newName']);
-                    } elseif ($item['type'] == 'del-field') {
+                    if ($item['type'] == 'del-field') {
                         $table->removeColumn($item['oldName']);
                     } elseif ($item['type'] == 'change-field-attr') {
                         $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
@@ -456,7 +466,7 @@ class Helper
 
                         if ($table->hasColumn($item['newName'])) {
                             // 字段已经存在
-                            throw new BaException(__('add-field fail exist', [$item['newName']]));
+                            throw new BaException(__($item['type'] . ' fail exist', [$item['newName']]));
                         }
 
                         $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
