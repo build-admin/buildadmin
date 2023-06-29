@@ -142,4 +142,5 @@ export default {
         'Deleting existing data tables and rebuilding them without adjusting the table structure ensures that CRUD code/records are consistent with the table structure',
     Yes: 'Yes',
     No: 'No',
+    'If the data is abnormal, repeat the previous step': 'If the data is abnormal, repeat the previous step',
 }

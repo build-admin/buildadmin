@@ -345,7 +345,7 @@ class Helper
         } else {
             if ($dataTypeLimit && $dataTypeLimit[0]) {
                 return ['limit' => $dataTypeLimit[0]];
-            } elseif ($field['length']) {
+            } elseif (isset($field['length'])) {
                 return ['limit' => $field['length']];
             }
         }

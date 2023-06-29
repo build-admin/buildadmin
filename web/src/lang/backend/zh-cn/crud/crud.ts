@@ -139,4 +139,5 @@ export default {
     tableReBuildBlockHelp: '不调整表结构，直接删除已有数据表并重建，此举可以确保CRUD代码/记录与数据表结构一致',
     Yes: '是',
     No: '否',
+    'If the data is abnormal, repeat the previous step': '数据异常，请重做上步操作',
 }

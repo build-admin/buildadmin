@@ -6,6 +6,7 @@ use Throwable;
 use ba\Exception;
 use ba\Filesystem;
 use think\facade\Db;
+use ba\TableManager;
 use app\admin\model\CrudLog;
 use app\common\library\Menu;
 use app\admin\model\AdminLog;
@@ -306,11 +307,19 @@ class Crud extends Backend
             $this->error(__('Record not found'));
         }
 
+        // 数据表是否有数据
+        $adapter = TableManager::adapter();
+        if ($adapter->hasTable($info['table']['name'])) {
+            $info['table']['empty'] = Db::name($info['table']['name'])->limit(1)->select()->isEmpty();
+        } else {
+            $info['table']['empty'] = true;
+        }
+
         AdminLog::setTitle(__('Log start'));
 
         $this->success('', [
             'table'  => $info['table'],
-            'fields' => $info['fields']
+            'fields' => $info['fields'],
         ]);
     }
 
@@ -447,16 +456,27 @@ class Crud extends Backend
         AdminLog::setTitle(__('Parse field data'));
         $type  = $this->request->post('type');
         $table = $this->request->post('table');
+        $table = TableManager::tableName($table);
         if ($type == 'db') {
             $sql       = 'SELECT * FROM `information_schema`.`tables` '
                 . 'WHERE TABLE_SCHEMA = ? AND table_name = ?';
-            $tableInfo = Db::query($sql, [config('database.connections.mysql.database'), Helper::getTableName($table)]);
+            $tableInfo = Db::query($sql, [config('database.connections.mysql.database'), $table]);
             if (!$tableInfo) {
                 $this->error(__('Record not found'));
             }
+
+            // 数据表是否有数据
+            $adapter = TableManager::adapter(false);
+            if ($adapter->hasTable($table)) {
+                $empty = Db::table($table)->limit(1)->select()->isEmpty();
+            } else {
+                $empty = true;
+            }
+
             $this->success('', [
                 'columns' => Helper::parseTableColumns($table),
                 'comment' => $tableInfo[0]['TABLE_COMMENT'] ?? '',
+                'empty'   => $empty,
             ]);
         }
     }

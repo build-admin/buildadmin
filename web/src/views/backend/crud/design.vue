@@ -754,7 +754,7 @@ const onFieldNameChange = async (val: string, index: number) => {
         count++
         await new Promise((resolve) => setTimeout(resolve, 300))
         if (count > 3) {
-            throw new Error('数据异常，请重做上步操作')
+            throw new Error(t('crud.crud.If the data is abnormal, repeat the previous step'))
         }
     }
     const oldName = state.fieldBackup.name!
@@ -1019,6 +1019,9 @@ const loadData = () => {
             .then((res) => {
                 state.table = res.data.table
                 tableDesignChangeInit()
+                if (res.data.table.empty) {
+                    state.table.rebuild = 'Yes'
+                }
                 state.table.isCommonModel = parseInt(res.data.table.isCommonModel)
                 const fields = res.data.fields
                 for (const key in fields) {
@@ -1055,6 +1058,9 @@ const loadData = () => {
             }
             state.fields = fields
             state.table.comment = res.data.comment
+            if (res.data.empty) {
+                state.table.rebuild = 'Yes'
+            }
             if (crudState.type == 'db' && crudState.startData.db) {
                 state.table.name = crudState.startData.db
                 onTableChange(crudState.startData.db)
