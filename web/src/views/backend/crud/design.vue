@@ -872,7 +872,9 @@ const startGenerate = () => {
         fields: fields,
     })
         .then(() => {
-            router.go(0)
+            setTimeout(() => {
+                router.go(0)
+            }, 1000)
         })
         .finally(() => {
             state.loading.generate = false
