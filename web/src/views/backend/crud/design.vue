@@ -525,7 +525,7 @@
                 />
                 <br />
                 <el-alert
-                    v-if="state.confirmGenerate.table && (crudState.type == 'create' || state.table.rebuild == 'Yes')"
+                    v-if="showTableConflictConfirmGenerate()"
                     :title="
                         t(
                             'crud.crud.The data table already exists Continuing to generate will automatically delete the original table and create a new one!'
@@ -925,9 +925,13 @@ const onGenerate = () => {
         .catch((res) => {
             state.loading.generate = false
             if (res.code == -1) {
-                state.confirmGenerate.show = true
                 state.confirmGenerate.table = res.data.table
                 state.confirmGenerate.controller = res.data.controller
+                if (showTableConflictConfirmGenerate() || state.confirmGenerate.controller) {
+                    state.confirmGenerate.show = true
+                } else {
+                    startGenerate()
+                }
             } else {
                 ElNotification({
                     type: 'error',
@@ -936,6 +940,8 @@ const onGenerate = () => {
             }
         })
 }
+
+const showTableConflictConfirmGenerate = () => state.confirmGenerate.table && (crudState.type == 'create' || state.table.rebuild == 'Yes')
 
 const onAbandonDesign = () => {
     if (!state.table.name && !state.table.comment && !state.fields.length) {
