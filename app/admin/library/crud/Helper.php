@@ -443,6 +443,12 @@ class Helper
                             throw new BaException(__($item['type'] . ' fail not exist', [$item['oldName']]));
                         }
                         $table->renameColumn($item['oldName'], $item['newName']);
+
+                        // 改名后需要重设字段属性
+                        $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
+                            return $field['name'] == $item['newName'];
+                        }));
+                        $table->changeColumn($item['newName'], $phinxFieldData['type'], $phinxFieldData['options']);
                     }
                 }
 
