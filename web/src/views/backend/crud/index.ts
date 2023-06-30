@@ -11,6 +11,7 @@ export interface TableDesignChange {
     oldName: string
     newName: string
     sync?: boolean
+    after?: string
 }
 
 export const state: {

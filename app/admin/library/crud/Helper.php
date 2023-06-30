@@ -411,6 +411,44 @@ class Helper
     }
 
     /**
+     * 表字段排序
+     * @param string $tableName    表名
+     * @param array  $fields       字段数据
+     * @param array  $designChange 前端字段改变数据
+     * @return void
+     */
+    public static function updateFieldOrder(string $tableName, array $fields, array $designChange): void
+    {
+        if ($designChange) {
+            $table = TableManager::instance($tableName, [], false);
+            foreach ($designChange as $item) {
+                if (!$item['sync']) continue;
+
+                if (!empty($item['after'])) {
+                    $field    = self::searchArray($fields, function ($field) use ($item) {
+                        return $field['name'] == $item['newName'];
+                    });
+                    $dataType = self::analyseFieldDataType($field);
+                    $sql      = "ALTER TABLE `{$tableName}` MODIFY COLUMN `{$item['newName']}` $dataType";
+                    if ($item['after'] == 'FIRST FIELD') {
+                        // 设为第一个字段
+                        $sql .= ' FIRST';
+                    } else {
+                        $sql .= " AFTER {$item['after']}";
+                    }
+                    Db::execute($sql);
+
+                    // 使用 Phinx 再更新一遍字段，不然字段注释等数据丢失
+                    // think-migration 使用了自行维护的 Phinx，并不支持直接将字段设置为第一个，所以调整排序直接使用 SQL
+                    $phinxFieldData = self::getPhinxFieldData($field);
+                    $table->changeColumn($item['newName'], $phinxFieldData['type'], $phinxFieldData['options']);
+                }
+            }
+            $table->update();
+        }
+    }
+
+    /**
      * 表设计处理
      * @param array $table  表数据
      * @param array $fields 字段数据
@@ -444,7 +482,7 @@ class Helper
                         }
                         $table->renameColumn($item['oldName'], $item['newName']);
 
-                        // 改名后需要重设字段属性
+                        // 改名后使用 Phinx 再更新一遍字段，不然字段注释等数据丢失
                         $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
                             return $field['name'] == $item['newName'];
                         }));
@@ -482,6 +520,9 @@ class Helper
                     }
                 }
                 $table->update();
+
+                // 表更新结构完成再处理字段排序
+                self::updateFieldOrder($name, $fields, $designChange);
             }
         } else {
             // 创建表
@@ -725,7 +766,7 @@ class Helper
     }
 
     /**
-     * 分析字段类型
+     * 分析字段数据类型
      * @param array $field 字段数据
      * @return string 字段类型
      */
@@ -737,6 +778,29 @@ class Helper
             return trim($typeName[0]);
         }
         return trim($dataType);
+    }
+
+    /**
+     * 分析字段的完整数据类型定义
+     * @param array $field 字段数据
+     * @return string
+     */
+    public static function analyseFieldDataType(array $field): string
+    {
+        if (!empty($field['dataType'])) return $field['dataType'];
+
+        $conciseType = self::analyseFieldType($field);
+        $limit       = self::analyseFieldLimit($conciseType, $field);
+
+        if (isset($limit['precision'])) {
+            $dataType = "$conciseType({$limit['precision']}, {$limit['scale']})";
+        } elseif (isset($limit['values'])) {
+            $values   = implode(',', $limit['values']);
+            $dataType = "$conciseType($values)";
+        } else {
+            $dataType = "$conciseType({$limit['limit']})";
+        }
+        return $dataType;
     }
 
     /**

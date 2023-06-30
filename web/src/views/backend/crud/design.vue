@@ -1126,6 +1126,7 @@ onMounted(() => {
                     index: evt.newIndex!,
                     newName: data.name,
                     oldName: '',
+                    after: evt.newIndex === 0 ? 'FIRST FIELD' : state.fields[evt.newIndex! - 1].name,
                 })
 
                 // 远程下拉参数预填
