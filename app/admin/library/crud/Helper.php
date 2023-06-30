@@ -473,13 +473,17 @@ class Helper
             if ($designChange) {
                 $table = TableManager::instance($name, [], false);
 
-                // 改名操作优先
+                // 改名和删除操作优先
                 foreach ($designChange as $item) {
+
                     if (!$item['sync']) continue;
+
+                    if (in_array($item['type'], ['change-field-name', 'del-field']) && !$table->hasColumn($item['oldName'])) {
+                        // 字段不存在
+                        throw new BaException(__($item['type'] . ' fail not exist', [$item['oldName']]));
+                    }
+
                     if ($item['type'] == 'change-field-name') {
-                        if (!$table->hasColumn($item['oldName'])) {
-                            throw new BaException(__($item['type'] . ' fail not exist', [$item['oldName']]));
-                        }
                         $table->renameColumn($item['oldName'], $item['newName']);
 
                         // 改名后使用 Phinx 再更新一遍字段，不然字段注释等数据丢失
@@ -487,21 +491,23 @@ class Helper
                             return $field['name'] == $item['newName'];
                         }));
                         $table->changeColumn($item['newName'], $phinxFieldData['type'], $phinxFieldData['options']);
+                    } elseif ($item['type'] == 'del-field') {
+                        $table->removeColumn($item['oldName']);
                     }
                 }
 
+                // 修改字段属性和添加字段操作
                 foreach ($designChange as $item) {
 
                     if (!$item['sync']) continue;
 
-                    if (in_array($item['type'], ['del-field', 'change-field-attr']) && !$table->hasColumn($item['oldName'])) {
-                        // 字段不存在
-                        throw new BaException(__($item['type'] . ' fail not exist', [$item['oldName']]));
-                    }
+                    if ($item['type'] == 'change-field-attr') {
 
-                    if ($item['type'] == 'del-field') {
-                        $table->removeColumn($item['oldName']);
-                    } elseif ($item['type'] == 'change-field-attr') {
+                        if (!$table->hasColumn($item['oldName'])) {
+                            // 字段不存在
+                            throw new BaException(__($item['type'] . ' fail not exist', [$item['oldName']]));
+                        }
+
                         $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
                             return $field['name'] == $item['oldName'];
                         }));
