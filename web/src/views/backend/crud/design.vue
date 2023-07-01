@@ -1151,6 +1151,15 @@ onMounted(() => {
             const temp = state.fields[evt.oldIndex!]
             state.fields.splice(evt.oldIndex!, 1)
             state.fields.splice(evt.newIndex!, 0, temp)
+
+            logTableDesignChange({
+                type: 'change-field-order',
+                index: evt.newIndex!,
+                newName: '',
+                oldName: temp.name,
+                after: evt.newIndex === 0 ? 'FIRST FIELD' : state.fields[evt.newIndex! - 1].name,
+            })
+
             nextTick(() => {
                 sortable.sort(range(state.fields.length).map((value) => value.toString()))
             })
@@ -1315,10 +1324,23 @@ const logTableDesignChange = (data: TableDesignChange) => {
             // 有属性修改记录的字段被改名-单独循环防止字段再次改名后造成找不到属性修改记录
             if (state.table.designChange[key].type == 'change-field-attr' && data.oldName == state.table.designChange[key].oldName) {
                 state.table.designChange[key].oldName = data.newName
-                break
+            }
+            // 有排序记录的字段被改名
+            if (state.table.designChange[key].type == 'change-field-order' && data.oldName == state.table.designChange[key].oldName) {
+                state.table.designChange[key].oldName = data.newName
+            }
+            if (state.table.designChange[key].after == data.oldName) {
+                state.table.designChange[key].after = data.newName
             }
         }
         for (const key in state.table.designChange) {
+            // 新增字段改名
+            if (state.table.designChange[key].type == 'add-field' && state.table.designChange[key].newName == data.oldName) {
+                state.table.designChange[key].newName = data.newName
+                push = false
+                // 同一字段不会有两条新增记录
+                break
+            }
             // 字段再次改名
             if (state.table.designChange[key].type == 'change-field-name' && state.table.designChange[key].newName == data.oldName) {
                 data.oldName = state.table.designChange[key].oldName
@@ -1332,35 +1354,36 @@ const logTableDesignChange = (data: TableDesignChange) => {
                 push = false
                 break
             }
-            // 新增字段改名
-            if (state.table.designChange[key].type == 'add-field' && state.table.designChange[key].newName == data.oldName) {
-                state.table.designChange[key].newName = data.newName
-                push = false
-                break
-            }
         }
     } else if (data.type == 'del-field') {
+        let add = false
+        state.table.designChange = state.table.designChange.filter((item) => {
+            // 新增的字段被删除
+            add = item.type == 'add-field' && item.newName == data.oldName
+            // 有改名记录的字段被删除
+            const name = item.type == 'change-field-name' && item.newName == data.oldName
+            // 有属性修改记录的字段被删除
+            const attr = item.type == 'change-field-attr' && item.oldName == data.oldName
+            // 有排序记录的字段被删除
+            const order = item.type == 'change-field-order' && item.oldName == data.oldName
+
+            if (name) data.oldName = item.oldName
+
+            return !add && !name && !attr && !order
+        })
+
+        // 添加的字段需要过滤掉记录同时不记录删除操作
+        if (add) push = false
+
         for (const key in state.table.designChange) {
             // 同一字段名称多次删除（删除后添加再删除）
             if (state.table.designChange[key].type == 'del-field' && state.table.designChange[key].oldName == data.oldName) {
                 push = false
                 break
             }
-            // 新增的字段被删除-删除新增记录
-            if (state.table.designChange[key].type == 'add-field' && state.table.designChange[key].newName == data.oldName) {
-                state.table.designChange.splice(key as any, 1)
-                push = false
-                break
-            }
         }
-        state.table.designChange = state.table.designChange.filter((item) => {
-            // 有改名记录的字段被删除
-            const name = item.type == 'change-field-name' && item.newName == data.oldName
-            // 有属性修改记录的字段被删除
-            const attr = item.type == 'change-field-attr' && data.oldName == item.oldName
-            return !name && !attr
-        })
     } else if (data.type == 'change-field-attr') {
+        // 先改名再改属性无需处理
         for (const key in state.table.designChange) {
             // 重复修改属性只记录一次
             if (state.table.designChange[key].type == 'change-field-attr' && state.table.designChange[key].oldName == data.oldName) {
@@ -1369,6 +1392,22 @@ const logTableDesignChange = (data: TableDesignChange) => {
             }
             // 新增的字段无需记录属性修改
             if (state.table.designChange[key].type == 'add-field' && state.table.designChange[key].newName == data.oldName) {
+                push = false
+                break
+            }
+        }
+    } else if (data.type == 'change-field-order') {
+        for (const key in state.table.designChange) {
+            // 新增的字段
+            if (state.table.designChange[key].type == 'add-field' && state.table.designChange[key].newName == data.oldName) {
+                // 更新排序设定
+                state.table.designChange[key].after = data.after
+                push = false
+                break
+            }
+            // 重复的排序记录
+            if (state.table.designChange[key].type == 'change-field-order' && state.table.designChange[key].oldName == data.oldName) {
+                state.table.designChange[key] = data
                 push = false
                 break
             }
@@ -1388,6 +1427,14 @@ const getTableDesignChangeContent = (data: TableDesignChange): string => {
             return t('crud.crud.Modify field name') + ' ' + data.oldName + ' => ' + data.newName
         case 'del-field':
             return t('crud.crud.Delete field') + ' ' + data.oldName
+        case 'change-field-order':
+            return (
+                t('crud.crud.Modify field order') +
+                ' ' +
+                data.oldName +
+                ' => ' +
+                (data.after == 'FIRST FIELD' ? t('crud.crud.First field') : data.after + ' ' + t('crud.crud.After'))
+            )
         default:
             return t('Unknown')
     }
@@ -1407,6 +1454,9 @@ const getTableDesignTimelineType = (type: TableDesignChangeType): TimelineItemPr
             break
         case 'change-field-attr':
             timeline = 'success'
+            break
+        case 'change-field-order':
+            timeline = 'info'
             break
         default:
             timeline = 'success'

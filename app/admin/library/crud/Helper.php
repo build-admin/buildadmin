@@ -425,23 +425,26 @@ class Helper
                 if (!$item['sync']) continue;
 
                 if (!empty($item['after'])) {
-                    $field    = self::searchArray($fields, function ($field) use ($item) {
-                        return $field['name'] == $item['newName'];
+
+                    $fieldName = in_array($item['type'], ['add-field', 'change-field-name']) ? $item['newName'] : $item['oldName'];
+
+                    $field    = self::searchArray($fields, function ($field) use ($fieldName) {
+                        return $field['name'] == $fieldName;
                     });
                     $dataType = self::analyseFieldDataType($field);
-                    $sql      = "ALTER TABLE `{$tableName}` MODIFY COLUMN `{$item['newName']}` $dataType";
+                    $sql      = "ALTER TABLE `{$tableName}` MODIFY COLUMN `$fieldName` $dataType";
                     if ($item['after'] == 'FIRST FIELD') {
                         // 设为第一个字段
                         $sql .= ' FIRST';
                     } else {
-                        $sql .= " AFTER {$item['after']}";
+                        $sql .= " AFTER `{$item['after']}`";
                     }
                     Db::execute($sql);
 
                     // 使用 Phinx 再更新一遍字段，不然字段注释等数据丢失
                     // think-migration 使用了自行维护的 Phinx，并不支持直接将字段设置为第一个，所以调整排序直接使用 SQL
                     $phinxFieldData = self::getPhinxFieldData($field);
-                    $table->changeColumn($item['newName'], $phinxFieldData['type'], $phinxFieldData['options']);
+                    $table->changeColumn($fieldName, $phinxFieldData['type'], $phinxFieldData['options']);
                 }
             }
             $table->update();

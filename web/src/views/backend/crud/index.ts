@@ -3,14 +3,23 @@ import { i18n } from '/@/lang/index'
 import { validatorType } from '/@/utils/validate'
 import { npuaFalse, fieldData } from '/@/components/baInput/helper'
 
-export type TableDesignChangeType = 'change-field-name' | 'del-field' | 'add-field' | 'change-field-attr'
+/**
+ * 字段修改类型标识
+ * 改排序需要在表结构变更完成之后再单独处理所以标识独立
+ */
+export type TableDesignChangeType = 'change-field-name' | 'del-field' | 'add-field' | 'change-field-attr' | 'change-field-order'
 
 export interface TableDesignChange {
     type: TableDesignChangeType
+    // 字段在设计器中的数组 index
     index?: number
+    // 字段旧名称（重命名、修改属性、删除）
     oldName: string
+    // 字段新名称（重命名、添加）
     newName: string
+    // 是否同步到数据表
     sync?: boolean
+    // 此字段在 after 字段之后，值为`FIRST FIELD`表示它是第一个字段
     after?: string
 }
 
