@@ -425,7 +425,7 @@ class Install extends Migrator
                 'collation'   => 'utf8mb4_unicode_ci',
             ]);
             $table->addColumn('id', 'integer', ['comment' => 'ID', 'signed' => false, 'identity' => true])
-                ->addColumn('group_id', 'integer', ['comment' => '分组ID', 'signed' => false])
+                ->addColumn('group_id', 'integer', ['comment' => '分组ID', 'default' => 0, 'signed' => false])
                 ->addColumn('username', 'string', ['limit' => 32, 'default' => '', 'comment' => '用户名'])
                 ->addColumn('nickname', 'string', ['limit' => 50, 'default' => '', 'comment' => '昵称'])
                 ->addColumn('email', 'string', ['limit' => 50, 'default' => '', 'comment' => '邮箱'])
