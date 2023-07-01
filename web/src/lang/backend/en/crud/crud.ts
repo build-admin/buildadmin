@@ -146,4 +146,5 @@ export default {
     Yes: 'Yes',
     No: 'No',
     'If the data is abnormal, repeat the previous step': 'If the data is abnormal, repeat the previous step',
+    'Field name duplication': 'field name {field} is duplicate',
 }

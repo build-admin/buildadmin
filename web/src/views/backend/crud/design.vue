@@ -13,7 +13,7 @@
                             :input-attr="{
                                 onChange: onTableNameChange,
                             }"
-                            :error="state.tableNameError"
+                            :error="state.error.tableName"
                         />
                         <FormItem
                             class="table-comment-item"
@@ -596,7 +596,7 @@ import { cloneDeep, range, isEmpty } from 'lodash-es'
 import Sortable, { SortableEvent } from 'sortablejs'
 import { useTemplateRefsList } from '@vueuse/core'
 import { changeStep, state as crudState, getTableAttr, fieldItem, designTypes, tableFieldsKey } from '/@/views/backend/crud/index'
-import { ElNotification, FormItemRule, FormInstance, ElMessageBox, TimelineItemProps } from 'element-plus'
+import { ElNotification, FormItemRule, FormInstance, ElMessageBox, TimelineItemProps, ElMessage, MessageHandler } from 'element-plus'
 import { getDatabaseList, getFileData, generateCheck, generate, parseFieldData, postLogStart } from '/@/api/backend/crud'
 import { getTableFieldList } from '/@/api/common'
 import { buildValidatorData, regularVarName } from '/@/utils/validate'
@@ -661,9 +661,12 @@ const state: {
         controller: boolean
     }
     draggingField: boolean
-    tableNameError: string
     fieldBackup: Partial<FieldItem>
     showDesignChangeLog: boolean
+    error: {
+        tableName: string
+        fieldName: MessageHandler | null
+    }
 } = reactive({
     loading: {
         init: false,
@@ -715,9 +718,12 @@ const state: {
         controller: false,
     },
     draggingField: false,
-    tableNameError: '',
     fieldBackup: {},
     showDesignChangeLog: false,
+    error: {
+        tableName: '',
+        fieldName: null,
+    },
 })
 
 type TableKey = keyof typeof state.table
@@ -774,6 +780,43 @@ const onFieldNameChange = async (val: string, index: number) => {
         oldName: oldName,
         newName: val,
     })
+
+    fieldNameDuplicationCheck('ElMessage')
+}
+
+/**
+ * 字段名称重复检测
+ */
+const fieldNameDuplicationCheck = (showErrorType: 'ElNotification' | 'ElMessage') => {
+    if (state.error.fieldName) {
+        state.error.fieldName.close()
+        state.error.fieldName = null
+    }
+    for (const key in state.fields) {
+        let count = 0
+        for (const checkKey in state.fields) {
+            if (state.fields[key].name == state.fields[checkKey].name) {
+                count++
+            }
+            if (count > 1) {
+                let msg = t('crud.crud.Field name duplication', { field: state.fields[key].name })
+                if (showErrorType == 'ElMessage') {
+                    state.error.fieldName = ElMessage({
+                        message: msg,
+                        type: 'error',
+                        duration: 0,
+                    })
+                } else {
+                    ElNotification({
+                        type: 'error',
+                        message: msg,
+                    })
+                }
+                return false
+            }
+        }
+    }
+    return true
 }
 
 const onFieldAttrChange = () => {
@@ -883,6 +926,9 @@ const startGenerate = () => {
 }
 
 const onGenerate = () => {
+    // 字段名称重复检查
+    if (!fieldNameDuplicationCheck('ElNotification')) return
+
     let msg = ''
 
     // 字段名检查
@@ -906,7 +952,7 @@ const onGenerate = () => {
 
     // 表名检查
     if (!state.table.name) msg = t('crud.crud.Please enter the data table name!')
-    if (state.tableNameError) msg = t('crud.crud.Please enter the correct table name!')
+    if (state.error.tableName) msg = t('crud.crud.Please enter the correct table name!')
 
     if (msg) {
         ElNotification({
@@ -1193,12 +1239,12 @@ onMounted(() => {
  * @param val 新表名
  */
 const onTableNameChange = (val: string) => {
-    if (!val) return (state.tableNameError = '')
+    if (!val) return (state.error.tableName = '')
     if (/^[a-z_][a-z0-9_]*$/.test(val)) {
-        state.tableNameError = ''
+        state.error.tableName = ''
         onTableChange(val)
     } else {
-        state.tableNameError = t('crud.crud.Use lower case underlined for table names')
+        state.error.tableName = t('crud.crud.Use lower case underlined for table names')
     }
     tableDesignChangeInit()
 }
@@ -1537,7 +1583,7 @@ const getTableDesignTimelineType = (type: TableDesignChangeType): TimelineItemPr
 .header-box {
     display: flex;
     align-items: center;
-    height: v-bind("state.tableNameError ? '70px':'60px'");
+    height: v-bind("state.error.tableName ? '70px':'60px'");
     padding: 10px;
     background-color: var(--ba-bg-color-overlay);
     border-radius: var(--el-border-radius-base);

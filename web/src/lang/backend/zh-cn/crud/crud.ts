@@ -143,4 +143,5 @@ export default {
     Yes: '是',
     No: '否',
     'If the data is abnormal, repeat the previous step': '数据异常，请重做上步操作',
+    'Field name duplication': '字段名称 {field} 重复！',
 }
