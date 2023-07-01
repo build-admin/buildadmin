@@ -45,13 +45,16 @@
             </div>
             <div v-else>{{ t('module.There is no adjustment for system dependency') }}</div>
         </div>
-        <div v-if="state.common.dependInstallState == 'fail'" class="install-tis-box">
+        <div v-if="state.common.dependInstallState == 'fail'" class="install-tis-box text-align-center">
             <div class="install-tis">
                 {{ t('module.Dependency installation fail 5') }}
                 <span class="span-a" @click="onConfirmDepend">
                     {{ t('module.Dependency installation fail 6') }}
                 </span>
                 {{ t('module.Dependency installation fail 7') }}
+                <span class="dependency-installation-fail-tips">
+                    {{ t('module.dependency-installation-fail-tips') }}
+                </span>
             </div>
         </div>
         <div class="install-tis-box">
@@ -131,6 +134,7 @@ const onConfirmDepend = () => {
         dependentInstallComplete(state.common.uid).then(() => {
             onRefreshTableData()
             state.loading.common = false
+            state.common.dependInstallState = 'success'
         })
     })
 }
@@ -142,6 +146,9 @@ const onConfirmDepend = () => {
     color: var(--el-color-success);
     text-align: center;
 }
+.text-align-center {
+    text-align: center;
+}
 .install-tis-box {
     padding: 20px;
     margin: 20px auto;
@@ -151,6 +158,13 @@ const onConfirmDepend = () => {
     display: flex;
     align-items: center;
     justify-content: center;
+    .dependency-installation-fail-tips {
+        display: block;
+        font-size: var(--el-font-size-extra-small);
+        text-align: center;
+        padding-top: 5px;
+        color: var(--el-text-color-regular);
+    }
 }
 .depend-box {
     display: flex;

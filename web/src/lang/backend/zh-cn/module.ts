@@ -132,4 +132,5 @@ export default {
     Password: '密码',
     'User name': '用户名',
     'Verification Code': '验证码',
+    'dependency-installation-fail-tips': '若手动执行命令成功，可点击以上的 `确定依赖已准备好` 将模块修改为已安装状态。',
 }

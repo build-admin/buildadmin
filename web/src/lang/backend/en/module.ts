@@ -137,4 +137,6 @@ export default {
     Password: 'password',
     'User name': 'User name',
     'Verification Code': 'Captcha',
+    'dependency-installation-fail-tips':
+        'If the command is successfully executed manually, click `Make sure dependency is ready` above to change the module to the installed state',
 }
