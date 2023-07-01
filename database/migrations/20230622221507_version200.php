@@ -94,6 +94,10 @@ class Version200 extends Migrator
                 Db::name('admin_rule')->where('name', 'auth/menu/edit')->update(['name' => 'auth/rule/edit']);
                 Db::name('admin_rule')->where('name', 'auth/menu/del')->update(['name' => 'auth/rule/del']);
                 Db::name('admin_rule')->where('name', 'auth/menu/sortable')->update(['name' => 'auth/rule/sortable']);
+                Db::name('admin_rule')->whereIn('name', [
+                    'dashboard/dashboard',
+                    'routine/attachment',
+                ])->update(['remark' => 'Remark lang']);
             }
         }
 
