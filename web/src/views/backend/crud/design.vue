@@ -666,6 +666,7 @@ const state: {
     error: {
         tableName: string
         fieldName: MessageHandler | null
+        fieldNameDuplication: MessageHandler | null
     }
 } = reactive({
     loading: {
@@ -723,6 +724,7 @@ const state: {
     error: {
         tableName: '',
         fieldName: null,
+        fieldNameDuplication: null,
     },
 })
 
@@ -781,16 +783,49 @@ const onFieldNameChange = async (val: string, index: number) => {
         newName: val,
     })
 
+    fieldNameCheck('ElMessage')
     fieldNameDuplicationCheck('ElMessage')
+}
+
+/**
+ * 字段名称命名规则检测
+ */
+const fieldNameCheck = (showErrorType: 'ElNotification' | 'ElMessage') => {
+    if (state.error.fieldName) {
+        state.error.fieldName.close()
+        state.error.fieldName = null
+    }
+    for (const key in state.fields) {
+        if (!regularVarName(state.fields[key].name)) {
+            let msg = t(
+                'crud.crud.Field name is invalid It starts with a letter or underscore and cannot contain any character other than letters, digits, or underscores',
+                { field: state.fields[key].name }
+            )
+            if (showErrorType == 'ElMessage') {
+                state.error.fieldName = ElMessage({
+                    message: msg,
+                    type: 'error',
+                    duration: 0,
+                })
+            } else {
+                ElNotification({
+                    type: 'error',
+                    message: msg,
+                })
+            }
+            return false
+        }
+    }
+    return true
 }
 
 /**
  * 字段名称重复检测
  */
 const fieldNameDuplicationCheck = (showErrorType: 'ElNotification' | 'ElMessage') => {
-    if (state.error.fieldName) {
-        state.error.fieldName.close()
-        state.error.fieldName = null
+    if (state.error.fieldNameDuplication) {
+        state.error.fieldNameDuplication.close()
+        state.error.fieldNameDuplication = null
     }
     for (const key in state.fields) {
         let count = 0
@@ -801,7 +836,7 @@ const fieldNameDuplicationCheck = (showErrorType: 'ElNotification' | 'ElMessage'
             if (count > 1) {
                 let msg = t('crud.crud.Field name duplication', { field: state.fields[key].name })
                 if (showErrorType == 'ElMessage') {
-                    state.error.fieldName = ElMessage({
+                    state.error.fieldNameDuplication = ElMessage({
                         message: msg,
                         type: 'error',
                         duration: 0,
@@ -926,21 +961,11 @@ const startGenerate = () => {
 }
 
 const onGenerate = () => {
-    // 字段名称重复检查
+    // 字段名称检查
+    if (!fieldNameCheck('ElNotification')) return
     if (!fieldNameDuplicationCheck('ElNotification')) return
 
     let msg = ''
-
-    // 字段名检查
-    state.fields.find((item) => {
-        if (!regularVarName(item.name)) {
-            msg = t(
-                'crud.crud.Field name is invalid It starts with a letter or underscore and cannot contain any character other than letters, digits, or underscores',
-                { field: item.name }
-            )
-            return true
-        }
-    })
 
     // 主键检查
     const pkIndex = state.fields.findIndex((item) => {
