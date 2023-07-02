@@ -39,6 +39,7 @@ class Version200 extends Migrator
         if ($adminLog->hasColumn('createtime')) {
             $adminLog->renameColumn('createtime', 'create_time')
                 ->changeColumn('create_time', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '创建时间'])
+                ->changeColumn('data', 'text', ['limit' => MysqlAdapter::TEXT_LONG, 'null' => true, 'default' => null, 'comment' => '请求数据'])
                 ->save();
         }
 
@@ -70,6 +71,7 @@ class Version200 extends Migrator
                 ->renameColumn('expiretime', 'expire_time')
                 ->changeColumn('create_time', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '创建时间'])
                 ->changeColumn('expire_time', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '过期时间'])
+                ->changeColumn('captcha', 'text', ['limit' => MysqlAdapter::TEXT_LONG, 'null' => true, 'default' => null, 'comment' => '验证码数据'])
                 ->save();
         }
 
@@ -164,7 +166,11 @@ class Version200 extends Migrator
                 ->renameColumn('createtime', 'create_time')
                 ->changeColumn('update_time', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '更新时间'])
                 ->changeColumn('create_time', 'biginteger', ['limit' => 16, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '创建时间'])
-                ->save();
+                ->changeColumn('type', 'enum', ['values' => 'route,menu_dir,menu,nav_user_menu,nav,button', 'default' => 'menu', 'comment' => '类型:route=路由,menu_dir=菜单目录,menu=菜单项,nav_user_menu=顶栏会员菜单下拉项,nav=顶栏菜单项,button=页面按钮']);
+            if (!$userRule->hasColumn('no_login_valid')) {
+                $userRule->addColumn('no_login_valid', 'integer', ['signed' => false, 'limit' => MysqlAdapter::INT_TINY, 'default' => 0, 'comment' => '未登录有效:0=否,1=是']);
+            }
+            $userRule->save();
         }
 
         $userScoreLog = $this->table('user_score_log');
