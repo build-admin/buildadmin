@@ -8,6 +8,7 @@ import { moduleInstallState, moduleState } from './types'
 import { uuid } from '/@/utils/random'
 import { fullUrl } from '/@/utils/common'
 import { UserInfo } from '/@/stores/interface'
+import { i18n } from '/@/lang/index'
 
 export const loadData = () => {
     state.loading.table = true
@@ -91,7 +92,7 @@ const getModules = () => {
 
                 if (item.new_version && item.tags) {
                     item.tags.push({
-                        name: '有新版本',
+                        name: i18n.global.t('module.New version'),
                         type: 'danger',
                     })
                 }
@@ -205,7 +206,7 @@ export const showCommonLoading = (loadingTitle: moduleState['common']['loadingTi
 export const onInstall = (uid: string, id: number) => {
     state.dialog.common = true
     showCommonLoading('init')
-    state.common.dialogTitle = '安装'
+    state.common.dialogTitle = i18n.global.t('module.Install')
 
     // 获取安装状态
     getInstallState(uid).then((res) => {
@@ -218,8 +219,8 @@ export const onInstall = (uid: string, id: number) => {
                 type: 'error',
                 message:
                     res.data.state === moduleInstallState.INSTALLED || res.data.state === moduleInstallState.DISABLE
-                        ? '安装取消，因为模块已经存在！'
-                        : '安装取消，因为模块所需目录被占用！',
+                        ? i18n.global.t('module.Installation cancelled because module already exists!')
+                        : i18n.global.t('module.Installation cancelled because the directory required by the module is occupied!'),
             })
             state.dialog.common = false
         } else {
@@ -238,7 +239,7 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
     state.common.disableHmr = true
     postInstallModule(uid, id, extend)
         .then(() => {
-            state.common.dialogTitle = '安装完成'
+            state.common.dialogTitle = i18n.global.t('module.Installation complete')
             state.common.moduleState = moduleInstallState.INSTALLED
             state.common.type = 'done'
         })
@@ -247,13 +248,13 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
             if (res.code == -1) {
                 state.common.uid = res.data.uid
                 state.common.type = 'InstallConflict'
-                state.common.dialogTitle = '发现冲突，请手动处理'
+                state.common.dialogTitle = i18n.global.t('module.A conflict is found Please handle it manually')
                 state.common.fileConflict = res.data.fileConflict
                 state.common.dependConflict = res.data.dependConflict
             } else if (res.code == -2) {
                 state.common.type = 'done'
                 state.common.uid = res.data.uid
-                state.common.dialogTitle = '等待依赖安装'
+                state.common.dialogTitle = i18n.global.t('module.Wait for dependent installation')
                 state.common.moduleState = moduleInstallState.DEPENDENT_WAIT_INSTALL
                 state.common.waitInstallDepend = res.data.wait_install
                 state.common.dependInstallState = 'executing'
@@ -328,7 +329,7 @@ export const onDisable = (confirmConflict = false) => {
         .then(() => {
             ElNotification({
                 type: 'success',
-                message: '操作成功，请清理系统缓存并刷新浏览器~',
+                message: i18n.global.t('module.The operation succeeds Please clear the system cache and refresh the browser ~'),
             })
             state.dialog.common = false
             onRefreshTableData()
@@ -336,7 +337,7 @@ export const onDisable = (confirmConflict = false) => {
         .catch((res) => {
             if (res.code == -1) {
                 state.dialog.common = true
-                state.common.dialogTitle = '处理冲突'
+                state.common.dialogTitle = i18n.global.t('module.Deal with conflict')
                 state.common.type = 'disableConfirmConflict'
                 state.common.disableDependConflict = res.data.dependConflict
                 if (res.data.conflictFile && res.data.conflictFile.length) {
@@ -382,7 +383,7 @@ export const onEnable = (uid: string) => {
         .then(() => {
             state.dialog.common = true
             showCommonLoading('init')
-            state.common.dialogTitle = '启用'
+            state.common.dialogTitle = i18n.global.t('Enable')
 
             execInstall(uid, 0)
             state.dialog.goodsInfo = false
@@ -416,7 +417,7 @@ export const execCommand = (data: anyObj) => {
     if (data.type == 'disable') {
         state.dialog.common = true
         state.common.type = 'done'
-        state.common.dialogTitle = '等待依赖安装'
+        state.common.dialogTitle = i18n.global.t('module.Wait for dependent installation')
         state.common.moduleState = moduleInstallState.DISABLE
         state.common.dependInstallState = 'executing'
         const terminal = useTerminal()
@@ -435,7 +436,7 @@ export const execCommand = (data: anyObj) => {
     }
 }
 
-export const specificUserName = (userInfo: UserInfo) => {
+export const specificUserName = (userInfo: Partial<UserInfo>) => {
     return userInfo.nickname + '（' + (userInfo.email || userInfo.mobile || 'ID:' + userInfo.id) + '）'
 }
 
@@ -444,7 +445,7 @@ export const currency = (price: number, val: number) => {
         return '-'
     }
     if (val == 0) {
-        return parseInt(price.toString()) + '积分'
+        return parseInt(price.toString()) + i18n.global.t('module.Points')
     } else {
         return '￥' + price
     }
@@ -455,32 +456,32 @@ export const moduleStatus = (state: number) => {
         case moduleInstallState.INSTALLED:
             return {
                 type: '',
-                text: '已安装',
+                text: i18n.global.t('module.installed'),
             }
         case moduleInstallState.WAIT_INSTALL:
             return {
                 type: 'success',
-                text: '等待安装',
+                text: i18n.global.t('module.Wait for installation'),
             }
         case moduleInstallState.CONFLICT_PENDING:
             return {
                 type: 'danger',
-                text: '冲突待处理',
+                text: i18n.global.t('module.Conflict pending'),
             }
         case moduleInstallState.DEPENDENT_WAIT_INSTALL:
             return {
                 type: 'warning',
-                text: '依赖待安装',
+                text: i18n.global.t('module.Dependency to be installed'),
             }
         case moduleInstallState.DISABLE:
             return {
                 type: 'warning',
-                text: '禁用',
+                text: i18n.global.t('Disable'),
             }
         default:
             return {
                 type: 'info',
-                text: '未知',
+                text: i18n.global.t('Unknown'),
             }
     }
 }

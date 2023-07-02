@@ -6,7 +6,6 @@ export default {
     url: 'URL',
     ip: 'IP',
     useragent: 'UserAgent',
-    createtime: 'Creation Time',
     'Operation administrator': 'Operation administrator',
     'Operator IP': 'Operator IP',
     'Request data': 'Request Data',

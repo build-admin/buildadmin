@@ -139,4 +139,19 @@ export default {
     'Verification Code': 'Captcha',
     'dependency-installation-fail-tips':
         'If the command is successfully executed manually, click `Make sure dependency is ready` above to change the module to the installed state',
+    'New version': 'New version',
+    Install: 'Install',
+    'Installation cancelled because module already exists!': 'Installation cancelled because module already exists!',
+    'Installation cancelled because the directory required by the module is occupied!':
+        'Installation cancelled because the directory required by the module is occupied!',
+    'Installation complete': 'Installation complete',
+    'A conflict is found Please handle it manually': 'A conflict is found. Please handle it manually',
+    'Wait for dependent installation': 'Wait for dependent installation',
+    'The operation succeeds Please clear the system cache and refresh the browser ~':
+        'The operation succeeds. Please clear the system cache and refresh the browser ~',
+    'Deal with conflict': 'Deal with conflict',
+    Points: 'points',
+    'Wait for installation': 'Wait for installation',
+    'Conflict pending': 'Conflict pending',
+    'Dependency to be installed': 'Dependency to be installed',
 }

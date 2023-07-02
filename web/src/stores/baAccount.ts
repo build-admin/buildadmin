@@ -6,7 +6,7 @@ import { Local } from '/@/utils/storage'
 import router from '../router'
 
 export const useBaAccount = defineStore('baAccount', {
-    state: (): UserInfo => {
+    state: (): Partial<UserInfo> => {
         return {
             id: 0,
             username: '',
@@ -18,9 +18,6 @@ export const useBaAccount = defineStore('baAccount', {
             birthday: '',
             money: 0,
             score: 0,
-            lastlogintime: '',
-            lastloginip: '',
-            jointime: '',
             motto: '',
             token: '',
             refreshToken: '',
