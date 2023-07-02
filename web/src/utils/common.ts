@@ -158,7 +158,7 @@ export const isAdminApp = (path = '') => {
     if (path) {
         return /^\/admin/.test(path)
     }
-    if (/^\/admin/.test(router.currentRoute.value.fullPath) || window.location.hash.indexOf('#/admin') === 0) {
+    if (/^\/admin/.test(getCurrentRoutePath())) {
         return true
     }
     return false
@@ -187,9 +187,10 @@ export const getFileNameFromPath = (path: string) => {
  * @param name
  */
 export const auth = (name: string) => {
+    const path = getCurrentRoutePath()
     const store = isAdminApp() ? useNavTabs() : useMemberCenter()
-    if (store.state.authNode.has(router.currentRoute.value.path)) {
-        if (store.state.authNode.get(router.currentRoute.value.path)!.some((v: string) => v == router.currentRoute.value.path + '/' + name)) {
+    if (store.state.authNode.has(path)) {
+        if (store.state.authNode.get(path)!.some((v: string) => v == path + '/' + name)) {
             return true
         }
     }
@@ -217,6 +218,16 @@ export const fullUrl = (relativeUrl: string, domain = '') => {
 }
 
 /**
+ * 获取路由 path
+ */
+export const getCurrentRoutePath = () => {
+    let path = router.currentRoute.value.path
+    if (path == '/') path = trimStart(window.location.hash, '#')
+    if (path.indexOf('?') !== -1) path = path.replace(/\?.*/, '')
+    return path
+}
+
+/**
  * 获取根据当前路由路径动态加载的语言翻译
  * @param key 无需语言路径的翻译key，亦可使用完整路径
  * @param named — 命名插值的值
@@ -224,10 +235,8 @@ export const fullUrl = (relativeUrl: string, domain = '') => {
  * @returns — Translated message
  */
 export const __ = (key: string, named?: Record<string, unknown>, options?: TranslateOptions<string>) => {
-    let path = router.currentRoute.value.path
-    if (path == '/') path = trimStart(window.location.hash, '#')
-    if (path.indexOf('?') !== -1) path = path.replace(/\?.*/, '')
     let langPath = ''
+    const path = getCurrentRoutePath()
     if (isAdminApp()) {
         langPath = path.slice(path.indexOf(adminBaseRoute.path) + adminBaseRoute.path.length)
         langPath = trim(langPath, '/').replaceAll('/', '.')
