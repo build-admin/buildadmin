@@ -66,7 +66,7 @@
             >
                 <el-form
                     :label-width="140"
-                    @keyup.enter="onSubmit(formRef)"
+                    @keyup.enter="onSubmit()"
                     class="select-db-form"
                     ref="formRef"
                     :model="crudState.startData"
@@ -82,7 +82,7 @@
                             :placeholder="t('crud.crud.table create SQL')"
                             :rows="10"
                             @keyup.enter.stop=""
-                            @keyup.ctrl.enter="onSubmit(formRef)"
+                            @keyup.ctrl.enter="onSubmit()"
                         />
                     </template>
                     <template v-else-if="state.dialog.type == 'db'">
@@ -117,7 +117,7 @@
                 <template #footer>
                     <div :style="{ width: 'calc(100% * 0.9)' }">
                         <el-button @click="state.dialog.visible = false">{{ $t('Cancel') }}</el-button>
-                        <el-button :loading="state.loading" @click="onSubmit(formRef)" v-blur type="primary">{{ t('Confirm') }}</el-button>
+                        <el-button :loading="state.loading" @click="onSubmit()" v-blur type="primary">{{ t('Confirm') }}</el-button>
                         <el-button v-if="state.successRecord" @click="onLogStart" v-blur type="success">
                             {{ t('crud.crud.Start with the historical record') }}
                         </el-button>
@@ -174,8 +174,8 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     db: [buildValidatorData({ name: 'required', message: t('crud.crud.Please select a data table') })],
 })
 
-const onSubmit = (formEl: FormInstance | undefined = undefined) => {
-    if (!formEl) return
+const onSubmit = () => {
+    if (!formRef.value) return
     if (state.dialog.type == 'sql' && !crudState.startData.sql) {
         ElNotification({
             type: 'error',
@@ -183,7 +183,7 @@ const onSubmit = (formEl: FormInstance | undefined = undefined) => {
         })
         return
     }
-    formEl.validate((valid) => {
+    formRef.value.validate((valid) => {
         if (valid) {
             changeStep(state.dialog.type)
         }

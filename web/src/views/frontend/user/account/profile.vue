@@ -10,7 +10,7 @@
                 </div>
             </template>
             <div class="user-profile">
-                <el-form :model="state.form" :rules="state.rules" :label-width="100" ref="formRef" @keyup.enter="onSubmit(formRef)">
+                <el-form :model="state.form" :rules="state.rules" :label-width="100" ref="formRef" @keyup.enter="onSubmit()">
                     <FormItem
                         :label="$t('user.account.profile.head portrait')"
                         :input-attr="{
@@ -76,7 +76,7 @@
                     <UserProfileMixin />
                     <el-form-item class="submit-buttons">
                         <el-button @click="onResetForm(formRef)">{{ $t('Reset') }}</el-button>
-                        <el-button type="primary" :loading="state.formSubmitLoading" @click="onSubmit(formRef)">{{ $t('Save') }}</el-button>
+                        <el-button type="primary" :loading="state.formSubmitLoading" @click="onSubmit()">{{ $t('Save') }}</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -96,7 +96,7 @@
                 :rules="state.dialog.verification.rules"
                 :label-position="'top'"
                 ref="verificationFormRef"
-                @keyup.enter="onSubmitVerification(verificationFormRef)"
+                @keyup.enter="onSubmitVerification()"
             >
                 <FormItem
                     :label="t('user.account.profile.Account password verification')"
@@ -145,7 +145,7 @@
             <template #footer>
                 <div :style="'width: calc(100% - 20px)'">
                     <el-button @click="state.dialog.verification.show = false">{{ t('Cancel') }}</el-button>
-                    <el-button v-blur :loading="state.dialog.submitLoading" @click="onSubmitVerification(verificationFormRef)" type="primary">
+                    <el-button v-blur :loading="state.dialog.submitLoading" @click="onSubmitVerification()" type="primary">
                         {{ t('user.account.profile.next step') }}
                     </el-button>
                 </div>
@@ -166,7 +166,7 @@
                 :rules="state.dialog.bind.rules"
                 :label-position="'top'"
                 ref="bindFormRef"
-                @keyup.enter="onSubmitBind(bindFormRef)"
+                @keyup.enter="onSubmitBind()"
             >
                 <FormItem
                     v-if="!state.dialog.verification.accountVerificationToken"
@@ -225,7 +225,7 @@
             <template #footer>
                 <div :style="'width: calc(100% - 20px)'">
                     <el-button @click="state.dialog.bind.show = false">{{ t('Cancel') }}</el-button>
-                    <el-button v-blur :loading="state.dialog.submitLoading" @click="onSubmitBind(bindFormRef)" type="primary">
+                    <el-button v-blur :loading="state.dialog.submitLoading" @click="onSubmitBind()" type="primary">
                         {{ t('user.account.profile.bind') }}
                     </el-button>
                 </div>
@@ -413,9 +413,9 @@ const sendBindCaptcha = (captchaInfo: string) => {
         })
 }
 
-const onSubmitVerification = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.validate((res) => {
+const onSubmitVerification = () => {
+    if (!verificationFormRef.value) return
+    verificationFormRef.value.validate((res) => {
         if (res) {
             state.dialog.submitLoading = true
             postVerification({
@@ -436,9 +436,9 @@ const onSubmitVerification = (formEl: FormInstance | undefined) => {
     })
 }
 
-const onSubmitBind = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.validate((res) => {
+const onSubmitBind = () => {
+    if (!bindFormRef.value) return
+    bindFormRef.value.validate((res) => {
         if (res) {
             state.dialog.submitLoading = true
             postChangeBind({
@@ -458,9 +458,9 @@ const onSubmitBind = (formEl: FormInstance | undefined) => {
     })
 }
 
-const onSubmit = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.validate((valid) => {
+const onSubmit = () => {
+    if (!formRef.value) return
+    formRef.value.validate((valid) => {
         if (valid) {
             state.formSubmitLoading = true
             postProfile(state.form)

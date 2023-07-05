@@ -91,9 +91,13 @@
                             type="number"
                             :placeholder="t('routine.attachment.Upload (Reference) times of this file')"
                         ></el-input>
-                        <span class="block-help">{{
-                            t('routine.attachment.When the same file is uploaded multiple times, only one attachment record will be saved and added')
-                        }}</span>
+                        <span class="block-help">
+                            {{
+                                t(
+                                    'routine.attachment.When the same file is uploaded multiple times, only one attachment record will be saved and added'
+                                )
+                            }}
+                        </span>
                     </el-form-item>
                     <el-form-item :label="t('routine.attachment.Storage mode')">
                         <el-input

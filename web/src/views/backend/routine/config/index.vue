@@ -5,7 +5,7 @@
                 <el-form
                     v-if="!state.loading"
                     ref="formRef"
-                    @keyup.enter="onSubmit(formRef)"
+                    @keyup.enter="onSubmit()"
                     :model="state.form"
                     :rules="state.rules"
                     :label-position="'top'"
@@ -31,7 +31,7 @@
                                         :label="item.title"
                                         :type="item.type"
                                         @keyup.enter.stop=""
-                                        @keyup.ctrl.enter="onSubmit(formRef)"
+                                        @keyup.ctrl.enter="onSubmit()"
                                         v-model="state.form[item.name]"
                                         :attr="{ prop: item.name, ...item.extend }"
                                         :input-attr="{
@@ -49,7 +49,7 @@
                                         :label="item.title"
                                         :type="item.type"
                                         @keyup.enter.stop=""
-                                        @keyup.ctrl.enter="onSubmit(formRef)"
+                                        @keyup.ctrl.enter="onSubmit()"
                                         v-model="state.form[item.name]"
                                         :attr="{ prop: item.name, ...item.extend }"
                                         :input-attr="{ placeholder: item.tip, rows: 3, ...item.input_extend }"
@@ -84,7 +84,7 @@
                             <div v-if="group.name == 'mail'" class="send-test-mail">
                                 <el-button @click="onTestSendMail()">{{ t('routine.config.Test mail sending') }}</el-button>
                             </div>
-                            <el-button type="primary" @click="onSubmit(formRef)">{{ t('Save') }}</el-button>
+                            <el-button type="primary" @click="onSubmit()">{{ t('Save') }}</el-button>
                         </el-tab-pane>
                         <el-tab-pane
                             name="add_config"
@@ -204,9 +204,9 @@ const onBeforeLeave = (newTabName: string | number) => {
     }
 }
 
-const onSubmit = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.validate((valid) => {
+const onSubmit = () => {
+    if (!formRef.value) return
+    formRef.value.validate((valid) => {
         if (valid) {
             // 只提交当前tab的表单数据
             const formData: anyObj = {}

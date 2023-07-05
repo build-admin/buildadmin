@@ -2,7 +2,7 @@
     <div class="user-views">
         <el-card class="user-views-card" shadow="hover" :header="t('user.account.changePassword.Change Password')">
             <div class="change-password">
-                <el-form :model="state.form" :rules="state.rules" label-position="top" ref="formRef" @keyup.enter="onSubmit(formRef)">
+                <el-form :model="state.form" :rules="state.rules" label-position="top" ref="formRef" @keyup.enter="onSubmit()">
                     <FormItem
                         :label="t('user.account.changePassword.Old password')"
                         type="password"
@@ -31,7 +31,7 @@
                     />
                     <el-form-item class="submit-buttons">
                         <el-button @click="onResetForm(formRef)">{{ $t('Reset') }}</el-button>
-                        <el-button type="primary" :loading="state.formSubmitLoading" @click="onSubmit(formRef)">{{ $t('Save') }}</el-button>
+                        <el-button type="primary" :loading="state.formSubmitLoading" @click="onSubmit()">{{ $t('Save') }}</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -86,9 +86,9 @@ const state = reactive({
     },
 })
 
-const onSubmit = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.validate((valid) => {
+const onSubmit = () => {
+    if (!formRef.value) return
+    formRef.value.validate((valid) => {
         if (valid) {
             state.formSubmitLoading = true
             changePassword(state.form)

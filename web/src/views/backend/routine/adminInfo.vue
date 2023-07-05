@@ -27,7 +27,7 @@
                     </div>
                     <div class="admin-info-form">
                         <el-form
-                            @keyup.enter="onSubmit(formRef)"
+                            @keyup.enter="onSubmit()"
                             :key="state.formKey"
                             label-position="top"
                             :rules="rules"
@@ -55,7 +55,7 @@
                             <el-form-item :label="t('routine.adminInfo.autograph')" prop="motto">
                                 <el-input
                                     @keyup.enter.stop=""
-                                    @keyup.ctrl.enter="onSubmit(formRef)"
+                                    @keyup.ctrl.enter="onSubmit()"
                                     :placeholder="t('routine.adminInfo.This guy is lazy and doesn write anything')"
                                     type="textarea"
                                     v-model="state.adminInfo.motto"
@@ -69,9 +69,9 @@
                                 ></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" :loading="state.buttonLoading" @click="onSubmit(formRef)">{{
-                                    t('routine.adminInfo.Save changes')
-                                }}</el-button>
+                                <el-button type="primary" :loading="state.buttonLoading" @click="onSubmit()">
+                                    {{ t('routine.adminInfo.Save changes') }}
+                                </el-button>
                                 <el-button @click="onResetForm(formRef)">{{ t('Reset') }}</el-button>
                             </el-form-item>
                         </el-form>
@@ -212,9 +212,9 @@ const onAvatarBeforeUpload = (file: any) => {
     })
 }
 
-const onSubmit = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.validate((valid) => {
+const onSubmit = () => {
+    if (!formRef.value) return
+    formRef.value.validate((valid) => {
         if (valid) {
             let data = { ...state.adminInfo }
             delete data.last_login_time

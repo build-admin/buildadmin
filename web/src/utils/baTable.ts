@@ -210,7 +210,7 @@ export default class baTable {
 
         if (formEl) {
             this.form.ref = formEl
-            formEl.validate((valid) => {
+            formEl.validate((valid: boolean) => {
                 if (valid) {
                     submitCallback()
                 }

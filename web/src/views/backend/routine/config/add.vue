@@ -9,7 +9,7 @@
             <div class="ba-operate-form ba-add-form" :style="'width: calc(100% - ' + state.labelWidth / 2 + 'px)'">
                 <el-form
                     ref="formRef"
-                    @keyup.enter="onAddSubmit(formRef)"
+                    @keyup.enter="onAddSubmit()"
                     :rules="rules"
                     :model="{ ...state.addConfig, ...state.formItemData }"
                     label-position="right"
@@ -30,7 +30,7 @@
         <template #footer>
             <div :style="'width: calc(100% - ' + state.labelWidth / 1.8 + 'px)'">
                 <el-button @click="closeForm">{{ t('Cancel') }}</el-button>
-                <el-button v-blur :loading="state.submitLoading" @click="onAddSubmit(formRef)" type="primary"> {{ t('Add') }} </el-button>
+                <el-button v-blur :loading="state.submitLoading" @click="onAddSubmit()" type="primary"> {{ t('Add') }} </el-button>
             </div>
         </template>
     </el-dialog>
@@ -115,9 +115,9 @@ const rules = reactive<FormRules>({
     weigh: [buildValidatorData({ name: 'integer', title: t('routine.config.number') })],
 })
 
-const onAddSubmit = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.validate((valid) => {
+const onAddSubmit = () => {
+    if (!formRef.value) return
+    formRef.value.validate((valid) => {
         if (valid) {
             state.addConfig.content = state.formItemData.dict
             delete state.formItemData.dict

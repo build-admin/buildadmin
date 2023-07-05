@@ -29,7 +29,7 @@
                 <div class="ba-login">
                     <h3 class="ba-title">{{ t('module.Log in to the buildadmin module marketplace') }}</h3>
                     <el-form
-                        @keyup.enter="onBaAccountSubmit(baAccountFormRef)"
+                        @keyup.enter="onBaAccountSubmit()"
                         ref="baAccountFormRef"
                         :rules="baAccountFormRules"
                         class="ba-account-login-form"
@@ -72,7 +72,7 @@
                             </el-row>
                         </el-form-item>
                         <el-form-item class="form-buttons">
-                            <el-button @click="onBaAccountSubmit(baAccountFormRef)" :loading="user.loading" round type="primary" size="large">
+                            <el-button @click="onBaAccountSubmit()" :loading="user.loading" round type="primary" size="large">
                                 {{ t('module.Sign in') }}
                             </el-button>
                             <a target="_blank" class="ba-account-register" href="https://buildadmin.com/user/login?type=register">
@@ -132,8 +132,9 @@ const openUrl = (url: string) => {
     window.open(url)
 }
 
-const onBaAccountSubmit = (formRef: FormInstance | undefined = undefined) => {
-    formRef!.validate((valid) => {
+const onBaAccountSubmit = () => {
+    if (!baAccountFormRef.value) return
+    baAccountFormRef.value.validate((valid) => {
         if (valid) {
             user.loading = true
             checkIn('post', user.form)

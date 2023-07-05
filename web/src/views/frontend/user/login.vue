@@ -175,7 +175,7 @@
             <div class="retrieve-password-form">
                 <el-form
                     ref="retrieveFormRef"
-                    @keyup.enter="onSubmitRetrieve(retrieveFormRef)"
+                    @keyup.enter="onSubmitRetrieve()"
                     :rules="retrieveRules"
                     :model="state.retrievePasswordForm"
                     :label-width="100"
@@ -243,7 +243,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button @click="state.showRetrievePasswordDialog = false">{{ t('Cancel') }}</el-button>
-                        <el-button :loading="state.submitRetrieveLoading" @click="onSubmitRetrieve(retrieveFormRef)" type="primary">
+                        <el-button :loading="state.submitRetrieveLoading" @click="onSubmitRetrieve()" type="primary">
                             {{ t('user.login.second') }}
                         </el-button>
                     </el-form-item>
@@ -404,8 +404,9 @@ const onSubmit = (captchaInfo = '') => {
             state.formLoading = false
         })
 }
-const onSubmitRetrieve = (formRef: FormInstance | undefined = undefined) => {
-    formRef!.validate((valid) => {
+const onSubmitRetrieve = () => {
+    if (!retrieveFormRef.value) return
+    retrieveFormRef.value.validate((valid) => {
         if (valid) {
             state.submitRetrieveLoading = true
             retrievePassword(state.retrievePasswordForm)
@@ -414,7 +415,7 @@ const onSubmitRetrieve = (formRef: FormInstance | undefined = undefined) => {
                     if (res.code == 1) {
                         state.showRetrievePasswordDialog = false
                         endTiming()
-                        onResetForm(formRef)
+                        onResetForm(retrieveFormRef.value)
                     }
                 })
                 .catch(() => {
