@@ -38,6 +38,10 @@ class Ajax extends Backend
         ]);
     }
 
+    /**
+     * 获取省市区数据
+     * @throws Throwable
+     */
     public function area()
     {
         $this->success('', get_area());

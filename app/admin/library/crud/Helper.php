@@ -21,7 +21,13 @@ class Helper
      * @var array
      */
     protected static array $reservedKeywords = [
-        'abstract', 'and', 'array', 'as', 'break', 'callable', 'case', 'catch', 'class', 'clone', 'const', 'continue', 'declare', 'default', 'die', 'do', 'echo', 'else', 'elseif', 'empty', 'enddeclare', 'endfor', 'endforeach', 'endif', 'endswitch', 'endwhile', 'eval', 'exit', 'extends', 'final', 'for', 'foreach', 'function', 'global', 'goto', 'if', 'implements', 'include', 'include_once', 'instanceof', 'insteadof', 'interface', 'isset', 'list', 'namespace', 'new', 'or', 'print', 'private', 'protected', 'public', 'require', 'require_once', 'return', 'static', 'switch', 'throw', 'trait', 'try', 'unset', 'use', 'var', 'while', 'xor', 'yield'
+        'abstract', 'and', 'array', 'as', 'break', 'callable', 'case', 'catch', 'class', 'clone',
+        'const', 'continue', 'declare', 'default', 'die', 'do', 'echo', 'else', 'elseif', 'empty',
+        'enddeclare', 'endfor', 'endforeach', 'endif', 'endswitch', 'endwhile', 'eval', 'exit', 'extends',
+        'final', 'for', 'foreach', 'function', 'global', 'goto', 'if', 'implements', 'include', 'include_once',
+        'instanceof', 'insteadof', 'interface', 'isset', 'list', 'namespace', 'new', 'or', 'print', 'private',
+        'protected', 'public', 'require', 'require_once', 'return', 'static', 'switch', 'throw', 'trait', 'try',
+        'unset', 'use', 'var', 'while', 'xor', 'yield', 'match', 'readonly', 'fn',
     ];
 
     /**
@@ -432,7 +438,7 @@ class Helper
                         return $field['name'] == $fieldName;
                     });
                     $dataType = self::analyseFieldDataType($field);
-                    $sql      = "ALTER TABLE `{$tableName}` MODIFY COLUMN `$fieldName` $dataType";
+                    $sql      = "ALTER TABLE `$tableName` MODIFY COLUMN `$fieldName` $dataType";
                     if ($item['after'] == 'FIRST FIELD') {
                         // 设为第一个字段
                         $sql .= ' FIRST';
@@ -552,6 +558,10 @@ class Helper
         return [$pk];
     }
 
+    /**
+     * 解析文件数据
+     * @throws Throwable
+     */
     public static function parseNameData($app, $table, $type, $value = ''): array
     {
         $pathArr = [];

@@ -298,6 +298,7 @@ class Crud extends Backend
 
     /**
      * 从log开始
+     * @throws Throwable
      */
     public function logStart(): void
     {
@@ -450,6 +451,7 @@ class Crud extends Backend
 
     /**
      * 解析字段数据
+     * @throws Throwable
      */
     public function parseFieldData()
     {
