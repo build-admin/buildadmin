@@ -12,22 +12,22 @@
 <br />
 <p align="center">
     <a href="https://www.thinkphp.cn/" target="_blank">
-        <img src="https://img.shields.io/badge/ThinkPHP-%3E6.0-brightgreen?color=91aac3&labelColor=439EFD" alt="vue">
+        <img src="https://img.shields.io/badge/ThinkPHP-%3E8.0-brightgreen?color=91aac3&labelColor=439EFD" alt="vue">
     </a>
     <a href="https://v3.vuejs.org/" target="_blank">
-        <img src="https://img.shields.io/badge/Vue-%3E3.x-brightgreen?color=91aac3&labelColor=439EFD" alt="vue">
+        <img src="https://img.shields.io/badge/Vue-%3E3.3-brightgreen?color=91aac3&labelColor=439EFD" alt="vue">
     </a>
     <a href="https://element-plus.gitee.io/#/zh-CN/component/changelog" target="_blank">
-        <img src="https://img.shields.io/badge/Element--Plus-%3E2.2-brightgreen?color=91aac3&labelColor=439EFD" alt="element plus">
+        <img src="https://img.shields.io/badge/Element--Plus-%3E2.3-brightgreen?color=91aac3&labelColor=439EFD" alt="element plus">
     </a>
     <a href="https://www.tslang.cn/" target="_blank">
-        <img src="https://img.shields.io/badge/TypeScript-%3E4.9-blue?color=91aac3&labelColor=439EFD" alt="typescript">
+        <img src="https://img.shields.io/badge/TypeScript-%3E5.1-blue?color=91aac3&labelColor=439EFD" alt="typescript">
     </a>
     <a href="https://vitejs.dev/" target="_blank">
-        <img src="https://img.shields.io/badge/Vite-%3E4.0-blue?color=91aac3&labelColor=439EFD" alt="vite">
+        <img src="https://img.shields.io/badge/Vite-%3E4.3-blue?color=91aac3&labelColor=439EFD" alt="vite">
     </a>
     <a href="https://pinia.vuejs.org/" target="_blank">
-        <img src="https://img.shields.io/badge/Pinia-%3E2.0-blue?color=91aac3&labelColor=439EFD" alt="vite">
+        <img src="https://img.shields.io/badge/Pinia-%3E2.1-blue?color=91aac3&labelColor=439EFD" alt="vite">
     </a>
     <a href="https://gitee.com/wonderful-code/buildadmin/blob/master/LICENSE" target="_blank">
         <img src="https://img.shields.io/badge/Apache2.0-license-blue?color=91aac3&labelColor=439EFD" alt="license">
@@ -41,17 +41,17 @@
 <br>
 
 ### 介绍
-🌈 基于 Vue3.x setup + ThinkPHP6 + TypeScript + Vite + Pinia + Element Plus等流行技术栈的后台管理系统，自适应多端、可视化CRUD代码生成、自带WEB终端、同时提供Web和Server端、内置全局数据回收站和字段级数据修改保护、自动注册路由、无限子级权限管理等，无需授权即可免费商用，希望能帮助大家实现快速开发。
+🌈 基于 Vue3.3 + ThinkPHP8 + TypeScript + Vite + Pinia + Element Plus等流行技术栈的后台管理系统，自适应多端、可视化CRUD代码生成、自带WEB终端、同时提供Web、WebNuxt、Server端、内置全局数据回收站和字段级数据修改保护、自动注册路由、无限子级权限管理等，无需授权即可免费商用，希望能帮助大家实现快速开发。
 
 ### 主要特性
 **🚀 CRUD代码生成：**
-图形化拖拽生成后台增删改查代码，自动创建数据表；大气且实用的表格，多达22种表单组件支持，行拖拽排序，受权限控制的编辑和删除等等，并支持关联表，可为您节省大量开发时间。
+图形化拖拽生成后台增删改查代码，自动创建数据表；大气且实用的表格，多达24种表单组件支持，行拖拽排序，受权限控制的编辑和删除等等，并支持关联表，可为您节省大量开发时间。
 
 **💥 内置WEB终端：**
 我们内置了一个WEB终端以实现一些理想中的功能，比如：虽然是基于vue3的系统，但你在安装本系统时，并不需要手动执行`npm install`和`npm build`命令。且后续本终端将为您提供更多方便、快捷的服务。
 
 **👍 流行且稳定的技术栈：**
-除了基于`ThinkPHP6`前后端分离架构外，我们的`Vue3`使用了`Setup`、状态管理使用`Pinia`、并使用了`TypeScript`、`Vite`等可以为你的知识面添砖加瓦的技术栈。
+除了基于`ThinkPHP8`前后端分离架构外，我们的`Vue3`使用了`Setup`、状态管理使用`Pinia`、并使用了`TypeScript`、`Vite`等可以为你的知识面添砖加瓦的技术栈。
 
 **🎨 模块市场：**
 一键安装数据导出、短信发送、云存储、单页或是纯前端技术栈的学习案例项目等等，随时随地为系统添砖加瓦，系统能够自动维护`package.json`和`composer.json`并通过内置终端自动完成模块所需依赖的安装，若您愿意成为模块开发者，模块可以：覆盖系统任何文件或为系统新增文件，您的模块经由官方审核即可上架。
