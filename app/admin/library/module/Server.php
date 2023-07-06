@@ -156,6 +156,7 @@ class Server
         return [
             'app',
             'config',
+            'database',
             'extend',
             'public',
             'vendor',
