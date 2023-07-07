@@ -121,7 +121,11 @@ export const showInfo = (uid: string) => {
         return item.uid == uid
     })
 
-    info({ uid: uid, localVersion: localItem?.version })
+    info({
+        uid: uid,
+        localVersion: localItem?.version,
+        sysVersion: state.sysVersion,
+    })
         .then((res) => {
             if (localItem) {
                 if (res.data.info.type == 'local') {
