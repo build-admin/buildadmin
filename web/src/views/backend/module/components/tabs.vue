@@ -91,6 +91,9 @@ const onTabChange = () => {
     display: block;
     overflow: hidden;
     padding: 10px 10px 0 10px;
+    .goods-tag {
+        min-height: 60px;
+    }
     .goods-title {
         display: block;
         overflow: hidden;
