@@ -81,4 +81,6 @@ export default {
     Rule: 'Rule',
     Extend: 'Extend',
     Dict: 'Dict',
+    ArrayKey: 'Key',
+    ArrayValue: 'Value',
 }
