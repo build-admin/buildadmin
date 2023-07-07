@@ -5,7 +5,7 @@ import { useBaAccount } from '/@/stores/baAccount'
 const userControllerUrl = '/api/user/'
 const captchaUrl = '/api/common/captcha'
 const moduleControllerUrl = '/admin/module/'
-const storeUrl = '/api/v5.store/'
+const storeUrl = '/api/v6.store/'
 
 export function index(params: anyObj = {}) {
     return createAxios({

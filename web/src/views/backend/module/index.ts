@@ -32,6 +32,7 @@ export const onRefreshTableData = () => {
 const loadIndex = () => {
     return index().then((res) => {
         state.table.indexLoaded = true
+        state.sysVersion = res.data.sysVersion
         state.installedModule = res.data.installed
         const installedModuleUids = []
         if (res.data.installed) {
@@ -64,6 +65,7 @@ const getModules = () => {
         })
     })
     params['installed'] = installedModule
+    params['sysVersion'] = state.sysVersion
     modules(params)
         .then((res) => {
             if (params.activeTab == 'all') {
@@ -73,7 +75,11 @@ const getModules = () => {
 
                 state.installedModule.forEach((item) => {
                     if (moduleUids.indexOf(item.uid) === -1) {
-                        res.data.rows.push(item)
+                        if (state.table.params.quickSearch) {
+                            if (item.title.includes(state.table.params.quickSearch)) res.data.rows.push(item)
+                        } else {
+                            res.data.rows.push(item)
+                        }
                     }
                 })
             }

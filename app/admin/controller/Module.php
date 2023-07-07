@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use Throwable;
 use ba\Exception;
+use think\facade\Config;
 use app\admin\library\module\Server;
 use app\admin\library\module\Manage;
 use app\common\controller\Backend;
@@ -20,7 +21,8 @@ class Module extends Backend
     public function index(): void
     {
         $this->success('', [
-            'installed' => Server::installedList(root_path() . 'modules' . DIRECTORY_SEPARATOR),
+            'sysVersion' => Config::get('buildadmin.version'),
+            'installed'  => Server::installedList(root_path() . 'modules' . DIRECTORY_SEPARATOR),
         ]);
     }
 

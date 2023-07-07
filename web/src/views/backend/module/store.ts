@@ -52,6 +52,7 @@ export const state = reactive<moduleState>({
         disableDependConflict: [],
         disableParams: {},
     },
+    sysVersion: '',
     installedModule: [],
     installedModuleUids: [],
 })

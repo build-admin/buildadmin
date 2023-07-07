@@ -67,6 +67,7 @@ export interface moduleState {
         disableDependConflict: anyObj[]
         disableParams: anyObj
     }
+    sysVersion: string
     installedModule: moduleInfo[]
     installedModuleUids: string[]
 }

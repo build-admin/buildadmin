@@ -32,7 +32,7 @@ class Server
         $tmpFile = $dir . $uid . ".zip";
         try {
             $client   = self::getClient();
-            $response = $client->get('/api/v5.store/download', ['query' => array_merge(['uid' => $uid, 'server' => 1], $extend)]);
+            $response = $client->get('/api/v6.store/download', ['query' => array_merge(['uid' => $uid, 'server' => 1], $extend)]);
             $body     = $response->getBody();
             $content  = $body->getContents();
             if ($content == '' || stripos($content, '<title>系统发生错误</title>') !== false) {
