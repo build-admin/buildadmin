@@ -36,7 +36,7 @@ const tableRef = ref()
 const baTable = new baTableClass(
     new baTableApi('/admin/user.Rule/'),
     {
-        expandAll: true,
+        expandAll: false,
         column: [
             { type: 'selection', align: 'center', operator: false },
             { label: t('auth.rule.title'), prop: 'title', align: 'left', width: '200' },
