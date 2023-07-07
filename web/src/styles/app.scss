@@ -200,6 +200,15 @@ body,
 }
 /* 暗黑模式公共样式-e */
 
+/* NProgress-s */
+#nprogress {
+    .bar,
+    .spinner {
+        z-index: 999999;
+    }
+}
+/* NProgress-e */
+
 /* 自适应-s */
 @media screen and (max-width: 768px) {
     .xs-hidden {
