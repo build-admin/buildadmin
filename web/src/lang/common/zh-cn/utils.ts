@@ -81,4 +81,5 @@ export default {
     Dict: '字典数据',
     ArrayKey: '键名',
     ArrayValue: '键值',
+    'No data': '无数据',
 }

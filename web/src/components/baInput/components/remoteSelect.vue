@@ -1,45 +1,61 @@
 <template>
-    <el-select
-        ref="selectRef"
-        @focus="onFocus"
-        class="remote-select"
-        :loading="state.loading || state.accidentBlur"
-        :filterable="true"
-        :remote="true"
-        clearable
-        remote-show-suffix
-        :remote-method="onLogKeyword"
-        v-model="state.value"
-        @change="onChangeSelect"
-        :multiple="multiple"
-        :key="state.selectKey"
-        @clear="onClear"
-        @visible-change="onVisibleChange"
-    >
-        <el-option
-            class="remote-select-option"
-            v-for="item in state.options"
-            :label="item[field]"
-            :value="item[state.primaryKey].toString()"
-            :key="item[state.primaryKey]"
+    <div class="w100">
+        <!-- el-select 的远程下拉只在有搜索词时，才会加载数据（显示出 option 列表） -->
+        <!-- 使用 el-popover 在无数据/无搜索词时，显示一个无数据的提醒 -->
+        <el-popover
+            width="100%"
+            placement="bottom"
+            popper-class="remote-select-popper"
+            :visible="state.focusStatus && !state.loading && !state.keyword && !state.options.length"
+            :teleported="false"
+            :content="$t('utils.No data')"
         >
-            <el-tooltip placement="right" effect="light" v-if="!isEmpty(tooltipParams)">
-                <template #content>
-                    <p v-for="(tooltipParam, key) in tooltipParams" :key="key">{{ key }}: {{ item[tooltipParam] }}</p>
-                </template>
-                <div>{{ item[field] }}</div>
-            </el-tooltip>
-        </el-option>
-        <el-pagination
-            v-if="state.total"
-            :currentPage="state.currentPage"
-            :page-size="state.pageSize"
-            class="select-pagination"
-            layout="->, prev, next"
-            :total="state.total"
-            @current-change="onSelectCurrentPageChange"
-        />
-    </el-select>
+            <template #reference>
+                <el-select
+                    ref="selectRef"
+                    class="w100"
+                    @focus="onFocus"
+                    @blur="onBlur"
+                    :loading="state.loading || state.accidentBlur"
+                    :filterable="true"
+                    :remote="true"
+                    clearable
+                    remote-show-suffix
+                    :remote-method="onLogKeyword"
+                    v-model="state.value"
+                    @change="onChangeSelect"
+                    :multiple="multiple"
+                    :key="state.selectKey"
+                    @clear="onClear"
+                    @visible-change="onVisibleChange"
+                >
+                    <el-option
+                        class="remote-select-option"
+                        v-for="item in state.options"
+                        :label="item[field]"
+                        :value="item[state.primaryKey].toString()"
+                        :key="item[state.primaryKey]"
+                    >
+                        <el-tooltip placement="right" effect="light" v-if="!isEmpty(tooltipParams)">
+                            <template #content>
+                                <p v-for="(tooltipParam, key) in tooltipParams" :key="key">{{ key }}: {{ item[tooltipParam] }}</p>
+                            </template>
+                            <div>{{ item[field] }}</div>
+                        </el-tooltip>
+                    </el-option>
+                    <el-pagination
+                        v-if="state.total"
+                        :currentPage="state.currentPage"
+                        :page-size="state.pageSize"
+                        class="select-pagination"
+                        layout="->, prev, next"
+                        :total="state.total"
+                        @current-change="onSelectCurrentPageChange"
+                    />
+                </el-select>
+            </template>
+        </el-popover>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -91,6 +107,7 @@ const state: {
     selectKey: string
     initializeData: boolean
     accidentBlur: boolean
+    focusStatus: boolean
 } = reactive({
     primaryKey: props.pk,
     options: [],
@@ -104,6 +121,7 @@ const state: {
     selectKey: uuid(),
     initializeData: false,
     accidentBlur: false,
+    focusStatus: false,
 })
 
 let io: null | IntersectionObserver = null
@@ -141,6 +159,7 @@ const onVisibleChange = (val: boolean) => {
 }
 
 const onFocus = () => {
+    state.focusStatus = true
     if (selectRef.value?.query != state.keyword) {
         state.keyword = ''
         state.initializeData = false
@@ -150,6 +169,10 @@ const onFocus = () => {
     if (!state.initializeData) {
         getData()
     }
+}
+
+const onBlur = () => {
+    state.focusStatus = false
 }
 
 const onClear = () => {
@@ -272,8 +295,8 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-.remote-select {
-    width: 100%;
+:deep(.remote-select-popper) {
+    text-align: center;
 }
 .remote-select-option {
     white-space: pre;

@@ -83,4 +83,5 @@ export default {
     Dict: 'Dict',
     ArrayKey: 'Key',
     ArrayValue: 'Value',
+    'No data': 'No data',
 }
