@@ -153,6 +153,7 @@ export interface InputAttr {
     style?: CSSProperties
     toolbarConfig?: anyObj
     editorConfig?: anyObj
+    editorType?: string
     // array组件属性
     keyTitle?: string
     valueTitle?: string
