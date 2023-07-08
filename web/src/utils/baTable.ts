@@ -182,7 +182,10 @@ export default class baTable {
      * @param formEl 表单组件ref
      */
     onSubmit = (formEl: FormInstance | undefined = undefined) => {
-        if (this.runBefore('onSubmit', { formEl: formEl, operate: this.form.operate!, items: this.form.items! }) === false) return
+        // 当前操作的首字母小写
+        const operate = this.form.operate!.replace(this.form.operate![0], this.form.operate![0].toLowerCase())
+
+        if (this.runBefore('onSubmit', { formEl: formEl, operate: operate, items: this.form.items! }) === false) return
 
         Object.keys(this.form.items!).forEach((item) => {
             if (this.form.items![item] === null) delete this.form.items![item]
@@ -192,7 +195,7 @@ export default class baTable {
         const submitCallback = () => {
             this.form.submitLoading = true
             this.api
-                .postData(this.form.operate!, this.form.items!)
+                .postData(operate, this.form.items!)
                 .then((res) => {
                     this.onTableHeaderAction('refresh', {})
                     this.form.operateIds?.shift()
