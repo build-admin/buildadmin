@@ -161,7 +161,7 @@ export const fieldItem: {
         },
         {
             title: i18n.global.t('crud.state.Remote Select (association table)'),
-            name: 'user_id',
+            name: 'remote_select',
             comment: i18n.global.t('utils.remote select'),
             designType: 'remoteSelect',
             tableBuildExclude: true,
@@ -412,7 +412,7 @@ export const fieldItem: {
         },
         {
             title: i18n.global.t('crud.state.Remote Select (Multi)'),
-            name: 'user_ids',
+            name: 'remote_select',
             comment: i18n.global.t('utils.remote select'),
             designType: 'remoteSelects',
             tableBuildExclude: true,

@@ -421,7 +421,7 @@
                     v-loading="state.remoteSelectPre.loading"
                     label-position="right"
                     label-width="160px"
-                    v-if="state.remoteSelectPre.index != -1"
+                    v-if="state.remoteSelectPre.index != -1 && state.fields[state.remoteSelectPre.index]"
                 >
                     <FormItem
                         prop="table"
@@ -1350,10 +1350,13 @@ const onJoinTableChange = (val: string) => {
 const onSaveRemoteSelect = () => {
     const submitCallback = () => {
         // 修改字段名
-        onFieldBackup(state.fields[state.remoteSelectPre.index], state.remoteSelectPre.index)
-        const newName = state.remoteSelectPre.form.table + (state.fields[state.remoteSelectPre.index].designType == 'remoteSelect' ? '_id' : '_ids')
-        state.fields[state.remoteSelectPre.index].name = newName
-        onFieldNameChange(newName, state.remoteSelectPre.index)
+        if (state.fields[state.remoteSelectPre.index].name == 'remote_select') {
+            onFieldBackup(state.fields[state.remoteSelectPre.index], state.remoteSelectPre.index)
+            const newName =
+                state.remoteSelectPre.form.table + (state.fields[state.remoteSelectPre.index].designType == 'remoteSelect' ? '_id' : '_ids')
+            state.fields[state.remoteSelectPre.index].name = newName
+            onFieldNameChange(newName, state.remoteSelectPre.index)
+        }
 
         state.fields[state.remoteSelectPre.index].form['remote-table'].value = state.remoteSelectPre.form.table
         state.fields[state.remoteSelectPre.index].form['remote-pk'].value = state.remoteSelectPre.form.pk
