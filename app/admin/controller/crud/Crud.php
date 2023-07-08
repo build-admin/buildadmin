@@ -754,7 +754,7 @@ class Crud extends Backend
             $formField['@keyup.enter.stop']   = '';
             $formField['@keyup.ctrl.enter']   = 'baTable.onSubmit(formRef)';
         } elseif ($field['designType'] == 'remoteSelect' || $field['designType'] == 'remoteSelects') {
-            $formField[':input-attr']['pk']         = TableManager::tableName($field['form']['remote-table'], false) . '.' . ($field['form']['remote-pk'] ?? 'id');
+            $formField[':input-attr']['pk']         = TableManager::tableName($field['form']['remote-table']) . '.' . ($field['form']['remote-pk'] ?? 'id');
             $formField[':input-attr']['field']      = $field['form']['remote-field'] ?? 'name';
             $formField[':input-attr']['remote-url'] = $this->getRemoteSelectUrl($field);
         } elseif ($field['designType'] == 'number') {
