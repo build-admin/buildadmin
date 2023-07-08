@@ -15,7 +15,7 @@ class {%className%} extends Backend
      * @phpstan-var \{%modelNamespace%}\{%modelName%}
      */
     protected object $model;
-    {%attr%}{%initialize%}
+{%attr%}{%initialize%}
 {%methods%}
 
     /**

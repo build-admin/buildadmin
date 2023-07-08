@@ -144,4 +144,6 @@ export default {
     No: '否',
     'If the data is abnormal, repeat the previous step': '数据异常，请重做上步操作',
     'Field name duplication': '字段名称 {field} 重复！',
+    'Design remote select tips':
+        '将自动根据表名生成本字段的名称；确认生成时，字段名 user_id 生成的关联方法名为 user，字段名 developer_done_id 生成的关联方法名为 developerDone，请注意远程下拉字段的名称前缀不要重复',
 }

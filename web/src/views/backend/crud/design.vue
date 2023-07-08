@@ -498,6 +498,11 @@
                                 ),
                             }"
                         />
+                        <el-form-item :label="t('Reminder')">
+                            <div class="block-help">
+                                {{ t('crud.crud.Design remote select tips') }}
+                            </div>
+                        </el-form-item>
                     </div>
                 </el-form>
             </div>
@@ -757,6 +762,7 @@ const onFieldBackup = (field: FieldItem, index: number) => {
  * 字段名修改，调用此函数前先调用 onFieldBackup 备份字段修改前的数据
  */
 const onFieldNameChange = async (val: string, index: number) => {
+    // 字段数据较大，赋值可能需要一点时间，此处等待字段数据备份完成
     let count = 0
     while (state.fieldBackup.index != index) {
         count++
@@ -1341,6 +1347,12 @@ const onJoinTableChange = (val: string) => {
 
 const onSaveRemoteSelect = () => {
     const submitCallback = () => {
+        // 修改字段名
+        onFieldBackup(state.fields[state.remoteSelectPre.index], state.remoteSelectPre.index)
+        const newName = state.remoteSelectPre.form.table + (state.fields[state.remoteSelectPre.index].designType == 'remoteSelect' ? '_id' : '_ids')
+        state.fields[state.remoteSelectPre.index].name = newName
+        onFieldNameChange(newName, state.remoteSelectPre.index)
+
         state.fields[state.remoteSelectPre.index].form['remote-table'].value = state.remoteSelectPre.form.table
         state.fields[state.remoteSelectPre.index].form['remote-pk'].value = state.remoteSelectPre.form.pk
         state.fields[state.remoteSelectPre.index].form['remote-field'].value = state.remoteSelectPre.form.label

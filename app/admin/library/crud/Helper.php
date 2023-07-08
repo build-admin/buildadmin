@@ -1022,9 +1022,9 @@ class Helper
         if (isset($controllerData['relationVisibleFieldList']) && $controllerData['relationVisibleFieldList']) {
             $relationVisibleFields = '$res->visible([';
             foreach ($controllerData['relationVisibleFieldList'] as $cKey => $controllerDatum) {
-                $relationVisibleFields .= "'$cKey' => ['" . implode("','", $controllerDatum) . "'],";
+                $relationVisibleFields .= "'$cKey' => ['" . implode("','", $controllerDatum) . "'], ";
             }
-            $relationVisibleFields = rtrim($relationVisibleFields, ',');
+            $relationVisibleFields = rtrim($relationVisibleFields, ', ');
             $relationVisibleFields .= ']);';
             // 重写index
             $controllerData['methods']['index'] = self::assembleStub('mixins/controller/index', [

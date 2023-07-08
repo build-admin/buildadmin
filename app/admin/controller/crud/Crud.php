@@ -564,7 +564,7 @@ class Crud extends Backend
             $columns        = Helper::parseTableColumns($field['form']['remote-table'], true);
             $relationFields = explode(',', $field['form']['relation-fields']);
             $tableName      = TableManager::tableName($field['form']['remote-table'], false);
-            $relationMethod = parse_name($tableName, 1, false);
+            $relationName   = parse_name(rtrim(rtrim($field['name'], '_ids'), '_id'), 1, false);
 
             // 建立关联模型代码文件
             if (!$field['form']['remote-model'] || !file_exists(root_path() . $field['form']['remote-model'])) {
@@ -601,26 +601,26 @@ class Crud extends Backend
 
             if ($field['designType'] == 'remoteSelect') {
                 // 关联预载入方法
-                $this->controllerData['attr']['withJoinTable'][$tableName] = $relationMethod;
+                $this->controllerData['attr']['withJoinTable'][$relationName] = $relationName;
 
                 // 模型方法代码
-                $relationData                                      = [
-                    'relationMethod'     => $relationMethod,
+                $relationData                                         = [
+                    'relationMethod'     => $relationName,
                     'relationMode'       => 'belongsTo',
                     'relationPrimaryKey' => $field['form']['remote-pk'] ?? 'id',
                     'relationForeignKey' => $field['name'],
                     'relationClassName'  => str_replace(['.php', '/'], ['', '\\'], '\\' . $field['form']['remote-model']) . "::class",
                 ];
-                $this->modelData['relationMethodList'][$tableName] = Helper::assembleStub('mixins/model/belongsTo', $relationData);
+                $this->modelData['relationMethodList'][$relationName] = Helper::assembleStub('mixins/model/belongsTo', $relationData);
 
                 // 查询时显示的字段
                 if ($relationFields) {
                     $this->controllerData['relationVisibleFieldList'][$relationData['relationMethod']] = $relationFields;
                 }
             } elseif ($field['designType'] == 'remoteSelects') {
-                $this->modelData['append'][]  = parse_name($tableName, 1, false);
+                $this->modelData['append'][]  = $relationName;
                 $this->modelData['methods'][] = Helper::assembleStub('mixins/model/getters/remoteSelectLabels', [
-                    'field'          => parse_name($tableName, 1),
+                    'field'          => parse_name($relationName, 1),
                     'className'      => str_replace(['.php', '/'], ['', '\\'], '\\' . $field['form']['remote-model']),
                     'primaryKey'     => $field['form']['remote-pk'] ?? 'id',
                     'foreignKey'     => $field['name'],
@@ -629,8 +629,8 @@ class Crud extends Backend
             }
 
             foreach ($relationFields as $relationField) {
-                $relationFieldPrefix     = $relationMethod . '.';
-                $relationFieldLangPrefix = strtolower($tableName) . '__';
+                $relationFieldPrefix     = $relationName . '.';
+                $relationFieldLangPrefix = strtolower($relationName) . '__';
                 if (array_key_exists($relationField, $columns)) {
                     Helper::getDictData($dictEn, $columns[$relationField], 'en', $relationFieldLangPrefix);
                     Helper::getDictData($dictZhCn, $columns[$relationField], 'zh-cn', $relationFieldLangPrefix);
