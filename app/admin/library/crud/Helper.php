@@ -1141,8 +1141,8 @@ class Helper
             $itemJson = rtrim($itemJson, ',');
             $itemJson .= ' }';
         } else {
-            if ($item === 'false') {
-                $itemJson = ' ' . $key . ': false,';
+            if ($item === 'false' || $item === 'true') {
+                $itemJson = ' ' . $key . ': ' . $item . ',';
             } elseif (in_array($key, ['label', 'width', 'buttons'], true) || str_starts_with($item, "t('") || str_starts_with($item, "t(\"")) {
                 $itemJson = ' ' . $key . ': ' . $item . ',';
             } else {

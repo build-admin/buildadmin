@@ -410,6 +410,7 @@
             :model-value="state.remoteSelectPre.show"
             :title="t('crud.crud.Remote drop-down association information')"
             :close-on-click-modal="false"
+            :destroy-on-close="true"
             @keyup.enter="onSaveRemoteSelect"
         >
             <div class="ba-operate-form" :style="'width: calc(100% - 80px)'">
@@ -420,7 +421,7 @@
                     v-loading="state.remoteSelectPre.loading"
                     label-position="right"
                     label-width="160px"
-                    :destroy-on-close="true"
+                    v-if="state.remoteSelectPre.index != -1"
                 >
                     <FormItem
                         prop="table"
@@ -457,6 +458,7 @@
                             }"
                         />
                         <FormItem
+                            v-if="state.fields[state.remoteSelectPre.index].designType == 'remoteSelect'"
                             prop="joinField"
                             type="selects"
                             :label="t('crud.crud.Fields displayed in the table')"
@@ -1358,7 +1360,12 @@ const onSaveRemoteSelect = () => {
         state.fields[state.remoteSelectPre.index].form['remote-field'].value = state.remoteSelectPre.form.label
         state.fields[state.remoteSelectPre.index].form['remote-controller'].value = state.remoteSelectPre.form.controllerFile
         state.fields[state.remoteSelectPre.index].form['remote-model'].value = state.remoteSelectPre.form.modelFile
-        state.fields[state.remoteSelectPre.index].form['relation-fields'].value = state.remoteSelectPre.form.joinField.join(',')
+
+        state.fields[state.remoteSelectPre.index].form['relation-fields'].value =
+            state.fields[state.remoteSelectPre.index].designType == 'remoteSelect'
+                ? state.remoteSelectPre.form.joinField.join(',')
+                : state.remoteSelectPre.form.label
+
         state.remoteSelectPre.index = -1
         state.remoteSelectPre.show = false
         resetRemoteSelectForm()

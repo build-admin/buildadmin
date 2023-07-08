@@ -629,12 +629,11 @@ class Crud extends Backend
             }
 
             foreach ($relationFields as $relationField) {
+                if (!array_key_exists($relationField, $columns)) continue;
                 $relationFieldPrefix     = $relationName . '.';
                 $relationFieldLangPrefix = strtolower($relationName) . '__';
-                if (array_key_exists($relationField, $columns)) {
-                    Helper::getDictData($dictEn, $columns[$relationField], 'en', $relationFieldLangPrefix);
-                    Helper::getDictData($dictZhCn, $columns[$relationField], 'zh-cn', $relationFieldLangPrefix);
-                }
+                Helper::getDictData($dictEn, $columns[$relationField], 'en', $relationFieldLangPrefix);
+                Helper::getDictData($dictZhCn, $columns[$relationField], 'zh-cn', $relationFieldLangPrefix);
 
                 // 不允许双击编辑的字段
                 if ($columns[$relationField]['designType'] == 'switch') {
@@ -645,10 +644,30 @@ class Crud extends Backend
                 $columnDict = $this->getColumnDict($columns[$relationField], $relationFieldLangPrefix);
 
                 // 表格列
-                $columns[$relationField]['table']['render']   = 'tags';
-                $columns[$relationField]['table']['operator'] = 'LIKE';
-                $columns[$relationField]['designType']        = $field['designType'];
-                $this->indexVueData['tableColumn'][]          = $this->getTableColumn($columns[$relationField], $columnDict, $relationFieldPrefix, $relationFieldLangPrefix);
+                $columns[$relationField]['designType']      = $field['designType'];
+                $columns[$relationField]['table']['render'] = 'tags';
+                if ($field['designType'] == 'remoteSelects') {
+                    $columns[$relationField]['table']['operator'] = 'false';
+                    $this->indexVueData['tableColumn'][]          = $this->getTableColumn($columns[$relationField], $columnDict, $relationFieldPrefix, $relationFieldLangPrefix);
+
+                    // 额外生成一个公共搜索，渲染为远程下拉的列
+                    unset($columns[$relationField]['table']['render']);
+                    $columns[$relationField]['table']['label']           = "t('" . $this->webTranslate . $relationFieldLangPrefix . $columns[$relationField]['name'] . "')";
+                    $columns[$relationField]['name']                     = $field['name'];
+                    $columns[$relationField]['table']['show']            = 'false';
+                    $columns[$relationField]['table']['operator']        = 'FIND_IN_SET';
+                    $columns[$relationField]['table']['comSearchRender'] = 'remoteSelect';
+                    $columns[$relationField]['table']['remote']          = [
+                        'pk'        => TableManager::tableName($field['form']['remote-table']) . '.' . ($field['form']['remote-pk'] ?? 'id'),
+                        'field'     => $field['form']['remote-field'] ?? 'name',
+                        'remoteUrl' => $this->getRemoteSelectUrl($field),
+                        'multiple'  => 'true',
+                    ];
+                    $this->indexVueData['tableColumn'][]                 = $this->getTableColumn($columns[$relationField], $columnDict, '', $relationFieldLangPrefix);
+                } else {
+                    $columns[$relationField]['table']['operator'] = 'LIKE';
+                    $this->indexVueData['tableColumn'][]          = $this->getTableColumn($columns[$relationField], $columnDict, $relationFieldPrefix, $relationFieldLangPrefix);
+                }
             }
         }
         $this->langTsData['en']    = array_merge($this->langTsData['en'], $dictEn);
