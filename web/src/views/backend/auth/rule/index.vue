@@ -75,7 +75,7 @@ const baTable = new baTableClass(
     },
     {
         getIndex: () => {
-            baTable.table.expandAll = baTable.table.filter?.quick_search ? true : false
+            baTable.table.expandAll = baTable.table.filter?.quickSearch ? true : false
         },
         // 获得编辑数据后
         requestEdit: () => {

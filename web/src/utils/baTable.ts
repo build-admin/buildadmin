@@ -372,7 +372,7 @@ export default class baTable {
             [
                 'quick-search',
                 () => {
-                    this.table.filter!.quick_search = data.keyword
+                    this.table.filter!.quickSearch = data.keyword
                     this.getIndex()
                 },
             ],

@@ -28,7 +28,7 @@ declare global {
             page?: number
             limit?: number
             order?: string
-            quick_search?: string
+            quickSearch?: string
             search?: comSearchData[]
             [key: string]: any
         }

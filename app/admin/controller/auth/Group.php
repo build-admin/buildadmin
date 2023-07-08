@@ -67,7 +67,7 @@ class Group extends Backend
         $isTree          = $this->request->param('isTree', true);
         $this->initValue = $this->request->get("initValue/a", []);
         $this->initValue = array_filter($this->initValue);
-        $this->keyword   = $this->request->request("quick_search", '');
+        $this->keyword   = $this->request->request("quickSearch", '');
 
         // 有初始化值时不组装树状（初始化出来的值更好看）
         $this->assembleTree = $isTree && !$this->initValue;

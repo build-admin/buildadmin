@@ -182,7 +182,7 @@ class Backend extends Api
             return [];
         }
         $pk          = $this->model->getPk();
-        $quickSearch = $this->request->get("quick_search/s", '');
+        $quickSearch = $this->request->get("quickSearch/s", '');
         $limit       = $this->request->get("limit/d", 10);
         $order       = $this->request->get("order/s", '');
         $search      = $this->request->get("search/a", []);
