@@ -187,18 +187,18 @@ class Backend extends Api
         $order       = $this->request->get("order/s", '');
         $search      = $this->request->get("search/a", []);
         $initKey     = $this->request->get("initKey/s", $pk);
-        $initValue   = $this->request->get("initValue/a", '');
+        $initValue   = $this->request->get("initValue", '');
 
         $where              = [];
         $modelTable         = strtolower($this->model->getTable());
         $alias[$modelTable] = parse_name(basename(str_replace('\\', '/', get_class($this->model))));
-        $tableAlias         = $alias[$modelTable] . '.';
+        $mainTableAlias     = $alias[$modelTable] . '.';
 
         // 快速搜索
         if ($quickSearch) {
             $quickSearchArr = is_array($this->quickSearchField) ? $this->quickSearchField : explode(',', $this->quickSearchField);
             foreach ($quickSearchArr as $k => $v) {
-                $quickSearchArr[$k] = stripos($v, ".") === false ? $tableAlias . $v : $v;
+                $quickSearchArr[$k] = str_contains($v, '.') ? $v : $mainTableAlias . $v;
             }
             $where[] = [implode("|", $quickSearchArr), "LIKE", '%' . str_replace('%', '\%', $quickSearch) . '%'];
         }
@@ -210,7 +210,7 @@ class Backend extends Api
         // 排序
         if ($order) {
             $order = explode(',', $order);
-            if (isset($order[0]) && isset($order[1]) && ($order[1] == 'asc' || $order[1] == 'desc')) {
+            if (!empty($order[0]) && !empty($order[1]) && ($order[1] == 'asc' || $order[1] == 'desc')) {
                 $order = [$order[0] => $order[1]];
             }
         } else {
@@ -218,7 +218,7 @@ class Backend extends Api
                 $order = $this->defaultSortField;
             } else {
                 $order = explode(',', $this->defaultSortField);
-                if (isset($order[0]) && isset($order[1])) {
+                if (!empty($order[0]) && !empty($order[1])) {
                     $order = [$order[0] => $order[1]];
                 } else {
                     $order = [$pk => 'desc'];
@@ -232,13 +232,7 @@ class Backend extends Api
                 continue;
             }
 
-            if (stripos($field['field'], '.') !== false) {
-                $fieldArr            = explode('.', $field['field']);
-                $alias[$fieldArr[0]] = $fieldArr[0];
-                $fieldName           = $field['field'];
-            } else {
-                $fieldName = $tableAlias . $field['field'];
-            }
+            $fieldName = str_contains($field['field'], '.') ? $field['field'] : $mainTableAlias . $field['field'];
 
             // 日期时间
             if (isset($field['render']) && $field['render'] == 'datetime') {
@@ -257,9 +251,6 @@ class Backend extends Api
 
             // 范围查询
             if ($field['operator'] == 'RANGE' || $field['operator'] == 'NOT RANGE') {
-                if (stripos($field['val'], ',') === false) {
-                    continue;
-                }
                 $arr = explode(',', $field['val']);
                 // 重新确定操作符
                 if (!isset($arr[0]) || $arr[0] === '') {
@@ -313,7 +304,7 @@ class Backend extends Api
         // 数据权限
         $dataLimitAdminIds = $this->getDataLimitAdminIds();
         if ($dataLimitAdminIds) {
-            $where[] = [$tableAlias . $this->dataLimitField, 'in', $dataLimitAdminIds];
+            $where[] = [$mainTableAlias . $this->dataLimitField, 'in', $dataLimitAdminIds];
         }
 
         return [$where, $alias, $limit, $order];
