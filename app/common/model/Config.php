@@ -24,6 +24,7 @@ class Config extends Model
      */
     public static function removeConfigGroup(string $key): bool
     {
+        if (adminConfigModel::where('group', $key)->find()) return false;
         return self::removeArrayItem('config_group', $key);
     }
 
