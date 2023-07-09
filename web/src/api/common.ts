@@ -274,7 +274,7 @@ export function refreshToken() {
         url: refreshTokenUrl,
         method: 'POST',
         data: {
-            refresh_token: isAdminApp() ? adminInfo.getToken('refresh') : userInfo.getToken('refresh'),
+            refreshToken: isAdminApp() ? adminInfo.getToken('refresh') : userInfo.getToken('refresh'),
         },
     })
 }

@@ -46,7 +46,7 @@ export function postLogout() {
         url: siteConfig.apiUrl + userControllerUrl + 'logout',
         method: 'POST',
         data: {
-            refresh_token: baAccount.getToken('refresh'),
+            refreshToken: baAccount.getToken('refresh'),
         },
     })
 }
@@ -154,7 +154,7 @@ export function postInstallModule(uid: string, orderId: number, extend: anyObj =
             method: 'post',
             params: {
                 uid: uid,
-                order_id: orderId,
+                orderId: orderId,
                 token: baAccount.getToken('auth'),
             },
             data: {
@@ -175,7 +175,7 @@ export function postUpdate(uid: string, orderId: number, extend: anyObj = {}) {
         method: 'POST',
         params: {
             uid,
-            order_id: orderId,
+            orderId: orderId,
             token: baAccount.getToken('auth'),
         },
         data: {

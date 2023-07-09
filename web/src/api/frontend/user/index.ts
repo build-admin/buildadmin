@@ -108,7 +108,7 @@ export function postLogout() {
         url: userUrl + 'logout',
         method: 'POST',
         data: {
-            refresh_token: userInfo.getToken('refresh'),
+            refreshToken: userInfo.getToken('refresh'),
         },
     })
 }

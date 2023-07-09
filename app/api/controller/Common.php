@@ -58,7 +58,7 @@ class Common extends Api
 
     public function refreshToken()
     {
-        $refreshToken = $this->request->post('refresh_token');
+        $refreshToken = $this->request->post('refreshToken');
         $refreshToken = Token::get($refreshToken, false);
 
         if (!$refreshToken || $refreshToken['expire_time'] < time()) {

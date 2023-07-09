@@ -114,7 +114,7 @@ class User extends Frontend
     public function logout()
     {
         if ($this->request->isPost()) {
-            $refreshToken = $this->request->post('refresh_token', '');
+            $refreshToken = $this->request->post('refreshToken', '');
             if ($refreshToken) Token::delete((string)$refreshToken);
             $this->auth->logout();
             $this->success();

@@ -24,7 +24,7 @@ export function logout() {
         url: url + 'logout',
         method: 'POST',
         data: {
-            refresh_token: adminInfo.getToken('refresh'),
+            refreshToken: adminInfo.getToken('refresh'),
         },
     })
 }

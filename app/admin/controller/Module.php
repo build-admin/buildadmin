@@ -41,7 +41,7 @@ class Module extends Backend
     {
         $uid     = $this->request->get("uid/s", '');
         $token   = $this->request->get("token/s", '');
-        $orderId = $this->request->get("order_id/d", 0);
+        $orderId = $this->request->get("orderId/d", 0);
         if (!$uid) {
             $this->error(__('Parameter error'));
         }
@@ -114,7 +114,7 @@ class Module extends Backend
     {
         $uid     = $this->request->get("uid/s", '');
         $token   = $this->request->get("token/s", '');
-        $orderId = $this->request->get("order_id/d", 0);
+        $orderId = $this->request->get("orderId/d", 0);
         if (!$token || !$uid) {
             $this->error(__('Parameter error'));
         }
