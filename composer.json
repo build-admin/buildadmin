@@ -19,7 +19,7 @@
         "topthink/framework": "^8.0.0",
         "topthink/think-orm": "^3.0",
         "topthink/think-multi-app": "^1.0",
-        "topthink/think-throttle": "dev-tp8",
+        "topthink/think-throttle": "v2.0.0",
         "topthink/think-migration": "^3.0",
         "phpmailer/phpmailer": "^6.8",
         "w7corp/easywechat": "^6.12",
@@ -54,11 +54,5 @@
             "@php think service:discover",
             "@php think vendor:publish"
         ]
-    },
-    "repositories": [
-        {
-            "type": "github",
-            "url": "https://github.com/build-admin/think-throttle"
-        }
-    ]
+    }
 }
