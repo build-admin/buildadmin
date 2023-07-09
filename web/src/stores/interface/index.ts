@@ -52,7 +52,7 @@ export interface AdminInfo {
     avatar: string
     last_login_time: string
     token: string
-    refreshToken: string
+    refresh_token: string
     super: boolean
 }
 
@@ -72,7 +72,7 @@ export interface UserInfo {
     join_time: string
     motto: string
     token: string
-    refreshToken: string
+    refresh_token: string
 }
 
 export interface TaskItem {

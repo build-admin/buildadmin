@@ -108,11 +108,11 @@ function createAxios<Data = any, T = ApiPromise<Data>>(axiosConfig: AxiosRequest
                             return refreshToken()
                                 .then((res) => {
                                     if (res.data.type == 'admin-refresh') {
-                                        adminInfo.setToken(res.data.token, 'token')
+                                        adminInfo.setToken(res.data.token, 'auth')
                                         response.headers.batoken = `${res.data.token}`
                                         window.requests.forEach((cb) => cb(res.data.token, 'admin-refresh'))
                                     } else if (res.data.type == 'user-refresh') {
-                                        userInfo.setToken(res.data.token, 'token')
+                                        userInfo.setToken(res.data.token, 'auth')
                                         response.headers['ba-user-token'] = `${res.data.token}`
                                         window.requests.forEach((cb) => cb(res.data.token, 'user-refresh'))
                                     }

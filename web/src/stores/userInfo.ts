@@ -23,22 +23,23 @@ export const useUserInfo = defineStore('userInfo', {
             join_time: '',
             motto: '',
             token: '',
-            refreshToken: '',
+            refresh_token: '',
         }
     },
     actions: {
         removeToken() {
             this.token = ''
-            this.refreshToken = ''
+            this.refresh_token = ''
         },
         dataFill(state: UserInfo) {
-            this.$state = state
+            this.$state = { ...this.$state, ...state }
         },
-        setToken(token: string, type: 'token' | 'refreshToken') {
-            this[type] = token
+        setToken(token: string, type: 'auth' | 'refresh') {
+            const field = type == 'auth' ? 'token' : 'refresh_token'
+            this[field] = token
         },
         getToken(type: 'auth' | 'refresh' = 'auth') {
-            return type === 'auth' ? this.token : this.refreshToken
+            return type === 'auth' ? this.token : this.refresh_token
         },
         getGenderIcon() {
             let icon = { name: 'fa fa-transgender-alt', color: 'var(--el-text-color-secondary)' }

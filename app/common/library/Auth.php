@@ -420,10 +420,10 @@ class Auth extends \ba\Auth
         if (!$this->model) {
             return [];
         }
-        $info                 = $this->model->toArray();
-        $info                 = array_intersect_key($info, array_flip($this->getAllowFields()));
-        $info['token']        = $this->getToken();
-        $info['refreshToken'] = $this->getRefreshToken();
+        $info                  = $this->model->toArray();
+        $info                  = array_intersect_key($info, array_flip($this->getAllowFields()));
+        $info['token']         = $this->getToken();
+        $info['refresh_token'] = $this->getRefreshToken();
         return $info;
     }
 

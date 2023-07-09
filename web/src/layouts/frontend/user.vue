@@ -42,7 +42,7 @@ onMounted(async () => {
      * 会员中心初始化请求，获取会员中心菜单信息等
      */
     index().then((res) => {
-        res.data.userInfo.refreshToken = userInfo.refreshToken
+        res.data.userInfo.refresh_token = userInfo.getToken('refresh')
         userInfo.dataFill(res.data.userInfo)
         if (res.data.menus) {
             handleMemberCenterRoute(res.data.menus, res.data.rules)

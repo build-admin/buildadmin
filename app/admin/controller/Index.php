@@ -25,7 +25,7 @@ class Index extends Backend
     {
         $adminInfo          = $this->auth->getInfo();
         $adminInfo['super'] = $this->auth->isSuperAdmin();
-        unset($adminInfo['token'], $adminInfo['refreshToken']);
+        unset($adminInfo['token'], $adminInfo['refresh_token']);
 
         $menus = $this->auth->getMenus();
         if (!$menus) {
