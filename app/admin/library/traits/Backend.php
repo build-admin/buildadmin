@@ -167,14 +167,17 @@ trait Backend
             $this->error(__('Parameter error'));
         }
 
+        $where             = [];
         $dataLimitAdminIds = $this->getDataLimitAdminIds();
         if ($dataLimitAdminIds) {
-            $this->model->where($this->dataLimitField, 'in', $dataLimitAdminIds);
+            $where[] = [$this->dataLimitField, 'in', $dataLimitAdminIds];
         }
 
-        $pk    = $this->model->getPk();
-        $data  = $this->model->where($pk, 'in', $ids)->select();
+        $pk      = $this->model->getPk();
+        $where[] = [$pk, 'in', $ids];
+
         $count = 0;
+        $data  = $this->model->where($where)->select();
         $this->model->startTrans();
         try {
             foreach ($data as $v) {
