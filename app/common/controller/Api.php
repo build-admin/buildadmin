@@ -6,7 +6,6 @@ use Throwable;
 use think\App;
 use think\Response;
 use app\BaseController;
-use think\facade\Event;
 use think\facade\Config;
 use think\exception\HttpResponseException;
 
@@ -44,8 +43,6 @@ class Api extends BaseController
             ip_check();
             // 时区设定
             set_timezone();
-            // 存储/上传资料配置
-            Event::trigger('uploadConfigInit', $this->app);
         }
 
         parent::initialize();

@@ -1,10 +1,12 @@
 <?php
 // 应用公共文件
 
+use think\App;
 use ba\Filesystem;
 use think\Response;
 use think\facade\Db;
 use think\facade\Lang;
+use think\facade\Event;
 use think\facade\Config;
 use app\admin\model\Config as configModel;
 use think\exception\HttpResponseException;
@@ -94,6 +96,9 @@ if (!function_exists('full_url')) {
      */
     function full_url(string $relativeUrl = '', bool $domain = true, string $default = ''): string
     {
+        // 存储/上传资料配置
+        Event::trigger('uploadConfigInit', App::getInstance());
+
         $cdnUrl = Config::get('buildadmin.cdn_url');
         if (!$cdnUrl) $cdnUrl = request()->upload['cdn'] ?? request()->domain();
         if ($domain === true) {
@@ -332,6 +337,9 @@ if (!function_exists('get_upload_config')) {
      */
     function get_upload_config(): array
     {
+        // 存储/上传资料配置
+        Event::trigger('uploadConfigInit', App::getInstance());
+
         $uploadConfig            = Config::get('upload');
         $uploadConfig['maxsize'] = Filesystem::fileUnitToByte($uploadConfig['maxsize']);
 

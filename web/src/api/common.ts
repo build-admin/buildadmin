@@ -62,7 +62,7 @@ export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false
     }
 
     if (!forceLocal && uploadExpandState() == 'enable') {
-        return uploadExpand(fd, params)
+        return uploadExpand(fd, params, config)
     }
 
     return createAxios({
