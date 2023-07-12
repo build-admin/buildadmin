@@ -58,7 +58,6 @@ class Install extends Migrator
                 ->addColumn('updatetime', 'integer', ['limit' => 10, 'signed' => false, 'null' => true, 'default' => null, 'comment' => '创建时间'])
                 ->addIndex(['username'], [
                     'unique' => true,
-                    'type'   => 'BTREE',
                 ])
                 ->create();
         }
@@ -230,7 +229,6 @@ class Install extends Migrator
                 ->addColumn('weigh', 'integer', ['comment' => '权重', 'default' => 0])
                 ->addIndex(['name'], [
                     'unique' => true,
-                    'type'   => 'BTREE',
                 ])
                 ->create();
         }
@@ -448,15 +446,12 @@ class Install extends Migrator
                 ->addColumn('createtime', 'biginteger', ['signed' => false, 'null' => true, 'default' => null, 'comment' => '创建时间'])
                 ->addIndex(['username'], [
                     'unique' => true,
-                    'type'   => 'BTREE',
                 ])
                 ->addIndex(['email'], [
                     'unique' => true,
-                    'type'   => 'BTREE',
                 ])
                 ->addIndex(['mobile'], [
                     'unique' => true,
-                    'type'   => 'BTREE',
                 ])
                 ->create();
         }
