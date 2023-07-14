@@ -124,6 +124,7 @@
 - [countUp](https://github.com/inorganik/countUp.js)
 - [Sortable](https://github.com/SortableJS/Sortable)
 - [v-code-diff](https://github.com/Shimada666/v-code-diff)
+- [jetbrains](https://www.jetbrains.com/)`https://www.jetbrains.com/`
 - [clicaptcha](https://github.com/hooray/clicaptcha)
 - [phinx](https://github.com/cakephp/phinx)
 
