@@ -251,7 +251,7 @@ watch(
     () => props.modelValue,
     (newVal) => {
         if (state.uploading > 0) return
-        if (newVal === undefined) {
+        if (newVal === undefined || newVal === null) {
             return init('')
         }
         let newValArr = arrayFullUrl(stringToArray(cloneDeep(newVal)))
