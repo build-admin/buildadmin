@@ -36,7 +36,7 @@
 
 <br>
 <div align="center">
-  <img src="https://wonderful-code.gitee.io/images/readme/index.gif" />
+  <img src="https://wonderful-code.gitee.io/images/readme/dashboard-radius.png" />
 </div>
 <br>
 
