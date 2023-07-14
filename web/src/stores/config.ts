@@ -32,7 +32,7 @@ export const useConfig = defineStore(
             // 侧边菜单宽度(展开时)，单位px
             menuWidth: 260,
             // 侧边菜单项默认图标
-            menuDefaultIcon: 'el-icon-Minus',
+            menuDefaultIcon: 'fa fa-circle-o',
             // 是否水平折叠收起菜单
             menuCollapse: false,
             // 是否只保持一个子菜单的展开(手风琴)

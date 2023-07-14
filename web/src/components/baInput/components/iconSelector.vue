@@ -126,7 +126,7 @@ const state: {
     fontIconNames: [],
     inputValue: '',
     prependIcon: props.modelValue,
-    defaultModelValue: props.modelValue || 'el-icon-Minus',
+    defaultModelValue: props.modelValue || 'fa fa-circle-o',
     iconKey: 0, // 给icon标签准备个key，以随时使用 h 函数重新生成元素
 })
 
@@ -204,7 +204,7 @@ watch(
     () => {
         state.iconKey++
         if (props.modelValue != state.prependIcon) state.defaultModelValue = props.modelValue
-        if (props.modelValue == '') state.defaultModelValue = 'el-icon-Minus'
+        if (props.modelValue == '') state.defaultModelValue = 'fa fa-circle-o'
         state.prependIcon = props.modelValue
     }
 )

@@ -40,7 +40,7 @@ const baTable = new baTableClass(
         column: [
             { type: 'selection', align: 'center', operator: false },
             { label: t('auth.rule.title'), prop: 'title', align: 'left', width: '200' },
-            { label: t('auth.rule.Icon'), prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'el-icon-Minus' },
+            { label: t('auth.rule.Icon'), prop: 'icon', align: 'center', width: '60', render: 'icon', default: 'fa fa-circle-o' },
             { label: t('auth.rule.name'), prop: 'name', align: 'center', showOverflowTooltip: true },
             {
                 label: t('auth.rule.type'),
@@ -72,13 +72,13 @@ const baTable = new baTableClass(
             no_login_valid: '0',
             keepalive: 0,
             status: '1',
-            icon: 'el-icon-Minus',
+            icon: 'fa fa-circle-o',
         },
     },
     {
         // 获得编辑数据后
         requestEdit: () => {
-            if (baTable.form.items && !baTable.form.items.icon) baTable.form.items.icon = 'el-icon-Minus'
+            if (baTable.form.items && !baTable.form.items.icon) baTable.form.items.icon = 'fa fa-circle-o'
         },
         onSubmit: () => {
             if (baTable.form.items!.type == 'route') {
