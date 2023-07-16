@@ -69,7 +69,7 @@ const baTable: baTableClass = new baTableClass(
     },
     {
         // 提交前
-        onSubmit: ({ formEl, items }) => {
+        onSubmit: ({ formEl, operate, items }) => {
             var items = cloneDeep(items)
 
             items.rules = formRef.value.getCheckeds()
@@ -80,11 +80,13 @@ const baTable: baTableClass = new baTableClass(
                 }
             }
 
+            operate = operate.replace(operate[0], operate[0].toLowerCase())
+
             // 表单验证通过后执行的api请求操作
             let submitCallback = () => {
                 baTable.form.submitLoading = true
                 baTable.api
-                    .postData(baTable.form.operate!, items)
+                    .postData(operate, items)
                     .then((res) => {
                         baTable.onTableHeaderAction('refresh', {})
                         baTable.form.submitLoading = false
