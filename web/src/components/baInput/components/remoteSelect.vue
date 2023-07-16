@@ -28,7 +28,7 @@
                     :key="state.selectKey"
                     @clear="onClear"
                     @visible-change="onVisibleChange"
-                    v-bind="props.attr"
+                    v-bind="$attrs"
                 >
                     <el-option
                         class="remote-select-option"
@@ -71,7 +71,7 @@ const selectRef = ref<InstanceType<typeof ElSelect> | undefined>()
 type ElSelectProps = Partial<InstanceType<typeof ElSelect>['$props']>
 type valType = string | number | string[] | number[]
 
-interface Props {
+interface Props extends /* @vue-ignore */ ElSelectProps {
     pk?: string
     field?: string
     params?: anyObj
@@ -80,7 +80,6 @@ interface Props {
     modelValue: valType
     labelFormatter?: (optionData: anyObj, optionKey: string) => string
     tooltipParams?: anyObj
-    attr?: ElSelectProps
 }
 const props = withDefaults(defineProps<Props>(), {
     pk: 'id',
@@ -92,9 +91,6 @@ const props = withDefaults(defineProps<Props>(), {
     modelValue: '',
     multiple: false,
     tooltipParams: () => {
-        return {}
-    },
-    attr: () => {
         return {}
     },
 })
