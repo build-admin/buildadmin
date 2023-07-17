@@ -31,7 +31,7 @@
         "ext-gd": "*"
     },
     "require-dev": {
-        "symfony/var-dumper": "^4.2",
+        "symfony/var-dumper": "^5.4",
         "topthink/think-trace": "^1.0"
     },
     "autoload": {
