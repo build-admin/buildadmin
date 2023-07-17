@@ -40,7 +40,7 @@ class Server
             }
             if (str_starts_with($content, '{')) {
                 $json = (array)json_decode($content, true);
-                throw new Exception($json['msg'], $json['code'], $json['data']);
+                throw new Exception($json['msg'], $json['code'], $json['data'] ?? []);
             }
         } catch (TransferException $e) {
             throw new Exception('package download failed', 0, ['msg' => $e->getMessage()]);

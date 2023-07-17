@@ -10,7 +10,7 @@ use think\Exception as E;
  */
 class Exception extends E
 {
-    public function __construct(protected $message, protected $code = 0, protected $data = '')
+    public function __construct(protected $message, protected $code = 0, protected $data = [])
     {
         parent::__construct($message, $code);
     }
