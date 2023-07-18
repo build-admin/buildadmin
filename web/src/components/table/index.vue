@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick, inject, computed } from 'vue'
-import type { TableInstance, TableProps } from 'element-plus'
+import type { ElTable, TableInstance } from 'element-plus'
 import Column from '/@/components/table/column/index.vue'
 import FieldRender from '/@/components/table/fieldRender/index.vue'
 import { useConfig } from '/@/stores/config'
@@ -77,7 +77,7 @@ const config = useConfig()
 const tableRef = ref<TableInstance>()
 const baTable = inject('baTable') as baTableClass
 
-interface Props extends Partial<TableProps<anyObj>> {
+interface Props extends /* @vue-ignore */ Partial<InstanceType<typeof ElTable>> {
     pagination?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
