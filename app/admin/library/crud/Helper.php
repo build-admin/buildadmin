@@ -403,9 +403,16 @@ class Helper
         if (!is_null($phinxTypeData['limit'])) {
             $phinxColumnOptions['limit'] = $phinxTypeData['limit'];
         }
-        if ($field['default'] != 'none' && !in_array($conciseType, ['text', 'blob'])) {
+
+        // 无默认值字段
+        $noDefaultValueFields = [
+            'text', 'blob', 'geometry', 'geometrycollection', 'json', 'linestring', 'longblob', 'longtext', 'mediumblob',
+            'mediumtext', 'multilinestring', 'multipoint', 'multipolygon', 'point', 'polygon', 'tinyblob',
+        ];
+        if ($field['default'] != 'none' && !in_array($conciseType, $noDefaultValueFields)) {
             $phinxColumnOptions['default'] = self::analyseFieldDefault($field);
         }
+
         $phinxColumnOptions['null']     = (bool)$field['null'];
         $phinxColumnOptions['comment']  = $field['comment'];
         $phinxColumnOptions['signed']   = !$field['unsigned'];
