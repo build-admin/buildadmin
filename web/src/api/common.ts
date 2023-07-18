@@ -7,6 +7,7 @@ import { ElNotification, UploadRawFile } from 'element-plus'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { state as uploadExpandState, fileUpload as uploadExpand } from '/@/components/mixins/baUpload'
 import { AxiosRequestConfig } from 'axios'
+import { uuid } from '/@/utils/random'
 import { i18n } from '../lang'
 
 /*
@@ -98,13 +99,14 @@ export function buildSuffixSvgUrl(suffix: string, background = '') {
  * 获取地区数据
  */
 export function getArea(values: number[]) {
-    const params: { province?: number; city?: number } = {}
+    const params: { province?: number; city?: number; uuid?: string } = {}
     if (values[0]) {
         params.province = values[0]
     }
     if (values[1]) {
         params.city = values[1]
     }
+    params.uuid = uuid()
     return createAxios({
         url: isAdminApp() ? adminAreaUrl : apiAreaUrl,
         method: 'GET',
