@@ -89,7 +89,11 @@
                             childrenAttr: { border: true },
                         }"
                     />
-                    <el-form-item prop="url" v-if="baTable.form.items!.menu_type != 'tab'" :label="t('auth.rule.Link address')">
+                    <el-form-item
+                        prop="url"
+                        v-if="baTable.form.items!.menu_type != 'tab' && baTable.form.items!.type != 'button'"
+                        :label="t('auth.rule.Link address')"
+                    >
                         <el-input
                             v-model="baTable.form.items!.url"
                             type="string"
