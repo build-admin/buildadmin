@@ -403,7 +403,7 @@ class Helper
         if (!is_null($phinxTypeData['limit'])) {
             $phinxColumnOptions['limit'] = $phinxTypeData['limit'];
         }
-        if ($field['default'] != 'none') {
+        if ($field['default'] != 'none' && !in_array($conciseType, ['text', 'blob'])) {
             $phinxColumnOptions['default'] = self::analyseFieldDefault($field);
         }
         $phinxColumnOptions['null']     = (bool)$field['null'];
