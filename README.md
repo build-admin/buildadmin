@@ -2,7 +2,7 @@
 <div align="center">
     <img src="https://wonderful-code.gitee.io/images/readme/logo-title.png" alt="" />
     <br />
-    <a href="https://buildadmin.com/" target="_blank">官网</a> | <a href="https://demo.buildadmin.com/" target="_blank">演示站</a> |
+    <a href="https://uni.buildadmin.com/" target="_blank">官网</a> | <a href="https://demo.buildadmin.com/" target="_blank">演示站</a> |
     <a href="https://wonderful-code.gitee.io/" target="_blank">文档</a> |
     <a href="https://jq.qq.com/?_wv=1027&k=c8a7iSk8" target="_blank">加群</a> |
     <a href="https://wonderful-code.gitee.io/guide/" target="_blank">视频介绍</a> |
@@ -86,7 +86,7 @@
 - 加群：[687903819（已满）](https://jq.qq.com/?_wv=1027&k=QwtXa14c)、[751852082](https://jq.qq.com/?_wv=1027&k=c8a7iSk8)
 - [Gitee仓库](https://gitee.com/wonderful-code/buildadmin)、[GitHub仓库](https://github.com/build-admin/BuildAdmin)
 - [备用文档：doc.buildadmin.com](https://doc.buildadmin.com/)
-- [官网](https://buildadmin.com/)、[官方邮箱 hi@buildadmin.com](mailto:hi@buildadmin.com)
+- [官网](https://uni.buildadmin.com/)、[官方邮箱 hi@buildadmin.com](mailto:hi@buildadmin.com)
 
 ### 项目预览
 |  |  |

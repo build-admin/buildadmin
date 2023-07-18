@@ -18,7 +18,7 @@
                         <span>{{ $t('module.Balance') + ' ' + baAccount.money }}</span>
                     </p>
                     <div class="userinfo-buttons">
-                        <el-button @click="openUrl('https://buildadmin.com/user/account/moduleOrders')" v-blur size="default" type="primary">
+                        <el-button @click="openUrl('https://uni.buildadmin.com/user/account/moduleOrders')" v-blur size="default" type="primary">
                             {{ $t('module.My module') }}
                         </el-button>
                         <el-button @click="baAccount.logout()" v-blur size="default" type="warning">{{ $t('module.Logout login') }}</el-button>
@@ -75,7 +75,7 @@
                             <el-button @click="onBaAccountSubmit()" :loading="user.loading" round type="primary" size="large">
                                 {{ t('module.Sign in') }}
                             </el-button>
-                            <a target="_blank" class="ba-account-register" href="https://buildadmin.com/user/login?type=register">
+                            <a target="_blank" class="ba-account-register" href="https://uni.buildadmin.com/user/login?type=register">
                                 <el-button round plain type="info" size="large"> {{ t('module.Register') }} </el-button>
                             </a>
                         </el-form-item>
