@@ -76,6 +76,7 @@
                 class="xs-hidden quick-search"
                 @input="debounce(onSearchInput, 500)()"
                 :placeholder="quickSearchPlaceholder ? quickSearchPlaceholder : t('Search')"
+                clearable
             />
             <div class="table-search-button-group" v-if="props.buttons.includes('columnDisplay') || props.buttons.includes('comSearch')">
                 <el-dropdown v-if="props.buttons.includes('columnDisplay')" :max-height="380" :hide-on-click="false">
@@ -173,7 +174,7 @@ const onChangeShowColumn = (value: string | number | boolean, field: string) => 
 <style scoped lang="scss">
 .table-header {
     position: relative;
-    overflow-y: scroll;
+    overflow-x: auto;
     box-sizing: border-box;
     display: flex;
     align-items: center;
