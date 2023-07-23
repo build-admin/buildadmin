@@ -183,7 +183,6 @@ const onClearCache = (type: string) => {
     height: 100%;
     margin-left: auto;
     background-color: v-bind('configStore.getColorVal("headerBarBackground")');
-    overflow: hidden;
     .nav-menu-item {
         height: 100%;
         width: 40px;

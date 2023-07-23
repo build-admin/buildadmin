@@ -22,6 +22,7 @@ import { adminBaseRoute } from '/@/router/static'
 import { useEventListener } from '@vueuse/core'
 import { BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
 import { isEmpty } from 'lodash-es'
+import { setNavTabsWidth } from '/@/utils/layout'
 
 defineOptions({
     components: { Default, Classic, Streamline, Double },
@@ -38,8 +39,8 @@ onMounted(() => {
     if (!adminInfo.token) return router.push({ name: 'adminLogin' })
 
     init()
-    onSetNavTabsMinWidth()
-    useEventListener(window, 'resize', onSetNavTabsMinWidth)
+    setNavTabsWidth()
+    useEventListener(window, 'resize', setNavTabsWidth)
 })
 onBeforeMount(() => {
     onAdaptiveLayout()
@@ -96,17 +97,5 @@ const onAdaptiveLayout = () => {
         config.setLayout('shrink', false)
         config.setLayoutMode(beforeResizeLayoutTemp.layoutMode)
     }
-}
-
-// 在实例挂载后为navTabs设置一个min-width，防止宽度改变时闪现滚动条
-const onSetNavTabsMinWidth = () => {
-    const navTabs = document.querySelector('.nav-tabs') as HTMLElement
-    if (!navTabs) {
-        return
-    }
-    const navBar = document.querySelector('.nav-bar') as HTMLElement
-    const navMenus = document.querySelector('.nav-menus') as HTMLElement
-    const minWidth = navBar.offsetWidth - (navMenus.offsetWidth + 20)
-    navTabs.style.width = minWidth.toString() + 'px'
 }
 </script>
