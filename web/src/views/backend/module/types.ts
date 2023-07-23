@@ -66,6 +66,7 @@ export interface moduleState {
         disableConflictFile: { file: string }[]
         disableDependConflict: anyObj[]
         disableParams: anyObj
+        payType: 'score' | 'wx' | 'balance' | 'zfb'
     }
     sysVersion: string
     installedModule: moduleInfo[]

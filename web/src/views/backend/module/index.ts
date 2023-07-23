@@ -171,11 +171,12 @@ export const onBuy = () => {
         })
 }
 
-export const onPay = (payType: 'score' | 'wx' | 'balance') => {
+export const onPay = (payType: 'score' | 'wx' | 'balance' | 'zfb') => {
+    state.common.payType = payType
     state.loading.common = true
     payOrder(state.buy.info.id, payType)
         .then((res) => {
-            if (payType == 'wx') {
+            if (payType == 'wx' || payType == 'zfb') {
                 // 关闭其他弹窗
                 state.dialog.buy = false
                 state.dialog.goodsInfo = false

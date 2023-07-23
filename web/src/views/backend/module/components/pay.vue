@@ -4,13 +4,18 @@
             v-model="state.dialog.pay"
             :close-on-press-escape="false"
             :close-on-click-modal="false"
+            :destroy-on-close="true"
             class="pay-dialog"
             top="20vh"
             width="680px"
         >
             <div>
                 <div class="header-box">
-                    <img class="wechat-pay-logo" src="https://buildadmin.com/static/images/wechat-pay.png" alt="" />
+                    <img
+                        class="pay-logo"
+                        :src="'https://buildadmin.com/static/images/' + (state.common.payType == 'wx' ? 'wechat-pay.png' : 'alipay.png')"
+                        alt=""
+                    />
                 </div>
                 <div class="pay-box">
                     <div class="left">
@@ -19,26 +24,45 @@
                             <div class="order-info-items">{{ t('module.Order No') }}：{{ state.payInfo.info.sn }}</div>
                             <div class="order-info-items">{{ t('module.Purchase user') }}：{{ specificUserName(baAccount) }}</div>
                             <div class="order-info-items">
-                                {{ t('module.Order price') }}：<span class="rmb-symbol"
-                                    >￥<span class="amount">{{ state.payInfo.info.amount }}</span></span
-                                >
+                                <span>{{ t('module.Order price') }}：</span>
+                                <span class="rmb-symbol">
+                                    ￥<span class="amount">{{ state.payInfo.info.amount }}</span>
+                                </span>
                             </div>
                         </div>
                         <div class="pay_qr">
-                            <vue-qr :text="state.payInfo.pay.code_url" :size="220" :margin="0"></vue-qr>
+                            <vue-qr v-if="state.common.payType == 'wx'" :text="state.payInfo.pay.code_url" :size="220" :margin="0"></vue-qr>
+                            <iframe
+                                v-if="state.common.payType == 'zfb'"
+                                :srcdoc="state.payInfo.pay.code_url"
+                                frameborder="no"
+                                border="0"
+                                marginwidth="0"
+                                marginheight="0"
+                                scrolling="no"
+                                width="220"
+                                height="220"
+                                style="overflow: hidden"
+                            >
+                            </iframe>
                             <div v-if="state.payInfo.pay.status == 'success'" class="pay-success">
                                 <Icon name="fa fa-check" color="var(--el-color-success)" size="30" />
                             </div>
                         </div>
                         <el-alert class="qr-tips" :closable="false" type="success" center>
                             <div class="qr-tips-content">
-                                <Icon color="var(--el-color-success)" name="fa fa-wechat" />
-                                <span>{{ t('module.Use WeChat to scan QR code for payment') }}</span>
+                                <Icon color="var(--el-color-success)" :name="state.common.payType == 'wx' ? 'fa fa-wechat' : 'fa fa-buysellads'" />
+                                <span v-if="state.common.payType == 'wx'">{{ t('module.Use WeChat to scan QR code for payment') }}</span>
+                                <span v-if="state.common.payType == 'zfb'">{{ t('module.Use Alipay to scan QR code for payment') }}</span>
                             </div>
                         </el-alert>
                     </div>
                     <div class="right">
-                        <img class="wechat-pay-logo" src="https://buildadmin.com/static/images/screenshot-wechat.png" alt="" />
+                        <img
+                            class="pay-logo"
+                            :src="'https://buildadmin.com/static/images/screenshot-' + (state.common.payType == 'wx' ? 'wechat.png' : 'alipay.png')"
+                            alt=""
+                        />
                     </div>
                 </div>
             </div>
@@ -63,7 +87,7 @@ const baAccount = useBaAccount()
     padding-top: 0;
 }
 .header-box {
-    .wechat-pay-logo {
+    .pay-logo {
         height: 30px;
         user-select: none;
     }

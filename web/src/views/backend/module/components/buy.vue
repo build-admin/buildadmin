@@ -43,6 +43,9 @@
                                     <el-button :loading="state.loading.common" @click="onPay('wx')" v-blur type="success">
                                         {{ t('module.Wechat payment') }}
                                     </el-button>
+                                    <el-button :loading="state.loading.common" @click="onPay('zfb')" v-blur type="primary">
+                                        {{ t('module.Alipay payment') }}
+                                    </el-button>
                                 </template>
                             </template>
                             <el-button
