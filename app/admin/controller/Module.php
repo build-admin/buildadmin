@@ -5,6 +5,7 @@ namespace app\admin\controller;
 use Throwable;
 use ba\Exception;
 use think\facade\Config;
+use app\admin\model\AdminLog;
 use app\admin\library\module\Server;
 use app\admin\library\module\Manage;
 use app\common\controller\Backend;
@@ -39,6 +40,7 @@ class Module extends Backend
 
     public function install()
     {
+        AdminLog::setTitle(__('Install module'));
         $uid     = $this->request->get("uid/s", '');
         $token   = $this->request->get("token/s", '');
         $orderId = $this->request->get("orderId/d", 0);
@@ -76,6 +78,7 @@ class Module extends Backend
 
     public function changeState()
     {
+        AdminLog::setTitle(__('Change module state'));
         $uid   = $this->request->post("uid/s", '');
         $state = $this->request->post("state/b", false);
         if (!$uid) {
@@ -96,6 +99,7 @@ class Module extends Backend
 
     public function uninstall()
     {
+        AdminLog::setTitle(__('Unload module'));
         $uid = $this->request->get("uid/s", '');
         if (!$uid) {
             $this->error(__('Parameter error'));
@@ -112,6 +116,7 @@ class Module extends Backend
 
     public function update()
     {
+        AdminLog::setTitle(__('Update module'));
         $uid     = $this->request->get("uid/s", '');
         $token   = $this->request->get("token/s", '');
         $orderId = $this->request->get("orderId/d", 0);
@@ -130,6 +135,7 @@ class Module extends Backend
 
     public function upload()
     {
+        AdminLog::setTitle(__('Upload install module'));
         $file = $this->request->get("file/s", '');
         if (!$file) {
             $this->error(__('Parameter error'));

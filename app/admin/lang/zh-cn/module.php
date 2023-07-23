@@ -18,4 +18,9 @@ return [
     'Please disable the module first'                           => '请先禁用模块',
     'Please disable the module before updating'                 => '更新前请先禁用模块',
     'The directory required by the module is occupied'          => '模块所需目录已被占用',
+    'Install module'                                            => '安装模块',
+    'Unload module'                                             => '卸载模块',
+    'Update module'                                             => '更新模块',
+    'Change module state'                                       => '改变模块状态',
+    'Upload install module'                                     => '上传安装模块',
 ];
