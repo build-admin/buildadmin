@@ -13,12 +13,13 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted, watch, onBeforeMount, onUnmounted, nextTick } from 'vue'
+import { ref, reactive, onMounted, watch, onBeforeMount, onUnmounted, nextTick, provide } from 'vue'
 import { useRoute, RouteLocationNormalized } from 'vue-router'
 import { mainHeight as layoutMainScrollbarStyle } from '/@/utils/layout'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
+import { ScrollbarInstance } from 'element-plus'
 
 defineOptions({
     name: 'layout/main',
@@ -29,6 +30,7 @@ const { proxy } = useCurrentInstance()
 const route = useRoute()
 const config = useConfig()
 const navTabs = useNavTabs()
+const mainScrollbarRef = ref<ScrollbarInstance>()
 
 const state: {
     componentKey: string
@@ -83,6 +85,8 @@ watch(
         }
     }
 )
+
+provide('mainScrollbarRef', mainScrollbarRef)
 </script>
 
 <style scoped lang="scss">
