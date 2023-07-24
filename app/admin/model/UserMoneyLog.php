@@ -9,6 +9,8 @@ use think\model\relation\BelongsTo;
 
 /**
  * UserMoneyLog 模型
+ * 1. 创建余额日志自动完成会员余额的添加
+ * 2. 创建余额日志时，请开启事务
  */
 class UserMoneyLog extends model
 {
@@ -21,7 +23,7 @@ class UserMoneyLog extends model
      */
     public static function onBeforeInsert($model)
     {
-        $user = User::where('id', $model->user_id)->find();
+        $user = User::where('id', $model->user_id)->lock(true)->find();
         if (!$user) {
             throw new Exception("The user can't find it");
         }
@@ -29,22 +31,11 @@ class UserMoneyLog extends model
             throw new Exception("Change note cannot be blank");
         }
         $model->before = $user->money;
-        $model->after  = $user->money + $model->money;
-    }
 
-    /**
-     * 入库后
-     * @throws Throwable
-     */
-    public static function onAfterInsert($model)
-    {
-        $user = User::where('id', $model->user_id)->find();
-        if (!$user) {
-            $model->delete();
-            throw new Exception("The user can't find it");
-        }
         $user->money += $model->money;
         $user->save();
+
+        $model->after = $user->money;
     }
 
     public static function onBeforeDelete(): bool

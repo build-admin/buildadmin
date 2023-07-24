@@ -9,6 +9,8 @@ use think\model\relation\BelongsTo;
 
 /**
  * UserScoreLog 模型
+ * 1. 创建积分日志自动完成会员积分的添加
+ * 2. 创建积分日志时，请开启事务
  */
 class UserScoreLog extends model
 {
@@ -21,7 +23,7 @@ class UserScoreLog extends model
      */
     public static function onBeforeInsert($model)
     {
-        $user = User::where('id', $model->user_id)->find();
+        $user = User::where('id', $model->user_id)->lock(true)->find();
         if (!$user) {
             throw new Exception("The user can't find it");
         }
@@ -29,22 +31,11 @@ class UserScoreLog extends model
             throw new Exception("Change note cannot be blank");
         }
         $model->before = $user->score;
-        $model->after  = $user->score + $model->score;
-    }
 
-    /**
-     * 入库后
-     * @throws Throwable
-     */
-    public static function onAfterInsert($model)
-    {
-        $user = User::where('id', $model->user_id)->find();
-        if (!$user) {
-            $model->delete();
-            throw new Exception("The user can't find it");
-        }
         $user->score += $model->score;
         $user->save();
+
+        $model->after = $user->score;
     }
 
     public static function onBeforeDelete(): bool
