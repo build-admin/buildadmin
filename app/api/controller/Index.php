@@ -23,23 +23,29 @@ class Index extends Frontend
      */
     public function index()
     {
+        $menus = [];
         if ($this->auth->isLogin()) {
-            $rule = $this->auth->getMenus();
+            $rules     = [];
+            $userMenus = $this->auth->getMenus();
 
             // 首页加载的规则，验权，但过滤掉会员中心菜单
-            foreach ($rule as $key => $item) {
-                if (in_array($item['type'], ['menu_dir', 'menu'])) unset($rule[$key]);
+            foreach ($userMenus as $item) {
+                if ($item['type'] == 'menu_dir') {
+                    $menus[] = $item;
+                } else if ($item['type'] != 'menu') {
+                    $rules[] = $item;
+                }
             }
-            $rule = array_values($rule);
+            $rules = array_values($rules);
         } else {
-            $rule = Db::name('user_rule')
+            $rules = Db::name('user_rule')
                 ->where('status', '1')
                 ->where('no_login_valid', 1)
                 ->where('type', 'in', ['route', 'nav', 'button'])
                 ->order('weigh', 'desc')
                 ->select()
                 ->toArray();
-            $rule = Tree::instance()->assembleChild($rule);
+            $rules = Tree::instance()->assembleChild($rules);
         }
 
         $this->success('', [
@@ -51,7 +57,8 @@ class Index extends Frontend
                 'upload'       => get_upload_config(),
             ],
             'openMemberCenter' => Config::get('buildadmin.open_member_center'),
-            'rules'            => $rule
+            'rules'            => $rules,
+            'menus'            => $menus,
         ]);
     }
 }
