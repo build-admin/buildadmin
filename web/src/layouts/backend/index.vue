@@ -3,6 +3,7 @@
 </template>
 
 <script setup lang="ts">
+import { reactive } from 'vue'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 import { useTerminal } from '/@/stores/terminal'
@@ -34,6 +35,10 @@ const config = useConfig()
 const route = useRoute()
 const siteConfig = useSiteConfig()
 const adminInfo = useAdminInfo()
+
+const state = reactive({
+    autoMenuCollapseLock: false,
+})
 
 onMounted(() => {
     if (!adminInfo.token) return router.push({ name: 'adminLogin' })
@@ -87,10 +92,18 @@ const onAdaptiveLayout = () => {
 
     const clientWidth = document.body.clientWidth
     if (clientWidth < 1024) {
-        config.setLayout('menuCollapse', true)
+        /**
+         * 锁定窗口改变自动调整 menuCollapse
+         * 避免已是小窗且打开了菜单栏时，意外的自动关闭菜单栏
+         */
+        if (!state.autoMenuCollapseLock) {
+            state.autoMenuCollapseLock = true
+            config.setLayout('menuCollapse', true)
+        }
         config.setLayout('shrink', true)
         config.setLayoutMode('Classic')
     } else {
+        state.autoMenuCollapseLock = false
         let beforeResizeLayoutTemp = beforeResizeLayout || defaultBeforeResizeLayout
 
         config.setLayout('menuCollapse', beforeResizeLayoutTemp.menuCollapse)
