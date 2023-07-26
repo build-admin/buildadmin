@@ -182,7 +182,7 @@ body,
 }
 /* 页面切换动画-e */
 
-/* 会员中心相关-s */
+/* 布局相关-s */
 .frontend-footer-brother {
     min-height: calc(100vh - 120px);
 }
@@ -192,7 +192,12 @@ body,
         margin-bottom: 15px;
     }
 }
-/* 会员中心-e */
+.ba-aside-drawer {
+    .el-drawer__body {
+        padding: 0;
+    }
+}
+/* 布局相关-e */
 
 /* 暗黑模式公共样式-s */
 .ba-icon-dark {

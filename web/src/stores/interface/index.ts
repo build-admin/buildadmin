@@ -114,6 +114,7 @@ export interface Menus {
     path: string
     title: string
     url: string
+    icon: string
     meta: {
         type: 'tab' | 'link' | 'iframe'
     }

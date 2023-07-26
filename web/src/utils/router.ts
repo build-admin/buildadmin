@@ -108,8 +108,8 @@ export const handleMemberCenterRoute = (routes: any, rules: any) => {
 
     addRouteAll(viewsComponent, rules, '', true)
     memberCenter.mergeAuthNode(handleAuthNode(rules, '/'))
-    memberCenter.setNavUserMenus(handleMenus(rules, '/', 'nav_user_menu'))
-    siteConfig.setHeadNav(handleMenus(rules, '/', 'nav'))
+    memberCenter.setNavUserMenus(handleMenus(rules, '/', ['nav_user_menu']))
+    siteConfig.setHeadNav(handleMenus(rules, '/', ['nav']))
 }
 
 /**
@@ -122,8 +122,8 @@ export const handleFrontendRoute = (routes: any) => {
     const siteConfig = useSiteConfig()
     const memberCenter = useMemberCenter()
     memberCenter.mergeAuthNode(handleAuthNode(routes, '/'))
-    memberCenter.setNavUserMenus(handleMenus(routes, '/', 'nav_user_menu'))
-    siteConfig.setHeadNav(handleMenus(routes, '/', 'nav'))
+    memberCenter.setNavUserMenus(handleMenus(routes, '/', ['nav_user_menu']))
+    siteConfig.setHeadNav(handleMenus(routes, '/', ['nav']))
 }
 
 /**
@@ -305,18 +305,18 @@ const getParentNames = (name: string) => {
     return reverse(parentNames)
 }
 
-export const handleMenus = (rules: anyObj, prefix = '/', type = 'nav') => {
+export const handleMenus = (rules: anyObj, prefix = '/', type = ['nav']) => {
     const menus: Menus[] = []
     for (const key in rules) {
-        if (rules[key].extend == 'add_rules_only' || !rules[key].component) {
+        if (rules[key].extend == 'add_rules_only') {
             continue
         }
         let children: Menus[] = []
         if (rules[key].children && rules[key].children.length > 0) {
-            children = handleMenus(rules[key].children, prefix)
+            children = handleMenus(rules[key].children, prefix, type)
         }
 
-        if (rules[key].type == type) {
+        if (type.includes(rules[key].type)) {
             let path = ''
             if ('link' == rules[key].menu_type) {
                 path = rules[key].url

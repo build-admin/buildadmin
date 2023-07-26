@@ -1,103 +1,64 @@
 <template>
     <el-header class="header">
         <el-row justify="center">
-            <el-col class="header-row" :span="16" :xs="24">
-                <div :class="userInfo.isLogin() ? 'hidden-sm-and-down' : ''" @click="router.push({ name: '/' })" class="header-logo">
+            <el-col class="header-row" :xs="24" :sm="24" :md="16">
+                <div @click="router.push({ name: '/' })" class="header-logo">
                     <img src="~assets/logo.png" />
-                    <span class="hidden-xs-only">{{ siteConfig.siteName }}</span>
+                    <span class="site-name">{{ siteConfig.siteName }}</span>
                 </div>
-                <div v-if="userInfo.isLogin()" @click="memberCenter.toggleMenuExpand(true)" class="user-menus-expand hidden-md-and-up">
+                <div v-if="!memberCenter.state.menuExpand" @click="memberCenter.toggleMenuExpand(true)" class="user-menus-expand hidden-md-and-up">
                     <Icon name="fa fa-indent" color="var(--el-color-primary)" size="20" />
                 </div>
-                <el-menu :default-active="state.activeMenu" class="frontend-header-menu" mode="horizontal" :ellipsis="false">
-                    <el-menu-item @click="router.push({ name: '/' })" v-blur index="index">{{ $t('Home') }}</el-menu-item>
-                    <!-- 动态菜单项 -->
-                    <HeaderDynamicMenus :menus="siteConfig.headNav" />
 
-                    <template v-if="memberCenter.state.open">
-                        <el-sub-menu v-if="userInfo.isLogin()" v-blur index="user">
-                            <template #title>
-                                <div class="header-user-box">
-                                    <img
-                                        class="header-user-avatar"
-                                        :src="fullUrl(userInfo.avatar ? userInfo.avatar : '/static/images/avatar.png')"
-                                        alt=""
-                                    />
-                                    {{ userInfo.nickname }}
-                                </div>
-                            </template>
-                            <el-menu-item @click="router.push({ name: 'user' })" v-blur index="user-index">{{ $t('Member Center') }}</el-menu-item>
-                            <!-- 动态菜单项 -->
-                            <HeaderDynamicMenus :menus="memberCenter.state.navUserMenus" />
-                            <el-menu-item @click="userInfo.logout()" v-blur index="user-logout">{{ $t('Logout login') }}</el-menu-item>
-                        </el-sub-menu>
-                        <el-menu-item v-else @click="router.push({ name: 'user' })" v-blur index="user">{{ $t('Member Center') }}</el-menu-item>
-                    </template>
-
-                    <el-sub-menu v-blur index="switch-language">
-                        <template #title>{{ $t('Language') }}</template>
-                        <el-menu-item
-                            @click="editDefaultLang(item.name)"
-                            v-for="item in config.lang.langArray"
-                            :key="item.name"
-                            :index="'switch-language-' + item.value"
-                            >{{ item.value }}</el-menu-item
-                        >
-                    </el-sub-menu>
-                    <el-menu-item index="theme-switch" class="theme-switch">
-                        <DarkSwitch @click="toggleDark()" />
-                    </el-menu-item>
-                </el-menu>
+                <el-scrollbar class="hidden-sm-and-down">
+                    <Menu class="frontend-header-menu" :ellipsis="false" mode="horizontal" />
+                </el-scrollbar>
             </el-col>
         </el-row>
         <el-drawer
-            class="aside-drawer"
+            class="ba-aside-drawer"
             :append-to-body="true"
             v-model="memberCenter.state.menuExpand"
             :with-header="false"
             direction="ltr"
-            size="70%"
+            size="40%"
         >
-            <Aside />
+            <div class="header-row">
+                <div @click="router.push({ name: '/' })" class="header-logo">
+                    <img src="~assets/logo.png" />
+                    <span class="site-name">{{ siteConfig.siteName }}</span>
+                </div>
+                <div @click="memberCenter.toggleMenuExpand(false)" class="user-menus-expand hidden-md-and-up">
+                    <Icon name="fa fa-dedent" color="var(--el-color-primary)" size="20" />
+                </div>
+            </div>
+            <Menu :show-icon="true" mode="vertical" />
         </el-drawer>
     </el-header>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
-import { useRoute } from 'vue-router'
-import { useRouter } from 'vue-router'
-import { useUserInfo } from '/@/stores/userInfo'
+import { watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useSiteConfig } from '/@/stores/siteConfig'
-import { useConfig } from '/@/stores/config'
 import { useMemberCenter } from '/@/stores/memberCenter'
-import { editDefaultLang } from '/@/lang/index'
 import { index } from '/@/api/frontend/index'
-import Aside from '/@/layouts/frontend/components/aside.vue'
-import DarkSwitch from '/@/layouts/common/components/darkSwitch.vue'
-import toggleDark from '/@/utils/useDark'
-import { fullUrl } from '/@/utils/common'
-import HeaderDynamicMenus from '/@/layouts/frontend/components/headerDynamicMenus.vue'
-
-const state = reactive({
-    activeMenu: '',
-})
+import Menu from '/@/layouts/frontend/components/menu.vue'
 
 const route = useRoute()
-const userInfo = useUserInfo()
 const router = useRouter()
-const config = useConfig()
 const siteConfig = useSiteConfig()
 const memberCenter = useMemberCenter()
 
-switch (route.name) {
-    case '/':
-        state.activeMenu = ''
-        break
-    case 'userLogin':
-        state.activeMenu = 'user'
-        break
-}
+watch(
+    () => route.path,
+    () => {
+        memberCenter.toggleMenuExpand(false)
+    },
+    {
+        immediate: true,
+    }
+)
 
 /**
  * 前端初始化请求，获取站点配置信息，动态路由信息等
@@ -109,86 +70,64 @@ index()
 .header {
     background-color: var(--ba-bg-color-overlay);
     box-shadow: 0 0 8px rgba(0 0 0 / 8%);
-}
-.el-header {
-    padding: 0;
+    .frontend-header-menu {
+        height: var(--el-header-height);
+    }
 }
 .header-row {
     display: flex;
-}
-.user-menus-expand {
-    display: flex;
-    height: 60px;
-    align-items: center;
-    justify-content: center;
-}
-.header-logo {
-    display: flex;
-    height: 60px;
-    align-items: center;
-    cursor: pointer;
-    img {
-        height: 34px;
-        width: 34px;
+    justify-content: space-between;
+    .header-logo {
+        display: flex;
+        height: var(--el-header-height);
+        align-items: center;
+        padding-right: 15px;
+        cursor: pointer;
+        img {
+            height: 34px;
+            width: 34px;
+        }
+        .site-name {
+            padding-left: 4px;
+            font-size: var(--el-font-size-large);
+            white-space: nowrap;
+        }
     }
-    span {
-        padding-left: 4px;
-        font-size: var(--el-font-size-large);
-    }
-}
-.switch-language {
-    display: flex;
-    align-items: center;
-    span {
-        padding-right: 4px;
+    .user-menus-expand {
+        display: flex;
+        height: var(--el-header-height);
+        align-items: center;
+        justify-content: center;
     }
 }
-.el-menu--horizontal {
-    margin-left: auto;
-    border-bottom: none;
+.ba-aside-drawer {
+    .header-row {
+        padding: 10px 20px;
+        background-color: var(--el-color-info-light-9);
+        .header-logo {
+            img {
+                height: 28px;
+                width: 28px;
+            }
+        }
+    }
 }
-.header-user-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+@at-root html.dark {
+    .header-logo .site-name {
+        color: var(--el-text-color-primary);
+    }
 }
-.header-user-avatar {
-    width: 16px;
-    height: 16px;
-    margin-right: 4px;
-    border-radius: 50%;
-}
-.el-menu--horizontal > .el-menu-item,
-.el-menu--horizontal > :deep(.el-sub-menu) .el-sub-menu__title,
-.el-menu--horizontal > .el-menu-item.is-active {
-    border-bottom: none;
-}
-:deep(.aside-drawer) {
-    .el-drawer__body {
+@media screen and (max-width: 768px) {
+    .user-menus-expand {
         padding: 0;
     }
 }
-@media only screen and (max-width: 768px) {
-    .header-logo {
-        padding-left: 10px;
-    }
-    .user-menus-expand {
-        padding-left: 20px;
-    }
-}
-@media screen and (max-width: 425px) {
-    :deep(.aside-drawer) {
-        width: 70% !important;
-    }
-}
-.theme-switch {
-    --el-menu-hover-bg-color: none;
-}
-
-@at-root .dark {
-    .header-logo {
-        .hidden-xs-only {
-            color: var(--el-text-color-primary);
+@media screen and (max-width: 414px) {
+    .frontend-header-menu :deep(.el-sub-menu .el-sub-menu__title) {
+        padding: 0 20px;
+        .el-icon {
+            display: none;
         }
     }
 }

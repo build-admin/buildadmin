@@ -70,7 +70,7 @@
 
                     <!-- 规则图标 -->
                     <FormItem
-                        v-if="!['nav', 'button', 'nav_user_menu'].includes(baTable.form.items!.type)"
+                        v-if="baTable.form.items!.type != 'button'"
                         type="icon"
                         :label="t('auth.rule.Rule Icon')"
                         v-model="baTable.form.items!.icon"
