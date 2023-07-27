@@ -42,7 +42,7 @@ import { watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
-import { index } from '/@/api/frontend/index'
+import { initialize } from '/@/api/frontend/index'
 import Menu from '/@/layouts/frontend/components/menu.vue'
 
 const route = useRoute()
@@ -63,7 +63,7 @@ watch(
 /**
  * 前端初始化请求，获取站点配置信息，动态路由信息等
  */
-index()
+initialize()
 </script>
 
 <style scoped lang="scss">

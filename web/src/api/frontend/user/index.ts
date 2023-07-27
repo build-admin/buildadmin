@@ -4,13 +4,6 @@ import { useUserInfo } from '/@/stores/userInfo'
 export const userUrl = '/api/user/'
 export const accountUrl = '/api/account/'
 
-export function index() {
-    return createAxios({
-        url: userUrl + 'index',
-        method: 'get',
-    })
-}
-
 export function checkIn(method: 'get' | 'post', params: object = {}) {
     return createAxios({
         url: userUrl + 'checkIn',

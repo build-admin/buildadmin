@@ -17,6 +17,8 @@ export const useSiteConfig = defineStore('siteConfig', {
                 savename: '',
             },
             headNav: [],
+            initialize: false,
+            userInitialize: false,
         }
     },
     actions: {
@@ -25,6 +27,12 @@ export const useSiteConfig = defineStore('siteConfig', {
         },
         setHeadNav(headNav: RouteRecordRaw[]) {
             this.headNav = headNav
+        },
+        setInitialize(initialize: boolean) {
+            this.initialize = initialize
+        },
+        setUserInitialize(userInitialize: boolean) {
+            this.userInitialize = userInitialize
         },
     },
 })

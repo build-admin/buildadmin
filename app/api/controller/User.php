@@ -22,34 +22,6 @@ class User extends Frontend
     }
 
     /**
-     * 会员首页初始化请求
-     * @throws Throwable
-     */
-    public function index()
-    {
-        $userInfo = $this->auth->getUserInfo();
-        $menus    = $this->auth->getMenus();
-        if (!$menus) {
-            $this->error(__('No action available, please contact the administrator~'));
-        }
-
-        $rules     = [];
-        $userMenus = [];
-        foreach ($menus as $menu) {
-            if ($menu['type'] == 'menu_dir') {
-                $userMenus[] = $menu;
-            } else if ($menu['type'] != 'menu') {
-                $rules[] = $menu;
-            }
-        }
-        $this->success('', [
-            'userInfo' => $userInfo,
-            'menus'    => $userMenus,
-            'rules'    => $rules,
-        ]);
-    }
-
-    /**
      * 会员签入(登录和注册)
      * @throws Throwable
      */

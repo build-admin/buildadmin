@@ -57,6 +57,7 @@ class Index extends Frontend
                 'upload'       => get_upload_config(),
             ],
             'openMemberCenter' => Config::get('buildadmin.open_member_center'),
+            'userInfo'         => $this->auth->getUserInfo(),
             'rules'            => $rules,
             'menus'            => $menus,
         ]);

@@ -5,9 +5,10 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useUserInfo } from '/@/stores/userInfo'
+import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
-import { index } from '/@/api/frontend/user/index'
-import { handleFrontendRoute, getFirstRoute, routePush } from '/@/utils/router'
+import { initialize } from '/@/api/frontend/index'
+import { getFirstRoute, routePush } from '/@/utils/router'
 import { memberCenterBaseRoute } from '/@/router/static'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import Default from '/@/layouts/frontend/container/default.vue'
@@ -25,6 +26,7 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const userInfo = useUserInfo()
+const siteConfig = useSiteConfig()
 const memberCenter = useMemberCenter()
 
 onBeforeRouteUpdate((to) => {
@@ -41,37 +43,39 @@ onMounted(async () => {
     /**
      * 会员中心初始化请求，获取会员中心菜单信息等
      */
-    index().then((res) => {
-        res.data.userInfo.refresh_token = userInfo.getToken('refresh')
-        userInfo.dataFill(res.data.userInfo)
-        handleFrontendRoute(res.data.rules, res.data.menus)
-        if (res.data.menus.length) {
-            if (ret.type == 'jump') return router.push(ret.url)
 
-            // 预跳转到上次路径
-            if (route.params.to) {
-                const lastRoute = JSON.parse(route.params.to as string)
-                if (lastRoute.path != memberCenterBaseRoute.path) {
-                    let query = !isEmpty(lastRoute.query) ? lastRoute.query : {}
-                    routePush({ path: lastRoute.path, query: query })
-                    return
-                }
-            }
+    const callback = () => {
+        if (ret.type == 'jump') return router.push(ret.url)
 
-            // 跳转到第一个菜单
-            if (route.name == 'userMainLoading') {
-                let firstRoute = getFirstRoute(memberCenter.state.viewRoutes)
-                if (firstRoute) {
-                    router.push({ path: firstRoute.path })
-                } else {
-                    ElNotification({
-                        type: 'error',
-                        message: t('No route found to jump~'),
-                    })
-                }
+        // 预跳转到上次路径
+        if (route.params.to) {
+            const lastRoute = JSON.parse(route.params.to as string)
+            if (lastRoute.path != memberCenterBaseRoute.path) {
+                let query = !isEmpty(lastRoute.query) ? lastRoute.query : {}
+                routePush({ path: lastRoute.path, query: query })
+                return
             }
         }
-    })
+
+        // 跳转到第一个菜单
+        if (route.name == 'userMainLoading') {
+            let firstRoute = getFirstRoute(memberCenter.state.viewRoutes)
+            if (firstRoute) {
+                router.push({ path: firstRoute.path })
+            } else {
+                ElNotification({
+                    type: 'error',
+                    message: t('No route found to jump~'),
+                })
+            }
+        }
+    }
+
+    if (siteConfig.userInitialize) {
+        callback()
+    } else {
+        initialize(callback)
+    }
 
     if (document.body.clientWidth < 1024) {
         memberCenter.setShrink(true)
