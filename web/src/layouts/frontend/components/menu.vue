@@ -30,6 +30,9 @@
                 <!-- 动态菜单 -->
                 <MenuSub :menus="memberCenter.state.navUserMenus" :show-icon="showIcon" />
 
+                <!-- 会员中心菜单 -->
+                <MenuSub :menus="memberCenter.state.viewRoutes" :show-icon="showIcon" />
+
                 <el-menu-item @click="userInfo.logout()" v-blur index="user-logout">
                     <Icon v-if="showIcon" name="fa fa-sign-out" color="var(--el-text-color-primary)" />
                     {{ $t('Logout login') }}
@@ -67,7 +70,6 @@
 <script setup lang="ts">
 import { nextTick, reactive, watch } from 'vue'
 import { editDefaultLang } from '/@/lang/index'
-import { Menus } from '/@/stores/interface/index'
 import { useConfig } from '/@/stores/config'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useSiteConfig } from '/@/stores/siteConfig'
@@ -76,7 +78,7 @@ import { fullUrl } from '/@/utils/common'
 import MenuSub from '/@/layouts/frontend/components/menuSub.vue'
 import toggleDark from '/@/utils/useDark'
 import DarkSwitch from '/@/layouts/common/components/darkSwitch.vue'
-import { RouteLocationNormalizedLoaded, useRoute, useRouter } from 'vue-router'
+import { RouteLocationNormalizedLoaded, useRoute, useRouter, RouteRecordRaw } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
@@ -100,12 +102,12 @@ const state = reactive({
 const findMenu = (route: RouteLocationNormalizedLoaded) => {
     for (const key in memberCenter.state.navUserMenus) {
         if (memberCenter.state.navUserMenus[key].path == route.path || memberCenter.state.navUserMenus[key].name == route.name) {
-            return memberCenter.state.navUserMenus[key].id
+            return memberCenter.state.navUserMenus[key].meta?.id
         }
     }
     for (const key in siteConfig.headNav) {
         if (siteConfig.headNav[key].path == route.path || siteConfig.headNav[key].name == route.name) {
-            return siteConfig.headNav[key].id
+            return siteConfig.headNav[key].meta?.id
         }
     }
 }
@@ -142,7 +144,7 @@ const onSelect = (index: string) => {
  * @param menus
  * @param index
  */
-const noNeedActive = (menus: Menus[], index: string) => {
+const noNeedActive = (menus: RouteRecordRaw[], index: string) => {
     if (index.indexOf('language-switch') === 0 || index == 'theme-switch') {
         return true
     }
@@ -154,14 +156,14 @@ const noNeedActive = (menus: Menus[], index: string) => {
  * @param menus
  * @param index
  */
-const isExternalLink = (menus: Menus[], index: string): boolean => {
+const isExternalLink = (menus: RouteRecordRaw[], index: string): boolean => {
     for (const key in menus) {
-        const columnIndex = `column-${menus[key].id}`
+        const columnIndex = `column-${menus[key].meta?.id}`
         if (columnIndex == index) {
-            return menus[key].meta.type == 'link'
+            return menus[key].meta?.menu_type == 'link'
         }
-        if (menus[key].children.length) {
-            return isExternalLink(menus[key].children, index)
+        if (menus[key].children?.length) {
+            return isExternalLink(menus[key].children!, index)
         }
     }
     return false

@@ -42,7 +42,7 @@ export interface MemberCenter {
     authNode: Map<string, string[]>
     shrink: boolean
     menuExpand: boolean
-    navUserMenus: Menus[]
+    navUserMenus: RouteRecordRaw[]
 }
 
 export interface AdminInfo {
@@ -107,20 +107,6 @@ export interface Terminal {
     port: string
 }
 
-export interface Menus {
-    id: number
-    name: string
-    type: string
-    path: string
-    title: string
-    url: string
-    icon: string
-    meta: {
-        type: 'tab' | 'link' | 'iframe'
-    }
-    children: Menus[]
-}
-
 export interface SiteConfig {
     siteName: string
     recordNumber?: string
@@ -135,5 +121,5 @@ export interface SiteConfig {
         url?: string
         params?: anyObj
     }
-    headNav: Menus[]
+    headNav: RouteRecordRaw[]
 }

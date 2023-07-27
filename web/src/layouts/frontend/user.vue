@@ -7,7 +7,7 @@ import { onMounted } from 'vue'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { index } from '/@/api/frontend/user/index'
-import { handleMemberCenterRoute, getFirstRoute, routePush } from '/@/utils/router'
+import { handleFrontendRoute, getFirstRoute, routePush } from '/@/utils/router'
 import { memberCenterBaseRoute } from '/@/router/static'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import Default from '/@/layouts/frontend/container/default.vue'
@@ -44,9 +44,8 @@ onMounted(async () => {
     index().then((res) => {
         res.data.userInfo.refresh_token = userInfo.getToken('refresh')
         userInfo.dataFill(res.data.userInfo)
-        if (res.data.menus) {
-            handleMemberCenterRoute(res.data.menus, res.data.rules)
-
+        handleFrontendRoute(res.data.rules, res.data.menus)
+        if (res.data.menus.length) {
             if (ret.type == 'jump') return router.push(ret.url)
 
             // 预跳转到上次路径

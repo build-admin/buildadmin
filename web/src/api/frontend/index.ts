@@ -23,9 +23,7 @@ export function index() {
             method: 'get',
         }).then((res) => {
             setTitle(res.data.site.siteName)
-            if (res.data.rules) {
-                handleFrontendRoute(res.data.rules)
-            }
+            handleFrontendRoute(res.data.rules, res.data.menus)
             siteConfig.dataFill(res.data.site)
             memberCenter.setStatus(res.data.openMemberCenter)
             if (!res.data.openMemberCenter) memberCenter.setLayoutMode('Disable')

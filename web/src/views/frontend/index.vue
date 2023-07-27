@@ -35,12 +35,9 @@ import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import Header from '/@/layouts/frontend/components/header.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
-import { togglePageDark } from '/@/utils/useDark'
 
 const siteConfig = useSiteConfig()
 const memberCenter = useMemberCenter()
-
-togglePageDark(false)
 </script>
 
 <style scoped lang="scss">
@@ -101,13 +98,10 @@ togglePageDark(false)
                 color: var(--el-color-white) !important;
             }
             &:hover {
-                background-color: transparent;
+                background-color: transparent !important;
                 color: var(--el-menu-hover-text-color);
             }
         }
-    }
-    :deep(.theme-switch) {
-        display: none;
     }
 }
 .footer {
@@ -136,6 +130,11 @@ togglePageDark(false)
 @media screen and (max-width: 375px) {
     .main-right img {
         width: 300px !important;
+    }
+}
+@at-root html.dark {
+    .container {
+        background: url(/@/assets/bg-dark.jpg) repeat;
     }
 }
 </style>

@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { MemberCenter, Menus } from '/@/stores/interface/index'
+import { MemberCenter } from '/@/stores/interface/index'
 import { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 
 export const useMemberCenter = defineStore('memberCenter', () => {
@@ -25,7 +25,7 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         navUserMenus: [],
     })
 
-    const setNavUserMenus = (menus: Menus[]) => {
+    const setNavUserMenus = (menus: RouteRecordRaw[]) => {
         state.navUserMenus = menus
     }
 
@@ -82,7 +82,7 @@ export const useMemberCenter = defineStore('memberCenter', () => {
 
 function encodeRoutesURI(data: RouteRecordRaw[]) {
     data.forEach((item) => {
-        if (item.meta?.type == 'iframe') {
+        if (item.meta?.menu_type == 'iframe') {
             item.path = '/user/iframe/' + encodeURIComponent(item.path)
         }
 

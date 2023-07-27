@@ -38,7 +38,7 @@ class User extends Frontend
         foreach ($menus as $menu) {
             if ($menu['type'] == 'menu_dir') {
                 $userMenus[] = $menu;
-            } else {
+            } else if ($menu['type'] != 'menu') {
                 $rules[] = $menu;
             }
         }
