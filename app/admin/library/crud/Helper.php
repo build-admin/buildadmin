@@ -373,7 +373,6 @@ class Helper
             return null;
         }
         return match ($field['default']) {
-            '0' => 0,
             'empty string' => '',
             default => $field['default'],
         };
