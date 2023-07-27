@@ -1161,7 +1161,7 @@ class Helper
 
     public static function formatObjectKey(string $keyName): string
     {
-        if (preg_match("/^[a-zA-Z0-9_]+$/", $keyName)) {
+        if (preg_match("/^[a-zA-Z_][a-zA-Z0-9_]+$/", $keyName)) {
             return $keyName;
         } else {
             $quote = self::getQuote($keyName);
