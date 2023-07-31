@@ -10,7 +10,14 @@
                 </div>
             </template>
             <div class="user-profile">
-                <el-form :model="state.form" :rules="state.rules" :label-width="100" ref="formRef" @keyup.enter="onSubmit()">
+                <el-form
+                    :label-position="memberCenter.state.shrink ? 'top' : 'right'"
+                    :model="state.form"
+                    :rules="state.rules"
+                    :label-width="100"
+                    ref="formRef"
+                    @keyup.enter="onSubmit()"
+                >
                     <FormItem
                         :label="$t('user.account.profile.head portrait')"
                         :input-attr="{
@@ -248,11 +255,13 @@ import { useI18n } from 'vue-i18n'
 import { sendEms, sendSms } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import clickCaptcha from '/@/components/clickCaptcha'
+import { useMemberCenter } from '/@/stores/memberCenter'
 let timer: number
 
 const { t } = useI18n()
 const router = useRouter()
 const userInfo = useUserInfo()
+const memberCenter = useMemberCenter()
 
 const formRef = ref<FormInstance>()
 const bindFormRef = ref<FormInstance>()
