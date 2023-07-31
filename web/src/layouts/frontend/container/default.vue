@@ -14,11 +14,17 @@
 </template>
 
 <script setup lang="ts">
+import { ref, provide } from 'vue'
 import Header from '/@/layouts/frontend/components/header.vue'
 import Aside from '/@/layouts/frontend/components/aside.vue'
 import Main from '/@/layouts/frontend/components/main.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
 import { mainHeight as layoutMainScrollbarStyle } from '/@/utils/layout'
+import { ScrollbarInstance } from 'element-plus'
+
+const mainScrollbarRef = ref<ScrollbarInstance>()
+
+provide('mainScrollbarRef', mainScrollbarRef)
 </script>
 
 <style scoped lang="scss">
