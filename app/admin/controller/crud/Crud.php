@@ -564,7 +564,12 @@ class Crud extends Backend
             $columns        = Helper::parseTableColumns($field['form']['remote-table'], true);
             $relationFields = explode(',', $field['form']['relation-fields']);
             $tableName      = TableManager::tableName($field['form']['remote-table'], false);
-            $relationName   = parse_name(preg_replace('/(.*)(_ids|_id)$/', '$1', $field['name']), 1, false);
+            $rnPattern      = '/(.*)(_ids|_id)$/';
+            if (preg_match($rnPattern, $field['name'])) {
+                $relationName = parse_name(preg_replace($rnPattern, '$1', $field['name']), 1, false);
+            } else {
+                $relationName = parse_name($field['name'] . '_table', 1, false);
+            }
 
             // 建立关联模型代码文件
             if (!$field['form']['remote-model'] || !file_exists(root_path() . $field['form']['remote-model'])) {
