@@ -85,10 +85,12 @@ import { uuid } from '/@/utils/random'
 import { buildValidatorData } from '/@/utils/validate'
 import router from '/@/router'
 import clickCaptcha from '/@/components/clickCaptcha'
+import toggleDark from '/@/utils/useDark'
 let timer: number
 
 const config = useConfig()
 const adminInfo = useAdminInfo()
+toggleDark(config.layout.isDark)
 
 const formRef = ref<FormInstance>()
 const usernameRef = ref<InputInstance>()
