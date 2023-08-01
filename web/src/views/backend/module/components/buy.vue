@@ -19,7 +19,11 @@
                             <el-checkbox v-model="state.buy.agreement" size="small" label="" />
                             <span>
                                 {{ t('module.Understand and agree') }}《
-                                <a href="https://doc.buildadmin.com/guide/other/appendix/templateAgreement.html" target="_blank">
+                                <a
+                                    href="https://doc.buildadmin.com/guide/other/appendix/templateAgreement.html"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
                                     {{ t('module.Module purchase and use agreement') }}
                                 </a>
                                 》

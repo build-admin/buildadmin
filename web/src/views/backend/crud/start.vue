@@ -28,7 +28,7 @@
                     <ol>
                         <li>
                             {{ t('crud.crud.experience 1 1') }}
-                            <a target="_blank" href="https://wonderful-code.gitee.io/guide/other/developerMustSee.html">
+                            <a target="_blank" href="https://wonderful-code.gitee.io/guide/other/developerMustSee.html" rel="noopener noreferrer">
                                 {{ t('crud.crud.experience 1 2') }}
                             </a>
                             {{ t('crud.crud.experience 1 3') }}
@@ -47,7 +47,7 @@
                     <el-alert v-if="!isDev()" class="no-dev" type="warning" :show-icon="true" :closable="false">
                         <template #title>
                             <span>{{ t('crud.crud.experience 4 1') }}</span>
-                            <a target="_blank" href="https://wonderful-code.gitee.io/guide/other/developerMustSee.html">
+                            <a target="_blank" href="https://wonderful-code.gitee.io/guide/other/developerMustSee.html" rel="noopener noreferrer">
                                 {{ t('crud.crud.experience 4 2') }}
                             </a>
                             <span>

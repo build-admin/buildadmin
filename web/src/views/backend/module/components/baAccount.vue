@@ -75,7 +75,12 @@
                             <el-button @click="onBaAccountSubmit()" :loading="user.loading" round type="primary" size="large">
                                 {{ t('module.Sign in') }}
                             </el-button>
-                            <a target="_blank" class="ba-account-register" href="https://uni.buildadmin.com/user/login?type=register">
+                            <a
+                                target="_blank"
+                                class="ba-account-register"
+                                href="https://uni.buildadmin.com/user/login?type=register"
+                                rel="noopener noreferrer"
+                            >
                                 <el-button round plain type="info" size="large"> {{ t('module.Register') }} </el-button>
                             </a>
                         </el-form-item>
