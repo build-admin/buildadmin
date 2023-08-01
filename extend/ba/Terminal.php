@@ -187,8 +187,8 @@ class Terminal
             $token = request()->server('HTTP_BATOKEN', request()->request('batoken', Cookie::get('batoken') ?: false));
             $auth  = Auth::instance();
             $auth->init($token);
-            if (!$auth->isLogin()) {
-                $this->execError('Please login first', true);
+            if (!$auth->isSuperAdmin()) {
+                $this->execError("You're not super administrator", true);
             }
         }
 
