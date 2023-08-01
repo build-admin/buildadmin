@@ -47,8 +47,11 @@ class Api extends BaseController
 
         parent::initialize();
 
-        // 设置默认过滤规则
-        $this->request->filter('trim,strip_tags,htmlspecialchars');
+        /**
+         * 设置默认过滤规则
+         * @see filter()
+         */
+        $this->request->filter('filter');
 
         // 加载控制器语言包
         $langSet = $this->app->lang->getLangSet();
