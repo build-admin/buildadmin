@@ -442,15 +442,15 @@ const tableBaseAttr = {
     },
     operator: {
         type: 'select',
-        value: '=',
+        value: 'eq',
         options: {
             false: i18n.global.t('crud.state.Disable Search'),
-            '=': '=',
-            '<>': '!=',
-            '>': '>',
-            '>=': '>=',
-            '<': '<',
-            '<=': '<=',
+            eq: 'eq =',
+            ne: 'ne !=',
+            gt: 'gt >',
+            egt: 'egt >=',
+            lt: 'lt <',
+            elt: 'elt <=',
             LIKE: 'LIKE',
             'NOT LIKE': 'NOT LIKE',
             IN: 'IN',
@@ -651,7 +651,7 @@ export const designTypes: anyObj = {
     datetime: {
         name: i18n.global.t('utils.time date') + i18n.global.t('utils.choice'),
         table: {
-            operator: getTableAttr('operator', '='),
+            operator: getTableAttr('operator', 'eq'),
             sortable: getTableAttr('sortable', 'custom'),
             width: {
                 type: 'number',
@@ -677,7 +677,7 @@ export const designTypes: anyObj = {
     date: {
         name: i18n.global.t('utils.date') + i18n.global.t('utils.choice'),
         table: {
-            operator: getTableAttr('operator', '='),
+            operator: getTableAttr('operator', 'eq'),
             sortable: getTableAttr('sortable', 'custom'),
         },
         form: {
@@ -688,7 +688,7 @@ export const designTypes: anyObj = {
     time: {
         name: i18n.global.t('utils.time') + i18n.global.t('utils.choice'),
         table: {
-            operator: getTableAttr('operator', '='),
+            operator: getTableAttr('operator', 'eq'),
             sortable: getTableAttr('sortable', 'custom'),
         },
         form: formBaseAttr,

@@ -231,12 +231,12 @@ declare global {
 
     /* 通用搜索操作符支持的值 */
     type OperatorStr =
-        | '=' // 等于，默认值
-        | '<>'
-        | '>'
-        | '>='
-        | '<'
-        | '<='
+        | 'eq' // 等于，默认值
+        | 'ne' // 不等于
+        | 'gt' // 大于
+        | 'egt' // 大于等于
+        | 'lt' // 小于
+        | 'elt' // 小于等于
         | 'LIKE'
         | 'NOT LIKE'
         | 'IN'
@@ -246,6 +246,13 @@ declare global {
         | 'NULL' // 是否为NULL，将生成单个复选框
         | 'NOT NULL'
         | 'FIND_IN_SET'
+        // 不推荐使用的，因为部分符号不利于网络传输
+        | '='
+        | '<>'
+        | '>'
+        | '>='
+        | '<'
+        | '<='
 
     /* 链接打开方式 */
     type aTarget = '_blank' | '_self'

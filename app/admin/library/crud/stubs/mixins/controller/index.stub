@@ -5,8 +5,6 @@
      */
     public function index(): void
     {
-        $this->request->filter(['strip_tags', 'trim']);
-
         // 如果是 select 则转发到 select 方法，若未重写该方法，其实还是继续执行 index
         if ($this->request->param('select')) {
             $this->select();

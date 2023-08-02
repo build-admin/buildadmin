@@ -64,7 +64,6 @@ class Crud extends Backend
     public function initialize(): void
     {
         parent::initialize();
-        $this->request->filter(['trim']);
     }
 
     /**

@@ -34,7 +34,6 @@ class User extends Backend
      */
     public function index(): void
     {
-        $this->request->filter(['strip_tags', 'trim']);
         if ($this->request->param('select')) {
             $this->select();
         }
@@ -134,8 +133,6 @@ class User extends Backend
      */
     public function select(): void
     {
-        $this->request->filter(['strip_tags', 'trim']);
-
         list($where, $alias, $limit, $order) = $this->queryBuilder();
         $res = $this->model
             ->withJoin($this->withJoinTable, $this->withJoinType)

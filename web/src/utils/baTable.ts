@@ -490,7 +490,7 @@ export default class baTable {
             }
             const prop = field[key].prop
             if (typeof field[key].operator == 'undefined') {
-                field[key].operator = '='
+                field[key].operator = 'eq'
             }
             if (prop) {
                 if (field[key].operator == 'RANGE' || field[key].operator == 'NOT RANGE') {

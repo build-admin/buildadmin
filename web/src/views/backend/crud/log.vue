@@ -116,7 +116,6 @@ const baTable = new baTableClass(
                 prop: 'status',
                 align: 'center',
                 render: 'tag',
-                operator: '=',
                 sortable: false,
                 replaceValue: {
                     delete: t('crud.log.status delete'),

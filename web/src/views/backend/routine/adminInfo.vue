@@ -159,7 +159,7 @@ index().then((res) => {
         {
             field: 'admin_id',
             val: res.data.info.id,
-            operator: '=',
+            operator: 'eq',
         },
     ]
     getLog()

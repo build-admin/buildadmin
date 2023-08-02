@@ -232,6 +232,8 @@ class Backend extends Api
                 continue;
             }
 
+            $field['operator'] = $this->getOperatorByAlias($field['operator']);
+
             $fieldName = str_contains($field['field'], '.') ? $field['field'] : $mainTableAlias . $field['field'];
 
             // 日期时间
@@ -339,5 +341,24 @@ class Backend extends Api
         }
         $adminIds[] = $this->auth->id;
         return array_unique($adminIds);
+    }
+
+    /**
+     * 从别名获取原始的逻辑运算符
+     * @param string $operator 逻辑运算符别名
+     * @return string 原始的逻辑运算符，无别名则原样返回
+     */
+    protected function getOperatorByAlias(string $operator): string
+    {
+        $alias = [
+            'ne'  => '<>',
+            'eq'  => '=',
+            'gt'  => '>',
+            'egt' => '>=',
+            'lt'  => '<',
+            'elt' => '<=',
+        ];
+
+        return $alias[$operator] ?? $operator;
     }
 }

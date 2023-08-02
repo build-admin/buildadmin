@@ -47,7 +47,7 @@
                         v-model="baTable.form.items!.group_id"
                         :placeholder="t('user.user.grouping')"
                         :input-attr="{
-                            params: { isTree: true, search: [{ field: 'status', val: '1', operator: '=' }] },
+                            params: { isTree: true, search: [{ field: 'status', val: '1', operator: 'eq' }] },
                             field: 'name',
                             'remote-url': '/admin/user.Group/index',
                         }"
