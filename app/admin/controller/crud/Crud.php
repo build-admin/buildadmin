@@ -742,7 +742,7 @@ class Crud extends Backend
     {
         if ($field['designType'] == 'editor') {
             $this->formVueData['bigDialog']     = 'true'; // form 使用较宽的 Dialog
-            $this->controllerData['filterRule'] = "\n" . Helper::tab(2) . '$this->request->filter(\'trim,htmlspecialchars\');';// 修改变量过滤规则
+            $this->controllerData['filterRule'] = "\n" . Helper::tab(2) . '$this->request->filter(\'clean_xss\');';// 修改变量过滤规则
         }
 
         // 默认排序字段
