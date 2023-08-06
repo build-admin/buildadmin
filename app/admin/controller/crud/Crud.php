@@ -812,7 +812,7 @@ class Crud extends Backend
         }
         if ($field['designType'] == 'array') {
             $this->indexVueData['defaultItems'][$field['name']] = "[]";
-        } elseif (in_array($field['designType'], $this->dtStringToArray) && stripos($field['default'], ',') !== false) {
+        } elseif (in_array($field['designType'], $this->dtStringToArray) && $field['default'] !== null && stripos($field['default'], ',') !== false) {
             $this->indexVueData['defaultItems'][$field['name']] = Helper::buildSimpleArray(explode(',', $field['default']));
         } elseif (in_array($field['designType'], ['weigh', 'number', 'float'])) {
             $this->indexVueData['defaultItems'][$field['name']] = (float)$field['default'];
