@@ -74,7 +74,7 @@ class Crud extends Backend
     {
         $type   = $this->request->post('type', '');
         $table  = $this->request->post('table', []);
-        $fields = $this->request->post('fields', []);
+        $fields = $this->request->post('fields', [], 'clean_xss,htmlspecialchars_decode');
 
         if (!$table || !$fields || !isset($table['name']) || !$table['name']) {
             $this->error(__('Parameter error'));
