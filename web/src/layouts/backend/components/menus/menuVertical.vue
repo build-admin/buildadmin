@@ -72,6 +72,7 @@ onBeforeRouteUpdate((to) => {
 }
 .layouts-menu-vertical {
     border: 0;
+    padding-bottom: 30px;
     --el-menu-bg-color: v-bind('config.getColorVal("menuBackground")');
     --el-menu-text-color: v-bind('config.getColorVal("menuColor")');
     --el-menu-active-color: v-bind('config.getColorVal("menuActiveColor")');
