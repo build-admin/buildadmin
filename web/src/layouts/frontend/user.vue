@@ -74,7 +74,7 @@ onMounted(async () => {
     if (siteConfig.userInitialize) {
         callback()
     } else {
-        initialize(callback)
+        initialize(callback, true)
     }
 
     if (document.body.clientWidth < 1024) {

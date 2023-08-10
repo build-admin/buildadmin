@@ -14,7 +14,7 @@ export const indexUrl = '/api/index/'
  * 1. 首次初始化携带了会员token时，一共只初始化一次
  * 2. 首次初始化未带会员token，将在登录后再初始化一次
  */
-export function initialize(callback?: (res: ApiResponse) => void) {
+export function initialize(callback?: (res: ApiResponse) => void, requiredLogin?: boolean) {
     debounce(() => {
         if (router.currentRoute.value.meta.initialize === false) return
 
@@ -28,6 +28,9 @@ export function initialize(callback?: (res: ApiResponse) => void) {
         createAxios({
             url: indexUrl + 'index',
             method: 'get',
+            params: {
+                requiredLogin: requiredLogin ? 1 : 0,
+            },
         }).then((res) => {
             setTitle(res.data.site.siteName)
             handleFrontendRoute(res.data.rules, res.data.menus)
@@ -37,15 +40,14 @@ export function initialize(callback?: (res: ApiResponse) => void) {
             if (!isEmpty(res.data.userInfo)) {
                 res.data.userInfo.refresh_token = userInfo.getToken('refresh')
                 userInfo.dataFill(res.data.userInfo)
+
+                // 请求到会员信息才设置会员中心初始化是成功的
+                siteConfig.setUserInitialize(true)
             }
 
             if (!res.data.openMemberCenter) memberCenter.setLayoutMode('Disable')
 
             siteConfig.setInitialize(true)
-
-            if (userInfo.isLogin()) {
-                siteConfig.setUserInitialize(true)
-            }
 
             typeof callback == 'function' && callback(res)
         })
