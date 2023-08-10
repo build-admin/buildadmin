@@ -29,6 +29,10 @@ export const useMemberCenter = defineStore('memberCenter', () => {
         state.navUserMenus = menus
     }
 
+    const mergeNavUserMenus = (menus: RouteRecordRaw[]) => {
+        state.navUserMenus = [...state.navUserMenus, ...menus]
+    }
+
     const setAuthNode = (key: string, data: string[]) => {
         state.authNode.set(key, data)
     }
@@ -68,6 +72,7 @@ export const useMemberCenter = defineStore('memberCenter', () => {
     return {
         state,
         setNavUserMenus,
+        mergeNavUserMenus,
         setAuthNode,
         mergeAuthNode,
         setViewRoutes,

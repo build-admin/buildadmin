@@ -103,13 +103,14 @@ export const handleFrontendRoute = (routes: any, menus: any) => {
         addRouteAll(viewsComponent, routes, '', true)
         memberCenter.mergeAuthNode(handleAuthNode(routes, '/'))
         siteConfig.setHeadNav(handleMenuRule(routes, '/', ['nav']))
+        memberCenter.mergeNavUserMenus(handleMenuRule(routes, '/', ['nav_user_menu']))
     }
     if (menus.length && isEmpty(memberCenter.state.viewRoutes)) {
         addRouteAll(viewsComponent, menus, memberCenterBaseRoute.name as string)
         const menuMemberCenterBaseRoute = '/' + (memberCenterBaseRoute.name as string) + '/'
         memberCenter.mergeAuthNode(handleAuthNode(menus, menuMemberCenterBaseRoute))
 
-        memberCenter.setNavUserMenus(handleMenuRule(menus, '/', ['nav_user_menu']))
+        memberCenter.mergeNavUserMenus(handleMenuRule(menus, '/', ['nav_user_menu']))
         memberCenter.setShowHeadline(menus.length > 1 ? true : false)
         memberCenter.setViewRoutes(handleMenuRule(menus, menuMemberCenterBaseRoute))
     }
