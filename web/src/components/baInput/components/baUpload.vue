@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch, useSlots } from 'vue'
+import { ref, reactive, onMounted, watch, useSlots, nextTick } from 'vue'
 import { UploadInstance, UploadUserFile, UploadProps, genFileId, UploadRawFile, UploadFiles } from 'element-plus'
 import { stringToArray } from '/@/components/baInput/helper'
 import { fullUrl, arrayFullUrl, getFileNameFromPath, getArrayKey } from '/@/utils/common'
@@ -56,6 +56,7 @@ import SelectFile from '/@/components/baInput/components/selectFile.vue'
 import { uuid } from '/@/utils/random'
 import { cloneDeep, isEmpty } from 'lodash-es'
 import { AxiosProgressEvent } from 'axios'
+import Sortable from 'sortablejs'
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] }
 interface Props {
@@ -245,6 +246,26 @@ onMounted(() => {
     if (state.attr.limit) state.selectFile.limit = state.attr.limit
 
     init(props.modelValue)
+
+    nextTick(() => {
+        let uploadListEl = upload.value?.$el.querySelector('.el-upload-list')
+        let uploadItemEl = uploadListEl.getElementsByClassName('el-upload-list__item')
+        if (uploadItemEl.length >= 2) {
+            Sortable.create(uploadListEl, {
+                animation: 200,
+                draggable: '.el-upload-list__item',
+                onEnd: (evt: Sortable.SortableEvent) => {
+                    if (evt.oldIndex != evt.newIndex) {
+                        state.fileList[evt.newIndex!] = [
+                            state.fileList[evt.oldIndex!],
+                            (state.fileList[evt.oldIndex!] = state.fileList[evt.newIndex!]),
+                        ][0]
+                        emits('update:modelValue', getAllUrls())
+                    }
+                },
+            })
+        }
+    })
 })
 
 watch(
@@ -378,6 +399,15 @@ defineExpose({
 .ba-upload.file :deep(.el-upload-list),
 .ba-upload.files :deep(.el-upload-list) {
     margin-left: -10px;
+}
+.ba-upload.files,
+.ba-upload.images {
+    :deep(.el-upload-list__item) {
+        .el-upload-list__item-actions,
+        .el-upload-list__item-name {
+            cursor: move;
+        }
+    }
 }
 .ml-6 {
     margin-left: 6px;
