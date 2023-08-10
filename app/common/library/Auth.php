@@ -61,9 +61,16 @@ class Auth extends \ba\Auth
 
     /**
      * 令牌默认有效期
+     * 可在 config/buildadmin.php 内修改默认值
      * @var int
      */
     protected int $keepTime = 86400;
+
+    /**
+     * 刷新令牌有效期
+     * @var int
+     */
+    protected int $refreshTokenKeepTime = 2592000;
 
     /**
      * 允许输出的字段
@@ -78,6 +85,8 @@ class Auth extends \ba\Auth
             'auth_group_access' => '', // 用户-用户组关系表（关系字段）
             'auth_rule'         => 'user_rule', // 权限规则表
         ], $config));
+
+        $this->setKeepTime((int)Config::get('buildadmin.user_token_keep_time'));
     }
 
     /**
@@ -205,13 +214,13 @@ class Auth extends \ba\Auth
 
     /**
      * 会员登录
-     * @param string $username
-     * @param string $password
-     * @param bool   $keepTime
+     * @param string $username 用户名
+     * @param string $password 密码
+     * @param bool   $keep     是否保持登录
      * @return bool
      * @throws Throwable
      */
-    public function login(string $username, string $password, bool $keepTime): bool
+    public function login(string $username, string $password, bool $keep): bool
     {
         // 判断账户类型
         $accountType = false;
@@ -252,8 +261,8 @@ class Auth extends \ba\Auth
             Token::clear('user-refresh', $this->model->id);
         }
 
-        if ($keepTime) {
-            $this->setRefreshToken(2592000);
+        if ($keep) {
+            $this->setRefreshToken($this->refreshTokenKeepTime);
         }
         $this->loginSuccessful();
         return true;
