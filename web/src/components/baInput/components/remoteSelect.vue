@@ -183,8 +183,10 @@ const onClear = () => {
 }
 
 const onLogKeyword = (q: string) => {
-    state.keyword = q
-    getData()
+    if (state.keyword != q) {
+        state.keyword = q
+        getData()
+    }
 }
 
 const getData = (initValue: valType = '') => {
