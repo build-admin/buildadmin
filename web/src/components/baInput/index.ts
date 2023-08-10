@@ -183,6 +183,7 @@ export interface InputAttr {
     onCalendarChange?: Function
     onPanelChange?: Function
     onActiveChange?: Function
+    onRow?: Function
     [key: string]: any
 }
 

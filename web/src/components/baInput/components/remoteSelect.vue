@@ -137,13 +137,15 @@ const emits = defineEmits<{
 const onChangeSelect = (val: valType) => {
     emits('update:modelValue', val)
     if (typeof instance?.vnode.props?.onRow == 'function') {
+        let pkArr = props.pk.split('.')
+        let pk = pkArr[pkArr.length - 1]
         if (typeof val == 'number' || typeof val == 'string') {
-            const dataKey = getArrayKey(state.options, props.pk, val.toString())
+            const dataKey = getArrayKey(state.options, pk, val.toString())
             emits('row', dataKey ? toRaw(state.options[dataKey]) : {})
         } else {
             const valueArr = []
             for (const key in val) {
-                let dataKey = getArrayKey(state.options, props.pk, val[key].toString())
+                let dataKey = getArrayKey(state.options, pk, val[key].toString())
                 if (dataKey) valueArr.push(toRaw(state.options[dataKey]))
             }
             emits('row', valueArr)
