@@ -413,101 +413,103 @@
             :destroy-on-close="true"
             @keyup.enter="onSaveRemoteSelect"
         >
-            <div class="ba-operate-form" :style="'width: calc(100% - 80px)'">
-                <el-form
-                    ref="formRef"
-                    :model="state.remoteSelectPre.form"
-                    :rules="remoteSelectPreFormRules"
-                    v-loading="state.remoteSelectPre.loading"
-                    label-position="right"
-                    label-width="160px"
-                    v-if="state.remoteSelectPre.index != -1 && state.fields[state.remoteSelectPre.index]"
-                >
-                    <FormItem
-                        prop="table"
-                        type="select"
-                        :label="t('crud.crud.Associated Data Table')"
-                        v-model="state.remoteSelectPre.form.table"
-                        :key="JSON.stringify(state.remoteSelectPre.dbList)"
-                        :data="{
-                            content: state.remoteSelectPre.dbList,
-                        }"
-                        :input-attr="{ onChange: onJoinTableChange }"
-                    />
-                    <div v-loading="state.loading.remoteSelect">
+            <el-scrollbar max-height="60vh">
+                <div class="ba-operate-form" :style="'width: calc(100% - 80px)'">
+                    <el-form
+                        ref="formRef"
+                        :model="state.remoteSelectPre.form"
+                        :rules="remoteSelectPreFormRules"
+                        v-loading="state.remoteSelectPre.loading"
+                        label-position="right"
+                        label-width="160px"
+                        v-if="state.remoteSelectPre.index != -1 && state.fields[state.remoteSelectPre.index]"
+                    >
                         <FormItem
-                            prop="pk"
+                            prop="table"
                             type="select"
-                            :label="t('crud.crud.Drop down value field')"
-                            v-model="state.remoteSelectPre.form.pk"
-                            :placeholder="t('crud.crud.Please select the value field of the select component')"
-                            :key="'select-value' + JSON.stringify(state.remoteSelectPre.fieldList)"
+                            :label="t('crud.crud.Associated Data Table')"
+                            v-model="state.remoteSelectPre.form.table"
+                            :key="JSON.stringify(state.remoteSelectPre.dbList)"
                             :data="{
-                                content: state.remoteSelectPre.fieldList,
+                                content: state.remoteSelectPre.dbList,
                             }"
+                            :input-attr="{ onChange: onJoinTableChange }"
                         />
-                        <FormItem
-                            prop="label"
-                            type="select"
-                            :label="t('crud.crud.Drop down label field')"
-                            v-model="state.remoteSelectPre.form.label"
-                            :placeholder="t('crud.crud.Please select the label field of the select component')"
-                            :key="'select-label' + JSON.stringify(state.remoteSelectPre.fieldList)"
-                            :data="{
-                                content: state.remoteSelectPre.fieldList,
-                            }"
-                        />
-                        <FormItem
-                            v-if="state.fields[state.remoteSelectPre.index].designType == 'remoteSelect'"
-                            prop="joinField"
-                            type="selects"
-                            :label="t('crud.crud.Fields displayed in the table')"
-                            v-model="state.remoteSelectPre.form.joinField"
-                            :placeholder="t('crud.crud.Please select the fields displayed in the table')"
-                            :key="'join-field' + JSON.stringify(state.remoteSelectPre.fieldList)"
-                            :data="{
-                                content: state.remoteSelectPre.fieldList,
-                            }"
-                        />
-                        <FormItem
-                            prop="controllerFile"
-                            type="select"
-                            :label="t('crud.crud.Controller position')"
-                            v-model="state.remoteSelectPre.form.controllerFile"
-                            :placeholder="t('crud.crud.Please select the controller of the data table')"
-                            :key="'controller-file' + JSON.stringify(state.remoteSelectPre.controllerFileList)"
-                            :data="{
-                                content: state.remoteSelectPre.controllerFileList,
-                            }"
-                            :attr="{
-                                blockHelp: t(
-                                    'crud.crud.The remote pull-down will request the corresponding controller to obtain data, so it is recommended that you create the CRUD of the associated table'
-                                ),
-                            }"
-                        />
-                        <FormItem
-                            type="select"
-                            :label="t('crud.crud.Data Model Location')"
-                            v-model="state.remoteSelectPre.form.modelFile"
-                            :placeholder="t('crud.crud.Please select the data model location of the data table')"
-                            :key="'model-file' + JSON.stringify(state.remoteSelectPre.modelFileList)"
-                            :data="{
-                                content: state.remoteSelectPre.modelFileList,
-                            }"
-                            :attr="{
-                                blockHelp: t(
-                                    'crud.crud.If it is left blank, the model of the associated table will be generated automatically If the table already has a model, it is recommended to select it to avoid repeated generation'
-                                ),
-                            }"
-                        />
-                        <el-form-item :label="t('Reminder')">
-                            <div class="block-help">
-                                {{ t('crud.crud.Design remote select tips') }}
-                            </div>
-                        </el-form-item>
-                    </div>
-                </el-form>
-            </div>
+                        <div v-loading="state.loading.remoteSelect">
+                            <FormItem
+                                prop="pk"
+                                type="select"
+                                :label="t('crud.crud.Drop down value field')"
+                                v-model="state.remoteSelectPre.form.pk"
+                                :placeholder="t('crud.crud.Please select the value field of the select component')"
+                                :key="'select-value' + JSON.stringify(state.remoteSelectPre.fieldList)"
+                                :data="{
+                                    content: state.remoteSelectPre.fieldList,
+                                }"
+                            />
+                            <FormItem
+                                prop="label"
+                                type="select"
+                                :label="t('crud.crud.Drop down label field')"
+                                v-model="state.remoteSelectPre.form.label"
+                                :placeholder="t('crud.crud.Please select the label field of the select component')"
+                                :key="'select-label' + JSON.stringify(state.remoteSelectPre.fieldList)"
+                                :data="{
+                                    content: state.remoteSelectPre.fieldList,
+                                }"
+                            />
+                            <FormItem
+                                v-if="state.fields[state.remoteSelectPre.index].designType == 'remoteSelect'"
+                                prop="joinField"
+                                type="selects"
+                                :label="t('crud.crud.Fields displayed in the table')"
+                                v-model="state.remoteSelectPre.form.joinField"
+                                :placeholder="t('crud.crud.Please select the fields displayed in the table')"
+                                :key="'join-field' + JSON.stringify(state.remoteSelectPre.fieldList)"
+                                :data="{
+                                    content: state.remoteSelectPre.fieldList,
+                                }"
+                            />
+                            <FormItem
+                                prop="controllerFile"
+                                type="select"
+                                :label="t('crud.crud.Controller position')"
+                                v-model="state.remoteSelectPre.form.controllerFile"
+                                :placeholder="t('crud.crud.Please select the controller of the data table')"
+                                :key="'controller-file' + JSON.stringify(state.remoteSelectPre.controllerFileList)"
+                                :data="{
+                                    content: state.remoteSelectPre.controllerFileList,
+                                }"
+                                :attr="{
+                                    blockHelp: t(
+                                        'crud.crud.The remote pull-down will request the corresponding controller to obtain data, so it is recommended that you create the CRUD of the associated table'
+                                    ),
+                                }"
+                            />
+                            <FormItem
+                                type="select"
+                                :label="t('crud.crud.Data Model Location')"
+                                v-model="state.remoteSelectPre.form.modelFile"
+                                :placeholder="t('crud.crud.Please select the data model location of the data table')"
+                                :key="'model-file' + JSON.stringify(state.remoteSelectPre.modelFileList)"
+                                :data="{
+                                    content: state.remoteSelectPre.modelFileList,
+                                }"
+                                :attr="{
+                                    blockHelp: t(
+                                        'crud.crud.If it is left blank, the model of the associated table will be generated automatically If the table already has a model, it is recommended to select it to avoid repeated generation'
+                                    ),
+                                }"
+                            />
+                            <el-form-item :label="t('Reminder')">
+                                <div class="block-help">
+                                    {{ t('crud.crud.Design remote select tips') }}
+                                </div>
+                            </el-form-item>
+                        </div>
+                    </el-form>
+                </div>
+            </el-scrollbar>
             <template #footer>
                 <div :style="'width: calc(100% - 88px)'">
                     <el-button @click="onCancelRemoteSelect">{{ $t('Cancel') }}</el-button>
