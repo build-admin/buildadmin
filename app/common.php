@@ -68,6 +68,20 @@ if (!function_exists('clean_xss')) {
     }
 }
 
+if (!function_exists('htmlspecialchars_decode_improve')) {
+    /**
+     * html解码增强
+     * 被 clean_xss函数 和 filter函数 内的 htmlspecialchars 编码的字符串，需要用此函数才能完全解码
+     * @param string $string
+     * @param int    $flags
+     * @return string
+     */
+    function htmlspecialchars_decode_improve(string $string, int $flags = ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401): string
+    {
+        return htmlspecialchars_decode($string, $flags);
+    }
+}
+
 if (!function_exists('get_sys_config')) {
 
     /**
