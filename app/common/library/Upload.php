@@ -186,7 +186,7 @@ class Upload
             '{sec}'      => date("s"),
             '{random}'   => Random::build(),
             '{random32}' => Random::build('alnum', 32),
-            '{filename}' => substr($filename, 0, 15),
+            '{filename}' => mb_substr($filename, 0, 15),
             '{suffix}'   => $suffix,
             '{.suffix}'  => $suffix ? '.' . $suffix : '',
             '{filesha1}' => $sha1,
