@@ -182,12 +182,13 @@ const onElChange = (file: UploadFileExt, files: UploadFiles) => {
         })
         .finally(() => {
             state.uploading--
-            typeof state.events['onChange'] == 'function' && state.events['onChange'](file, files)
+            onChange(file, files)
         })
 }
 
 const onElRemove = (file: UploadUserFile, files: UploadFiles) => {
     typeof state.events['onRemove'] == 'function' && state.events['onRemove'](file, files)
+    onChange(file, files)
     emits('update:modelValue', getAllUrls())
 }
 
@@ -216,8 +217,33 @@ const onChoice = (files: string[]) => {
     files = oldValArr.concat(files)
     init(files)
     emits('update:modelValue', getAllUrls())
-    typeof state.events['onChange'] == 'function' && state.events['onChange'](files, state.fileList)
+    onChange(files, state.fileList)
     state.selectFile.show = false
+}
+
+/**
+ * 初始化文件/图片的排序功能
+ */
+const initSort = () => {
+    nextTick(() => {
+        let uploadListEl = upload.value?.$el.querySelector('.el-upload-list')
+        let uploadItemEl = uploadListEl.getElementsByClassName('el-upload-list__item')
+        if (uploadItemEl.length >= 2) {
+            Sortable.create(uploadListEl, {
+                animation: 200,
+                draggable: '.el-upload-list__item',
+                onEnd: (evt: Sortable.SortableEvent) => {
+                    if (evt.oldIndex != evt.newIndex) {
+                        state.fileList[evt.newIndex!] = [
+                            state.fileList[evt.oldIndex!],
+                            (state.fileList[evt.oldIndex!] = state.fileList[evt.newIndex!]),
+                        ][0]
+                        emits('update:modelValue', getAllUrls())
+                    }
+                },
+            })
+        }
+    })
 }
 
 onMounted(() => {
@@ -247,25 +273,7 @@ onMounted(() => {
 
     init(props.modelValue)
 
-    nextTick(() => {
-        let uploadListEl = upload.value?.$el.querySelector('.el-upload-list')
-        let uploadItemEl = uploadListEl.getElementsByClassName('el-upload-list__item')
-        if (uploadItemEl.length >= 2) {
-            Sortable.create(uploadListEl, {
-                animation: 200,
-                draggable: '.el-upload-list__item',
-                onEnd: (evt: Sortable.SortableEvent) => {
-                    if (evt.oldIndex != evt.newIndex) {
-                        state.fileList[evt.newIndex!] = [
-                            state.fileList[evt.oldIndex!],
-                            (state.fileList[evt.oldIndex!] = state.fileList[evt.newIndex!]),
-                        ][0]
-                        emits('update:modelValue', getAllUrls())
-                    }
-                },
-            })
-        }
-    })
+    initSort()
 })
 
 watch(
@@ -329,6 +337,11 @@ const formDataAppend = (fd: FormData) => {
         }
     }
     return fd
+}
+
+const onChange = (file: string | string[] | UploadFileExt, files: UploadFileExt[]) => {
+    initSort()
+    typeof state.events['onChange'] == 'function' && state.events['onChange'](file, files)
 }
 
 const getUploadRef = () => {
@@ -403,6 +416,7 @@ defineExpose({
 .ba-upload.files,
 .ba-upload.images {
     :deep(.el-upload-list__item) {
+        user-select: none;
         .el-upload-list__item-actions,
         .el-upload-list__item-name {
             cursor: move;
