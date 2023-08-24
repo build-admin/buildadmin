@@ -310,6 +310,7 @@ interface State {
     codeSendCountdown: number
     submitRetrieveLoading: boolean
     sendCaptchaLoading: boolean
+    to: string
 }
 
 const state: State = reactive({
@@ -338,6 +339,8 @@ const state: State = reactive({
     codeSendCountdown: 0,
     submitRetrieveLoading: false,
     sendCaptchaLoading: false,
+    // 登录成功后要跳转的URL
+    to: route.query.to as string,
 })
 
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
@@ -398,6 +401,7 @@ const onSubmit = (captchaInfo = '') => {
     checkIn('post', state.form)
         .then((res) => {
             userInfo.dataFill(res.data.userInfo)
+            if (state.to) return (location.href = state.to)
             router.push({ path: res.data.routePath })
         })
         .finally(() => {
