@@ -217,6 +217,7 @@ const onResetForm = () => {
     for (const key in baTable.comSearch.form) {
         baTable.comSearch.form[key] = ''
     }
+    onComSearch()
 }
 </script>
 
