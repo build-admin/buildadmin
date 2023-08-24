@@ -89,6 +89,15 @@ class Upload
     }
 
     /**
+     * 设置细目（存储目录）
+     */
+    public function setTopic(string $topic): Upload
+    {
+        $this->topic = $topic;
+        return $this;
+    }
+
+    /**
      * 检查文件类型是否允许上传
      * @return bool
      * @throws Throwable
