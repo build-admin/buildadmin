@@ -40,7 +40,7 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: 'ID', prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            { label: 'ID', prop: 'id', align: 'center', operator: '=', operatorPlaceholder: t('Id'), width: 70 },
             { label: t('security.dataRecycle.Rule name'), prop: 'name', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {
                 label: t('security.dataRecycle.controller'),

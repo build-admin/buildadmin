@@ -57,7 +57,7 @@ const baTable = new baTableClass(
     {
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: t('Id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+            { label: t('Id'), prop: 'id', align: 'center', operator: '=', operatorPlaceholder: t('Id'), width: 70 },
             { label: t('user.moneyLog.User ID'), prop: 'user_id', align: 'center', width: 70 },
             { label: t('user.moneyLog.User name'), prop: 'user.username', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
             {

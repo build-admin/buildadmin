@@ -70,7 +70,7 @@ optBtn[1].popconfirm!.title = t('routine.attachment.Files and records will be de
 const baTable = new baTableClass(new baTableApi('/admin/routine.Attachment/'), {
     column: [
         { type: 'selection', align: 'center', operator: false },
-        { label: t('Id'), prop: 'id', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), width: 70 },
+        { label: t('Id'), prop: 'id', align: 'center', operator: '=', operatorPlaceholder: t('Id'), width: 70 },
         { label: t('utils.Breakdown'), prop: 'topic', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query') },
         {
             label: t('routine.attachment.Upload administrator'),

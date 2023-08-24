@@ -102,7 +102,7 @@ const baTable = new baTableClass(
         pk: 'id',
         column: [
             { type: 'selection', align: 'center', operator: false },
-            { label: t('crud.log.id'), prop: 'id', align: 'center', width: 70, operator: 'RANGE', sortable: 'custom' },
+            { label: t('crud.log.id'), prop: 'id', align: 'center', width: 70, operator: '=', operatorPlaceholder: t('Id'), sortable: 'custom' },
             {
                 label: t('crud.log.table_name'),
                 prop: 'table_name',
