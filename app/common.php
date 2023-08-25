@@ -58,13 +58,11 @@ if (!function_exists('clean_xss')) {
      * 清理XSS
      * 通常只用于富文本，比 filter 慢
      * @param string $string
-     * @param bool   $htmlspecialchars
      * @return string
      */
-    function clean_xss(string $string, bool $htmlspecialchars = true): string
+    function clean_xss(string $string): string
     {
-        $string = (new AntiXSS())->xss_clean($string);
-        return $htmlspecialchars ? htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, 'UTF-8') : $string;
+        return (new AntiXSS())->xss_clean($string);
     }
 }
 
