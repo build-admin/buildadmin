@@ -129,6 +129,9 @@ const closeAllTab = (menu: RouteLocationNormalized) => {
     if (firstRoute && firstRoute.path == menu.path) {
         return closeOtherTab(menu)
     }
+    if (firstRoute && firstRoute.path == navTabs.state.activeRoute?.path) {
+        return closeOtherTab(navTabs.state.activeRoute)
+    }
     navTabs.closeTabs(false)
     if (firstRoute) routePush(firstRoute.path)
 }
