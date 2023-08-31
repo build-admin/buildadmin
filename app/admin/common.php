@@ -18,7 +18,7 @@ if (!function_exists('get_table_list')) {
         $database  = config('database.connections.mysql.database');
         $tables    = Db::query("SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema = ? ", [$database]);
         foreach ($tables as $row) {
-            $tableList[$row['TABLE_NAME']] = $row['TABLE_NAME'] . ($row['TABLE_COMMENT'] ? ' - ' . str_replace('表', '', $row['TABLE_COMMENT']) : '');
+            $tableList[$row['TABLE_NAME']] = $row['TABLE_NAME'] . ($row['TABLE_COMMENT'] ? ' - ' . $row['TABLE_COMMENT'] : '');
         }
         return $tableList;
     }
