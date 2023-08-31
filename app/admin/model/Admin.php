@@ -5,7 +5,6 @@ namespace app\admin\model;
 use ba\Random;
 use think\Model;
 use think\facade\Db;
-use think\facade\Config;
 
 /**
  * Admin模型
@@ -50,7 +49,12 @@ class Admin extends Model
 
     public function getAvatarAttr($value): string
     {
-        return full_url($value, true, Config::get('buildadmin.default_avatar'));
+        return full_url($value, true, config('buildadmin.default_avatar'));
+    }
+
+    public function setAvatarAttr($value): string
+    {
+        return $value == full_url($value, true, config('buildadmin.default_avatar')) ? '' : $value;
     }
 
     public function getLastLoginTimeAttr($value): string

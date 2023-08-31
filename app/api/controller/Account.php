@@ -58,15 +58,17 @@ class Account extends Frontend
             $data = $this->request->only(['id', 'avatar', 'username', 'nickname', 'gender', 'birthday', 'motto']);
             if (!isset($data['birthday'])) $data['birthday'] = null;
 
-            // 避免默认头像入库
-            if (isset($data['avatar']) && $data['avatar'] == full_url('', true, config('buildadmin.default_avatar'))) unset($data['avatar']);
+            try {
+                $validate = new AccountValidate();
+                $validate->scene('edit')->check($data);
+            } catch (Throwable $e) {
+                $this->error($e->getMessage());
+            }
 
             $model = $this->auth->getUser();
             $model->startTrans();
             try {
-                $validate = new AccountValidate();
-                $validate->scene('edit')->check($data);
-                $model->where('id', $this->auth->id)->update($data);
+                $model->save($data);
                 $model->commit();
             } catch (Throwable $e) {
                 $model->rollback();

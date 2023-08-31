@@ -4,7 +4,6 @@ namespace app\common\model;
 
 use ba\Random;
 use think\Model;
-use think\facade\Config;
 
 /**
  * 会员公共模型
@@ -23,7 +22,12 @@ class User extends Model
 
     public function getAvatarAttr($value): string
     {
-        return full_url(htmlspecialchars_decode($value), true, Config::get('buildadmin.default_avatar'));
+        return full_url($value, true, config('buildadmin.default_avatar'));
+    }
+
+    public function setAvatarAttr($value): string
+    {
+        return $value == full_url($value, true, config('buildadmin.default_avatar')) ? '' : $value;
     }
 
     public function resetPassword($uid, $newPassword): int|User
