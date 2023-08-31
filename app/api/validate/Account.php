@@ -9,7 +9,6 @@ class Account extends Validate
     protected $failException = true;
 
     protected $rule = [
-        'avatar'   => 'require',
         'username' => 'require|regex:^[a-zA-Z][a-zA-Z0-9_]{2,15}$|unique:user',
         'nickname' => 'require|chsDash',
         'birthday' => 'date',
@@ -24,7 +23,7 @@ class Account extends Validate
      * 验证场景
      */
     protected $scene = [
-        'edit'             => ['avatar', 'username', 'nickname', 'birthday'],
+        'edit'             => ['username', 'nickname', 'birthday'],
         'changePassword'   => ['password'],
         'retrievePassword' => ['account', 'captcha', 'password'],
     ];
@@ -32,7 +31,6 @@ class Account extends Validate
     public function __construct()
     {
         $this->field   = [
-            'avatar'   => __('avatar'),
             'username' => __('username'),
             'nickname' => __('nickname'),
             'birthday' => __('birthday'),

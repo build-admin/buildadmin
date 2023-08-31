@@ -301,7 +301,6 @@ const state: {
     formSubmitLoading: false,
     form: userInfo.$state,
     rules: {
-        avatar: [buildValidatorData({ name: 'required', message: t('Please select field', { field: t('user.account.profile.head portrait') }) })],
         username: [buildValidatorData({ name: 'required', title: t('user.account.profile.User name') }), buildValidatorData({ name: 'account' })],
         nickname: [buildValidatorData({ name: 'required', title: t('user.account.profile.nickname') })],
     },

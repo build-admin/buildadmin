@@ -1,6 +1,5 @@
 <?php
 return [
-    'avatar'                                                                   => '头像',
     'username'                                                                 => '用户名',
     'nickname'                                                                 => '昵称',
     'birthday'                                                                 => '生日',

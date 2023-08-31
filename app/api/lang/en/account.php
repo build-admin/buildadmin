@@ -1,6 +1,5 @@
 <?php
 return [
-    'avatar'                                             => 'Avatar',
     'username'                                           => 'Username',
     'nickname'                                           => 'Nickname',
     'birthday'                                           => 'Birthday',
