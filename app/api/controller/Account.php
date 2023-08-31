@@ -58,6 +58,9 @@ class Account extends Frontend
             $data = $this->request->only(['id', 'avatar', 'username', 'nickname', 'gender', 'birthday', 'motto']);
             if (!isset($data['birthday'])) $data['birthday'] = null;
 
+            // 避免默认头像入库
+            if (isset($data['avatar']) && $data['avatar'] == full_url('', true, config('buildadmin.default_avatar'))) unset($data['avatar']);
+
             $model = $this->auth->getUser();
             $model->startTrans();
             try {
