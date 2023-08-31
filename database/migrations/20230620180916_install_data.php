@@ -278,6 +278,7 @@ class InstallData extends Migrator
                 'component'  => '/src/views/backend/auth/group/index.vue',
                 'keepalive'  => '1',
                 'weigh'      => '99',
+                'remark'     => 'Remark lang',
                 'updatetime' => $this->nowTime,
                 'createtime' => $this->nowTime,
             ],
