@@ -1,7 +1,7 @@
 export default {
     username: '用户名',
     nickname: '昵称',
-    grouping: '分组',
+    grouping: '角色组',
     'head portrait': '头像',
     mailbox: '邮箱',
     mobile: '手机号',
