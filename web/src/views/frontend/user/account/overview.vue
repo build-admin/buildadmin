@@ -11,7 +11,7 @@
             </template>
             <div class="overview-userinfo">
                 <div class="user-avatar">
-                    <img :src="userInfo.avatar" alt="" />
+                    <img :src="fullUrl(userInfo.avatar)" alt="" />
                     <div class="user-avatar-icons">
                         <div @click="router.push({ name: 'account/profile' })" class="avatar-icon-item">
                             <el-tooltip
@@ -80,7 +80,7 @@ import { useUserInfo } from '/@/stores/userInfo'
 import { useRouter } from 'vue-router'
 import * as echarts from 'echarts'
 import { useI18n } from 'vue-i18n'
-import { getGreet, timeFormat } from '/@/utils/common'
+import { fullUrl, getGreet, timeFormat } from '/@/utils/common'
 import { overview } from '/@/api/frontend/user/index'
 import { useEventListener } from '@vueuse/core'
 

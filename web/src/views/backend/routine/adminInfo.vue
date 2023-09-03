@@ -11,7 +11,7 @@
                         :auto-upload="false"
                         accept="image/gif, image/jpg, image/jpeg, image/bmp, image/png, image/webp"
                     >
-                        <el-image :src="state.adminInfo.avatar" class="avatar">
+                        <el-image :src="fullUrl(state.adminInfo.avatar)" class="avatar">
                             <template #error>
                                 <div class="image-slot">
                                     <Icon size="30" color="#c0c4cc" name="el-icon-Picture" />
@@ -106,7 +106,7 @@ import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { index, log, postData } from '/@/api/backend/routine/AdminInfo'
 import { FormInstance, FormItemRule } from 'element-plus'
-import { onResetForm, timeFormat } from '/@/utils/common'
+import { fullUrl, onResetForm, timeFormat } from '/@/utils/common'
 import { uuid } from '../../../utils/random'
 import { buildValidatorData } from '/@/utils/validate'
 import { fileUpload } from '/@/api/common'

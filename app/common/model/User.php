@@ -22,12 +22,12 @@ class User extends Model
 
     public function getAvatarAttr($value): string
     {
-        return full_url($value, true, config('buildadmin.default_avatar'));
+        return full_url($value, false, config('buildadmin.default_avatar'));
     }
 
     public function setAvatarAttr($value): string
     {
-        return $value == full_url($value, true, config('buildadmin.default_avatar')) ? '' : $value;
+        return $value == full_url('', false, config('buildadmin.default_avatar')) ? '' : $value;
     }
 
     public function resetPassword($uid, $newPassword): int|User

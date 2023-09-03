@@ -73,7 +73,7 @@
             <template #reference>
                 <div class="admin-info" :class="state.currentNavMenu == 'adminInfo' ? 'hover' : ''">
                     <el-avatar :size="25" fit="fill">
-                        <img :src="adminInfo.avatar" alt="" />
+                        <img :src="fullUrl(adminInfo.avatar)" alt="" />
                     </el-avatar>
                     <div class="admin-name">{{ adminInfo.nickname }}</div>
                 </div>
@@ -81,7 +81,7 @@
             <div>
                 <div class="admin-info-base">
                     <el-avatar :size="70" fit="fill">
-                        <img :src="adminInfo.avatar" alt="" />
+                        <img :src="fullUrl(adminInfo.avatar)" alt="" />
                     </el-avatar>
                     <div class="admin-info-other">
                         <div class="admin-info-name">{{ adminInfo.nickname }}</div>
@@ -119,6 +119,7 @@ import { routePush } from '/@/utils/router'
 import { logout } from '/@/api/backend/index'
 import { postClearCache } from '/@/api/common'
 import TerminalVue from '/@/components/terminal/index.vue'
+import { fullUrl } from '/@/utils/common'
 
 const { t } = useI18n()
 
