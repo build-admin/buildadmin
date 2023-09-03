@@ -21,7 +21,7 @@
                     <img src="~assets/login-header.png" alt="" />
                 </div>
                 <div class="form">
-                    <img class="profile-avatar" src="~assets/avatar.png" alt="" />
+                    <img class="profile-avatar" :src="fullUrl('/static/images/avatar.png')" alt="" />
                     <div class="content">
                         <el-form @keyup.enter="onSubmitPre()" ref="formRef" :rules="rules" size="large" :model="form">
                             <el-form-item prop="username">
@@ -86,6 +86,7 @@ import { buildValidatorData } from '/@/utils/validate'
 import router from '/@/router'
 import clickCaptcha from '/@/components/clickCaptcha'
 import toggleDark from '/@/utils/useDark'
+import { fullUrl } from '/@/utils/common'
 let timer: number
 
 const config = useConfig()
