@@ -6,17 +6,7 @@
                     <Icon v-if="showIcon" :name="item.meta?.icon" color="var(--el-text-color-primary)" />
                     {{ item.meta?.title }}
                 </template>
-                <el-menu-item
-                    v-for="(subItem, subIndex) in item.children"
-                    :key="subIndex"
-                    @click="onClickMenu(subItem)"
-                    v-blur
-                    :index="'column-' + subItem.meta?.id"
-                    :class="(subItem.name as string).replace(/[\/]/g, '-')"
-                >
-                    <Icon v-if="showIcon" :name="subItem.meta?.icon" color="var(--el-text-color-primary)" />
-                    <template #title>{{ subItem.meta?.title }}</template>
-                </el-menu-item>
+                <MenuSub :menus="item.children" :show-icon="showIcon" />
             </el-sub-menu>
         </template>
         <template v-else>
@@ -32,6 +22,7 @@
 import { isEmpty } from 'lodash-es'
 import { onClickMenu } from '/@/utils/router'
 import { RouteRecordRaw } from 'vue-router'
+import MenuSub from '/@/layouts/frontend/components/menuSub.vue'
 
 interface Props {
     menus: RouteRecordRaw[]
