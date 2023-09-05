@@ -156,7 +156,7 @@ import { CountUp } from 'countup.js'
 import * as echarts from 'echarts'
 import { useNavTabs } from '/@/stores/navTabs'
 import { useTemplateRefsList } from '@vueuse/core'
-import { dashboard } from '/@/api/backend/dashboard'
+import { index } from '/@/api/backend/dashboard'
 import { useI18n } from 'vue-i18n'
 import { Local } from '/@/utils/storage'
 import { useAdminInfo } from '/@/stores/adminInfo'
@@ -187,7 +187,7 @@ const state: {
     pauseWork: false,
 })
 
-dashboard().then((res) => {
+index().then((res) => {
     state.remark = res.data.remark
 })
 

@@ -2,9 +2,9 @@ import createAxios from '/@/utils/axios'
 
 export const url = '/admin/Dashboard/'
 
-export function dashboard() {
+export function index() {
     return createAxios({
-        url: url + 'dashboard',
+        url: url + 'index',
         method: 'get',
     })
 }
