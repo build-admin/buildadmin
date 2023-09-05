@@ -60,7 +60,12 @@ const init = () => {
         siteConfig.dataFill(res.data.siteConfig)
         terminal.changePort(res.data.terminal.installServicePort)
         terminal.changePackageManager(res.data.terminal.npmPackageManager)
-        adminInfo.dataFill(res.data.adminInfo)
+        siteConfig.setInitialize(true)
+
+        if (!isEmpty(res.data.adminInfo)) {
+            adminInfo.dataFill(res.data.adminInfo)
+            siteConfig.setUserInitialize(true)
+        }
 
         if (res.data.menus) {
             handleAdminRoute(res.data.menus)

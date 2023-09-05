@@ -10,6 +10,7 @@
                         @change="onAvatarBeforeUpload"
                         :auto-upload="false"
                         accept="image/gif, image/jpg, image/jpeg, image/bmp, image/png, image/webp"
+                        v-if="!isEmpty(state.adminInfo)"
                     >
                         <el-image :src="fullUrl(state.adminInfo.avatar)" class="avatar">
                             <template #error>
@@ -111,6 +112,7 @@ import { uuid } from '../../../utils/random'
 import { buildValidatorData } from '/@/utils/validate'
 import { fileUpload } from '/@/api/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
+import { isEmpty } from 'lodash-es'
 
 defineOptions({
     name: 'routine/adminInfo',
