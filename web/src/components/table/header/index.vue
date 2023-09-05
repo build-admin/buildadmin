@@ -17,20 +17,20 @@
             </el-button>
         </el-tooltip>
         <slot name="refreshAppend"></slot>
-        <el-tooltip v-if="props.buttons.includes('add') && auth('add')" :content="t('Add')" placement="top">
+        <el-tooltip v-if="props.buttons.includes('add') && baTable.auth('add')" :content="t('Add')" placement="top">
             <el-button v-blur @click="onAction('add')" class="table-header-operate" type="primary">
                 <Icon name="fa fa-plus" />
                 <span class="table-header-operate-text">{{ t('Add') }}</span>
             </el-button>
         </el-tooltip>
-        <el-tooltip v-if="props.buttons.includes('edit') && auth('edit')" :content="t('Edit selected row')" placement="top">
+        <el-tooltip v-if="props.buttons.includes('edit') && baTable.auth('edit')" :content="t('Edit selected row')" placement="top">
             <el-button v-blur @click="onAction('edit')" :disabled="!enableBatchOpt" class="table-header-operate" type="primary">
                 <Icon name="fa fa-pencil" />
                 <span class="table-header-operate-text">{{ t('Edit') }}</span>
             </el-button>
         </el-tooltip>
         <el-popconfirm
-            v-if="props.buttons.includes('delete') && auth('del')"
+            v-if="props.buttons.includes('delete') && baTable.auth('del')"
             @confirm="onAction('delete')"
             :confirm-button-text="t('Delete')"
             :cancel-button-text="t('Cancel')"
@@ -125,7 +125,7 @@
 
 <script setup lang="ts">
 import { reactive, computed, inject } from 'vue'
-import { debounce, auth } from '/@/utils/common'
+import { debounce } from '/@/utils/common'
 import type baTableClass from '/@/utils/baTable'
 import ComSearch from '/@/components/table/comSearch/index.vue'
 import { useI18n } from 'vue-i18n'

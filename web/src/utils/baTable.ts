@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import { getArrayKey } from '/@/utils/common'
+import { auth, getArrayKey } from '/@/utils/common'
 import type { baTableApi } from '/@/api/common'
 import Sortable from 'sortablejs'
 import { findIndexRow } from '/@/components/table'
@@ -67,6 +67,15 @@ export default class baTable {
 
         const route = useRoute()
         this.initComSearch(!isUndefined(route) ? route.query : {})
+    }
+
+    /**
+     * 表格内部鉴权方法
+     * 此方法在表头或表行组件内部自动调用，传递权限节点名，如：add、edit
+     * 若需自定义表格内部鉴权，重写此方法即可
+     */
+    auth(node: string) {
+        return auth(node)
     }
 
     /**
