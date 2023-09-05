@@ -12,9 +12,9 @@ return [
     'user_login_retry'      => 10,
     // 管理员登录失败可重试次数,false则无限
     'admin_login_retry'     => 10,
-    // 开启管理员单点登录
+    // 开启管理员单处登录它处失效
     'admin_sso'             => false,
-    // 开启会员单点登录
+    // 开启会员单处登录它处失效
     'user_sso'              => false,
     // 会员登录态保持时间（非刷新token，3天）
     'user_token_keep_time'  => 60 * 60 * 24 * 3,
