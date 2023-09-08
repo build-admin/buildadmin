@@ -2,7 +2,9 @@
 <div align="center">
     <img src="https://wonderful-code.gitee.io/images/readme/logo-title.png" alt="" />
     <br />
-    <a href="https://uni.buildadmin.com/" target="_blank">官网</a> | <a href="https://demo.buildadmin.com/" target="_blank">演示站</a> |
+    <a href="https://uni.buildadmin.com" target="_blank">官网</a> |
+    <a href="https://demo.buildadmin.com" target="_blank">演示</a> |
+    <a href="https://ask.buildadmin.com" target="_blank">社区</a> |
     <a href="https://wonderful-code.gitee.io/" target="_blank">文档</a> |
     <a href="https://jq.qq.com/?_wv=1027&k=c8a7iSk8" target="_blank">加群</a> |
     <a href="https://wonderful-code.gitee.io/guide/" target="_blank">视频介绍</a> |
@@ -84,12 +86,14 @@
 💫 我们提供了完善的文档，对于熟悉`ThinkPHP`和`Vue`的用户，请使用大佬版：[快速上手](https://wonderful-code.gitee.io/guide/install/start.html) ，对于新人朋友，我们额外准备了各个操作系统的从零开始套餐：[Windows从零到一](https://wonderful-code.gitee.io/guide/install/windows.html) | [Linux从零到一](https://wonderful-code.gitee.io/guide/install/linux-bt.html) | [MacBook安装引导](https://wonderful-code.gitee.io/guide/install/macBook.html)
 
 ### 联系我们
-- [演示站](https://demo.buildadmin.com/) 账户：`admin`，密码：`123456`（演示站数据无法修改，请下载源码安装体验全部功能）
+- [演示站](https://demo.buildadmin.com) 账户：`admin`，密码：`123456`（演示站数据无法修改，请下载源码安装体验全部功能）
+- [问答社区](https://ask.buildadmin.com)
+- [官网](https://uni.buildadmin.com)
 - [文档：wonderful-code.gitee.io](https://wonderful-code.gitee.io/)
 - 加群：[687903819（已满）](https://jq.qq.com/?_wv=1027&k=QwtXa14c)、[751852082](https://jq.qq.com/?_wv=1027&k=c8a7iSk8)
 - [Gitee仓库](https://gitee.com/wonderful-code/buildadmin)、[GitHub仓库](https://github.com/build-admin/BuildAdmin)
 - [备用文档：doc.buildadmin.com](https://doc.buildadmin.com/)
-- [官网](https://uni.buildadmin.com/)、[官方邮箱 hi@buildadmin.com](mailto:hi@buildadmin.com)
+- [官方邮箱 hi@buildadmin.com](mailto:hi@buildadmin.com)
 
 ### 项目预览
 |  |  |
