@@ -87,8 +87,8 @@
 
 ### 联系我们
 - [演示站](https://demo.buildadmin.com) 账户：`admin`，密码：`123456`（演示站数据无法修改，请下载源码安装体验全部功能）
-- [问答社区](https://ask.buildadmin.com)
-- [官网](https://uni.buildadmin.com)
+- [问答社区：ask.buildadmin.com](https://ask.buildadmin.com)
+- [官方网站：uni.buildadmin.com](https://uni.buildadmin.com)
 - [文档：wonderful-code.gitee.io](https://wonderful-code.gitee.io/)
 - 加群：[687903819（已满）](https://jq.qq.com/?_wv=1027&k=QwtXa14c)、[751852082](https://jq.qq.com/?_wv=1027&k=c8a7iSk8)
 - [Gitee仓库](https://gitee.com/wonderful-code/buildadmin)、[GitHub仓库](https://github.com/build-admin/BuildAdmin)
