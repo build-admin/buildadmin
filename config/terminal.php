@@ -132,7 +132,7 @@ return [
         'composer'     => [
             'update' => [
                 'cwd'     => '',
-                'command' => 'composer update',
+                'command' => 'composer update --no-interaction',
             ]
         ],
         'ping'         => [
