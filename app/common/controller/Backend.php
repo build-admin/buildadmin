@@ -188,6 +188,7 @@ class Backend extends Api
         $search      = $this->request->get("search/a", []);
         $initKey     = $this->request->get("initKey/s", $pk);
         $initValue   = $this->request->get("initValue", '');
+        $operator    = $this->request->get("operator/s", 'in');
 
         $where              = [];
         $modelTable         = strtolower($this->model->getTable());
@@ -203,7 +204,7 @@ class Backend extends Api
             $where[] = [implode("|", $quickSearchArr), "LIKE", '%' . str_replace('%', '\%', $quickSearch) . '%'];
         }
         if ($initValue) {
-            $where[] = [$initKey, 'in', $initValue];
+            $where[] = [$initKey, $operator, $initValue];
             $limit   = 999999;
         }
 
