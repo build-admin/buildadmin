@@ -181,14 +181,14 @@ class Backend extends Api
         if (empty($this->model)) {
             return [];
         }
-        $pk          = $this->model->getPk();
-        $quickSearch = $this->request->get("quickSearch/s", '');
-        $limit       = $this->request->get("limit/d", 10);
-        $order       = $this->request->get("order/s", '');
-        $search      = $this->request->get("search/a", []);
-        $initKey     = $this->request->get("initKey/s", $pk);
-        $initValue   = $this->request->get("initValue", '');
-        $operator    = $this->request->get("operator/s", 'in');
+        $pk           = $this->model->getPk();
+        $quickSearch  = $this->request->get("quickSearch/s", '');
+        $limit        = $this->request->get("limit/d", 10);
+        $order        = $this->request->get("order/s", '');
+        $search       = $this->request->get("search/a", []);
+        $initKey      = $this->request->get("initKey/s", $pk);
+        $initValue    = $this->request->get("initValue", '');
+        $initOperator = $this->request->get("initOperator/s", 'in');
 
         $where              = [];
         $modelTable         = strtolower($this->model->getTable());
@@ -204,7 +204,7 @@ class Backend extends Api
             $where[] = [implode("|", $quickSearchArr), "LIKE", '%' . str_replace('%', '\%', $quickSearch) . '%'];
         }
         if ($initValue) {
-            $where[] = [$initKey, $operator, $initValue];
+            $where[] = [$initKey, $initOperator, $initValue];
             $limit   = 999999;
         }
 
