@@ -11,7 +11,6 @@ class Version202 extends Migrator
      */
     public function up()
     {
-        parent::up();
         Db::startTrans();
         try {
             $dashboardId = Db::name('admin_rule')

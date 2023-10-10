@@ -123,7 +123,7 @@ class TableManager
 
         $table = Config::get('database.migration_table', 'migrations');
 
-        $dbConfig['default_migration_table'] = $dbConfig['table_prefix'] . $table;
+        $dbConfig['migration_table'] = $dbConfig['table_prefix'] . $table;
 
         return $dbConfig;
     }

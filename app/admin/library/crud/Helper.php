@@ -440,22 +440,18 @@ class Helper
 
                     $fieldName = in_array($item['type'], ['add-field', 'change-field-name']) ? $item['newName'] : $item['oldName'];
 
-                    $field    = self::searchArray($fields, function ($field) use ($fieldName) {
+                    $field = self::searchArray($fields, function ($field) use ($fieldName) {
                         return $field['name'] == $fieldName;
                     });
-                    $dataType = self::analyseFieldDataType($field);
-                    $sql      = "ALTER TABLE `$tableName` MODIFY COLUMN `$fieldName` $dataType";
-                    if ($item['after'] == 'FIRST FIELD') {
-                        // 设为第一个字段
-                        $sql .= ' FIRST';
-                    } else {
-                        $sql .= " AFTER `{$item['after']}`";
-                    }
-                    Db::execute($sql);
 
-                    // 使用 Phinx 再更新一遍字段，不然字段注释等数据丢失
-                    // think-migration 使用了自行维护的 Phinx，并不支持直接将字段设置为第一个，所以调整排序直接使用 SQL
                     $phinxFieldData = self::getPhinxFieldData($field);
+
+                    // 字段顺序调整
+                    if ($item['after'] == 'FIRST FIELD') {
+                        $phinxFieldData['options']['after'] = MysqlAdapter::FIRST;
+                    } else {
+                        $phinxFieldData['options']['after'] = $item['after'];
+                    }
                     $table->changeColumn($fieldName, $phinxFieldData['type'], $phinxFieldData['options']);
                 }
             }
@@ -489,6 +485,7 @@ class Helper
                 $table = TableManager::instance($name, [], false);
 
                 // 改名和删除操作优先
+                $priorityOpt = false;
                 foreach ($designChange as $item) {
 
                     if (!$item['sync']) continue;
@@ -499,16 +496,17 @@ class Helper
                     }
 
                     if ($item['type'] == 'change-field-name') {
+                        $priorityOpt = true;
                         $table->renameColumn($item['oldName'], $item['newName']);
-
-                        // 改名后使用 Phinx 再更新一遍字段，不然字段注释等数据丢失
-                        $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
-                            return $field['name'] == $item['newName'];
-                        }));
-                        $table->changeColumn($item['newName'], $phinxFieldData['type'], $phinxFieldData['options']);
                     } elseif ($item['type'] == 'del-field') {
+                        $priorityOpt = true;
                         $table->removeColumn($item['oldName']);
                     }
+                }
+
+                // 保存需要优先执行的操作，避免先改名再改属性时找不到字段
+                if ($priorityOpt) {
+                    $table->update();
                 }
 
                 // 修改字段属性和添加字段操作

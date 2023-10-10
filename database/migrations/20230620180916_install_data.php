@@ -7,15 +7,9 @@ class InstallData extends Migrator
 {
     public string $nowTime = '';
 
-    protected function init()
-    {
-        parent::init();
-        $this->nowTime = time();
-    }
-
     public function up()
     {
-        parent::up();
+        $this->nowTime = time();
         $this->admin();
         $this->adminGroup();
         $this->adminGroupAccess();
