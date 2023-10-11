@@ -42,7 +42,7 @@
                                 <el-option
                                     v-for="(item, idx) in state.fields"
                                     :key="idx"
-                                    :label="item.name + (item.title ? '-' + item.title : '')"
+                                    :label="item.name + (item.comment ? '-' + item.comment : item.title)"
                                     :value="item.name"
                                 />
                             </el-select>
@@ -53,7 +53,7 @@
                                     <el-option
                                         v-for="(item, idx) in state.fields"
                                         :key="idx"
-                                        :label="item.name + (item.title ? '-' + item.title : '')"
+                                        :label="item.name + (item.comment ? '-' + item.comment : item.title)"
                                         :value="item.name"
                                     />
                                 </el-select>
@@ -73,7 +73,7 @@
                                 <el-option
                                     v-for="(item, idx) in state.fields"
                                     :key="idx"
-                                    :label="item.name + (item.title ? '-' + item.title : '')"
+                                    :label="item.name + (item.comment ? '-' + item.comment : item.title)"
                                     :value="item.name"
                                 />
                             </el-select>
@@ -83,7 +83,7 @@
                                 <el-option
                                     v-for="(item, idx) in state.fields"
                                     :key="idx"
-                                    :label="item.name + (item.title ? '-' + item.title : '')"
+                                    :label="item.name + (item.comment ? '-' + item.comment : item.title)"
                                     :value="item.name"
                                 />
                             </el-select>
