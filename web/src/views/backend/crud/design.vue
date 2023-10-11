@@ -197,12 +197,11 @@
                             <BaInput
                                 @pointerdown.stop
                                 class="design-field-name-input"
-                                v-model="field.name"
+                                :model-value="field.name"
                                 type="string"
                                 :attr="{
                                     size: 'small',
-                                    onFocus: () => onFieldBackup(field, index),
-                                    onChange: ($event: string) => onFieldNameChange($event, index),
+                                    onInput: ($event: string) => onFieldNameChange($event, index),
                                 }"
                             />
                         </div>
@@ -276,10 +275,9 @@
                             <FormItem
                                 :label="t('crud.crud.Field Name')"
                                 type="string"
-                                v-model="state.fields[state.activateField].name"
+                                :model-value="state.fields[state.activateField].name"
                                 :input-attr="{
-                                    onFocus: () => onFieldBackup(state.fields[state.activateField], state.activateField),
-                                    onChange: ($event: string) => onFieldNameChange($event, state.activateField)
+                                    onInput: ($event: string) => onFieldNameChange($event, state.activateField)
                                 }"
                             />
                             <template v-if="state.fields[state.activateField].dataType">
@@ -670,7 +668,6 @@ const state: {
         controller: boolean
     }
     draggingField: boolean
-    fieldBackup: Partial<FieldItem>
     showDesignChangeLog: boolean
     error: {
         tableName: string
@@ -728,7 +725,6 @@ const state: {
         controller: false,
     },
     draggingField: false,
-    fieldBackup: {},
     showDesignChangeLog: false,
     error: {
         tableName: '',
@@ -755,27 +751,11 @@ const onFieldDesignTypeChange = () => {
 }
 
 /**
- * 备份 state.fields 数据
+ * 字段名修改
  */
-const onFieldBackup = (field: FieldItem, index: number) => {
-    state.fieldBackup = cloneDeep(field)
-    state.fieldBackup.index = index
-}
-
-/**
- * 字段名修改，调用此函数前先调用 onFieldBackup 备份字段修改前的数据
- */
-const onFieldNameChange = async (val: string, index: number) => {
-    // 字段数据较大，赋值可能需要一点时间，此处等待字段数据备份完成
-    let count = 0
-    while (state.fieldBackup.index != index) {
-        count++
-        await new Promise((resolve) => setTimeout(resolve, 300))
-        if (count > 3) {
-            throw new Error(t('crud.crud.If the data is abnormal, repeat the previous step'))
-        }
-    }
-    const oldName = state.fieldBackup.name!
+const onFieldNameChange = (val: string, index: number) => {
+    const oldName = state.fields[index].name
+    state.fields[index].name = val
     for (const key in tableFieldsKey) {
         for (const idx in state.table[tableFieldsKey[key] as TableKey] as string[]) {
             if ((state.table[tableFieldsKey[key] as TableKey] as string[])[idx] == oldName) {
@@ -896,6 +876,9 @@ const onDelField = (index: number) => {
     }
 
     state.fields.splice(index, 1)
+
+    fieldNameCheck('ElMessage')
+    fieldNameDuplicationCheck('ElMessage')
 }
 
 const showRemoteSelectPre = (index: number, hideDelField = false) => {
@@ -1351,10 +1334,8 @@ const onSaveRemoteSelect = () => {
     const submitCallback = () => {
         // 修改字段名
         if (state.fields[state.remoteSelectPre.index].name == 'remote_select') {
-            onFieldBackup(state.fields[state.remoteSelectPre.index], state.remoteSelectPre.index)
             const newName =
                 state.remoteSelectPre.form.table + (state.fields[state.remoteSelectPre.index].designType == 'remoteSelect' ? '_id' : '_ids')
-            state.fields[state.remoteSelectPre.index].name = newName
             onFieldNameChange(newName, state.remoteSelectPre.index)
         }
 
