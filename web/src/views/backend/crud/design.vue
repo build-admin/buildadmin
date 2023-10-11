@@ -24,12 +24,7 @@
                         />
                     </div>
                     <div class="header-right">
-                        <el-link
-                            v-if="state.table.designChange.length"
-                            @click="state.showDesignChangeLog = true"
-                            class="design-change-log"
-                            type="danger"
-                        >
+                        <el-link v-if="crudState.type != 'create'" @click="state.showDesignChangeLog = true" class="design-change-log" type="primary">
                             {{ t('crud.crud.Table design change') }}
                         </el-link>
                         <el-button type="primary" :loading="state.loading.generate" @click="onGenerate" v-blur>
@@ -558,20 +553,23 @@
                 </div>
             </template>
             <el-scrollbar max-height="400px">
-                <el-timeline class="design-change-log-timeline">
-                    <el-timeline-item
-                        v-for="(item, idx) in state.table.designChange"
-                        :key="idx"
-                        :type="getTableDesignTimelineType(item.type)"
-                        :hollow="true"
-                        :hide-timestamp="true"
-                    >
-                        <div class="design-timeline-box">
-                            <el-checkbox v-model="item.sync" :label="getTableDesignChangeContent(item)" size="small" />
-                        </div>
-                    </el-timeline-item>
-                </el-timeline>
-                <span class="design-change-tips">{{ t('crud.crud.designChangeTips') }}</span>
+                <template v-if="state.table.designChange.length">
+                    <el-timeline class="design-change-log-timeline">
+                        <el-timeline-item
+                            v-for="(item, idx) in state.table.designChange"
+                            :key="idx"
+                            :type="getTableDesignTimelineType(item.type)"
+                            :hollow="true"
+                            :hide-timestamp="true"
+                        >
+                            <div class="design-timeline-box">
+                                <el-checkbox v-model="item.sync" :label="getTableDesignChangeContent(item)" size="small" />
+                            </div>
+                        </el-timeline-item>
+                    </el-timeline>
+                    <span class="design-change-tips">{{ t('crud.crud.designChangeTips') }}</span>
+                </template>
+                <div class="design-change-tips" v-else>暂无表设计变更</div>
                 <FormItem
                     :label="t('crud.crud.tableReBuild')"
                     class="rebuild-form-item"
