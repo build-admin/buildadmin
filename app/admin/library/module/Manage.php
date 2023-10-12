@@ -694,7 +694,7 @@ class Manage
                     RecursiveIteratorIterator::SELF_FIRST
                 ) as $item
             ) {
-                $destDirItem = $destDir . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
+                $destDirItem = Filesystem::fsFit($destDir . DIRECTORY_SEPARATOR . str_replace($baseDir, '', $item->getPathname()));
                 if ($item->isDir()) {
                     Filesystem::mkdir($destDirItem);
                 } else {
@@ -703,6 +703,10 @@ class Manage
                         copy($item, $destDirItem);
                     }
                 }
+            }
+            // 纯净模式
+            if (Config::get('buildadmin.module_pure_install')) {
+                Filesystem::delDir($baseDir);
             }
         }
         return true;

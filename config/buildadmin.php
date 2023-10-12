@@ -24,6 +24,8 @@ return [
     'auto_sort_eq_weight'   => false,
     // 开启前台会员中心
     'open_member_center'    => true,
+    // 模块纯净安装（安装时移动模块文件而不是复制）
+    'module_pure_install'   => true,
     // 点选验证码配置
     'click_captcha'         => [
         // 模式:text=文字,icon=图标(若只有icon则适用于国际化站点)
