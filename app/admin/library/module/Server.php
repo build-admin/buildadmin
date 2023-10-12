@@ -133,6 +133,10 @@ class Server
         if ($moduleFileList) {
             // 有冲突的文件
             if ($onlyConflict) {
+                // 排除的文件
+                $excludeFile = [
+                    'info.ini'
+                ];
                 foreach ($moduleFileList as $file) {
                     if (!is_file($file['path'])) continue;
 
@@ -140,7 +144,7 @@ class Server
                     $path          = Filesystem::fsFit(str_replace($dir, '', $file['path']));
                     $paths         = explode(DIRECTORY_SEPARATOR, $path);
                     $overwriteFile = in_array($paths[0], $overwriteDir) ? root_path() . $path : $dir . $path;
-                    if (is_file($overwriteFile) && (filesize($overwriteFile) != $file['size'] || md5_file($overwriteFile) != $file['md5'])) {
+                    if (is_file($overwriteFile) && !in_array($path, $excludeFile) && (filesize($overwriteFile) != $file['size'] || md5_file($overwriteFile) != $file['md5'])) {
                         $fileList[] = $path;
                     }
                 }
