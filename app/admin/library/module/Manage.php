@@ -427,6 +427,12 @@ class Manage
             ];
         }
         if ($conflictFile) {
+            // 如果是模块自带文件需要备份，加上模块目录前缀
+            $overwriteDir = Server::getOverwriteDir();
+            foreach ($conflictFile as $key => $item) {
+                $paths              = explode(DIRECTORY_SEPARATOR, $item);
+                $conflictFile[$key] = in_array($paths[0], $overwriteDir) ? $item : Filesystem::fsFit(str_replace(root_path(), '', $this->modulesDir . $item));
+            }
             $backupsZip = $this->backupsDir . $this->uid . '-disable-' . date('YmdHis') . '.zip';
             Filesystem::zip($conflictFile, $backupsZip);
         }
@@ -689,7 +695,7 @@ class Manage
                 continue;
             }
             foreach (
-                $iterator = new RecursiveIteratorIterator(
+                new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($baseDir, FilesystemIterator::SKIP_DOTS),
                     RecursiveIteratorIterator::SELF_FIRST
                 ) as $item
