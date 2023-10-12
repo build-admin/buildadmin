@@ -115,14 +115,53 @@ class Server
         return $conflict;
     }
 
+    /**
+     * 获取模块[冲突]文件列表
+     * @param string $dir          模块目录
+     * @param bool   $onlyConflict 是否只获取冲突文件
+     */
     public static function getFileList(string $dir, bool $onlyConflict = false): array
     {
         if (!is_dir($dir)) {
             return [];
         }
 
-        $fileList     = [];
-        $overwriteDir = self::getOverwriteDir();
+        $fileList       = [];
+        $overwriteDir   = self::getOverwriteDir();
+        $moduleFileList = self::getRuntime($dir, 'files');
+
+        if ($moduleFileList) {
+            // 有冲突的文件
+            if ($onlyConflict) {
+                foreach ($moduleFileList as $file) {
+                    if (!is_file($file['path'])) continue;
+
+                    // 如果是要安装到项目的文件，从项目根目录开始，如果不是，从模块根目录开始
+                    $path          = Filesystem::fsFit(str_replace($dir, '', $file['path']));
+                    $paths         = explode(DIRECTORY_SEPARATOR, $path);
+                    $overwriteFile = in_array($paths[0], $overwriteDir) ? root_path() . $path : $dir . $path;
+                    if (is_file($overwriteFile) && (filesize($overwriteFile) != $file['size'] || md5_file($overwriteFile) != $file['md5'])) {
+                        $fileList[] = $path;
+                    }
+                }
+            } else {
+                // 要安装的文件
+                foreach ($overwriteDir as $item) {
+                    $baseDir = $dir . $item;
+                    if (!is_dir($baseDir)) {
+                        continue;
+                    }
+                    foreach ($moduleFileList as $file) {
+                        if (!is_file($file['path'])) continue;
+                        if (!str_starts_with($file['path'], $baseDir)) continue;
+
+                        $fileList[] = Filesystem::fsFit(str_replace($dir, '', $file['path']));
+                    }
+                }
+            }
+            return $fileList;
+        }
+
         foreach ($overwriteDir as $item) {
             $baseDir = $dir . $item;
             if (!is_dir($baseDir)) {
@@ -439,6 +478,50 @@ class Server
             }
         }
         return false;
+    }
+
+    /**
+     * 创建 .runtime
+     */
+    public static function createRuntime(string $dir): void
+    {
+        $runtimeFilePath = $dir . '.runtime';
+        $files           = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY
+        );
+        $filePaths       = [];
+        foreach ($files as $file) {
+            if (!$file->isDir()) {
+                $pathName = $file->getPathName();
+                if ($pathName == $runtimeFilePath) continue;
+                $filePaths[] = [
+                    'path' => Filesystem::fsFit($pathName),
+                    'size' => filesize($pathName),
+                    'md5'  => md5_file($pathName),
+                ];
+            }
+        }
+
+        file_put_contents($runtimeFilePath, json_encode([
+            'files' => $filePaths
+        ]));
+    }
+
+    /**
+     * 读取 .runtime
+     */
+    public static function getRuntime(string $dir, string $key = ''): array
+    {
+        $runtimeFilePath   = $dir . '.runtime';
+        $runtimeContent    = @file_get_contents($runtimeFilePath);
+        $runtimeContentArr = json_decode($runtimeContent, true);
+        if (!$runtimeContentArr) return [];
+
+        if ($key) {
+            return $runtimeContentArr[$key] ?? [];
+        } else {
+            return $runtimeContentArr;
+        }
     }
 
     /**

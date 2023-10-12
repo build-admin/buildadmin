@@ -107,14 +107,13 @@ class Manage
             throw new Exception('Order not found');
         }
         // 下载
-        $sysVersion = Config::get('buildadmin.version');
-        $installed  = Server::installedList($this->installDir);
+        $installed = Server::installedList($this->installDir);
         foreach ($installed as $item) {
             $installedIds[] = $item['uid'];
         }
         unset($installed);
         $zipFile = Server::download($this->uid, $this->installDir, [
-            'sysVersion'    => $sysVersion,
+            'sysVersion'    => Config::get('buildadmin.version'),
             'nuxtVersion'   => Server::getNuxtVersion(),
             'ba-user-token' => $token,
             'order_id'      => $orderId,
@@ -152,6 +151,7 @@ class Manage
     {
         $file = Filesystem::fsFit(root_path() . 'public' . $file);
         if (!is_file($file)) {
+            // 包未找到
             throw new Exception('Zip file not found');
         }
 
@@ -163,12 +163,14 @@ class Manage
         $copyToDir .= DIRECTORY_SEPARATOR;
 
         // 删除zip
+        @unlink($file);
         @unlink($copyTo);
 
         // 读取ini
         $info = Server::getIni($copyToDir);
-        if (!isset($info['uid']) || !$info['uid']) {
+        if (empty($info['uid'])) {
             Filesystem::delDir($copyToDir);
+            // 基本配置不完整
             throw new Exception('Basic configuration of the Module is incomplete');
         }
         $this->uid        = $info['uid'];
@@ -178,18 +180,21 @@ class Manage
             $info = $this->getInfo();
             if ($info && isset($info['uid'])) {
                 Filesystem::delDir($copyToDir);
+                // 模块已经存在
                 throw new Exception('Module already exists');
             }
 
             if (!Filesystem::dirIsEmpty($this->modulesDir)) {
                 Filesystem::delDir($copyToDir);
+                // 模块目录被占
                 throw new Exception('The directory required by the module is occupied');
             }
         }
 
+        // 放置新模块
         rename($copyToDir, $this->modulesDir);
 
-        // 检查是否完整
+        // 检查新包是否完整
         $this->checkPackage();
 
         // 设置为待安装状态
@@ -321,6 +326,9 @@ class Manage
     {
         // 安装 WebBootstrap
         Server::installWebBootstrap($this->uid, $this->modulesDir);
+
+        // 建立 .runtime
+        Server::createRuntime($this->modulesDir);
 
         // 冲突检查
         $this->conflictHandle($trigger);
@@ -801,30 +809,6 @@ class Manage
             }
         }
         return $depend;
-    }
-
-    public function disableDependConflictCheck(string $backupsDir): array
-    {
-        if (!$backupsDir) {
-            return [];
-        }
-        $dependFile = [
-            Filesystem::fsFit($backupsDir . DIRECTORY_SEPARATOR . 'composer.json')    => [
-                'path' => Filesystem::fsFit(root_path() . 'composer.json'),
-                'type' => 'composer',
-            ],
-            Filesystem::fsFit($backupsDir . DIRECTORY_SEPARATOR . 'web/package.json') => [
-                'path' => Filesystem::fsFit(root_path() . 'web/package.json'),
-                'type' => 'npm',
-            ],
-        ];
-        $conflict   = [];
-        foreach ($dependFile as $key => $item) {
-            if (is_file($key) && (filesize($key) != filesize($item['path']) || md5_file($key) != md5_file($item['path']))) {
-                $conflict[] = $item['type'];
-            }
-        }
-        return $conflict;
     }
 
     /**
