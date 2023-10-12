@@ -138,8 +138,6 @@ class Server
                     'info.ini'
                 ];
                 foreach ($moduleFileList as $file) {
-                    if (!is_file($file['path'])) continue;
-
                     // 如果是要安装到项目的文件，从项目根目录开始，如果不是，从模块根目录开始
                     $path          = Filesystem::fsFit(str_replace($dir, '', $file['path']));
                     $paths         = explode(DIRECTORY_SEPARATOR, $path);
@@ -152,13 +150,8 @@ class Server
                 // 要安装的文件
                 foreach ($overwriteDir as $item) {
                     $baseDir = $dir . $item;
-                    if (!is_dir($baseDir)) {
-                        continue;
-                    }
                     foreach ($moduleFileList as $file) {
-                        if (!is_file($file['path'])) continue;
                         if (!str_starts_with($file['path'], $baseDir)) continue;
-
                         $fileList[] = Filesystem::fsFit(str_replace($dir, '', $file['path']));
                     }
                 }
