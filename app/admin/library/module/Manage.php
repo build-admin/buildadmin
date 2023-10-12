@@ -472,19 +472,24 @@ class Manage
 
         // 恢复备份文件
         if ($zipDir) {
+            $unrecoverableFiles = [
+                Filesystem::fsFit(root_path() . 'composer.json'),
+                Filesystem::fsFit(root_path() . 'web/package.json'),
+                Filesystem::fsFit(root_path() . 'web-nuxt/package.json'),
+            ];
             foreach (
-                $iterator = new RecursiveIteratorIterator(
+                new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($zipDir, FilesystemIterator::SKIP_DOTS),
                     RecursiveIteratorIterator::SELF_FIRST
                 ) as $item
             ) {
-                $backupsFile = Filesystem::fsFit(root_path() . $iterator->getSubPathName());
+                $backupsFile = root_path() . str_replace($zipDir, '', $item->getPathname());
                 if ($item->isDir()) {
                     if (!is_dir($backupsFile)) {
                         mkdir($backupsFile, 0755, true);
                     }
                 } else {
-                    if ($backupsFile != Filesystem::fsFit(root_path() . 'composer.json') && $backupsFile != Filesystem::fsFit(root_path() . 'web/package.json')) {
+                    if (!in_array($backupsFile, $unrecoverableFiles)) {
                         copy($item, $backupsFile);
                     }
                 }
