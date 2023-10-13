@@ -1,11 +1,11 @@
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 import { auth, getArrayKey } from '/@/utils/common'
 import type { baTableApi } from '/@/api/common'
 import Sortable from 'sortablejs'
 import { findIndexRow } from '/@/components/table'
 import { ElNotification, FormInstance, TableColumnCtx } from 'element-plus'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { cloneDeep, isUndefined } from 'lodash-es'
+import { useRoute } from 'vue-router'
+import { cloneDeep } from 'lodash-es'
 import { i18n } from '/@/lang/index'
 
 export default class baTable {
@@ -64,9 +64,6 @@ export default class baTable {
         this.table = Object.assign(this.table, table)
         this.before = before
         this.after = after
-
-        const route = useRoute()
-        this.initComSearch(!isUndefined(route) ? route.query : {})
     }
 
     /**
@@ -474,11 +471,25 @@ export default class baTable {
     mount = () => {
         if (this.runBefore('mount') === false) return
 
-        // 监听路由变化,响应通用搜索更新
-        onBeforeRouteUpdate((to) => {
-            this.initComSearch(to.query)
-            this.getIndex()
-        })
+        const route = useRoute()
+        this.table.routePath = route.path
+
+        // 初始化公共搜索数据
+        this.initComSearch(route?.query ? route.query : {})
+
+        // 路由未改变，而 query 改变了，重新筛选数据
+        let routeFlag = route.path + Object.entries(route.query).toString()
+        watch(
+            () => route.query,
+            () => {
+                const newRouteFlag = route.path + Object.entries(route.query).toString()
+                if (route.path == this.table.routePath && routeFlag != newRouteFlag) {
+                    this.initComSearch(route.query)
+                    this.getIndex()
+                    routeFlag = newRouteFlag
+                }
+            }
+        )
     }
 
     /**

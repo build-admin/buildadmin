@@ -44,6 +44,8 @@ declare global {
         dblClickNotEditColumn?: (string | undefined)[]
         // 是否展开所有子项，树状表格专用属性
         expandAll?: boolean
+        // 当前表格所在页面的路由 path
+        routePath?: string
         // 表格扩展数据，随意定义，以便一些自定义数据可以随baTable实例传递
         extend?: anyObj
     }
