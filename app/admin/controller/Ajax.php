@@ -16,6 +16,12 @@ class Ajax extends Backend
 {
     protected array $noNeedPermission = ['*'];
 
+    /**
+     * 无需登录的方法
+     * terminal 内部自带验权
+     */
+    protected array $noNeedLogin = ['terminal'];
+
     public function initialize(): void
     {
         parent::initialize();
@@ -112,5 +118,14 @@ class Ajax extends Backend
         }
         Event::trigger('cacheClearAfter', $this->app);
         $this->success(__('Cache cleaned~'));
+    }
+
+    /**
+     * 终端
+     * @throws Throwable
+     */
+    public function terminal()
+    {
+        Terminal::instance()->exec();
     }
 }

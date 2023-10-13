@@ -20,7 +20,7 @@ export const adminBuildSuffixSvgUrl = '/admin/ajax/buildSuffixSvg'
 export const adminAreaUrl = '/admin/ajax/area'
 export const getTablePkUrl = '/admin/ajax/getTablePk'
 export const getTableFieldListUrl = '/admin/ajax/getTableFieldList'
-export const terminalUrl = '/admin/Terminal/index'
+export const terminalUrl = '/admin/ajax/terminal'
 export const changeTerminalConfigUrl = '/admin/ajax/changeTerminalConfig'
 export const clearCacheUrl = '/admin/ajax/clearCache'
 
