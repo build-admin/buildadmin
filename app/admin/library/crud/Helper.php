@@ -940,6 +940,7 @@ class Helper
                     'name'      => $menuName,
                     'path'      => $menuName,
                     'menu_type' => 'tab',
+                    'keepalive' => '1',
                     'component' => $componentPath,
                     'children'  => self::$menuChildren,
                 ]
