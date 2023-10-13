@@ -401,9 +401,14 @@ class Manage
         }
 
         // 备份
+        $dependJsonFiles   = [
+            'composer'       => 'composer.json',
+            'webPackage'     => 'web' . DIRECTORY_SEPARATOR . 'package.json',
+            'webNuxtPackage' => 'web-nuxt' . DIRECTORY_SEPARATOR . 'package.json',
+        ];
         $dependWaitInstall = [];
         if ($delComposerDepend) {
-            $conflictFile[]      = 'composer.json';
+            $conflictFile[]      = $dependJsonFiles['composer'];
             $dependWaitInstall[] = [
                 'pm'      => false,
                 'command' => 'composer.update',
@@ -411,7 +416,7 @@ class Manage
             ];
         }
         if ($delNpmDepend) {
-            $conflictFile[]      = 'web' . DIRECTORY_SEPARATOR . 'package.json';
+            $conflictFile[]      = $dependJsonFiles['webPackage'];
             $dependWaitInstall[] = [
                 'pm'      => true,
                 'command' => 'web-install',
@@ -419,7 +424,7 @@ class Manage
             ];
         }
         if ($delNuxtNpmDepend) {
-            $conflictFile[]      = 'web-nuxt' . DIRECTORY_SEPARATOR . 'package.json';
+            $conflictFile[]      = $dependJsonFiles['webNuxtPackage'];
             $dependWaitInstall[] = [
                 'pm'      => true,
                 'command' => 'nuxt-install',
@@ -430,8 +435,15 @@ class Manage
             // 如果是模块自带文件需要备份，加上模块目录前缀
             $overwriteDir = Server::getOverwriteDir();
             foreach ($conflictFile as $key => $item) {
-                $paths              = explode(DIRECTORY_SEPARATOR, $item);
-                $conflictFile[$key] = in_array($paths[0], $overwriteDir) ? $item : Filesystem::fsFit(str_replace(root_path(), '', $this->modulesDir . $item));
+                $paths = explode(DIRECTORY_SEPARATOR, $item);
+                if (in_array($paths[0], $overwriteDir) || in_array($item, $dependJsonFiles)) {
+                    $conflictFile[$key] = $item;
+                } else {
+                    $conflictFile[$key] = Filesystem::fsFit(str_replace(root_path(), '', $this->modulesDir . $item));
+                }
+                if (!is_file(root_path() . $conflictFile[$key])) {
+                    unset($conflictFile[$key]);
+                }
             }
             $backupsZip = $this->backupsDir . $this->uid . '-disable-' . date('YmdHis') . '.zip';
             Filesystem::zip($conflictFile, $backupsZip);
