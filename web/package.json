@@ -40,7 +40,6 @@
         "@typescript-eslint/parser": "5.60.0",
         "@vitejs/plugin-vue": "4.2.3",
         "async-validator": "4.2.5",
-        "dotenv": "16.3.1",
         "eslint": "8.43.0",
         "eslint-config-prettier": "8.8.0",
         "eslint-plugin-vue": "9.15.1",
