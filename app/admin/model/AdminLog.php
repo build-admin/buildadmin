@@ -124,7 +124,7 @@ class AdminLog extends Model
             'username'  => $username,
             'url'       => substr(request()->url(), 0, 1500),
             'title'     => $title,
-            'data'      => !is_scalar($data) ? json_encode($data, JSON_UNESCAPED_UNICODE) : $data,
+            'data'      => !is_scalar($data) ? json_encode($data) : $data,
             'ip'        => request()->ip(),
             'useragent' => substr(request()->server('HTTP_USER_AGENT'), 0, 255),
         ]);
