@@ -161,7 +161,9 @@ class ClickCaptcha
             ]);
 
         // 输出图片
-        if (ob_get_level()) ob_end_clean();
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
         if (!ob_get_level()) ob_start();
         switch ($imageInfo[2]) {
             case 1:// GIF

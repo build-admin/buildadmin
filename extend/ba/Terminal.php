@@ -170,13 +170,16 @@ class Terminal
      */
     public function exec(bool $authentication = true): void
     {
+        header('X-Accel-Buffering: no');
         header('Content-Type: text/event-stream');
         header('Cache-Control: no-cache');
 
-        $this->commandKey = request()->param('command');
-
-        if (ob_get_level()) ob_end_clean();
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
         if (!ob_get_level()) ob_start();
+
+        $this->commandKey = request()->param('command');
 
         $command = self::getCommand($this->commandKey);
         if (!$command) {
