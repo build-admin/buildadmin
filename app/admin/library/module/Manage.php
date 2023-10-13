@@ -639,6 +639,9 @@ class Manage
                 if ($key == 'dependencies' || $key == 'devDependencies') {
                     $coverFiles[] = 'web' . DIRECTORY_SEPARATOR . 'package.json';
                 }
+                if ($key == 'nuxtDependencies' || $key == 'nuxtDevDependencies') {
+                    $coverFiles[] = 'web-nuxt' . DIRECTORY_SEPARATOR . 'package.json';
+                }
             }
         }
 
