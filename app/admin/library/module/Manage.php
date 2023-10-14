@@ -368,10 +368,11 @@ class Manage
 
         $info    = $this->getInfo();
         $zipFile = $this->backupsDir . $this->uid . '-install.zip';
-        $zipDir  = $this->backupsDir . $this->uid . '-install' . DIRECTORY_SEPARATOR;
+        $zipDir  = false;
         if (is_file($zipFile)) {
             try {
-                $zipDir = Filesystem::unzip($zipFile, $zipDir);
+                $zipDir = $this->backupsDir . $this->uid . '-install' . DIRECTORY_SEPARATOR;
+                Filesystem::unzip($zipFile, $zipDir);
             } catch (Exception) {
                 // skip
             }
@@ -491,7 +492,17 @@ class Manage
 
         // 删除模块文件
         foreach ($moduleFile as &$file) {
-            $file = Filesystem::fsFit(root_path() . $file);
+            // 纯净模式下，模块文件将被删除，此处直接检查模块目录中是否有该文件并恢复（不检查是否开启纯净模式，因为开关可能被调整）
+            $moduleFilePath = Filesystem::fsFit($this->modulesDir . $file);
+            $file           = Filesystem::fsFit(root_path() . $file);
+            if (!file_exists($file)) continue;
+            if (!file_exists($moduleFilePath)) {
+                if (!is_dir(dirname($moduleFilePath))) {
+                    mkdir(dirname($moduleFilePath), 0755, true);
+                }
+                copy($file, $moduleFilePath);
+            }
+
             if (in_array($file, $protectedFiles)) {
                 continue;
             }
