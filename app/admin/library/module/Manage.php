@@ -3,6 +3,7 @@
 namespace app\admin\library\module;
 
 use Throwable;
+use ba\Version;
 use ba\Depends;
 use ba\Exception;
 use ba\Filesystem;
@@ -176,19 +177,36 @@ class Manage
         $this->uid        = $info['uid'];
         $this->modulesDir = $this->installDir . $info['uid'] . DIRECTORY_SEPARATOR;
 
+        $upgrade = false;
         if (is_dir($this->modulesDir)) {
-            $info = $this->getInfo();
-            if ($info && isset($info['uid'])) {
-                Filesystem::delDir($copyToDir);
-                // 模块已经存在
-                throw new Exception('Module already exists');
+            $oldInfo = $this->getInfo();
+            if ($oldInfo && !empty($oldInfo['uid'])) {
+                $versions = explode('.', $oldInfo['version']);
+                if (isset($versions[2])) {
+                    $versions[2]++;
+                }
+                $nextVersion = implode('.', $versions);
+                $upgrade     = Version::compare($nextVersion, $info['version']);
+                if (!$upgrade) {
+                    Filesystem::delDir($copyToDir);
+                    // 模块已经存在
+                    throw new Exception('Module already exists');
+                }
             }
 
-            if (!Filesystem::dirIsEmpty($this->modulesDir)) {
+            if (!Filesystem::dirIsEmpty($this->modulesDir) && !$upgrade) {
                 Filesystem::delDir($copyToDir);
                 // 模块目录被占
                 throw new Exception('The directory required by the module is occupied');
             }
+        }
+
+        $newInfo = ['state' => self::WAIT_INSTALL];
+        if ($upgrade) {
+            $newInfo['update'] = 1;
+
+            // 清理旧版本代码
+            Filesystem::delDir($this->modulesDir);
         }
 
         // 放置新模块
@@ -198,9 +216,7 @@ class Manage
         $this->checkPackage();
 
         // 设置为待安装状态
-        $this->setInfo([
-            'state' => self::WAIT_INSTALL,
-        ]);
+        $this->setInfo($newInfo);
 
         return $info;
     }
