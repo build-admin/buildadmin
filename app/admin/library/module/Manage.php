@@ -368,10 +368,10 @@ class Manage
 
         $info    = $this->getInfo();
         $zipFile = $this->backupsDir . $this->uid . '-install.zip';
-        $zipDir  = false;
+        $zipDir  = $this->backupsDir . $this->uid . '-install' . DIRECTORY_SEPARATOR;
         if (is_file($zipFile)) {
             try {
-                $zipDir = Filesystem::unzip($zipFile);
+                $zipDir = Filesystem::unzip($zipFile, $zipDir);
             } catch (Exception) {
                 // skip
             }
@@ -481,14 +481,17 @@ class Manage
             }
         }
 
-        // 删除模块文件
+        // 配置了不删除的文件
         $protectedFiles = Server::getConfig($this->modulesDir, 'protectedFiles');
         foreach ($protectedFiles as &$protectedFile) {
             $protectedFile = Filesystem::fsFit(root_path() . $protectedFile);
         }
+        // 模块文件列表
         $moduleFile = Server::getFileList($this->modulesDir);
-        foreach ($moduleFile as $item) {
-            $file = Filesystem::fsFit(root_path() . $item);
+
+        // 删除模块文件
+        foreach ($moduleFile as &$file) {
+            $file = Filesystem::fsFit(root_path() . $file);
             if (in_array($file, $protectedFiles)) {
                 continue;
             }
@@ -511,7 +514,13 @@ class Manage
                     RecursiveIteratorIterator::SELF_FIRST
                 ) as $item
             ) {
-                $backupsFile = root_path() . str_replace($zipDir, '', $item->getPathname());
+                $backupsFile = Filesystem::fsFit(root_path() . str_replace($zipDir, '', $item->getPathname()));
+
+                // 在模块包中，同时不在 $protectedFiles 列表的文件不恢复，这些文件可能是模块升级时备份的
+                if (in_array($backupsFile, $moduleFile) && !in_array($backupsFile, $protectedFiles)) {
+                    continue;
+                }
+
                 if ($item->isDir()) {
                     if (!is_dir($backupsFile)) {
                         mkdir($backupsFile, 0755, true);
