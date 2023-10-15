@@ -508,7 +508,7 @@ class Server
     /**
      * 读取 .runtime
      */
-    public static function getRuntime(string $dir, string $key = ''): array
+    public static function getRuntime(string $dir, string $key = ''): mixed
     {
         $runtimeFilePath   = $dir . '.runtime';
         $runtimeContent    = @file_get_contents($runtimeFilePath);
