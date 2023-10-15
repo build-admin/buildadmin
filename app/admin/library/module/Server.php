@@ -500,7 +500,8 @@ class Server
         }
 
         file_put_contents($runtimeFilePath, json_encode([
-            'files' => $filePaths
+            'files' => $filePaths,
+            'pure'  => Config::get('buildadmin.module_pure_install'),
         ]));
     }
 
