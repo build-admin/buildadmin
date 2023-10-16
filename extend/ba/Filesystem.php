@@ -170,7 +170,12 @@ class Filesystem
         $zip = new ZipFile();
         try {
             foreach ($files as $v) {
-                $zip->addFile(root_path() . $v, $v);
+                if (is_array($v) && isset($v['file']) && isset($v['name'])) {
+                    $zip->addFile(root_path() . str_replace(root_path(), '', Filesystem::fsFit($v['file'])), $v['name']);
+                } else {
+                    $saveFile = str_replace(root_path(), '', Filesystem::fsFit($v));
+                    $zip->addFile(root_path() . $saveFile, $saveFile);
+                }
             }
             $zip->saveAsFile($fileName);
         } catch (Throwable $e) {
