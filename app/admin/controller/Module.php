@@ -138,9 +138,9 @@ class Module extends Backend
         AdminLog::setTitle(__('Upload install module'));
         $file  = $this->request->get("file/s", '');
         $token = $this->request->get("token/s", '');
-        if (!$file || !$token) {
-            $this->error(__('Parameter error'));
-        }
+        if (!$file) $this->error(__('Parameter error'));
+        if (!$token) $this->error(__('Please login to the official website account first'));
+
         $info = [];
         try {
             $info = Manage::instance()->upload($token, $file);

@@ -24,4 +24,5 @@ return [
     'Update module'                                             => '更新模块',
     'Change module state'                                       => '改变模块状态',
     'Upload install module'                                     => '上传安装模块',
+    'Please login to the official website account first'        => '请先使用BuildAdmin官网账户登录到模块市场~',
 ];
