@@ -170,14 +170,19 @@ class Manage
         }
 
         // 安装预检 - 系统版本号要求、已安装模块的互斥和依赖检测
-        Server::installPreCheck([
-            'uid'           => $info['uid'],
-            'sysVersion'    => Config::get('buildadmin.version'),
-            'nuxtVersion'   => Server::getNuxtVersion(),
-            'ba-user-token' => $token,
-            'installed'     => Server::getInstalledIds($this->installDir),
-            'server'        => 1,
-        ]);
+        try {
+            Server::installPreCheck([
+                'uid'           => $info['uid'],
+                'sysVersion'    => Config::get('buildadmin.version'),
+                'nuxtVersion'   => Server::getNuxtVersion(),
+                'ba-user-token' => $token,
+                'installed'     => Server::getInstalledIds($this->installDir),
+                'server'        => 1,
+            ]);
+        } catch (Throwable $e) {
+            Filesystem::delDir($copyToDir);
+            throw $e;
+        }
 
         $this->uid        = $info['uid'];
         $this->modulesDir = $this->installDir . $info['uid'] . DIRECTORY_SEPARATOR;
