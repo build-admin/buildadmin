@@ -107,19 +107,13 @@ class Manage
         if (!$orderId) {
             throw new Exception('Order not found');
         }
-        // 下载
-        $installed = Server::installedList($this->installDir);
-        foreach ($installed as $item) {
-            $installedIds[] = $item['uid'];
-        }
-        unset($installed);
+        // 下载 - 系统版本号要求、已安装模块的互斥和依赖检测
         $zipFile = Server::download($this->uid, $this->installDir, [
             'sysVersion'    => Config::get('buildadmin.version'),
             'nuxtVersion'   => Server::getNuxtVersion(),
             'ba-user-token' => $token,
             'order_id'      => $orderId,
-            // 传递已安装模块，做互斥检测
-            'installed'     => $installedIds ?? [],
+            'installed'     => Server::getInstalledIds($this->installDir),
         ]);
 
         // 删除旧版本代码
@@ -148,7 +142,7 @@ class Manage
      * @return array 模块的基本信息
      * @throws Throwable
      */
-    public function upload(string $file): array
+    public function upload(string $token, string $file): array
     {
         $file = Filesystem::fsFit(root_path() . 'public' . $file);
         if (!is_file($file)) {
@@ -174,6 +168,17 @@ class Manage
             // 基本配置不完整
             throw new Exception('Basic configuration of the Module is incomplete');
         }
+
+        // 安装预检 - 系统版本号要求、已安装模块的互斥和依赖检测
+        Server::installPreCheck([
+            'uid'           => $info['uid'],
+            'sysVersion'    => Config::get('buildadmin.version'),
+            'nuxtVersion'   => Server::getNuxtVersion(),
+            'ba-user-token' => $token,
+            'installed'     => Server::getInstalledIds($this->installDir),
+            'server'        => 1,
+        ]);
+
         $this->uid        = $info['uid'];
         $this->modulesDir = $this->installDir . $info['uid'] . DIRECTORY_SEPARATOR;
 

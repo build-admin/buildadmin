@@ -23,6 +23,8 @@ class Server
 {
     private static ?Client $client = null;
 
+    private static string $apiBaseUrl = '/api/v6.store/';
+
     /**
      * 下载
      * @throws Throwable
@@ -32,7 +34,7 @@ class Server
         $tmpFile = $dir . $uid . ".zip";
         try {
             $client   = self::getClient();
-            $response = $client->get('/api/v6.store/download', ['query' => array_merge(['uid' => $uid, 'server' => 1], $extend)]);
+            $response = $client->get(self::$apiBaseUrl . 'download', ['query' => array_merge(['uid' => $uid, 'server' => 1], $extend)]);
             $body     = $response->getBody();
             $content  = $body->getContents();
             if ($content == '' || stripos($content, '<title>系统发生错误</title>') !== false) {
@@ -52,6 +54,33 @@ class Server
             return $tmpFile;
         }
         throw new Exception("No permission to write temporary files");
+    }
+
+    /**
+     * 安装预检
+     * @throws Throwable
+     */
+    public static function installPreCheck(array $query = []): bool
+    {
+        try {
+            $client     = self::getClient();
+            $response   = $client->get(self::$apiBaseUrl . 'preCheck', ['query' => $query]);
+            $body       = $response->getBody();
+            $statusCode = $response->getStatusCode();
+            $content    = $body->getContents();
+            if ($content == '' || stripos($content, '<title>系统发生错误</title>') !== false || $statusCode != 200) {
+                return true;
+            }
+            if (str_starts_with($content, '{')) {
+                $json = json_decode($content, true);
+                if ($json && $json['code'] == 0) {
+                    throw new Exception($json['msg'], $json['code'], $json['data'] ?? []);
+                }
+            }
+        } catch (TransferException $e) {
+            throw new Exception('package check failed', 0, ['msg' => $e->getMessage()]);
+        }
+        return true;
     }
 
     public static function getConfig(string $dir, $key = ''): array
@@ -250,6 +279,16 @@ class Server
             $installedList[] = $info;
         }
         return $installedList;
+    }
+
+    public static function getInstalledIds(string $dir): array
+    {
+        $installedIds = [];
+        $installed    = self::installedList($dir);
+        foreach ($installed as $item) {
+            $installedIds[] = $item['uid'];
+        }
+        return $installedIds;
     }
 
     /**

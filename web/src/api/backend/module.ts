@@ -224,11 +224,13 @@ export function dependentInstallComplete(uid: string) {
 }
 
 export function upload(file: string) {
+    const baAccount = useBaAccount()
     return createAxios({
         url: moduleControllerUrl + 'upload',
         method: 'post',
         params: {
             file: file,
+            token: baAccount.getToken('auth'),
         },
     })
 }
