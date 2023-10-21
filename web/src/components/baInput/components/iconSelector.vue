@@ -76,7 +76,7 @@
 import { reactive, ref, onMounted, nextTick, watch, computed } from 'vue'
 import { getAwesomeIconfontNames, getIconfontNames, getElementPlusIconfontNames, getLocalIconfontNames } from '/@/utils/iconfont'
 import { useEventListener } from '@vueuse/core'
-import { Placement } from 'element-plus'
+import type { Placement } from 'element-plus'
 
 type IconType = 'ele' | 'awe' | 'ali' | 'local'
 

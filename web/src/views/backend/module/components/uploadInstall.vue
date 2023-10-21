@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { UploadFile } from 'element-plus'
+import type { UploadFile } from 'element-plus'
 import { fileUpload } from '/@/api/common'
 import { upload } from '/@/api/backend/module'
 import { onInstall } from '../index'

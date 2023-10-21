@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { isEmpty } from 'lodash-es'
 import { onClickMenu } from '/@/utils/router'
-import { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 import MenuSub from '/@/layouts/frontend/components/menuSub.vue'
 
 interface Props {

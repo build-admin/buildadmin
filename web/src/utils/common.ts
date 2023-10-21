@@ -5,14 +5,14 @@ import router from '/@/router/index'
 import Icon from '/@/components/icon/index.vue'
 import { useNavTabs } from '/@/stores/navTabs'
 import { useMemberCenter } from '/@/stores/memberCenter'
-import { FormInstance } from 'element-plus'
+import type { FormInstance } from 'element-plus'
 import { useSiteConfig } from '../stores/siteConfig'
 import { useTitle } from '@vueuse/core'
 import { i18n } from '../lang'
 import { getUrl } from './axios'
 import { adminBaseRoute } from '/@/router/static'
 import { trim, trimStart } from 'lodash-es'
-import { TranslateOptions } from 'vue-i18n'
+import type { TranslateOptions } from 'vue-i18n'
 
 export function registerIcons(app: App) {
     /*

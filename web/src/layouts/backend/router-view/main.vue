@@ -14,12 +14,12 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch, onBeforeMount, onUnmounted, nextTick, provide } from 'vue'
-import { useRoute, RouteLocationNormalized } from 'vue-router'
+import { useRoute, type RouteLocationNormalized } from 'vue-router'
 import { mainHeight as layoutMainScrollbarStyle } from '/@/utils/layout'
 import useCurrentInstance from '/@/utils/useCurrentInstance'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
-import { ScrollbarInstance } from 'element-plus'
+import type { ScrollbarInstance } from 'element-plus'
 
 defineOptions({
     name: 'layout/main',

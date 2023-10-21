@@ -16,7 +16,7 @@
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import Logo from '/@/layouts/backend/components/logo.vue'
 import MenuTree from '/@/layouts/backend/components/menus/menuTree.vue'
-import { useRoute, onBeforeRouteUpdate, RouteLocationNormalizedLoaded } from 'vue-router'
+import { useRoute, onBeforeRouteUpdate, type RouteLocationNormalizedLoaded } from 'vue-router'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 import type { ScrollbarInstance } from 'element-plus'

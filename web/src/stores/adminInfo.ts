@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ADMIN_INFO } from '/@/stores/constant/cacheKey'
-import { AdminInfo } from '/@/stores/interface'
+import type { AdminInfo } from '/@/stores/interface'
 
 export const useAdminInfo = defineStore('adminInfo', {
     state: (): AdminInfo => {

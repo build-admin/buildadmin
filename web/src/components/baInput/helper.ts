@@ -1,4 +1,4 @@
-import { FieldData } from './index'
+import type { FieldData } from './index'
 
 export const npuaFalse = () => {
     return {

@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter, RouteRecordRaw } from 'vue-router'
+import { useRouter, type RouteRecordRaw } from 'vue-router'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { onClickMenu } from '/@/utils/router'

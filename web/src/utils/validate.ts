@@ -1,5 +1,5 @@
 import type { RuleType } from 'async-validator'
-import { FormItemRule } from 'element-plus'
+import type { FormItemRule } from 'element-plus'
 import { i18n } from '../lang'
 
 /**

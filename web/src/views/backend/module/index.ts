@@ -4,10 +4,10 @@ import { useBaAccount } from '/@/stores/baAccount'
 import { ElNotification } from 'element-plus'
 import { useTerminal } from '/@/stores/terminal'
 import { taskStatus } from '/@/components/terminal/constant'
-import { moduleInstallState, moduleState } from './types'
+import { moduleInstallState, type moduleState } from './types'
 import { uuid } from '/@/utils/random'
 import { fullUrl } from '/@/utils/common'
-import { UserInfo } from '/@/stores/interface'
+import type { UserInfo } from '/@/stores/interface'
 import { i18n } from '/@/lang/index'
 
 export const loadData = () => {

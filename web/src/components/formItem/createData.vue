@@ -114,7 +114,7 @@ import { reactive } from 'vue'
 import FormItem from '/@/components/formItem/index.vue'
 import { inputTypes } from '/@/components/baInput'
 import { validatorType } from '/@/utils/validate'
-import { InputAttr } from '/@/components/baInput'
+import type { InputAttr } from '/@/components/baInput'
 import { i18n } from '/@/lang'
 
 const { t } = i18n.global

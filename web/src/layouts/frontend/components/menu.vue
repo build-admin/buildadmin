@@ -78,7 +78,8 @@ import { fullUrl } from '/@/utils/common'
 import MenuSub from '/@/layouts/frontend/components/menuSub.vue'
 import toggleDark from '/@/utils/useDark'
 import DarkSwitch from '/@/layouts/common/components/darkSwitch.vue'
-import { RouteLocationNormalizedLoaded, useRoute, useRouter, RouteRecordRaw } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()

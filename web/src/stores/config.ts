@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { STORE_CONFIG } from '/@/stores/constant/cacheKey'
-import { Layout } from '/@/stores/interface'
+import type { Layout } from '/@/stores/interface'
 
 export const useConfig = defineStore(
     'config',

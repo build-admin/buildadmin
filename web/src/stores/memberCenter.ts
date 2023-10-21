@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { MemberCenter } from '/@/stores/interface/index'
-import { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
+import type { MemberCenter } from '/@/stores/interface/index'
+import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 
 export const useMemberCenter = defineStore('memberCenter', () => {
     const state: MemberCenter = reactive({

@@ -1,4 +1,5 @@
-import { App, nextTick } from 'vue'
+import type { App } from 'vue'
+import { nextTick } from 'vue'
 import horizontalScroll from '/@/utils/horizontalScroll'
 import { useEventListener } from '@vueuse/core'
 import { isString } from 'lodash-es'

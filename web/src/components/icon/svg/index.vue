@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, CSSProperties } from 'vue'
+import { computed, type CSSProperties } from 'vue'
 import { isExternal } from '/@/utils/common'
 interface Props {
     name: string

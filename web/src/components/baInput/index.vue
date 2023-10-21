@@ -1,6 +1,8 @@
 <script lang="ts">
-import { createVNode, resolveComponent, defineComponent, PropType, VNode, computed, reactive } from 'vue'
-import { inputTypes, modelValueTypes, InputAttr, InputData } from '/@/components/baInput'
+import type { PropType, VNode } from 'vue'
+import type { modelValueTypes, InputAttr, InputData } from '/@/components/baInput'
+import { createVNode, resolveComponent, defineComponent, computed, reactive } from 'vue'
+import { inputTypes } from '/@/components/baInput'
 import Array from '/@/components/baInput/components/array.vue'
 import RemoteSelect from '/@/components/baInput/components/remoteSelect.vue'
 import IconSelector from '/@/components/baInput/components/iconSelector.vue'

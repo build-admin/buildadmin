@@ -1,5 +1,6 @@
 import router from '/@/router/index'
-import { isNavigationFailure, NavigationFailureType, RouteRecordRaw, RouteLocationRaw } from 'vue-router'
+import { isNavigationFailure, NavigationFailureType } from 'vue-router'
+import type { RouteRecordRaw, RouteLocationRaw } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'

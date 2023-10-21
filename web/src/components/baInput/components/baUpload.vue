@@ -48,14 +48,15 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch, useSlots, nextTick } from 'vue'
-import { UploadInstance, UploadUserFile, UploadProps, genFileId, UploadRawFile, UploadFiles } from 'element-plus'
+import { genFileId } from 'element-plus'
+import type { UploadInstance, UploadUserFile, UploadProps, UploadRawFile, UploadFiles } from 'element-plus'
 import { stringToArray } from '/@/components/baInput/helper'
 import { fullUrl, arrayFullUrl, getFileNameFromPath, getArrayKey } from '/@/utils/common'
 import { fileUpload } from '/@/api/common'
 import SelectFile from '/@/components/baInput/components/selectFile.vue'
 import { uuid } from '/@/utils/random'
 import { cloneDeep, isEmpty } from 'lodash-es'
-import { AxiosProgressEvent } from 'axios'
+import type { AxiosProgressEvent } from 'axios'
 import Sortable from 'sortablejs'
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] }

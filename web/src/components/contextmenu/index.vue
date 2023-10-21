@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, toRaw } from 'vue'
 import type { Axis, ContextmenuItemClickEmitArg, Props } from './interface'
-import { RouteLocationNormalized } from 'vue-router'
+import type { RouteLocationNormalized } from 'vue-router'
 import { useEventListener } from '@vueuse/core'
 
 const props = withDefaults(defineProps<Props>(), {

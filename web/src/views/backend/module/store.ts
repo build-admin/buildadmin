@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import { uuid } from '/@/utils/random'
-import { moduleState } from './types'
+import type { moduleState } from './types'
 
 export const state = reactive<moduleState>({
     loading: {

@@ -111,12 +111,13 @@
 import { ref, reactive, onMounted } from 'vue'
 import FormItem from '/@/components/formItem/index.vue'
 import { index, postData, del, postSendTestMail } from '/@/api/backend/routine/config'
-import { FormInstance, FormItemRule, ElMessageBox, ElNotification } from 'element-plus'
+import { ElMessageBox, ElNotification } from 'element-plus'
+import type { FormInstance, FormItemRule } from 'element-plus'
 import AddFrom from './add.vue'
 import { routePush } from '/@/utils/router'
-import { buildValidatorData, buildValidatorParams } from '/@/utils/validate'
+import { buildValidatorData, type buildValidatorParams } from '/@/utils/validate'
 import { useSiteConfig } from '/@/stores/siteConfig'
-import { SiteConfig } from '/@/stores/interface'
+import type { SiteConfig } from '/@/stores/interface'
 import { useI18n } from 'vue-i18n'
 import { uuid } from '/@/utils/random'
 
@@ -221,7 +222,7 @@ const onSubmit = () => {
             postData('edit', formData).then(() => {
                 for (const key in siteConfig.$state) {
                     if (formData[key] && siteConfig.$state[key as keyof SiteConfig] != formData[key]) {
-                        siteConfig.$state[key as keyof SiteConfig] = formData[key]
+                        ;(siteConfig.$state[key as keyof SiteConfig] as any) = formData[key]
                     }
                 }
             })

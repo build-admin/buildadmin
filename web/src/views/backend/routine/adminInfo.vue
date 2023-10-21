@@ -106,7 +106,7 @@
 import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { index, log, postData } from '/@/api/backend/routine/AdminInfo'
-import { FormInstance, FormItemRule } from 'element-plus'
+import type { FormInstance, FormItemRule } from 'element-plus'
 import { fullUrl, onResetForm, timeFormat } from '/@/utils/common'
 import { uuid } from '../../../utils/random'
 import { buildValidatorData } from '/@/utils/validate'

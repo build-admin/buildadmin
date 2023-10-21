@@ -1,6 +1,7 @@
 import { shortUuid } from '/@/utils/random'
-import { VNode, createVNode, render } from 'vue'
+import { createVNode, render } from 'vue'
 import clickCaptchaConstructor from './index.vue'
+import type { VNode } from 'vue'
 
 interface ClickCaptchaOptions {
     // 验证码弹窗的自定义class

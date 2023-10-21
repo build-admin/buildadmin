@@ -219,7 +219,7 @@ import IconSelector from '/@/components/baInput/components/iconSelector.vue'
 import { STORE_CONFIG, BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
 import { Local, Session } from '/@/utils/storage'
 import { useI18n } from 'vue-i18n'
-import { Layout } from '/@/stores/interface'
+import type { Layout } from '/@/stores/interface'
 import DarkSwitch from '/@/layouts/common/components/darkSwitch.vue'
 import toggleDark from '/@/utils/useDark'
 

@@ -1,4 +1,4 @@
-import { Component, CSSProperties } from 'vue'
+import type { Component, CSSProperties } from 'vue'
 
 /**
  * 支持的输入框类型

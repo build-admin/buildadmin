@@ -1,6 +1,7 @@
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
-import { UserConfig, ConfigEnv, ProxyOptions, loadEnv } from 'vite'
+import { loadEnv } from 'vite'
+import type { UserConfig, ConfigEnv, ProxyOptions } from 'vite'
 import { isProd } from '/@/utils/vite'
 import { svgBuilder } from '/@/components/icon/svg/index'
 

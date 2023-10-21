@@ -244,7 +244,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { FormInstance, FormItemRule } from 'element-plus'
+import type { FormInstance, FormItemRule } from 'element-plus'
 import FormItem from '/@/components/formItem/index.vue'
 import { useUserInfo } from '/@/stores/userInfo'
 import { onResetForm } from '/@/utils/common'

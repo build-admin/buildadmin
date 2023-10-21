@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { FormInstance } from 'element-plus'
+import type { FormInstance } from 'element-plus'
 import { onResetForm } from '/@/utils/common'
 import { buildValidatorData } from '/@/utils/validate'
 import { changePassword } from '/@/api/frontend/user/index'

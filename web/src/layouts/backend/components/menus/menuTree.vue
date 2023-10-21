@@ -19,7 +19,7 @@
 </template>
 <script setup lang="ts">
 import { useConfig } from '/@/stores/config'
-import { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 import { onClickMenu } from '/@/utils/router'
 
 const config = useConfig()

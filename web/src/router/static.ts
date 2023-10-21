@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 
 const pageTitle = (name: string): string => {
     return `pagesTitle.${name}`

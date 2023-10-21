@@ -20,7 +20,7 @@ import Aside from '/@/layouts/frontend/components/aside.vue'
 import Main from '/@/layouts/frontend/components/main.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
 import { mainHeight as layoutMainScrollbarStyle } from '/@/utils/layout'
-import { ScrollbarInstance } from 'element-plus'
+import type { ScrollbarInstance } from 'element-plus'
 
 const mainScrollbarRef = ref<ScrollbarInstance>()
 

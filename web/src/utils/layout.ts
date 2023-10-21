@@ -1,4 +1,4 @@
-import { CSSProperties } from 'vue'
+import type { CSSProperties } from 'vue'
 import { useNavTabs } from '/@/stores/navTabs'
 import { useConfig } from '/@/stores/config'
 import { isAdminApp } from '/@/utils/common'

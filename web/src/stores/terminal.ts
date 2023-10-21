@@ -1,7 +1,7 @@
 import { nextTick, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { STORE_TERMINAL } from '/@/stores/constant/cacheKey'
-import { Terminal } from '/@/stores/interface/index'
+import type { Terminal } from '/@/stores/interface/index'
 import { buildTerminalUrl } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import { timeFormat } from '/@/utils/common'
