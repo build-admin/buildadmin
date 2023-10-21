@@ -75,7 +75,6 @@
 import { onMounted, onBeforeUnmount, reactive, ref, nextTick } from 'vue'
 import * as pageBubble from '/@/utils/pageBubble'
 import type { FormInstance, InputInstance } from 'element-plus'
-import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { editDefaultLang } from '/@/lang/index'
 import { useConfig } from '/@/stores/config'
@@ -162,10 +161,6 @@ const onSubmit = (captchaInfo = '') => {
     login('post', form)
         .then((res) => {
             adminInfo.dataFill(res.data.userInfo)
-            ElNotification({
-                message: res.msg,
-                type: 'success',
-            })
             router.push({ path: res.data.routePath })
         })
         .finally(() => {
