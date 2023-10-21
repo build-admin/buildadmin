@@ -259,14 +259,14 @@ export default class baTable {
                 'page-size-change',
                 () => {
                     this.table.filter!.limit = data.size
-                    this.getIndex()
+                    this.onTableHeaderAction('refresh', { event: 'page-size-change', ...data })
                 },
             ],
             [
                 'current-page-change',
                 () => {
                     this.table.filter!.page = data.page
-                    this.getIndex()
+                    this.onTableHeaderAction('refresh', { event: 'current-page-change', ...data })
                 },
             ],
             [
@@ -278,7 +278,7 @@ export default class baTable {
                     }
                     if (newOrder != this.table.filter!.order) {
                         this.table.filter!.order = newOrder
-                        this.getIndex()
+                        this.onTableHeaderAction('refresh', { event: 'sort-change', ...data })
                     }
                 },
             ],
@@ -316,7 +316,7 @@ export default class baTable {
                 'com-search',
                 () => {
                     this.table.filter!.search = data as comSearchData[]
-                    this.getIndex()
+                    this.onTableHeaderAction('refresh', { event: 'com-search', data: data })
                 },
             ],
             [
@@ -380,7 +380,7 @@ export default class baTable {
             [
                 'quick-search',
                 () => {
-                    this.getIndex()
+                    this.onTableHeaderAction('refresh', { event: 'quick-search', ...data })
                 },
             ],
             [
@@ -486,7 +486,7 @@ export default class baTable {
                 const newRouteFlag = route.path + Object.entries(route.query).toString()
                 if (route.path == this.table.routePath && routeFlag != newRouteFlag) {
                     this.initComSearch(route.query)
-                    this.getIndex()
+                    this.onTableHeaderAction('refresh', { event: 'route-query-change', query: route.query })
                     routeFlag = newRouteFlag
                 }
             }
