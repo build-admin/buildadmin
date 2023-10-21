@@ -343,6 +343,7 @@ export default class baTable {
             [
                 'refresh',
                 () => {
+                    // 刷新表格在大多数情况下无需置空 data，但任需防范表格列组件的 :key 不会被更新的问题，比如关联表的数据列
                     this.table.data = []
                     this.getIndex()
                 },
