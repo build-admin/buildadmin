@@ -72,7 +72,7 @@
             <slot name="quickSearchPrepend"></slot>
             <el-input
                 v-if="props.buttons.includes('quickSearch')"
-                v-model="state.quickSearch"
+                v-model="baTable.table.filter!.quickSearch"
                 class="xs-hidden quick-search"
                 @input="debounce(onSearchInput, 500)()"
                 :placeholder="quickSearchPlaceholder ? quickSearchPlaceholder : t('Search')"
@@ -124,7 +124,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, inject } from 'vue'
+import { computed, inject } from 'vue'
 import { debounce } from '/@/utils/common'
 import type baTableClass from '/@/utils/baTable'
 import ComSearch from '/@/components/table/comSearch/index.vue'
@@ -144,10 +144,6 @@ const props = withDefaults(defineProps<Props>(), {
     quickSearchPlaceholder: '',
 })
 
-const state = reactive({
-    quickSearch: '',
-})
-
 const columnDisplay = computed(() => {
     let columnDisplayArr = []
     for (let item of baTable.table.column) {
@@ -163,7 +159,7 @@ const onAction = (event: string, data: anyObj = {}) => {
 }
 
 const onSearchInput = () => {
-    baTable.onTableHeaderAction('quick-search', { keyword: state.quickSearch })
+    baTable.onTableHeaderAction('quick-search', { keyword: baTable.table.filter!.quickSearch })
 }
 
 const onChangeShowColumn = (value: string | number | boolean, field: string) => {
