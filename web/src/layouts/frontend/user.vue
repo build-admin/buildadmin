@@ -9,7 +9,7 @@ import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { initialize } from '/@/api/frontend/index'
 import { getFirstRoute, routePush } from '/@/utils/router'
-import { memberCenterBaseRoute } from '/@/router/static'
+import { memberCenterBaseRoutePath } from '/@/router/static/memberCenterBase'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import Default from '/@/layouts/frontend/container/default.vue'
 import Disable from '/@/layouts/frontend/container/disable.vue'
@@ -50,7 +50,7 @@ onMounted(async () => {
         // 预跳转到上次路径
         if (route.params.to) {
             const lastRoute = JSON.parse(route.params.to as string)
-            if (lastRoute.path != memberCenterBaseRoute.path) {
+            if (lastRoute.path != memberCenterBaseRoutePath) {
                 let query = !isEmpty(lastRoute.query) ? lastRoute.query : {}
                 routePush({ path: lastRoute.path, query: query })
                 return

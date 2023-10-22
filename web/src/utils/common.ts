@@ -10,7 +10,7 @@ import { useSiteConfig } from '../stores/siteConfig'
 import { useTitle } from '@vueuse/core'
 import { i18n } from '../lang'
 import { getUrl } from './axios'
-import { adminBaseRoute } from '/@/router/static'
+import { adminBaseRoutePath } from '/@/router/static/adminBase'
 import { trim, trimStart } from 'lodash-es'
 import type { TranslateOptions } from 'vue-i18n'
 
@@ -251,7 +251,7 @@ export const __ = (key: string, named?: Record<string, unknown>, options?: Trans
     let langPath = ''
     const path = getCurrentRoutePath()
     if (isAdminApp()) {
-        langPath = path.slice(path.indexOf(adminBaseRoute.path) + adminBaseRoute.path.length)
+        langPath = path.slice(path.indexOf(adminBaseRoutePath) + adminBaseRoutePath.length)
         langPath = trim(langPath, '/').replaceAll('/', '.')
     } else {
         langPath = trim(path, '/').replaceAll('/', '.')

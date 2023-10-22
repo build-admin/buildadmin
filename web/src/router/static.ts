@@ -1,4 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router'
+import { adminBaseRoutePath } from '/@/router/static/adminBase'
+import { memberCenterBaseRoutePath } from '/@/router/static/memberCenterBase'
 
 const pageTitle = (name: string): string => {
     return `pagesTitle.${name}`
@@ -6,6 +8,7 @@ const pageTitle = (name: string): string => {
 
 /*
  * 静态路由
+ * 自动加载 ./static 目录的所有文件，并 push 到以下数组
  */
 const staticRoutes: Array<RouteRecordRaw> = [
     {
@@ -18,8 +21,8 @@ const staticRoutes: Array<RouteRecordRaw> = [
         },
     },
     {
-        // 管理员登录页
-        path: '/admin/login',
+        // 管理员登录页 - 不放在 adminBaseRoute.children 因为登录页不需要使用后台的布局
+        path: adminBaseRoutePath + '/login',
         name: 'adminLogin',
         component: () => import('/@/views/backend/login.vue'),
         meta: {
@@ -28,7 +31,7 @@ const staticRoutes: Array<RouteRecordRaw> = [
     },
     {
         // 会员登录页
-        path: '/user/login',
+        path: memberCenterBaseRoutePath + '/login',
         name: 'userLogin',
         component: () => import('/@/views/frontend/user/login.vue'),
         meta: {
@@ -50,7 +53,7 @@ const staticRoutes: Array<RouteRecordRaw> = [
     },
     {
         // 后台找不到页面了-可能是路由未加载上
-        path: '/admin:path(.*)*',
+        path: adminBaseRoutePath + ':path(.*)*',
         redirect: (to) => {
             return {
                 name: 'adminMainLoading',
@@ -65,7 +68,7 @@ const staticRoutes: Array<RouteRecordRaw> = [
     },
     {
         // 会员中心找不到页面了
-        path: '/user:path(.*)*',
+        path: memberCenterBaseRoutePath + ':path(.*)*',
         redirect: (to) => {
             return {
                 name: 'userMainLoading',
@@ -89,53 +92,9 @@ const staticRoutes: Array<RouteRecordRaw> = [
     },
 ]
 
-/*
- * 后台基础静态路由
- */
-const adminBaseRoute: RouteRecordRaw = {
-    path: '/admin',
-    name: 'admin',
-    component: () => import('/@/layouts/backend/index.vue'),
-    redirect: '/admin/loading',
-    meta: {
-        title: pageTitle('admin'),
-    },
-    children: [
-        {
-            path: 'loading/:to?',
-            name: 'adminMainLoading',
-            component: () => import('/@/layouts/common/components/loading.vue'),
-            meta: {
-                title: pageTitle('Loading'),
-            },
-        },
-    ],
+const staticFiles: Record<string, Record<string, RouteRecordRaw>> = import.meta.glob('./static/*.ts', { eager: true })
+for (const key in staticFiles) {
+    if (staticFiles[key].default) staticRoutes.push(staticFiles[key].default)
 }
 
-/*
- * 会员中心基础静态路由
- */
-const memberCenterBaseRoute: RouteRecordRaw = {
-    path: '/user',
-    name: 'user',
-    component: () => import('/@/layouts/frontend/user.vue'),
-    redirect: '/user/loading',
-    meta: {
-        title: pageTitle('User'),
-    },
-    children: [
-        {
-            path: 'loading/:to?',
-            name: 'userMainLoading',
-            component: () => import('/@/layouts/common/components/loading.vue'),
-            meta: {
-                title: pageTitle('Loading'),
-            },
-        },
-    ],
-}
-
-staticRoutes.push(adminBaseRoute)
-staticRoutes.push(memberCenterBaseRoute)
-
-export { staticRoutes, adminBaseRoute, memberCenterBaseRoute }
+export default staticRoutes

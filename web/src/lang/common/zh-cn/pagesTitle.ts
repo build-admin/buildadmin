@@ -5,7 +5,7 @@ export default {
     notFound: '页面找不到了',
     noPower: '无访问权限',
     noTitle: '无标题',
-    Loading: 'Loading...',
-    User: '会员中心',
+    loading: 'Loading...',
+    user: '会员中心',
     userLogin: '会员登录',
 }

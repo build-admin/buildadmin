@@ -1,7 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { staticRoutes, adminBaseRoute } from '/@/router/static'
+import staticRoutes from '/@/router/static'
+import { adminBaseRoutePath } from '/@/router/static/adminBase'
 import { loading } from '/@/utils/loading'
 import langAutoLoadMap from '/@/lang/autoload'
 import { mergeMessage } from '/@/lang/index'
@@ -33,7 +34,7 @@ router.beforeEach((to, from, next) => {
         prefix = './backend/' + config.lang.defaultLang
 
         // 去除 path 中的 /admin
-        const adminPath = to.path.slice(to.path.indexOf(adminBaseRoute.path) + adminBaseRoute.path.length)
+        const adminPath = to.path.slice(to.path.indexOf(adminBaseRoutePath) + adminBaseRoutePath.length)
         if (adminPath) loadPath.push(prefix + adminPath + '.ts')
     } else {
         prefix = './frontend/' + config.lang.defaultLang

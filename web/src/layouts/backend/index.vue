@@ -19,7 +19,7 @@ import { Session } from '/@/utils/storage'
 import { index } from '/@/api/backend'
 import { handleAdminRoute, getFirstRoute, routePush } from '/@/utils/router'
 import router from '/@/router/index'
-import { adminBaseRoute } from '/@/router/static'
+import { adminBaseRoutePath } from '/@/router/static/adminBase'
 import { useEventListener } from '@vueuse/core'
 import { BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
 import { isEmpty } from 'lodash-es'
@@ -73,7 +73,7 @@ const init = () => {
             // 预跳转到上次路径
             if (route.params.to) {
                 const lastRoute = JSON.parse(route.params.to as string)
-                if (lastRoute.path != adminBaseRoute.path) {
+                if (lastRoute.path != adminBaseRoutePath) {
                     let query = !isEmpty(lastRoute.query) ? lastRoute.query : {}
                     routePush({ path: lastRoute.path, query: query })
                     return
