@@ -15,12 +15,12 @@
             <div
                 class="ba-operate-form"
                 :class="'ba-' + baTable.form.operate + '-form'"
-                :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
+                :style="config.layout.shrink ? '':'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
             >
                 <el-form
                     @keyup.enter="baTable.onSubmit()"
                     v-model="baTable.form.items"
-                    label-position="right"
+                    :label-position="config.layout.shrink ? 'top' : 'right'"
                     :label-width="baTable.form.labelWidth + 'px'"
                 >
                     <el-form-item :label="t('utils.preview')">
@@ -134,7 +134,9 @@ import { inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import { previewRenderFormatter } from './index'
+import { useConfig } from '/@/stores/config'
 
+const config = useConfig()
 const baTable = inject('baTable') as baTableClass
 
 const { t } = useI18n()

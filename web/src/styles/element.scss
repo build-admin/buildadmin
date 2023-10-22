@@ -55,3 +55,14 @@
     }
 }
 /* dialog滚动条-e */
+
+/* 小屏设备 el-radio-group 样式优化-s */
+.ba-input-item-radio {
+    margin-bottom: 10px;
+    .el-radio-group {
+        .el-radio {
+            margin-bottom: 8px;
+        }
+    }
+}
+/* 小屏设备 el-radio-group 样式调整-e */

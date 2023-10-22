@@ -34,10 +34,10 @@
                         }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Before modification')" label-class-name="color-red">
-                        {{ baTable.form.extend!.info.before }}
+                        <div class="info-content">{{ baTable.form.extend!.info.before }}</div>
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.After modification')" label-class-name="color-red">
-                        {{ baTable.form.extend!.info.after }}
+                        <div class="info-content">{{ baTable.form.extend!.info.after }}</div>
                     </el-descriptions-item>
                     <el-descriptions-item :width="120" :span="2" label="User Agent">
                         {{ baTable.form.extend!.info.useragent }}
@@ -104,6 +104,10 @@ const onRollback = (id: string) => {
         align-items: unset;
         height: unset;
     }
+}
+.info-content {
+    word-wrap: break-word;
+    word-break: break-all;
 }
 .table-header-operate-text {
     margin-left: 6px;

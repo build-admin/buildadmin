@@ -16,13 +16,13 @@
             <div
                 class="ba-operate-form"
                 :class="'ba-' + baTable.form.operate + '-form'"
-                :style="'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
+                :style="config.layout.shrink ? '':'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
             >
                 <el-form
                     ref="formRef"
                     @keyup.enter="baTable.onSubmit(formRef)"
                     :model="baTable.form.items"
-                    label-position="right"
+                    :label-position="config.layout.shrink ? 'top' : 'right'"
                     :label-width="baTable.form.labelWidth + 'px'"
                     :rules="rules"
                     v-if="!baTable.form.loading"
@@ -89,6 +89,7 @@ import type { FormInstance, ElTree, FormItemRule } from 'element-plus'
 import { uuid } from '/@/utils/random'
 import { buildValidatorData } from '/@/utils/validate'
 import type Node from 'element-plus/es/components/tree/src/model/node'
+import { useConfig } from '/@/stores/config'
 
 interface MenuRules {
     id: number
@@ -96,6 +97,7 @@ interface MenuRules {
     children: MenuRules[]
 }
 
+const config = useConfig()
 const formRef = ref<FormInstance>()
 const treeRef = ref<InstanceType<typeof ElTree>>()
 const baTable = inject('baTable') as baTableClass

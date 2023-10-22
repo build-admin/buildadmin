@@ -108,7 +108,6 @@ body,
 
 /* 新增/编辑表单-s */
 .ba-operate-dialog {
-    min-width: 400px;
     overflow: hidden;
     border-radius: var(--el-border-radius-base);
 }
@@ -129,7 +128,7 @@ body,
     bottom: 0;
 }
 .ba-operate-form {
-    padding-top: 30px;
+    padding-top: 20px;
 }
 /* 新增/编辑表单-e */
 
@@ -220,10 +219,9 @@ body,
         display: none;
     }
 }
-@media screen and (max-width: 1000px) {
-    .ba-operate-dialog .el-dialog__body {
-        padding-left: 0;
-        padding-right: 0;
+@media screen and (max-width: 1024px) {
+    .ba-operate-dialog {
+        width: 96%;
     }
 }
 @media screen and (max-width: 991px) {

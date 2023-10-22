@@ -6,13 +6,13 @@
             </div>
         </template>
         <el-scrollbar class="ba-table-form-scrollbar">
-            <div class="ba-operate-form ba-add-form" :style="'width: calc(100% - ' + state.labelWidth / 2 + 'px)'">
+            <div class="ba-operate-form ba-add-form" :style="config.layout.shrink ? '' : 'width: calc(100% - ' + state.labelWidth / 2 + 'px)'">
                 <el-form
                     ref="formRef"
                     @keyup.enter="onAddSubmit()"
                     :rules="rules"
                     :model="{ ...state.addConfig, ...state.formItemData }"
-                    label-position="right"
+                    :label-position="config.layout.shrink ? 'top' : 'right'"
                     :label-width="160"
                 >
                     <FormItem
@@ -44,6 +44,9 @@ import { buildValidatorData } from '/@/utils/validate'
 import { postData } from '/@/api/backend/routine/config'
 import CreateFormItemData from '/@/components/formItem/createData.vue'
 import { useI18n } from 'vue-i18n'
+import { useConfig } from '/@/stores/config'
+
+const config = useConfig()
 
 interface Props {
     modelValue: boolean
