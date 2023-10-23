@@ -24,6 +24,21 @@ use app\common\facade\Token;
 class Auth extends \ba\Auth
 {
     /**
+     * 需要登录时/无需登录时的响应状态代码
+     */
+    public const LOGIN_RESPONSE_CODE = 303;
+
+    /**
+     * 需要登录标记 - 前台应清理 token、记录当前路由 path、跳转到登录页
+     */
+    public const NEED_LOGIN = 'need login';
+
+    /**
+     * 已经登录标记 - 前台应跳转到基础路由
+     */
+    public const LOGGED_IN = 'logged in';
+
+    /**
      * 对象实例
      * @var ?Auth
      */

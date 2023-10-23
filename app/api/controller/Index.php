@@ -49,8 +49,8 @@ class Index extends Frontend
 
                 // 未过期或无token，直接要求登录
                 $this->error(__('Please login first'), [
-                    'routePath' => '/user/login'
-                ], 302);
+                    'type' => $this->auth::NEED_LOGIN
+                ], $this->auth::LOGIN_RESPONSE_CODE);
             }
 
             $rules = Db::name('user_rule')

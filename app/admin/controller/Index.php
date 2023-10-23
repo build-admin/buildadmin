@@ -58,8 +58,8 @@ class Index extends Backend
         // 检查登录态
         if ($this->auth->isLogin()) {
             $this->success(__('You have already logged in. There is no need to log in again~'), [
-                'routePath' => '/admin'
-            ], 302);
+                'type' => $this->auth::LOGGED_IN
+            ], $this->auth::LOGIN_RESPONSE_CODE);
         }
 
         $captchaSwitch = Config::get('buildadmin.admin_login_captcha');
