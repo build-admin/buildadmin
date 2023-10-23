@@ -11,7 +11,7 @@
                         </div>
                         <el-button
                             v-if="memberCenter.state.open"
-                            @click="$router.push('/user')"
+                            @click="$router.push(memberCenterBaseRoutePath)"
                             class="container-button"
                             color="#ffffff"
                             size="large"
@@ -35,6 +35,7 @@ import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import Header from '/@/layouts/frontend/components/header.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
+import { memberCenterBaseRoutePath } from '/@/router/static/memberCenterBase'
 
 const siteConfig = useSiteConfig()
 const memberCenter = useMemberCenter()

@@ -5,6 +5,7 @@ import { defineStore } from 'pinia'
 import { STORE_TAB_VIEW_CONFIG } from '/@/stores/constant/cacheKey'
 import type { NavTabs } from '/@/stores/interface/index'
 import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
+import { adminBaseRoutePath } from '/@/router/static/adminBase'
 
 export const useNavTabs = defineStore(
     'navTabs',
@@ -101,7 +102,7 @@ export const useNavTabs = defineStore(
 function encodeRoutesURI(data: RouteRecordRaw[]) {
     data.forEach((item) => {
         if (item.meta?.menu_type == 'iframe') {
-            item.path = '/admin/iframe/' + encodeURIComponent(item.path)
+            item.path = adminBaseRoutePath + '/iframe/' + encodeURIComponent(item.path)
         }
 
         if (item.children && item.children.length) {

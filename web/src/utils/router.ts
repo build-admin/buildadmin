@@ -247,7 +247,7 @@ export const addRouteItem = (viewsComponent: Record<string, any>, route: any, pa
     let path = '',
         component
     if (route.menu_type == 'iframe') {
-        path = (isAdminApp() ? '/admin' : '/user') + '/iframe/' + encodeURIComponent(route.url)
+        path = (isAdminApp() ? adminBaseRoute.path : memberCenterBaseRoute.path) + '/iframe/' + encodeURIComponent(route.url)
         component = () => import('/@/layouts/common/router-view/iframe.vue')
     } else {
         path = parentName ? route.path : '/' + route.path

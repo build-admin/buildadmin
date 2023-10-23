@@ -155,10 +155,11 @@ export const buildJsonToElTreeData = (data: any): ElTreeData[] => {
  * @param path 不传递则通过当前路由 path 检查
  */
 export const isAdminApp = (path = '') => {
+    const regex = new RegExp(`^${adminBaseRoutePath}`)
     if (path) {
-        return /^\/admin/.test(path)
+        return regex.test(path)
     }
-    if (/^\/admin/.test(getCurrentRoutePath())) {
+    if (regex.test(getCurrentRoutePath())) {
         return true
     }
     return false

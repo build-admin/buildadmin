@@ -30,6 +30,7 @@ import useCurrentInstance from '/@/utils/useCurrentInstance'
 import Contextmenu from '/@/components/contextmenu/index.vue'
 import horizontalScroll from '/@/utils/horizontalScroll'
 import { getFirstRoute, routePush } from '/@/utils/router'
+import { adminBaseRoutePath } from '/@/router/static/adminBase'
 
 const route = useRoute()
 const router = useRouter()
@@ -97,7 +98,7 @@ const toLastTab = () => {
     if (lastTab) {
         router.push(lastTab)
     } else {
-        router.push('/admin')
+        router.push(adminBaseRoutePath)
     }
 }
 
