@@ -27,7 +27,7 @@ class Ajax extends Backend
         parent::initialize();
     }
 
-    public function upload()
+    public function upload(): void
     {
         AdminLog::setTitle(__('upload'));
         $file = $this->request->file('file');
@@ -48,7 +48,7 @@ class Ajax extends Backend
      * 获取省市区数据
      * @throws Throwable
      */
-    public function area()
+    public function area(): void
     {
         $this->success('', get_area());
     }
@@ -66,7 +66,7 @@ class Ajax extends Backend
      * @param ?string $table
      * @throws Throwable
      */
-    public function getTablePk(?string $table = null)
+    public function getTablePk(?string $table = null): void
     {
         if (!$table) {
             $this->error(__('Parameter error'));
@@ -83,7 +83,7 @@ class Ajax extends Backend
         $this->success('', ['pk' => $tablePk]);
     }
 
-    public function getTableFieldList()
+    public function getTableFieldList(): void
     {
         $table = $this->request->param('table');
         $clean = $this->request->param('clean', true);
@@ -98,7 +98,7 @@ class Ajax extends Backend
         ]);
     }
 
-    public function changeTerminalConfig()
+    public function changeTerminalConfig(): void
     {
         AdminLog::setTitle(__('changeTerminalConfig'));
         if (Terminal::changeTerminalConfig()) {
@@ -108,7 +108,7 @@ class Ajax extends Backend
         }
     }
 
-    public function clearCache()
+    public function clearCache(): void
     {
         $type = $this->request->post('type');
         if ($type == 'tp' || $type == 'all') {
@@ -124,7 +124,7 @@ class Ajax extends Backend
      * 终端
      * @throws Throwable
      */
-    public function terminal()
+    public function terminal(): void
     {
         Terminal::instance()->exec();
     }

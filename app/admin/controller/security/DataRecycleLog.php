@@ -68,7 +68,7 @@ class DataRecycleLog extends Backend
      * @param string|int|null $id
      * @throws Throwable
      */
-    public function info(string|int $id = null)
+    public function info(string|int $id = null): void
     {
         $row = $this->model
             ->withJoin($this->withJoinTable, $this->withJoinType)

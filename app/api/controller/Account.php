@@ -23,7 +23,7 @@ class Account extends Frontend
         parent::initialize();
     }
 
-    public function overview()
+    public function overview(): void
     {
         $sevenDays = Date::unixTime('day', -6);
         $score     = $money = $days = [];
@@ -52,7 +52,7 @@ class Account extends Frontend
      * 会员资料
      * @throws Throwable
      */
-    public function profile()
+    public function profile(): void
     {
         if ($this->request->isPost()) {
             $data = $this->request->only(['id', 'avatar', 'username', 'nickname', 'gender', 'birthday', 'motto']);
@@ -90,7 +90,7 @@ class Account extends Frontend
      * 在 changBind 方法中，通过 pass Token来确定用户已经通过了账户验证（用户未绑定邮箱/手机时通过账户密码验证）
      * @throws Throwable
      */
-    public function verification()
+    public function verification(): void
     {
         $captcha = new Captcha();
         $params  = $this->request->only(['type', 'captcha']);
@@ -110,7 +110,7 @@ class Account extends Frontend
      * 通过 pass Token来确定用户已经通过了账户验证，也就是以上的 verification 方法，同时用户未绑定邮箱/手机时通过账户密码验证
      * @throws Throwable
      */
-    public function changeBind()
+    public function changeBind(): void
     {
         $captcha = new Captcha();
         $params  = $this->request->only(['type', 'captcha', 'email', 'mobile', 'accountVerificationToken', 'password']);
@@ -157,7 +157,7 @@ class Account extends Frontend
         $this->error(__('Please enter the correct verification code'));
     }
 
-    public function changePassword()
+    public function changePassword(): void
     {
         if ($this->request->isPost()) {
             $params = $this->request->only(['oldPassword', 'newPassword']);
@@ -187,7 +187,7 @@ class Account extends Frontend
      * 积分日志
      * @throws Throwable
      */
-    public function integral()
+    public function integral(): void
     {
         $limit         = $this->request->request('limit');
         $integralModel = new UserScoreLog();
@@ -205,7 +205,7 @@ class Account extends Frontend
      * 余额日志
      * @throws Throwable
      */
-    public function balance()
+    public function balance(): void
     {
         $limit      = $this->request->request('limit');
         $moneyModel = new UserMoneyLog();
@@ -223,7 +223,7 @@ class Account extends Frontend
      * 找回密码
      * @throws Throwable
      */
-    public function retrievePassword()
+    public function retrievePassword(): void
     {
         $params = $this->request->only(['type', 'account', 'captcha', 'password']);
         try {

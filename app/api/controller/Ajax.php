@@ -16,7 +16,7 @@ class Ajax extends Frontend
         parent::initialize();
     }
 
-    public function upload()
+    public function upload(): void
     {
         $file = $this->request->file('file');
         try {
@@ -36,7 +36,7 @@ class Ajax extends Frontend
      * 省份地区数据
      * @throws Throwable
      */
-    public function area()
+    public function area(): void
     {
         $this->success('', get_area());
     }

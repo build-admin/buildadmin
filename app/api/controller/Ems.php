@@ -26,7 +26,7 @@ class Ems extends Frontend
      * 不同的事件，会自动做各种必要检查，其中 验证账户 要求用户输入当前密码才能发送验证码邮件
      * @throws Throwable
      */
-    public function send()
+    public function send(): void
     {
         $params = $this->request->post(['email', 'event', 'captchaId', 'captchaInfo']);
         $mail   = new Email();

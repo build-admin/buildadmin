@@ -22,7 +22,7 @@ class Index extends Frontend
      * 前台和会员中心的初始化请求
      * @throws Throwable
      */
-    public function index()
+    public function index(): void
     {
         $menus = [];
         if ($this->auth->isLogin()) {

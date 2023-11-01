@@ -25,7 +25,7 @@ class User extends Frontend
      * 会员签入(登录和注册)
      * @throws Throwable
      */
-    public function checkIn()
+    public function checkIn(): void
     {
         $openMemberCenter = Config::get('buildadmin.open_member_center');
         if (!$openMemberCenter) {
@@ -83,7 +83,7 @@ class User extends Frontend
         ]);
     }
 
-    public function logout()
+    public function logout(): void
     {
         if ($this->request->isPost()) {
             $refreshToken = $this->request->post('refreshToken', '');
