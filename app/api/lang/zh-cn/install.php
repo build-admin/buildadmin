@@ -41,4 +41,5 @@ return [
     'Please upgrade %s version'                                                                                          => '请升级%s版本',
     'nothing'                                                                                                            => '无',
     'The gd extension and freeType library need to be installed'                                                         => '需要gd2扩展和freeType库',
+    'The .env file with database configuration was detected. Please clean up and try again!'                             => '检测到带有数据库配置的 .env 文件。请清理后再试一次!',
 ];

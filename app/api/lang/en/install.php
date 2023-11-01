@@ -41,4 +41,5 @@ return [
     'Please upgrade %s version'                                                                                          => 'Please upgrade the %s version',
     'nothing'                                                                                                            => 'Nothing',
     'The gd extension and freeType library need to be installed'                                                         => 'The gd2 extension and freeType library need to be installed',
+    'The .env file with database configuration was detected. Please clean up and try again!'                             => 'The .env file with database configuration was detected. Please clean up and try again!',
 ];

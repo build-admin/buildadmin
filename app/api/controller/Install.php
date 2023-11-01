@@ -51,9 +51,9 @@ class Install extends Api
      */
     static array $needDependentVersion = [
         'php'  => '8.0.2',
-        'npm'  => '6.14.0',
+        'npm'  => '9.8.1',
         'cnpm' => '7.1.0',
-        'node' => '14.13.1',
+        'node' => '18.18.2',
         'yarn' => '1.2.0',
         'pnpm' => '6.32.13',
     ];
@@ -80,7 +80,7 @@ class Install extends Api
      * 命令执行窗口
      * @throws Throwable
      */
-    public function terminal()
+    public function terminal(): void
     {
         if ($this->isInstallComplete()) {
             return;
@@ -89,7 +89,7 @@ class Install extends Api
         Terminal::instance()->exec(false);
     }
 
-    public function changePackageManager()
+    public function changePackageManager(): void
     {
         if ($this->isInstallComplete()) {
             return;
@@ -108,10 +108,13 @@ class Install extends Api
     /**
      * 环境基础检查
      */
-    public function envBaseCheck()
+    public function envBaseCheck(): void
     {
         if ($this->isInstallComplete()) {
             $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]), []);
+        }
+        if (env('database.type')) {
+            $this->error(__('The .env file with database configuration was detected. Please clean up and try again!'));
         }
 
         // php版本-start
@@ -264,7 +267,7 @@ class Install extends Api
     /**
      * npm环境检查
      */
-    public function envNpmCheck()
+    public function envNpmCheck(): void
     {
         if ($this->isInstallComplete()) {
             $this->error('', [], 2);
@@ -381,7 +384,7 @@ class Install extends Api
     /**
      * 测试数据库连接
      */
-    public function testDatabase()
+    public function testDatabase(): void
     {
         $database = [
             'hostname' => $this->request->post('hostname'),
@@ -405,7 +408,7 @@ class Install extends Api
      * 系统基础配置
      * post请求=开始安装
      */
-    public function baseConfig()
+    public function baseConfig(): void
     {
         if ($this->isInstallComplete()) {
             $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]));
@@ -451,7 +454,12 @@ class Install extends Api
         // 写入.env-example文件
         $envFile        = root_path() . '.env-example';
         $envFileContent = @file_get_contents($envFile);
-        if ($envFileContent && stripos($envFileContent, '[DATABASE]') === false) {
+        if ($envFileContent) {
+            $databasePos = stripos($envFileContent, '[DATABASE]');
+            if ($databasePos !== false) {
+                // 清理已有数据库配置
+                $envFileContent = substr($envFileContent, 0, $databasePos);
+            }
             $envFileContent .= "\n" . '[DATABASE]' . "\n";
             $envFileContent .= 'TYPE = mysql' . "\n";
             $envFileContent .= 'HOSTNAME = ' . $databaseParam['hostname'] . "\n";
@@ -459,6 +467,7 @@ class Install extends Api
             $envFileContent .= 'USERNAME = ' . $databaseParam['username'] . "\n";
             $envFileContent .= 'PASSWORD = ' . $databaseParam['password'] . "\n";
             $envFileContent .= 'HOSTPORT = ' . $databaseParam['hostport'] . "\n";
+            $envFileContent .= 'PREFIX = ' . $databaseParam['prefix'] . "\n";
             $envFileContent .= 'CHARSET = utf8mb4' . "\n";
             $envFileContent .= 'DEBUG = true' . "\n";
             $result         = @file_put_contents($envFile, $envFileContent);
@@ -505,7 +514,7 @@ class Install extends Api
      * 标记命令执行完毕
      * @throws Throwable
      */
-    public function commandExecComplete()
+    public function commandExecComplete(): void
     {
         if ($this->isInstallComplete()) {
             $this->error(__('The system has completed installation. If you need to reinstall, please delete the %s file first', ['public/' . self::$lockFileName]));
@@ -569,14 +578,14 @@ class Install extends Api
     /**
      * 安装指引
      */
-    public function manualInstall()
+    public function manualInstall(): void
     {
         $this->success('', [
             'webPath' => str_replace('\\', '/', root_path() . 'web')
         ]);
     }
 
-    public function mvDist()
+    public function mvDist(): void
     {
         if (!is_file(root_path() . self::$distDir . DIRECTORY_SEPARATOR . 'index.html')) {
             $this->error(__('No built front-end file found, please rebuild manually!'));
