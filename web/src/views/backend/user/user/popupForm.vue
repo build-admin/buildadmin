@@ -45,6 +45,7 @@
                         type="remoteSelect"
                         :label="t('user.user.grouping')"
                         v-model="baTable.form.items!.group_id"
+                        prop="group_id"
                         :placeholder="t('user.user.grouping')"
                         :input-attr="{
                             params: { isTree: true, search: [{ field: 'status', val: '1', operator: 'eq' }] },
@@ -159,6 +160,7 @@ const { t } = useI18n()
 const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     username: [buildValidatorData({ name: 'required', title: t('user.user.User name') }), buildValidatorData({ name: 'account' })],
     nickname: [buildValidatorData({ name: 'required', title: t('user.user.nickname') })],
+    group_id: [buildValidatorData({ name: 'required', message: t('Please select field', { field: t('user.user.grouping') }) })],
     email: [buildValidatorData({ name: 'email', title: t('user.user.email') })],
     mobile: [buildValidatorData({ name: 'mobile' })],
     password: [
