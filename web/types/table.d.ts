@@ -158,6 +158,8 @@ declare global {
         size?: TagProps['size']
         // 自定义数据:比如渲染为Tag时,可以指定不同值时的Tag的Type属性 { open: 'success', close: 'info' }
         custom?: any
+        // 自定义Tag的Type属性:当数据内容不确定时（例如用户手动输入），可以通过该字段指定Type属性。
+        customTagType?: TagProps['type'],
         // 谨慎使用：自定义渲染模板，方法可返回html内容，请确保返回内容是xss安全的
         customTemplate?: (row: TableRow, field: TableColumn, value: any, column: TableColumnCtx<TableRow>, index: number) => string
         // 自定义组件/函数渲染
