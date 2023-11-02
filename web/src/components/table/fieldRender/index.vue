@@ -52,7 +52,7 @@
                 <el-tag
                     v-if="tag"
                     class="m-10"
-                    :type="getTagType(tag, field.custom)"
+                    :type="field.customTagType ?? getTagType(tag, field.custom)"
                     :effect="field.effect ?? 'light'"
                     :size="field.size ?? 'default'"
                 >
@@ -64,7 +64,7 @@
             <el-tag
                 class="m-10"
                 v-if="fieldValue !== ''"
-                :type="getTagType(fieldValue, field.custom)"
+                :type="field.customTagType ?? getTagType(fieldValue, field.custom)"
                 :effect="field.effect ?? 'light'"
                 :size="field.size ?? 'default'"
             >
