@@ -85,6 +85,7 @@
                         :class="props.buttons.includes('comSearch') ? 'right-border' : ''"
                         color="#dcdfe6"
                         plain
+                        v-blur
                     >
                         <Icon size="14" name="el-icon-Grid" />
                     </el-button>
@@ -114,6 +115,7 @@
                         @click="baTable.table.showComSearch = !baTable.table.showComSearch"
                         color="#dcdfe6"
                         plain
+                        v-blur
                     >
                         <Icon size="14" name="el-icon-Search" />
                     </el-button>
@@ -235,7 +237,7 @@ html.dark {
             background-color: var(--el-color-info-light-7);
         }
         button {
-            background-color: #898a8d;
+            background-color: var(--ba-bg-color-overlay);
             el-icon {
                 color: white !important;
             }
