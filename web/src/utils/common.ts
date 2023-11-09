@@ -92,7 +92,8 @@ export function isExternal(path: string): boolean {
 }
 
 /**
- * 防抖
+ * 全局防抖
+ * 与 _.debounce 不同的是，间隔期间如果再次传递不同的函数，两个函数也只会执行一次
  * @param fn 执行函数
  * @param ms 间隔毫秒数
  */
