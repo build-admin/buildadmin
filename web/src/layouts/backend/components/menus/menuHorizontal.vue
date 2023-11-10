@@ -5,7 +5,7 @@
         </div>
         <el-scrollbar ref="horizontalMenusRef" class="horizontal-menus-scrollbar">
             <el-menu class="menu-horizontal" mode="horizontal" :default-active="state.defaultActive" :key="state.menuKey">
-                <MenuTree :menus="menus" />
+                <MenuTree :extends="{ position: 'horizontal', level: 1 }" :menus="menus" />
             </el-menu>
         </el-scrollbar>
         <NavMenus />

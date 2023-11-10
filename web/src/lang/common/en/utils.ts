@@ -4,6 +4,7 @@ export default {
     'Navigation failed, navigation guard intercepted!': 'Navigation failed, Navigation Guard interception!',
     'Navigation failed, it is at the navigation target position!': 'Navigation failed, it is already at the navigation the position!',
     'Navigation failed, invalid route!': 'Navigation failed, invalid route!',
+    'No child menu to jump to!': 'No child menu to jump to!',
     Loading: 'Loading...',
     Reload: 'Reload',
     comma: ',',

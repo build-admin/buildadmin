@@ -6,7 +6,7 @@
                     <Icon :color="config.getColorVal('menuColor')" :name="menu.meta?.icon ? menu.meta?.icon : config.layout.menuDefaultIcon" />
                     <span>{{ menu.meta?.title ? menu.meta?.title : $t('noTitle') }}</span>
                 </template>
-                <menu-tree :menus="menu.children"></menu-tree>
+                <menu-tree :extends="{ ...props.extends, level: props.extends.level + 1 }" :menus="menu.children"></menu-tree>
             </el-sub-menu>
         </template>
         <template v-else>
@@ -20,20 +20,47 @@
 <script setup lang="ts">
 import { useConfig } from '/@/stores/config'
 import type { RouteRecordRaw } from 'vue-router'
-import { onClickMenu } from '/@/utils/router'
+import { getFirstRoute, onClickMenu } from '/@/utils/router'
+import { ElNotification } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const config = useConfig()
 
 interface Props {
     menus: RouteRecordRaw[]
+    extends?: {
+        level: number
+        [key: string]: any
+    }
 }
 const props = withDefaults(defineProps<Props>(), {
     menus: () => [],
+    extends: () => {
+        return {
+            level: 1,
+        }
+    },
 })
 
+/**
+ * sub-menu-item 被点击 - 用于单栏布局和双栏布局
+ * 顶栏菜单：点击时打开第一个菜单
+ * 侧边菜单（若有）：点击只展开收缩
+ *
+ * sub-menu-item 被点击时，也会触发到 menu-item 的点击事件，由 el-menu 内部触发，无法很好的排除，在此检查 level 值
+ */
 const onClickSubMenu = (menu: RouteRecordRaw) => {
-    if (['Streamline', 'Double'].includes(config.layout.layoutMode) && menu.children?.length) {
-        onClickMenu(menu.children[0])
+    if (props.extends?.position == 'horizontal' && props.extends.level <= 1 && menu.children?.length) {
+        const firstRoute = getFirstRoute(menu.children)
+        if (firstRoute) {
+            onClickMenu(firstRoute)
+        } else {
+            ElNotification({
+                type: 'error',
+                message: t('utils.No child menu to jump to!'),
+            })
+        }
     }
 }
 </script>

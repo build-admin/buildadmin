@@ -4,6 +4,7 @@ export default {
     'Navigation failed, navigation guard intercepted!': '导航失败，导航守卫拦截！',
     'Navigation failed, it is at the navigation target position!': '导航失败，已在导航目标位置！',
     'Navigation failed, invalid route!': '导航失败，路由无效！',
+    'No child menu to jump to!': '没有找到可以跳转的子级菜单！',
     Loading: '加载中...',
     Reload: '重新加载',
     comma: '，',
