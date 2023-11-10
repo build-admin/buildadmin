@@ -74,13 +74,18 @@ export function setTitleFromRoute() {
 }
 
 /**
- * 设置浏览器标题-只能在路由加载完成后调用
+ * 设置浏览器标题
  * @param webTitle 新的标题
  */
 export function setTitle(webTitle: string) {
-    const title = useTitle()
-    const siteConfig = useSiteConfig()
-    title.value = `${webTitle}${siteConfig.siteName ? ' - ' + siteConfig.siteName : ''}`
+    if (router.currentRoute.value) {
+        router.currentRoute.value.meta.title = webTitle
+    }
+    nextTick(() => {
+        const title = useTitle()
+        const siteConfig = useSiteConfig()
+        title.value = `${webTitle}${siteConfig.siteName ? ' - ' + siteConfig.siteName : ''}`
+    })
 }
 
 /**
