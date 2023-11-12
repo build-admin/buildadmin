@@ -97,7 +97,7 @@
             <el-col :xs="24" :sm="8">
                 <el-card :header="t('routine.config.Quick configuration entry')">
                     <el-button v-for="item in state.quickEntrance" class="config_quick_entrance">
-                        <div @click="routePush(item['value'])">{{ item['key'] }}</div>
+                        <div @click="routePush({ name: item['value'] })">{{ item['key'] }}</div>
                     </el-button>
                 </el-card>
             </el-col>
