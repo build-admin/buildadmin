@@ -3,7 +3,6 @@
 namespace app\admin\controller\routine;
 
 use Throwable;
-use think\facade\Cache;
 use app\common\library\Email;
 use PHPMailer\PHPMailer\PHPMailer;
 use app\common\controller\Backend;
@@ -99,7 +98,6 @@ class Config extends Backend
                     }
                 }
                 $result = $this->model->saveAll($configValue);
-                Cache::tag(ConfigModel::$cacheTag)->clear();
                 $this->model->commit();
             } catch (Throwable $e) {
                 $this->model->rollback();
@@ -136,7 +134,6 @@ class Config extends Backend
                     }
                 }
                 $result = $this->model->save($data);
-                Cache::tag(ConfigModel::$cacheTag)->clear();
                 $this->model->commit();
             } catch (Throwable $e) {
                 $this->model->rollback();

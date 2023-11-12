@@ -4,7 +4,6 @@ namespace app\common\model;
 
 use Throwable;
 use think\Model;
-use think\facade\Cache;
 use app\admin\model\Config as adminConfigModel;
 
 class Config extends Model
@@ -60,7 +59,6 @@ class Config extends Model
         }
         $configRow->value = array_merge($configRow->value, [['key' => $key, 'value' => $value]]);
         $configRow->save();
-        Cache::tag(adminConfigModel::$cacheTag)->clear();
         return true;
     }
 
@@ -79,7 +77,6 @@ class Config extends Model
         }
         $configRow->value = $configRowValue;
         $configRow->save();
-        Cache::tag(adminConfigModel::$cacheTag)->clear();
         return true;
     }
 

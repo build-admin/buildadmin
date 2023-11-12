@@ -21,6 +21,5 @@ class Version205 extends Migrator
         }
         $configQuickEntrance->value = $value;
         $configQuickEntrance->save();
-        Cache::tag(Config::$cacheTag)->clear();
     }
 }
