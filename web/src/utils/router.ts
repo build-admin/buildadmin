@@ -109,7 +109,7 @@ export const handleFrontendRoute = (routes: any, menus: any) => {
     }
     if (menus.length && isEmpty(memberCenter.state.viewRoutes)) {
         addRouteAll(viewsComponent, menus, memberCenterBaseRoute.name as string)
-        const menuMemberCenterBaseRoute = '/' + (memberCenterBaseRoute.name as string) + '/'
+        const menuMemberCenterBaseRoute = (memberCenterBaseRoute.path as string) + '/'
         memberCenter.mergeAuthNode(handleAuthNode(menus, menuMemberCenterBaseRoute))
 
         memberCenter.mergeNavUserMenus(handleMenuRule(menus, '/', ['nav_user_menu']))
@@ -124,7 +124,7 @@ export const handleFrontendRoute = (routes: any, menus: any) => {
 export const handleAdminRoute = (routes: any) => {
     const viewsComponent = import.meta.glob('/src/views/backend/**/*.vue')
     addRouteAll(viewsComponent, routes, adminBaseRoute.name as string)
-    const menuAdminBaseRoute = '/' + (adminBaseRoute.name as string) + '/'
+    const menuAdminBaseRoute = (adminBaseRoute.path as string) + '/'
 
     // 更新stores中的路由菜单数据
     const navTabs = useNavTabs()
