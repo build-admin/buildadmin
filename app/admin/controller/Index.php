@@ -102,8 +102,7 @@ class Index extends Backend
             $res = $this->auth->login($username, $password, (bool)$keep);
             if ($res === true) {
                 $this->success(__('Login succeeded!'), [
-                    'userInfo'  => $this->auth->getInfo(),
-                    'routePath' => '/admin'
+                    'userInfo' => $this->auth->getInfo()
                 ]);
             } else {
                 $msg = $this->auth->getError();
