@@ -134,6 +134,8 @@ trait Backend
                     if (class_exists($validate)) {
                         $validate = new $validate;
                         if ($this->modelSceneValidate) $validate->scene('edit');
+                        $pk = $this->model->getPk();
+                        $data[$pk] = $row[$pk];
                         $validate->check($data);
                     }
                 }
