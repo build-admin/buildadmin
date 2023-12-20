@@ -113,7 +113,7 @@ export const handleFrontendRoute = (routes: any, menus: any) => {
         memberCenter.mergeAuthNode(handleAuthNode(menus, menuMemberCenterBaseRoute))
 
         memberCenter.mergeNavUserMenus(handleMenuRule(menus, '/', ['nav_user_menu']))
-        memberCenter.setShowHeadline(menus.length > 1 ? true : false)
+        memberCenter.setShowHeadline(menus.length > 1)
         memberCenter.setViewRoutes(handleMenuRule(menus, menuMemberCenterBaseRoute))
     }
 }
