@@ -272,7 +272,7 @@
                                 type="string"
                                 :model-value="state.fields[state.activateField].name"
                                 :input-attr="{
-                                    onInput: ($event: string) => onFieldNameChange($event, state.activateField)
+                                    onInput: ($event: string) => onFieldNameChange($event, state.activateField),
                                 }"
                             />
                             <template v-if="state.fields[state.activateField].dataType">

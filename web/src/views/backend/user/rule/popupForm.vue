@@ -17,7 +17,7 @@
             <div
                 class="ba-operate-form"
                 :class="'ba-' + baTable.form.operate + '-form'"
-                :style="config.layout.shrink ? '':'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
+                :style="config.layout.shrink ? '' : 'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
             >
                 <el-form
                     ref="formRef"
@@ -101,7 +101,10 @@
                     </el-form-item>
                     <!-- 组件路径 -->
                     <el-form-item
-                        v-if="baTable.form.items!.type == 'route' || (!['menu_dir', 'button'].includes(baTable.form.items!.type) && baTable.form.items!.menu_type == 'tab')"
+                        v-if="
+                            baTable.form.items!.type == 'route' ||
+                            (!['menu_dir', 'button'].includes(baTable.form.items!.type) && baTable.form.items!.menu_type == 'tab')
+                        "
                         :label="t('auth.rule.Component path')"
                     >
                         <el-input

@@ -16,7 +16,7 @@
             <div
                 class="ba-operate-form"
                 :class="'ba-' + baTable.form.operate + '-form'"
-                :style="config.layout.shrink ? '':'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
+                :style="config.layout.shrink ? '' : 'width: calc(100% - ' + baTable.form.labelWidth! / 2 + 'px)'"
             >
                 <el-form
                     ref="formRef"
@@ -46,7 +46,7 @@
                         v-model="baTable.form.items!.group_arr"
                         prop="group_arr"
                         type="remoteSelect"
-                        :key="('group-' + baTable.form.items!.id)"
+                        :key="'group-' + baTable.form.items!.id"
                         :input-attr="{
                             multiple: true,
                             params: { isTree: true, absoluteAuth: adminInfo.id == baTable.form.items!.id ? 0 : 1 },

@@ -1,51 +1,42 @@
 <template>
     <el-popover :placement="placement" trigger="focus" :hide-after="0" :width="state.selectorWidth" :visible="state.popoverVisible">
         <div @mouseover.stop="state.iconSelectorMouseover = true" @mouseout.stop="state.iconSelectorMouseover = false" class="icon-selector">
-            <transition name="el-zoom-in-center">
-                <div class="icon-selector-box">
-                    <div class="selector-header">
-                        <div class="selector-title">{{ title ? title : $t('utils.Please select an icon') }}</div>
-                        <div class="selector-tab">
-                            <span
-                                :title="'Element Puls ' + $t('utils.Icon')"
-                                @click="onChangeTab('ele')"
-                                :class="state.iconType == 'ele' ? 'active' : ''"
-                                >ele</span
-                            >
-                            <span
-                                :title="'Font Awesome ' + $t('utils.Icon')"
-                                @click="onChangeTab('awe')"
-                                :class="state.iconType == 'awe' ? 'active' : ''"
-                                >awe</span
-                            >
-                            <span :title="$t('utils.Ali iconcont Icon')" @click="onChangeTab('ali')" :class="state.iconType == 'ali' ? 'active' : ''"
-                                >ali</span
-                            >
-                            <span
-                                :title="$t('utils.Local icon title')"
-                                @click="onChangeTab('local')"
-                                :class="state.iconType == 'local' ? 'active' : ''"
-                                >local</span
-                            >
-                        </div>
-                    </div>
-                    <div class="selector-body">
-                        <el-scrollbar ref="selectorScrollbarRef">
-                            <div v-if="renderFontIconNames.length > 0">
-                                <div
-                                    class="icon-selector-item"
-                                    :title="item"
-                                    @click="onIcon(item)"
-                                    v-for="(item, key) in renderFontIconNames"
-                                    :key="key"
-                                >
-                                    <Icon :name="item" />
-                                </div>
-                            </div>
-                        </el-scrollbar>
+            <div class="icon-selector-box">
+                <div class="selector-header">
+                    <div class="selector-title">{{ title ? title : $t('utils.Please select an icon') }}</div>
+                    <div class="selector-tab">
+                        <span
+                            :title="'Element Puls ' + $t('utils.Icon')"
+                            @click="onChangeTab('ele')"
+                            :class="state.iconType == 'ele' ? 'active' : ''"
+                        >
+                            ele
+                        </span>
+                        <span
+                            :title="'Font Awesome ' + $t('utils.Icon')"
+                            @click="onChangeTab('awe')"
+                            :class="state.iconType == 'awe' ? 'active' : ''"
+                        >
+                            awe
+                        </span>
+                        <span :title="$t('utils.Ali iconcont Icon')" @click="onChangeTab('ali')" :class="state.iconType == 'ali' ? 'active' : ''">
+                            ali
+                        </span>
+                        <span :title="$t('utils.Local icon title')" @click="onChangeTab('local')" :class="state.iconType == 'local' ? 'active' : ''">
+                            local
+                        </span>
                     </div>
                 </div>
-            </transition>
+                <div class="selector-body">
+                    <el-scrollbar ref="selectorScrollbarRef">
+                        <div v-if="renderFontIconNames.length > 0">
+                            <div class="icon-selector-item" :title="item" @click="onIcon(item)" v-for="(item, key) in renderFontIconNames" :key="key">
+                                <Icon :name="item" />
+                            </div>
+                        </div>
+                    </el-scrollbar>
+                </div>
+            </div>
         </div>
         <template #reference>
             <el-input

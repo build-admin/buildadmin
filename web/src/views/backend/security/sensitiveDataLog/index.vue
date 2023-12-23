@@ -13,14 +13,14 @@
                 :cancel-button-text="t('Cancel')"
                 confirmButtonType="success"
                 :title="t('security.sensitiveDataLog.Are you sure you want to rollback the record?')"
-                :disabled="baTable.table.selection!.length > 0 ? false:true"
+                :disabled="baTable.table.selection!.length > 0 ? false : true"
             >
                 <template #reference>
                     <div class="mlr-12">
                         <el-tooltip :content="t('security.sensitiveDataLog.Rollback the selected record to the original data table')" placement="top">
                             <el-button
                                 v-blur
-                                :disabled="baTable.table.selection!.length > 0 ? false:true"
+                                :disabled="baTable.table.selection!.length > 0 ? false : true"
                                 class="table-header-operate"
                                 type="success"
                             >

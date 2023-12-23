@@ -13,14 +13,14 @@
                 :cancel-button-text="t('Cancel')"
                 confirmButtonType="success"
                 :title="t('security.dataRecycleLog.Are you sure to restore the selected records?')"
-                :disabled="baTable.table.selection!.length > 0 ? false:true"
+                :disabled="baTable.table.selection!.length > 0 ? false : true"
             >
                 <template #reference>
                     <div class="mlr-12">
                         <el-tooltip :content="t('security.dataRecycleLog.Restore the selected record to the original data table')" placement="top">
                             <el-button
                                 v-blur
-                                :disabled="baTable.table.selection!.length > 0 ? false:true"
+                                :disabled="baTable.table.selection!.length > 0 ? false : true"
                                 class="table-header-operate"
                                 type="success"
                             >
