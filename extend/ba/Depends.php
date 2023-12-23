@@ -182,4 +182,31 @@ class Depends
         }
         $this->setContent($content);
     }
+
+    /**
+     * 删除 composer 配置项
+     * @throws Throwable
+     */
+    public function removeComposerConfig(array $config): void
+    {
+        if (!$config) return;
+        $content = $this->getContent(true);
+        foreach ($config as $key => $item) {
+            if (isset($content['config'][$key])) {
+                if (is_array($item)) {
+                    foreach ($item as $configKey => $configItem) {
+                        if (isset($content['config'][$key][$configKey])) unset($content['config'][$key][$configKey]);
+                    }
+
+                    // 没有子级配置项了
+                    if (!$content['config'][$key]) {
+                        unset($content['config'][$key]);
+                    }
+                } else {
+                    unset($content['config'][$key]);
+                }
+            }
+        }
+        $this->setContent($content);
+    }
 }
