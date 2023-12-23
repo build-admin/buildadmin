@@ -134,4 +134,52 @@ class Depends
         }
         $this->setContent($content);
     }
+
+    /**
+     * 获取 composer.json 的 config 字段
+     */
+    public function getComposerConfig(): array
+    {
+        try {
+            $content = $this->getContent();
+        } catch (Throwable) {
+            return [];
+        }
+        return $content['config'];
+    }
+
+    /**
+     * 设置 composer.json 的 config 字段
+     * @throws Throwable
+     */
+    public function setComposerConfig(array $config, bool $cover = true): void
+    {
+        $content = $this->getContent(true);
+
+        // 配置冲突检查
+        if (!$cover) {
+            foreach ($config as $key => $item) {
+                if (is_array($item)) {
+                    foreach ($item as $configKey => $configItem) {
+                        if (isset($content['config'][$key][$configKey]) && $content['config'][$key][$configKey] != $configItem) {
+                            throw new Exception(__('composer config %s conflict', [$configKey]));
+                        }
+                    }
+                } elseif (isset($content['config'][$key]) && $content['config'][$key] != $item) {
+                    throw new Exception(__('composer config %s conflict', [$key]));
+                }
+            }
+        }
+
+        foreach ($config as $key => $item) {
+            if (is_array($item)) {
+                foreach ($item as $configKey => $configItem) {
+                    $content['config'][$key][$configKey] = $configItem;
+                }
+            } else {
+                $content['config'][$key] = $item;
+            }
+        }
+        $this->setContent($content);
+    }
 }
