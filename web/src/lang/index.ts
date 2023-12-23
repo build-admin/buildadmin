@@ -10,8 +10,8 @@ import { isEmpty } from 'lodash-es'
  * 动态 import 只支持相对路径，所以无法按需 import element-plus 的语言包
  * 但i18n的 messages 内是按需载入的
  */
-import elementZhcnLocale from 'element-plus/lib/locale/lang/zh-cn'
-import elementEnLocale from 'element-plus/lib/locale/lang/en'
+import elementZhcnLocale from 'element-plus/es/locale/lang/zh-cn'
+import elementEnLocale from 'element-plus/es/locale/lang/en'
 
 export let i18n: {
     global: Composer
