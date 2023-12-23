@@ -492,6 +492,12 @@ class Manage
             }
         }
 
+        // 删除 composer.json 中的 config
+        $composerConfig = Server::getConfig($this->modulesDir, 'composerConfig');
+        if ($composerConfig) {
+            $serverDepend->removeComposerConfig($composerConfig);
+        }
+
         // 配置了不删除的文件
         $protectedFiles = Server::getConfig($this->modulesDir, 'protectedFiles');
         foreach ($protectedFiles as &$protectedFile) {
