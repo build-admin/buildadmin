@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     printWidth: 150,
     // 指定每个缩进级别的空格数
     tabWidth: 4,
