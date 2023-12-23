@@ -701,6 +701,13 @@ class Manage
             $npm      = false;
             $composer = false;
             $nuxtNpm  = false;
+
+            // composer config 更新
+            $composerConfig = Server::getConfig($this->modulesDir, 'composerConfig');
+            if ($composerConfig) {
+                $serverDep->setComposerConfig($composerConfig);
+            }
+
             foreach ($depends as $key => $item) {
                 if (!$item) {
                     continue;
