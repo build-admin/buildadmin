@@ -40,6 +40,9 @@ export const customHotUpdate = (): Plugin => {
                     server.restart()
                 })
             })
+            server.ws.on('custom:reload-hot', () => {
+                server.restart()
+            })
         },
         handleHotUpdate() {
             const closeHmrs = Array.from(closeHmr.values())

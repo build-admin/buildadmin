@@ -146,4 +146,5 @@ export default {
     'Field name duplication': '字段名称 {field} 重复！',
     'Design remote select tips':
         '将自动根据表名生成本字段的名称；确认生成时，字段名 user_id 生成的关联方法名为 user，字段名 developer_done_id 生成的关联方法名为 developerDone，请注意远程下拉字段的名称前缀不要重复',
+    'Vite hot warning': '未找到 Vite 热更新服务，请在开发环境生成代码，或点击右上角的WEB终端重新发布',
 }
