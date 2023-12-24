@@ -22,7 +22,7 @@
         "topthink/think-throttle": "v2.0.0",
         "topthink/think-migration": "3.1.1",
         "phpmailer/phpmailer": "^6.8",
-        "w7corp/easywechat": "^6.12",
+        "guzzlehttp/guzzle": "^7.8.1",
         "voku/anti-xss": "^4.1",
         "nelexa/zip": "^4.0.0",
         "ext-calendar": "*",
@@ -45,10 +45,7 @@
         }
     },
     "config": {
-        "preferred-install": "dist",
-        "allow-plugins": {
-            "easywechat-composer/easywechat-composer": true
-        }
+        "preferred-install": "dist"
     },
     "scripts": {
         "post-autoload-dump": [
