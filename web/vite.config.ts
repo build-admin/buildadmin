@@ -2,7 +2,7 @@ import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import { loadEnv } from 'vite'
 import type { UserConfig, ConfigEnv, ProxyOptions } from 'vite'
-import { isProd } from '/@/utils/vite'
+import { isProd, customHotUpdate } from '/@/utils/vite'
 import { svgBuilder } from '/@/components/icon/svg/index'
 
 const pathResolve = (dir: string): any => {
@@ -30,7 +30,7 @@ const viteConfig = ({ mode }: ConfigEnv): UserConfig => {
     }
 
     return {
-        plugins: [vue(), svgBuilder('./src/assets/icons/')],
+        plugins: [vue(), svgBuilder('./src/assets/icons/'), customHotUpdate()],
         root: process.cwd(),
         resolve: { alias },
         base: VITE_BASE_PATH,

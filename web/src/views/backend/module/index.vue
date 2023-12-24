@@ -9,35 +9,30 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { state } from './store'
+import { onMounted, onActivated, onDeactivated, onUnmounted } from 'vue'
 import { loadData } from './index'
 import TableHeader from './components/tableHeader.vue'
 import BaAccount from './components/baAccount.vue'
 import Tabs from './components/tabs.vue'
 import GoodsInfo from './components/goodsInfo.vue'
 import CommonDialog from './components/commonDialog.vue'
-import { useI18n } from 'vue-i18n'
 
 defineOptions({
     name: 'moduleStore/moduleStore',
 })
 
-const { t } = useI18n()
-
 onMounted(() => {
     loadData()
-    if (import.meta.hot) {
-        import.meta.hot.on('vite:beforeFullReload', () => {
-            if (state.common.disableHmr) throw t('This is a deliberate error thrown to prevent a hot update of Vite')
-        })
-        import.meta.hot.on('vite:beforeUpdate', () => {
-            if (state.common.disableHmr) throw t('This is a deliberate error thrown to prevent a hot update of Vite')
-        })
-        import.meta.hot.on('vite:beforePrune', () => {
-            if (state.common.disableHmr) throw t('This is a deliberate error thrown to prevent a hot update of Vite')
-        })
-    }
+    if (import.meta.hot) import.meta.hot.send('custom:close-hot', { type: 'modules' })
+})
+onActivated(() => {
+    if (import.meta.hot) import.meta.hot.send('custom:close-hot', { type: 'modules' })
+})
+onDeactivated(() => {
+    if (import.meta.hot) import.meta.hot.send('custom:open-hot', { type: 'modules' })
+})
+onUnmounted(() => {
+    if (import.meta.hot) import.meta.hot.send('custom:open-hot', { type: 'modules' })
 })
 </script>
 
