@@ -50,7 +50,7 @@ export default {
     'There is no adjustment for system dependency': 'There is no adjustment for system dependency.',
     please: 'please',
     'After installation 1': 'After installation',
-    'Manually clean up the system and browser cache, and refresh the page': 'Manually clean up the system and browser cache, and refresh the page.',
+    'Manually clean up the system and browser cache': 'Manually clean up the system and browser cache.',
     'After installation 2': 'After installation',
     'Automatically execute reissue command?': 'Automatically execute reissue command?',
     'End of installation': 'End of installation',

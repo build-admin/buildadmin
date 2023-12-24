@@ -48,7 +48,7 @@ export default {
     'There is no adjustment for system dependency': '系统依赖无调整。',
     please: '请',
     'After installation 1': '在安装结束后',
-    'Manually clean up the system and browser cache, and refresh the page': '手动的清理系统和浏览器缓存，并刷新页面。',
+    'Manually clean up the system and browser cache': '手动的清理系统和浏览器缓存。',
     'After installation 2': '安装结束后',
     'Automatically execute reissue command?': '自动执行重新发布命令？',
     'End of installation': '安装结束',
