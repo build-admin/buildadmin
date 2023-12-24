@@ -48,5 +48,4 @@ export default {
     'Expand generic search': '展开通用搜索',
     'Link address': '链接地址',
     'No route found to jump~': '没有找到可以跳转的路由~',
-    'This is a deliberate error thrown to prevent a hot update of Vite': '这是为了防止Vite的热更新而有意抛出的错误',
 }

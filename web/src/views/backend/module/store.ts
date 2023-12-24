@@ -40,7 +40,6 @@ export const state = reactive<moduleState>({
         moduleState: 0,
         quickClose: false,
         type: 'loading',
-        disableHmr: false,
         dialogTitle: '',
         fileConflict: [],
         dependConflict: [],

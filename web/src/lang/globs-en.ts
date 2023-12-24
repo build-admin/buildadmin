@@ -47,5 +47,4 @@ export default {
     'Expand generic search': 'Expand Universal Search',
     'Link address': 'Link address',
     'No route found to jump~': 'Failed to find a jump route.',
-    'This is a deliberate error thrown to prevent a hot update of Vite': 'This is a deliberate error thrown to prevent a hot update of Vite',
 }

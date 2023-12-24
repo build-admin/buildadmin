@@ -55,7 +55,6 @@ export interface moduleState {
         moduleState: number
         quickClose: boolean
         type: 'loading' | 'InstallConflict' | 'done' | 'disableConfirmConflict' | 'uploadInstall'
-        disableHmr: boolean
         dialogTitle: string
         fileConflict: anyObj[]
         dependConflict: anyObj[]

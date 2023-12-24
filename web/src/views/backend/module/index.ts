@@ -247,7 +247,6 @@ export const onInstall = (uid: string, id: number) => {
 }
 
 export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
-    state.common.disableHmr = true
     postInstallModule(uid, id, extend)
         .then(() => {
             state.common.dialogTitle = i18n.global.t('module.Installation complete')
@@ -295,7 +294,6 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
         })
         .finally(() => {
             state.loading.common = false
-            state.common.disableHmr = true
             onRefreshTableData()
         })
 }
@@ -318,7 +316,6 @@ const terminalTaskExecComplete = (res: number, type: string) => {
 
 export const onDisable = (confirmConflict = false) => {
     state.loading.common = true
-    state.common.disableHmr = true
 
     // 拼装依赖处理方案
     if (confirmConflict) {
@@ -381,7 +378,6 @@ export const onDisable = (confirmConflict = false) => {
         })
         .finally(() => {
             state.loading.common = false
-            state.common.disableHmr = true
         })
 }
 
