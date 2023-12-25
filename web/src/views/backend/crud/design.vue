@@ -1569,7 +1569,7 @@ const getTableDesignTimelineType = (type: TableDesignChangeType): TimelineItemPr
 }
 .field-item {
     display: inline-block;
-    padding: 4px 18px;
+    padding: 3px 16px;
     border: 1px dashed var(--el-border-color);
     border-radius: var(--el-border-radius-base);
     margin: 6px;
