@@ -805,7 +805,7 @@ class Crud extends Backend
             $this->indexVueData['defaultItems'][$field['name']] = $field['default'];
         }
         if ($field['default'] == 'null') {
-            $this->indexVueData['defaultItems'][$field['name']] = null;
+            $this->indexVueData['defaultItems'][$field['name']] = $field['designType'] == 'editor' ? '' : null;
         } elseif ($field['default'] == '0' && in_array($field['designType'], ['radio', 'checkbox', 'select', 'selects'])) {
             // 防止为`0`时无法设置上默认值
             $this->indexVueData['defaultItems'][$field['name']] = '0';
