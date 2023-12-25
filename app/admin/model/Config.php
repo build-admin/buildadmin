@@ -61,7 +61,7 @@ class Config extends Model
 
     public function getValueAttr($value, $row)
     {
-        if (!isset($row['type'])) return $value;
+        if (!isset($row['type']) || $value == '0') return $value;
         if (in_array($row['type'], $this->jsonDecodeType)) {
             return empty($value) ? [] : json_decode($value, true);
         } elseif ($row['type'] == 'switch') {
@@ -69,12 +69,8 @@ class Config extends Model
         } elseif ($row['type'] == 'editor') {
             return !$value ? '' : htmlspecialchars_decode($value);
         } elseif (in_array($row['type'], ['city', 'remoteSelects'])) {
-            if ($value == '') {
-                return [];
-            }
-            if (!is_array($value)) {
-                return explode(',', $value);
-            }
+            if (!$value) return [];
+            if (!is_array($value)) return explode(',', $value);
             return $value;
         } else {
             return $value ?: '';
