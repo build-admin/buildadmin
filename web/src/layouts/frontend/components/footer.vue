@@ -1,7 +1,7 @@
 <template>
     <el-footer class="footer">
         <div>
-            Copyright @ 2020~2022 {{ siteConfig.siteName }} {{ $t('Copyright') }}
+            Copyright @ 2020~{{ new Date().getFullYear() }} {{ siteConfig.siteName }} {{ $t('Copyright') }}
             <a href="http://beian.miit.gov.cn/">{{ siteConfig.recordNumber }}</a>
         </div>
     </el-footer>
@@ -22,6 +22,12 @@ const siteConfig = useSiteConfig()
     background-color: var(--el-color-info-light-7);
     a {
         color: var(--el-text-color-secondary);
+    }
+    @media screen and (max-width: 768px) {
+        a {
+            display: block;
+            text-align: center;
+        }
     }
 }
 </style>
