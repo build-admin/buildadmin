@@ -6,7 +6,7 @@ use Phinx\Db\Adapter\MysqlAdapter;
 class Install extends Migrator
 {
 
-    public function change()
+    public function change(): void
     {
         $this->admin();
         $this->adminGroup();
@@ -31,7 +31,7 @@ class Install extends Migrator
         $this->crudLog();
     }
 
-    public function admin()
+    public function admin(): void
     {
         if (!$this->hasTable('admin')) {
             $table = $this->table('admin', [
@@ -63,7 +63,7 @@ class Install extends Migrator
         }
     }
 
-    public function adminGroup()
+    public function adminGroup(): void
     {
         if (!$this->hasTable('admin_group')) {
             $table = $this->table('admin_group', [
@@ -84,7 +84,7 @@ class Install extends Migrator
         }
     }
 
-    public function adminGroupAccess()
+    public function adminGroupAccess(): void
     {
         if (!$this->hasTable('admin_group_access')) {
             $table = $this->table('admin_group_access', [
@@ -105,7 +105,7 @@ class Install extends Migrator
         }
     }
 
-    public function adminLog()
+    public function adminLog(): void
     {
         if (!$this->hasTable('admin_log')) {
             $table = $this->table('admin_log', [
@@ -128,7 +128,7 @@ class Install extends Migrator
         }
     }
 
-    public function area()
+    public function area(): void
     {
         if (!$this->hasTable('area')) {
             $table = $this->table('area', [
@@ -157,7 +157,7 @@ class Install extends Migrator
         }
     }
 
-    public function attachment()
+    public function attachment(): void
     {
         if (!$this->hasTable('attachment')) {
             $table = $this->table('attachment', [
@@ -186,7 +186,7 @@ class Install extends Migrator
         }
     }
 
-    public function captcha()
+    public function captcha(): void
     {
         if (!$this->hasTable('captcha')) {
             $table = $this->table('captcha', [
@@ -205,7 +205,7 @@ class Install extends Migrator
         }
     }
 
-    public function config()
+    public function config(): void
     {
         if (!$this->hasTable('config')) {
             $table = $this->table('config', [
@@ -234,7 +234,7 @@ class Install extends Migrator
         }
     }
 
-    public function menuRule()
+    public function menuRule(): void
     {
         if (!$this->hasTable('menu_rule') && !$this->hasTable('admin_rule')) {
             $table = $this->table('menu_rule', [
@@ -268,7 +268,7 @@ class Install extends Migrator
         }
     }
 
-    public function securityDataRecycle()
+    public function securityDataRecycle(): void
     {
         if (!$this->hasTable('security_data_recycle')) {
             $table = $this->table('security_data_recycle', [
@@ -291,7 +291,7 @@ class Install extends Migrator
         }
     }
 
-    public function securityDataRecycleLog()
+    public function securityDataRecycleLog(): void
     {
         if (!$this->hasTable('security_data_recycle_log')) {
             $table = $this->table('security_data_recycle_log', [
@@ -315,7 +315,7 @@ class Install extends Migrator
         }
     }
 
-    public function securitySensitiveData()
+    public function securitySensitiveData(): void
     {
         if (!$this->hasTable('security_sensitive_data')) {
             $table = $this->table('security_sensitive_data', [
@@ -339,7 +339,7 @@ class Install extends Migrator
         }
     }
 
-    public function securitySensitiveDataLog()
+    public function securitySensitiveDataLog(): void
     {
         if (!$this->hasTable('security_sensitive_data_log')) {
             $table = $this->table('security_sensitive_data_log', [
@@ -367,7 +367,7 @@ class Install extends Migrator
         }
     }
 
-    public function testBuild()
+    public function testBuild(): void
     {
         if (!$this->hasTable('test_build')) {
             $table = $this->table('test_build', [
@@ -393,7 +393,7 @@ class Install extends Migrator
         }
     }
 
-    public function token()
+    public function token(): void
     {
         if (!$this->hasTable('token')) {
             $table = $this->table('token', [
@@ -412,7 +412,7 @@ class Install extends Migrator
         }
     }
 
-    public function user()
+    public function user(): void
     {
         if (!$this->hasTable('user')) {
             $table = $this->table('user', [
@@ -457,7 +457,7 @@ class Install extends Migrator
         }
     }
 
-    public function userGroup()
+    public function userGroup(): void
     {
         if (!$this->hasTable('user_group')) {
             $table = $this->table('user_group', [
@@ -477,7 +477,7 @@ class Install extends Migrator
         }
     }
 
-    public function userMoneyLog()
+    public function userMoneyLog(): void
     {
         if (!$this->hasTable('user_money_log')) {
             $table = $this->table('user_money_log', [
@@ -498,7 +498,7 @@ class Install extends Migrator
         }
     }
 
-    public function userRule()
+    public function userRule(): void
     {
         if (!$this->hasTable('user_rule')) {
             $table = $this->table('user_rule', [
@@ -532,7 +532,7 @@ class Install extends Migrator
         }
     }
 
-    public function userScoreLog()
+    public function userScoreLog(): void
     {
         if (!$this->hasTable('user_score_log')) {
             $table = $this->table('user_score_log', [
@@ -553,7 +553,7 @@ class Install extends Migrator
         }
     }
 
-    public function crudLog()
+    public function crudLog(): void
     {
         if (!$this->hasTable('crud_log')) {
             $table = $this->table('crud_log', [

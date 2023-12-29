@@ -6,7 +6,7 @@ use Phinx\Db\Adapter\MysqlAdapter;
 
 class Version200 extends Migrator
 {
-    public function up()
+    public function up(): void
     {
         $admin = $this->table('admin');
         if ($admin->hasColumn('loginfailure')) {

@@ -1,13 +1,12 @@
 <?php
 
 use think\facade\Db;
-use think\facade\Cache;
 use app\admin\model\Config;
 use think\migration\Migrator;
 
 class Version205 extends Migrator
 {
-    public function up()
+    public function up(): void
     {
         $configQuickEntrance = Config::where('name', 'config_quick_entrance')->find();
         $value               = $configQuickEntrance->value;

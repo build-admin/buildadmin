@@ -7,7 +7,7 @@ class InstallData extends Migrator
 {
     public string $nowTime = '';
 
-    public function up()
+    public function up(): void
     {
         $this->nowTime = time();
         $this->admin();
@@ -22,7 +22,7 @@ class InstallData extends Migrator
         $this->userRule();
     }
 
-    public function admin()
+    public function admin(): void
     {
         $table = $this->table('admin');
         $rows  = [
@@ -42,7 +42,7 @@ class InstallData extends Migrator
         }
     }
 
-    public function adminGroup()
+    public function adminGroup(): void
     {
         $table = $this->table('admin_group');
         $rows  = [
@@ -85,7 +85,7 @@ class InstallData extends Migrator
         }
     }
 
-    public function adminGroupAccess()
+    public function adminGroupAccess(): void
     {
         $table = $this->table('admin_group_access');
         $rows  = [
@@ -100,7 +100,7 @@ class InstallData extends Migrator
         }
     }
 
-    public function config()
+    public function config(): void
     {
         $table = $this->table('config');
         $rows  = [
@@ -229,7 +229,7 @@ class InstallData extends Migrator
         }
     }
 
-    public function menuRule()
+    public function menuRule(): void
     {
         if (!$this->hasTable('menu_rule')) return;
         $table = $this->table('menu_rule');
@@ -1161,7 +1161,7 @@ class InstallData extends Migrator
         }
     }
 
-    public function securityDataRecycle()
+    public function securityDataRecycle(): void
     {
         $table = $this->table('security_data_recycle');
         $rows  = [
@@ -1232,7 +1232,7 @@ class InstallData extends Migrator
         }
     }
 
-    public function securitySensitiveData()
+    public function securitySensitiveData(): void
     {
         $table = $this->table('security_sensitive_data');
         $rows  = [
@@ -1279,7 +1279,7 @@ class InstallData extends Migrator
         }
     }
 
-    public function user()
+    public function user(): void
     {
         $table = $this->table('user');
         $rows  = [
@@ -1303,7 +1303,7 @@ class InstallData extends Migrator
         }
     }
 
-    public function userGroup()
+    public function userGroup(): void
     {
         $table = $this->table('user_group');
         $rows  = [
@@ -1322,7 +1322,7 @@ class InstallData extends Migrator
         }
     }
 
-    public function userRule()
+    public function userRule(): void
     {
         $table = $this->table('user_rule');
         $rows  = [

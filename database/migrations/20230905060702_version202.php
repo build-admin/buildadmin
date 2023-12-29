@@ -9,7 +9,7 @@ class Version202 extends Migrator
      * 规范菜单规则
      * @throws Throwable
      */
-    public function up()
+    public function up(): void
     {
         Db::startTrans();
         try {

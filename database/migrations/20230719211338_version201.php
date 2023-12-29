@@ -4,7 +4,7 @@ use think\migration\Migrator;
 
 class Version201 extends Migrator
 {
-    public function up()
+    public function up(): void
     {
         $user = $this->table('user');
         if ($user->hasIndex('email')) {
