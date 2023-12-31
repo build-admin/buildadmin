@@ -4,6 +4,7 @@ return [
     'Mail'                                                                                              => '邮件配置',
     'Config group'                                                                                      => '配置分组',
     'Site Name'                                                                                         => '站点名称',
+    'Backend entrance'                                                                                  => '自定义后台入口',
     'Config Quick entrance'                                                                             => '快捷配置入口',
     'Record number'                                                                                     => '备案号',
     'Version number'                                                                                    => '版本号',
@@ -20,4 +21,5 @@ return [
     'This is a test email'                                                                              => '这是一封测试邮件',
     'Congratulations, receiving this email means that your email service has been configured correctly' => '恭喜您，收到此邮件代表您的邮件服务已配置正确；这是邮件主体 <b>在主体中可以使用Html!</b>',
     'The current page configuration item was updated successfully'                                      => '当前页配置项更新成功！',
+    'Backend entrance rule'                                                                             => '后台入口请以 / 开头，且只包含数字和字母。',
 ];

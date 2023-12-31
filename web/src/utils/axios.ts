@@ -4,7 +4,7 @@ import { ElLoading, ElNotification, type LoadingOptions } from 'element-plus'
 import { refreshToken } from '/@/api/common'
 import { i18n } from '/@/lang/index'
 import router from '/@/router/index'
-import { adminBaseRoutePath } from '/@/router/static/adminBase'
+import adminBaseRoute from '/@/router/static/adminBase'
 import { memberCenterBaseRoutePath } from '/@/router/static/memberCenterBase'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { useConfig } from '/@/stores/config'
@@ -55,6 +55,12 @@ function createAxios<Data = any, T = ApiPromise<Data>>(axiosConfig: AxiosRequest
         responseType: 'json',
     })
 
+    // 自定义后台入口
+    if (adminBaseRoute.path != '/admin' && isAdminApp() && /^\/admin\//.test(axiosConfig.url!)) {
+        axiosConfig.url = axiosConfig.url!.replace(/^\/admin\//, adminBaseRoute.path + '.php/')
+    }
+
+    // 合并默认请求选项
     options = Object.assign(
         {
             CancelDuplicateRequest: true, // 是否开启取消重复请求, 默认为 true
@@ -175,7 +181,7 @@ function createAxios<Data = any, T = ApiPromise<Data>>(axiosConfig: AxiosRequest
                     }
                     if (response.data.code == 303) {
                         const isAdminAppFlag = isAdminApp()
-                        let routerPath = isAdminAppFlag ? adminBaseRoutePath : memberCenterBaseRoutePath
+                        let routerPath = isAdminAppFlag ? adminBaseRoute.path : memberCenterBaseRoutePath
 
                         // 需要登录，清理 token，转到登录页
                         if (response.data.data.type == 'need login') {

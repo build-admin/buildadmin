@@ -2,6 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 /**
  * 后台基础路由路径
+ * 您可以随时于后台->系统配置中修改此值，程序可自动完成代码修改，同时建立对应的API入口和禁止admin应用访问
  */
 export const adminBaseRoutePath = '/admin'
 

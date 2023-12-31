@@ -19,4 +19,5 @@ return [
     'Test mail sent successfully~'                                                                      => 'Test message sent successfully',
     'This is a test email'                                                                              => 'This is a test email',
     'Congratulations, receiving this email means that your email service has been configured correctly' => "Congratulations, when you receive this email, it means that your mail service is configures correctly. This is the email subject, <b>you can use HtmlL!</b> in the main body.",
+    'Backend entrance rule'                                                                             => 'The background entry must start with / and contain only numbers and letters.',
 ];

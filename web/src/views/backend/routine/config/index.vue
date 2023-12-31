@@ -113,6 +113,7 @@ import FormItem from '/@/components/formItem/index.vue'
 import { index, postData, del, postSendTestMail } from '/@/api/backend/routine/config'
 import { ElMessageBox, ElNotification } from 'element-plus'
 import type { FormInstance, FormItemRule } from 'element-plus'
+import { adminBaseRoutePath } from '/@/router/static/adminBase'
 import AddFrom from './add.vue'
 import { routePush } from '/@/utils/router'
 import { buildValidatorData, type buildValidatorParams } from '/@/utils/validate'
@@ -224,6 +225,11 @@ const onSubmit = () => {
                     if (formData[key] && siteConfig.$state[key as keyof SiteConfig] != formData[key]) {
                         ;(siteConfig.$state[key as keyof SiteConfig] as any) = formData[key]
                     }
+                }
+
+                if (formData.backend_entrance != adminBaseRoutePath) {
+                    window.open(window.location.href.replace(adminBaseRoutePath, formData.backend_entrance))
+                    window.close()
                 }
             })
         }
