@@ -114,16 +114,17 @@ class Config extends Backend
 
                         // 禁止 admin 应用访问
                         $denyAppList = config('app.deny_app_list');
-                        if (!in_array('admin', $denyAppList)) {
+                        if (($newBackendEntrance == 'admin' && in_array('admin', $denyAppList)) || !in_array('admin', $denyAppList)) {
                             $appConfigFilePath = Filesystem::fsFit(root_path() . $this->filePath['appConfig']);
                             $appConfigContent  = @file_get_contents($appConfigFilePath);
                             if (!$appConfigContent) $this->error(__('Configuration write failed: %s', [$this->filePath['appConfig']]));
 
                             $denyAppListStr = '';
                             foreach ($denyAppList as $appName) {
+                                if ($newBackendEntrance == 'admin' && $appName == 'admin') continue;
                                 $denyAppListStr .= "'$appName', ";
                             }
-                            $denyAppListStr .= "'admin', ";
+                            if ($newBackendEntrance != 'admin') $denyAppListStr .= "'admin', ";
                             $denyAppListStr = rtrim($denyAppListStr, ', ');
                             $denyAppListStr = "[$denyAppListStr]";
 
@@ -137,11 +138,13 @@ class Config extends Backend
                         $newBackendEntranceFile = Filesystem::fsFit(public_path() . $newBackendEntrance . '.php');
                         if (file_exists($oldBackendEntranceFile)) @unlink($oldBackendEntranceFile);
 
-                        $backendEntranceStub = @file_get_contents(Filesystem::fsFit(root_path() . $this->filePath['backendEntranceStub']));
-                        if (!$backendEntranceStub) $this->error(__('Configuration write failed: %s', [$this->filePath['backendEntranceStub']]));
+                        if ($newBackendEntrance != 'admin') {
+                            $backendEntranceStub = @file_get_contents(Filesystem::fsFit(root_path() . $this->filePath['backendEntranceStub']));
+                            if (!$backendEntranceStub) $this->error(__('Configuration write failed: %s', [$this->filePath['backendEntranceStub']]));
 
-                        $result = @file_put_contents($newBackendEntranceFile, $backendEntranceStub);
-                        if (!$result) $this->error(__('Configuration write failed: %s', [$newBackendEntranceFile]));
+                            $result = @file_put_contents($newBackendEntranceFile, $backendEntranceStub);
+                            if (!$result) $this->error(__('Configuration write failed: %s', [$newBackendEntranceFile]));
+                        }
                     }
                 }
             }
