@@ -107,7 +107,8 @@ trait Backend
      */
     public function edit(): void
     {
-        $id  = $this->request->param($this->model->getPk());
+        $pk  = $this->model->getPk();
+        $id  = $this->request->param($pk);
         $row = $this->model->find($id);
         if (!$row) {
             $this->error(__('Record not found'));
@@ -134,7 +135,6 @@ trait Backend
                     if (class_exists($validate)) {
                         $validate = new $validate;
                         if ($this->modelSceneValidate) $validate->scene('edit');
-                        $pk = $this->model->getPk();
                         $data[$pk] = $row[$pk];
                         $validate->check($data);
                     }
