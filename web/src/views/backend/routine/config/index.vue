@@ -108,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, onActivated, onDeactivated, onUnmounted } from 'vue'
 import FormItem from '/@/components/formItem/index.vue'
 import { index, postData, del, postSendTestMail } from '/@/api/backend/routine/config'
 import { ElMessageBox, ElNotification } from 'element-plus'
@@ -276,6 +276,16 @@ const onTestSendMail = () => {
 
 onMounted(() => {
     getIndex()
+    if (import.meta.hot) import.meta.hot.send('custom:close-hot', { type: 'config' })
+})
+onActivated(() => {
+    if (import.meta.hot) import.meta.hot.send('custom:close-hot', { type: 'config' })
+})
+onDeactivated(() => {
+    if (import.meta.hot) import.meta.hot.send('custom:open-hot', { type: 'config' })
+})
+onUnmounted(() => {
+    if (import.meta.hot) import.meta.hot.send('custom:open-hot', { type: 'config' })
 })
 </script>
 

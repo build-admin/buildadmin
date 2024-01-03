@@ -102,11 +102,11 @@ class Config extends Backend
                         // 修改 adminBaseRoutePath
                         $adminBaseFilePath = Filesystem::fsFit(root_path() . $this->filePath['webAdminBase']);
                         $adminBaseContent  = @file_get_contents($adminBaseFilePath);
-                        if (!$adminBaseContent) $this->error('Configuration write failed: %s', [$this->filePath['webAdminBase']]);
+                        if (!$adminBaseContent) $this->error(__('Configuration write failed: %s', [$this->filePath['webAdminBase']]));
 
                         $adminBaseContent = str_replace("export const adminBaseRoutePath = '$backendEntrance'", "export const adminBaseRoutePath = '{$data[$item->name]}'", $adminBaseContent);
                         $result           = @file_put_contents($adminBaseFilePath, $adminBaseContent);
-                        if (!$result) $this->error('Configuration write failed: %s', [$this->filePath['webAdminBase']]);
+                        if (!$result) $this->error(__('Configuration write failed: %s', [$this->filePath['webAdminBase']]));
 
                         // 去除后台入口开头的斜杠
                         $oldBackendEntrance = ltrim($backendEntrance, '/');
@@ -117,7 +117,7 @@ class Config extends Backend
                         if (!in_array('admin', $denyAppList)) {
                             $appConfigFilePath = Filesystem::fsFit(root_path() . $this->filePath['appConfig']);
                             $appConfigContent  = @file_get_contents($appConfigFilePath);
-                            if (!$appConfigContent) $this->error('Configuration write failed: %s', [$this->filePath['appConfig']]);
+                            if (!$appConfigContent) $this->error(__('Configuration write failed: %s', [$this->filePath['appConfig']]));
 
                             $denyAppListStr = '';
                             foreach ($denyAppList as $appName) {
@@ -129,7 +129,7 @@ class Config extends Backend
 
                             $appConfigContent = preg_replace("/'deny_app_list'(\s+)=>(\s+)(.*)/", "'deny_app_list'\$1=>\$2$denyAppListStr,", $appConfigContent);
                             $result           = @file_put_contents($appConfigFilePath, $appConfigContent);
-                            if (!$result) $this->error('Configuration write failed: %s', [$this->filePath['appConfig']]);
+                            if (!$result) $this->error(__('Configuration write failed: %s', [$this->filePath['appConfig']]));
                         }
 
                         // 建立API入口文件
@@ -137,9 +137,11 @@ class Config extends Backend
                         $newBackendEntranceFile = Filesystem::fsFit(public_path() . $newBackendEntrance . '.php');
                         if (file_exists($oldBackendEntranceFile)) @unlink($oldBackendEntranceFile);
 
-                        $backendEntranceStub = @file_get_contents(Filesystem::fsFit($this->filePath['backendEntranceStub']));
-                        $result              = @file_put_contents($newBackendEntranceFile, $backendEntranceStub);
-                        if (!$result) $this->error('Configuration write failed: %s', [$newBackendEntranceFile]);
+                        $backendEntranceStub = @file_get_contents(Filesystem::fsFit(root_path() . $this->filePath['backendEntranceStub']));
+                        if (!$backendEntranceStub) $this->error(__('Configuration write failed: %s', [$this->filePath['backendEntranceStub']]));
+
+                        $result = @file_put_contents($newBackendEntranceFile, $backendEntranceStub);
+                        if (!$result) $this->error(__('Configuration write failed: %s', [$newBackendEntranceFile]));
                     }
                 }
             }
