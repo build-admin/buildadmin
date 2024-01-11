@@ -1,0 +1,1 @@
+import{c as o,t as r}from"./index-r2_r-mqm.js";const e="/admin/Index/";function i(){return o({url:e+"index",method:"get"})}function u(n,t={}){return o({url:e+"login",data:t,method:n})}function s(){const n=r();return o({url:e+"logout",method:"POST",data:{refreshToken:n.getToken("refresh")}})}export{s as a,i,u as l};
