@@ -227,7 +227,7 @@ const onSubmit = () => {
                     }
                 }
 
-                if (formData.backend_entrance != adminBaseRoutePath) {
+                if (formData.backend_entrance && formData.backend_entrance != adminBaseRoutePath) {
                     window.open(window.location.href.replace(adminBaseRoutePath, formData.backend_entrance))
                     window.close()
                 }
