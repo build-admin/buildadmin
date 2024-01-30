@@ -126,8 +126,8 @@ return [
         // 设置源
         'set-registry' => [
             'npm'    => 'npm config set registry https://registry.npmjs.org/ && npm config get registry',
-            'taobao' => 'npm config set registry https://registry.npm.taobao.org/ && npm config get registry',
-            'rednpm' => 'npm config set registry http://registry.mirror.cqupt.edu.cn/ && npm config get registry'
+            'taobao' => 'npm config set registry https://registry.npmmirror.com/ && npm config get registry',
+            'tencent' => 'npm config set registry https://mirrors.cloud.tencent.com/npm/ && npm config get registry'
         ],
         'composer'     => [
             'update' => [
