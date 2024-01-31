@@ -69,7 +69,7 @@ if (!function_exists('clean_xss')) {
 if (!function_exists('htmlspecialchars_decode_improve')) {
     /**
      * html解码增强
-     * 被 clean_xss函数 和 filter函数 内的 htmlspecialchars 编码的字符串，需要用此函数才能完全解码
+     * 被 filter函数 内的 htmlspecialchars 编码的字符串，需要用此函数才能完全解码
      * @param string $string
      * @param int    $flags
      * @return string
