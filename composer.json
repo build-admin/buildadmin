@@ -21,6 +21,7 @@
         "topthink/think-multi-app": "^1.0",
         "topthink/think-throttle": "v2.0.0",
         "topthink/think-migration": "3.1.1",
+        "symfony/http-foundation": "^6.0|^7.0",
         "phpmailer/phpmailer": "^6.8",
         "guzzlehttp/guzzle": "^7.8.1",
         "voku/anti-xss": "^4.1",
