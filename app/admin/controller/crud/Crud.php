@@ -308,7 +308,7 @@ class Crud extends Backend
         }
 
         // 数据表是否有数据
-        $adapter = TableManager::adapter();
+        $adapter = TableManager::phinxAdapter();
         if ($adapter->hasTable($info['table']['name'])) {
             $info['table']['empty'] = Db::name($info['table']['name'])->limit(1)->select()->isEmpty();
         } else {
@@ -467,7 +467,7 @@ class Crud extends Backend
             }
 
             // 数据表是否有数据
-            $adapter = TableManager::adapter(false);
+            $adapter = TableManager::phinxAdapter(false);
             if ($adapter->hasTable($table)) {
                 $empty = Db::table($table)->limit(1)->select()->isEmpty();
             } else {
