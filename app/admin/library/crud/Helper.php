@@ -480,9 +480,9 @@ class Helper
 
         if ($adapter->hasTable($name)) {
             // 更新表
-            TableManager::changeComment($name, $comment);
             if ($designChange) {
                 $table = TableManager::phinxTable($name, [], false);
+                $table->changeComment($comment)->update();
 
                 // 改名和删除操作优先
                 $priorityOpt = false;
@@ -728,16 +728,8 @@ class Helper
     }
 
     /**
-     * 删除数据表
-     */
-    public static function delTable(string $table): void
-    {
-        $sql = 'DROP TABLE IF EXISTS `' . TableManager::tableName($table) . '`';
-        Db::execute($sql);
-    }
-
-    /**
      * 根据数据表解析字段数据
+     * @throws Throwable
      */
     public static function parseTableColumns(string $table, bool $analyseField = false): array
     {

@@ -88,16 +88,16 @@ class Crud extends Backend
                 'status' => 'start',
             ]);
 
+            // 表名称
+            $tableName = TableManager::tableName($table['name'], false);
+
             if ($type == 'create' || $table['rebuild'] == 'Yes') {
                 // 数据表存在则删除
-                Helper::delTable($table['name']);
+                TableManager::phinxTable($tableName)->drop()->save();
             }
 
             // 处理表设计
             [$tablePk] = Helper::handleTableDesign($table, $fields);
-
-            // 表名称
-            $tableName = TableManager::tableName($table['name'], false);
 
             // 表注释
             $tableComment = mb_substr($table['comment'], -1) == '表' ? mb_substr($table['comment'], 0, -1) . '管理' : $table['comment'];
@@ -757,6 +757,10 @@ class Crud extends Backend
         }
     }
 
+    /**
+     * 组装前台表单的数据
+     * @throws Throwable
+     */
     private function getFormField($field, $columnDict): array
     {
         // 表单项属性
