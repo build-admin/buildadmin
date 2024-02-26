@@ -3,6 +3,7 @@
 namespace app\admin\controller\security;
 
 use Throwable;
+use ba\TableManager;
 use app\common\controller\Backend;
 use app\admin\model\DataRecycle as DataRecycleModel;
 
@@ -148,6 +149,10 @@ class DataRecycle extends Backend
         return $outControllers;
     }
 
+    /**
+     * 数据表列表
+     * @throws Throwable
+     */
     protected function getTableList(): array
     {
         $tablePrefix     = config('database.connections.mysql.prefix');
@@ -163,7 +168,7 @@ class DataRecycle extends Backend
         ];
 
         $outTables = [];
-        $tables    = get_table_list();
+        $tables    = TableManager::getTableList();
         $pattern   = '/^' . $tablePrefix . '/i';
         foreach ($tables as $table => $tableComment) {
             $table = preg_replace($pattern, '', $table);

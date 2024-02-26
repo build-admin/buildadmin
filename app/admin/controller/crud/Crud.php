@@ -505,7 +505,7 @@ class Crud extends Backend
             $this->error($e->getMessage());
         }
 
-        $tableList       = get_table_list();
+        $tableList       = TableManager::getTableList();
         $tableExist      = array_key_exists(TableManager::tableName($table), $tableList);
         $controllerExist = file_exists(root_path() . $controllerFile);
 
@@ -518,6 +518,10 @@ class Crud extends Backend
         $this->success();
     }
 
+    /**
+     * 数据表列表
+     * @throws Throwable
+     */
     public function databaseList(): void
     {
         $tablePrefix     = config('database.connections.mysql.prefix');
@@ -535,7 +539,7 @@ class Crud extends Backend
         ];
 
         $outTables = [];
-        $tables    = get_table_list();
+        $tables    = TableManager::getTableList();
         $pattern   = '/^' . $tablePrefix . '/i';
         foreach ($tables as $table => $tableComment) {
             if (!preg_match($pattern, $table)) continue;

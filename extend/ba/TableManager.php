@@ -61,6 +61,26 @@ class TableManager
     }
 
     /**
+     * 数据表列表
+     * @param ?string $connection 连接配置标识
+     * @throws Exception
+     */
+    public static function getTableList(?string $connection = null): array
+    {
+        $tableList  = [];
+        $connection = self::getConnection($connection);
+        $connection = config("database.connections.$connection");
+        if (!is_array($connection)) {
+            throw new Exception('Database connection configuration error');
+        }
+        $tables = Db::query("SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema = ? ", [$connection['database']]);
+        foreach ($tables as $row) {
+            $tableList[$row['TABLE_NAME']] = $row['TABLE_NAME'] . ($row['TABLE_COMMENT'] ? ' - ' . $row['TABLE_COMMENT'] : '');
+        }
+        return $tableList;
+    }
+
+    /**
      * 系统是否存在多个数据库连接配置
      */
     public static function isMultiDatabase(): bool
