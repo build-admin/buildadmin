@@ -428,6 +428,7 @@ class Helper
      * @param array  $fields       字段数据
      * @param array  $designChange 前端字段改变数据
      * @return void
+     * @throws Throwable
      */
     public static function updateFieldOrder(string $tableName, array $fields, array $designChange): void
     {

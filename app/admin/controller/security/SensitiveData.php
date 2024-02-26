@@ -63,6 +63,7 @@ class SensitiveData extends Backend
 
     /**
      * 添加重写
+     * @throws Throwable
      */
     public function add(): void
     {
