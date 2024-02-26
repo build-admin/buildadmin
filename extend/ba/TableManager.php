@@ -21,6 +21,7 @@ class TableManager
      * @param bool    $prefixWrapper 是否使用表前缀包装表名
      * @param ?string $connection    连接配置标识
      * @return Table
+     * @throws Throwable
      */
     public static function phinxTable(string $table, array $options = [], bool $prefixWrapper = true, ?string $connection = null): Table
     {
@@ -32,6 +33,7 @@ class TableManager
      * @param bool    $prefixWrapper 是否使用表前缀包装表名
      * @param ?string $connection    连接配置标识
      * @return AdapterInterface
+     * @throws Throwable
      */
     public static function phinxAdapter(bool $prefixWrapper = true, ?string $connection = null): AdapterInterface
     {
@@ -52,12 +54,8 @@ class TableManager
      */
     public static function tableName(string $table, bool $fullName = true, ?string $connection = null): string
     {
-        $connection = self::getConnection($connection);
-        $connection = config("database.connections.$connection");
-        if (!is_array($connection)) {
-            throw new Exception('Database connection configuration error');
-        }
-        $pattern = '/^' . $connection['prefix'] . '/i';
+        $connection = self::getConnectionConfig($connection);
+        $pattern    = '/^' . $connection['prefix'] . '/i';
         return ($fullName ? $connection['prefix'] : '') . (preg_replace($pattern, '', $table));
     }
 
@@ -69,12 +67,8 @@ class TableManager
     public static function getTableList(?string $connection = null): array
     {
         $tableList  = [];
-        $connection = self::getConnection($connection);
-        $connection = config("database.connections.$connection");
-        if (!is_array($connection)) {
-            throw new Exception('Database connection configuration error');
-        }
-        $tables = Db::query("SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema = ? ", [$connection['database']]);
+        $connection = self::getConnectionConfig($connection);
+        $tables     = Db::query("SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema = ? ", [$connection['database']]);
         foreach ($tables as $row) {
             $tableList[$row['TABLE_NAME']] = $row['TABLE_NAME'] . ($row['TABLE_COMMENT'] ? ' - ' . $row['TABLE_COMMENT'] : '');
         }
@@ -92,13 +86,8 @@ class TableManager
     {
         if (!$table) return [];
 
-        $table = self::tableName($table, true, $connection);
-
-        $connection = self::getConnection($connection);
-        $connection = config("database.connections.$connection");
-        if (!is_array($connection)) {
-            throw new Exception('Database connection configuration error');
-        }
+        $table      = self::tableName($table, true, $connection);
+        $connection = self::getConnectionConfig($connection);
 
         // 从数据库中获取表字段信息
         // Phinx 目前无法正确获取到列注释信息，故使用 sql
@@ -144,39 +133,52 @@ class TableManager
     }
 
     /**
+     * 获取数据库连接的配置数组
+     * @param ?string $connection 连接配置标识
+     * @throws Exception
+     */
+    public static function getConnectionConfig(?string $connection = null): array
+    {
+        $connection = self::getConnection($connection);
+        $connection = config("database.connections.$connection");
+        if (!is_array($connection)) {
+            throw new Exception('Database connection configuration error');
+        }
+
+        // 分布式
+        if ($connection['deploy'] == 1) {
+            $keys = ['type', 'hostname', 'database', 'username', 'password', 'hostport', 'charset', 'prefix'];
+            foreach ($connection as $key => $item) {
+                if (in_array($key, $keys)) {
+                    $connection[$key] = is_array($item) ? $item[0] : explode(',', $item)[0];
+                }
+            }
+        }
+        return $connection;
+    }
+
+    /**
      * 获取 Phinx 适配器需要的数据库配置
      * @param ?string $connection 连接配置标识
      * @return array
+     * @throws Throwable
      */
     protected static function getPhinxDbConfig(?string $connection = null): array
     {
+        $config     = self::getConnectionConfig($connection);
         $connection = self::getConnection($connection);
-        $config     = Config::get("database.connections.$connection");
         $db         = Db::connect($connection);
 
         // 数据库为懒连接，执行 sql 命令为 $db 实例连接数据库
         $db->query('SELECT 1');
 
-        if ($config['deploy'] == 0) {
-            $dbConfig = [
-                'adapter'      => $config['type'],
-                'connection'   => $db->getPdo(),
-                'name'         => $config['database'],
-                'table_prefix' => $config['prefix'],
-            ];
-        } else {
-            $dbConfig = [
-                'adapter'      => is_array($config['type']) ? $config['type'][0] : explode(',', $config['type'])[0],
-                'connection'   => $db->getPdo(),
-                'name'         => is_array($config['database']) ? $config['database'][0] : explode(',', $config['database'])[0],
-                'table_prefix' => is_array($config['prefix']) ? $config['prefix'][0] : explode(',', $config['prefix'])[0],
-            ];
-        }
-
         $table = Config::get('database.migration_table', 'migrations');
-
-        $dbConfig['migration_table'] = $dbConfig['table_prefix'] . $table;
-
-        return $dbConfig;
+        return [
+            'adapter'         => $config['type'],
+            'connection'      => $db->getPdo(),
+            'name'            => $config['database'],
+            'table_prefix'    => $config['prefix'],
+            'migration_table' => $config['prefix'] . $table,
+        ];
     }
 }
