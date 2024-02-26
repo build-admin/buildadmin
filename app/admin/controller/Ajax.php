@@ -5,6 +5,7 @@ namespace app\admin\controller;
 use Throwable;
 use ba\Terminal;
 use think\Response;
+use ba\TableManager;
 use think\facade\Db;
 use think\facade\Cache;
 use think\facade\Event;
@@ -83,6 +84,10 @@ class Ajax extends Backend
         $this->success('', ['pk' => $tablePk]);
     }
 
+    /**
+     * 获取数据表字段列表
+     * @throws Throwable
+     */
     public function getTableFieldList(): void
     {
         $table = $this->request->param('table');
@@ -94,7 +99,7 @@ class Ajax extends Backend
         $tablePk = Db::name($table)->getPk();
         $this->success('', [
             'pk'        => $tablePk,
-            'fieldList' => get_table_fields($table, $clean),
+            'fieldList' => TableManager::getTableColumns($table, $clean),
         ]);
     }
 

@@ -2,6 +2,7 @@
 
 namespace ba;
 
+use Throwable;
 use think\facade\Db;
 use think\facade\Config;
 use think\migration\db\Table;
@@ -78,6 +79,47 @@ class TableManager
             $tableList[$row['TABLE_NAME']] = $row['TABLE_NAME'] . ($row['TABLE_COMMENT'] ? ' - ' . $row['TABLE_COMMENT'] : '');
         }
         return $tableList;
+    }
+
+    /**
+     * 获取数据表所有列
+     * @param string  $table            数据表名
+     * @param bool    $onlyCleanComment 只要干净的字段注释信息
+     * @param ?string $connection       连接配置标识
+     * @throws Throwable
+     */
+    public static function getTableColumns(string $table, bool $onlyCleanComment = false, ?string $connection = null): array
+    {
+        if (!$table) return [];
+
+        $table = self::tableName($table, true, $connection);
+
+        $connection = self::getConnection($connection);
+        $connection = config("database.connections.$connection");
+        if (!is_array($connection)) {
+            throw new Exception('Database connection configuration error');
+        }
+
+        // 从数据库中获取表字段信息
+        // Phinx 目前无法正确获取到列注释信息，故使用 sql
+        $sql        = "SELECT * FROM `information_schema`.`columns` "
+            . "WHERE TABLE_SCHEMA = ? AND table_name = ? "
+            . "ORDER BY ORDINAL_POSITION";
+        $columnList = Db::query($sql, [$connection['database'], $table]);
+
+        $fieldList = [];
+        foreach ($columnList as $item) {
+            if ($onlyCleanComment) {
+                $fieldList[$item['COLUMN_NAME']] = '';
+                if ($item['COLUMN_COMMENT']) {
+                    $comment                         = explode(':', $item['COLUMN_COMMENT']);
+                    $fieldList[$item['COLUMN_NAME']] = $comment[0];
+                }
+                continue;
+            }
+            $fieldList[$item['COLUMN_NAME']] = $item;
+        }
+        return $fieldList;
     }
 
     /**
