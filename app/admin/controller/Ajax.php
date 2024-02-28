@@ -63,6 +63,27 @@ class Ajax extends Backend
     }
 
     /**
+     * 获取已脱敏的数据库连接配置列表
+     * @throws Throwable
+     */
+    public function getDatabaseConnections(): void
+    {
+        $connections     = config('database.connections');
+        $desensitization = [];
+        foreach ($connections as $key => $connection) {
+            $connection        = TableManager::getConnectionConfig($key);
+            $desensitization[] = [
+                'type'     => $connection['type'],
+                'database' => substr_replace($connection['database'], '****', 1, strlen($connection['database']) > 4 ? 2 : 1),
+                'key'      => $key,
+            ];
+        }
+        $this->success('', [
+            'list' => $desensitization,
+        ]);
+    }
+
+    /**
      * 获取表主键字段
      * @param ?string $table
      * @throws Throwable
