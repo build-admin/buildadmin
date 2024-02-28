@@ -126,14 +126,14 @@ class TableManager
      */
     public static function getConnection(?string $source = null): string
     {
-        if (is_null($source) || $source === 'default') {
+        if (!$source || $source === 'default') {
             return Config::get('database.default');
         }
         return $source;
     }
 
     /**
-     * 获取数据库连接的配置数组
+     * 获取某个数据库连接的配置数组
      * @param ?string $connection 连接配置标识
      * @throws Exception
      */
