@@ -138,6 +138,20 @@
                                 labelWidth: 140,
                             }"
                         />
+                        <FormItem
+                            :label="t('crud.crud.Database connection')"
+                            v-model="state.table.databaseConnection"
+                            type="remoteSelect"
+                            :attr="{
+                                labelWidth: 140,
+                                blockHelp: t('crud.crud.Database connection help'),
+                            }"
+                            :input-attr="{
+                                pk: 'key',
+                                field: 'key',
+                                'remote-url': getDatabaseConnectionListUrl,
+                            }"
+                        />
                     </div>
                 </div>
             </transition>
@@ -418,15 +432,31 @@
                         v-if="state.remoteSelectPre.index != -1 && state.fields[state.remoteSelectPre.index]"
                     >
                         <FormItem
-                            prop="table"
-                            type="select"
                             :label="t('crud.crud.Associated Data Table')"
                             v-model="state.remoteSelectPre.form.table"
-                            :key="JSON.stringify(state.remoteSelectPre.dbList)"
-                            :data="{
-                                content: state.remoteSelectPre.dbList,
+                            type="remoteSelect"
+                            :key="state.table.databaseConnection"
+                            :input-attr="{
+                                pk: 'table',
+                                field: 'comment',
+                                params: {
+                                    connection: state.table.databaseConnection,
+                                    samePrefix: 1,
+                                    excludeTable: [
+                                        'area',
+                                        'token',
+                                        'captcha',
+                                        'admin_group_access',
+                                        'config',
+                                        'admin_log',
+                                        'user_money_log',
+                                        'user_score_log',
+                                    ],
+                                },
+                                'remote-url': getTableListUrl,
+                                onChange: onJoinTableChange,
                             }"
-                            :input-attr="{ onChange: onJoinTableChange }"
+                            prop="table"
                         />
                         <div v-loading="state.loading.remoteSelect">
                             <FormItem
@@ -494,6 +524,16 @@
                                     ),
                                 }"
                             />
+                            <el-form-item
+                                v-if="state.table.databaseConnection && state.remoteSelectPre.form.modelFile"
+                                :label="t('crud.crud.Database connection')"
+                            >
+                                <el-text size="large" type="danger">{{ state.table.databaseConnection }}</el-text>
+                                <div class="block-help">
+                                    <div>{{ t('crud.crud.Check model class', { connection: state.table.databaseConnection }) }}</div>
+                                    <div>{{ t('crud.crud.There is no connection attribute in model class') }}</div>
+                                </div>
+                            </el-form-item>
                             <el-form-item :label="t('Reminder')">
                                 <div class="block-help">
                                     {{ t('crud.crud.Design remote select tips') }}
@@ -604,8 +644,8 @@ import { useTemplateRefsList } from '@vueuse/core'
 import { changeStep, state as crudState, getTableAttr, fieldItem, designTypes, tableFieldsKey } from '/@/views/backend/crud/index'
 import { ElNotification, ElMessageBox, ElMessage } from 'element-plus'
 import type { FormItemRule, FormInstance, TimelineItemProps, MessageHandler } from 'element-plus'
-import { getDatabaseList, getFileData, generateCheck, generate, parseFieldData, postLogStart } from '/@/api/backend/crud'
-import { getTableFieldList } from '/@/api/common'
+import { getFileData, generateCheck, generate, parseFieldData, postLogStart } from '/@/api/backend/crud'
+import { getTableFieldList, getTableListUrl, getDatabaseConnectionListUrl } from '/@/api/common'
 import { buildValidatorData, regularVarName } from '/@/utils/validate'
 import { getArrayKey } from '/@/utils/common'
 import { useI18n } from 'vue-i18n'
@@ -635,6 +675,7 @@ const state: {
         controllerFile: string
         validateFile: string
         webViewsDir: string
+        databaseConnection: string
         designChange: TableDesignChange[]
         rebuild: string
     }
@@ -644,7 +685,6 @@ const state: {
     remoteSelectPre: {
         show: boolean
         index: number
-        dbList: anyObj
         fieldList: anyObj
         modelFileList: anyObj
         controllerFileList: anyObj
@@ -692,6 +732,7 @@ const state: {
         controllerFile: '',
         validateFile: '',
         webViewsDir: '',
+        databaseConnection: '',
         designChange: [],
         rebuild: 'No',
     },
@@ -701,7 +742,6 @@ const state: {
     remoteSelectPre: {
         show: false,
         index: -1,
-        dbList: [],
         fieldList: [],
         modelFileList: [],
         controllerFileList: [],
@@ -884,34 +924,30 @@ const showRemoteSelectPre = (index: number, hideDelField = false) => {
     state.remoteSelectPre.loading = true
     state.remoteSelectPre.index = index
     state.remoteSelectPre.hideDelField = hideDelField
-    getDatabaseList()
-        .then((res) => {
-            state.remoteSelectPre.dbList = res.data.dbs
-            if (state.fields[index] && state.fields[index].form['remote-table'].value) {
-                state.remoteSelectPre.form.table = state.fields[index].form['remote-table'].value
-                state.remoteSelectPre.form.pk = state.fields[index].form['remote-pk'].value
-                state.remoteSelectPre.form.label = state.fields[index].form['remote-field'].value
-                state.remoteSelectPre.form.controllerFile = state.fields[index].form['remote-controller'].value
-                state.remoteSelectPre.form.modelFile = state.fields[index].form['remote-model'].value
-                state.remoteSelectPre.form.joinField = state.fields[index].form['relation-fields'].value.split(',')
-                getTableFieldList(state.fields[index].form['remote-table'].value).then((res) => {
-                    const fieldSelect: anyObj = {}
-                    for (const key in res.data.fieldList) {
-                        fieldSelect[key] = (key ? key + ' - ' : '') + res.data.fieldList[key]
-                    }
-                    state.remoteSelectPre.fieldList = fieldSelect
-                })
-                if (isEmpty(state.remoteSelectPre.modelFileList) || isEmpty(state.remoteSelectPre.controllerFileList)) {
-                    getFileData(state.fields[index].form['remote-table'].value).then((res) => {
-                        state.remoteSelectPre.modelFileList = res.data.modelFileList
-                        state.remoteSelectPre.controllerFileList = res.data.controllerFileList
-                    })
-                }
+
+    if (state.fields[index] && state.fields[index].form['remote-table'].value) {
+        state.remoteSelectPre.form.table = state.fields[index].form['remote-table'].value
+        state.remoteSelectPre.form.pk = state.fields[index].form['remote-pk'].value
+        state.remoteSelectPre.form.label = state.fields[index].form['remote-field'].value
+        state.remoteSelectPre.form.controllerFile = state.fields[index].form['remote-controller'].value
+        state.remoteSelectPre.form.modelFile = state.fields[index].form['remote-model'].value
+        state.remoteSelectPre.form.joinField = state.fields[index].form['relation-fields'].value.split(',')
+        getTableFieldList(state.fields[index].form['remote-table'].value).then((res) => {
+            const fieldSelect: anyObj = {}
+            for (const key in res.data.fieldList) {
+                fieldSelect[key] = (key ? key + ' - ' : '') + res.data.fieldList[key]
             }
+            state.remoteSelectPre.fieldList = fieldSelect
         })
-        .finally(() => {
-            state.remoteSelectPre.loading = false
-        })
+        if (isEmpty(state.remoteSelectPre.modelFileList) || isEmpty(state.remoteSelectPre.controllerFileList)) {
+            getFileData(state.fields[index].form['remote-table'].value).then((res) => {
+                state.remoteSelectPre.modelFileList = res.data.modelFileList
+                state.remoteSelectPre.controllerFileList = res.data.controllerFileList
+            })
+        }
+    }
+
+    state.remoteSelectPre.loading = false
 }
 
 const onEditField = (index: number, field: FieldItem) => {
@@ -987,6 +1023,7 @@ const onGenerate = () => {
     state.loading.generate = true
     generateCheck({
         table: state.table.name,
+        connection: state.table.databaseConnection,
         controllerFile: state.table.controllerFile,
     })
         .then(() => {
@@ -1112,7 +1149,12 @@ const loadData = () => {
     }
 
     // 从数据表或sql开始
-    parseFieldData(crudState.type, crudState.startData.db, crudState.startData.sql)
+    parseFieldData({
+        type: crudState.type,
+        table: crudState.startData.table,
+        sql: crudState.startData.sql,
+        connection: crudState.startData.databaseConnection,
+    })
         .then((res) => {
             let fields = []
             for (const key in res.data.columns) {
@@ -1134,12 +1176,13 @@ const loadData = () => {
             }
             state.fields = fields
             state.table.comment = res.data.comment
+            state.table.databaseConnection = crudState.startData.databaseConnection
             if (res.data.empty) {
                 state.table.rebuild = 'Yes'
             }
-            if (crudState.type == 'db' && crudState.startData.db) {
-                state.table.name = crudState.startData.db
-                onTableChange(crudState.startData.db)
+            if (crudState.type == 'db' && crudState.startData.table) {
+                state.table.name = crudState.startData.table
+                onTableChange(crudState.startData.table)
             }
         })
         .finally(() => {

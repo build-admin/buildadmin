@@ -8,7 +8,7 @@ use think\Model;
  * {%className%}
  */
 class {%className%} extends Model
-{{%pk%}
+{{%connection%}{%pk%}
     // 表名
     protected $name = '{%name%}';
 

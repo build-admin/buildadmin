@@ -27,17 +27,19 @@ export const state: {
     step: 'Start' | 'Design'
     type: string
     startData: {
-        db: string
         sql: string
+        table: string
         logId: string
+        databaseConnection: string
     }
 } = reactive({
     step: 'Start',
     type: '',
     startData: {
-        db: '',
         sql: '',
+        table: '',
         logId: '',
+        databaseConnection: '',
     },
 })
 

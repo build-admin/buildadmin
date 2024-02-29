@@ -281,10 +281,13 @@ class Helper
                 ]);
             return $data['id'];
         }
-        $log = CrudLog::create([
+
+        $connection = $data['table']['databaseConnection'] ?: config('database.default');
+        $log        = CrudLog::create([
             'table_name' => $data['table']['name'],
             'table'      => $data['table'],
             'fields'     => $data['fields'],
+            'connection' => $connection,
             'status'     => $data['status'],
         ]);
         return $log->id;
@@ -424,16 +427,17 @@ class Helper
 
     /**
      * 表字段排序
-     * @param string $tableName    表名
-     * @param array  $fields       字段数据
-     * @param array  $designChange 前端字段改变数据
+     * @param string  $tableName    表名
+     * @param array   $fields       字段数据
+     * @param array   $designChange 前端字段改变数据
+     * @param ?string $connection   数据库连接标识
      * @return void
      * @throws Throwable
      */
-    public static function updateFieldOrder(string $tableName, array $fields, array $designChange): void
+    public static function updateFieldOrder(string $tableName, array $fields, array $designChange, ?string $connection = null): void
     {
         if ($designChange) {
-            $table = TableManager::phinxTable($tableName, [], false);
+            $table = TableManager::phinxTable($tableName, [], false, $connection);
             foreach ($designChange as $item) {
                 if (!$item['sync']) continue;
 
@@ -469,10 +473,10 @@ class Helper
      */
     public static function handleTableDesign(array $table, array $fields): array
     {
-        $name         = TableManager::tableName($table['name']);
+        $name         = TableManager::tableName($table['name'], true, $table['databaseConnection']);
         $comment      = $table['comment'] ?? '';
         $designChange = $table['designChange'] ?? [];
-        $adapter      = TableManager::phinxAdapter(false);
+        $adapter      = TableManager::phinxAdapter(false, $table['databaseConnection']);
 
         $pk = self::searchArray($fields, function ($item) {
             return $item['primaryKey'];
@@ -482,8 +486,8 @@ class Helper
         if ($adapter->hasTable($name)) {
             // 更新表
             if ($designChange) {
-                $table = TableManager::phinxTable($name, [], false);
-                $table->changeComment($comment)->update();
+                $tableManager = TableManager::phinxTable($name, [], false, $table['databaseConnection']);
+                $tableManager->changeComment($comment)->update();
 
                 // 改名和删除操作优先
                 $priorityOpt = false;
@@ -491,23 +495,23 @@ class Helper
 
                     if (!$item['sync']) continue;
 
-                    if (in_array($item['type'], ['change-field-name', 'del-field']) && !$table->hasColumn($item['oldName'])) {
+                    if (in_array($item['type'], ['change-field-name', 'del-field']) && !$tableManager->hasColumn($item['oldName'])) {
                         // 字段不存在
                         throw new BaException(__($item['type'] . ' fail not exist', [$item['oldName']]));
                     }
 
                     if ($item['type'] == 'change-field-name') {
                         $priorityOpt = true;
-                        $table->renameColumn($item['oldName'], $item['newName']);
+                        $tableManager->renameColumn($item['oldName'], $item['newName']);
                     } elseif ($item['type'] == 'del-field') {
                         $priorityOpt = true;
-                        $table->removeColumn($item['oldName']);
+                        $tableManager->removeColumn($item['oldName']);
                     }
                 }
 
                 // 保存需要优先执行的操作，避免先改名再改属性时找不到字段
                 if ($priorityOpt) {
-                    $table->update();
+                    $tableManager->update();
                 }
 
                 // 修改字段属性和添加字段操作
@@ -517,7 +521,7 @@ class Helper
 
                     if ($item['type'] == 'change-field-attr') {
 
-                        if (!$table->hasColumn($item['oldName'])) {
+                        if (!$tableManager->hasColumn($item['oldName'])) {
                             // 字段不存在
                             throw new BaException(__($item['type'] . ' fail not exist', [$item['oldName']]));
                         }
@@ -525,10 +529,10 @@ class Helper
                         $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
                             return $field['name'] == $item['oldName'];
                         }));
-                        $table->changeColumn($item['oldName'], $phinxFieldData['type'], $phinxFieldData['options']);
+                        $tableManager->changeColumn($item['oldName'], $phinxFieldData['type'], $phinxFieldData['options']);
                     } elseif ($item['type'] == 'add-field') {
 
-                        if ($table->hasColumn($item['newName'])) {
+                        if ($tableManager->hasColumn($item['newName'])) {
                             // 字段已经存在
                             throw new BaException(__($item['type'] . ' fail exist', [$item['newName']]));
                         }
@@ -536,28 +540,28 @@ class Helper
                         $phinxFieldData = self::getPhinxFieldData(self::searchArray($fields, function ($field) use ($item) {
                             return $field['name'] == $item['newName'];
                         }));
-                        $table->addColumn($item['newName'], $phinxFieldData['type'], $phinxFieldData['options']);
+                        $tableManager->addColumn($item['newName'], $phinxFieldData['type'], $phinxFieldData['options']);
                     }
                 }
-                $table->update();
+                $tableManager->update();
 
                 // 表更新结构完成再处理字段排序
-                self::updateFieldOrder($name, $fields, $designChange);
+                self::updateFieldOrder($name, $fields, $designChange, $table['databaseConnection']);
             }
         } else {
             // 创建表
-            $table = TableManager::phinxTable($name, [
+            $tableManager = TableManager::phinxTable($name, [
                 'id'          => false,
                 'comment'     => $comment,
                 'row_format'  => 'DYNAMIC',
                 'primary_key' => $pk,
                 'collation'   => 'utf8mb4_unicode_ci',
-            ], false);
+            ], false, $table['databaseConnection']);
             foreach ($fields as $field) {
                 $phinxFieldData = self::getPhinxFieldData($field);
-                $table->addColumn($field['name'], $phinxFieldData['type'], $phinxFieldData['options']);
+                $tableManager->addColumn($field['name'], $phinxFieldData['type'], $phinxFieldData['options']);
             }
-            $table->create();
+            $tableManager->create();
         }
 
         return [$pk];
@@ -732,15 +736,19 @@ class Helper
      * 根据数据表解析字段数据
      * @throws Throwable
      */
-    public static function parseTableColumns(string $table, bool $analyseField = false): array
+    public static function parseTableColumns(string $table, bool $analyseField = false, ?string $connection = null): array
     {
+        $connection       = TableManager::getConnection($connection);
+        $connectionConfig = TableManager::getConnectionConfig($connection);
+
         // 从数据库中获取表字段信息
         $sql = 'SELECT * FROM `information_schema`.`columns` '
             . 'WHERE TABLE_SCHEMA = ? AND table_name = ? '
             . 'ORDER BY ORDINAL_POSITION';
 
         $columns     = [];
-        $tableColumn = Db::query($sql, [config('database.connections.mysql.database'), TableManager::tableName($table)]);
+        $tableColumn = Db::connect($connection)->query($sql, [$connectionConfig['database'], TableManager::tableName($table, true, $connection)]);
+
         foreach ($tableColumn as $item) {
             $isNullAble = $item['IS_NULLABLE'] == 'YES';
             if (str_contains($item['COLUMN_TYPE'], '(')) {
@@ -989,7 +997,13 @@ class Helper
 
     public static function writeModelFile(string $tablePk, array $fieldsMap, array $modelData, array $modelFile): void
     {
-        $modelData['pk']                 = $tablePk == 'id' ? '' : "\n" . self::tab() . "// 表主键\n" . self::tab() . 'protected $pk = ' . "'$tablePk';\n" . self::tab();
+        if ($modelData['connection'] && $modelData['connection'] != config('database.default')) {
+            $modelData['connection'] = "\n" . self::tab() . "// 数据库连接配置标识\n" . self::tab() . 'protected $connection = ' . "'{$modelData['connection']}';\n";
+        } else {
+            $modelData['connection'] = '';
+        }
+
+        $modelData['pk']                 = $tablePk == 'id' ? '' : "\n" . self::tab() . "// 表主键\n" . self::tab() . 'protected $pk = ' . "'$tablePk';\n";
         $modelData['autoWriteTimestamp'] = array_key_exists(self::$createTimeField, $fieldsMap) || array_key_exists(self::$updateTimeField, $fieldsMap) ? 'true' : 'false';
         if ($modelData['autoWriteTimestamp'] == 'true') {
             $modelData['createTime'] = array_key_exists(self::$createTimeField, $fieldsMap) ? '' : "\n" . self::tab() . "protected \$createTime = false;";

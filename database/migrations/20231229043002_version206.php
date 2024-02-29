@@ -26,5 +26,11 @@ class Version206 extends Migrator
             $table = $this->table('config');
             $table->insert($rows)->saveData();
         }
+
+        $crudLog = $this->table('crud_log');
+        if (!$crudLog->hasColumn('connection')) {
+            $crudLog->addColumn('connection', 'string', ['limit' => 100, 'default' => '', 'comment' => '数据库连接配置标识', 'null' => false, 'after' => 'status']);
+            $crudLog->save();
+        }
     }
 }

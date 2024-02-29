@@ -59,7 +59,7 @@ class Crud extends Backend
      */
     protected array $dtStringToArray = ['checkbox', 'selects', 'remoteSelects', 'city', 'images', 'files'];
 
-    protected array $noNeedPermission = ['logStart', 'getFileData', 'parseFieldData', 'generateCheck', 'databaseList'];
+    protected array $noNeedPermission = ['logStart', 'getFileData', 'parseFieldData', 'generateCheck'];
 
     public function initialize(): void
     {
@@ -89,11 +89,11 @@ class Crud extends Backend
             ]);
 
             // 表名称
-            $tableName = TableManager::tableName($table['name'], false);
+            $tableName = TableManager::tableName($table['name'], false, $table['databaseConnection']);
 
             if ($type == 'create' || $table['rebuild'] == 'Yes') {
                 // 数据表存在则删除
-                TableManager::phinxTable($tableName)->drop()->save();
+                TableManager::phinxTable($tableName, [], true, $table['databaseConnection'])->drop()->save();
             }
 
             // 处理表设计
@@ -127,6 +127,7 @@ class Crud extends Backend
             $this->modelData['beforeInsertMixins'] = [];
             $this->modelData['beforeInsert']       = '';
             $this->modelData['afterInsert']        = '';
+            $this->modelData['connection']         = $table['databaseConnection'];
             $this->modelData['name']               = $tableName;
             $this->modelData['className']          = $modelFile['lastName'];
             $this->modelData['namespace']          = $modelFile['namespace'];
@@ -205,7 +206,7 @@ class Crud extends Backend
 
                 // 关联表数据解析
                 if (in_array($field['designType'], ['remoteSelect', 'remoteSelects'])) {
-                    $this->parseJoinData($field);
+                    $this->parseJoinData($field, $table);
                 }
 
                 // 模型方法
@@ -308,9 +309,15 @@ class Crud extends Backend
         }
 
         // 数据表是否有数据
-        $adapter = TableManager::phinxAdapter();
-        if ($adapter->hasTable($info['table']['name'])) {
-            $info['table']['empty'] = Db::name($info['table']['name'])->limit(1)->select()->isEmpty();
+        $connection = TableManager::getConnection($info['table']['databaseConnection']);
+        $tableName  = TableManager::tableName($info['table']['name'], false, $connection);
+        $adapter    = TableManager::phinxAdapter(true, $connection);
+        if ($adapter->hasTable($tableName)) {
+            $info['table']['empty'] = Db::connect($connection)
+                ->name($tableName)
+                ->limit(1)
+                ->select()
+                ->isEmpty();
         } else {
             $info['table']['empty'] = true;
         }
@@ -438,9 +445,13 @@ class Crud extends Backend
      */
     public function checkCrudLog(): void
     {
-        $table   = $this->request->get('table');
+        $table      = $this->request->get('table');
+        $connection = $this->request->get('connection');
+        $connection = $connection ?: config('database.default');
+
         $crudLog = Db::name('crud_log')
             ->where('table_name', $table)
+            ->where('connection', $connection)
             ->order('create_time desc')
             ->find();
         $this->success('', [
@@ -455,27 +466,36 @@ class Crud extends Backend
     public function parseFieldData(): void
     {
         AdminLog::setTitle(__('Parse field data'));
-        $type  = $this->request->post('type');
-        $table = $this->request->post('table');
-        $table = TableManager::tableName($table);
+        $type       = $this->request->post('type');
+        $table      = $this->request->post('table');
+        $connection = $this->request->post('connection');
+        $connection = TableManager::getConnection($connection);
+
+        $table            = TableManager::tableName($table, true, $connection);
+        $connectionConfig = TableManager::getConnectionConfig($connection);
+
         if ($type == 'db') {
             $sql       = 'SELECT * FROM `information_schema`.`tables` '
                 . 'WHERE TABLE_SCHEMA = ? AND table_name = ?';
-            $tableInfo = Db::query($sql, [config('database.connections.mysql.database'), $table]);
+            $tableInfo = Db::connect($connection)->query($sql, [$connectionConfig['database'], $table]);
             if (!$tableInfo) {
                 $this->error(__('Record not found'));
             }
 
             // 数据表是否有数据
-            $adapter = TableManager::phinxAdapter(false);
+            $adapter = TableManager::phinxAdapter(false, $connection);
             if ($adapter->hasTable($table)) {
-                $empty = Db::table($table)->limit(1)->select()->isEmpty();
+                $empty = Db::connect($connection)
+                    ->table($table)
+                    ->limit(1)
+                    ->select()
+                    ->isEmpty();
             } else {
                 $empty = true;
             }
 
             $this->success('', [
-                'columns' => Helper::parseTableColumns($table),
+                'columns' => Helper::parseTableColumns($table, false, $connection),
                 'comment' => $tableInfo[0]['TABLE_COMMENT'] ?? '',
                 'empty'   => $empty,
             ]);
@@ -490,6 +510,7 @@ class Crud extends Backend
     {
         $table          = $this->request->post('table');
         $controllerFile = $this->request->post('controllerFile', '');
+        $connection     = $this->request->post('connection');
 
         if (!$table) {
             $this->error(__('Parameter error'));
@@ -505,8 +526,8 @@ class Crud extends Backend
             $this->error($e->getMessage());
         }
 
-        $tableList       = TableManager::getTableList();
-        $tableExist      = array_key_exists(TableManager::tableName($table), $tableList);
+        $tableList       = TableManager::getTableList($connection);
+        $tableExist      = array_key_exists(TableManager::tableName($table, true, $connection), $tableList);
         $controllerExist = file_exists(root_path() . $controllerFile);
 
         if ($controllerExist || $tableExist) {
@@ -519,54 +540,20 @@ class Crud extends Backend
     }
 
     /**
-     * 数据表列表
-     * @throws Throwable
-     */
-    public function databaseList(): void
-    {
-        $tablePrefix     = config('database.connections.mysql.prefix');
-        $outExcludeTable = [
-            // 功能表
-            'area',
-            'token',
-            'captcha',
-            'admin_group_access',
-            'config',
-            'admin_log',
-            // 不建议生成crud的表
-            'user_money_log',
-            'user_score_log',
-        ];
-
-        $outTables = [];
-        $tables    = TableManager::getTableList();
-        $pattern   = '/^' . $tablePrefix . '/i';
-        foreach ($tables as $table => $tableComment) {
-            if (!preg_match($pattern, $table)) continue;
-            $table = preg_replace($pattern, '', $table);
-            if (!in_array($table, $outExcludeTable)) {
-                $outTables[$table] = $tableComment;
-            }
-        }
-        $this->success('', [
-            'dbs' => $outTables,
-        ]);
-    }
-
-    /**
      * 关联表数据解析
      * @param $field
+     * @param $table
      * @throws Throwable
      */
-    private function parseJoinData($field): void
+    private function parseJoinData($field, $table): void
     {
         $dictEn   = [];
         $dictZhCn = [];
 
         if ($field['form']['relation-fields'] && $field['form']['remote-table']) {
-            $columns        = Helper::parseTableColumns($field['form']['remote-table'], true);
+            $columns        = Helper::parseTableColumns($field['form']['remote-table'], true, $table['databaseConnection']);
             $relationFields = explode(',', $field['form']['relation-fields']);
-            $tableName      = TableManager::tableName($field['form']['remote-table'], false);
+            $tableName      = TableManager::tableName($field['form']['remote-table'], false, $table['databaseConnection']);
             $rnPattern      = '/(.*)(_ids|_id)$/';
             if (preg_match($rnPattern, $field['name'])) {
                 $relationName = parse_name(preg_replace($rnPattern, '$1', $field['name']), 1, false);
@@ -586,6 +573,7 @@ class Crud extends Backend
                     $joinModelData['beforeInsertMixins'] = [];
                     $joinModelData['beforeInsert']       = '';
                     $joinModelData['afterInsert']        = '';
+                    $joinModelData['connection']         = $table['databaseConnection'];
                     $joinModelData['name']               = $tableName;
                     $joinModelData['className']          = $joinModelFile['lastName'];
                     $joinModelData['namespace']          = $joinModelFile['namespace'];

@@ -13,7 +13,15 @@
                 :buttons="['refresh', 'quickSearch', 'columnDisplay']"
                 :quick-search-placeholder="t('Quick search placeholder', { fields: t('crud.log.quick Search Fields') })"
             />
-            <Table ref="tableRef" />
+            <Table ref="tableRef">
+                <template #tableName>
+                    <el-table-column :show-overflow-tooltip="true" prop="table_name" align="center" :label="t('crud.log.table_name')">
+                        <template #default="scope">
+                            {{ (scope.row.table.databaseConnection ? scope.row.table.databaseConnection + '.' : '') + scope.row.table.name }}
+                        </template>
+                    </el-table-column>
+                </template>
+            </Table>
         </el-dialog>
     </div>
 </template>
@@ -105,11 +113,10 @@ const baTable = new baTableClass(
             { label: t('crud.log.id'), prop: 'id', align: 'center', width: 70, operator: '=', operatorPlaceholder: t('Id'), sortable: 'custom' },
             {
                 label: t('crud.log.table_name'),
-                prop: 'table_name',
-                align: 'center',
                 operatorPlaceholder: t('Fuzzy query'),
                 operator: 'LIKE',
-                sortable: false,
+                render: 'slot',
+                slotName: 'tableName',
             },
             {
                 label: t('crud.log.status'),

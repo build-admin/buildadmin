@@ -15,13 +15,6 @@ export function generate(data: anyObj) {
     )
 }
 
-export function getDatabaseList() {
-    return createAxios({
-        url: url + 'databaseList',
-        method: 'get',
-    })
-}
-
 export function getFileData(table: string, commonModel = 0) {
     return createAxios({
         url: url + 'getFileData',
@@ -46,15 +39,11 @@ export function generateCheck(data: anyObj) {
     )
 }
 
-export function parseFieldData(type: string, table = '', sql = '') {
+export function parseFieldData(data: anyObj) {
     return createAxios({
         url: url + 'parseFieldData',
         method: 'post',
-        data: {
-            type: type,
-            table: table,
-            sql: sql,
-        },
+        data: data,
     })
 }
 
@@ -78,12 +67,13 @@ export function postDel(id: number) {
     })
 }
 
-export function checkCrudLog(table: string) {
+export function checkCrudLog(table: string, connection: string) {
     return createAxios({
         url: url + 'checkCrudLog',
         method: 'get',
         params: {
             table: table,
+            connection: connection,
         },
     })
 }
