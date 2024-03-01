@@ -2,6 +2,9 @@
  * backend common language package
  */
 export default {
+    Connection: 'connection',
+    'Database connection': 'Database connection',
+    'Database connection help': 'You can configure multiple database connections in config/database.php and select it here',
     layouts: {
         'Layout configuration': 'Layout configuration',
         'Layout mode': 'Layout mode',

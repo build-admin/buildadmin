@@ -260,13 +260,14 @@ export function getTablePk(table: string) {
  * @param table 数据表名
  * @param clean 只要干净的字段注释（只要字段标题）
  */
-export function getTableFieldList(table: string, clean = true) {
+export function getTableFieldList(table: string, clean = true, connection = '') {
     return createAxios({
         url: getTableFieldListUrl,
         method: 'get',
         params: {
             table: table,
             clean: clean ? 1 : 0,
+            connection: connection,
         },
     })
 }

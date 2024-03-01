@@ -139,12 +139,12 @@
                             }"
                         />
                         <FormItem
-                            :label="t('crud.crud.Database connection')"
+                            :label="t('Database connection')"
                             v-model="state.table.databaseConnection"
                             type="remoteSelect"
                             :attr="{
                                 labelWidth: 140,
-                                blockHelp: t('crud.crud.Database connection help'),
+                                blockHelp: t('Database connection help'),
                             }"
                             :input-attr="{
                                 pk: 'key',
@@ -526,7 +526,7 @@
                             />
                             <el-form-item
                                 v-if="state.table.databaseConnection && state.remoteSelectPre.form.modelFile"
-                                :label="t('crud.crud.Database connection')"
+                                :label="t('Database connection')"
                             >
                                 <el-text size="large" type="danger">{{ state.table.databaseConnection }}</el-text>
                                 <div class="block-help">
@@ -932,7 +932,7 @@ const showRemoteSelectPre = (index: number, hideDelField = false) => {
         state.remoteSelectPre.form.controllerFile = state.fields[index].form['remote-controller'].value
         state.remoteSelectPre.form.modelFile = state.fields[index].form['remote-model'].value
         state.remoteSelectPre.form.joinField = state.fields[index].form['relation-fields'].value.split(',')
-        getTableFieldList(state.fields[index].form['remote-table'].value).then((res) => {
+        getTableFieldList(state.fields[index].form['remote-table'].value, true, state.table.databaseConnection).then((res) => {
             const fieldSelect: anyObj = {}
             for (const key in res.data.fieldList) {
                 fieldSelect[key] = (key ? key + ' - ' : '') + res.data.fieldList[key]
@@ -1343,7 +1343,7 @@ const onJoinTableChange = (val: string) => {
     resetRemoteSelectForm()
     state.remoteSelectPre.form.table = val
     state.loading.remoteSelect = true
-    getTableFieldList(val)
+    getTableFieldList(val, true, state.table.databaseConnection)
         .then((res) => {
             state.remoteSelectPre.form.pk = res.data.pk
 

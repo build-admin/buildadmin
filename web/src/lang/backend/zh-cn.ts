@@ -3,6 +3,9 @@
  * 覆盖风险：请避免使用页面语言包的目录名、文件名作为翻译 key
  */
 export default {
+    Connection: '连接标识',
+    'Database connection': '数据库连接配置标识',
+    'Database connection help': '您可以在 config/database.php 内配置多个数据库连接，然后在此处选择它，留空将使用默认连接配置',
     layouts: {
         'Layout configuration': '布局配置',
         'Layout mode': '布局方式',

@@ -142,16 +142,18 @@ class Ajax extends Backend
      */
     public function getTableFieldList(): void
     {
-        $table = $this->request->param('table');
-        $clean = $this->request->param('clean', true);
+        $table      = $this->request->param('table');
+        $clean      = $this->request->param('clean', true);
+        $connection = $this->request->request('connection');
         if (!$table) {
             $this->error(__('Parameter error'));
         }
 
-        $tablePk = Db::name($table)->getPk();
+        $connection = TableManager::getConnection($connection);
+        $tablePk    = Db::connect($connection)->name($table)->getPk();
         $this->success('', [
             'pk'        => $tablePk,
-            'fieldList' => TableManager::getTableColumns($table, $clean),
+            'fieldList' => TableManager::getTableColumns($table, $clean, $connection),
         ]);
     }
 

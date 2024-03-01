@@ -87,12 +87,12 @@
                     </template>
                     <template v-else-if="state.dialog.type == 'db'">
                         <FormItem
-                            :label="t('crud.crud.Database connection')"
+                            :label="t('Database connection')"
                             v-model="crudState.startData.databaseConnection"
                             type="remoteSelect"
                             :attr="{
                                 labelWidth: 140,
-                                blockHelp: t('crud.crud.Database connection help'),
+                                blockHelp: t('Database connection help'),
                             }"
                             :input-attr="{
                                 pk: 'key',
