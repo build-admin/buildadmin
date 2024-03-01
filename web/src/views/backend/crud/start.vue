@@ -129,7 +129,7 @@
                                     ],
                                 },
                                 'remote-url': getTableListUrl,
-                                onChange: onTableStartChange,
+                                onRow: onTableStartChange,
                             }"
                             prop="table"
                         />

@@ -68,6 +68,7 @@ class Ajax extends Backend
      */
     public function getDatabaseConnectionList(): void
     {
+        $quickSearch     = $this->request->get("quickSearch/s", '');
         $connections     = config('database.connections');
         $desensitization = [];
         foreach ($connections as $key => $connection) {
@@ -78,6 +79,14 @@ class Ajax extends Backend
                 'key'      => $key,
             ];
         }
+
+        if ($quickSearch) {
+            $desensitization = array_filter($desensitization, function ($item) use ($quickSearch) {
+                return preg_match("/$quickSearch/i", $item['key']);
+            });
+            $desensitization = array_values($desensitization);
+        }
+
         $this->success('', [
             'list' => $desensitization,
         ]);
@@ -112,6 +121,7 @@ class Ajax extends Backend
      */
     public function getTableList(): void
     {
+        $quickSearch  = $this->request->get("quickSearch/s", '');
         $connection   = $this->request->request('connection');// 数据库连接配置标识
         $samePrefix   = $this->request->request('samePrefix/b', true);// 是否仅返回项目数据表（前缀同项目一致的）
         $excludeTable = $this->request->request('excludeTable/a', []);// 要排除的数据表数组（表名无需带前缀）
@@ -119,7 +129,14 @@ class Ajax extends Backend
         $outTables = [];
         $dbConfig  = TableManager::getConnectionConfig($connection);
         $tables    = TableManager::getTableList($connection);
-        $pattern   = '/^' . $dbConfig['prefix'] . '/i';
+
+        if ($quickSearch) {
+            $tables = array_filter($tables, function ($comment) use ($quickSearch) {
+                return preg_match("/$quickSearch/i", $comment);
+            });
+        }
+
+        $pattern = '/^' . $dbConfig['prefix'] . '/i';
         foreach ($tables as $table => $comment) {
             if ($samePrefix && !preg_match($pattern, $table)) continue;
 

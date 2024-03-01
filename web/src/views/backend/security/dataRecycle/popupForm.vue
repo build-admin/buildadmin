@@ -68,7 +68,7 @@
                                 excludeTable: ['area', 'token', 'captcha', 'admin_group_access', 'user_money_log', 'user_score_log'],
                             },
                             'remote-url': getTableListUrl,
-                            onChange: onTableChange,
+                            onRow: onTableChange,
                         }"
                         prop="data_table"
                     />
@@ -134,9 +134,9 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     primary_key: [buildValidatorData({ name: 'required', trigger: 'change', title: t('security.dataRecycle.Data table primary key') })],
 })
 
-const onTableChange = (val: string) => {
-    if (!val) return
-    getTablePk(val, baTable.form.items!.connection).then((res) => {
+const onTableChange = () => {
+    if (!baTable.form.items!.data_table) return
+    getTablePk(baTable.form.items!.data_table, baTable.form.items!.connection).then((res) => {
         baTable.form.items!.primary_key = res.data.pk
         baTable.form.defaultItems!.primary_key = res.data.pk
     })
