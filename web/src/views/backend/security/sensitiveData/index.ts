@@ -34,10 +34,8 @@ export class sensitiveDataClass extends baTableClass {
                     })
                 }
 
-                this.form.extend = Object.assign(this.form.extend!, {
-                    tableList: res.data.tables,
-                    controllerList: res.data.controllers,
-                })
+                this.form.items!.connection = res.data.row.connection ? res.data.row.connection : ''
+                this.form.extend!.controllerList = res.data.controllers
 
                 if (res.data.row.data_table) {
                     this.onTableChange(res.data.row.data_table)
@@ -49,6 +47,16 @@ export class sensitiveDataClass extends baTableClass {
                 this.form.items = res.data.row
                 this.runAfter('requestEdit', { res })
             })
+    }
+
+    onConnectionChange = () => {
+        this.form.extend!.fieldList = {}
+        this.form.extend!.fieldSelect = {}
+        this.form.extend!.fieldSelectKey = uuid()
+
+        this.form.items!.data_table = ''
+        this.form.items!.data_fields = []
+        if (this.form.extend!.parentRef) this.form.extend!.parentRef.setDataFields([])
     }
 
     // 数据表改变事件
@@ -63,7 +71,7 @@ export class sensitiveDataClass extends baTableClass {
         this.form.items!.data_fields = []
         if (this.form.extend!.parentRef) this.form.extend!.parentRef.setDataFields([])
 
-        getTableFieldList(table).then((res) => {
+        getTableFieldList(table, true, this.form.items!.connection).then((res) => {
             this.form.items!.primary_key = res.data.pk
             this.form.defaultItems!.primary_key = res.data.pk
 
@@ -100,10 +108,7 @@ export class sensitiveDataClass extends baTableClass {
         } else if (operate == 'Add') {
             this.form.loading = true
             add().then((res) => {
-                this.form.extend = Object.assign(this.form.extend!, {
-                    tableList: res.data.tables,
-                    controllerList: res.data.controllers,
-                })
+                this.form.extend!.controllerList = res.data.controllers
                 this.form.items = Object.assign({}, this.form.defaultItems)
                 this.form.loading = false
             })

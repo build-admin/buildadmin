@@ -6,14 +6,17 @@
         <el-scrollbar v-loading="baTable.form.loading" class="ba-table-form-scrollbar">
             <div class="ba-operate-form" :class="'ba-' + baTable.form.operate + '-form'">
                 <el-descriptions v-if="!isEmpty(baTable.form.extend!.info)" :column="2" border>
+                    <el-descriptions-item :width="120" :span="2" :label="t('security.sensitiveDataLog.Rule name')">
+                        {{ baTable.form.extend!.info.sensitive?.name }}
+                    </el-descriptions-item>
                     <el-descriptions-item :label="t('Id')">
                         {{ baTable.form.extend!.info.id }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.Operation administrator')">
                         {{ baTable.form.extend!.info.admin?.nickname + '(' + baTable.form.extend!.info.admin?.username + ')' }}
                     </el-descriptions-item>
-                    <el-descriptions-item :label="t('security.sensitiveDataLog.Rule name')">
-                        {{ baTable.form.extend!.info.sensitive?.name }}
+                    <el-descriptions-item :label="t('Connection')">
+                        {{ baTable.form.extend!.info.connection }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="t('security.sensitiveDataLog.data sheet')">
                         {{ baTable.form.extend!.info.data_table }}

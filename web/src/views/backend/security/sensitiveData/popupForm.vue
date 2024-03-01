@@ -44,12 +44,36 @@
                         "
                     />
                     <FormItem
+                        :label="t('Database connection')"
+                        v-model="baTable.form.items!.connection"
+                        type="remoteSelect"
+                        :attr="{
+                            blockHelp: t('Database connection help'),
+                        }"
+                        :input-attr="{
+                            pk: 'key',
+                            field: 'key',
+                            'remote-url': getDatabaseConnectionListUrl,
+                            onChange: baTable.onConnectionChange,
+                        }"
+                    />
+                    <FormItem
                         :label="t('security.sensitiveData.Corresponding data sheet')"
-                        type="select"
+                        type="remoteSelect"
                         v-model="baTable.form.items!.data_table"
+                        :key="baTable.form.items!.connection"
+                        :input-attr="{
+                            pk: 'table',
+                            field: 'comment',
+                            params: {
+                                connection: baTable.form.items!.connection,
+                                samePrefix: 1,
+                                excludeTable: ['area', 'token', 'captcha', 'admin_group_access', 'admin_log', 'user_money_log', 'user_score_log'],
+                            },
+                            'remote-url': getTableListUrl,
+                            onChange: baTable.onTableChange,
+                        }"
                         prop="data_table"
-                        :data="{ content: baTable.form.extend!.tableList }"
-                        :input-attr="{ onChange: baTable.onTableChange }"
                     />
                     <FormItem
                         :label="t('security.sensitiveData.Data table primary key')"
@@ -57,29 +81,31 @@
                         v-model="baTable.form.items!.primary_key"
                         prop="primary_key"
                     />
-                    <hr class="form-hr" />
+                    <template v-if="!isEmpty(baTable.form.extend!.fieldSelect)">
+                        <hr class="form-hr" />
 
-                    <FormItem
-                        :label="t('security.sensitiveData.Sensitive fields')"
-                        type="selects"
-                        v-model="baTable.form.items!.data_fields"
-                        :key="baTable.form.extend!.fieldSelectKey"
-                        prop="data_fields"
-                        :data="{ content: baTable.form.extend!.fieldSelect }"
-                        :input-attr="{ onChange: onFieldChange }"
-                        v-loading="baTable.form.extend!.fieldLoading"
-                    />
+                        <FormItem
+                            :label="t('security.sensitiveData.Sensitive fields')"
+                            type="selects"
+                            v-model="baTable.form.items!.data_fields"
+                            :key="baTable.form.extend!.fieldSelectKey"
+                            prop="data_fields"
+                            :data="{ content: baTable.form.extend!.fieldSelect }"
+                            :input-attr="{ onChange: onFieldChange }"
+                            v-loading="baTable.form.extend!.fieldLoading"
+                        />
 
-                    <FormItem
-                        v-for="(item, idx) in state.dataFields"
-                        :key="idx"
-                        :label="item.name"
-                        type="string"
-                        v-model="item.value"
-                        :placeholder="t('security.sensitiveData.Filling in field notes helps you quickly identify fields later')"
-                    />
+                        <FormItem
+                            v-for="(item, idx) in state.dataFields"
+                            :key="idx"
+                            :label="item.name"
+                            type="string"
+                            v-model="item.value"
+                            :placeholder="t('security.sensitiveData.Filling in field notes helps you quickly identify fields later')"
+                        />
 
-                    <hr class="form-hr" />
+                        <hr class="form-hr" />
+                    </template>
                     <FormItem
                         :label="t('State')"
                         type="radio"
@@ -109,6 +135,8 @@ import FormItem from '/@/components/formItem/index.vue'
 import type { FormInstance, FormItemRule } from 'element-plus'
 import { buildValidatorData } from '/@/utils/validate'
 import { useConfig } from '/@/stores/config'
+import { getTableListUrl, getDatabaseConnectionListUrl } from '/@/api/common'
+import { isEmpty } from 'lodash-es'
 
 const config = useConfig()
 const formRef = ref<FormInstance>()

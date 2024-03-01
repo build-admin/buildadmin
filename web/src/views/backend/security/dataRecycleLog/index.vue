@@ -122,6 +122,13 @@ const baTable = new baTableClass(
                 operatorPlaceholder: t('Fuzzy query'),
             },
             {
+                label: t('Connection'),
+                prop: 'connection',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
                 label: t('security.dataRecycleLog.data sheet'),
                 prop: 'data_table',
                 align: 'center',

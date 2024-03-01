@@ -3,6 +3,7 @@
 namespace app\admin\controller\security;
 
 use Throwable;
+use ba\TableManager;
 use think\facade\Db;
 use app\common\controller\Backend;
 use app\admin\model\DataRecycleLog as DataRecycleLogModel;
@@ -45,7 +46,7 @@ class DataRecycleLog extends Backend
         try {
             foreach ($data as $row) {
                 $recycleData = json_decode($row['data'], true);
-                if (is_array($recycleData) && Db::name($row->data_table)->insert($recycleData)) {
+                if (is_array($recycleData) && Db::connect(TableManager::getConnection($row->connection))->name($row->data_table)->insert($recycleData)) {
                     $row->delete();
                     $count++;
                 }

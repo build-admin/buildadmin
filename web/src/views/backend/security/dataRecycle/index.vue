@@ -13,12 +13,12 @@
         <Table ref="tableRef" />
 
         <!-- 表单 -->
-        <PopupForm ref="formRef" :form-data="addFormData" />
+        <PopupForm ref="formRef" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, reactive, provide } from 'vue'
+import { onMounted, ref, provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { add, url } from '/@/api/backend/security/dataRecycle'
 import PopupForm from './popupForm.vue'
@@ -45,6 +45,13 @@ const baTable = new baTableClass(
             {
                 label: t('security.dataRecycle.controller'),
                 prop: 'controller',
+                align: 'center',
+                operator: 'LIKE',
+                operatorPlaceholder: t('Fuzzy query'),
+            },
+            {
+                label: t('Connection'),
+                prop: 'connection',
                 align: 'center',
                 operator: 'LIKE',
                 operatorPlaceholder: t('Fuzzy query'),
@@ -96,19 +103,13 @@ const baTable = new baTableClass(
             if (operate == 'Add' || operate == 'Edit') {
                 baTable.form.loading = true
                 add().then((res) => {
-                    addFormData.tableList = res.data.tables
-                    addFormData.controllerList = res.data.controllers
+                    baTable.form.extend!.controllerList = res.data.controllers
                     baTable.form.loading = false
                 })
             }
         },
     }
 )
-
-const addFormData = reactive({
-    tableList: {},
-    controllerList: {},
-})
 
 provide('baTable', baTable)
 

@@ -38,16 +38,39 @@
                         type="select"
                         v-model="baTable.form.items!.controller"
                         prop="controller"
-                        :data="{ content: props.formData.controllerList }"
+                        :data="{ content: baTable.form.extend!.controllerList }"
                         :placeholder="t('security.dataRecycle.The data collection mechanism will monitor delete operations under this controller')"
                     />
                     <FormItem
+                        :label="t('Database connection')"
+                        v-model="baTable.form.items!.connection"
+                        type="remoteSelect"
+                        :attr="{
+                            blockHelp: t('Database connection help'),
+                        }"
+                        :input-attr="{
+                            pk: 'key',
+                            field: 'key',
+                            'remote-url': getDatabaseConnectionListUrl,
+                        }"
+                    />
+                    <FormItem
                         :label="t('security.dataRecycle.Corresponding data sheet')"
-                        type="select"
+                        type="remoteSelect"
                         v-model="baTable.form.items!.data_table"
+                        :key="baTable.form.items!.connection"
+                        :input-attr="{
+                            pk: 'table',
+                            field: 'comment',
+                            params: {
+                                connection: baTable.form.items!.connection,
+                                samePrefix: 1,
+                                excludeTable: ['area', 'token', 'captcha', 'admin_group_access', 'user_money_log', 'user_score_log'],
+                            },
+                            'remote-url': getTableListUrl,
+                            onChange: onTableChange,
+                        }"
                         prop="data_table"
-                        :data="{ content: props.formData.tableList }"
-                        :input-attr="{ onChange: onTableChange }"
                     />
                     <FormItem
                         :label="t('security.dataRecycle.Data table primary key')"
@@ -83,21 +106,8 @@ import type baTableClass from '/@/utils/baTable'
 import FormItem from '/@/components/formItem/index.vue'
 import type { FormInstance, FormItemRule } from 'element-plus'
 import { buildValidatorData } from '/@/utils/validate'
-import { getTablePk } from '/@/api/common'
+import { getTablePk, getTableListUrl, getDatabaseConnectionListUrl } from '/@/api/common'
 import { useConfig } from '/@/stores/config'
-
-interface Props {
-    formData: {
-        tableList?: anyObj
-        controllerList?: anyObj
-    }
-}
-
-const props = withDefaults(defineProps<Props>(), {
-    formData: () => {
-        return {}
-    },
-})
 
 const config = useConfig()
 const formRef = ref<FormInstance>()
@@ -126,7 +136,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
 
 const onTableChange = (val: string) => {
     if (!val) return
-    getTablePk(val).then((res) => {
+    getTablePk(val, baTable.form.items!.connection).then((res) => {
         baTable.form.items!.primary_key = res.data.pk
         baTable.form.defaultItems!.primary_key = res.data.pk
     })

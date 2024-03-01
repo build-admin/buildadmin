@@ -15,6 +15,9 @@
                     <el-descriptions-item :label="t('security.dataRecycleLog.Recycling rule name')">
                         {{ baTable.form.extend!.info.recycle?.name }}
                     </el-descriptions-item>
+                    <el-descriptions-item :label="t('Connection')">
+                        {{ baTable.form.extend!.info.connection }}
+                    </el-descriptions-item>
                     <el-descriptions-item :label="t('security.dataRecycleLog.data sheet')">
                         {{ baTable.form.extend!.info.data_table }}
                     </el-descriptions-item>
@@ -24,7 +27,7 @@
                     <el-descriptions-item :label="t('security.dataRecycleLog.Operator IP')">
                         {{ baTable.form.extend!.info.ip }}
                     </el-descriptions-item>
-                    <el-descriptions-item :width="120" :span="2" :label="t('security.dataRecycleLog.Delete time')">
+                    <el-descriptions-item :label="t('security.dataRecycleLog.Delete time')">
                         {{ timeFormat(baTable.form.extend!.info.create_time) }}
                     </el-descriptions-item>
                     <el-descriptions-item :width="120" :span="2" label="User Agent">

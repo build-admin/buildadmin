@@ -32,5 +32,29 @@ class Version206 extends Migrator
             $crudLog->addColumn('connection', 'string', ['limit' => 100, 'default' => '', 'comment' => '数据库连接配置标识', 'null' => false, 'after' => 'status']);
             $crudLog->save();
         }
+
+        $securityDataRecycle = $this->table('security_data_recycle');
+        if (!$securityDataRecycle->hasColumn('connection')) {
+            $securityDataRecycle->addColumn('connection', 'string', ['limit' => 100, 'default' => '', 'comment' => '数据库连接配置标识', 'null' => false, 'after' => 'data_table']);
+            $securityDataRecycle->save();
+        }
+
+        $securityDataRecycleLog = $this->table('security_data_recycle_log');
+        if (!$securityDataRecycleLog->hasColumn('connection')) {
+            $securityDataRecycleLog->addColumn('connection', 'string', ['limit' => 100, 'default' => '', 'comment' => '数据库连接配置标识', 'null' => false, 'after' => 'data_table']);
+            $securityDataRecycleLog->save();
+        }
+
+        $securitySensitiveData = $this->table('security_sensitive_data');
+        if (!$securitySensitiveData->hasColumn('connection')) {
+            $securitySensitiveData->addColumn('connection', 'string', ['limit' => 100, 'default' => '', 'comment' => '数据库连接配置标识', 'null' => false, 'after' => 'data_table']);
+            $securitySensitiveData->save();
+        }
+
+        $securitySensitiveDataLog = $this->table('security_sensitive_data_log');
+        if (!$securitySensitiveDataLog->hasColumn('connection')) {
+            $securitySensitiveDataLog->addColumn('connection', 'string', ['limit' => 100, 'default' => '', 'comment' => '数据库连接配置标识', 'null' => false, 'after' => 'data_table']);
+            $securitySensitiveDataLog->save();
+        }
     }
 }

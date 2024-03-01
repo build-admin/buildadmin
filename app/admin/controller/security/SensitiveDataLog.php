@@ -3,6 +3,7 @@
 namespace app\admin\controller\security;
 
 use Throwable;
+use ba\TableManager;
 use think\facade\Db;
 use app\common\controller\Backend;
 use app\admin\model\SensitiveDataLog as SensitiveDataLogModel;
@@ -93,7 +94,7 @@ class SensitiveDataLog extends Backend
         $this->model->startTrans();
         try {
             foreach ($data as $row) {
-                if (Db::name($row->data_table)->where($row->primary_key, $row->id_value)->update([
+                if (Db::connect(TableManager::getConnection($row->connection))->name($row->data_table)->where($row->primary_key, $row->id_value)->update([
                     $row->data_field => $row->before
                 ])) {
                     $row->delete();
