@@ -245,12 +245,13 @@ export function checkClickCaptcha(id: string, info: string, unset: boolean) {
     )
 }
 
-export function getTablePk(table: string) {
+export function getTablePk(table: string, connection = '') {
     return createAxios({
         url: getTablePkUrl,
         method: 'get',
         params: {
             table: table,
+            connection: connection,
         },
     })
 }

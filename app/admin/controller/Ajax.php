@@ -86,20 +86,23 @@ class Ajax extends Backend
     /**
      * 获取表主键字段
      * @param ?string $table
+     * @param ?string $connection
      * @throws Throwable
      */
-    public function getTablePk(?string $table = null): void
+    public function getTablePk(?string $table = null, ?string $connection = null): void
     {
         if (!$table) {
             $this->error(__('Parameter error'));
         }
 
-        $table = TableManager::tableName($table);
-        if (!TableManager::phinxAdapter(false)->hasTable($table)) {
+        $table = TableManager::tableName($table, true, $connection);
+        if (!TableManager::phinxAdapter(false, $connection)->hasTable($table)) {
             $this->error(__('Data table does not exist'));
         }
 
-        $tablePk = Db::table($table)->getPk();
+        $tablePk = Db::connect(TableManager::getConnection($connection))
+            ->table($table)
+            ->getPk();
         $this->success('', ['pk' => $tablePk]);
     }
 
