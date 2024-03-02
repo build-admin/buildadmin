@@ -5,6 +5,7 @@ namespace app\admin\controller\user;
 use ba\Tree;
 use Throwable;
 use app\admin\model\UserRule;
+use app\admin\model\UserGroup;
 use app\common\controller\Backend;
 
 class Rule extends Backend
@@ -69,6 +70,63 @@ class Rule extends Backend
             'list'   => $this->getRules(),
             'remark' => get_route_remark(),
         ]);
+    }
+
+    /**
+     * 添加
+     */
+    public function add(): void
+    {
+        if ($this->request->isPost()) {
+            $data = $this->request->post();
+            if (!$data) {
+                $this->error(__('Parameter %s can not be empty', ['']));
+            }
+
+            $data = $this->excludeFields($data);
+            if ($this->dataLimit && $this->dataLimitFieldAutoFill) {
+                $data[$this->dataLimitField] = $this->auth->id;
+            }
+
+            $result = false;
+            $this->model->startTrans();
+            try {
+                // 模型验证
+                if ($this->modelValidate) {
+                    $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
+                    if (class_exists($validate)) {
+                        $validate = new $validate;
+                        if ($this->modelSceneValidate) $validate->scene('add');
+                        $validate->check($data);
+                    }
+                }
+                $result = $this->model->save($data);
+
+                if (!empty($data['pid'])) {
+                    $groups = UserGroup::where('rules', '<>', '*')->select();
+                    foreach ($groups as $group) {
+                        $rules = explode(',', $group->rules);
+                        if (in_array($data['pid'], $rules) && !in_array($this->model->id, $rules)) {
+                            $rules[]      = $this->model->id;
+                            $group->rules = implode(',', $rules);
+                            $group->save();
+                        }
+                    }
+                }
+
+                $this->model->commit();
+            } catch (Throwable $e) {
+                $this->model->rollback();
+                $this->error($e->getMessage());
+            }
+            if ($result !== false) {
+                $this->success(__('Added successfully'));
+            } else {
+                $this->error(__('No rows were added'));
+            }
+        }
+
+        $this->error(__('Parameter error'));
     }
 
     /**
