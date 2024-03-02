@@ -57,6 +57,7 @@
                             node-key="id"
                             :props="{ children: 'children', label: 'title', class: treeNodeClass }"
                             :data="state.menuRules"
+                            class="w100"
                         />
                     </el-form-item>
                     <FormItem

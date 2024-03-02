@@ -13,7 +13,7 @@
         <Table ref="tableRef" />
 
         <!-- 表单 -->
-        <PopupForm ref="formRef" />
+        <PopupForm ref="formRef" :key="baTable.table.extend!.popupFormKey" />
     </div>
 </template>
 
@@ -27,6 +27,7 @@ import { defaultOptButtons } from '/@/components/table'
 import { baTableApi } from '/@/api/common'
 import { useI18n } from 'vue-i18n'
 import { cloneDeep } from 'lodash-es'
+import { uuid } from '/@/utils/random'
 
 defineOptions({
     name: 'user/group',
@@ -62,6 +63,9 @@ const baTable = new baTableClass(
             },
         ],
         dblClickNotEditColumn: [undefined],
+        extend: {
+            popupFormKey: uuid(),
+        },
     },
     {
         defaultItems: {
@@ -114,6 +118,9 @@ const baTable = new baTableClass(
                 submitCallback()
             }
             return false
+        },
+        toggleForm() {
+            baTable.table.extend!.popupFormKey = uuid()
         },
     }
 )

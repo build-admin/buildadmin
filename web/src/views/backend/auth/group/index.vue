@@ -14,7 +14,7 @@
         <Table ref="tableRef" :pagination="false" />
 
         <!-- 表单 -->
-        <PopupForm ref="formRef" />
+        <PopupForm ref="formRef" :key="baTable.table.extend!.popupFormKey" />
     </div>
 </template>
 
@@ -30,6 +30,7 @@ import { useI18n } from 'vue-i18n'
 import { cloneDeep } from 'lodash-es'
 import { getArrayKey } from '/@/utils/common'
 import { useAdminInfo } from '/@/stores/adminInfo'
+import { uuid } from '/@/utils/random'
 
 defineOptions({
     name: 'auth/group',
@@ -61,6 +62,9 @@ const baTable: baTableClass = new baTableClass(
             { label: t('Create time'), prop: 'create_time', align: 'center', width: '160', render: 'datetime' },
             { label: t('Operate'), align: 'center', width: '130', render: 'buttons', buttons: defaultOptButtons(['edit', 'delete']) },
         ],
+        extend: {
+            popupFormKey: uuid(),
+        },
     },
     {
         defaultItems: {
@@ -118,6 +122,9 @@ const baTable: baTableClass = new baTableClass(
         // 双击编辑前
         onTableDblclick: ({ row }) => {
             return baTable.table.extend!['adminGroup'].indexOf(row.id) === -1
+        },
+        toggleForm() {
+            baTable.table.extend!.popupFormKey = uuid()
         },
     },
     {
