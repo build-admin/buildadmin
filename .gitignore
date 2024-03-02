@@ -23,22 +23,6 @@ dist-ssr
 /.env
 Desktop.ini
 
-# 部署到线上时，如果您已经删除了 /modules 的忽略规则，那么以下规则可以帮您排除多余的模块文件（已知的多余/重复文件）
-# 请勿在已经忽略以下文件[夹]的环境下卸载模块，该操作将导致未知异常！
-/modules/ebak
-/modules/*/app
-/modules/*/config
-/modules/*/extend
-/modules/*/public
-/modules/*/vendor
-/modules/*/web
-/modules/*/web-nuxt
-/modules/*/install.sql
-/modules/*/config.json
-/modules/*/LICENSE
-/modules/*/README.md
-/modules/*/uniapp.zip
-
 # Log files
 *.log
 npm-debug.log*
