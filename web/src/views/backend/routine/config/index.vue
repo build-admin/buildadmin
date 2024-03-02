@@ -5,6 +5,7 @@
                 <el-form
                     v-if="!state.loading"
                     ref="formRef"
+                    @submit.prevent=""
                     @keyup.enter="onSubmit()"
                     :model="state.form"
                     :rules="state.rules"
