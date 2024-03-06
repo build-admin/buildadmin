@@ -307,7 +307,10 @@ class Crud extends Backend
         if (!$info) {
             $this->error(__('Record not found'));
         }
-
+        // 需要兼容旧纪录
+        if(!isset($info['table']['databaseConnection'])) {
+            $info['table']['databaseConnection'] = config('database.default');
+        }
         // 数据表是否有数据
         $connection = TableManager::getConnection($info['table']['databaseConnection']);
         $tableName  = TableManager::tableName($info['table']['name'], false, $connection);
