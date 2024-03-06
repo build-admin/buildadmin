@@ -1136,6 +1136,7 @@ const loadData = () => {
                     state.table.rebuild = 'Yes'
                 }
                 state.table.isCommonModel = parseInt(res.data.table.isCommonModel)
+                state.table.databaseConnection = res.data.table.databaseConnection ? res.data.table.databaseConnection : ''
                 const fields = res.data.fields
                 for (const key in fields) {
                     const field = handleFieldAttr(cloneDeep(fields[key]))
