@@ -133,6 +133,11 @@ const memberCenter = useMemberCenter()
         width: 300px !important;
     }
 }
+@media screen and (max-height: 650px) {
+    .main-right img {
+        display: none;
+    }
+}
 @at-root html.dark {
     .container {
         background: url(/@/assets/bg-dark.jpg) repeat;
