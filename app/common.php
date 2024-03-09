@@ -150,7 +150,7 @@ if (!function_exists('full_url')) {
         Event::trigger('uploadConfigInit', App::getInstance());
 
         $cdnUrl = Config::get('buildadmin.cdn_url');
-        if (!$cdnUrl) $cdnUrl = request()->upload['cdn'] ?? request()->domain();
+        if (!$cdnUrl) $cdnUrl = request()->upload['cdn'] ?? '//' . request()->host();
         if ($domain === true) {
             $domain = $cdnUrl;
         } elseif ($domain === false) {
