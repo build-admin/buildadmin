@@ -6,14 +6,14 @@ use Throwable;
 use think\facade\Db;
 
 /**
- * 权限规则检测类
+ * 权限规则类
  */
 class Auth
 {
     /**
      * 用户有权限的规则节点
      */
-    protected array $rules = [];
+    protected static array $rules = [];
 
     /**
      * 默认配置
@@ -59,19 +59,18 @@ class Auth
      */
     public function getMenus(int $uid): array
     {
-        if (!$this->rules) {
+        if (empty(self::$rules[$uid])) {
             $this->getRuleList($uid);
         }
-        if (!$this->rules) return [];
+        if (empty(self::$rules[$uid])) return [];
 
-        foreach ($this->rules as $rule) {
+        $this->children = [];
+        foreach (self::$rules[$uid] as $rule) {
             $this->children[$rule['pid']][] = $rule;
         }
 
         // 没有根菜单规则
-        if (!isset($this->children[0])) {
-            return [];
-        }
+        if (!isset($this->children[0])) return [];
 
         return $this->getChildren($this->children[0]);
     }
@@ -155,44 +154,38 @@ class Auth
      */
     public function getRuleList(int $uid): array
     {
-        // 静态保存所有用户验证通过的权限列表
-        static $ruleList = [];
-        if (isset($ruleList[$uid])) {
-            return $ruleList[$uid];
-        }
-
         // 读取用户规则节点
         $ids = $this->getRuleIds($uid);
-        if (empty($ids)) {
-            $ruleList[$uid] = [];
-            return [];
-        }
+        if (empty($ids)) return [];
 
-        $where[] = ['status', '=', '1'];
-        // 如果没有 * 则只获取用户拥有的规则
-        if (!in_array('*', $ids)) {
-            $where[] = ['id', 'in', $ids];
+        // 读取用户所有权限规则
+        if (empty(self::$rules[$uid])) {
+            $where   = [];
+            $where[] = ['status', '=', '1'];
+            // 如果没有 * 则只获取用户拥有的规则
+            if (!in_array('*', $ids)) {
+                $where[] = ['id', 'in', $ids];
+            }
+            self::$rules[$uid] = Db::name($this->config['auth_rule'])
+                ->withoutField(['remark', 'status', 'weigh', 'update_time', 'create_time'])
+                ->where($where)
+                ->order('weigh desc,id asc')
+                ->select()
+                ->toArray();
+
+            foreach (self::$rules[$uid] as $key => $rule) {
+                if (!empty($rule['keepalive'])) self::$rules[$uid][$key]['keepalive'] = $rule['name'];
+            }
         }
-        // 读取用户组所有权限规则
-        $this->rules = Db::name($this->config['auth_rule'])
-            ->withoutField(['remark', 'status', 'weigh', 'update_time', 'create_time'])
-            ->where($where)
-            ->order('weigh desc,id asc')
-            ->select()
-            ->toArray();
 
         // 用户规则
         $rules = [];
         if (in_array('*', $ids)) {
             $rules[] = "*";
         }
-        foreach ($this->rules as $key => $rule) {
+        foreach (self::$rules[$uid] as $rule) {
             $rules[$rule['id']] = strtolower($rule['name']);
-            if (isset($rule['keepalive']) && $rule['keepalive']) {
-                $this->rules[$key]['keepalive'] = $rule['name'];
-            }
         }
-        $ruleList[$uid] = $rules;
         return array_unique($rules);
     }
 
