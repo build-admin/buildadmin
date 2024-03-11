@@ -170,9 +170,14 @@ class Terminal
      */
     public function exec(bool $authentication = true): void
     {
-        header('X-Accel-Buffering: no');
-        header('Content-Type: text/event-stream');
-        header('Cache-Control: no-cache');
+        $headers                      = request()->allowCrossDomainHeaders ?? [];
+        $headers['X-Accel-Buffering'] = 'no';
+        $headers['Content-Type']      = 'text/event-stream';
+        $headers['Cache-Control']     = 'no-cache';
+
+        foreach ($headers as $name => $val) {
+            header($name . (!is_null($val) ? ':' . $val : ''));
+        }
 
         while (ob_get_level()) {
             ob_end_clean();

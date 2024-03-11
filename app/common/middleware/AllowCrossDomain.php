@@ -43,7 +43,7 @@ class AllowCrossDomain
         $header = !empty($header) ? array_merge($this->header, $header) : $this->header;
 
         $origin = $request->header('origin');
-        if ($origin) {
+        if ($origin && !isset($header['Access-Control-Allow-Origin'])) {
             $info = parse_url($origin);
 
             // 获取跨域配置
@@ -51,9 +51,11 @@ class AllowCrossDomain
             $corsDomain[] = $request->host(true);
 
             if (in_array("*", $corsDomain) || in_array($origin, $corsDomain) || (isset($info['host']) && in_array($info['host'], $corsDomain))) {
-                header("Access-Control-Allow-Origin: " . $origin);
+                $header['Access-Control-Allow-Origin'] = $origin;
             }
         }
+
+        $request->allowCrossDomainHeaders = $header;
 
         return $next($request)->header($header);
     }
