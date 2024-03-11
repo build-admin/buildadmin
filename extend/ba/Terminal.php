@@ -47,9 +47,14 @@ class Terminal
     protected array $pipes = [];
 
     /**
-     * @var int proc 执行状态
+     * @var int proc执行状态:0=未执行,1=执行中,2=执行完毕
      */
-    protected int $procStatus = 0;
+    protected int $procStatusMark = 0;
+
+    /**
+     * @var array proc执行状态数据
+     */
+    protected array $procStatusData = [];
 
     /**
      * @var string 命令在前台的uuid
@@ -217,6 +222,22 @@ class Terminal
                     $this->outputContent = $contents;
                 }
             }
+
+            // 输出执行状态信息
+            if ($this->procStatusMark === 2) {
+                $this->output('exitCode: ' . $this->procStatusData['exitcode']);
+                if ($this->procStatusData['exitcode'] === 0) {
+                    if ($this->successCallback()) {
+                        $this->outputFlag('exec-success');
+                    } else {
+                        $this->output('Error: Command execution succeeded, but callback execution failed');
+                        $this->outputFlag('exec-error');
+                    }
+                } else {
+                    $this->outputFlag('exec-error');
+                }
+            }
+
             usleep(500000);
         }
         foreach ($this->pipes as $pipe) {
@@ -232,23 +253,12 @@ class Terminal
      */
     public function getProcStatus(): bool
     {
-        $status = proc_get_status($this->process);
-        if ($status['running']) {
-            $this->procStatus = 1;
+        $this->procStatusData = proc_get_status($this->process);
+        if ($this->procStatusData['running']) {
+            $this->procStatusMark = 1;
             return true;
-        } elseif ($this->procStatus === 1) {
-            $this->procStatus = 0;
-            $this->output('exitcode: ' . $status['exitcode']);
-            if ($status['exitcode'] === 0) {
-                if ($this->successCallback()) {
-                    $this->outputFlag('exec-success');
-                } else {
-                    $this->output('Error: Command execution succeeded, but callback execution failed');
-                    $this->outputFlag('exec-error');
-                }
-            } else {
-                $this->outputFlag('exec-error');
-            }
+        } elseif ($this->procStatusMark === 1) {
+            $this->procStatusMark = 2;
             return true;
         } else {
             return false;
