@@ -402,3 +402,30 @@ if (!function_exists('get_upload_config')) {
         return array_merge($upload, $uploadConfig);
     }
 }
+
+if (!function_exists('get_auth_token')) {
+
+    /**
+     * 获取鉴权 token
+     * @param array $names
+     * @return string
+     */
+    function get_auth_token(array $names = ['ba', 'token']): string
+    {
+        $separators = [
+            'header' => ['', '-'], // batoken、ba-token【ba_token 不在 header 的接受列表内因为兼容性不高，改用 http_ba_token】
+            'param'  => ['', '-', '_'], // batoken、ba-token、ba_token
+            'server' => ['_'], // http_ba_token
+        ];
+
+        $tokens  = [];
+        $request = request();
+        foreach ($separators as $fun => $sps) {
+            foreach ($sps as $sp) {
+                $tokens[] = $request->$fun(($fun == 'server' ? 'http_' : '') . implode($sp, $names));
+            }
+        }
+        $tokens = array_filter($tokens);
+        return array_values($tokens)[0] ?? '';
+    }
+}
