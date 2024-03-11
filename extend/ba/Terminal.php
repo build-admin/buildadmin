@@ -220,6 +220,7 @@ class Terminal
                 if (preg_match('/\r\n|\r|\n/', $newOutput)) {
                     $this->output($newOutput);
                     $this->outputContent = $contents;
+                    $this->checkOutput();
                 }
             }
 
@@ -284,6 +285,17 @@ class Terminal
             echo 'data: ' . $data . "\n\n";
             if ($callback) $this->outputCallback($data);
             @ob_flush();// 刷新浏览器缓冲区
+        }
+    }
+
+
+    /**
+     * 检查输出
+     */
+    public function checkOutput(): void
+    {
+        if (str_contains($this->outputContent, '(Y/n)')) {
+            $this->execError('An interactive command has been detected, and you can manually execute the command to confirm the situation.', true);
         }
     }
 
