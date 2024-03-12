@@ -59,13 +59,9 @@ class Auth
      */
     public function getMenus(int $uid): array
     {
-        if (empty(self::$rules[$uid])) {
-            $this->getRuleList($uid);
-        }
-        if (empty(self::$rules[$uid])) return [];
-
-        $this->children = [];
-        foreach (self::$rules[$uid] as $rule) {
+        $this->children  = [];
+        $originAuthRules = $this->getOriginAuthRules($uid);
+        foreach ($originAuthRules as $rule) {
             $this->children[$rule['pid']][] = $rule;
         }
 
@@ -158,35 +154,51 @@ class Auth
         $ids = $this->getRuleIds($uid);
         if (empty($ids)) return [];
 
-        // 读取用户所有权限规则
-        if (empty(self::$rules[$uid])) {
-            $where   = [];
-            $where[] = ['status', '=', '1'];
-            // 如果没有 * 则只获取用户拥有的规则
-            if (!in_array('*', $ids)) {
-                $where[] = ['id', 'in', $ids];
-            }
-            self::$rules[$uid] = Db::name($this->config['auth_rule'])
-                ->withoutField(['remark', 'status', 'weigh', 'update_time', 'create_time'])
-                ->where($where)
-                ->order('weigh desc,id asc')
-                ->select()
-                ->toArray();
-
-            foreach (self::$rules[$uid] as $key => $rule) {
-                if (!empty($rule['keepalive'])) self::$rules[$uid][$key]['keepalive'] = $rule['name'];
-            }
-        }
+        $originAuthRules = $this->getOriginAuthRules($uid);
 
         // 用户规则
         $rules = [];
         if (in_array('*', $ids)) {
             $rules[] = "*";
         }
-        foreach (self::$rules[$uid] as $rule) {
+        foreach ($originAuthRules as $rule) {
             $rules[$rule['id']] = strtolower($rule['name']);
         }
         return array_unique($rules);
+    }
+
+    /**
+     * 获得权限规则原始数据
+     * @param int $uid 用户id
+     * @return array
+     * @throws Throwable
+     */
+    public function getOriginAuthRules(int $uid): array
+    {
+        $ids = $this->getRuleIds($uid);
+        if (empty($ids)) return [];
+
+        $idsCacheKey = md5(implode('', $ids) . $this->config['auth_rule']);
+        if (empty(self::$rules[$idsCacheKey])) {
+            $where   = [];
+            $where[] = ['status', '=', '1'];
+            // 如果没有 * 则只获取用户拥有的规则
+            if (!in_array('*', $ids)) {
+                $where[] = ['id', 'in', $ids];
+            }
+            self::$rules[$idsCacheKey] = Db::name($this->config['auth_rule'])
+                ->withoutField(['remark', 'status', 'weigh', 'update_time', 'create_time'])
+                ->where($where)
+                ->order('weigh desc,id asc')
+                ->select()
+                ->toArray();
+
+            foreach (self::$rules[$idsCacheKey] as $key => $rule) {
+                if (!empty($rule['keepalive'])) self::$rules[$idsCacheKey][$key]['keepalive'] = $rule['name'];
+            }
+        }
+
+        return self::$rules[$idsCacheKey];
     }
 
     /**
@@ -214,13 +226,15 @@ class Auth
      */
     public function getGroups(int $uid): array
     {
+        $dbName = $this->config['auth_group_access'] ?: 'user';
+
         static $groups = [];
-        if (isset($groups[$uid])) {
-            return $groups[$uid];
+        if (isset($groups[$dbName][$uid])) {
+            return $groups[$dbName][$uid];
         }
 
         if ($this->config['auth_group_access']) {
-            $userGroups = Db::name($this->config['auth_group_access'])
+            $userGroups = Db::name($dbName)
                 ->alias('aga')
                 ->join($this->config['auth_group'] . ' ag', 'aga.group_id = ag.id', 'LEFT')
                 ->field('aga.uid,aga.group_id,ag.id,ag.pid,ag.name,ag.rules')
@@ -228,7 +242,7 @@ class Auth
                 ->select()
                 ->toArray();
         } else {
-            $userGroups = Db::name('user')
+            $userGroups = Db::name($dbName)
                 ->alias('u')
                 ->join($this->config['auth_group'] . ' ag', 'u.group_id = ag.id', 'LEFT')
                 ->field('u.id as uid,u.group_id,ag.id,ag.name,ag.rules')
@@ -237,7 +251,7 @@ class Auth
                 ->toArray();
         }
 
-        $groups[$uid] = $userGroups ?: [];
-        return $groups[$uid];
+        $groups[$dbName][$uid] = $userGroups ?: [];
+        return $groups[$dbName][$uid];
     }
 }

@@ -39,12 +39,6 @@ class Auth extends \ba\Auth
     public const LOGGED_IN = 'logged in';
 
     /**
-     * 对象实例
-     * @var ?Auth
-     */
-    protected static ?Auth $instance = null;
-
-    /**
      * 是否登录
      * @var bool
      */
@@ -122,11 +116,11 @@ class Auth extends \ba\Auth
      */
     public static function instance(array $options = []): Auth
     {
-        if (is_null(self::$instance)) {
-            self::$instance = new static($options);
+        $request = request();
+        if (!isset($request->userAuth)) {
+            $request->userAuth = new static($options);
         }
-
-        return self::$instance;
+        return $request->userAuth;
     }
 
     /**
