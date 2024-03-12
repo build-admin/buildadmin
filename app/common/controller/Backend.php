@@ -6,7 +6,6 @@ use Throwable;
 use think\Model;
 use think\facade\Db;
 use think\facade\Event;
-use think\facade\Cookie;
 use app\admin\library\Auth;
 use think\db\exception\PDOException;
 use think\exception\HttpResponseException;
@@ -146,9 +145,8 @@ class Backend extends Api
             $this->error(mb_convert_encoding($e->getMessage(), 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'));
         }
 
+        $token      = get_auth_token();
         $this->auth = Auth::instance();
-        $routePath  = $this->app->request->controllerPath . '/' . $this->request->action(true);
-        $token      = $this->request->server('HTTP_BATOKEN', $this->request->request('batoken', Cookie::get('batoken') ?: false));
         if (!action_in_arr($this->noNeedLogin)) {
             $this->auth->init($token);
             if (!$this->auth->isLogin()) {
@@ -157,6 +155,7 @@ class Backend extends Api
                 ], $this->auth::LOGIN_RESPONSE_CODE);
             }
             if (!action_in_arr($this->noNeedPermission)) {
+                $routePath = ($this->app->request->controllerPath ?? '') . '/' . $this->request->action(true);
                 if (!$this->auth->check($routePath)) {
                     $this->error(__('You have no permission'), [], 401);
                 }
