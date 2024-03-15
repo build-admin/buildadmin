@@ -10,6 +10,7 @@ use think\Exception;
 use think\facade\Config;
 use think\file\UploadedFile;
 use app\common\model\Attachment;
+use think\exception\FileException;
 
 /**
  * 上传
@@ -258,8 +259,29 @@ class Upload
         $saveName  = '/' . ltrim($saveName, '/');
         $uploadDir = substr($saveName, 0, strripos($saveName, '/') + 1);
         $fileName  = substr($saveName, strripos($saveName, '/') + 1);
-        $destDir   = root_path() . 'public' . str_replace('/', DIRECTORY_SEPARATOR, $uploadDir);
+        $destDir   = Filesystem::fsFit(root_path() . 'public' . $uploadDir);
 
-        return $this->file->move($destDir, $fileName);
+        if (request()->isCgi()) {
+            return $this->file->move($destDir, $fileName);
+        }
+
+        set_error_handler(function ($type, $msg) use (&$error) {
+            $error = $msg;
+        });
+
+        if (!is_dir($destDir) && !mkdir($destDir, 0777, true)) {
+            restore_error_handler();
+            throw new FileException(sprintf('Unable to create the "%s" directory (%s)', $destDir, strip_tags($error)));
+        }
+
+        $destination = $destDir . $fileName;
+        if (!rename($this->file->getPathname(), $destination)) {
+            restore_error_handler();
+            throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s)', $this->file->getPathname(), $destination, strip_tags($error)));
+        }
+
+        restore_error_handler();
+        @chmod($destination, 0666 & ~umask());
+        return $this->file;
     }
 }
