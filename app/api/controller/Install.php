@@ -86,7 +86,7 @@ class Install extends Api
             return;
         }
 
-        Terminal::instance()->exec(false);
+        (new Terminal())->exec(false);
     }
 
     public function changePackageManager(): void

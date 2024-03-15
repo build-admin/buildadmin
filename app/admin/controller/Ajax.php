@@ -205,6 +205,6 @@ class Ajax extends Backend
      */
     public function terminal(): void
     {
-        Terminal::instance()->exec();
+        (new Terminal())->exec();
     }
 }
