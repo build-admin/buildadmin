@@ -66,11 +66,11 @@ class Upload
 
     /**
      * 设置文件
-     * @param UploadedFile $file
+     * @param ?UploadedFile $file
      * @return array 文件信息
      * @throws Throwable
      */
-    public function setFile(UploadedFile $file): array
+    public function setFile(?UploadedFile $file): array
     {
         if (empty($file)) {
             throw new Exception(__('No files were uploaded'), 10001);
