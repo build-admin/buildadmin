@@ -196,7 +196,7 @@ class Upload
             '{sec}'      => date("s"),
             '{random}'   => Random::build(),
             '{random32}' => Random::build('alnum', 32),
-            '{filename}' => mb_substr($filename, 0, 15),
+            '{filename}' => $this->getFileNameSubstr($filename),
             '{suffix}'   => $suffix,
             '{.suffix}'  => $suffix ? '.' . $suffix : '',
             '{filesha1}' => $sha1,
@@ -283,5 +283,16 @@ class Upload
         restore_error_handler();
         @chmod($destination, 0666 & ~umask());
         return $this->file;
+    }
+
+    /**
+     * 获取文件名称字符串的子串
+     */
+    public function getFileNameSubstr(string $fileName, int $length = 15): string
+    {
+        // 对 $fileName 中不利于传输的字符串进行过滤
+        $pattern  = "/[\s:@#?&\/=',+]+/u";
+        $fileName = preg_replace($pattern, '', $fileName);
+        return mb_substr($fileName, 0, $length);
     }
 }
