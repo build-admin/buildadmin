@@ -7,8 +7,11 @@ use Throwable;
 use ba\Captcha;
 use think\Response;
 use ba\ClickCaptcha;
+use think\facade\Config;
 use app\common\facade\Token;
 use app\common\controller\Api;
+use app\admin\library\Auth as AdminAuth;
+use app\common\library\Auth as UserAuth;
 
 class Common extends Api
 {
@@ -59,7 +62,7 @@ class Common extends Api
     public function refreshToken(): void
     {
         $refreshToken = $this->request->post('refreshToken');
-        $refreshToken = Token::get($refreshToken, false);
+        $refreshToken = Token::get($refreshToken);
 
         if (!$refreshToken || $refreshToken['expire_time'] < time()) {
             $this->error(__('Login expired, please login again.'));
@@ -67,20 +70,24 @@ class Common extends Api
 
         $newToken = Random::uuid();
 
-        if ($refreshToken['type'] == 'admin-refresh') {
-            $baToken = $this->request->server('HTTP_BATOKEN', $this->request->request('batoken', ''));
+        // 管理员token刷新
+        if ($refreshToken['type'] == AdminAuth::TOKEN_TYPE . '-refresh') {
+            $baToken = get_auth_token();
             if (!$baToken) {
                 $this->error(__('Invalid token'));
             }
             Token::delete($baToken);
-            Token::set($newToken, 'admin', $refreshToken['user_id'], 86400);
-        } elseif ($refreshToken['type'] == 'user-refresh') {
-            $baUserToken = $this->request->server('HTTP_BA_USER_TOKEN', $this->request->request('ba-user-token', ''));
+            Token::set($newToken, AdminAuth::TOKEN_TYPE, $refreshToken['user_id'], (int)Config::get('buildadmin.admin_token_keep_time'));
+        }
+
+        // 会员token刷新
+        if ($refreshToken['type'] == UserAuth::TOKEN_TYPE . '-refresh') {
+            $baUserToken = get_auth_token(['ba', 'user', 'token']);
             if (!$baUserToken) {
                 $this->error(__('Invalid token'));
             }
             Token::delete($baUserToken);
-            Token::set($newToken, 'user', $refreshToken['user_id'], 86400);
+            Token::set($newToken, UserAuth::TOKEN_TYPE, $refreshToken['user_id'], (int)Config::get('buildadmin.user_token_keep_time'));
         }
 
         $this->success('', [

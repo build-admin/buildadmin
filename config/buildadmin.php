@@ -59,12 +59,14 @@ return [
                 'host'       => '127.0.0.1',
                 'port'       => 6379,
                 'password'   => '',
-                'select'     => false,
+                // Db索引，非 0 以避免数据被意外清理
+                'select'     => 1,
                 'timeout'    => 0,
-                'expire'     => 0,
+                // 默认 token 有效时间
+                'expire'     => 2592000,
                 'persistent' => false,
-                'userprefix' => 'up:',
-            ]
+                'prefix'     => 'tk:',
+            ],
         ]
     ],
     // 自动写入管理员操作日志

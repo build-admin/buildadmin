@@ -6,6 +6,7 @@ use think\helper\Arr;
 use think\helper\Str;
 use think\facade\Config;
 use InvalidArgumentException;
+use app\common\library\token\TokenExpirationException;
 
 /**
  * Token 管理类
@@ -214,5 +215,16 @@ class Token
     public function clear(string $type, int $user_id): bool
     {
         return $this->getDriver()->clear($type, $user_id);
+    }
+
+    /**
+     * Token过期检查
+     * @throws TokenExpirationException
+     */
+    public function tokenExpirationCheck(array $token): void
+    {
+        if (isset($token['expire_time']) && $token['expire_time'] <= time()) {
+            throw new TokenExpirationException();
+        }
     }
 }

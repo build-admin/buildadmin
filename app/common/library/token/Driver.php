@@ -22,31 +22,29 @@ abstract class Driver
 
     /**
      * 设置 token
-     * @param string $token   Token
-     * @param string $type    Type:admin|user
-     * @param int    $user_id 用户ID
-     * @param int    $expire  过期时间
+     * @param string $token  Token
+     * @param string $type   Type
+     * @param int    $userId 用户ID
+     * @param ?int   $expire 过期时间
      * @return bool
      */
-    abstract function set(string $token, string $type, int $user_id, int $expire = 0): bool;
+    abstract function set(string $token, string $type, int $userId, int $expire = null): bool;
 
     /**
      * 获取 token 的数据
-     * @param string $token               Token
-     * @param bool   $expirationException 过期直接抛出异常
+     * @param string $token Token
      * @return array
      */
-    abstract function get(string $token, bool $expirationException = true): array;
+    abstract function get(string $token): array;
 
     /**
      * 检查token是否有效
      * @param string $token
      * @param string $type
-     * @param int    $user_id
-     * @param bool   $expirationException
+     * @param int    $userId
      * @return bool
      */
-    abstract function check(string $token, string $type, int $user_id, bool $expirationException = true): bool;
+    abstract function check(string $token, string $type, int $userId): bool;
 
     /**
      * 删除一个token
@@ -58,10 +56,10 @@ abstract class Driver
     /**
      * 清理一个用户的所有token
      * @param string $type
-     * @param int    $user_id
+     * @param int    $userId
      * @return bool
      */
-    abstract function clear(string $type, int $user_id): bool;
+    abstract function clear(string $type, int $userId): bool;
 
     /**
      * 返回句柄对象

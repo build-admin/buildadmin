@@ -6,6 +6,7 @@ use Throwable;
 use think\facade\Event;
 use app\common\library\Auth;
 use think\exception\HttpResponseException;
+use app\common\library\token\TokenExpirationException;
 
 class Frontend extends Api
 {
@@ -36,10 +37,23 @@ class Frontend extends Api
     public function initialize(): void
     {
         parent::initialize();
-        $token      = get_auth_token(['ba', 'user', 'token']);
-        $this->auth = Auth::instance();
-        if (!action_in_arr($this->noNeedLogin)) {
-            $this->auth->init($token);
+
+        $needLogin = !action_in_arr($this->noNeedLogin);
+
+        try {
+
+            // 初始化会员鉴权实例
+            $this->auth = Auth::instance();
+            $token      = get_auth_token(['ba', 'user', 'token']);
+            if ($token) $this->auth->init($token);
+
+        } catch (TokenExpirationException) {
+            if ($needLogin) {
+                $this->error(__('Token expiration'), [], 409);
+            }
+        }
+
+        if ($needLogin) {
             if (!$this->auth->isLogin()) {
                 $this->error(__('Please login first'), [
                     'type' => $this->auth::NEED_LOGIN
@@ -50,11 +64,6 @@ class Frontend extends Api
                 if (!$this->auth->check($routePath)) {
                     $this->error(__('You have no permission'), [], 401);
                 }
-            }
-        } elseif ($token) {
-            try {
-                $this->auth->init($token);
-            } catch (HttpResponseException) {
             }
         }
 

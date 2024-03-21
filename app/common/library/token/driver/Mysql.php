@@ -3,11 +3,9 @@
 namespace app\common\library\token\driver;
 
 use Throwable;
-use think\Response;
 use think\facade\Db;
 use think\facade\Cache;
 use app\common\library\token\Driver;
-use think\exception\HttpResponseException;
 
 /**
  * @see Driver
@@ -41,16 +39,22 @@ class Mysql extends Driver
     /**
      * @throws Throwable
      */
-    public function set(string $token, string $type, int $user_id, int $expire = null): bool
+    public function set(string $token, string $type, int $userId, int $expire = null): bool
     {
         if (is_null($expire)) {
             $expire = $this->options['expire'];
         }
         $expireTime = $expire !== 0 ? time() + $expire : 0;
         $token      = $this->getEncryptedToken($token);
-        $this->handler->insert(['token' => $token, 'type' => $type, 'user_id' => $user_id, 'create_time' => time(), 'expire_time' => $expireTime]);
+        $this->handler->insert([
+            'token'       => $token,
+            'type'        => $type,
+            'user_id'     => $userId,
+            'create_time' => time(),
+            'expire_time' => $expireTime,
+        ]);
 
-        // 每隔48小时清理一次过期缓存
+        // 每隔48小时清理一次过期Token
         $time                 = time();
         $lastCacheCleanupTime = Cache::get('last_cache_cleanup_time');
         if (!$lastCacheCleanupTime || $lastCacheCleanupTime < $time - 172800) {
@@ -63,32 +67,26 @@ class Mysql extends Driver
     /**
      * @throws Throwable
      */
-    public function get(string $token, bool $expirationException = true): array
+    public function get(string $token): array
     {
         $data = $this->handler->where('token', $this->getEncryptedToken($token))->find();
         if (!$data) {
             return [];
         }
-        // 返回未加密的token给客户端使用
-        $data['token'] = $token;
-        // 返回剩余有效时间
-        $data['expires_in'] = $this->getExpiredIn($data['expire_time'] ?? 0);
-        if ($data['expire_time'] && $data['expire_time'] <= time() && $expirationException) {
-            // token过期-触发前端刷新token
-            $response = Response::create(['code' => 409, 'msg' => __('Token expiration'), 'data' => $data], 'json');
-            throw new HttpResponseException($response);
-        }
+
+        $data['token']      = $token; // 返回未加密的token给客户端使用
+        $data['expires_in'] = $this->getExpiredIn($data['expire_time'] ?? 0); // 返回剩余有效时间
         return $data;
     }
 
     /**
      * @throws Throwable
      */
-    public function check(string $token, string $type, int $user_id, bool $expirationException = true): bool
+    public function check(string $token, string $type, int $userId): bool
     {
-        $data = $this->get($token, $expirationException);
-        if (!$data || (!$expirationException && $data['expire_time'] && $data['expire_time'] <= time())) return false;
-        return $data['type'] == $type && $data['user_id'] == $user_id;
+        $data = $this->get($token);
+        if (!$data || ($data['expire_time'] && $data['expire_time'] <= time())) return false;
+        return $data['type'] == $type && $data['user_id'] == $userId;
     }
 
     /**
@@ -103,10 +101,9 @@ class Mysql extends Driver
     /**
      * @throws Throwable
      */
-    public function clear(string $type, int $user_id): bool
+    public function clear(string $type, int $userId): bool
     {
-        $this->handler->where('type', $type)->where('user_id', $user_id)->delete();
+        $this->handler->where('type', $type)->where('user_id', $userId)->delete();
         return true;
     }
-
 }

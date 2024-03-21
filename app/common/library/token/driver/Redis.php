@@ -3,10 +3,8 @@
 namespace app\common\library\token\driver;
 
 use Throwable;
-use think\Response;
 use BadFunctionCallException;
 use app\common\library\token\Driver;
-use think\exception\HttpResponseException;
 
 /**
  * @see Driver
@@ -18,6 +16,11 @@ class Redis extends Driver
      * @var array
      */
     protected array $options = [];
+
+    /**
+     * Token 过期后缓存继续保留的时间(s)
+     */
+    protected int $expiredHold = 60 * 60 * 24 * 2;
 
     /**
      * 构造函数
@@ -52,7 +55,7 @@ class Redis extends Driver
     /**
      * @throws Throwable
      */
-    public function set(string $token, string $type, int $user_id, int $expire = null): bool
+    public function set(string $token, string $type, int $userId, int $expire = null): bool
     {
         if (is_null($expire)) {
             $expire = $this->options['expire'];
@@ -62,28 +65,25 @@ class Redis extends Driver
         $tokenInfo  = [
             'token'       => $token,
             'type'        => $type,
-            'user_id'     => $user_id,
+            'user_id'     => $userId,
             'create_time' => time(),
             'expire_time' => $expireTime,
         ];
         $tokenInfo  = json_encode($tokenInfo, JSON_UNESCAPED_UNICODE);
         if ($expire) {
-            if ($type == 'admin' || $type == 'user') {
-                // 增加 redis中的 token 过期时间，以免 token 过期自动刷新永远无法触发
-                $expire *= 2;
-            }
+            $expire += $this->expiredHold;
             $result = $this->handler->setex($token, $expire, $tokenInfo);
         } else {
             $result = $this->handler->set($token, $tokenInfo);
         }
-        $this->handler->sAdd($this->getUserKey($user_id), $token);
+        $this->handler->sAdd($this->getUserKey($type, $userId), $token);
         return $result;
     }
 
     /**
      * @throws Throwable
      */
-    public function get(string $token, bool $expirationException = true): array
+    public function get(string $token): array
     {
         $key  = $this->getEncryptedToken($token);
         $data = $this->handler->get($key);
@@ -91,27 +91,20 @@ class Redis extends Driver
             return [];
         }
         $data = json_decode($data, true);
-        // 返回未加密的token给客户端使用
-        $data['token'] = $token;
-        // 过期时间
-        $data['expires_in'] = $this->getExpiredIn($data['expire_time'] ?? 0);
 
-        if ($data['expire_time'] && $data['expire_time'] <= time() && $expirationException) {
-            // token过期-触发前端刷新token
-            $response = Response::create(['code' => 409, 'msg' => __('Token expiration'), 'data' => $data], 'json');
-            throw new HttpResponseException($response);
-        }
+        $data['token']      = $token; // 返回未加密的token给客户端使用
+        $data['expires_in'] = $this->getExpiredIn($data['expire_time'] ?? 0); // 过期时间
         return $data;
     }
 
     /**
      * @throws Throwable
      */
-    public function check(string $token, string $type, int $user_id, bool $expirationException = true): bool
+    public function check(string $token, string $type, int $userId): bool
     {
-        $data = $this->get($token, $expirationException);
-        if (!$data || (!$expirationException && $data['expire_time'] && $data['expire_time'] <= time())) return false;
-        return $data['type'] == $type && $data['user_id'] == $user_id;
+        $data = $this->get($token);
+        if (!$data || ($data['expire_time'] && $data['expire_time'] <= time())) return false;
+        return $data['type'] == $type && $data['user_id'] == $userId;
     }
 
     /**
@@ -119,12 +112,11 @@ class Redis extends Driver
      */
     public function delete(string $token): bool
     {
-        $data = $this->get($token, false);
+        $data = $this->get($token);
         if ($data) {
-            $key     = $this->getEncryptedToken($token);
-            $user_id = $data['user_id'];
+            $key = $this->getEncryptedToken($token);
             $this->handler->del($key);
-            $this->handler->sRem($this->getUserKey($user_id), $key);
+            $this->handler->sRem($this->getUserKey($data['type'], $data['user_id']), $key);
         }
         return true;
     }
@@ -132,22 +124,23 @@ class Redis extends Driver
     /**
      * @throws Throwable
      */
-    public function clear(string $type, int $user_id): bool
+    public function clear(string $type, int $userId): bool
     {
-        $keys = $this->handler->sMembers($this->getUserKey($user_id));
-        $this->handler->del($this->getUserKey($user_id));
+        $userKey = $this->getUserKey($type, $userId);
+        $keys    = $this->handler->sMembers($userKey);
+        $this->handler->del($userKey);
         $this->handler->del($keys);
         return true;
     }
 
     /**
      * 获取会员的key
-     * @param $user_id
+     * @param $type
+     * @param $userId
      * @return string
      */
-    protected function getUserKey($user_id): string
+    protected function getUserKey($type, $userId): string
     {
-        return $this->options['userprefix'] . $user_id;
+        return $this->options['prefix'] . $type . '-' . $userId;
     }
-
 }

@@ -117,7 +117,7 @@ class Account extends Frontend
         $user    = $this->auth->getUser();
 
         if ($user[$params['type']]) {
-            if (!Token::check($params['accountVerificationToken'], $params['type'] . '-pass', $user->id, false)) {
+            if (!Token::check($params['accountVerificationToken'], $params['type'] . '-pass', $user->id)) {
                 $this->error(__('You need to verify your account before modifying the binding information'));
             }
         } else {
