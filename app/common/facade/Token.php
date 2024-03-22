@@ -9,7 +9,7 @@ use app\common\library\token\Driver;
  * Token 门面类
  * @see Driver
  * @method array get(string $token) static 获取 token 的数据
- * @method bool set(string $token, string $type, int $userId, int $expire = 0) static 设置 token
+ * @method bool set(string $token, string $type, int $userId, int $expire = null) static 设置 token
  * @method bool check(string $token, string $type, int $userId) static 检查token是否有效
  * @method bool delete(string $token) static 删除一个token
  * @method bool clear(string $type, int $userId) static 清理一个用户的所有token
