@@ -80,9 +80,11 @@ export const useTerminal = defineStore(
         }
 
         function taskCompleted(idx: number) {
-            if (typeof state.taskList[idx].callback != 'function') {
-                return
-            }
+            // 命令执行完毕，重新打开热更新
+            if (import.meta.hot) import.meta.hot.send('custom:open-hot', { type: 'terminal' })
+
+            if (typeof state.taskList[idx].callback != 'function') return
+
             const status = state.taskList[idx].status
             if (status == taskStatus.Failed || status == taskStatus.Unknown) {
                 state.taskList[idx].callback(taskStatus.Failed)
@@ -179,6 +181,9 @@ export const useTerminal = defineStore(
         }
 
         function startEventSource(taskKey: number) {
+            // 命令执行期间禁用热更新
+            if (import.meta.hot) import.meta.hot.send('custom:close-hot', { type: 'terminal' })
+
             window.eventSource = new EventSource(
                 buildTerminalUrl(state.taskList[taskKey].command, state.taskList[taskKey].uuid, state.taskList[taskKey].extend)
             )
