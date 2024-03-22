@@ -40,15 +40,15 @@ class Api extends BaseController
      */
     protected function initialize(): void
     {
-        // 检查数据库连接
-        try {
-            Db::execute("SELECT 1");
-        } catch (PDOException $e) {
-            $this->error(mb_convert_encoding($e->getMessage(), 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'));
-        }
-
         // 系统站点配置
         if ($this->useSystemSettings) {
+            // 检查数据库连接
+            try {
+                Db::execute("SELECT 1");
+            } catch (PDOException $e) {
+                $this->error(mb_convert_encoding($e->getMessage(), 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'));
+            }
+
             ip_check(); // ip检查
             set_timezone(); // 时区设定
         }
