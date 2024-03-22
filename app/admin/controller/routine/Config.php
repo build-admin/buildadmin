@@ -112,26 +112,29 @@ class Config extends Backend
                         $oldBackendEntrance = ltrim($backendEntrance, '/');
                         $newBackendEntrance = ltrim($data[$item->name], '/');
 
-                        // 禁止 admin 应用访问
-                        $denyAppList = config('app.deny_app_list');
-                        if (($newBackendEntrance == 'admin' && in_array('admin', $denyAppList)) || !in_array('admin', $denyAppList)) {
-                            $appConfigFilePath = Filesystem::fsFit(root_path() . $this->filePath['appConfig']);
-                            $appConfigContent  = @file_get_contents($appConfigFilePath);
-                            if (!$appConfigContent) $this->error(__('Configuration write failed: %s', [$this->filePath['appConfig']]));
-
-                            $denyAppListStr = '';
-                            foreach ($denyAppList as $appName) {
-                                if ($newBackendEntrance == 'admin' && $appName == 'admin') continue;
-                                $denyAppListStr .= "'$appName', ";
-                            }
-                            if ($newBackendEntrance != 'admin') $denyAppListStr .= "'admin', ";
-                            $denyAppListStr = rtrim($denyAppListStr, ', ');
-                            $denyAppListStr = "[$denyAppListStr]";
-
-                            $appConfigContent = preg_replace("/'deny_app_list'(\s+)=>(\s+)(.*)/", "'deny_app_list'\$1=>\$2$denyAppListStr,", $appConfigContent);
-                            $result           = @file_put_contents($appConfigFilePath, $appConfigContent);
-                            if (!$result) $this->error(__('Configuration write failed: %s', [$this->filePath['appConfig']]));
+                        // 设置应用别名映射
+                        $appMap      = config('app.app_map');
+                        $adminMapKey = array_search('admin', $appMap);
+                        if ($adminMapKey !== false) {
+                            unset($appMap[$adminMapKey]);
                         }
+                        if ($newBackendEntrance != 'admin') {
+                            $appMap[$newBackendEntrance] = 'admin';
+                        }
+                        $appConfigFilePath = Filesystem::fsFit(root_path() . $this->filePath['appConfig']);
+                        $appConfigContent  = @file_get_contents($appConfigFilePath);
+                        if (!$appConfigContent) $this->error(__('Configuration write failed: %s', [$this->filePath['appConfig']]));
+
+                        $appMapStr = '';
+                        foreach ($appMap as $newAppName => $oldAppName) {
+                            $appMapStr .= "'$newAppName' => '$oldAppName', ";
+                        }
+                        $appMapStr = rtrim($appMapStr, ', ');
+                        $appMapStr = "[$appMapStr]";
+
+                        $appConfigContent = preg_replace("/'app_map'(\s+)=>(\s+)(.*)\/\/ 域名/s", "'app_map'\$1=>\$2$appMapStr,\n    // 域名", $appConfigContent);
+                        $result           = @file_put_contents($appConfigFilePath, $appConfigContent);
+                        if (!$result) $this->error(__('Configuration write failed: %s', [$this->filePath['appConfig']]));
 
                         // 建立API入口文件
                         $oldBackendEntranceFile = Filesystem::fsFit(public_path() . $oldBackendEntrance . '.php');
