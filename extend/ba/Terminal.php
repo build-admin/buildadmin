@@ -14,10 +14,10 @@ namespace ba;
 use Throwable;
 use think\Response;
 use think\facade\Config;
-use think\facade\Cookie;
 use app\admin\library\Auth;
 use app\admin\library\module\Manage;
 use think\exception\HttpResponseException;
+use app\common\library\token\TokenExpirationException;
 
 class Terminal
 {
@@ -190,11 +190,16 @@ class Terminal
         }
 
         if ($authentication) {
-            $token = request()->server('HTTP_BATOKEN', request()->request('batoken', Cookie::get('batoken') ?: false));
-            $auth  = Auth::instance();
-            $auth->init($token);
-            if (!$auth->isLogin() || !$auth->isSuperAdmin()) {
-                $this->execError("You are not super administrator or not logged in", true);
+            try {
+                $token = get_auth_token();
+                $auth  = Auth::instance();
+                $auth->init($token);
+
+                if (!$auth->isLogin() || !$auth->isSuperAdmin()) {
+                    $this->execError("You are not super administrator or not logged in", true);
+                }
+            } catch (TokenExpirationException) {
+                $this->execError(__('Token expiration'));
             }
         }
 

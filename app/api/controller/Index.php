@@ -5,9 +5,9 @@ namespace app\api\controller;
 use ba\Tree;
 use Throwable;
 use think\facade\Db;
-use think\facade\Cookie;
 use think\facade\Config;
 use app\common\controller\Frontend;
+use app\common\library\token\TokenExpirationException;
 
 class Index extends Frontend
 {
@@ -42,12 +42,15 @@ class Index extends Frontend
             // 若是从前台会员中心内发出的请求，要求必须登录，否则会员中心异常
             $requiredLogin = $this->request->get('requiredLogin/b', false);
             if ($requiredLogin) {
-                $token = $this->request->server('HTTP_BA_USER_TOKEN', $this->request->request('ba-user-token', Cookie::get('ba-user-token') ?: false));
 
-                // 若过期可触发过期判定
-                $this->auth->init($token);
+                // 触发可能的 token 过期异常
+                try {
+                    $token = get_auth_token(['ba', 'user', 'token']);
+                    $this->auth->init($token);
+                } catch (TokenExpirationException) {
+                    $this->error(__('Token expiration'), [], 409);
+                }
 
-                // 未过期或无token，直接要求登录
                 $this->error(__('Please login first'), [
                     'type' => $this->auth::NEED_LOGIN
                 ], $this->auth::LOGIN_RESPONSE_CODE);
