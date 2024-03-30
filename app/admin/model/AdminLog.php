@@ -94,8 +94,8 @@ class AdminLog extends Model
     public static function record(string $title = '', string|array $data = null): void
     {
         $auth     = Auth::instance();
-        $admin_id = $auth->isLogin() ? $auth->id : 0;
-        $username = $auth->isLogin() ? $auth->username : __('Unknown');
+        $adminId  = $auth->isLogin() ? $auth->id : 0;
+        $username = $auth->isLogin() ? $auth->username : request()->param('username', __('Unknown'));
 
         $controller = str_replace('.', '/', request()->controller(true));
         $action     = request()->action(true);
@@ -120,7 +120,7 @@ class AdminLog extends Model
             $title           = $controllerTitle ? ($controllerTitle . '-' . $title) : $title;
         }
         self::create([
-            'admin_id'  => $admin_id,
+            'admin_id'  => $adminId,
             'username'  => $username,
             'url'       => substr(request()->url(), 0, 1500),
             'title'     => $title,
