@@ -40,7 +40,7 @@ class Module extends Backend
 
     public function install(): void
     {
-        AdminLog::setTitle(__('Install module'));
+        AdminLog::instance()->setTitle(__('Install module'));
         $uid     = $this->request->get("uid/s", '');
         $token   = $this->request->get("token/s", '');
         $orderId = $this->request->get("orderId/d", 0);
@@ -78,7 +78,7 @@ class Module extends Backend
 
     public function changeState(): void
     {
-        AdminLog::setTitle(__('Change module state'));
+        AdminLog::instance()->setTitle(__('Change module state'));
         $uid   = $this->request->post("uid/s", '');
         $state = $this->request->post("state/b", false);
         if (!$uid) {
@@ -99,7 +99,7 @@ class Module extends Backend
 
     public function uninstall(): void
     {
-        AdminLog::setTitle(__('Unload module'));
+        AdminLog::instance()->setTitle(__('Unload module'));
         $uid = $this->request->get("uid/s", '');
         if (!$uid) {
             $this->error(__('Parameter error'));
@@ -116,7 +116,7 @@ class Module extends Backend
 
     public function update(): void
     {
-        AdminLog::setTitle(__('Update module'));
+        AdminLog::instance()->setTitle(__('Update module'));
         $uid     = $this->request->get("uid/s", '');
         $token   = $this->request->get("token/s", '');
         $orderId = $this->request->get("orderId/d", 0);
@@ -135,7 +135,7 @@ class Module extends Backend
 
     public function upload(): void
     {
-        AdminLog::setTitle(__('Upload install module'));
+        AdminLog::instance()->setTitle(__('Upload install module'));
         $file  = $this->request->get("file/s", '');
         $token = $this->request->get("token/s", '');
         if (!$file) $this->error(__('Parameter error'));

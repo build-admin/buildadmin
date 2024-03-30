@@ -97,7 +97,7 @@ class Index extends Backend
                 }
             }
 
-            AdminLog::setTitle(__('Login'));
+            AdminLog::instance()->setTitle(__('Login'));
 
             $res = $this->auth->login($username, $password, (bool)$keep);
             if ($res === true) {

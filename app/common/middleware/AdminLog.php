@@ -17,7 +17,7 @@ class AdminLog
     {
         $response = $next($request);
         if (($request->isPost() || $request->isDelete()) && Config::get('buildadmin.auto_write_admin_log')) {
-            AdminLogModel::record();
+            AdminLogModel::instance()->record();
         }
         return $response;
     }
