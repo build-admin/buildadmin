@@ -179,7 +179,7 @@ class Ajax extends Backend
 
     public function changeTerminalConfig(): void
     {
-        AdminLog::setTitle(__('changeTerminalConfig'));
+        AdminLog::setTitle(__('Change terminal config'));
         if (Terminal::changeTerminalConfig()) {
             $this->success();
         } else {
@@ -189,6 +189,7 @@ class Ajax extends Backend
 
     public function clearCache(): void
     {
+        AdminLog::setTitle(__('Clear cache'));
         $type = $this->request->post('type');
         if ($type == 'tp' || $type == 'all') {
             Cache::clear();
