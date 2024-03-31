@@ -103,12 +103,12 @@ const toLastTab = () => {
 }
 
 const closeTab = (route: RouteLocationNormalized) => {
-    navTabs.closeTab(route)
+    navTabs._closeTab(route)
     proxy.eventBus.emit('onTabViewClose', route)
     if (navTabs.state.activeRoute?.path === route.path) {
         toLastTab()
     } else {
-        navTabs.setActiveRoute(navTabs.state.activeRoute!)
+        navTabs._setActiveRoute(navTabs.state.activeRoute!)
         nextTick(() => {
             selectNavTab(tabsRefs.value[navTabs.state.activeIndex])
         })
@@ -118,22 +118,26 @@ const closeTab = (route: RouteLocationNormalized) => {
 }
 
 const closeOtherTab = (menu: RouteLocationNormalized) => {
-    navTabs.closeTabs(menu)
-    navTabs.setActiveRoute(menu)
+    navTabs._closeTabs(menu)
+    navTabs._setActiveRoute(menu)
     if (navTabs.state.activeRoute?.path !== route.path) {
         router.push(menu!.path)
     }
 }
 
-const closeAllTab = (menu: RouteLocationNormalized) => {
+/**
+ * 关闭所有tab（等同于 navTabs.closeAllTab）
+ * @param menu 需要保留的标签，否则关闭全部标签
+ */
+const closeAllTab = (menu?: RouteLocationNormalized) => {
     let firstRoute = getFirstRoute(navTabs.state.tabsViewRoutes)
-    if (firstRoute && firstRoute.path == menu.path) {
+    if (menu && firstRoute && firstRoute.path == menu.path) {
         return closeOtherTab(menu)
     }
     if (firstRoute && firstRoute.path == navTabs.state.activeRoute?.path) {
         return closeOtherTab(navTabs.state.activeRoute)
     }
-    navTabs.closeTabs(false)
+    navTabs._closeTabs(false)
     if (firstRoute) routePush(firstRoute.path)
 }
 
@@ -164,9 +168,9 @@ const onContextmenuItem = async (item: ContextmenuItemClickEmitArg) => {
 
 const updateTab = function (newRoute: RouteLocationNormalized) {
     // 添加tab
-    navTabs.addTab(newRoute)
+    navTabs._addTab(newRoute)
     // 激活当前tab
-    navTabs.setActiveRoute(newRoute)
+    navTabs._setActiveRoute(newRoute)
 
     nextTick(() => {
         selectNavTab(tabsRefs.value[navTabs.state.activeIndex])
@@ -180,6 +184,24 @@ onBeforeRouteUpdate(async (to) => {
 onMounted(() => {
     updateTab(router.currentRoute.value)
     new horizontalScroll(tabScrollbarRef.value)
+})
+
+/**
+ * 通过路由路径关闭tab（等同于 navTabs.closeTabByPath）
+ * @param path 需要关闭的 tab 的路径
+ */
+const closeTabByPath = (path: string) => {
+    for (const key in navTabs.state.tabsView) {
+        if (navTabs.state.tabsView[key].path == path) {
+            closeTab(navTabs.state.tabsView[key])
+            break
+        }
+    }
+}
+
+defineExpose({
+    closeAllTab,
+    closeTabByPath,
 })
 </script>
 
