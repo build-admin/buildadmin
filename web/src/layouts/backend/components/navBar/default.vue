@@ -1,6 +1,6 @@
 <template>
     <div class="nav-bar">
-        <NavTabs />
+        <NavTabs ref="layoutNavTabsRef" />
         <NavMenus />
     </div>
 </template>
@@ -9,6 +9,7 @@
 import { useConfig } from '/@/stores/config'
 import NavTabs from '/@/layouts/backend/components/navBar/tabs.vue'
 import NavMenus from '../navMenus.vue'
+import { layoutNavTabsRef } from '/@/stores/refs'
 
 const config = useConfig()
 </script>

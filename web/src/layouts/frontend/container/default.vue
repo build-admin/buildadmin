@@ -1,7 +1,7 @@
 <template>
     <el-container class="is-vertical">
         <Header />
-        <el-scrollbar :style="layoutMainScrollbarStyle()" ref="mainScrollbarRef">
+        <el-scrollbar :style="layoutMainScrollbarStyle" ref="layoutMainScrollbarRef">
             <el-row class="frontend-footer-brother" justify="center">
                 <el-col class="user-layouts" :span="16" :xs="24">
                     <Aside class="hidden-sm-and-down" />
@@ -14,17 +14,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, provide } from 'vue'
 import Header from '/@/layouts/frontend/components/header.vue'
 import Aside from '/@/layouts/frontend/components/aside.vue'
 import Main from '/@/layouts/frontend/components/main.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
-import { mainHeight as layoutMainScrollbarStyle } from '/@/utils/layout'
-import type { ScrollbarInstance } from 'element-plus'
-
-const mainScrollbarRef = ref<ScrollbarInstance>()
-
-provide('mainScrollbarRef', mainScrollbarRef)
+import { layoutMainScrollbarRef, layoutMainScrollbarStyle } from '/@/stores/refs'
 </script>
 
 <style scoped lang="scss">

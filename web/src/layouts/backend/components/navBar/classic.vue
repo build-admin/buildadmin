@@ -3,7 +3,7 @@
         <div v-if="config.layout.shrink && config.layout.menuCollapse" class="unfold">
             <Icon @click="onMenuCollapse" name="fa fa-indent" :color="config.getColorVal('menuActiveColor')" size="18" />
         </div>
-        <NavTabs v-if="!config.layout.shrink" />
+        <NavTabs v-if="!config.layout.shrink" ref="layoutNavTabsRef" />
         <NavMenus />
     </div>
 </template>
@@ -11,6 +11,7 @@
 <script setup lang="ts">
 import { useConfig } from '/@/stores/config'
 import NavTabs from '/@/layouts/backend/components/navBar/tabs.vue'
+import { layoutNavTabsRef } from '/@/stores/refs'
 import NavMenus from '../navMenus.vue'
 import { showShade } from '/@/utils/pageShade'
 

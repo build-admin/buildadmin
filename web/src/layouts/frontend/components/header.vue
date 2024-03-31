@@ -10,7 +10,7 @@
                     <Icon name="fa fa-indent" color="var(--el-color-primary)" size="20" />
                 </div>
 
-                <el-scrollbar class="hidden-sm-and-down">
+                <el-scrollbar ref="layoutMenuScrollbarRef" class="hidden-sm-and-down">
                     <Menu class="frontend-header-menu" :ellipsis="false" mode="horizontal" />
                 </el-scrollbar>
             </el-col>
@@ -44,6 +44,7 @@ import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { initialize } from '/@/api/frontend/index'
 import Menu from '/@/layouts/frontend/components/menu.vue'
+import { layoutMenuScrollbarRef } from '/@/stores/refs'
 
 const route = useRoute()
 const router = useRouter()

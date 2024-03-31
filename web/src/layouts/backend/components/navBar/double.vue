@@ -1,8 +1,8 @@
 <template>
     <div class="layouts-menu-horizontal-double">
-        <el-scrollbar ref="horizontalMenusRef" class="double-menus-scrollbar">
-            <el-menu class="menu-horizontal" mode="horizontal" :default-active="state.defaultActive" :key="state.menuKey">
-                <MenuTree :extends="{ position: 'horizontal', level: 1 }" :menus="menus" />
+        <el-scrollbar ref="layoutMenuScrollbarRef" class="double-menus-scrollbar">
+            <el-menu ref="layoutMenuRef" class="menu-horizontal" mode="horizontal" :default-active="state.defaultActive">
+                <MenuTree :extends="{ position: 'horizontal', level: 1 }" :menus="navTabs.state.tabsViewRoutes" />
             </el-menu>
         </el-scrollbar>
         <NavMenus />
@@ -10,30 +10,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, reactive, ref } from 'vue'
+import { nextTick, onMounted, reactive } from 'vue'
 import { useRoute, onBeforeRouteUpdate, type RouteLocationNormalizedLoaded } from 'vue-router'
 import { currentRouteTopActivity } from '/@/layouts/backend/components/menus/helper'
 import MenuTree from '/@/layouts/backend/components/menus/menuTree.vue'
+import { layoutMenuRef, layoutMenuScrollbarRef } from '/@/stores/refs'
 import NavMenus from '/@/layouts/backend/components/navMenus.vue'
-import type { ScrollbarInstance } from 'element-plus'
 import { useNavTabs } from '/@/stores/navTabs'
 import { useConfig } from '/@/stores/config'
-import { uuid } from '/@/utils/random'
-
-const horizontalMenusRef = ref<ScrollbarInstance>()
 
 const config = useConfig()
 const navTabs = useNavTabs()
 const route = useRoute()
 
 const state = reactive({
-    menuKey: uuid(),
     defaultActive: '',
-})
-
-const menus = computed(() => {
-    state.menuKey = uuid() // eslint-disable-line
-    return navTabs.state.tabsViewRoutes
 })
 
 // 激活当前路由的菜单
@@ -47,7 +38,7 @@ const verticalMenusScroll = () => {
     nextTick(() => {
         let activeMenu: HTMLElement | null = document.querySelector('.el-menu.menu-horizontal li.is-active')
         if (!activeMenu) return false
-        horizontalMenusRef.value?.setScrollTop(activeMenu.offsetTop)
+        layoutMenuScrollbarRef.value?.setScrollTop(activeMenu.offsetTop)
     })
 }
 

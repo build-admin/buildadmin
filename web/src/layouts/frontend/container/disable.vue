@@ -1,7 +1,7 @@
 <template>
     <el-container class="is-vertical">
         <Header />
-        <el-scrollbar :style="layoutMainScrollbarStyle()" ref="mainScrollbarRef">
+        <el-scrollbar :style="layoutMainScrollbarStyle" ref="layoutMainScrollbarRef">
             <el-row class="frontend-footer-brother" justify="center">
                 <el-col class="user-layouts" :span="16" :xs="24">
                     <el-alert :center="true" :title="$t('Member center disabled')" type="error" />
@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import Header from '/@/layouts/frontend/components/header.vue'
 import Footer from '/@/layouts/frontend/components/footer.vue'
-import { mainHeight as layoutMainScrollbarStyle } from '/@/utils/layout'
+import { layoutMainScrollbarRef, layoutMainScrollbarStyle } from '/@/stores/refs'
 </script>
 
 <style scoped lang="scss">

@@ -1,11 +1,12 @@
 <template>
-    <el-scrollbar ref="verticalMenusRef" class="vertical-menus-scrollbar">
+    <el-scrollbar ref="layoutMenuScrollbarRef" class="vertical-menus-scrollbar">
         <el-menu
             class="layouts-menu-vertical"
             :collapse-transition="false"
             :unique-opened="config.layout.menuUniqueOpened"
             :default-active="state.defaultActive"
             :collapse="config.layout.menuCollapse"
+            ref="layoutMenuRef"
         >
             <MenuTree :menus="navTabs.state.tabsViewRoutes" />
         </el-menu>
@@ -13,18 +14,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive } from 'vue'
 import MenuTree from '/@/layouts/backend/components/menus/menuTree.vue'
 import { useRoute, onBeforeRouteUpdate, type RouteLocationNormalizedLoaded } from 'vue-router'
-import type { ScrollbarInstance } from 'element-plus'
+import { layoutMenuRef, layoutMenuScrollbarRef } from '/@/stores/refs'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 
 const config = useConfig()
 const navTabs = useNavTabs()
 const route = useRoute()
-
-const verticalMenusRef = ref<ScrollbarInstance>()
 
 const state = reactive({
     defaultActive: '',
@@ -52,7 +51,7 @@ const verticalMenusScroll = () => {
     nextTick(() => {
         let activeMenu: HTMLElement | null = document.querySelector('.el-menu.layouts-menu-vertical li.is-active')
         if (!activeMenu) return false
-        verticalMenusRef.value?.setScrollTop(activeMenu.offsetTop)
+        layoutMenuScrollbarRef.value?.setScrollTop(activeMenu.offsetTop)
     })
 }
 

@@ -1,5 +1,5 @@
 <template>
-    <el-menu :default-active="state.activeMenu" @select="onSelect">
+    <el-menu ref="layoutMenuRef" :default-active="state.activeMenu" @select="onSelect">
         <el-menu-item @click="router.push({ name: '/' })" v-blur index="index">
             <Icon v-if="props.showIcon" name="fa fa-home" color="var(--el-text-color-primary)" />
             <template #title>{{ $t('Home') }}</template>
@@ -80,6 +80,7 @@ import toggleDark from '/@/utils/useDark'
 import DarkSwitch from '/@/layouts/common/components/darkSwitch.vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
+import { layoutMenuRef } from '/@/stores/refs'
 
 const route = useRoute()
 const router = useRouter()
