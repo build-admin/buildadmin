@@ -206,11 +206,9 @@ const closeTabByPath = (path: string) => {
  */
 const updateTabTitle = (path: string, title: string) => {
     navTabs._updateTabTitle(path, title)
-    if (path == navTabs.state.activeRoute?.path) {
-        nextTick(() => {
-            selectNavTab(tabsRefs.value[navTabs.state.activeIndex])
-        })
-    }
+    nextTick(() => {
+        selectNavTab(tabsRefs.value[navTabs.state.activeIndex])
+    })
 }
 
 defineExpose({
