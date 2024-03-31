@@ -37,7 +37,6 @@
 /* dialog滚动条-s */
 .el-overlay-dialog,
 .ba-scroll-style {
-    scrollbar-width: none;
     &::-webkit-scrollbar {
         width: 5px;
         height: 5px;
@@ -52,6 +51,13 @@
         &::-webkit-scrollbar-thumb:hover {
             background: #c8c9cc;
         }
+    }
+}
+@supports not (selector(::-webkit-scrollbar)) {
+    .el-overlay-dialog,
+    .ba-scroll-style {
+        scrollbar-width: thin;
+        scrollbar-color: #c8c9cc #eaeaea;
     }
 }
 /* dialog滚动条-e */
