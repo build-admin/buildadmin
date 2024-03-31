@@ -56,12 +56,13 @@ onBeforeRouteUpdate((to) => {
 .layouts-menu-horizontal-double {
     display: flex;
     align-items: center;
-    height: 60px;
+    height: var(--el-header-height);
     background-color: var(--ba-bg-color-overlay);
-    border-bottom: solid 1px var(--el-color-info-light-8);
+    border-bottom: 1px solid var(--el-color-info-light-8);
 }
 .double-menus-scrollbar {
     width: 70vw;
+    height: var(--el-header-height);
 }
 .menu-horizontal {
     border: none;

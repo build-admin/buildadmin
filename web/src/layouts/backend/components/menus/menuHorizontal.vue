@@ -59,9 +59,9 @@ onBeforeRouteUpdate((to) => {
     display: flex;
     align-items: center;
     width: 100vw;
-    height: 60px;
+    height: var(--el-header-height);
     background-color: var(--ba-bg-color-overlay);
-    border-bottom: solid 1px var(--el-color-info-light-8);
+    border-bottom: 1px solid var(--el-color-info-light-8);
 }
 .menu-horizontal-logo {
     width: 180px;
@@ -71,6 +71,7 @@ onBeforeRouteUpdate((to) => {
 }
 .horizontal-menus-scrollbar {
     flex: 1;
+    height: var(--el-header-height);
 }
 .menu-horizontal {
     border: none;
