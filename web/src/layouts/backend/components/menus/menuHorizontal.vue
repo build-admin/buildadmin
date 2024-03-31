@@ -21,6 +21,7 @@ import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
 import NavMenus from '/@/layouts/backend/components/navMenus.vue'
 import { layoutMenuRef, layoutMenuScrollbarRef } from '/@/stores/refs'
+import horizontalScroll from '/@/utils/horizontalScroll'
 
 const config = useConfig()
 const navTabs = useNavTabs()
@@ -47,6 +48,8 @@ const verticalMenusScroll = () => {
 onMounted(() => {
     currentRouteActive(route)
     verticalMenusScroll()
+
+    new horizontalScroll(layoutMenuScrollbarRef.value!.wrapRef!)
 })
 
 onBeforeRouteUpdate((to) => {
