@@ -43,8 +43,17 @@ export const useNavTabs = defineStore(
         }
 
         /**
+         * 修改 tab 标题
+         * @param path 需要修改标题的 tab 的路径
+         * @param title 新的标题
+         */
+        const updateTabTitle = (path: string, title: string) => {
+            layoutNavTabsRef.value?.updateTabTitle(path, title)
+        }
+
+        /**
          * 添加 tab（内部）
-         * router.push 时可自动完成 tab 添加，无需调用此方法
+         * ps: router.push 时可自动完成 tab 添加，无需调用此方法
          */
         function _addTab(route: RouteLocationNormalized) {
             if (!route.meta.addtab) return
@@ -63,7 +72,7 @@ export const useNavTabs = defineStore(
 
         /**
          * 设置激活 tab（内部）
-         * router.push 时可自动完成 tab 激活，无需调用此方法
+         * ps: router.push 时可自动完成 tab 激活，无需调用此方法
          */
         const _setActiveRoute = (route: RouteLocationNormalized): void => {
             const currentRouteIndex: number = state.tabsView.findIndex((item: RouteLocationNormalized) => {
@@ -76,6 +85,7 @@ export const useNavTabs = defineStore(
 
         /**
          * 关闭 tab（内部）
+         * ps: 使用 closeTabByPath 代替
          */
         function _closeTab(route: RouteLocationNormalized) {
             state.tabsView.map((v, k) => {
@@ -88,12 +98,26 @@ export const useNavTabs = defineStore(
 
         /**
          * 关闭多个标签（内部）
+         * ps：使用 closeAllTab 代替
          */
         const _closeTabs = (retainMenu: RouteLocationNormalized | false = false) => {
             if (retainMenu) {
                 state.tabsView = [retainMenu]
             } else {
                 state.tabsView = []
+            }
+        }
+
+        /**
+         * 更新标签标题（内部）
+         * ps: 使用 updateTabTitle 代替
+         */
+        const _updateTabTitle = (path: string, title: string) => {
+            for (const key in state.tabsView) {
+                if (state.tabsView[key].path == path) {
+                    state.tabsView[key].meta.title = title
+                    break
+                }
             }
         }
 
@@ -130,6 +154,7 @@ export const useNavTabs = defineStore(
             state,
             closeAllTab,
             closeTabByPath,
+            updateTabTitle,
             setTabsViewRoutes,
             setAuthNode,
             fillAuthNode,
@@ -138,6 +163,7 @@ export const useNavTabs = defineStore(
             _closeTab,
             _closeTabs,
             _setActiveRoute,
+            _updateTabTitle,
         }
     },
     {

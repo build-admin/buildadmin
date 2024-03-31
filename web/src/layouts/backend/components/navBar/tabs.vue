@@ -199,9 +199,24 @@ const closeTabByPath = (path: string) => {
     }
 }
 
+/**
+ * 修改 tab 标题（等同于 navTabs.updateTabTitle）
+ * @param path 需要修改标题的 tab 的路径
+ * @param title 新的标题
+ */
+const updateTabTitle = (path: string, title: string) => {
+    navTabs._updateTabTitle(path, title)
+    if (path == navTabs.state.activeRoute?.path) {
+        nextTick(() => {
+            selectNavTab(tabsRefs.value[navTabs.state.activeIndex])
+        })
+    }
+}
+
 defineExpose({
     closeAllTab,
     closeTabByPath,
+    updateTabTitle,
 })
 </script>
 
