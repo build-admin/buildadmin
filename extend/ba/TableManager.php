@@ -67,8 +67,9 @@ class TableManager
     public static function getTableList(?string $connection = null): array
     {
         $tableList  = [];
-        $connection = self::getConnectionConfig($connection);
-        $tables     = Db::query("SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema = ? ", [$connection['database']]);
+        $config     = self::getConnectionConfig($connection);
+        $connection = self::getConnection($connection);
+        $tables     = Db::connect($connection)->query("SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema = ? ", [$config['database']]);
         foreach ($tables as $row) {
             $tableList[$row['TABLE_NAME']] = $row['TABLE_NAME'] . ($row['TABLE_COMMENT'] ? ' - ' . $row['TABLE_COMMENT'] : '');
         }
@@ -87,14 +88,15 @@ class TableManager
         if (!$table) return [];
 
         $table      = self::tableName($table, true, $connection);
-        $connection = self::getConnectionConfig($connection);
+        $config     = self::getConnectionConfig($connection);
+        $connection = self::getConnection($connection);
 
         // 从数据库中获取表字段信息
         // Phinx 目前无法正确获取到列注释信息，故使用 sql
         $sql        = "SELECT * FROM `information_schema`.`columns` "
             . "WHERE TABLE_SCHEMA = ? AND table_name = ? "
             . "ORDER BY ORDINAL_POSITION";
-        $columnList = Db::query($sql, [$connection['database'], $table]);
+        $columnList = Db::connect($connection)->query($sql, [$config['database'], $table]);
 
         $fieldList = [];
         foreach ($columnList as $item) {
