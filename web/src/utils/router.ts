@@ -43,7 +43,7 @@ export const routePush = async (to: RouteLocationRaw) => {
 /**
  * 获取第一个菜单
  */
-export const getFirstRoute = (routes: RouteRecordRaw[], menuType = 'tab'): false | RouteRecordRaw => {
+export const getFirstRoute = (routes: RouteRecordRaw[]): false | RouteRecordRaw => {
     const routerPaths: string[] = []
     const routers = router.getRoutes()
     routers.forEach((item) => {
@@ -51,7 +51,7 @@ export const getFirstRoute = (routes: RouteRecordRaw[], menuType = 'tab'): false
     })
     let find: boolean | RouteRecordRaw = false
     for (const key in routes) {
-        if (routes[key].meta?.type == 'menu' && routes[key].meta?.menu_type == menuType && routerPaths.indexOf(routes[key].path) !== -1) {
+        if (routes[key].meta?.type == 'menu' && routerPaths.indexOf(routes[key].path) !== -1) {
             return routes[key]
         } else if (routes[key].children && routes[key].children?.length) {
             find = getFirstRoute(routes[key].children!)
