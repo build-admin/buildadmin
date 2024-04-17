@@ -14,7 +14,7 @@
                             }"
                         >
                             <!-- 外部可以使用 :deep() 选择器修改css样式 -->
-                            <div class="com-search-col">
+                            <div class="com-search-col" :class="item.prop">
                                 <div class="com-search-col-label" v-if="item.comSearchShowLabel !== false">{{ item.label }}</div>
                                 <div class="com-search-col-input">
                                     <!-- 自定义组件/函数渲染 -->
@@ -34,7 +34,7 @@
 
                         <!-- 时间范围 -->
                         <el-col v-else-if="item.render == 'datetime' && (item.operator == 'RANGE' || item.operator == 'NOT RANGE')" :xs="24" :sm="12">
-                            <div class="com-search-col">
+                            <div class="com-search-col" :class="item.prop">
                                 <div class="com-search-col-label w16" v-if="item.comSearchShowLabel !== false">{{ item.label }}</div>
                                 <div class="com-search-col-input-range w83">
                                     <el-date-picker
@@ -56,7 +56,7 @@
                             </div>
                         </el-col>
                         <el-col v-else :xs="24" :sm="6">
-                            <div class="com-search-col">
+                            <div class="com-search-col" :class="item.prop">
                                 <div class="com-search-col-label" v-if="item.comSearchShowLabel !== false">{{ item.label }}</div>
                                 <!-- 数字范围 -->
                                 <div v-if="item.operator == 'RANGE' || item.operator == 'NOT RANGE'" class="com-search-col-input-range">
