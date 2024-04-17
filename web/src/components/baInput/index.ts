@@ -164,6 +164,8 @@ export interface InputAttr {
     valueTitle?: string
     // 返回数据类型
     dataType?: string
+    // 是否渲染为 button（radio 和 checkbox）
+    button?: boolean
     // 事件
     onPreview?: Function
     onRemove?: Function

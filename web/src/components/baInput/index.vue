@@ -62,10 +62,11 @@ export default defineComponent({
                 console.warn('请传递 ' + props.type + '的 content')
             }
             let vNode: VNode[] = []
+            const type = props.attr.button ? props.type + '-button' : props.type
             for (const key in props.data.content) {
                 vNode.push(
                     createVNode(
-                        resolveComponent('el-' + props.type),
+                        resolveComponent('el-' + type),
                         {
                             label: key,
                             ...childrenAttr,
