@@ -175,6 +175,7 @@ export default defineComponent({
                     hideSelectFile: props.attr ? props.attr.hideSelectFile || props.attr['hide-select-file'] : false,
                     attr: props.attr,
                     forceLocal: props.attr ? props.attr.forceLocal || props.attr['force-local'] : false,
+                    hideImagePlusOnOverLimit: props.attr ? props.attr.hideImagePlusOnOverLimit || props.attr['hide-image-plus-on-over-limit'] : false,
                 })
         }
 

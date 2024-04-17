@@ -3,7 +3,7 @@
         <el-upload
             ref="upload"
             class="ba-upload"
-            :class="type"
+            :class="[type, hideImagePlusOnOverLimit && state.attr.limit && state.fileList.length >= state.attr.limit ? 'hide-image-plus' : '']"
             v-model:file-list="state.fileList"
             :auto-upload="false"
             @change="onElChange"
@@ -73,6 +73,8 @@ interface Props {
     attr?: Partial<Writeable<UploadProps>>
     // 强制上传到本地存储
     forceLocal?: boolean
+    // 在上传数量达到限制时隐藏图片上传按钮
+    hideImagePlusOnOverLimit?: boolean
 }
 interface UploadFileExt extends UploadUserFile {
     serverUrl?: string
@@ -93,6 +95,7 @@ const props = withDefaults(defineProps<Props>(), {
         return {}
     },
     forceLocal: false,
+    hideImagePlusOnOverLimit: false,
 })
 
 const emits = defineEmits<{
@@ -426,5 +429,8 @@ defineExpose({
 }
 .ml-6 {
     margin-left: 6px;
+}
+.ba-upload.hide-image-plus :deep(.el-upload--picture-card) {
+    display: none;
 }
 </style>

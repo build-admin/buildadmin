@@ -146,6 +146,7 @@ export interface InputAttr {
     hideSelectFile?: boolean
     returnFullUrl?: boolean
     forceLocal?: boolean
+    hideImagePlusOnOverLimit?: boolean
     // editor属性
     height?: string
     mode?: string
