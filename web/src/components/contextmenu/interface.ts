@@ -1,5 +1,3 @@
-import type { RouteLocationNormalized } from 'vue-router'
-
 export interface Axis {
     x: number
     y: number
@@ -12,8 +10,8 @@ export interface ContextMenuItem {
     disabled?: boolean
 }
 
-export interface ContextmenuItemClickEmitArg extends ContextMenuItem {
-    menu?: RouteLocationNormalized
+export interface ContextMenuItemClickEmitArg<T = any> extends ContextMenuItem {
+    sourceData?: T
 }
 
 export interface Props {
