@@ -1,22 +1,20 @@
 <template>
-    <div>
-        <div class="nav-tabs" ref="tabScrollbarRef">
-            <div
-                v-for="(item, idx) in navTabs.state.tabsView"
-                @click="onTab(item)"
-                @contextmenu.prevent="onContextmenu(item, $event)"
-                class="ba-nav-tab"
-                :class="navTabs.state.activeIndex == idx ? 'active' : ''"
-                :ref="tabsRefs.set"
-                :key="idx"
-            >
-                {{ item.meta.title }}
-                <transition @after-leave="selectNavTab(tabsRefs[navTabs.state.activeIndex])" name="el-fade-in">
-                    <Icon v-show="navTabs.state.tabsView.length > 1" class="close-icon" @click.stop="closeTab(item)" size="15" name="el-icon-Close" />
-                </transition>
-            </div>
-            <div :style="activeBoxStyle" class="nav-tabs-active-box"></div>
+    <div class="nav-tabs" ref="tabScrollbarRef">
+        <div
+            v-for="(item, idx) in navTabs.state.tabsView"
+            @click="onTab(item)"
+            @contextmenu.prevent="onContextmenu(item, $event)"
+            class="ba-nav-tab"
+            :class="navTabs.state.activeIndex == idx ? 'active' : ''"
+            :ref="tabsRefs.set"
+            :key="idx"
+        >
+            {{ item.meta.title }}
+            <transition @after-leave="selectNavTab(tabsRefs[navTabs.state.activeIndex])" name="el-fade-in">
+                <Icon v-show="navTabs.state.tabsView.length > 1" class="close-icon" @click.stop="closeTab(item)" size="15" name="el-icon-Close" />
+            </transition>
         </div>
+        <div :style="activeBoxStyle" class="nav-tabs-active-box"></div>
         <Contextmenu ref="contextmenuRef" :items="state.contextmenuItems" @menuClick="onContextMenuClick" />
     </div>
 </template>
