@@ -16,7 +16,7 @@
                     </li>
                 </template>
             </ul>
-            <span class="el-popper__arrow" :style="{ left: `${state.arrowAxis}px` }"></span>
+            <span v-if="state.showArrow" class="el-popper__arrow" :style="{ left: `${state.arrowAxis}px` }"></span>
         </div>
     </transition>
 </template>
@@ -45,6 +45,7 @@ const state: {
         y: number
     }
     sourceData: any
+    showArrow: boolean
     arrowAxis: number
 } = reactive({
     show: false,
@@ -53,6 +54,7 @@ const state: {
         y: 0,
     },
     sourceData: null,
+    showArrow: true,
     arrowAxis: 10,
 })
 
@@ -62,7 +64,20 @@ const state: {
  * @param axis 右击坐标信息
  */
 const onShowContextmenu = (sourceData: any, axis: Axis) => {
+    state.showArrow = true
     state.sourceData = sourceData
+
+    const yOffset = document.documentElement.clientHeight - axis.y - (props.items.length * 40 + 20)
+    const xOffset = document.documentElement.clientWidth - axis.x - (props.width + 20)
+    if (yOffset < 0) {
+        axis.y += yOffset
+        state.showArrow = false
+    }
+    if (xOffset < 0) {
+        axis.x += xOffset
+        state.showArrow = false
+    }
+
     state.axis = axis
     state.show = true
 }
