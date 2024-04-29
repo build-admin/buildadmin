@@ -203,35 +203,15 @@ class Rule extends Backend
             $this->error(__('Parameter error'));
         }
 
-        $dataLimitAdminIds = $this->getDataLimitAdminIds();
-        if ($dataLimitAdminIds) {
-            $this->model->where($this->dataLimitField, 'in', $dataLimitAdminIds);
-        }
-
-        $pk      = $this->model->getPk();
-        $data    = $this->model->where($pk, 'in', $ids)->select();
+        // 子级元素检查
         $subData = $this->model->where('pid', 'in', $ids)->column('pid', 'id');
         foreach ($subData as $key => $subDatum) {
             if (!in_array($key, $ids)) {
                 $this->error(__('Please delete the child element first, or use batch deletion'));
             }
         }
-        $count = 0;
-        $this->model->startTrans();
-        try {
-            foreach ($data as $v) {
-                $count += $v->delete();
-            }
-            $this->model->commit();
-        } catch (Throwable $e) {
-            $this->model->rollback();
-            $this->error($e->getMessage());
-        }
-        if ($count) {
-            $this->success(__('Deleted successfully'));
-        } else {
-            $this->error(__('No rows were deleted'));
-        }
+
+        parent::del($ids);
     }
 
     /**
