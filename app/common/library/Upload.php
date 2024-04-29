@@ -237,19 +237,21 @@ class Upload
             'sha1'     => $this->fileInfo['sha1']
         ];
 
-        $attachment = new Attachment();
-        $attachment->data(array_filter($params));
-        $res = $attachment->save();
-        if (!$res) {
-            $attachment = Attachment::where([
-                ['sha1', '=', $params['sha1']],
-                ['topic', '=', $params['topic']],
-                ['storage', '=', $params['storage']],
-            ])->find();
+        // 附件数据入库 - 不依赖模型新增前事件，确保入库前文件已经移动完成
+        $attachment = Attachment::where('sha1', $params['sha1'])
+            ->where('topic', $params['topic'])
+            ->where('storage', $params['storage'])
+            ->find();
+        $filePath   = Filesystem::fsFit(public_path() . ltrim($params['url'], '/'));
+        if ($attachment && file_exists($filePath)) {
+            $attachment->quote++;
+            $attachment->last_upload_time = time();
         } else {
             $this->move($saveName);
+            $attachment = new Attachment();
+            $attachment->data(array_filter($params));
         }
-
+        $attachment->save();
         return $attachment->toArray();
     }
 
