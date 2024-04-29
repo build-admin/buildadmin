@@ -3,8 +3,6 @@
 namespace app\admin\controller\routine;
 
 use Throwable;
-use ba\Filesystem;
-use think\facade\Event;
 use app\common\controller\Backend;
 use app\common\model\Attachment as AttachmentModel;
 
@@ -39,22 +37,19 @@ class Attachment extends Backend
             $this->error(__('Parameter error'));
         }
 
+        $where             = [];
         $dataLimitAdminIds = $this->getDataLimitAdminIds();
         if ($dataLimitAdminIds) {
-            $this->model->where($this->dataLimitField, 'in', $dataLimitAdminIds);
+            $where[] = [$this->dataLimitField, 'in', $dataLimitAdminIds];
         }
 
-        $pk    = $this->model->getPk();
-        $data  = $this->model->where($pk, 'in', $ids)->select();
+        $pk      = $this->model->getPk();
+        $where[] = [$pk, 'in', $ids];
+
         $count = 0;
+        $data  = $this->model->where($where)->select();
         try {
             foreach ($data as $v) {
-                Event::trigger('AttachmentDel', $v);
-                $filePath = Filesystem::fsFit(public_path() . ltrim($v->url, '/'));
-                if (file_exists($filePath)) {
-                    unlink($filePath);
-                    Filesystem::delEmptyDir(dirname($filePath));
-                }
                 $count += $v->delete();
             }
         } catch (Throwable $e) {
