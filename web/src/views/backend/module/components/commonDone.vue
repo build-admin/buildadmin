@@ -34,7 +34,7 @@
                         {{ t('module.Dependency installation fail 1') }}
                         <span class="span-a" @click="showTerminal">{{ t('module.Dependency installation fail 2') }}</span>
                         {{ t('module.Dependency installation fail 3') }}
-                        <el-link target="_blank" type="primary" href="https://wonderful-code.gitee.io/guide/install/manualOperation.html">
+                        <el-link target="_blank" type="primary" href="https://doc.buildadmin.com/guide/install/manualOperation.html">
                             {{ t('module.Dependency installation fail 4') }}
                         </el-link>
                     </div>

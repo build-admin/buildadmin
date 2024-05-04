@@ -23,11 +23,11 @@
                     </el-button>
                 </el-button-group>
                 <el-button-group class="ml10">
-                    <el-button @click="navigateTo('https://wonderful-code.gitee.io/senior/module/start.html')" v-blur type="success">
+                    <el-button @click="navigateTo('https://doc.buildadmin.com/senior/module/start.html')" v-blur type="success">
                         <Icon name="fa fa-cloud-upload" color="#ffffff" size="14" />
                         <span class="table-header-operate-text">{{ t('module.Publishing module') }}</span>
                     </el-button>
-                    <el-button @click="navigateTo('https://wonderful-code.gitee.io/guide/other/appendix/getPoints.html')" v-blur type="success">
+                    <el-button @click="navigateTo('https://doc.buildadmin.com/guide/other/appendix/getPoints.html')" v-blur type="success">
                         <Icon name="fa fa-rocket" color="#ffffff" size="14" />
                         <span class="table-header-operate-text">{{ t('module.Get points') }}</span>
                     </el-button>

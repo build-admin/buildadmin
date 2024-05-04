@@ -189,7 +189,7 @@
 - 可视化CRUD：MySQL text 和 blob 类型不能有默认值
 
 ## v2.0.0-Release
-此版本有一些不兼容更新，建议在更新前参考：[v2.0.0不兼容更新](https://wonderful-code.gitee.io/guide/other/incompatibleUpdate/v200.html)
+此版本有一些不兼容更新，建议在更新前参考：[v2.0.0不兼容更新](https://doc.buildadmin.com/guide/other/incompatibleUpdate/v200.html)
 ### 新增
 - 升级到`tp8.0.0`，升级所有后端依赖
 - 升级到`vue3.3`，升级所有前端依赖
@@ -362,7 +362,7 @@
 - 修复后台因为管理员模型登录时间获取器导致登录判断报错问题
 
 ## v1.1.2-Release
-- 此版本有一些不兼容更新，建议在更新前参考：[v1.1.2不兼容更新](https://wonderful-code.gitee.io/guide/other/incompatibleUpdate/v112.html)
+- 此版本有一些不兼容更新，建议在更新前参考：[v1.1.2不兼容更新](https://doc.buildadmin.com/guide/other/incompatibleUpdate/v112.html)
 - 页面组件与页面语言包全部**按需加载**，大幅减少首屏加载大小
 - 更新系统前端的所有可更新依赖到最新稳定版本
 - 可视化CRUD增加字段名称检查

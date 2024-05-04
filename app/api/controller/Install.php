@@ -132,7 +132,7 @@ class Install extends Api
                     'name'  => __('How to solve?'),
                     'title' => __('Click to see how to solve it'),
                     'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/preparePHP.html'
+                    'url'   => 'https://doc.buildadmin.com/guide/install/preparePHP.html'
                 ]
             ];
         }
@@ -148,7 +148,7 @@ class Install extends Api
                     'name'  => __('View reason'),
                     'title' => __('Click to view the reason'),
                     'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/dirNoPermission.html'
+                    'url'   => 'https://doc.buildadmin.com/guide/install/dirNoPermission.html'
                 ]
             ];
         }
@@ -162,7 +162,7 @@ class Install extends Api
                     'name'  => __('View reason'),
                     'title' => __('Click to view the reason'),
                     'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/dirNoPermission.html'
+                    'url'   => 'https://doc.buildadmin.com/guide/install/dirNoPermission.html'
                 ]
             ];
         }
@@ -180,7 +180,7 @@ class Install extends Api
                     'name'  => __('How to solve?'),
                     'title' => __('Click to see how to solve it'),
                     'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/missingExtension.html'
+                    'url'   => 'https://doc.buildadmin.com/guide/install/missingExtension.html'
                 ]
             ];
         }
@@ -198,7 +198,7 @@ class Install extends Api
                     'name'  => __('How to solve?'),
                     'title' => __('Click to see how to solve it'),
                     'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/gdFail.html'
+                    'url'   => 'https://doc.buildadmin.com/guide/install/gdFail.html'
                 ]
             ];
         }
@@ -212,19 +212,19 @@ class Install extends Api
                     'name'  => __('View reason'),
                     'title' => __('proc_open or proc_close functions in PHP Ini is disabled'),
                     'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/disablement.html'
+                    'url'   => 'https://doc.buildadmin.com/guide/install/disablement.html'
                 ],
                 [
                     'name'  => __('How to modify'),
                     'title' => __('Click to view how to modify'),
                     'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/disablement.html'
+                    'url'   => 'https://doc.buildadmin.com/guide/install/disablement.html'
                 ],
                 [
                     'name'  => __('Security assurance?'),
                     'title' => __('Using the installation service correctly will not cause any potential security problems. Click to view the details'),
                     'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/senior.html'
+                    'url'   => 'https://doc.buildadmin.com/guide/install/senior.html'
                 ],
             ];
         }
@@ -290,7 +290,7 @@ class Install extends Api
                     'name'  => __('How to solve?'),
                     'title' => __('Click to see how to solve it'),
                     'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/prepareNpm.html'
+                    'url'   => 'https://doc.buildadmin.com/guide/install/prepareNpm.html'
                 ]
             ];
         }
@@ -357,7 +357,7 @@ class Install extends Api
                     'name'  => __('How to solve?'),
                     'title' => __('Click to see how to solve it'),
                     'type'  => 'faq',
-                    'url'   => 'https://wonderful-code.gitee.io/guide/install/prepareNodeJs.html'
+                    'url'   => 'https://doc.buildadmin.com/guide/install/prepareNodeJs.html'
                 ]
             ];
         }
