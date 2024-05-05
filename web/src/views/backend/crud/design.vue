@@ -1339,12 +1339,14 @@ const onChangeCommonModel = () => {
     onTableChange(state.table.generateRelativePath)
 }
 
-const onJoinTableChange = (val: string) => {
-    if (!val) return
-    resetRemoteSelectForm()
-    state.remoteSelectPre.form.table = val
+const onJoinTableChange = () => {
+    if (!state.remoteSelectPre.form.table) return
+
+    // 重置远程下拉信息表单
+    resetRemoteSelectForm(['table'])
+
     state.loading.remoteSelect = true
-    getTableFieldList(val, true, state.table.databaseConnection)
+    getTableFieldList(state.remoteSelectPre.form.table, true, state.table.databaseConnection)
         .then((res) => {
             state.remoteSelectPre.form.pk = res.data.pk
 
@@ -1367,7 +1369,7 @@ const onJoinTableChange = (val: string) => {
             state.loading.remoteSelect = false
         })
 
-    getFileData(val).then((res) => {
+    getFileData(state.remoteSelectPre.form.table).then((res) => {
         state.remoteSelectPre.modelFileList = res.data.modelFileList
         state.remoteSelectPre.controllerFileList = res.data.controllerFileList
 
@@ -1422,8 +1424,9 @@ const onCancelRemoteSelect = () => {
     }
 }
 
-const resetRemoteSelectForm = () => {
+const resetRemoteSelectForm = (excludes: string[] = []) => {
     for (const key in state.remoteSelectPre.form) {
+        if (excludes.includes(key)) continue
         if (key == 'joinField') {
             state.remoteSelectPre.form[key] = []
         } else {
