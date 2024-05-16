@@ -175,6 +175,7 @@ class Manage
                 'uid'           => $info['uid'],
                 'sysVersion'    => Config::get('buildadmin.version'),
                 'nuxtVersion'   => Server::getNuxtVersion(),
+                'moduleVersion' => $info['version'],
                 'ba-user-token' => $token,
                 'installed'     => Server::getInstalledIds($this->installDir),
                 'server'        => 1,
