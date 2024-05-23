@@ -217,12 +217,16 @@ class Filesystem
 
         $fileList = [];
         foreach ($files as $file) {
-            if (!$file->isDir() && in_array($file->getExtension(), $suffix)) {
-                $filePath        = $file->getRealPath();
-                $name            = str_replace($dir, '', $filePath);
-                $name            = str_replace(DIRECTORY_SEPARATOR, "/", $name);
-                $fileList[$name] = $name;
+            if ($file->isDir()) {
+                continue;
             }
+            if (!empty($suffix) && !in_array($file->getExtension(), $suffix)) {
+                continue;
+            }
+            $filePath        = $file->getRealPath();
+            $name            = str_replace($dir, '', $filePath);
+            $name            = str_replace(DIRECTORY_SEPARATOR, "/", $name);
+            $fileList[$name] = $name;
         }
         return $fileList;
     }
