@@ -11,7 +11,7 @@ class UserRule extends model
 {
     protected $autoWriteTimestamp = true;
 
-    protected static function onAfterInsert($model)
+    protected static function onAfterInsert($model): void
     {
         $pk = $model->getPk();
         $model->where($pk, $model[$pk])->update(['weigh' => $model[$pk]]);

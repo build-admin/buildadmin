@@ -64,7 +64,7 @@ class Email extends PHPMailer
         }
     }
 
-    public function setSubject($subject)
+    public function setSubject($subject): void
     {
         $this->Subject = "=?utf-8?B?" . base64_encode($subject) . "?=";
     }

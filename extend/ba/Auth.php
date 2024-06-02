@@ -125,10 +125,8 @@ class Auth
                     // 如果节点相符且url参数满足
                     $list[] = $rule;
                 }
-            } else {
-                if (in_array($rule, $name)) {
-                    $list[] = $rule;
-                }
+            } elseif (in_array($rule, $name)) {
+                $list[] = $rule;
             }
         }
         if ('or' == $relation && !empty($list)) {

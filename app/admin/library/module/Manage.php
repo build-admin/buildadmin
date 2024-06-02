@@ -553,10 +553,8 @@ class Manage
                     if (!is_dir($backupsFile)) {
                         mkdir($backupsFile, 0755, true);
                     }
-                } else {
-                    if (!in_array($backupsFile, $unrecoverableFiles)) {
-                        copy($item, $backupsFile);
-                    }
+                } elseif (!in_array($backupsFile, $unrecoverableFiles)) {
+                    copy($item, $backupsFile);
                 }
             }
         }
@@ -783,11 +781,9 @@ class Manage
                 $destDirItem = Filesystem::fsFit($destDir . DIRECTORY_SEPARATOR . str_replace($baseDir, '', $item->getPathname()));
                 if ($item->isDir()) {
                     Filesystem::mkdir($destDirItem);
-                } else {
-                    if (!in_array(str_replace(root_path(), '', $destDirItem), $discardFiles)) {
-                        Filesystem::mkdir(dirname($destDirItem));
-                        copy($item, $destDirItem);
-                    }
+                } elseif (!in_array(str_replace(root_path(), '', $destDirItem), $discardFiles)) {
+                    Filesystem::mkdir(dirname($destDirItem));
+                    copy($item, $destDirItem);
                 }
             }
             // 纯净模式

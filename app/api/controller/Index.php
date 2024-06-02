@@ -33,7 +33,7 @@ class Index extends Frontend
             foreach ($userMenus as $item) {
                 if ($item['type'] == 'menu_dir') {
                     $menus[] = $item;
-                } else if ($item['type'] != 'menu') {
+                } elseif ($item['type'] != 'menu') {
                     $rules[] = $item;
                 }
             }

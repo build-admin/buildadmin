@@ -351,12 +351,10 @@ class Helper
                 $item = str_replace(['"', "'"], '', $item);
             }
             return ['values' => $dataTypeLimit];
-        } else {
-            if ($dataTypeLimit && $dataTypeLimit[0]) {
-                return ['limit' => $dataTypeLimit[0]];
-            } elseif (isset($field['length'])) {
-                return ['limit' => $field['length']];
-            }
+        } elseif ($dataTypeLimit && $dataTypeLimit[0]) {
+            return ['limit' => $dataTypeLimit[0]];
+        } elseif (isset($field['length'])) {
+            return ['limit' => $field['length']];
         }
         return [];
     }
@@ -588,13 +586,11 @@ class Helper
                     $pathArr[] = $item;
                 }
             }
+        } elseif (isset(self::$parseNamePresets[$type]) && array_key_exists($table, self::$parseNamePresets[$type])) {
+            $pathArr = self::$parseNamePresets[$type][$table];
         } else {
-            if (isset(self::$parseNamePresets[$type]) && array_key_exists($table, self::$parseNamePresets[$type])) {
-                $pathArr = self::$parseNamePresets[$type][$table];
-            } else {
-                $table   = str_replace(['.', '/', '\\', '_'], '/', $table);
-                $pathArr = explode('/', $table);
-            }
+            $table   = str_replace(['.', '/', '\\', '_'], '/', $table);
+            $pathArr = explode('/', $table);
         }
         $originalLastName = array_pop($pathArr);
         $pathArr          = array_map('strtolower', $pathArr);
@@ -641,13 +637,11 @@ class Helper
                     $pathArr[] = $item;
                 }
             }
+        } elseif (array_key_exists($table, self::$parseWebDirPresets[$type])) {
+            $pathArr = self::$parseWebDirPresets[$type][$table];
         } else {
-            if (array_key_exists($table, self::$parseWebDirPresets[$type])) {
-                $pathArr = self::$parseWebDirPresets[$type][$table];
-            } else {
-                $table   = str_replace(['.', '/', '\\', '_'], '/', $table);
-                $pathArr = explode('/', $table);
-            }
+            $table   = str_replace(['.', '/', '\\', '_'], '/', $table);
+            $pathArr = explode('/', $table);
         }
         $originalLastName = array_pop($pathArr);
         $pathArr          = array_map('strtolower', $pathArr);
@@ -1152,14 +1146,12 @@ class Helper
             }
             $itemJson = rtrim($itemJson, ',');
             $itemJson .= ' }';
+        } elseif ($item === 'false' || $item === 'true') {
+            $itemJson = ' ' . $key . ': ' . $item . ',';
+        } elseif (in_array($key, ['label', 'width', 'buttons'], true) || str_starts_with($item, "t('") || str_starts_with($item, "t(\"")) {
+            $itemJson = ' ' . $key . ': ' . $item . ',';
         } else {
-            if ($item === 'false' || $item === 'true') {
-                $itemJson = ' ' . $key . ': ' . $item . ',';
-            } elseif (in_array($key, ['label', 'width', 'buttons'], true) || str_starts_with($item, "t('") || str_starts_with($item, "t(\"")) {
-                $itemJson = ' ' . $key . ': ' . $item . ',';
-            } else {
-                $itemJson = ' ' . $key . ': \'' . $item . '\',';
-            }
+            $itemJson = ' ' . $key . ': \'' . $item . '\',';
         }
         return $itemJson;
     }

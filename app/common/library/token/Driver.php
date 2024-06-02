@@ -28,14 +28,14 @@ abstract class Driver
      * @param ?int   $expire 过期时间
      * @return bool
      */
-    abstract function set(string $token, string $type, int $userId, int $expire = null): bool;
+    abstract public function set(string $token, string $type, int $userId, int $expire = null): bool;
 
     /**
      * 获取 token 的数据
      * @param string $token Token
      * @return array
      */
-    abstract function get(string $token): array;
+    abstract public function get(string $token): array;
 
     /**
      * 检查token是否有效
@@ -44,14 +44,14 @@ abstract class Driver
      * @param int    $userId
      * @return bool
      */
-    abstract function check(string $token, string $type, int $userId): bool;
+    abstract public function check(string $token, string $type, int $userId): bool;
 
     /**
      * 删除一个token
      * @param string $token
      * @return bool
      */
-    abstract function delete(string $token): bool;
+    abstract public function delete(string $token): bool;
 
     /**
      * 清理一个用户的所有token
@@ -59,7 +59,7 @@ abstract class Driver
      * @param int    $userId
      * @return bool
      */
-    abstract function clear(string $type, int $userId): bool;
+    abstract public function clear(string $type, int $userId): bool;
 
     /**
      * 返回句柄对象

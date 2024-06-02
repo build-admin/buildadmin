@@ -36,7 +36,7 @@ class Redis extends Driver
         if (!empty($options)) {
             $this->options = array_merge($this->options, $options);
         }
-        $this->handler = new \Redis;
+        $this->handler = new \Redis();
         if ($this->options['persistent']) {
             $this->handler->pconnect($this->options['host'], $this->options['port'], $this->options['timeout'], 'persistent_id_' . $this->options['select']);
         } else {

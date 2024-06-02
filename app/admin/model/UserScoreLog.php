@@ -21,7 +21,7 @@ class UserScoreLog extends model
      * 入库前
      * @throws Throwable
      */
-    public static function onBeforeInsert($model)
+    public static function onBeforeInsert($model): void
     {
         $user = User::where('id', $model->user_id)->lock(true)->find();
         if (!$user) {

@@ -79,7 +79,7 @@ class Admin extends Backend
             if ($this->modelValidate) {
                 try {
                     $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
-                    $validate = new $validate;
+                    $validate = new $validate();
                     $validate->scene('add')->check($data);
                 } catch (Throwable $e) {
                     $this->error($e->getMessage());
@@ -151,7 +151,7 @@ class Admin extends Backend
             if ($this->modelValidate) {
                 try {
                     $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
-                    $validate = new $validate;
+                    $validate = new $validate();
                     $validate->scene('edit')->check($data);
                 } catch (Throwable $e) {
                     $this->error($e->getMessage());

@@ -45,10 +45,12 @@ class Token
         $name = $name ?: $this->getDefaultDriver();
 
         if (is_null($name)) {
-            throw new InvalidArgumentException(sprintf(
-                'Unable to resolve NULL driver for [%s].',
-                static::class
-            ));
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Unable to resolve NULL driver for [%s].',
+                    static::class
+                )
+            );
         }
 
         return $this->createDriver($name);

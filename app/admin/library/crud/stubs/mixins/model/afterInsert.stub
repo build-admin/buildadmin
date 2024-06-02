@@ -1,5 +1,5 @@
 
-    protected static function onAfterInsert($model)
+    protected static function onAfterInsert($model): void
     {
         if ($model->{%field%} == 0) {
             $pk = $model->getPk();

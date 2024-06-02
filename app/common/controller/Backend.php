@@ -211,16 +211,14 @@ class Backend extends Api
             if (!empty($order[0]) && !empty($order[1]) && ($order[1] == 'asc' || $order[1] == 'desc')) {
                 $order = [$order[0] => $order[1]];
             }
+        } elseif (is_array($this->defaultSortField)) {
+            $order = $this->defaultSortField;
         } else {
-            if (is_array($this->defaultSortField)) {
-                $order = $this->defaultSortField;
+            $order = explode(',', $this->defaultSortField);
+            if (!empty($order[0]) && !empty($order[1])) {
+                $order = [$order[0] => $order[1]];
             } else {
-                $order = explode(',', $this->defaultSortField);
-                if (!empty($order[0]) && !empty($order[1])) {
-                    $order = [$order[0] => $order[1]];
-                } else {
-                    $order = [$pk => 'desc'];
-                }
+                $order = [$pk => 'desc'];
             }
         }
 

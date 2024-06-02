@@ -27,7 +27,7 @@ class Log extends Backend
     public function initialize(): void
     {
         parent::initialize();
-        $this->model = new CrudLog;
+        $this->model = new CrudLog();
 
         if (!$this->auth->check('crud/crud/index')) {
             $this->error(__('You have no permission'), [], 401);

@@ -8,12 +8,12 @@ use app\admin\library\module\Server;
 
 class moduleService extends Service
 {
-    public function register()
+    public function register(): void
     {
         $this->moduleAppInit();
     }
 
-    public function moduleAppInit()
+    public function moduleAppInit(): void
     {
         $installed = Server::installedList(root_path() . 'modules' . DIRECTORY_SEPARATOR);
         foreach ($installed as $item) {

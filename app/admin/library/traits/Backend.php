@@ -80,7 +80,7 @@ trait Backend
                 if ($this->modelValidate) {
                     $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
                     if (class_exists($validate)) {
-                        $validate = new $validate;
+                        $validate = new $validate();
                         if ($this->modelSceneValidate) $validate->scene('add');
                         $validate->check($data);
                     }
@@ -133,7 +133,7 @@ trait Backend
                 if ($this->modelValidate) {
                     $validate = str_replace("\\model\\", "\\validate\\", get_class($this->model));
                     if (class_exists($validate)) {
-                        $validate = new $validate;
+                        $validate = new $validate();
                         if ($this->modelSceneValidate) $validate->scene('edit');
                         $data[$pk] = $row[$pk];
                         $validate->check($data);

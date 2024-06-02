@@ -13,12 +13,12 @@ use DateTimeInterface;
  */
 class Date
 {
-    const YEAR   = 31536000;
-    const MONTH  = 2592000;
-    const WEEK   = 604800;
-    const DAY    = 86400;
-    const HOUR   = 3600;
-    const MINUTE = 60;
+    private const YEAR   = 31536000;
+    private const MONTH  = 2592000;
+    private const WEEK   = 604800;
+    private const DAY    = 86400;
+    private const HOUR   = 3600;
+    private const MINUTE = 60;
 
     /**
      * 计算两个时区间相差的时长,单位为秒

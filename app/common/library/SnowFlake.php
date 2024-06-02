@@ -11,12 +11,12 @@ class SnowFlake
      * 起始时间戳
      * @var int
      */
-    const EPOCH = 1672502400000;
+    private const EPOCH = 1672502400000;
 
     /**
      * @var int
      */
-    const max41bit = 1099511627775;
+    private const max41bit = 1099511627775;
 
     /**
      * 机器节点 10bit
