@@ -40,9 +40,9 @@
 
     <!-- tag -->
     <div v-if="field.render == 'tag' && fieldValue !== ''">
-        <el-tag :type="getTagType(fieldValue, field.custom)" :effect="field.effect ?? 'light'" :size="field.size ?? 'default'">{{
-            field.replaceValue ? field.replaceValue[fieldValue] : fieldValue
-        }}</el-tag>
+        <el-tag :type="getTagType(fieldValue, field.custom)" :effect="field.effect ?? 'light'" :size="field.size ?? 'default'">
+            {{ field.replaceValue ? field.replaceValue[fieldValue] : fieldValue }}
+        </el-tag>
     </div>
 
     <!-- tags -->
@@ -251,7 +251,7 @@ const onButtonClick = (btn: OptButton) => {
 }
 
 const getTagType = (value: string, custom: any): TagProps['type'] => {
-    return custom && custom[value] ? custom[value] : ''
+    return custom && custom[value] ? custom[value] : 'primary'
 }
 </script>
 

@@ -116,8 +116,8 @@
                                         v-model="state.table.isCommonModel"
                                         :label="t('crud.crud.Common model')"
                                         size="small"
-                                        :true-label="1"
-                                        :false-label="0"
+                                        :true-value="1"
+                                        :false-value="0"
                                     />
                                 </template>
                             </el-input>

@@ -1,22 +1,22 @@
 {
     "compilerOptions": {
-        "target": "esnext",
+        "target": "ESNext",
+        "module": "ESNext",
+        "lib": ["ESNext", "DOM"],
         "useDefineForClassFields": true,
-        "module": "esnext",
-        "moduleResolution": "node",
-        "removeComments": false,
+        "moduleResolution": "Bundler",
         "strict": true,
         "jsx": "preserve",
         "sourceMap": false,
         "resolveJsonModule": true,
         "esModuleInterop": true,
-        "lib": ["esnext", "dom"],
         "isolatedModules": true,
         "baseUrl": "./",
+        "allowJs": true,
         "paths": {
             "/@/*": ["src/*"]
         },
-        "types": ["element-plus/global"]
+        "types": ["vite/client", "element-plus/global"]
     },
-    "exclude": ["node_modules"]
+    "include": ["src/**/*.ts", "src/**/*.vue", "types/**/*.d.ts", "vite.config.ts"]
 }

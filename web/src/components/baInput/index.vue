@@ -9,6 +9,7 @@ import IconSelector from '/@/components/baInput/components/iconSelector.vue'
 import Editor from '/@/components/baInput/components/editor.vue'
 import BaUpload from '/@/components/baInput/components/baUpload.vue'
 import { getArea } from '/@/api/common'
+import { isArray } from 'lodash-es'
 
 export default defineComponent({
     name: 'baInput',
@@ -59,21 +60,30 @@ export default defineComponent({
         // radio checkbox
         const rc = () => {
             if (!props.data || !props.data.content) {
-                console.warn('请传递 ' + props.type + '的 content')
+                console.warn('请传递 ' + props.type + ' 的 content')
             }
             let vNode: VNode[] = []
+            const contentIsArray = isArray(props.data.content)
             const type = props.attr.button ? props.type + '-button' : props.type
             for (const key in props.data.content) {
-                vNode.push(
-                    createVNode(
-                        resolveComponent('el-' + type),
-                        {
-                            label: key,
-                            ...childrenAttr,
-                        },
-                        () => props.data.content[key]
-                    )
-                )
+                let nodeProps = {}
+                if (contentIsArray) {
+                    if (typeof props.data.content[key].value == 'number') {
+                        console.warn(props.type + ' 的 content.value 不能是数字')
+                    }
+
+                    nodeProps = {
+                        ...props.data.content[key],
+                        ...childrenAttr,
+                    }
+                } else {
+                    nodeProps = {
+                        value: key,
+                        label: props.data.content[key],
+                        ...childrenAttr,
+                    }
+                }
+                vNode.push(createVNode(resolveComponent('el-' + type), nodeProps))
             }
             return () => {
                 const valueComputed = computed(() => {

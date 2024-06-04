@@ -16,7 +16,7 @@
                                         <el-radio-group size="large" v-model="state.form.registerType">
                                             <el-radio
                                                 class="register-verification-radio"
-                                                label="email"
+                                                value="email"
                                                 :disabled="!state.accountVerificationType.includes('email')"
                                                 border
                                             >
@@ -24,7 +24,7 @@
                                             </el-radio>
                                             <el-radio
                                                 class="register-verification-radio"
-                                                label="mobile"
+                                                value="mobile"
                                                 :disabled="!state.accountVerificationType.includes('mobile')"
                                                 border
                                             >
@@ -191,10 +191,10 @@
                 >
                     <el-form-item :label="t('user.login.Retrieval method')">
                         <el-radio-group v-model="state.retrievePasswordForm.type">
-                            <el-radio label="email" :disabled="!state.accountVerificationType.includes('email')" border>
+                            <el-radio value="email" :disabled="!state.accountVerificationType.includes('email')" border>
                                 {{ t('user.login.Via email') }}
                             </el-radio>
-                            <el-radio label="mobile" :disabled="!state.accountVerificationType.includes('mobile')" border>
+                            <el-radio value="mobile" :disabled="!state.accountVerificationType.includes('mobile')" border>
                                 {{ t('user.login.Via mobile number') }}
                             </el-radio>
                         </el-radio-group>

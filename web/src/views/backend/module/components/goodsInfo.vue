@@ -13,7 +13,9 @@
                     <div class="goods-basic">
                         <h4 class="goods-basic-title">{{ state.goodsInfo.title }}</h4>
                         <div class="goods-tag">
-                            <el-tag v-for="(tag, idx) in state.goodsInfo.tags" :key="idx" :type="tag.type">{{ tag.name }}</el-tag>
+                            <el-tag v-for="(tag, idx) in state.goodsInfo.tags" :key="idx" :type="tag.type ? tag.type : 'primary'">
+                                {{ tag.name }}
+                            </el-tag>
                         </div>
                         <div class="basic-item">
                             <div class="basic-item-title">{{ t('module.Price') }}</div>

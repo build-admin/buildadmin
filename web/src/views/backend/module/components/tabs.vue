@@ -20,7 +20,7 @@
                             />
                             <div class="goods-footer">
                                 <div class="goods-tag" v-if="item.tags && item.tags.length > 0">
-                                    <el-tag v-for="(tag, idx) in item.tags" :type="tag.type" :key="idx">{{ tag.name }}</el-tag>
+                                    <el-tag v-for="(tag, idx) in item.tags" :type="tag.type ? tag.type : 'primary'" :key="idx">{{ tag.name }}</el-tag>
                                 </div>
                                 <div class="goods-title">
                                     {{ item.title }}
@@ -34,7 +34,9 @@
                                         <span class="current-price">{{ currency(item.present_price, item.currency_select) }}</span>
                                     </span>
                                     <div v-else class="goods-price">
-                                        <el-tag effect="dark" :type="item.stateTag.type">{{ item.stateTag.text }}</el-tag>
+                                        <el-tag effect="dark" :type="item.stateTag.type ? item.stateTag.type : 'primary'">
+                                            {{ item.stateTag.text }}
+                                        </el-tag>
                                     </div>
                                 </div>
                             </div>

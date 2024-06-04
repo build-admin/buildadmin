@@ -117,15 +117,16 @@ body,
 .ba-operate-dialog {
     overflow: hidden;
     border-radius: var(--el-border-radius-base);
+    padding-bottom: 52px;
 }
 .ba-operate-dialog .el-dialog__header {
-    padding-bottom: 16px;
     border-bottom: 1px solid var(--ba-bg-color);
+    .el-dialog__headerbtn {
+        top: 4px;
+    }
 }
 .ba-operate-dialog .el-dialog__body {
-    height: 60vh;
-    padding-top: 0;
-    padding-bottom: 52px;
+    height: 58vh;
 }
 .ba-operate-dialog .el-dialog__footer {
     padding: 10px var(--el-dialog-padding-primary);
@@ -133,6 +134,7 @@ body,
     position: absolute;
     width: 100%;
     bottom: 0;
+    left: 0;
 }
 .ba-operate-form {
     padding-top: 20px;
