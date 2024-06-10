@@ -168,9 +168,6 @@ export default class baTable {
      */
     toggleForm = (operate = '', operateIds: string[] = []) => {
         if (this.runBefore('toggleForm', { operate, operateIds }) === false) return
-        if (this.form.ref) {
-            this.form.ref.resetFields()
-        }
         if (operate == 'Edit') {
             if (!operateIds.length) {
                 return false
