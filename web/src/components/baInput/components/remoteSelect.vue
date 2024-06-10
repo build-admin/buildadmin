@@ -145,6 +145,9 @@ const emits = defineEmits<{
 }>()
 
 const onChangeSelect = (val: valueTypes) => {
+    if (!val) {
+        state.value = val = props.multiple ? [] : ''
+    }
     emits('update:modelValue', val)
     if (typeof instance?.vnode.props?.onRow == 'function') {
         if (typeof val == 'number' || typeof val == 'string') {
