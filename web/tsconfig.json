@@ -13,6 +13,7 @@
         "isolatedModules": true,
         "baseUrl": "./",
         "allowJs": true,
+        "skipLibCheck": true,
         "paths": {
             "/@/*": ["src/*"]
         },
