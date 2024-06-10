@@ -9,25 +9,25 @@
             :visible="state.focusStatus && !state.loading && !state.keyword && !state.options.length"
             :teleported="false"
             :content="$t('utils.No data')"
+            :hide-after="0"
         >
             <template #reference>
                 <el-select
                     ref="selectRef"
                     class="w100"
-                    @focus="onFocus"
-                    @blur="onBlur"
-                    :loading="state.loading || state.accidentBlur"
-                    :filterable="true"
-                    :remote="true"
+                    remote
                     clearable
+                    filterable
+                    automatic-dropdown
                     remote-show-suffix
-                    :remote-method="onLogKeyword"
                     v-model="state.value"
-                    @change="onChangeSelect"
-                    :multiple="multiple"
-                    :key="state.selectKey"
+                    :loading="state.loading"
+                    :disabled="props.disabled || !state.initializeFlag"
+                    @blur="onBlur"
+                    @focus="onFocus"
                     @clear="onClear"
-                    @visible-change="onVisibleChange"
+                    @change="onChangeSelect"
+                    :remote-method="onRemoteMethod"
                     v-bind="$attrs"
                 >
                     <el-option
@@ -44,42 +44,48 @@
                             <div>{{ item[field] }}</div>
                         </el-tooltip>
                     </el-option>
-                    <el-pagination
-                        v-if="state.total"
-                        :currentPage="state.currentPage"
-                        :page-size="state.pageSize"
-                        class="select-pagination"
-                        layout="->, prev, next"
-                        :total="state.total"
-                        @current-change="onSelectCurrentPageChange"
-                    />
+                    <template v-if="state.total && props.pagination" #footer>
+                        <el-pagination
+                            :currentPage="state.currentPage"
+                            :page-size="state.pageSize"
+                            :pager-count="5"
+                            class="select-pagination"
+                            :layout="props.paginationLayout"
+                            :total="state.total"
+                            @current-change="onSelectCurrentPageChange"
+                            :small="config.layout.shrink"
+                        />
+                    </template>
                 </el-select>
             </template>
         </el-popover>
     </div>
 </template>
 
-<script setup lang="ts">
-import { reactive, watch, onMounted, onUnmounted, ref, nextTick, getCurrentInstance, toRaw } from 'vue'
-import { getSelectData } from '/@/api/common'
-import { uuid } from '/@/utils/random'
+<script lang="ts" setup>
 import type { ElSelect } from 'element-plus'
-import { isEmpty } from 'lodash-es'
+import { debounce, isEmpty } from 'lodash-es'
+import { getCurrentInstance, nextTick, onMounted, onUnmounted, reactive, ref, toRaw, watch } from 'vue'
+import { getSelectData } from '/@/api/common'
+import { useConfig } from '/@/stores/config'
 import { getArrayKey } from '/@/utils/common'
+import { shortUuid } from '/@/utils/random'
 
+const config = useConfig()
 const selectRef = ref<InstanceType<typeof ElSelect> | undefined>()
 type ElSelectProps = Partial<InstanceType<typeof ElSelect>['$props']>
-type valType = string | number | string[] | number[]
+type valueTypes = string | number | string[] | number[]
 
 interface Props extends /* @vue-ignore */ ElSelectProps {
     pk?: string
     field?: string
     params?: anyObj
-    multiple?: boolean
     remoteUrl: string
-    modelValue: valType
-    labelFormatter?: (optionData: anyObj, optionKey: string) => string
+    modelValue: valueTypes
+    pagination?: boolean
     tooltipParams?: anyObj
+    paginationLayout?: string
+    labelFormatter?: (optionData: anyObj, optionKey: string) => string
 }
 const props = withDefaults(defineProps<Props>(), {
     pk: 'id',
@@ -89,10 +95,12 @@ const props = withDefaults(defineProps<Props>(), {
     },
     remoteUrl: '',
     modelValue: '',
-    multiple: false,
     tooltipParams: () => {
         return {}
     },
+    pagination: true,
+    paginationLayout: 'total, ->, prev, pager, next',
+    disabled: false,
 })
 
 const state: {
@@ -105,10 +113,9 @@ const state: {
     pageSize: number
     params: anyObj
     keyword: string
-    value: valType
-    selectKey: string
-    initializeData: boolean
-    accidentBlur: boolean
+    value: valueTypes
+    initializeFlag: boolean
+    optionValidityFlag: boolean
     focusStatus: boolean
 } = reactive({
     primaryKey: props.pk,
@@ -120,32 +127,29 @@ const state: {
     params: props.params,
     keyword: '',
     value: props.modelValue ? props.modelValue : '',
-    selectKey: uuid(),
-    initializeData: false,
-    accidentBlur: false,
+    initializeFlag: false,
+    optionValidityFlag: false,
     focusStatus: false,
 })
 
-let io: null | IntersectionObserver = null
+let io: IntersectionObserver | null = null
 const instance = getCurrentInstance()
 
 const emits = defineEmits<{
-    (e: 'update:modelValue', value: valType): void
+    (e: 'update:modelValue', value: valueTypes): void
     (e: 'row', value: any): void
 }>()
 
-const onChangeSelect = (val: valType) => {
+const onChangeSelect = (val: valueTypes) => {
     emits('update:modelValue', val)
     if (typeof instance?.vnode.props?.onRow == 'function') {
-        let pkArr = props.pk.split('.')
-        let pk = pkArr[pkArr.length - 1]
         if (typeof val == 'number' || typeof val == 'string') {
-            const dataKey = getArrayKey(state.options, pk, val.toString())
+            const dataKey = getArrayKey(state.options, state.primaryKey, '' + val)
             emits('row', dataKey ? toRaw(state.options[dataKey]) : {})
         } else {
             const valueArr = []
             for (const key in val) {
-                let dataKey = getArrayKey(state.options, pk, val[key].toString())
+                let dataKey = getArrayKey(state.options, state.primaryKey, '' + val[key])
                 if (dataKey) valueArr.push(toRaw(state.options[dataKey]))
             }
             emits('row', valueArr)
@@ -153,77 +157,54 @@ const onChangeSelect = (val: valType) => {
     }
 }
 
-const onVisibleChange = (val: boolean) => {
-    // 保持面板状态和焦点状态一致
-    if (!val) {
-        nextTick(() => {
-            selectRef.value?.blur()
-        })
-    }
-}
-
 const onFocus = () => {
     state.focusStatus = true
-    if (selectRef.value?.query != state.keyword) {
-        state.keyword = ''
-        state.initializeData = false
-        // el-select 自动清理搜索词会产生意外的脱焦
-        state.accidentBlur = true
-    }
-    if (!state.initializeData) {
+    if (!state.optionValidityFlag) {
         getData()
     }
-}
-
-const onBlur = () => {
-    state.focusStatus = false
 }
 
 const onClear = () => {
-    state.keyword = ''
-    state.initializeData = false
+    // 点击清理按钮后，输入框呈聚焦状态，但选项面板不会展开，特此处理
+    nextTick(() => {
+        selectRef.value?.focus()
+        selectRef.value?.$el.click()
+    })
 }
 
-const onLogKeyword = (q: string) => {
+const onBlur = () => {
+    state.keyword = ''
+    state.focusStatus = false
+}
+
+const onRemoteMethod = debounce((q: string) => {
     if (state.keyword != q) {
         state.keyword = q
+        state.currentPage = 1
         getData()
     }
-}
+}, 300)
 
-const getData = (initValue: valType = '') => {
+const getData = (initValue: valueTypes = '') => {
     state.loading = true
     state.params.page = state.currentPage
     state.params.initKey = props.pk
     state.params.initValue = initValue
     getSelectData(props.remoteUrl, state.keyword, state.params)
         .then((res) => {
-            let initializeData = true
             let opts = res.data.options ? res.data.options : res.data.list
-            if (typeof props.labelFormatter == 'function') {
+            if (typeof props.labelFormatter === 'function') {
                 for (const key in opts) {
                     opts[key][props.field] = props.labelFormatter(opts[key], key)
                 }
             }
             state.options = opts
             state.total = res.data.total ?? 0
-            if (initValue) {
-                // 重新渲染组件,确保在赋值前,opts已加载到-兼容 modelValue 更新
-                state.selectKey = uuid()
-                initializeData = false
-            }
-            state.loading = false
-            state.initializeData = initializeData
-            if (state.accidentBlur) {
-                nextTick(() => {
-                    const inputEl = selectRef.value?.$el.querySelector('.el-select__tags .el-select__input')
-                    inputEl && inputEl.focus()
-                    state.accidentBlur = false
-                })
-            }
+            state.optionValidityFlag = state.keyword || (typeof initValue === 'object' ? !isEmpty(initValue) : initValue) ? false : true
         })
-        .catch(() => {
+        .finally(() => {
             state.loading = false
+            state.initializeFlag = true
         })
 }
 
@@ -232,25 +213,31 @@ const onSelectCurrentPageChange = (val: number) => {
     getData()
 }
 
+/**
+ * 初始化默认值
+ */
 const initDefaultValue = () => {
     if (state.value) {
-        // number[]转string[]确保默认值能够选中
+        // number[] 转 string[] 确保默认值能够选中
         if (typeof state.value === 'object') {
-            for (const key in state.value as string[]) {
-                state.value[key] = state.value[key].toString()
+            for (const key in state.value) {
+                state.value[key] = '' + state.value[key]
             }
         } else if (typeof state.value === 'number') {
-            state.value = state.value.toString()
+            state.value = '' + state.value
         }
-        getData(state.value)
     }
+
+    getData(state.value)
 }
 
 onMounted(() => {
-    if (props.pk.indexOf('.') > 0) {
-        let pk = props.pk.split('.')
-        state.primaryKey = pk[1] ? pk[1] : pk[0]
-    }
+    // 避免两个远程下拉组件共存时，可能带来的重复请求自动取消
+    state.params.uuid = shortUuid()
+
+    // 去除主键中的表名
+    let pkArr = props.pk.split('.')
+    state.primaryKey = pkArr[pkArr.length - 1]
     initDefaultValue()
 
     setTimeout(() => {
@@ -274,6 +261,10 @@ onUnmounted(() => {
 watch(
     () => props.modelValue,
     (newVal) => {
+        /**
+         * 1. 防止 number 到 string 的类型转换触发默认值多次初始化
+         * 2. 排除默认值的 null、undefined 等假值
+         */
         if (String(state.value) != String(newVal)) {
             state.value = newVal ? newVal : ''
             initDefaultValue()
@@ -281,7 +272,7 @@ watch(
     }
 )
 
-const getSelectRef = () => {
+const getRef = () => {
     return selectRef.value
 }
 
@@ -296,12 +287,14 @@ const blur = () => {
 defineExpose({
     blur,
     focus,
-    getSelectRef,
+    getRef,
 })
 </script>
 
 <style scoped lang="scss">
 :deep(.remote-select-popper) {
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
     text-align: center;
 }
 .remote-select-option {
