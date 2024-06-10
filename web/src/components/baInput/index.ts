@@ -123,6 +123,7 @@ export interface InputAttr {
     field?: string
     remoteUrl?: string
     tooltipParams?: anyObj
+    escBlur?: boolean
     // 图标选择器属性
     showIconName?: boolean
     placement?: string

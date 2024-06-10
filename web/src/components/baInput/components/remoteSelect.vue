@@ -27,6 +27,7 @@
                     @focus="onFocus"
                     @clear="onClear"
                     @change="onChangeSelect"
+                    @keydown.esc.capture="onKeyDownEsc"
                     :remote-method="onRemoteMethod"
                     v-bind="$attrs"
                 >
@@ -86,6 +87,8 @@ interface Props extends /* @vue-ignore */ ElSelectProps {
     tooltipParams?: anyObj
     paginationLayout?: string
     labelFormatter?: (optionData: anyObj, optionKey: string) => string
+    // 按下 ESC 键时直接使下拉框脱焦（默认是清理搜索词或关闭下拉面板，并且不会脱焦，造成 dialog 的按下 ESC 关闭失效）
+    escBlur?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
     pk: 'id',
@@ -101,6 +104,7 @@ const props = withDefaults(defineProps<Props>(), {
     pagination: true,
     paginationLayout: 'total, ->, prev, pager, next',
     disabled: false,
+    escBlur: true,
 })
 
 const state: {
@@ -157,6 +161,16 @@ const onChangeSelect = (val: valueTypes) => {
     }
 }
 
+const onKeyDownEsc = (e: KeyboardEvent) => {
+    if (props.escBlur) {
+        e.stopPropagation()
+        selectRef.value?.blur()
+
+        // 以上的 blur 与预期不符，额外找到内部的 input 再执行一次（element-plus 2.7.4）
+        selectRef.value?.inputRef?.blur()
+    }
+}
+
 const onFocus = () => {
     state.focusStatus = true
     if (!state.optionValidityFlag) {
@@ -165,9 +179,11 @@ const onFocus = () => {
 }
 
 const onClear = () => {
-    // 点击清理按钮后，输入框呈聚焦状态，但选项面板不会展开，特此处理
+    // 点击清理按钮后，内部 input 呈聚焦状态，但选项面板不会展开，特此处理（element-plus 2.7.4）
     nextTick(() => {
         selectRef.value?.focus()
+
+        // 以上的 focus 任然与预期不符，直接触发一次点击事件
         selectRef.value?.$el.click()
     })
 }
