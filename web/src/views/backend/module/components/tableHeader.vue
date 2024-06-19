@@ -42,7 +42,7 @@
                 <el-input
                     v-model="state.table.params.quickSearch"
                     class="xs-hidden"
-                    @input="debounce(onSearchInput, 500)()"
+                    @input="onSearchInput"
                     :placeholder="t('module.Search is actually very simple')"
                 />
             </div>
@@ -51,10 +51,10 @@
 </template>
 
 <script setup lang="ts">
-import { state } from '../store'
-import { loadData, onRefreshTableData } from '../index'
+import { debounce } from 'lodash-es'
 import { useI18n } from 'vue-i18n'
-import { debounce } from '/@/utils/common'
+import { loadData, onRefreshTableData } from '../index'
+import { state } from '../store'
 import { getUserInfo } from '/@/api/backend/module'
 import { useBaAccount } from '/@/stores/baAccount'
 
@@ -80,10 +80,10 @@ const onShowBaAccount = () => {
         })
 }
 
-const onSearchInput = () => {
+const onSearchInput = debounce(() => {
     state.table.modulesEbak[state.table.params.activeTab] = undefined
     loadData()
-}
+}, 500)
 
 const navigateTo = (url: string) => {
     window.open(url, '_blank')

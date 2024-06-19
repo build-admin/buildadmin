@@ -74,7 +74,7 @@
                 v-if="props.buttons.includes('quickSearch')"
                 v-model="baTable.table.filter!.quickSearch"
                 class="xs-hidden quick-search"
-                @input="debounce(onSearchInput, 500)()"
+                @input="onSearchInput"
                 :placeholder="quickSearchPlaceholder ? quickSearchPlaceholder : t('Search')"
                 clearable
             />
@@ -126,11 +126,11 @@
 </template>
 
 <script setup lang="ts">
+import { debounce } from 'lodash-es'
 import { computed, inject } from 'vue'
-import { debounce } from '/@/utils/common'
-import type baTableClass from '/@/utils/baTable'
-import ComSearch from '/@/components/table/comSearch/index.vue'
 import { useI18n } from 'vue-i18n'
+import ComSearch from '/@/components/table/comSearch/index.vue'
+import type baTableClass from '/@/utils/baTable'
 
 const { t } = useI18n()
 const baTable = inject('baTable') as baTableClass
@@ -160,9 +160,9 @@ const onAction = (event: string, data: anyObj = {}) => {
     baTable.onTableHeaderAction(event, data)
 }
 
-const onSearchInput = () => {
+const onSearchInput = debounce(() => {
     baTable.onTableHeaderAction('quick-search', { keyword: baTable.table.filter!.quickSearch })
-}
+}, 500)
 
 const onChangeShowColumn = (value: string | number | boolean, field: string) => {
     baTable.onTableHeaderAction('change-show-column', { field: field, value: value })
