@@ -11,11 +11,6 @@ use think\facade\Db;
 class Auth
 {
     /**
-     * 用户有权限的规则节点
-     */
-    protected static array $rules = [];
-
-    /**
      * 默认配置
      * @var array|string[]
      */
@@ -176,27 +171,25 @@ class Auth
         $ids = $this->getRuleIds($uid);
         if (empty($ids)) return [];
 
-        $idsCacheKey = md5(implode('', $ids) . $this->config['auth_rule']);
-        if (empty(self::$rules[$idsCacheKey])) {
-            $where   = [];
-            $where[] = ['status', '=', '1'];
-            // 如果没有 * 则只获取用户拥有的规则
-            if (!in_array('*', $ids)) {
-                $where[] = ['id', 'in', $ids];
-            }
-            self::$rules[$idsCacheKey] = Db::name($this->config['auth_rule'])
-                ->withoutField(['remark', 'status', 'weigh', 'update_time', 'create_time'])
-                ->where($where)
-                ->order('weigh desc,id asc')
-                ->select()
-                ->toArray();
-
-            foreach (self::$rules[$idsCacheKey] as $key => $rule) {
-                if (!empty($rule['keepalive'])) self::$rules[$idsCacheKey][$key]['keepalive'] = $rule['name'];
+        $where   = [];
+        $where[] = ['status', '=', '1'];
+        // 如果没有 * 则只获取用户拥有的规则
+        if (!in_array('*', $ids)) {
+            $where[] = ['id', 'in', $ids];
+        }
+        $rules = Db::name($this->config['auth_rule'])
+            ->withoutField(['remark', 'status', 'weigh', 'update_time', 'create_time'])
+            ->where($where)
+            ->order('weigh desc,id asc')
+            ->select()
+            ->toArray();
+        foreach ($rules as $key => $rule) {
+            if (!empty($rule['keepalive'])) {
+                $rules[$key]['keepalive'] = $rule['name'];
             }
         }
 
-        return self::$rules[$idsCacheKey];
+        return $rules;
     }
 
     /**
@@ -225,12 +218,6 @@ class Auth
     public function getGroups(int $uid): array
     {
         $dbName = $this->config['auth_group_access'] ?: 'user';
-
-        static $groups = [];
-        if (isset($groups[$dbName][$uid])) {
-            return $groups[$dbName][$uid];
-        }
-
         if ($this->config['auth_group_access']) {
             $userGroups = Db::name($dbName)
                 ->alias('aga')
@@ -249,7 +236,6 @@ class Auth
                 ->toArray();
         }
 
-        $groups[$dbName][$uid] = $userGroups ?: [];
-        return $groups[$dbName][$uid];
+        return $userGroups;
     }
 }
