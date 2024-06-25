@@ -405,6 +405,7 @@ export default defineComponent({
                 () => {
                     return () =>
                         createVNode(Editor, {
+                            class: 'w100',
                             modelValue: props.modelValue,
                             'onUpdate:modelValue': onValueUpdate,
                             ...props.attr,
