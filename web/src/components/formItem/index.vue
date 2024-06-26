@@ -1,10 +1,10 @@
 <script lang="ts">
-import type { PropType } from 'vue'
-import { createVNode, defineComponent, resolveComponent, computed } from 'vue'
+import type { PropType, VNode } from 'vue'
+import { computed, createVNode, defineComponent, resolveComponent } from 'vue'
+import type { InputAttr, InputData, modelValueTypes } from '/@/components/baInput'
 import { inputTypes } from '/@/components/baInput'
-import type { modelValueTypes, InputAttr, InputData } from '/@/components/baInput'
-import type { FormItemAttr } from '/@/components/formItem'
 import BaInput from '/@/components/baInput/index.vue'
+import type { FormItemAttr } from '/@/components/formItem'
 
 export default defineComponent({
     name: 'formItem',
@@ -59,8 +59,11 @@ export default defineComponent({
             return props.attr && props.attr['blockHelp'] ? props.attr['blockHelp'] : ''
         })
 
-        // el-form-item 的默认插槽,生成一个baInput
-        const defaultSlot = () => {
+        // el-form-item 插槽
+        const slots: { [key: string]: () => VNode | VNode[] } = {}
+
+        // default 插槽
+        slots.default = () => {
             let inputNode = createVNode(BaInput, {
                 type: props.type,
                 attr: { placeholder: props.placeholder, ...props.inputAttr },
@@ -84,91 +87,62 @@ export default defineComponent({
             return inputNode
         }
 
-        // 不带独立label输入框
-        const noNeedLabelSlot = [
-            'string',
-            'password',
-            'number',
-            'textarea',
-            'datetime',
-            'year',
-            'date',
-            'time',
-            'select',
-            'selects',
-            'remoteSelect',
-            'remoteSelects',
-            'city',
-            'icon',
-            'color',
-        ]
-
-        // 需要独立label的输入框
-        const needLabelSlot = ['radio', 'checkbox', 'switch', 'array', 'image', 'images', 'file', 'files', 'editor']
-
-        if (noNeedLabelSlot.includes(props.type)) {
-            return () =>
-                createVNode(
-                    resolveComponent('el-form-item'),
-                    {
-                        prop: props.prop,
-                        ...props.attr,
-                        label: props.label,
-                    },
-                    {
-                        default: defaultSlot,
-                    }
-                )
-        } else if (needLabelSlot.includes(props.type)) {
-            // 带独立label的输入框
-            let title = props.data && props.data.title ? props.data.title : props.label
-            const labelSlot = () => {
-                return [
-                    createVNode(
-                        'div',
-                        {
-                            class: 'ba-form-item-label',
-                        },
-                        [
-                            createVNode('div', null, title),
-                            createVNode(
-                                'div',
-                                {
-                                    class: 'ba-form-item-label-tip',
-                                },
-                                props.data && props.data.tip ? props.data.tip : ''
-                            ),
-                        ]
-                    ),
-                ]
+        if (props.data && props.data.tip) {
+            const createTipNode = () => {
+                const tipProps = typeof props.data.tip === 'string' ? { content: props.data.tip } : props.data.tip
+                return createVNode(resolveComponent('el-tooltip'), tipProps, {
+                    default: () => [
+                        createVNode('i', {
+                            class: 'fa fal fa-question-circle',
+                        }),
+                    ],
+                })
             }
 
-            return () =>
-                createVNode(
-                    resolveComponent('el-form-item'),
+            // label 插槽
+            slots.label = () => {
+                return createVNode(
+                    'span',
                     {
-                        class: 'ba-input-item-' + props.type,
-                        prop: props.prop,
-                        ...props.attr,
-                        label: props.label,
+                        class: 'ba-form-item-label',
                     },
-                    {
-                        label: labelSlot,
-                        default: defaultSlot,
-                    }
+                    [
+                        createVNode('span', null, props.label),
+                        createVNode(
+                            'span',
+                            {
+                                class: 'ba-form-item-label-tip',
+                            },
+                            [createTipNode()]
+                        ),
+                    ]
                 )
+            }
         }
+
+        return () =>
+            createVNode(
+                resolveComponent('el-form-item'),
+                {
+                    class: 'ba-input-item-' + props.type,
+                    prop: props.prop,
+                    ...props.attr,
+                    label: props.label,
+                },
+                {
+                    ...slots,
+                }
+            )
     },
 })
 </script>
 
 <style scoped lang="scss">
-.ba-form-item-label {
-    display: inline-block;
-    .ba-form-item-label-tip {
-        padding-left: 6px;
-        font-size: 12px;
-        color: var(--el-text-color-secondary);
+.ba-form-item-label-tip {
+    padding-left: 6px;
+    color: var(--el-text-color-secondary);
+    i {
+        cursor: pointer;
     }
 }
 .ba-form-item-not-support {
