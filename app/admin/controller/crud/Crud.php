@@ -765,17 +765,15 @@ class Crud extends Backend
 
         // 不同输入框的属性处理
         if ($columnDict || in_array($field['designType'], ['radio', 'checkbox', 'select', 'selects'])) {
-            $formField[':data'] = [
-                'content' => $columnDict,
-            ];
+            $formField[':input-attr']['content'] = $columnDict;
         } elseif ($field['designType'] == 'textarea') {
             $formField[':input-attr']['rows'] = (int)($field['form']['rows'] ?? 3);
             $formField['@keyup.enter.stop']   = '';
             $formField['@keyup.ctrl.enter']   = 'baTable.onSubmit(formRef)';
         } elseif ($field['designType'] == 'remoteSelect' || $field['designType'] == 'remoteSelects') {
-            $formField[':input-attr']['pk']         = TableManager::tableName($field['form']['remote-table']) . '.' . ($field['form']['remote-pk'] ?? 'id');
-            $formField[':input-attr']['field']      = $field['form']['remote-field'] ?? 'name';
-            $formField[':input-attr']['remote-url'] = $this->getRemoteSelectUrl($field);
+            $formField[':input-attr']['pk']        = TableManager::tableName($field['form']['remote-table']) . '.' . ($field['form']['remote-pk'] ?? 'id');
+            $formField[':input-attr']['field']     = $field['form']['remote-field'] ?? 'name';
+            $formField[':input-attr']['remoteUrl'] = $this->getRemoteSelectUrl($field);
         } elseif ($field['designType'] == 'number') {
             $formField[':input-attr']['step'] = (int)($field['form']['step'] ?? 1);
             $formField['v-model.number']      = $formField['v-model'];
