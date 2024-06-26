@@ -45,6 +45,7 @@ export default defineComponent({
             type: String,
             default: '',
         },
+        tip: [String, Object],
         ...formItemProps,
     },
     emits: ['update:modelValue'],
@@ -91,7 +92,7 @@ export default defineComponent({
 
         if (attrs.tip) {
             const createTipNode = () => {
-                const tipProps = typeof attrs.tip === 'string' ? { content: attrs.tip } : attrs.tip
+                const tipProps = typeof attrs.tip === 'string' ? { content: attrs.tip, placement: 'top' } : attrs.tip
                 return createVNode(resolveComponent('el-tooltip'), tipProps, {
                     default: () => [
                         createVNode('i', {
