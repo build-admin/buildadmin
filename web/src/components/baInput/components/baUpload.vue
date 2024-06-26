@@ -64,7 +64,6 @@ defineOptions({
     inheritAttrs: false,
 })
 
-type Writeable<T> = { -readonly [P in keyof T]: T[P] }
 interface Props extends /* @vue-ignore */ Partial<UploadProps> {
     type: 'image' | 'images' | 'file' | 'files'
     // 上传请求时的额外携带数据

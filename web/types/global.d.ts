@@ -26,3 +26,5 @@ interface ApiResponse<T = any> {
 }
 
 type ApiPromise<T = any> = Promise<ApiResponse<T>>
+
+type Writeable<T> = { -readonly [P in keyof T]: T[P] }
