@@ -45,7 +45,7 @@ export interface InputData {
  * input可用属性,用于代码提示,渲染不同输入组件时,需要的属性是不一样的
  * https://element-plus.org/zh-CN/component/input.html#input-属性
  */
-export interface InputAttr {
+export interface InputAttr extends InputData {
     id?: string
     name?: string
     type?: string

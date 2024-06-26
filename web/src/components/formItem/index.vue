@@ -27,25 +27,26 @@ export default defineComponent({
             type: Object as PropType<InputAttr>,
             default: () => {},
         },
-        // el-form-item 的附加属性(还可以直接通过当前组件的 props 传递)
-        attr: {
-            type: Object as PropType<FormItemAttr>,
-            default: () => {},
-        },
-        // 额外数据
-        data: {
-            type: Object as PropType<InputData>,
-            default: () => {},
-        },
-        placeholder: {
-            type: String,
-            default: '',
-        },
         blockHelp: {
             type: String,
             default: '',
         },
         tip: [String, Object],
+        // el-form-item 的附加属性（还可以直接通过当前组件的 props 传递）
+        attr: {
+            type: Object as PropType<FormItemAttr>,
+            default: () => {},
+        },
+        // 额外数据（已和 props.inputAttr 合并，还可以通过它进行传递）
+        data: {
+            type: Object as PropType<InputData>,
+            default: () => {},
+        },
+        // 内部输入框的 placeholder（相当于 props.inputAttr.placeholder 的别名）
+        placeholder: {
+            type: String,
+            default: '',
+        },
         ...formItemProps,
     },
     emits: ['update:modelValue'],
@@ -69,8 +70,7 @@ export default defineComponent({
         slots.default = () => {
             let inputNode = createVNode(BaInput, {
                 type: props.type,
-                attr: { placeholder: props.placeholder, ...props.inputAttr },
-                data: props.data,
+                attr: { placeholder: props.placeholder, ...props.inputAttr, ...props.data },
                 modelValue: props.modelValue,
                 'onUpdate:modelValue': onValueUpdate,
             })
