@@ -1,5 +1,5 @@
 
-    protected static function onBeforeInsert($model)
+    protected static function onBeforeInsert($model): void
     {
 {%setSnowFlakeIdCode%}
     }
