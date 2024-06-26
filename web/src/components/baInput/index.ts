@@ -1,4 +1,3 @@
-import type { ElTooltipProps } from 'element-plus'
 import type { Component, CSSProperties } from 'vue'
 
 /**
@@ -36,8 +35,6 @@ export type modelValueTypes = string | number | boolean | object
 export interface InputData {
     // 内容,比如radio的选项列表数据,格式为对象或者数组：{ a: '选项1', b: '选项2' } or [{value: 1, label: 2, disabled: false}, {...}]
     content?: any
-    // 提示信息
-    tip?: string | Partial<ElTooltipProps>
     // 需要生成子级元素时,子级元素属性(比如radio)
     childrenAttr?: anyObj
     // 城市选择器等级,1=省,2=市,3=区
