@@ -101,6 +101,7 @@ import { taskStatus } from '/@/components/terminal/constant'
 import { ElMessageBox } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { dependentInstallComplete } from '/@/api/backend/module'
+import { reloadServer } from '/@/utils/vite'
 
 const { t } = useI18n()
 const terminal = useTerminal()
@@ -119,13 +120,13 @@ const onSubmitInstallDone = () => {
         terminal.addTaskPM('web-build', false, '', (res: number) => {
             if (res == taskStatus.Success) {
                 terminal.toggle(false)
-                if (import.meta.hot && state.common.moduleState != moduleInstallState.DISABLE) {
-                    import.meta.hot.send('custom:reload-hot', { type: 'modules' })
+                if (state.common.moduleState != moduleInstallState.DISABLE) {
+                    reloadServer('modules')
                 }
             }
         })
-    } else if (import.meta.hot && state.common.moduleState != moduleInstallState.DISABLE) {
-        import.meta.hot.send('custom:reload-hot', { type: 'modules' })
+    } else if (state.common.moduleState != moduleInstallState.DISABLE) {
+        reloadServer('modules')
     }
 }
 

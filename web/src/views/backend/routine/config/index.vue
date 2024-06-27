@@ -122,6 +122,7 @@ import { useSiteConfig } from '/@/stores/siteConfig'
 import type { SiteConfig } from '/@/stores/interface'
 import { useI18n } from 'vue-i18n'
 import { uuid } from '/@/utils/random'
+import { closeHotUpdate, openHotUpdate } from '/@/utils/vite'
 
 defineOptions({
     name: 'routine/config',
@@ -277,16 +278,16 @@ const onTestSendMail = () => {
 
 onMounted(() => {
     getIndex()
-    if (import.meta.hot) import.meta.hot.send('custom:close-hot', { type: 'config' })
+    closeHotUpdate('config')
 })
 onActivated(() => {
-    if (import.meta.hot) import.meta.hot.send('custom:close-hot', { type: 'config' })
+    closeHotUpdate('config')
 })
 onDeactivated(() => {
-    if (import.meta.hot) import.meta.hot.send('custom:open-hot', { type: 'config' })
+    openHotUpdate('config')
 })
 onUnmounted(() => {
-    if (import.meta.hot) import.meta.hot.send('custom:open-hot', { type: 'config' })
+    openHotUpdate('config')
 })
 </script>
 

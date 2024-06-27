@@ -649,6 +649,7 @@ import { getTableFieldList, getTableListUrl, getDatabaseConnectionListUrl } from
 import { buildValidatorData, regularVarName } from '/@/utils/validate'
 import { getArrayKey } from '/@/utils/common'
 import { useI18n } from 'vue-i18n'
+import { reloadServer } from '/@/utils/vite'
 
 const { t } = useI18n()
 const designWindowRef = ref()
@@ -978,7 +979,7 @@ const startGenerate = () => {
             setTimeout(() => {
                 // 要求 Vite 服务端重启
                 if (import.meta.hot) {
-                    import.meta.hot.send('custom:reload-hot', { type: 'crud' })
+                    reloadServer('crud')
                 } else {
                     ElNotification({
                         type: 'error',

@@ -16,6 +16,7 @@ import BaAccount from './components/baAccount.vue'
 import Tabs from './components/tabs.vue'
 import GoodsInfo from './components/goodsInfo.vue'
 import CommonDialog from './components/commonDialog.vue'
+import { closeHotUpdate, openHotUpdate } from '/@/utils/vite'
 
 defineOptions({
     name: 'moduleStore/moduleStore',
@@ -23,16 +24,16 @@ defineOptions({
 
 onMounted(() => {
     loadData()
-    if (import.meta.hot) import.meta.hot.send('custom:close-hot', { type: 'modules' })
+    closeHotUpdate('modules')
 })
 onActivated(() => {
-    if (import.meta.hot) import.meta.hot.send('custom:close-hot', { type: 'modules' })
+    closeHotUpdate('modules')
 })
 onDeactivated(() => {
-    if (import.meta.hot) import.meta.hot.send('custom:open-hot', { type: 'modules' })
+    openHotUpdate('modules')
 })
 onUnmounted(() => {
-    if (import.meta.hot) import.meta.hot.send('custom:open-hot', { type: 'modules' })
+    openHotUpdate('modules')
 })
 </script>
 

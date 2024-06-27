@@ -8,6 +8,7 @@ import { timeFormat } from '/@/utils/common'
 import { taskStatus } from '/@/components/terminal/constant'
 import { ElNotification } from 'element-plus'
 import { i18n } from '/@/lang/index'
+import { closeHotUpdate, openHotUpdate } from '/@/utils/vite'
 
 export const useTerminal = defineStore(
     'terminal',
@@ -81,7 +82,7 @@ export const useTerminal = defineStore(
 
         function taskCompleted(idx: number) {
             // 命令执行完毕，重新打开热更新
-            if (import.meta.hot) import.meta.hot.send('custom:open-hot', { type: 'terminal' })
+            openHotUpdate('terminal')
 
             if (typeof state.taskList[idx].callback != 'function') return
 
@@ -182,7 +183,7 @@ export const useTerminal = defineStore(
 
         function startEventSource(taskKey: number) {
             // 命令执行期间禁用热更新
-            if (import.meta.hot) import.meta.hot.send('custom:close-hot', { type: 'terminal' })
+            closeHotUpdate('terminal')
 
             window.eventSource = new EventSource(
                 buildTerminalUrl(state.taskList[taskKey].command, state.taskList[taskKey].uuid, state.taskList[taskKey].extend)
