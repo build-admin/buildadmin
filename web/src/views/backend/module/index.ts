@@ -8,6 +8,8 @@ import { moduleInstallState, type moduleState } from './types'
 import { uuid } from '/@/utils/random'
 import { fullUrl } from '/@/utils/common'
 import type { UserInfo } from '/@/stores/interface'
+import { closeHotUpdate } from '/@/utils/vite'
+import router from '/@/router/index'
 import { i18n } from '/@/lang/index'
 
 export const loadData = () => {
@@ -311,7 +313,11 @@ const terminalTaskExecComplete = (res: number, type: string) => {
         terminal.toggle(true)
         state.common.dependInstallState = 'fail'
     }
-    onRefreshTableData()
+
+    if (router.currentRoute.value.name === 'moduleStore/moduleStore') {
+        onRefreshTableData()
+        closeHotUpdate('modules')
+    }
 }
 
 export const onDisable = (confirmConflict = false) => {
