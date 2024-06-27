@@ -73,7 +73,7 @@ interface Props extends /* @vue-ignore */ Partial<UploadProps> {
     returnFullUrl?: boolean
     // 隐藏附件选择器
     hideSelectFile?: boolean
-    // 可自定义 el-upload 的其他属性（已废弃，v2.1.0 删除，请直接传递为 props）
+    // 可自定义 el-upload 的其他属性（已废弃，v2.2.0 删除，请直接传递为 props）
     attr?: Partial<Writeable<UploadProps>>
     // 强制上传到本地存储
     forceLocal?: boolean
@@ -294,7 +294,7 @@ onMounted(() => {
             }
         }
 
-        console.warn('图片/文件上传组件的 props.attr 已经弃用，并将于 v2.1.0 版本彻底删除，请将 props.attr 的部分直接作为 props 传递！')
+        console.warn('图片/文件上传组件的 props.attr 已经弃用，并将于 v2.2.0 版本彻底删除，请将 props.attr 的部分直接作为 props 传递！')
     }
     // 即将废弃的 props.attr End
 
