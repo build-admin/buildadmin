@@ -63,7 +63,7 @@
                                 :label="t('crud.crud.sort order')"
                                 v-model="state.table.defaultSortType"
                                 type="select"
-                                :data="{
+                                :input-attr="{
                                     content: { desc: t('crud.crud.sort order desc'), asc: t('crud.crud.sort order asc') },
                                 }"
                             />
@@ -92,10 +92,8 @@
                             :label="t('crud.crud.The relative path to the generated code')"
                             v-model="state.table.generateRelativePath"
                             type="string"
-                            :attr="{
-                                labelWidth: 140,
-                                blockHelp: t('crud.crud.For quick combination code generation location, please fill in the relative path'),
-                            }"
+                            :label-width="140"
+                            :block-help="t('crud.crud.For quick combination code generation location, please fill in the relative path')"
                             :input-attr="{
                                 onChange: onTableChange,
                             }"
@@ -104,9 +102,7 @@
                             :label="t('crud.crud.Generated Controller Location')"
                             v-model="state.table.controllerFile"
                             type="string"
-                            :attr="{
-                                labelWidth: 140,
-                            }"
+                            :label-width="140"
                         />
                         <el-form-item :label="t('crud.crud.Generated Data Model Location')" :label-width="140">
                             <el-input v-model="state.table.modelFile" type="string">
@@ -126,30 +122,19 @@
                             :label="t('crud.crud.Generated Validator Location')"
                             v-model="state.table.validateFile"
                             type="string"
-                            :attr="{
-                                labelWidth: 140,
-                            }"
+                            :label-width="140"
                         />
-                        <FormItem
-                            :label="t('crud.crud.WEB end view directory')"
-                            v-model="state.table.webViewsDir"
-                            type="string"
-                            :attr="{
-                                labelWidth: 140,
-                            }"
-                        />
+                        <FormItem :label="t('crud.crud.WEB end view directory')" v-model="state.table.webViewsDir" type="string" :label-width="140" />
                         <FormItem
                             :label="t('Database connection')"
                             v-model="state.table.databaseConnection"
                             type="remoteSelect"
-                            :attr="{
-                                labelWidth: 140,
-                                blockHelp: t('Database connection help'),
-                            }"
+                            :label-width="140"
+                            :block-help="t('Database connection help')"
                             :input-attr="{
                                 pk: 'key',
                                 field: 'key',
-                                'remote-url': getDatabaseConnectionListUrl,
+                                remoteUrl: getDatabaseConnectionListUrl,
                             }"
                         />
                     </div>
@@ -384,10 +369,10 @@
                                         :type="item.type"
                                         v-model="state.fields[state.activateField].table[idx].value"
                                         :placeholder="state.fields[state.activateField].table[idx].placeholder ?? ''"
-                                        :data="{
+                                        :input-attr="{
                                             content: state.fields[state.activateField].table[idx].options ?? {},
+                                            ...(state.fields[state.activateField].table[idx].attr ?? {}),
                                         }"
-                                        :input-attr="state.fields[state.activateField].table[idx].attr ?? {}"
                                     />
                                 </template>
                             </template>
@@ -399,10 +384,10 @@
                                         :type="item.type"
                                         v-model="state.fields[state.activateField].form[idx].value"
                                         :placeholder="state.fields[state.activateField].form[idx].placeholder ?? ''"
-                                        :data="{
+                                        :input-attr="{
                                             content: state.fields[state.activateField].form[idx].options ?? {},
+                                            ...(state.fields[state.activateField].form[idx].attr ?? {}),
                                         }"
-                                        :input-attr="state.fields[state.activateField].form[idx].attr ?? {}"
                                     />
                                 </template>
                             </template>
@@ -453,7 +438,7 @@
                                         'user_score_log',
                                     ],
                                 },
-                                'remote-url': getTableListUrl,
+                                remoteUrl: getTableListUrl,
                                 onChange: onJoinTableChange,
                             }"
                             prop="table"
@@ -466,7 +451,7 @@
                                 v-model="state.remoteSelectPre.form.pk"
                                 :placeholder="t('crud.crud.Please select the value field of the select component')"
                                 :key="'select-value' + JSON.stringify(state.remoteSelectPre.fieldList)"
-                                :data="{
+                                :input-attr="{
                                     content: state.remoteSelectPre.fieldList,
                                 }"
                             />
@@ -477,7 +462,7 @@
                                 v-model="state.remoteSelectPre.form.label"
                                 :placeholder="t('crud.crud.Please select the label field of the select component')"
                                 :key="'select-label' + JSON.stringify(state.remoteSelectPre.fieldList)"
-                                :data="{
+                                :input-attr="{
                                     content: state.remoteSelectPre.fieldList,
                                 }"
                             />
@@ -489,7 +474,7 @@
                                 v-model="state.remoteSelectPre.form.joinField"
                                 :placeholder="t('crud.crud.Please select the fields displayed in the table')"
                                 :key="'join-field' + JSON.stringify(state.remoteSelectPre.fieldList)"
-                                :data="{
+                                :input-attr="{
                                     content: state.remoteSelectPre.fieldList,
                                 }"
                             />
@@ -500,14 +485,14 @@
                                 v-model="state.remoteSelectPre.form.controllerFile"
                                 :placeholder="t('crud.crud.Please select the controller of the data table')"
                                 :key="'controller-file' + JSON.stringify(state.remoteSelectPre.controllerFileList)"
-                                :data="{
+                                :input-attr="{
                                     content: state.remoteSelectPre.controllerFileList,
                                 }"
-                                :attr="{
-                                    blockHelp: t(
+                                :block-help="
+                                    t(
                                         'crud.crud.The remote pull-down will request the corresponding controller to obtain data, so it is recommended that you create the CRUD of the associated table'
-                                    ),
-                                }"
+                                    )
+                                "
                             />
                             <FormItem
                                 type="select"
@@ -515,14 +500,14 @@
                                 v-model="state.remoteSelectPre.form.modelFile"
                                 :placeholder="t('crud.crud.Please select the data model location of the data table')"
                                 :key="'model-file' + JSON.stringify(state.remoteSelectPre.modelFileList)"
-                                :data="{
+                                :input-attr="{
                                     content: state.remoteSelectPre.modelFileList,
                                 }"
-                                :attr="{
-                                    blockHelp: t(
+                                :block-help="
+                                    t(
                                         'crud.crud.If it is left blank, the model of the associated table will be generated automatically If the table already has a model, it is recommended to select it to avoid repeated generation'
-                                    ),
-                                }"
+                                    )
+                                "
                             />
                             <el-form-item
                                 v-if="state.table.databaseConnection && state.remoteSelectPre.form.modelFile"
@@ -615,10 +600,11 @@
                     class="rebuild-form-item"
                     v-model="state.table.rebuild"
                     type="radio"
-                    :data="{ content: { No: t('crud.crud.No'), Yes: t('crud.crud.Yes') }, childrenAttr: { border: true } }"
-                    :attr="{
-                        blockHelp: t('crud.crud.tableReBuildBlockHelp'),
+                    :input-attr="{
+                        border: true,
+                        content: { No: t('crud.crud.No'), Yes: t('crud.crud.Yes') },
                     }"
+                    :block-help="t('crud.crud.tableReBuildBlockHelp')"
                 />
             </el-scrollbar>
             <template #footer>

@@ -38,20 +38,18 @@
                         type="select"
                         v-model="baTable.form.items!.controller"
                         prop="controller"
-                        :data="{ content: baTable.form.extend!.controllerList }"
+                        :input-attr="{ content: baTable.form.extend!.controllerList }"
                         :placeholder="t('security.dataRecycle.The data collection mechanism will monitor delete operations under this controller')"
                     />
                     <FormItem
                         :label="t('Database connection')"
                         v-model="baTable.form.items!.connection"
                         type="remoteSelect"
-                        :attr="{
-                            blockHelp: t('Database connection help'),
-                        }"
+                        :block-help="t('Database connection help')"
                         :input-attr="{
                             pk: 'key',
                             field: 'key',
-                            'remote-url': getDatabaseConnectionListUrl,
+                            remoteUrl: getDatabaseConnectionListUrl,
                         }"
                     />
                     <FormItem
@@ -67,7 +65,7 @@
                                 samePrefix: 1,
                                 excludeTable: ['area', 'token', 'captcha', 'admin_group_access', 'user_money_log', 'user_score_log'],
                             },
-                            'remote-url': getTableListUrl,
+                            remoteUrl: getTableListUrl,
                             onRow: onTableChange,
                         }"
                         prop="data_table"
@@ -83,7 +81,10 @@
                         type="radio"
                         v-model="baTable.form.items!.status"
                         prop="status"
-                        :data="{ content: { '0': t('Disable'), '1': t('Enable') } }"
+                        :input-attr="{
+                            border: true,
+                            content: { '0': t('Disable'), '1': t('Enable') },
+                        }"
                     />
                 </el-form>
             </div>

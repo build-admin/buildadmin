@@ -35,7 +35,7 @@
                         :input-attr="{
                             pk: 'user.id',
                             field: 'nickname_text',
-                            'remote-url': '/admin/user.User/index',
+                            remoteUrl: '/admin/user.User/index',
                             onChange: getAdd,
                         }"
                     />

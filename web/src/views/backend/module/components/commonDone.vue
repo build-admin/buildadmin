@@ -72,7 +72,10 @@
                     "
                     v-model="form.rebuild"
                     type="radio"
-                    :data="{ content: { 0: t('module.no'), 1: t('module.yes') }, childrenAttr: { border: true } }"
+                    :input-attr="{
+                        border: true,
+                        content: { 0: t('module.no'), 1: t('module.yes') },
+                    }"
                 />
             </div>
         </div>

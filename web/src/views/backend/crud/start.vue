@@ -90,14 +90,12 @@
                             :label="t('Database connection')"
                             v-model="crudState.startData.databaseConnection"
                             type="remoteSelect"
-                            :attr="{
-                                labelWidth: 140,
-                                blockHelp: t('Database connection help'),
-                            }"
+                            :label-width="140"
+                            :block-help="t('Database connection help')"
                             :input-attr="{
                                 pk: 'key',
                                 field: 'key',
-                                'remote-url': getDatabaseConnectionListUrl,
+                                remoteUrl: getDatabaseConnectionListUrl,
                                 onChange: onDatabaseChange,
                             }"
                         />
@@ -107,10 +105,8 @@
                             type="remoteSelect"
                             :key="crudState.startData.databaseConnection"
                             :placeholder="t('crud.crud.Please select a data table')"
-                            :attr="{
-                                labelWidth: 140,
-                                blockHelp: t('crud.crud.data sheet help'),
-                            }"
+                            :label-width="140"
+                            :block-help="t('crud.crud.data sheet help')"
                             :input-attr="{
                                 pk: 'table',
                                 field: 'comment',
@@ -128,7 +124,7 @@
                                         'user_score_log',
                                     ],
                                 },
-                                'remote-url': getTableListUrl,
+                                remoteUrl: getTableListUrl,
                                 onRow: onTableStartChange,
                             }"
                             prop="table"

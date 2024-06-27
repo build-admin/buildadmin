@@ -50,7 +50,7 @@
                         :input-attr="{
                             params: { isTree: true, search: [{ field: 'status', val: '1', operator: 'eq' }] },
                             field: 'name',
-                            'remote-url': '/admin/user.Group/index',
+                            remoteUrl: '/admin/user.Group/index',
                         }"
                     />
                     <FormItem :label="t('user.user.head portrait')" type="image" v-model="baTable.form.items!.avatar" />
@@ -72,9 +72,9 @@
                         :label="t('user.user.Gender')"
                         v-model="baTable.form.items!.gender"
                         type="radio"
-                        :data="{
+                        :input-attr="{
+                            border: true,
                             content: { 0: t('Unknown'), 1: t('user.user.male'), 2: t('user.user.female') },
-                            childrenAttr: { border: true },
                         }"
                     />
                     <el-form-item :label="t('user.user.birthday')">
@@ -124,7 +124,10 @@
                         :label="t('State')"
                         v-model="baTable.form.items!.status"
                         type="radio"
-                        :data="{ content: { disable: t('Disable'), enable: t('Enable') }, childrenAttr: { border: true } }"
+                        :input-attr="{
+                            border: true,
+                            content: { disable: t('Disable'), enable: t('Enable') },
+                        }"
                     />
                 </el-form>
             </div>

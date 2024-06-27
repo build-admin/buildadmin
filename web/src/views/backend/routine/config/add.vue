@@ -20,7 +20,7 @@
                         type="select"
                         v-model="state.addConfig.group"
                         prop="group"
-                        :data="{ content: configGroup }"
+                        :input-attr="{ content: configGroup }"
                     />
                     <CreateFormItemData v-model="state.formItemData" />
                     <FormItem :label="t('Weigh')" type="number" v-model.number="state.addConfig.weigh" prop="weigh" />

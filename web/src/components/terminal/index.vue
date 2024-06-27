@@ -144,22 +144,25 @@
                 v-model="startCommand"
                 type="string"
                 :input-attr="{ disabled: true }"
-                :attr="{ blockHelp: t('terminal.Please execute this command to start the service (add Su under Linux)') }"
+                :block-help="t('terminal.Please execute this command to start the service (add Su under Linux)')"
             />
             <FormItem
                 :label="t('terminal.Installation service URL')"
                 v-model="serviceURL"
                 type="string"
                 :input-attr="{ disabled: true }"
-                :attr="{ blockHelp: t('terminal.Please access the site through the installation service URL (except in debug mode)') }"
+                :block-help="t('terminal.Please access the site through the installation service URL (except in debug mode)')"
             />
         </el-form>
         <FormItem
             :label="t('terminal.Clean up successful tasks when starting a new task')"
             :model-value="terminal.state.automaticCleanupTask"
             type="radio"
-            :data="{ content: { '0': t('Disable'), '1': t('Enable') }, childrenAttr: { border: true } }"
-            :input-attr="{ onChange: terminal.changeAutomaticCleanupTask }"
+            :input-attr="{
+                border: true,
+                content: { '0': t('Disable'), '1': t('Enable') },
+                onChange: terminal.changeAutomaticCleanupTask,
+            }"
         />
         <div class="config-buttons">
             <el-button @click="terminal.toggleConfigDialog(false)">{{ t('terminal.Back to terminal') }}</el-button>

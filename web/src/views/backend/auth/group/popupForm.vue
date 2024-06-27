@@ -35,7 +35,7 @@
                         :input-attr="{
                             params: { isTree: true },
                             field: 'name',
-                            'remote-url': baTable.api.actionUrl.get('index'),
+                            remoteUrl: baTable.api.actionUrl.get('index'),
                             placeholder: t('Click select'),
                         }"
                     />
@@ -64,7 +64,10 @@
                         :label="t('State')"
                         v-model="baTable.form.items!.status"
                         type="radio"
-                        :data="{ content: { '0': t('Disable'), '1': t('Enable') }, childrenAttr: { border: true } }"
+                        :input-attr="{
+                            border: true,
+                            content: { '0': t('Disable'), '1': t('Enable') },
+                        }"
                     />
                 </el-form>
             </div>

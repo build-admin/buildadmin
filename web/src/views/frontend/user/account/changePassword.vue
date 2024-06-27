@@ -8,7 +8,7 @@
                         type="password"
                         v-model="state.form.oldPassword"
                         prop="oldPassword"
-                        :input-attr="{ 'show-password': true }"
+                        :input-attr="{ showPassword: true }"
                         :placeholder="t('user.account.changePassword.Please enter your current password')"
                     />
                     <FormItem
@@ -16,7 +16,7 @@
                         type="password"
                         v-model="state.form.newPassword"
                         prop="newPassword"
-                        :input-attr="{ 'show-password': true }"
+                        :input-attr="{ showPassword: true }"
                         :placeholder="t('Please input field', { field: t('user.account.changePassword.New password') })"
                     />
                     <FormItem
@@ -25,7 +25,7 @@
                         v-model="state.form.confirmPassword"
                         prop="confirmPassword"
                         :input-attr="{
-                            'show-password': true,
+                            showPassword: true,
                         }"
                         :placeholder="t('Please input field', { field: t('user.account.changePassword.Confirm new password') })"
                     />

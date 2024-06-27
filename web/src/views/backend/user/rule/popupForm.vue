@@ -37,7 +37,7 @@
                         :input-attr="{
                             params: { isTree: true },
                             field: 'title',
-                            'remote-url': baTable.api.actionUrl.get('index'),
+                            remoteUrl: baTable.api.actionUrl.get('index'),
                         }"
                     />
                     <el-form-item :label="t('auth.rule.Rule type')">
@@ -74,7 +74,7 @@
                         type="icon"
                         :label="t('auth.rule.Rule Icon')"
                         v-model="baTable.form.items!.icon"
-                        :input-attr="{ 'show-icon-name': true }"
+                        :input-attr="{ showIconName: true }"
                     />
                     <!-- 菜单类型：tab、link、iframe -->
                     <FormItem
@@ -82,9 +82,9 @@
                         :label="t('auth.rule.Menu type')"
                         v-model="baTable.form.items!.menu_type"
                         type="radio"
-                        :data="{
+                        :input-attr="{
+                            border: true,
                             content: { tab: t('auth.rule.Menu type tab'), link: t('auth.rule.Menu type link (offsite)'), iframe: 'Iframe' },
-                            childrenAttr: { border: true },
                         }"
                     />
                     <!-- URL -->
@@ -136,13 +136,11 @@
                         :label="t('user.rule.no_login_valid')"
                         v-model="baTable.form.items!.no_login_valid"
                         type="radio"
-                        :data="{
+                        :input-attr="{
+                            border: true,
                             content: { '0': t('user.rule.no_login_valid 0'), '1': t('user.rule.no_login_valid 1') },
-                            childrenAttr: { border: true },
                         }"
-                        :attr="{
-                            blockHelp: t('user.rule.no_login_valid tips'),
-                        }"
+                        :block-help="t('user.rule.no_login_valid tips')"
                     />
                     <el-form-item :label="t('auth.rule.Rule comments')">
                         <el-input
@@ -165,9 +163,9 @@
                         :label="t('State')"
                         v-model="baTable.form.items!.status"
                         type="radio"
-                        :data="{
+                        :input-attr="{
+                            border: true,
                             content: { '0': t('Disable'), '1': t('Enable') },
-                            childrenAttr: { border: true },
                         }"
                     />
                 </el-form>

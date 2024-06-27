@@ -33,10 +33,10 @@
             :label="form.type.title"
             type="select"
             v-model="form.type.value"
-            :data="{ content: state.inputTypes }"
             :placeholder="t('Please select field', { field: form.type.title })"
             :input-attr="{
                 onChange: updateValue,
+                content: state.inputTypes,
                 ...props.options?.type?.inputAttr,
             }"
             prop="type"
@@ -72,10 +72,10 @@
             :label="form.rule.title"
             type="selects"
             v-model="form.rule.value"
-            :data="{ content: state.validators }"
             :placeholder="t('Please select field', { field: form.rule.title })"
             :input-attr="{
                 onChange: updateValue,
+                content: state.validators,
                 ...props.options?.rule?.inputAttr,
             }"
             prop="rule"

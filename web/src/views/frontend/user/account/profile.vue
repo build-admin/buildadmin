@@ -21,7 +21,7 @@
                     <FormItem
                         :label="$t('user.account.profile.head portrait')"
                         :input-attr="{
-                            'hide-select-file': true,
+                            hideSelectFile: true,
                         }"
                         type="image"
                         v-model="state.form.avatar"
@@ -63,8 +63,8 @@
                         :label="$t('user.account.profile.Gender')"
                         type="radio"
                         v-model="state.form.gender"
-                        :data="{
-                            childrenAttr: { border: true },
+                        :input-attr="{
+                            border: true,
                             content: {
                                 '0': $t('user.account.profile.secrecy'),
                                 '1': $t('user.account.profile.male'),
@@ -78,7 +78,7 @@
                         type="textarea"
                         :placeholder="$t('Please input field', { field: $t('user.account.profile.Personal signature') })"
                         v-model="state.form.motto"
-                        :input-attr="{ 'show-word-limit': true, rows: 3 }"
+                        :input-attr="{ showWordLimit: true, maxlength: 120, rows: 3 }"
                     />
                     <UserProfileMixin />
                     <el-form-item class="submit-buttons">
@@ -110,7 +110,7 @@
                     type="password"
                     v-model="state.dialog.verification.form.password"
                     prop="password"
-                    :input-attr="{ 'show-password': true }"
+                    :input-attr="{ showPassword: true }"
                     :placeholder="$t('Please input field', { field: $t('user.account.profile.password') })"
                 />
                 <el-form-item prop="captcha">
@@ -181,7 +181,7 @@
                     type="password"
                     v-model="state.dialog.bind.form.password"
                     prop="password"
-                    :input-attr="{ 'show-password': true }"
+                    :input-attr="{ showPassword: true }"
                     :placeholder="$t('Please input field', { field: $t('user.account.profile.password') })"
                 />
                 <FormItem
