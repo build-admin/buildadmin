@@ -211,9 +211,17 @@ export default defineComponent({
             [
                 'switch',
                 () => {
-                    const valueType = computed(() => typeof props.modelValue)
+                    // 值类型:string,number,boolean,custom
+                    const valueType = computed(() => {
+                        if (typeof attrs.activeValue !== 'undefined' && typeof attrs.inactiveValue !== 'undefined') {
+                            return 'custom'
+                        }
+                        return typeof props.modelValue
+                    })
+
+                    // 要传递给 el-switch 组件的绑定值，该组件对传入值有限制，先做处理
                     const valueComputed = computed(() => {
-                        if (valueType.value === 'boolean') {
+                        if (valueType.value === 'boolean' || valueType.value === 'custom') {
                             return props.modelValue
                         } else {
                             let valueTmp = parseInt(props.modelValue as string)
