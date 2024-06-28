@@ -76,8 +76,9 @@ import type baTableClass from '/@/utils/baTable'
 const config = useConfig()
 const tableRef = ref<TableInstance>()
 const baTable = inject('baTable') as baTableClass
+type ElTableProps = Partial<InstanceType<typeof ElTable>['$props']>
 
-interface Props extends /* @vue-ignore */ Partial<InstanceType<typeof ElTable>> {
+interface Props extends /* @vue-ignore */ ElTableProps {
     pagination?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
