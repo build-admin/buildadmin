@@ -30,7 +30,7 @@ export const inputTypes = [
     'icon',
     'color',
 ]
-export type modelValueTypes = string | number | boolean | object
+export type ModelValueTypes = string | number | boolean | object
 
 export interface InputData {
     // 内容,比如radio的选项列表数据,格式为对象或者数组：{ a: '选项1', b: '选项2' } or [{value: 1, label: 2, disabled: false}, {...}]

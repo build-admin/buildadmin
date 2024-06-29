@@ -2,7 +2,7 @@
 import { formItemProps } from 'element-plus'
 import type { PropType, VNode } from 'vue'
 import { createVNode, defineComponent, resolveComponent } from 'vue'
-import type { InputAttr, InputData, modelValueTypes } from '/@/components/baInput'
+import type { InputAttr, InputData, ModelValueTypes } from '/@/components/baInput'
 import { inputTypes } from '/@/components/baInput'
 import BaInput from '/@/components/baInput/index.vue'
 import type { FormItemAttr } from '/@/components/formItem'
@@ -59,7 +59,7 @@ export default defineComponent({
             }
         }
 
-        const onValueUpdate = (value: modelValueTypes) => {
+        const onValueUpdate = (value: ModelValueTypes) => {
             emit('update:modelValue', value)
         }
 

@@ -3,7 +3,7 @@ import { isArray } from 'lodash-es'
 import type { PropType, VNode } from 'vue'
 import { computed, createVNode, defineComponent, reactive, resolveComponent } from 'vue'
 import { getArea } from '/@/api/common'
-import type { InputAttr, InputData, modelValueTypes } from '/@/components/baInput'
+import type { InputAttr, InputData, ModelValueTypes } from '/@/components/baInput'
 import { inputTypes } from '/@/components/baInput'
 import Array from '/@/components/baInput/components/array.vue'
 import BaUpload from '/@/components/baInput/components/baUpload.vue'
@@ -44,7 +44,7 @@ export default defineComponent({
         const attrs = { ...props.attr, ...props.data }
 
         // 通用值更新函数
-        const onValueUpdate = (value: modelValueTypes) => {
+        const onValueUpdate = (value: ModelValueTypes) => {
             emit('update:modelValue', value)
         }
 
