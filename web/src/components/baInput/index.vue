@@ -41,56 +41,60 @@ export default defineComponent({
     emits: ['update:modelValue'],
     setup(props, { emit }) {
         // 合并 props.attr 和 props.data
-        const attrs = { ...props.attr, ...props.data }
+        const attrs = computed(() => {
+            return { ...props.attr, ...props.data }
+        })
 
         // 通用值更新函数
         const onValueUpdate = (value: ModelValueTypes) => {
             emit('update:modelValue', value)
         }
 
-        // 子级元素属性
-        const childrenAttr = attrs.childrenAttr ? attrs.childrenAttr : {}
-
         // string number textarea password
         const sntp = () => {
             return () =>
                 createVNode(resolveComponent('el-input'), {
                     type: props.type == 'string' ? 'text' : props.type,
-                    ...attrs,
+                    ...attrs.value,
                     modelValue: props.modelValue,
                     'onUpdate:modelValue': onValueUpdate,
                 })
         }
         // radio checkbox
         const rc = () => {
-            if (!attrs.content) {
+            if (!attrs.value.content) {
                 console.warn('请传递 ' + props.type + ' 的 content')
             }
-            let vNode: VNode[] = []
-            const contentIsArray = isArray(attrs.content)
-            const type = attrs.button ? props.type + '-button' : props.type
-            for (const key in attrs.content) {
-                let nodeProps = {}
-                if (contentIsArray) {
-                    if (typeof attrs.content[key].value == 'number') {
-                        console.warn(props.type + ' 的 content.value 不能是数字')
-                    }
 
-                    nodeProps = {
-                        ...attrs.content[key],
-                        border: attrs.border ? attrs.border : false,
-                        ...childrenAttr,
+            const vNodes = computed(() => {
+                const vNode: VNode[] = []
+                const contentIsArray = isArray(attrs.value.content)
+                const type = attrs.value.button ? props.type + '-button' : props.type
+                for (const key in attrs.value.content) {
+                    let nodeProps = {}
+                    if (contentIsArray) {
+                        if (typeof attrs.value.content[key].value == 'number') {
+                            console.warn(props.type + ' 的 content.value 不能是数字')
+                        }
+
+                        nodeProps = {
+                            ...attrs.value.content[key],
+                            border: attrs.value.border ? attrs.value.border : false,
+                            ...(attrs.value.childrenAttr || {}),
+                        }
+                    } else {
+                        nodeProps = {
+                            value: key,
+                            label: attrs.value.content[key],
+                            border: attrs.value.border ? attrs.value.border : false,
+                            ...(attrs.value.childrenAttr || {}),
+                        }
                     }
-                } else {
-                    nodeProps = {
-                        value: key,
-                        label: attrs.content[key],
-                        border: attrs.border ? attrs.border : false,
-                        ...childrenAttr,
-                    }
+                    vNode.push(createVNode(resolveComponent('el-' + type), nodeProps))
                 }
-                vNode.push(createVNode(resolveComponent('el-' + type), nodeProps))
-            }
+                return vNode
+            })
+
             return () => {
                 const valueComputed = computed(() => {
                     if (props.type == 'radio') {
@@ -107,30 +111,35 @@ export default defineComponent({
                 return createVNode(
                     resolveComponent('el-' + props.type + '-group'),
                     {
-                        ...attrs,
+                        ...attrs.value,
                         modelValue: valueComputed.value,
                         'onUpdate:modelValue': onValueUpdate,
                     },
-                    () => vNode
+                    () => vNodes.value
                 )
             }
         }
         // select selects
         const select = () => {
-            let vNode: VNode[] = []
-            if (!attrs.content) {
+            if (!attrs.value.content) {
                 console.warn('请传递 ' + props.type + '的 content')
             }
-            for (const key in attrs.content) {
-                vNode.push(
-                    createVNode(resolveComponent('el-option'), {
-                        key: key,
-                        label: attrs.content[key],
-                        value: key,
-                        ...childrenAttr,
-                    })
-                )
-            }
+
+            const vNodes = computed(() => {
+                const vNode: VNode[] = []
+                for (const key in attrs.value.content) {
+                    vNode.push(
+                        createVNode(resolveComponent('el-option'), {
+                            key: key,
+                            label: attrs.value.content[key],
+                            value: key,
+                            ...(attrs.value.childrenAttr || {}),
+                        })
+                    )
+                }
+                return vNode
+            })
+
             return () => {
                 const valueComputed = computed(() => {
                     if (props.type == 'select') {
@@ -150,11 +159,11 @@ export default defineComponent({
                         class: 'w100',
                         multiple: props.type == 'select' ? false : true,
                         clearable: true,
-                        ...attrs,
+                        ...attrs.value,
                         modelValue: valueComputed.value,
                         'onUpdate:modelValue': onValueUpdate,
                     },
-                    () => vNode
+                    () => vNodes.value
                 )
             }
         }
@@ -174,7 +183,7 @@ export default defineComponent({
                     class: 'w100',
                     type: props.type,
                     'value-format': valueFormat,
-                    ...attrs,
+                    ...attrs.value,
                     modelValue: props.modelValue,
                     'onUpdate:modelValue': onValueUpdate,
                 })
@@ -186,7 +195,7 @@ export default defineComponent({
                     type: props.type,
                     modelValue: props.modelValue,
                     'onUpdate:modelValue': onValueUpdate,
-                    ...attrs,
+                    ...attrs.value,
                 })
         }
 
@@ -197,7 +206,7 @@ export default defineComponent({
                     modelValue: props.modelValue,
                     'onUpdate:modelValue': onValueUpdate,
                     multiple: props.type == 'remoteSelect' ? false : true,
-                    ...attrs,
+                    ...attrs.value,
                 })
         }
 
@@ -213,7 +222,7 @@ export default defineComponent({
                 () => {
                     // 值类型:string,number,boolean,custom
                     const valueType = computed(() => {
-                        if (typeof attrs.activeValue !== 'undefined' && typeof attrs.inactiveValue !== 'undefined') {
+                        if (typeof attrs.value.activeValue !== 'undefined' && typeof attrs.value.inactiveValue !== 'undefined') {
                             return 'custom'
                         }
                         return typeof props.modelValue
@@ -230,7 +239,7 @@ export default defineComponent({
                     })
                     return () =>
                         createVNode(resolveComponent('el-switch'), {
-                            ...attrs,
+                            ...attrs.value,
                             modelValue: valueComputed.value,
                             'onUpdate:modelValue': (value: boolean) => {
                                 let newValue: boolean | string | number = value
@@ -256,7 +265,7 @@ export default defineComponent({
                             class: 'w100',
                             type: props.type,
                             'value-format': 'YYYY',
-                            ...attrs,
+                            ...attrs.value,
                             modelValue: valueComputed.value,
                             'onUpdate:modelValue': onValueUpdate,
                         })
@@ -282,7 +291,7 @@ export default defineComponent({
                             class: 'w100',
                             clearable: true,
                             format: 'HH:mm:ss',
-                            ...attrs,
+                            ...attrs.value,
                             modelValue: valueComputed.value,
                             'onUpdate:modelValue': onValueUpdate,
                         })
@@ -297,7 +306,7 @@ export default defineComponent({
                         createVNode(Array, {
                             modelValue: props.modelValue,
                             'onUpdate:modelValue': onValueUpdate,
-                            ...attrs,
+                            ...attrs.value,
                         })
                 },
             ],
@@ -307,7 +316,7 @@ export default defineComponent({
                 'city',
                 () => {
                     type Node = { value?: number; label?: string; leaf?: boolean }
-                    let maxLevel = attrs.level ? attrs.level - 1 : 2
+                    let maxLevel = attrs.value.level ? attrs.value.level - 1 : 2
                     const lastLazyValue: {
                         value: string | number[] | unknown
                         nodes: Node[]
@@ -384,7 +393,7 @@ export default defineComponent({
                                     })
                                 },
                             },
-                            ...attrs,
+                            ...attrs.value,
                         })
                 },
             ],
@@ -399,7 +408,7 @@ export default defineComponent({
                         createVNode(IconSelector, {
                             modelValue: props.modelValue,
                             'onUpdate:modelValue': onValueUpdate,
-                            ...attrs,
+                            ...attrs.value,
                         })
                 },
             ],
@@ -410,7 +419,7 @@ export default defineComponent({
                         createVNode(resolveComponent('el-color-picker'), {
                             modelValue: props.modelValue,
                             'onUpdate:modelValue': onValueUpdate,
-                            ...attrs,
+                            ...attrs.value,
                         })
                 },
             ],
@@ -422,7 +431,7 @@ export default defineComponent({
                             class: 'w100',
                             modelValue: props.modelValue,
                             'onUpdate:modelValue': onValueUpdate,
-                            ...attrs,
+                            ...attrs.value,
                         })
                 },
             ],

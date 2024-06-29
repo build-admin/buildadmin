@@ -1,7 +1,7 @@
 <script lang="ts">
 import { formItemProps } from 'element-plus'
 import type { PropType, VNode } from 'vue'
-import { createVNode, defineComponent, resolveComponent } from 'vue'
+import { computed, createVNode, defineComponent, resolveComponent } from 'vue'
 import type { InputAttr, InputData, ModelValueTypes } from '/@/components/baInput'
 import { inputTypes } from '/@/components/baInput'
 import BaInput from '/@/components/baInput/index.vue'
@@ -51,13 +51,18 @@ export default defineComponent({
     },
     emits: ['update:modelValue'],
     setup(props, { emit }) {
-        // 通过 props 和 props.attr 两种方式传递的属性在此汇总
-        const attrs = props.attr || {}
-        for (const key in props) {
-            if (!['type', 'modelValue', 'inputAttr', 'attr', 'data', 'placeholder'].includes(key)) {
-                attrs[key as keyof typeof props.attr] = (props[key as keyof typeof props] as any) || attrs[key as keyof typeof props.attr]
+        // 通过 props 和 props.attr 两种方式传递的属性汇总为 attrs
+        const excludeProps = ['type', 'modelValue', 'inputAttr', 'attr', 'data', 'placeholder']
+        const attrs = computed(() => {
+            const newAttrs = props.attr || {}
+            for (const key in props) {
+                const propValue: any = props[key as keyof typeof props]
+                if (!excludeProps.includes(key) && (propValue || propValue === false)) {
+                    newAttrs[key as keyof typeof props.attr] = propValue
+                }
             }
-        }
+            return newAttrs
+        })
 
         const onValueUpdate = (value: ModelValueTypes) => {
             emit('update:modelValue', value)
@@ -75,7 +80,7 @@ export default defineComponent({
                 'onUpdate:modelValue': onValueUpdate,
             })
 
-            if (attrs.blockHelp) {
+            if (attrs.value.blockHelp) {
                 return [
                     inputNode,
                     createVNode(
@@ -83,16 +88,16 @@ export default defineComponent({
                         {
                             class: 'block-help',
                         },
-                        attrs.blockHelp
+                        attrs.value.blockHelp
                     ),
                 ]
             }
             return inputNode
         }
 
-        if (attrs.tip) {
+        if (attrs.value.tip) {
             const createTipNode = () => {
-                const tipProps = typeof attrs.tip === 'string' ? { content: attrs.tip, placement: 'top' } : attrs.tip
+                const tipProps = typeof attrs.value.tip === 'string' ? { content: attrs.value.tip, placement: 'top' } : attrs.value.tip
                 return createVNode(resolveComponent('el-tooltip'), tipProps, {
                     default: () => [
                         createVNode('i', {
@@ -110,7 +115,7 @@ export default defineComponent({
                         class: 'ba-form-item-label',
                     },
                     [
-                        createVNode('span', null, attrs.label),
+                        createVNode('span', null, attrs.value.label),
                         createVNode(
                             'span',
                             {
@@ -128,7 +133,7 @@ export default defineComponent({
                 resolveComponent('el-form-item'),
                 {
                     class: 'ba-input-item-' + props.type,
-                    ...attrs,
+                    ...attrs.value,
                 },
                 {
                     ...slots,
