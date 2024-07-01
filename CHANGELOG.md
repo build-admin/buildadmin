@@ -2,6 +2,35 @@
 
 🔥🔥基于 Vue3.x setup + ThinkPHP6 + TypeScript + Vite + Pinia + Element Plus等流行技术栈的后台管理系统，自适应多端、支持CRUD代码生成、自带WEB终端、同时提供Web和Server端、内置全局数据回收站和字段级数据修改保护、自动注册路由、无限子级权限管理等，无需授权即可免费商用，希望能帮助大家实现快速开发。
 
+## v2.1.0-Release
+### 新增
+- 升级所有前端依赖
+- 增加`Writeable`工具类型，可将只读属性转为可写
+- 增加`vue-tsc`依赖和`typecheck`命令
+- 模块上传安装时对模块版本是否兼容当前系统版本进行检查
+
+### 重构/优化/修复
+- 修复`FormItem`组件属性失去了响应性的问题
+- 修复`switch`组件使用了`activeValue`属性时无法工作的问题
+- 修复连续安装模块时终端命令可能执行失败的问题
+- 修复拥有所有权限的分组可能无法默认选中权限节点的问题
+- 基于`Element plus`新版本优化远程下拉组件（分页样式、逻辑等）
+- 基于`Element plus`新版本优化文件上传组件（钩子等）
+- 基于`Element plus`新版本优化`FormItem`组件
+- 优化`FormItem`的`props.tip`和`props.blockHelp`样式
+- 优化`FormItem`组件的类型定义
+- 合并`FormItem`的`props`本身和`props.attr`，可查阅[此提交](https://gitee.com/wonderful-code/buildadmin/commit/10527ebb760a10b329130e3194a6bbc929a52737)
+- 合并`baInput`组件的`props.attr`和`props.data`，可查阅[此提交](https://gitee.com/wonderful-code/buildadmin/commit/10527ebb760a10b329130e3194a6bbc929a52737)
+- 优化表格的`props`继承的类型的定义
+- 优化富文本编辑器的默认宽度
+- 优化可视化`CRUD`生成的模型的`onBeforeInsert`方法返回值类型定义
+- 优化可视化`CRUD`生成的`FormItem`组件的属性代码
+- 优化`debounce`的使用，无必要不使用全局`debounce`
+- 去除菜单权限规则类的静态变量缓存以更好的兼容常驻内存运行
+- 使用`PSR-12`编码风格规范格式化和检查所有`PHP`代码
+- `Vite`热更新控制的相关功能整理为函数
+- 其他细节
+
 ## v2.0.10-Release
 ### 新增
 - 单复选框支持按钮模式
