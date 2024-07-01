@@ -119,7 +119,7 @@ class InstallData extends Migrator
                 'name'  => 'site_name',
                 'group' => 'basics',
                 'title' => 'Site Name',
-                'tip'   => '站点名称',
+                'tip'   => '',
                 'type'  => 'string',
                 'value' => '站点名称',
                 'rule'  => 'required',
