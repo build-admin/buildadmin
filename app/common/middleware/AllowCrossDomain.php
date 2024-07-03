@@ -55,6 +55,10 @@ class AllowCrossDomain
             }
         }
 
+        if ($request->isOptions()) {
+            return response('', 204, $header);
+        }
+
         $request->allowCrossDomainHeaders = $header;
 
         return $next($request)->header($header);
