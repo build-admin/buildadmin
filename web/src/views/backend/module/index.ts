@@ -290,6 +290,7 @@ export const execInstall = (uid: string, id: number, extend: anyObj = {}) => {
                 ElNotification({
                     type: 'error',
                     message: res.msg,
+                    zIndex: 9999,
                 })
                 state.dialog.common = false
             }
@@ -344,6 +345,7 @@ export const onDisable = (confirmConflict = false) => {
             ElNotification({
                 type: 'success',
                 message: i18n.global.t('module.The operation succeeds Please clear the system cache and refresh the browser ~'),
+                zIndex: 9999,
             })
             state.dialog.common = false
             onRefreshTableData()
@@ -379,6 +381,7 @@ export const onDisable = (confirmConflict = false) => {
                 ElNotification({
                     type: 'error',
                     message: res.msg,
+                    zIndex: 9999,
                 })
             }
         })
@@ -405,6 +408,7 @@ export const onEnable = (uid: string) => {
             ElNotification({
                 type: 'error',
                 message: res.msg,
+                zIndex: 9999,
             })
         })
 }

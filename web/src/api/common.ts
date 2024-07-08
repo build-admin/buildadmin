@@ -59,6 +59,7 @@ export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false
             ElNotification({
                 type: 'error',
                 message: errorMsg,
+                zIndex: 9999,
             })
             reject(errorMsg)
         })

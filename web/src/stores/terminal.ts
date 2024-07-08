@@ -132,6 +132,7 @@ export const useTerminal = defineStore(
                         ElNotification({
                             type: 'error',
                             message: i18n.global.t('terminal.Newly added tasks will never start because they are blocked by failed tasks'),
+                            zIndex: 9999,
                         })
                         break
                     }
