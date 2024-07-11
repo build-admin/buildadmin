@@ -18,6 +18,8 @@ class Account extends Frontend
 {
     protected array $noNeedLogin = ['retrievePassword'];
 
+    protected array $noNeedPermission = ['verification', 'changeBind'];
+
     public function initialize(): void
     {
         parent::initialize();
