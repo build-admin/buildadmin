@@ -136,14 +136,10 @@ function dragDirective(app: App) {
                 return false
             }
 
-            dragHandle.onmouseover = () => (dragHandle.style.cursor = `move`)
-
             function down(e: MouseEvent | TouchEvent, type: string): downReturn {
-                // 鼠标按下，计算当前元素距离可视区的距离
-                const disX =
-                    type === 'pc' ? (e as MouseEvent).clientX - dragHandle.offsetLeft : (e as TouchEvent).touches[0].clientX - dragHandle.offsetLeft
-                const disY =
-                    type === 'pc' ? (e as MouseEvent).clientY - dragHandle.offsetTop : (e as TouchEvent).touches[0].clientY - dragHandle.offsetTop
+                // 鼠标按下，记录鼠标位置
+                const disX = type === 'pc' ? (e as MouseEvent).clientX : (e as TouchEvent).touches[0].clientX
+                const disY = type === 'pc' ? (e as MouseEvent).clientY : (e as TouchEvent).touches[0].clientY
 
                 // body宽度
                 const screenWidth = document.body.clientWidth
@@ -202,6 +198,7 @@ function dragDirective(app: App) {
                 dragDom.style.cssText += `;left:${left + styL}px;top:${top + styT}px;`
             }
 
+            dragHandle.onmouseover = () => (dragHandle.style.cursor = `move`)
             dragHandle.onmousedown = (e) => {
                 const obj = down(e, 'pc')
                 document.onmousemove = (e) => {
