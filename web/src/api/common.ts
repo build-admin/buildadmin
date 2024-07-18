@@ -9,6 +9,7 @@ import { state as uploadExpandState, fileUpload as uploadExpand } from '/@/compo
 import type { AxiosRequestConfig } from 'axios'
 import { uuid } from '/@/utils/random'
 import { i18n } from '../lang'
+import { adminBaseRoutePath } from '/@/router/static/adminBase'
 
 /*
  * 公共请求函数和Url定义
@@ -16,13 +17,13 @@ import { i18n } from '../lang'
 
 // Admin模块
 export const adminUploadUrl = '/admin/ajax/upload'
-export const adminBuildSuffixSvgUrl = '/admin/ajax/buildSuffixSvg'
+export const adminBuildSuffixSvgUrl = adminBaseRoutePath + '/ajax/buildSuffixSvg'
 export const adminAreaUrl = '/admin/ajax/area'
 export const getTablePkUrl = '/admin/ajax/getTablePk'
 export const getTableListUrl = '/admin/ajax/getTableList'
 export const getTableFieldListUrl = '/admin/ajax/getTableFieldList'
 export const getDatabaseConnectionListUrl = '/admin/ajax/getDatabaseConnectionList'
-export const terminalUrl = '/admin/ajax/terminal'
+export const terminalUrl = adminBaseRoutePath + '/ajax/terminal'
 export const changeTerminalConfigUrl = '/admin/ajax/changeTerminalConfig'
 export const clearCacheUrl = '/admin/ajax/clearCache'
 
