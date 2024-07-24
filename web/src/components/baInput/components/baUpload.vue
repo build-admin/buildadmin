@@ -180,7 +180,7 @@ const onElChange = (file: UploadFileExt, files: UploadFiles) => {
     fileUpload(fd, { uuid: uuid() }, props.forceLocal, {
         onUploadProgress: (evt: AxiosProgressEvent) => {
             const progressEvt = evt as UploadProgressEvent
-            if (evt.total && evt.total > 0) {
+            if (evt.total && evt.total > 0 && ['ready', 'uploading'].includes(file.status!)) {
                 progressEvt.percent = (evt.loaded / evt.total) * 100
                 file.status = 'uploading'
                 file.percentage = Math.round(progressEvt.percent)
