@@ -3,7 +3,11 @@
         <el-upload
             ref="upload"
             class="ba-upload"
-            :class="[type, hideImagePlusOnOverLimit && state.attrs.limit && state.fileList.length >= state.attrs.limit ? 'hide-image-plus' : '']"
+            :class="[
+                type,
+                state.attrs.disabled ? 'is-disabled' : '',
+                hideImagePlusOnOverLimit && state.attrs.limit && state.fileList.length >= state.attrs.limit ? 'hide-image-plus' : '',
+            ]"
             v-model:file-list="state.fileList"
             :auto-upload="false"
             @change="onElChange"
@@ -17,7 +21,7 @@
             <template v-if="$slots.default" #default><slot name="default"></slot></template>
             <template v-else #default>
                 <template v-if="type == 'image' || type == 'images'">
-                    <div v-if="!hideSelectFile" @click.stop="state.selectFile.show = true" class="ba-upload-select-image">
+                    <div v-if="!hideSelectFile" @click.stop="showSelectFile()" class="ba-upload-select-image">
                         {{ $t('utils.choice') }}
                     </div>
                     <Icon class="ba-upload-icon" name="el-icon-Plus" size="30" color="#c0c4cc" />
@@ -27,7 +31,7 @@
                         <Icon name="el-icon-Plus" color="#ffffff" />
                         <span>{{ $t('Upload') }}</span>
                     </el-button>
-                    <el-button v-blur v-if="!hideSelectFile" @click.stop="state.selectFile.show = true" type="success">
+                    <el-button v-blur v-if="!hideSelectFile" @click.stop="showSelectFile()" type="success">
                         <Icon name="fa fa-th-list" size="14px" color="#ffffff" />
                         <span class="ml-6">{{ $t('utils.choice') }}</span>
                     </el-button>
@@ -397,6 +401,7 @@ const getRef = () => {
 }
 
 const showSelectFile = () => {
+    if (state.attrs.disabled) return
     state.selectFile.show = true
 }
 
@@ -436,6 +441,7 @@ watch(
     text-align: center;
     font-size: var(--el-font-size-extra-small);
     color: var(--el-text-color-regular);
+    user-select: none;
     &:hover {
         color: var(--el-color-primary);
         border: 1px dashed var(--el-color-primary);
@@ -491,5 +497,10 @@ watch(
 }
 .ba-upload.hide-image-plus :deep(.el-upload--picture-card) {
     display: none;
+}
+.ba-upload.is-disabled :deep(.el-upload),
+.ba-upload.is-disabled :deep(.el-upload) .el-button,
+.ba-upload.is-disabled :deep(.el-upload--picture-card) {
+    cursor: not-allowed;
 }
 </style>
