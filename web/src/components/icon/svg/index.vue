@@ -10,7 +10,7 @@ import { computed, type CSSProperties } from 'vue'
 import { isExternal } from '/@/utils/common'
 interface Props {
     name: string
-    size: string
+    size: string | number
     color: string
 }
 
@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
     color: '#000000',
 })
 
-const s = `${props.size.replace('px', '')}px`
+const s = `${String(props.size).replace('px', '')}px`
 const iconName = computed(() => `#${props.name}`)
 const iconStyle = computed((): CSSProperties => {
     return {

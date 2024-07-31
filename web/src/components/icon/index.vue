@@ -10,7 +10,7 @@ export default defineComponent({
             required: true,
         },
         size: {
-            type: String,
+            type: [String,Number],
             default: '18px',
         },
         color: {
@@ -21,7 +21,7 @@ export default defineComponent({
     setup(props) {
         const iconStyle = computed((): CSSProperties => {
             const { size, color } = props
-            let s = `${size.replace('px', '')}px`
+            let s = `${String(size).replace('px', '')}px`
             return {
                 fontSize: s,
                 color: color,
