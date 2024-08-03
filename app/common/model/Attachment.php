@@ -43,7 +43,8 @@ class Attachment extends Model
 
     public function getFullUrlAttr($value, $row): string
     {
-        return self::$upload->getDriver($row['storage'])->url($row['url']);
+        $driver = self::$upload->getDriver($row['storage'], false);
+        return $driver ? $driver->url($row['url']) : full_url($row['url']);
     }
 
     /**
@@ -58,7 +59,8 @@ class Attachment extends Model
             ['storage', '=', $model->storage],
         ])->find();
         if ($repeat) {
-            if (!self::$upload->getDriver($repeat->storage)->exists($repeat->url)) {
+            $driver = self::$upload->getDriver($repeat->storage, false);
+            if ($driver && !$driver->exists($repeat->url)) {
                 $repeat->delete();
                 return true;
             } else {
@@ -92,8 +94,8 @@ class Attachment extends Model
     {
         Event::trigger('AttachmentDel', $model);
 
-        $driver = self::$upload->getDriver($model->storage);
-        if ($driver->exists($model->url)) {
+        $driver = self::$upload->getDriver($model->storage, false);
+        if ($driver && $driver->exists($model->url)) {
             $driver->delete($model->url);
         }
     }

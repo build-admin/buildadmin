@@ -106,35 +106,38 @@ class Upload
 
     /**
      * 获取上传驱动句柄
+     * @param ?string $driver           驱动名称
+     * @param bool    $noDriveException 找不到驱动是否抛出异常
+     * @return bool|Driver
      */
-    public function getDriver(?string $driver = null): Driver
+    public function getDriver(?string $driver = null, bool $noDriveException = true): bool|Driver
     {
         if (is_null($driver)) {
             $driver = $this->driver['name'];
         }
         if (!isset($this->driver['handler'][$driver])) {
-            $class                            = $this->resolveDriverClass($driver);
-            $this->driver['handler'][$driver] = new $class();
+            $class = $this->resolveDriverClass($driver);
+            if ($class) {
+                $this->driver['handler'][$driver] = new $class();
+            } elseif ($noDriveException) {
+                throw new InvalidArgumentException("Driver [$driver] not supported.");
+            }
         }
-        return $this->driver['handler'][$driver];
+        return $this->driver['handler'][$driver] ?? false;
     }
 
     /**
      * 获取驱动类
-     * @param string $driver
-     * @return string
      */
-    protected function resolveDriverClass(string $driver): string
+    protected function resolveDriverClass(string $driver): bool|string
     {
         if ($this->driver['namespace'] || str_contains($driver, '\\')) {
             $class = str_contains($driver, '\\') ? $driver : $this->driver['namespace'] . Str::studly($driver);
-
             if (class_exists($class)) {
                 return $class;
             }
         }
-
-        throw new InvalidArgumentException("Driver [$driver] not supported.");
+        return false;
     }
 
     /**
