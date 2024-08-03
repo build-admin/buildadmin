@@ -11,7 +11,7 @@ import { useTitle } from '@vueuse/core'
 import { i18n } from '../lang'
 import { getUrl } from './axios'
 import { adminBaseRoutePath } from '/@/router/static/adminBase'
-import { trim, trimStart } from 'lodash-es'
+import { isArray, trim, trimStart } from 'lodash-es'
 import type { TranslateOptions } from 'vue-i18n'
 
 export function registerIcons(app: App) {
@@ -268,25 +268,27 @@ export const __ = (key: string, named?: Record<string, unknown>, options?: Trans
 }
 
 /**
- * 文件类型效验，主要用于云存储
- * 服务端并不能单纯此函数来限制文件上传
- * @param {string} fileName 文件名
- * @param {string} fileType 文件mimetype，不一定存在
+ * 文件类型效验，前端根据服务端配置进行初步检查
+ * @param fileName 文件名
+ * @param fileType 文件 mimeType，不一定存在
  */
 export const checkFileMimetype = (fileName: string, fileType: string) => {
     if (!fileName) return false
     const siteConfig = useSiteConfig()
-    const mimetype = siteConfig.upload.mimetype.toLowerCase().split(',')
+    const allowedSuffixes = isArray(siteConfig.upload.allowedSuffixes)
+        ? siteConfig.upload.allowedSuffixes
+        : siteConfig.upload.allowedSuffixes.toLowerCase().split(',')
+
+    const allowedMimeTypes = isArray(siteConfig.upload.allowedMimeTypes)
+        ? siteConfig.upload.allowedMimeTypes
+        : siteConfig.upload.allowedMimeTypes.toLowerCase().split(',')
 
     const fileSuffix = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase()
-    if (siteConfig.upload.mimetype === '*' || mimetype.includes(fileSuffix) || mimetype.includes('.' + fileSuffix)) {
+    if (allowedSuffixes.includes(fileSuffix) || allowedSuffixes.includes('.' + fileSuffix)) {
         return true
     }
-    if (fileType) {
-        const fileTypeTemp = fileType.toLowerCase().split('/')
-        if (mimetype.includes(fileTypeTemp[0] + '/*') || mimetype.includes(fileType)) {
-            return true
-        }
+    if (fileType && allowedMimeTypes.includes(fileType)) {
+        return true
     }
     return false
 }

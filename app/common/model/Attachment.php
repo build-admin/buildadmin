@@ -4,9 +4,9 @@ namespace app\common\model;
 
 use Throwable;
 use think\Model;
-use ba\Filesystem;
 use think\facade\Event;
 use app\admin\model\Admin;
+use app\common\library\Upload;
 use think\model\relation\BelongsTo;
 
 /**
@@ -22,6 +22,16 @@ class Attachment extends Model
         'full_url'
     ];
 
+    /**
+     * 上传类实例，可以通过它调用上传文件驱动，且驱动类具有静态缓存
+     */
+    protected static Upload $upload;
+
+    protected static function init(): void
+    {
+        self::$upload = new Upload();
+    }
+
     public function getSuffixAttr($value, $row): string
     {
         if ($row['name']) {
@@ -33,7 +43,7 @@ class Attachment extends Model
 
     public function getFullUrlAttr($value, $row): string
     {
-        return full_url($row['url']);
+        return self::$upload->getDriver($row['storage'])->url($row['url']);
     }
 
     /**
@@ -48,8 +58,7 @@ class Attachment extends Model
             ['storage', '=', $model->storage],
         ])->find();
         if ($repeat) {
-            $storageFile = Filesystem::fsFit(public_path() . ltrim($repeat['url'], '/'));
-            if ($model->storage == 'local' && !file_exists($storageFile)) {
+            if (!self::$upload->getDriver($repeat->storage)->exists($repeat->url)) {
                 $repeat->delete();
                 return true;
             } else {
@@ -83,10 +92,9 @@ class Attachment extends Model
     {
         Event::trigger('AttachmentDel', $model);
 
-        $filePath = Filesystem::fsFit(public_path() . ltrim($model->url, '/'));
-        if (file_exists($filePath)) {
-            unlink($filePath);
-            Filesystem::delEmptyDir(dirname($filePath));
+        $driver = self::$upload->getDriver($model->storage);
+        if ($driver->exists($model->url)) {
+            $driver->delete($model->url);
         }
     }
 

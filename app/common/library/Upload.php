@@ -4,13 +4,16 @@ namespace app\common\library;
 
 use Throwable;
 use ba\Random;
-use think\File;
 use ba\Filesystem;
 use think\Exception;
+use think\helper\Str;
 use think\facade\Config;
+use think\facade\Validate;
 use think\file\UploadedFile;
+use InvalidArgumentException;
+use think\validate\ValidateRule;
 use app\common\model\Attachment;
-use think\exception\FileException;
+use app\common\library\upload\Driver;
 
 /**
  * 上传
@@ -18,31 +21,36 @@ use think\exception\FileException;
 class Upload
 {
     /**
-     * 配置信息
-     * @var array
+     * 上传配置
      */
     protected array $config = [];
 
     /**
-     * @var ?UploadedFile
+     * 被上传文件
      */
     protected ?UploadedFile $file = null;
 
     /**
      * 是否是图片
-     * @var bool
      */
     protected bool $isImage = false;
 
     /**
      * 文件信息
-     * @var array
      */
     protected array $fileInfo;
 
     /**
-     * 细目（存储目录）
-     * @var string
+     * 上传驱动
+     */
+    protected array $driver = [
+        'name'      => 'local', // 默认驱动:local=本地
+        'handler'   => [], // 驱动句柄
+        'namespace' => '\\app\\common\\library\\upload\\driver\\', // 驱动类的命名空间
+    ];
+
+    /**
+     * 存储子目录
      */
     protected string $topic = 'default';
 
@@ -54,10 +62,8 @@ class Upload
      */
     public function __construct(?UploadedFile $file = null, array $config = [])
     {
-        $this->config = Config::get('upload');
-        if ($config) {
-            $this->config = array_merge($this->config, $config);
-        }
+        $upload       = Config::get('upload');
+        $this->config = array_merge($upload, $config);
 
         if ($file) {
             $this->setFile($file);
@@ -65,32 +71,74 @@ class Upload
     }
 
     /**
-     * 设置文件
+     * 设置上传文件
      * @param ?UploadedFile $file
-     * @return array 文件信息
+     * @return Upload
      * @throws Throwable
      */
-    public function setFile(?UploadedFile $file): array
+    public function setFile(?UploadedFile $file): Upload
     {
         if (empty($file)) {
-            throw new Exception(__('No files were uploaded'), 10001);
+            throw new Exception(__('No files were uploaded'));
         }
 
         $suffix             = strtolower($file->extension());
         $suffix             = $suffix && preg_match("/^[a-zA-Z0-9]+$/", $suffix) ? $suffix : 'file';
         $fileInfo['suffix'] = $suffix;
-        $fileInfo['type']   = $file->getOriginalMime();
+        $fileInfo['type']   = $file->getMime();
         $fileInfo['size']   = $file->getSize();
         $fileInfo['name']   = $file->getOriginalName();
         $fileInfo['sha1']   = $file->sha1();
 
         $this->file     = $file;
         $this->fileInfo = $fileInfo;
-        return $fileInfo;
+        return $this;
     }
 
     /**
-     * 设置细目（存储目录）
+     * 设置上传驱动
+     */
+    public function setDriver(string $driver): Upload
+    {
+        $this->driver['name'] = $driver;
+        return $this;
+    }
+
+    /**
+     * 获取上传驱动句柄
+     */
+    public function getDriver(?string $driver = null): Driver
+    {
+        if (is_null($driver)) {
+            $driver = $this->driver['name'];
+        }
+        if (!isset($this->driver['handler'][$driver])) {
+            $class                            = $this->resolveDriverClass($driver);
+            $this->driver['handler'][$driver] = new $class();
+        }
+        return $this->driver['handler'][$driver];
+    }
+
+    /**
+     * 获取驱动类
+     * @param string $driver
+     * @return string
+     */
+    protected function resolveDriverClass(string $driver): string
+    {
+        if ($this->driver['namespace'] || str_contains($driver, '\\')) {
+            $class = str_contains($driver, '\\') ? $driver : $this->driver['namespace'] . Str::studly($driver);
+
+            if (class_exists($class)) {
+                return $class;
+            }
+        }
+
+        throw new InvalidArgumentException("Driver [$driver] not supported.");
+    }
+
+    /**
+     * 设置存储子目录
      */
     public function setTopic(string $topic): Upload
     {
@@ -99,25 +147,7 @@ class Upload
     }
 
     /**
-     * 检查文件类型是否允许上传
-     * @return bool
-     * @throws Throwable
-     */
-    protected function checkMimetype(): bool
-    {
-        $mimetypeArr = explode(',', strtolower($this->config['mimetype']));
-        $typeArr     = explode('/', $this->fileInfo['type']);
-        // 验证文件后缀
-        if ($this->config['mimetype'] === '*'
-            || in_array($this->fileInfo['suffix'], $mimetypeArr) || in_array('.' . $this->fileInfo['suffix'], $mimetypeArr)
-            || in_array($this->fileInfo['type'], $mimetypeArr) || in_array($typeArr[0] . "/*", $mimetypeArr)) {
-            return true;
-        }
-        throw new Exception(__('The uploaded file format is not allowed'), 10002);
-    }
-
-    /**
-     * 是否是图片并设置好相关属性
+     * 检查是否是图片并设置好相关属性
      * @return bool
      * @throws Throwable
      */
@@ -146,21 +176,6 @@ class Upload
     }
 
     /**
-     * 检查文件大小是否允许上传
-     * @throws Throwable
-     */
-    protected function checkSize(): void
-    {
-        $size = Filesystem::fileUnitToByte($this->config['maxsize']);
-        if ($this->fileInfo['size'] > $size) {
-            throw new Exception(__('The uploaded file is too large (%sMiB), Maximum file size:%sMiB', [
-                round($this->fileInfo['size'] / pow(1024, 2), 2),
-                round($size / pow(1024, 2), 2)
-            ]));
-        }
-    }
-
-    /**
      * 获取文件后缀
      * @return string
      */
@@ -170,7 +185,7 @@ class Upload
     }
 
     /**
-     * 获取文件保存名
+     * 获取文件保存路径和名称
      * @param ?string $saveName
      * @param ?string $filename
      * @param ?string $sha1
@@ -184,7 +199,7 @@ class Upload
         } else {
             $suffix = $this->fileInfo['suffix'];
         }
-        $filename   = $filename ?: ($suffix ? substr($this->fileInfo['name'], 0, strripos($this->fileInfo['name'], '.')) : $this->fileInfo['name']);
+        $filename   = $filename ?: $this->fileInfo['name'];
         $sha1       = $sha1 ?: $this->fileInfo['sha1'];
         $replaceArr = [
             '{topic}'    => $this->topic,
@@ -196,13 +211,58 @@ class Upload
             '{sec}'      => date("s"),
             '{random}'   => Random::build(),
             '{random32}' => Random::build('alnum', 32),
-            '{filename}' => $this->getFileNameSubstr($filename),
+            '{fileName}' => $this->getFileNameSubstr($filename, $suffix),
             '{suffix}'   => $suffix,
             '{.suffix}'  => $suffix ? '.' . $suffix : '',
-            '{filesha1}' => $sha1,
+            '{fileSha1}' => $sha1,
         ];
-        $saveName   = $saveName ?: $this->config['savename'];
-        return str_replace(array_keys($replaceArr), array_values($replaceArr), $saveName);
+        $saveName   = $saveName ?: $this->config['save_name'];
+        return Filesystem::fsFit(str_replace(array_keys($replaceArr), array_values($replaceArr), $saveName));
+    }
+
+    /**
+     * 验证文件是否符合上传配置要求
+     * @throws Throwable
+     */
+    public function validates(): void
+    {
+        if (empty($this->file)) {
+            throw new Exception(__('No files have been uploaded or the file size exceeds the upload limit of the server'));
+        }
+
+        $size   = Filesystem::fileUnitToByte($this->config['max_size']);
+        $mime   = $this->checkConfig($this->config['allowed_mime_types']);
+        $suffix = $this->checkConfig($this->config['allowed_suffixes']);
+
+        // 文件大小
+        $fileValidateRule = ValidateRule::fileSize($size, __('The uploaded file is too large (%sMiB), Maximum file size:%sMiB', [
+            round($this->fileInfo['size'] / pow(1024, 2), 2),
+            round($size / pow(1024, 2), 2)
+        ]));
+
+        // 文件后缀
+        if ($suffix) {
+            $fileValidateRule->fileExt($suffix, __('The uploaded file format is not allowed'));
+        }
+        // 文件 MIME 类型
+        if ($mime) {
+            $fileValidateRule->fileMime($mime, __('The uploaded file format is not allowed'));
+        }
+
+        // 图片文件利用tp内置规则做一些额外检查
+        if ($this->checkIsImage()) {
+            $fileValidateRule->image("{$this->fileInfo['width']},{$this->fileInfo['height']},{$this->fileInfo['suffix']}", __('The uploaded image file is not a valid image'));
+        }
+
+        Validate::failException()
+            ->rule([
+                'file'  => $fileValidateRule,
+                'topic' => ValidateRule::is('string', __('Topic format error')),
+            ])
+            ->check([
+                'file'  => $this->file,
+                'topic' => $this->topic,
+            ]);
     }
 
     /**
@@ -215,25 +275,21 @@ class Upload
      */
     public function upload(?string $saveName = null, int $adminId = 0, int $userId = 0): array
     {
-        if (empty($this->file)) {
-            throw new Exception(__('No files have been uploaded or the file size exceeds the upload limit of the server'));
-        }
+        $this->validates();
 
-        $this->checkSize();
-        $this->checkMimetype();
-        $this->checkIsImage();
-
-        $params = [
+        $driver   = $this->getDriver();
+        $saveName = $saveName ?: $this->getSaveName();
+        $params   = [
             'topic'    => $this->topic,
             'admin_id' => $adminId,
             'user_id'  => $userId,
-            'url'      => $this->getSaveName(),
+            'url'      => $driver->url($saveName, false),
             'width'    => $this->fileInfo['width'] ?? 0,
             'height'   => $this->fileInfo['height'] ?? 0,
-            'name'     => substr(htmlspecialchars(strip_tags($this->fileInfo['name'])), 0, 100),
+            'name'     => $this->getFileNameSubstr($this->fileInfo['name'], $this->fileInfo['suffix'], 100) . ".{$this->fileInfo['suffix']}",
             'size'     => $this->fileInfo['size'],
             'mimetype' => $this->fileInfo['type'],
-            'storage'  => 'local',
+            'storage'  => $this->driver['name'],
             'sha1'     => $this->fileInfo['sha1']
         ];
 
@@ -242,12 +298,11 @@ class Upload
             ->where('topic', $params['topic'])
             ->where('storage', $params['storage'])
             ->find();
-        $filePath   = Filesystem::fsFit(public_path() . ltrim($params['url'], '/'));
-        if ($attachment && file_exists($filePath)) {
+        if ($attachment && $driver->exists($saveName)) {
             $attachment->quote++;
             $attachment->last_upload_time = time();
         } else {
-            $this->move($saveName);
+            $driver->save($this->file, $saveName);
             $attachment = new Attachment();
             $attachment->data(array_filter($params));
         }
@@ -255,46 +310,27 @@ class Upload
         return $attachment->toArray();
     }
 
-    public function move($saveName = null): File
-    {
-        $saveName  = $saveName ?: $this->getSaveName();
-        $saveName  = '/' . ltrim($saveName, '/');
-        $uploadDir = substr($saveName, 0, strripos($saveName, '/') + 1);
-        $fileName  = substr($saveName, strripos($saveName, '/') + 1);
-        $destDir   = Filesystem::fsFit(root_path() . 'public' . $uploadDir);
-
-        if (request()->isCgi()) {
-            return $this->file->move($destDir, $fileName);
-        }
-
-        set_error_handler(function ($type, $msg) use (&$error) {
-            $error = $msg;
-        });
-
-        if (!is_dir($destDir) && !mkdir($destDir, 0777, true)) {
-            restore_error_handler();
-            throw new FileException(sprintf('Unable to create the "%s" directory (%s)', $destDir, strip_tags($error)));
-        }
-
-        $destination = $destDir . $fileName;
-        if (!rename($this->file->getPathname(), $destination)) {
-            restore_error_handler();
-            throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s)', $this->file->getPathname(), $destination, strip_tags($error)));
-        }
-
-        restore_error_handler();
-        @chmod($destination, 0666 & ~umask());
-        return $this->file;
-    }
-
     /**
      * 获取文件名称字符串的子串
      */
-    public function getFileNameSubstr(string $fileName, int $length = 15): string
+    public function getFileNameSubstr(string $fileName, string $suffix, int $length = 15): string
     {
         // 对 $fileName 中不利于传输的字符串进行过滤
         $pattern  = "/[\s:@#?&\/=',+]+/u";
+        $fileName = str_replace(".$suffix", '', $fileName);
         $fileName = preg_replace($pattern, '', $fileName);
-        return mb_substr($fileName, 0, $length);
+        return mb_substr(htmlspecialchars(strip_tags($fileName)), 0, $length);
+    }
+
+    /**
+     * 检查配置项，将 string 类型的配置转换为 array，并且将所有字母转换为小写
+     */
+    protected function checkConfig($configItem): array
+    {
+        if (is_array($configItem)) {
+            return array_map('strtolower', $configItem);
+        } else {
+            return explode(',', strtolower($configItem));
+        }
     }
 }

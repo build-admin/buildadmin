@@ -18,10 +18,16 @@ class Ajax extends Frontend
 
     public function upload(): void
     {
-        $file = $this->request->file('file');
+        $file   = $this->request->file('file');
+        $driver = $this->request->param('driver', 'local');
+        $topic  = $this->request->param('topic', 'default');
         try {
-            $upload     = new Upload($file);
-            $attachment = $upload->upload(null, 0, $this->auth->id);
+            $upload     = new Upload();
+            $attachment = $upload
+                ->setFile($file)
+                ->setDriver($driver)
+                ->setTopic($topic)
+                ->upload(null, 0, $this->auth->id);
             unset($attachment['create_time'], $attachment['quote']);
         } catch (Throwable $e) {
             $this->error($e->getMessage());

@@ -39,7 +39,7 @@ class Index extends Backend
                 'version'  => get_sys_config('version'),
                 'cdnUrl'   => full_url(),
                 'apiUrl'   => Config::get('buildadmin.api_url'),
-                'upload'   => get_upload_config(),
+                'upload'   => keys_to_camel_case(get_upload_config()),
             ],
             'terminal'   => [
                 'installServicePort' => Config::get('terminal.install_service_port'),

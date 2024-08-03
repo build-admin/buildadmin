@@ -27,6 +27,7 @@ return [
     'The uploaded image file is not a valid image'                                        => '上传的图片文件不是有效的图像',
     'The uploaded file is too large (%sMiB), Maximum file size:%sMiB'                     => '上传的文件太大(%sM)，最大文件大小：%sM',
     'No files have been uploaded or the file size exceeds the upload limit of the server' => '没有文件被上传或文件大小超出服务器上传限制！',
+    'Topic format error'                                                                  => '存储目录（topic）格式错误！',
     'Unknown'                                                                             => '未知',
     // 权限类语言包-s
     'Account not exist'                                                                   => '帐户不存在',

@@ -52,7 +52,7 @@ export function fileUpload(fd: FormData, params: anyObj = {}, forceLocal = false
         errorMsg = i18n.global.t('utils.The data of the uploaded file is incomplete!')
     } else if (!checkFileMimetype(file.name, file.type)) {
         errorMsg = i18n.global.t('utils.The type of uploaded file is not allowed!')
-    } else if (file.size > siteConfig.upload.maxsize) {
+    } else if (file.size > siteConfig.upload.maxSize) {
         errorMsg = i18n.global.t('utils.The size of the uploaded file exceeds the allowed range!')
     }
     if (errorMsg) {
