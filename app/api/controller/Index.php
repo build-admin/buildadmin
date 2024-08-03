@@ -72,7 +72,7 @@ class Index extends Frontend
                 'recordNumber' => get_sys_config('record_number'),
                 'version'      => get_sys_config('version'),
                 'cdnUrl'       => full_url(),
-                'upload'       => keys_to_camel_case(get_upload_config()),
+                'upload'       => keys_to_camel_case(get_upload_config(), ['max_size', 'save_name', 'allowed_suffixes', 'allowed_mime_types']),
             ],
             'openMemberCenter' => Config::get('buildadmin.open_member_center'),
             'userInfo'         => $this->auth->getUserInfo(),

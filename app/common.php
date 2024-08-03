@@ -433,16 +433,18 @@ if (!function_exists('get_auth_token')) {
 if (!function_exists('keys_to_camel_case')) {
 
     /**
-     * 将数组所有 key 的命名方式转换为小写驼峰
-     * @param array $array
+     * 将数组 key 的命名方式转换为小写驼峰
+     * @param array $array 被转换的数组
+     * @param array $keys  要转换的 key，默认所有
      * @return array
      */
-    function keys_to_camel_case(array $array): array
+    function keys_to_camel_case(array $array, array $keys = []): array
     {
         $result = [];
         foreach ($array as $key => $value) {
             // 将键名转换为驼峰命名
-            $camelCaseKey = parse_name($key, 1, false);
+            $camelCaseKey = $keys && in_array($key, $keys) ? parse_name($key, 1, false) : $key;
+
             if (is_array($value)) {
                 // 如果值是数组，递归转换
                 $result[$camelCaseKey] = keys_to_camel_case($value);
