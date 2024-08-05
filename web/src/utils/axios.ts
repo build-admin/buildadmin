@@ -367,9 +367,9 @@ interface Options {
     reductDataFormat?: boolean
     // 是否开启接口错误信息展示,默认为true
     showErrorMessage?: boolean
-    // 是否开启code不为0时的信息提示, 默认为true
+    // 是否开启code不为1时的信息提示, 默认为true
     showCodeMessage?: boolean
-    // 是否开启code为0时的信息提示, 默认为false
+    // 是否开启code为1时的信息提示, 默认为false
     showSuccessMessage?: boolean
     // 当前请求使用另外的用户token
     anotherToken?: string
