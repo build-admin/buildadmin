@@ -103,6 +103,7 @@
                                             (item.render == 'tag' || item.render == 'tags' || item.comSearchRender == 'select') && item.replaceValue
                                         "
                                         v-model="baTable.comSearch.form[item.prop!]"
+                                        :multiple="item.operator == 'IN' || item.operator == 'NOT IN'"
                                         :clearable="true"
                                     >
                                         <el-option v-for="(opt, okey) in item.replaceValue" :key="item.prop! + okey" :label="opt" :value="okey" />
