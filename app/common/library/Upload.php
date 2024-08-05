@@ -120,7 +120,7 @@ class Upload
             if ($class) {
                 $this->driver['handler'][$driver] = new $class();
             } elseif ($noDriveException) {
-                throw new InvalidArgumentException("Driver [$driver] not supported.");
+                throw new InvalidArgumentException(__('Driver %s not supported', [$driver]));
             }
         }
         return $this->driver['handler'][$driver] ?? false;
@@ -259,12 +259,14 @@ class Upload
 
         Validate::failException()
             ->rule([
-                'file'  => $fileValidateRule,
-                'topic' => ValidateRule::is('string', __('Topic format error')),
+                'file'   => $fileValidateRule,
+                'topic'  => ValidateRule::is('alphaDash', __('Topic format error')),
+                'driver' => ValidateRule::is('alphaDash', __('Driver %s not supported', [$this->driver['name']])),
             ])
             ->check([
-                'file'  => $this->file,
-                'topic' => $this->topic,
+                'file'   => $this->file,
+                'topic'  => $this->topic,
+                'driver' => $this->driver['name'],
             ]);
     }
 

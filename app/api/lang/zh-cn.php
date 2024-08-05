@@ -23,7 +23,8 @@ return [
     'The uploaded image file is not a valid image'                                        => '上传的图片文件不是有效的图像',
     'The uploaded file is too large (%sMiB), Maximum file size:%sMiB'                     => '上传的文件太大(%sM)，最大文件大小：%sM',
     'No files have been uploaded or the file size exceeds the upload limit of the server' => '没有文件被上传或文件大小超出服务器上传限制！',
-    'Topic format error'                                                                  => '存储目录（topic）格式错误！',
+    'Topic format error'                                                                  => '上传存储子目录格式错误！',
+    'Driver %s not supported'                                                             => '不支持的驱动：%s',
     // 文件上传-e
     'Invalid token'                                                                       => 'Token 无效！',
     'Login expired, please login again.'                                                  => '登录过期，请重新登录。',
