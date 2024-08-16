@@ -229,7 +229,7 @@ declare global {
     }
 
     /* 表头支持的按钮 */
-    type HeaderOptButton = 'refresh' | 'add' | 'edit' | 'delete' | 'unfold' | 'recycle bin' | 'comSearch' | 'quickSearch' | 'columnDisplay'
+    type HeaderOptButton = 'refresh' | 'add' | 'edit' | 'delete' | 'unfold' | 'comSearch' | 'quickSearch' | 'columnDisplay'
 
     /* 通用搜索操作符支持的值 */
     type OperatorStr =
@@ -262,7 +262,7 @@ declare global {
     /* 通用搜索事件返回的Data */
     interface comSearchData {
         field: string
-        val: string
+        val: string | string[] | number | number[]
         operator: string
         render?: string
     }
