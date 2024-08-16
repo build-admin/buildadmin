@@ -32,7 +32,7 @@
                         <div class="small-panel-content">
                             <div class="content-left">
                                 <Icon color="#8595F4" size="20" name="fa fa-line-chart" />
-                                <span id="user_reg_number">5456</span>
+                                <el-statistic :value="userRegNumberOutput" :value-style="statisticValueStyle" />
                             </div>
                             <div class="content-right">+14%</div>
                         </div>
@@ -44,7 +44,7 @@
                         <div class="small-panel-content">
                             <div class="content-left">
                                 <Icon color="#AD85F4" size="20" name="fa fa-file-text" />
-                                <span id="file_number">1234</span>
+                                <el-statistic :value="fileNumberOutput" :value-style="statisticValueStyle" />
                             </div>
                             <div class="content-right">+50%</div>
                         </div>
@@ -56,7 +56,7 @@
                         <div class="small-panel-content">
                             <div class="content-left">
                                 <Icon color="#74A8B5" size="20" name="fa fa-users" />
-                                <span id="users_number">9486</span>
+                                <el-statistic :value="usersNumberOutput" :value-style="statisticValueStyle" />
                             </div>
                             <div class="content-right">+28%</div>
                         </div>
@@ -68,7 +68,7 @@
                         <div class="small-panel-content">
                             <div class="content-left">
                                 <Icon color="#F48595" size="20" name="fa fa-object-group" />
-                                <span id="addons_number">875</span>
+                                <el-statistic :value="addonsNumberOutput" :value-style="statisticValueStyle" />
                             </div>
                             <div class="content-right">+88%</div>
                         </div>
@@ -149,20 +149,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, nextTick, onActivated, watch, onBeforeMount } from 'vue'
-import headerSvg from '/@/assets/dashboard/header-1.svg'
-import coffeeSvg from '/@/assets/dashboard/coffee.svg'
-import { CountUp } from 'countup.js'
+import { useEventListener, useTemplateRefsList, useTransition } from '@vueuse/core'
 import * as echarts from 'echarts'
-import { useNavTabs } from '/@/stores/navTabs'
-import { useTemplateRefsList } from '@vueuse/core'
-import { index } from '/@/api/backend/dashboard'
+import { CSSProperties, nextTick, onActivated, onBeforeMount, onMounted, onUnmounted, reactive, toRefs, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Local } from '/@/utils/storage'
+import { index } from '/@/api/backend/dashboard'
+import coffeeSvg from '/@/assets/dashboard/coffee.svg'
+import headerSvg from '/@/assets/dashboard/header-1.svg'
 import { useAdminInfo } from '/@/stores/adminInfo'
 import { WORKING_TIME } from '/@/stores/constant/cacheKey'
+import { useNavTabs } from '/@/stores/navTabs'
 import { fullUrl, getGreet } from '/@/utils/common'
-import { useEventListener } from '@vueuse/core'
+import { Local } from '/@/utils/storage'
 let workTimer: number
 
 defineOptions({
@@ -187,27 +185,35 @@ const state: {
     pauseWork: false,
 })
 
+/**
+ * 带有数字向上变化特效的数据
+ */
+const countUp = reactive({
+    userRegNumber: 0,
+    fileNumber: 0,
+    usersNumber: 0,
+    addonsNumber: 0,
+})
+
+const countUpRefs = toRefs(countUp)
+const userRegNumberOutput = useTransition(countUpRefs.userRegNumber, { duration: 1500 })
+const fileNumberOutput = useTransition(countUpRefs.fileNumber, { duration: 1500 })
+const usersNumberOutput = useTransition(countUpRefs.usersNumber, { duration: 1500 })
+const addonsNumberOutput = useTransition(countUpRefs.addonsNumber, { duration: 1500 })
+const statisticValueStyle: CSSProperties = {
+    fontSize: '28px',
+}
+
 index().then((res) => {
     state.remark = res.data.remark
 })
 
-const countUpFun = (id: string) => {
-    nextTick(() => {
-        let value = document.getElementById(id)?.innerText
-        if (value) {
-            new CountUp(id, parseInt(value), {
-                startVal: 0,
-                duration: 3,
-            }).start()
-        }
-    })
-}
-
 const initCountUp = () => {
-    countUpFun('user_reg_number')
-    countUpFun('file_number')
-    countUpFun('users_number')
-    countUpFun('addons_number')
+    // 虚拟数据
+    countUpRefs.userRegNumber.value = 5456
+    countUpRefs.fileNumber.value = 1234
+    countUpRefs.usersNumber.value = 9486
+    countUpRefs.addonsNumber.value = 875
 }
 
 const initUserGrowthChart = () => {
@@ -277,11 +283,11 @@ const initFileGrowthChart = () => {
         },
         legend: {
             type: 'scroll',
-            bottom: 15,
+            bottom: 0,
             data: (function () {
                 var list = []
-                for (var i = 1; i <= 12; i++) {
-                    list.push(i + t('dashboard.month'))
+                for (var i = 1; i <= 28; i++) {
+                    list.push(i + 2000 + '')
                 }
                 return list
             })(),
@@ -301,11 +307,12 @@ const initFileGrowthChart = () => {
                 { name: t('dashboard.file') },
                 { name: t('dashboard.table') },
                 { name: t('dashboard.Compressed package') },
+                { name: t('dashboard.other') },
             ],
         },
         series: (function () {
             var series = []
-            for (var i = 1; i <= 12; i++) {
+            for (var i = 1; i <= 28; i++) {
                 series.push({
                     type: 'radar',
                     symbol: 'none',
@@ -319,8 +326,8 @@ const initFileGrowthChart = () => {
                     },
                     data: [
                         {
-                            value: [(40 - i) * 10, (38 - i) * 4 + 60, i * 5 + 10, i * 20],
-                            name: i + t('dashboard.month'),
+                            value: [(40 - i) * 10, (38 - i) * 4 + 60, i * 5 + 10, i * 9, (i * i) / 2],
+                            name: i + 2000 + '',
                         },
                     ],
                 })
@@ -421,7 +428,7 @@ const initUserSourceChart = () => {
 
 const initUserSurnameChart = () => {
     const userSurnameChart = echarts.init(chartRefs.value[3] as HTMLElement)
-    const data = genData(50)
+    const data = genData(20)
     const option = {
         tooltip: {
             trigger: 'item',
@@ -463,7 +470,7 @@ const initUserSurnameChart = () => {
         const legendData = []
         const seriesData = []
         for (var i = 0; i < count; i++) {
-            var name = Math.random() > 0.65 ? makeWord(4, 1) + '·' + makeWord(3, 0) : makeWord(2, 1)
+            var name = Math.random() > 0.85 ? makeWord(2, 1) + '·' + makeWord(2, 0) : makeWord(2, 1)
             legendData.push(name)
             seriesData.push({
                 name: name,
@@ -715,13 +722,11 @@ watch(
         margin-top: 20px;
         color: #2c3f5d;
         .content-left {
+            display: flex;
+            align-items: center;
             font-size: 24px;
             .icon {
                 margin-right: 10px;
-            }
-            span {
-                display: inline-block;
-                font-size: 28px;
             }
         }
         .content-right {
