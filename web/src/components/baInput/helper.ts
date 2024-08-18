@@ -15,7 +15,7 @@ export const npuaFalse = () => {
 export const fieldData: FieldData = {
     string: {
         type: 'varchar',
-        length: 200,
+        length: 255,
         precision: 0,
         default: 'empty string',
         ...npuaFalse(),
@@ -112,7 +112,7 @@ export const fieldData: FieldData = {
     },
     selects: {
         type: 'varchar',
-        length: 100,
+        length: 255,
         precision: 0,
         default: 'empty string',
         ...npuaFalse(),
@@ -127,7 +127,7 @@ export const fieldData: FieldData = {
     },
     remoteSelects: {
         type: 'varchar',
-        length: 100,
+        length: 255,
         precision: 0,
         default: 'empty string',
         ...npuaFalse(),
@@ -149,28 +149,28 @@ export const fieldData: FieldData = {
     },
     image: {
         type: 'varchar',
-        length: 200,
+        length: 255,
         precision: 0,
         default: 'empty string',
         ...npuaFalse(),
     },
     images: {
         type: 'varchar',
-        length: 255,
+        length: 1500,
         precision: 0,
         default: 'empty string',
         ...npuaFalse(),
     },
     file: {
         type: 'varchar',
-        length: 200,
+        length: 255,
         precision: 0,
         default: 'empty string',
         ...npuaFalse(),
     },
     files: {
         type: 'varchar',
-        length: 255,
+        length: 1500,
         precision: 0,
         default: 'empty string',
         ...npuaFalse(),
@@ -184,7 +184,7 @@ export const fieldData: FieldData = {
     },
     color: {
         type: 'varchar',
-        length: 30,
+        length: 50,
         precision: 0,
         default: 'empty string',
         ...npuaFalse(),
