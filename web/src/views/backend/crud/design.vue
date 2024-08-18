@@ -241,11 +241,11 @@
                     <div v-else :key="'activate-field-' + state.activateField">
                         <el-form label-position="top">
                             <el-divider content-position="left">{{ t('crud.crud.Common') }}</el-divider>
-                            <el-form-item :label="t('crud.crud.generate')">
+                            <el-form-item :label="t('crud.crud.Generate type')">
                                 <el-select
-                                    @change="onFieldDesignTypeChange"
+                                    @change="onFieldDesignTypeChange($event)"
                                     class="w100"
-                                    v-model="state.fields[state.activateField].designType"
+                                    :model-value="state.fields[state.activateField].designType"
                                     placement="bottom"
                                 >
                                     <el-option v-for="(item, idx) in designTypes" :key="idx" :label="item.name" :value="idx" />
@@ -764,8 +764,31 @@ const onActivateField = (idx: number) => {
     state.activateField = idx
 }
 
-const onFieldDesignTypeChange = () => {
+const onFieldDesignTypeChange = (designType: string) => {
+    // 获取新的类型的数据
+    let fieldDesignData: FieldItem | null = null
+    for (const key in fieldItem) {
+        const fieldItemIndex = getArrayKey(fieldItem[key as keyof typeof fieldItem], 'designType', designType)
+        if (fieldItemIndex) {
+            fieldDesignData = cloneDeep(fieldItem[key as keyof typeof fieldItem][fieldItemIndex])
+            break
+        }
+    }
+
+    if (!fieldDesignData) return false
+
+    // 主键重复检查
+    if (!primaryKeyRepeatCheck(fieldDesignData, state.activateField)) {
+        return false
+    }
+
+    // 选中字段数据
     const field = cloneDeep(state.fields[state.activateField])
+
+    // 赋值新类型
+    field.designType = designType
+
+    // 保留字段的 table 和 form 数据，此处额外处理以便交付给 handleFieldAttr 函数
     for (const tKey in field.table) {
         field.table[tKey] = field.table[tKey].value
     }
@@ -773,6 +796,50 @@ const onFieldDesignTypeChange = () => {
         field.form[tKey] = field.form[tKey].value
     }
     state.fields[state.activateField] = handleFieldAttr(field)
+
+    // 询问是否切换至预设方案（除了字段名的属性全部重置）
+    ElMessageBox.confirm(t('crud.crud.Reset generate type attr'), t('Reminder'), {
+        confirmButtonText: t('Confirm') + t('Reset'),
+        cancelButtonText: t('crud.crud.Design efficiency'),
+        type: 'warning',
+        closeOnClickModal: false,
+    })
+        .then(() => {
+            // 记录字段属性更新
+            onFieldAttrChange()
+
+            // 重置属性，除了 name
+            const oldName = state.fields[state.activateField].name
+            state.fields[state.activateField] = handleFieldAttr(fieldDesignData)
+            state.fields[state.activateField].name = oldName
+
+            // 删除快速搜索和排序，根据新类型重新赋值
+            clearFieldTableData(oldName)
+
+            if (fieldDesignData.primaryKey) {
+                // 设置为默认排序字段、快速搜索字段
+                state.table.defaultSortField = fieldDesignData.name
+                state.table.quickSearchField.push(fieldDesignData.name)
+            }
+
+            if (fieldDesignData.designType == 'weigh') {
+                state.table.defaultSortField = fieldDesignData.name
+            }
+
+            // 远程下拉参数预填
+            if (['remoteSelect', 'remoteSelects'].includes(fieldDesignData.designType)) {
+                showRemoteSelectPre(state.activateField, true)
+            }
+
+            // 表单表格字段预定义
+            if (!fieldDesignData.formBuildExclude) {
+                state.table.formFields.push(fieldDesignData.name)
+            }
+            if (!fieldDesignData.tableBuildExclude) {
+                state.table.columnFields.push(fieldDesignData.name)
+            }
+        })
+        .catch(() => {})
 }
 
 /**
@@ -800,6 +867,28 @@ const onFieldNameChange = (val: string, index: number) => {
 
     fieldNameCheck('ElMessage')
     fieldNameDuplicationCheck('ElMessage')
+}
+
+/**
+ * 主键字段重复检测
+ */
+const primaryKeyRepeatCheck = (field: FieldItem, excludeIndex: number = -1) => {
+    if (field.primaryKey === true) {
+        const primaryKeyField = state.fields.find((item, index) => {
+            if (excludeIndex > -1 && index == excludeIndex) {
+                return false
+            }
+            return item.primaryKey
+        })
+        if (primaryKeyField) {
+            ElNotification({
+                type: 'error',
+                message: t('crud.crud.There can only be one primary key field'),
+            })
+            return false
+        }
+    }
+    return true
 }
 
 /**
@@ -878,27 +967,35 @@ const onFieldAttrChange = () => {
     })
 }
 
+/**
+ * 从 state.table.* 清理某个字段的数据
+ */
+const clearFieldTableData = (name: string) => {
+    if (name == state.table.defaultSortField) {
+        state.table.defaultSortField = ''
+    }
+
+    for (const key in tableFieldsKey) {
+        const delIdx = (state.table[tableFieldsKey[key] as TableKey] as string[]).findIndex((item) => {
+            return item == name
+        })
+        if (delIdx != -1) {
+            ;(state.table[tableFieldsKey[key] as TableKey] as string[]).splice(delIdx, 1)
+        }
+    }
+}
+
 const onDelField = (index: number) => {
     if (!state.fields[index]) return
     state.activateField = -1
-    if (state.fields[index].name == state.table.defaultSortField) {
-        state.table.defaultSortField = ''
-    }
+
+    clearFieldTableData(state.fields[index].name)
 
     logTableDesignChange({
         type: 'del-field',
         oldName: state.fields[index].name,
         newName: '',
     })
-
-    for (const key in tableFieldsKey) {
-        const delIdx = (state.table[tableFieldsKey[key] as TableKey] as string[]).findIndex((item) => {
-            return item == state.fields[index].name
-        })
-        if (delIdx != -1) {
-            ;(state.table[tableFieldsKey[key] as TableKey] as string[]).splice(delIdx, 1)
-        }
-    }
 
     state.fields.splice(index, 1)
 
@@ -1191,19 +1288,14 @@ onMounted(() => {
                 const data = handleFieldAttr(cloneDeep(field[evt.oldIndex!]))
 
                 // 主键重复检测
-                if (data.primaryKey == true) {
-                    const primaryKeyField = state.fields.find((item) => {
-                        return item.primaryKey
-                    })
-                    if (primaryKeyField) {
-                        ElNotification({
-                            type: 'error',
-                            message: t('crud.crud.There can only be one primary key field'),
-                        })
+                if (data.primaryKey) {
+                    if (primaryKeyRepeatCheck(data)) {
+                        // 设置为默认排序字段、快速搜索字段
+                        state.table.defaultSortField = data.name
+                        state.table.quickSearchField.push(data.name)
+                    } else {
                         return evt.item.remove()
                     }
-                    state.table.defaultSortField = data.name
-                    state.table.quickSearchField.push(data.name)
                 }
 
                 // 出现权重字段则以其排序
