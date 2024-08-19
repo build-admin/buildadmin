@@ -87,7 +87,7 @@ export default {
     length: '长度',
     'decimal point': '小数点',
     'Field Defaults': '字段默认值',
-    'You can directly enter null, 0, empty string': '可以直接输入null、0、empty string',
+    'Please input the default value': '请输入默认值',
     'Auto increment': '自动递增',
     Unsigned: '无符号',
     'Allow NULL': '允许NULL',

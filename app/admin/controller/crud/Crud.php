@@ -795,22 +795,26 @@ class Crud extends Backend
         }
 
         // 默认值
-        if ($field['default'] && $field['default'] != 'empty string') {
+        if ($field['defaultType'] == 'INPUT') {
             $this->indexVueData['defaultItems'][$field['name']] = $field['default'];
         }
-        if ($field['default'] == 'null') {
-            $this->indexVueData['defaultItems'][$field['name']] = $field['designType'] == 'editor' ? '' : null;
-        } elseif ($field['default'] == '0' && in_array($field['designType'], ['radio', 'checkbox', 'select', 'selects'])) {
-            // 防止为`0`时无法设置上默认值
-            $this->indexVueData['defaultItems'][$field['name']] = '0';
-        }
-        if ($field['designType'] == 'array') {
+
+        // 部分生成类型的默认值需要额外处理
+        if ($field['designType'] == 'editor') {
+            $this->indexVueData['defaultItems'][$field['name']] = ($field['defaultType'] == 'INPUT' && $field['default']) ? $field['default'] : '';
+        } elseif ($field['designType'] == 'array') {
             $this->indexVueData['defaultItems'][$field['name']] = "[]";
-        } elseif (in_array($field['designType'], $this->dtStringToArray) && $field['default'] !== null && stripos($field['default'], ',') !== false) {
+        } elseif ($field['defaultType'] == 'INPUT' && in_array($field['designType'], $this->dtStringToArray) && str_contains($field['default'], ',')) {
             $this->indexVueData['defaultItems'][$field['name']] = Helper::buildSimpleArray(explode(',', $field['default']));
-        } elseif (in_array($field['designType'], ['weigh', 'number', 'float'])) {
+        } elseif ($field['defaultType'] == 'INPUT' && in_array($field['designType'], ['number', 'float'])) {
             $this->indexVueData['defaultItems'][$field['name']] = (float)$field['default'];
         }
+
+        // 无意义的默认值
+        if (in_array($field['designType'], ['switch', 'number', 'float', 'remoteSelect']) && $field['default'] == 0) {
+            unset($this->indexVueData['defaultItems'][$field['name']]);
+        }
+
         return $formField;
     }
 

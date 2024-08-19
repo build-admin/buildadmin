@@ -194,13 +194,23 @@ export interface InputAttr extends InputData {
  */
 export interface FieldData {
     [key: string]: {
-        type: string // 数据类型
-        length: number // 长度
-        precision: number // 小数点
-        default: string // 默认值
-        null: boolean // 允许 null
-        primaryKey: boolean // 主键
-        unsigned: boolean // 无符号
-        autoIncrement: boolean // 自动递增
+        // 数据类型
+        type: string
+        // 长度
+        length: number
+        // 小数点
+        precision: number
+        // 默认值
+        default?: string
+        // 默认值类型:INPUT=输入,EMPTY STRING=空字符串,NULL=NULL,NONE=无
+        defaultType: 'INPUT' | 'EMPTY STRING' | 'NULL' | 'NONE'
+        // 允许 null
+        null: boolean
+        // 主键
+        primaryKey: boolean
+        // 无符号
+        unsigned: boolean
+        // 自动递增
+        autoIncrement: boolean
     }
 }

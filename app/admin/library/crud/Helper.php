@@ -302,7 +302,10 @@ class Helper
     public static function getPhinxFieldType(string $type, array $field): array
     {
         if ($type == 'tinyint') {
-            if ((isset($field['dataType']) && $field['dataType'] == 'tinyint(1)') || $field['default'] == '1') {
+            if (
+                (isset($field['dataType']) && $field['dataType'] == 'tinyint(1)') ||
+                ($field['default'] == '1' && $field['defaultType'] == 'INPUT')
+            ) {
                 $type = 'boolean';
             }
         }
@@ -370,11 +373,9 @@ class Helper
 
     public static function analyseFieldDefault(array $field): mixed
     {
-        if (strtolower((string)$field['default']) == 'null') {
-            return null;
-        }
-        return match ($field['default']) {
-            'empty string' => '',
+        return match ($field['defaultType']) {
+            'EMPTY STRING' => '',
+            'NULL' => null,
             default => $field['default'],
         };
     }
@@ -409,7 +410,7 @@ class Helper
             'text', 'blob', 'geometry', 'geometrycollection', 'json', 'linestring', 'longblob', 'longtext', 'mediumblob',
             'mediumtext', 'multilinestring', 'multipoint', 'multipolygon', 'point', 'polygon', 'tinyblob',
         ];
-        if ($field['default'] != 'none' && !in_array($conciseType, $noDefaultValueFields)) {
+        if ($field['defaultType'] != 'NONE' && !in_array($conciseType, $noDefaultValueFields)) {
             $phinxColumnOptions['default'] = self::analyseFieldDefault($field);
         }
 
@@ -751,11 +752,25 @@ class Helper
                 $dataType = str_replace(' unsigned', '', $item['COLUMN_TYPE']);
             }
 
+            // 默认值和默认值类型分析
+            $default = '';
+            if ($isNullAble && is_null($item['COLUMN_DEFAULT'])) {
+                $defaultType = 'NULL';
+            } elseif ($item['COLUMN_DEFAULT'] == '' && in_array($item['DATA_TYPE'], ['varchar', 'char'])) {
+                $defaultType = 'EMPTY STRING';
+            } elseif (!$isNullAble && is_null($item['COLUMN_DEFAULT'])) {
+                $defaultType = 'NONE';
+            } else {
+                $defaultType = 'INPUT';
+                $default     = $item['COLUMN_DEFAULT'];
+            }
+
             $column = [
                 'name'          => $item['COLUMN_NAME'],
                 'type'          => $item['DATA_TYPE'],
                 'dataType'      => $dataType,
-                'default'       => ($isNullAble && is_null($item['COLUMN_DEFAULT'])) ? 'null' : $item['COLUMN_DEFAULT'],
+                'default'       => $default,
+                'defaultType'   => $defaultType,
                 'null'          => $isNullAble,
                 'primaryKey'    => $item['COLUMN_KEY'] == 'PRI',
                 'unsigned'      => (bool)stripos($item['COLUMN_TYPE'], 'unsigned'),

@@ -88,7 +88,7 @@ export default {
     length: 'length',
     'decimal point': 'decimal point',
     'Field Defaults': 'Field Defaults',
-    'You can directly enter null, 0, empty string': 'You can directly enter null, 0, empty string',
+    'Please input the default value': 'Please input the default value',
     'Auto increment': 'Auto increment',
     Unsigned: 'Unsigned',
     'Allow NULL': 'Allow NULL',

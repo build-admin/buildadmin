@@ -312,15 +312,22 @@
                                     />
                                 </div>
                             </template>
-                            <FormItem
-                                :label="t('crud.crud.Field Defaults')"
-                                :placeholder="t('crud.crud.You can directly enter null, 0, empty string')"
-                                type="string"
-                                v-model="state.fields[state.activateField].default"
-                                :input-attr="{
-                                    onChange: onFieldAttrChange,
-                                }"
-                            />
+                            <el-form-item :label="t('crud.crud.Field Defaults')">
+                                <el-select v-model="state.fields[state.activateField].defaultType">
+                                    <el-option label="手动输入" value="INPUT" />
+                                    <el-option label="EMPTY STRING（空字符串）" value="EMPTY STRING" />
+                                    <el-option label="NULL" value="NULL" />
+                                    <el-option label="无（不设默认值）" value="NONE" />
+                                </el-select>
+                                <el-input
+                                    v-if="state.fields[state.activateField].defaultType == 'INPUT'"
+                                    :placeholder="t('crud.crud.Please input the default value')"
+                                    type="text"
+                                    v-model="state.fields[state.activateField].default"
+                                    @change="onFieldAttrChange"
+                                    class="default-input"
+                                />
+                            </el-form-item>
                             <div class="field-inline">
                                 <FormItem
                                     class="form-item-position-right"
@@ -1224,6 +1231,17 @@ const loadData = () => {
                 const fields = res.data.fields
                 for (const key in fields) {
                     const field = handleFieldAttr(cloneDeep(fields[key]))
+
+                    // 默认值和默认值类型分析
+                    if (typeof field.defaultType == 'undefined') {
+                        if (field.default && ['none', 'null', 'empty string'].includes(field.default)) {
+                            field.defaultType = field.default.toUpperCase() as 'EMPTY STRING' | 'NULL' | 'NONE'
+                            field.default = ''
+                        } else {
+                            field.defaultType = 'INPUT'
+                        }
+                    }
+
                     state.fields.push(field)
                 }
             })
@@ -1836,6 +1854,9 @@ const getTableDesignTimelineType = (type: TableDesignChangeType): TimelineItemPr
         width: 46%;
         margin-right: 2%;
     }
+}
+.default-input {
+    margin-top: 10px;
 }
 .field-config {
     overflow-x: auto;
