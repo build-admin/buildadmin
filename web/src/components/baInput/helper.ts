@@ -139,7 +139,7 @@ export const fieldData: FieldData = {
         type: 'text',
         length: 0,
         precision: 0,
-        defaultType: 'EMPTY STRING',
+        defaultType: 'NULL',
         ...npuaFalse(),
         null: true,
     },
