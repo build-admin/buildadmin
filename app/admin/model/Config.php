@@ -77,7 +77,7 @@ class Config extends Model
         }
     }
 
-    public function setValueAttr($value, $row): string
+    public function setValueAttr(mixed $value, $row): mixed
     {
         if (in_array($row['type'], $this->jsonDecodeType)) {
             return $value ? json_encode($value) : '';

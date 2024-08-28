@@ -62,7 +62,7 @@
                                         :type="item.type"
                                         v-model="state.form[item.name]"
                                         :attr="{ prop: item.name, ...item.extend }"
-                                        :input-attr="{ content: item.content ? item.content : {}, ...item.input_extend }"
+                                        :input-attr="!isEmpty(item.content) ? { content: item.content, ...item.input_extend } : item.input_extend"
                                         :tip="item.tip"
                                         :key="'other-' + item.id"
                                     />
@@ -108,19 +108,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, onActivated, onDeactivated, onUnmounted } from 'vue'
-import FormItem from '/@/components/formItem/index.vue'
-import { index, postData, del, postSendTestMail } from '/@/api/backend/routine/config'
-import { ElMessageBox, ElNotification } from 'element-plus'
 import type { FormInstance, FormItemRule } from 'element-plus'
-import { adminBaseRoutePath } from '/@/router/static/adminBase'
+import { ElMessageBox, ElNotification } from 'element-plus'
+import { isEmpty } from 'lodash-es'
+import { onActivated, onDeactivated, onMounted, onUnmounted, reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import AddFrom from './add.vue'
+import { del, index, postData, postSendTestMail } from '/@/api/backend/routine/config'
+import FormItem from '/@/components/formItem/index.vue'
+import { adminBaseRoutePath } from '/@/router/static/adminBase'
+import type { SiteConfig } from '/@/stores/interface'
+import { useSiteConfig } from '/@/stores/siteConfig'
+import { uuid } from '/@/utils/random'
 import { routePush } from '/@/utils/router'
 import { buildValidatorData, type buildValidatorParams } from '/@/utils/validate'
-import { useSiteConfig } from '/@/stores/siteConfig'
-import type { SiteConfig } from '/@/stores/interface'
-import { useI18n } from 'vue-i18n'
-import { uuid } from '/@/utils/random'
 import { closeHotUpdate, openHotUpdate } from '/@/utils/vite'
 
 defineOptions({
