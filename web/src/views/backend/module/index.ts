@@ -3,7 +3,7 @@ import { index, modules, info, createOrder, payOrder, postInstallModule, getInst
 import { useBaAccount } from '/@/stores/baAccount'
 import { ElNotification } from 'element-plus'
 import { useTerminal } from '/@/stores/terminal'
-import { taskStatus } from '/@/components/terminal/constant'
+import { taskStatus } from '/@/stores/constant/terminalTaskStatus'
 import { moduleInstallState, type moduleState } from './types'
 import { uuid } from '/@/utils/random'
 import { fullUrl } from '/@/utils/common'

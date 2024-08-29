@@ -174,7 +174,7 @@
 import { reactive, computed, watch, onMounted } from 'vue'
 import { useTerminal } from '/@/stores/terminal'
 import { useI18n } from 'vue-i18n'
-import { taskStatus } from './constant'
+import { taskStatus } from '/@/stores/constant/terminalTaskStatus'
 import { ElMessageBox, type TimelineItemProps } from 'element-plus'
 import { postChangeTerminalConfig } from '/@/api/common'
 import FormItem from '/@/components/formItem/index.vue'
