@@ -169,7 +169,7 @@ class Install extends Api
         // public-end
 
         // PDO-start
-        $phpPdo = extension_loaded("PDO");
+        $phpPdo = extension_loaded("PDO") && extension_loaded('pdo_mysql');
         if (!$phpPdo) {
             $phpPdoLink = [
                 [
