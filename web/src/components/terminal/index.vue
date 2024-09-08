@@ -88,12 +88,22 @@
             </el-scrollbar>
 
             <div class="terminal-buttons">
-                <el-button class="terminal-menu-item" icon="el-icon-MagicStick" v-blur @click="terminal.addTaskPM('test', false)">
+                <el-button class="terminal-menu-item" icon="el-icon-MagicStick" v-blur @click="addTerminalTask('test', true, false)">
                     {{ t('terminal.Test command') }}
                 </el-button>
-                <el-button class="terminal-menu-item" icon="el-icon-Download" v-blur @click="terminal.addTaskPM('web-install')">
-                    {{ t('terminal.Install dependent packages') }}
-                </el-button>
+                <el-dropdown class="terminal-menu-item">
+                    <el-button icon="el-icon-Download" v-blur>
+                        {{ t('terminal.Install dependent packages') }}
+                    </el-button>
+                    <template #dropdown>
+                        <el-dropdown-menu>
+                            <el-dropdown-item @click="addTerminalTask('web-install', true)" v-if="terminal.state.packageManager != 'none'">
+                                {{ terminal.state.packageManager }} run install
+                            </el-dropdown-item>
+                            <el-dropdown-item @click="addTerminalTask('composer.update', false)">composer update</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
                 <el-button class="terminal-menu-item" icon="el-icon-Sell" v-blur @click="webBuild()">{{ t('terminal.Republish') }}</el-button>
                 <el-button class="terminal-menu-item" icon="el-icon-Delete" v-blur @click="terminal.clearSuccessTask()">
                     {{ t('terminal.Clean up task list') }}
@@ -146,7 +156,7 @@
 <script setup lang="ts">
 import type { TimelineItemProps } from 'element-plus'
 import { ElMessageBox, ElScrollbar } from 'element-plus'
-import { ref, reactive } from 'vue'
+import { ref, reactive, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { postChangeTerminalConfig } from '/@/api/common'
 import FormItem from '/@/components/formItem/index.vue'
@@ -196,13 +206,28 @@ const getTaskStatus = (status: number) => {
     }
 }
 
+const addTerminalTask = (command: string, pm: boolean, blockOnFailure = true) => {
+    if (pm) {
+        terminal.addTaskPM(command, blockOnFailure)
+    } else {
+        terminal.addTask(command, blockOnFailure)
+    }
+
+    // 任务列表滚动条滚动到底部
+    nextTick(() => {
+        if (terminalScrollbarRef.value && terminalScrollbarRef.value.wrapRef) {
+            terminalScrollbarRef.value.setScrollTop(terminalScrollbarRef.value.wrapRef.scrollHeight)
+        }
+    })
+}
+
 const webBuild = () => {
     ElMessageBox.confirm(t('terminal.Are you sure you want to republish?'), t('Reminder'), {
         confirmButtonText: t('Confirm'),
         cancelButtonText: t('Cancel'),
         type: 'warning',
     }).then(() => {
-        terminal.addTaskPM('web-build')
+        addTerminalTask('web-build', true)
     })
 }
 
@@ -292,7 +317,11 @@ const changePackageManager = (val: string) => {
     margin-left: 10px;
 }
 .terminal-menu-item {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+}
+.terminal-menu-item + .terminal-menu-item {
+    margin-left: 12px;
+    margin-bottom: 12px;
 }
 .terminal-buttons {
     display: block;
