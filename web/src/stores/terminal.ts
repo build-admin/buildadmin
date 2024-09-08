@@ -22,8 +22,6 @@ export const useTerminal = defineStore(
             taskList: [],
             // 包管理器
             packageManager: 'pnpm',
-            // 显示包管理器切换窗口
-            showPackageManagerDialog: false,
             // 显示终端设置窗口
             showConfig: false,
             // 开始任务时自动清理已完成任务
@@ -54,11 +52,6 @@ export const useTerminal = defineStore(
         function toggleConfigDialog(val = !state.showConfig) {
             toggle(!val)
             state.showConfig = val
-        }
-
-        function togglePackageManagerDialog(val = !state.showPackageManagerDialog) {
-            toggle(!val)
-            state.showPackageManagerDialog = val
         }
 
         function changePackageManager(val: string) {
@@ -283,7 +276,6 @@ export const useTerminal = defineStore(
             startTask,
             retryTask,
             clearSuccessTask,
-            togglePackageManagerDialog,
             toggleConfigDialog,
             changePackageManager,
             changePHPDevelopmentServer,

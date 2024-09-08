@@ -101,7 +101,6 @@ export interface Terminal {
     showDot: boolean
     taskList: TaskItem[]
     packageManager: string
-    showPackageManagerDialog: boolean
     showConfig: boolean
     automaticCleanupTask: string
     phpDevelopmentServer: boolean

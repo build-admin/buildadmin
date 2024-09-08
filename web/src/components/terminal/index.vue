@@ -1,161 +1,152 @@
 <template>
-    <el-dialog v-bind="$attrs" v-model="terminal.state.show" :title="t('terminal.Terminal')" class="ba-terminal-dialog" :append-to-body="true">
-        <el-alert
-            class="terminal-warning-alert"
-            v-if="!terminal.state.phpDevelopmentServer"
-            :title="t('terminal.The current terminal is not running under the installation service, and some commands may not be executed')"
-            type="error"
-        />
+    <div>
+        <el-dialog v-model="terminal.state.show" :title="t('terminal.Terminal')" class="ba-terminal-dialog">
+            <el-scrollbar ref="terminalScrollbarRef" :max-height="500" class="terminal-scrollbar">
+                <el-alert
+                    class="terminal-warning-alert"
+                    v-if="!terminal.state.phpDevelopmentServer"
+                    :title="t('terminal.The current terminal is not running under the installation service, and some commands may not be executed')"
+                    type="error"
+                />
 
-        <el-timeline v-if="terminal.state.taskList.length">
-            <el-timeline-item
-                v-for="(item, idx) in terminal.state.taskList"
-                :key="idx"
-                class="task-item"
-                :class="'task-status-' + item.status"
-                :type="getTaskStatus(item.status)['statusType']"
-                center
-                :timestamp="item.createTime"
-                placement="top"
-            >
-                <el-card>
-                    <div>
-                        <el-tag :type="getTaskStatus(item.status)['statusType']">{{ getTaskStatus(item.status)['statusText'] }}</el-tag>
-                        <el-tag
-                            class="block-on-failure-tag"
-                            v-if="(item.status == taskStatus.Failed || item.status == taskStatus.Unknown) && item.blockOnFailure"
-                            type="warning"
-                        >
-                            {{ t('terminal.Failure to execute this command will block the execution of the queue') }}
-                        </el-tag>
-                        <el-tag
-                            class="block-on-failure-tag"
-                            v-if="item.status == taskStatus.Executing || item.status == taskStatus.Connecting"
-                            type="danger"
-                        >
-                            {{ t('terminal.Do not refresh the browser') }}
-                        </el-tag>
-                        <span class="command">{{ item.command }}</span>
-                        <div class="task-opt">
-                            <el-button
-                                :title="t('Retry')"
-                                v-if="item.status == taskStatus.Failed || item.status == taskStatus.Unknown"
-                                size="small"
-                                v-blur
-                                type="warning"
-                                icon="el-icon-RefreshRight"
-                                circle
-                                @click="terminal.retryTask(idx)"
-                            />
-                            <el-button
-                                @click="terminal.delTask(idx)"
-                                :title="t('Delete')"
-                                size="small"
-                                v-blur
-                                type="danger"
-                                icon="el-icon-Delete"
-                                circle
-                            />
-                        </div>
-                    </div>
-                    <template v-if="item.status != taskStatus.Waiting">
-                        <div
-                            v-if="item.status != taskStatus.Connecting && item.status != taskStatus.Executing"
-                            @click="terminal.setTaskShowMessage(idx)"
-                            class="toggle-message-display"
-                        >
-                            <span>{{ t('terminal.Command run log') }}</span>
-                            <Icon :name="item.showMessage ? 'el-icon-ArrowUp' : 'el-icon-ArrowDown'" size="16" color="#909399" />
-                        </div>
-                        <div
-                            v-if="
-                                item.status == taskStatus.Connecting ||
-                                item.status == taskStatus.Executing ||
-                                (item.status > taskStatus.Executing && item.showMessage)
-                            "
-                            class="exec-message"
-                            :class="'exec-message-' + item.uuid"
-                        >
-                            <pre v-for="(msg, index) in item.message" :key="index" class="message-item">{{ msg }}</pre>
-                        </div>
-                    </template>
-                </el-card>
-            </el-timeline-item>
-        </el-timeline>
-        <el-empty v-else :image-size="80" :description="t('terminal.No mission yet')" />
+                <el-timeline class="terminal-timeline" v-if="terminal.state.taskList.length">
+                    <el-timeline-item
+                        v-for="(item, idx) in terminal.state.taskList"
+                        :key="idx"
+                        class="task-item"
+                        :class="'task-status-' + item.status"
+                        :type="getTaskStatus(item.status)['statusType']"
+                        center
+                        :timestamp="item.createTime"
+                        placement="top"
+                    >
+                        <el-card>
+                            <div>
+                                <el-tag :type="getTaskStatus(item.status)['statusType']">{{ getTaskStatus(item.status)['statusText'] }}</el-tag>
+                                <el-tag
+                                    class="block-on-failure-tag"
+                                    v-if="(item.status == taskStatus.Failed || item.status == taskStatus.Unknown) && item.blockOnFailure"
+                                    type="warning"
+                                >
+                                    {{ t('terminal.Failure to execute this command will block the execution of the queue') }}
+                                </el-tag>
+                                <el-tag
+                                    class="block-on-failure-tag"
+                                    v-if="item.status == taskStatus.Executing || item.status == taskStatus.Connecting"
+                                    type="danger"
+                                >
+                                    {{ t('terminal.Do not refresh the browser') }}
+                                </el-tag>
+                                <span class="command">{{ item.command }}</span>
+                                <div class="task-opt">
+                                    <el-button
+                                        :title="t('Retry')"
+                                        v-if="item.status == taskStatus.Failed || item.status == taskStatus.Unknown"
+                                        size="small"
+                                        v-blur
+                                        type="warning"
+                                        icon="el-icon-RefreshRight"
+                                        circle
+                                        @click="terminal.retryTask(idx)"
+                                    />
+                                    <el-button
+                                        @click="terminal.delTask(idx)"
+                                        :title="t('Delete')"
+                                        size="small"
+                                        v-blur
+                                        type="danger"
+                                        icon="el-icon-Delete"
+                                        circle
+                                    />
+                                </div>
+                            </div>
+                            <template v-if="item.status != taskStatus.Waiting">
+                                <div
+                                    v-if="item.status != taskStatus.Connecting && item.status != taskStatus.Executing"
+                                    @click="terminal.setTaskShowMessage(idx)"
+                                    class="toggle-message-display"
+                                >
+                                    <span>{{ t('terminal.Command run log') }}</span>
+                                    <Icon :name="item.showMessage ? 'el-icon-ArrowUp' : 'el-icon-ArrowDown'" size="16" color="#909399" />
+                                </div>
+                                <div
+                                    v-if="
+                                        item.status == taskStatus.Connecting ||
+                                        item.status == taskStatus.Executing ||
+                                        (item.status > taskStatus.Executing && item.showMessage)
+                                    "
+                                    class="exec-message"
+                                    :class="'exec-message-' + item.uuid"
+                                >
+                                    <pre v-for="(msg, index) in item.message" :key="index" class="message-item">{{ msg }}</pre>
+                                </div>
+                            </template>
+                        </el-card>
+                    </el-timeline-item>
+                </el-timeline>
+                <el-empty v-else :image-size="80" :description="t('terminal.No mission yet')" />
+            </el-scrollbar>
 
-        <el-button-group>
-            <el-button class="terminal-menu-item" icon="el-icon-MagicStick" v-blur @click="terminal.addTaskPM('test', false)">
-                {{ t('terminal.Test command') }}
-            </el-button>
-            <el-button class="terminal-menu-item" icon="el-icon-Download" v-blur @click="terminal.addTaskPM('web-install')">
-                {{ t('terminal.Install dependent packages') }}
-            </el-button>
-            <el-button class="terminal-menu-item" icon="el-icon-Sell" v-blur @click="webBuild()">{{ t('terminal.Republish') }}</el-button>
-            <el-button v-if="!state.menuExpand" class="terminal-menu-item" icon="el-icon-Expand" v-blur @click="state.menuExpand = true"></el-button>
-            <template v-else>
+            <div class="terminal-buttons">
+                <el-button class="terminal-menu-item" icon="el-icon-MagicStick" v-blur @click="terminal.addTaskPM('test', false)">
+                    {{ t('terminal.Test command') }}
+                </el-button>
+                <el-button class="terminal-menu-item" icon="el-icon-Download" v-blur @click="terminal.addTaskPM('web-install')">
+                    {{ t('terminal.Install dependent packages') }}
+                </el-button>
+                <el-button class="terminal-menu-item" icon="el-icon-Sell" v-blur @click="webBuild()">{{ t('terminal.Republish') }}</el-button>
                 <el-button class="terminal-menu-item" icon="el-icon-Delete" v-blur @click="terminal.clearSuccessTask()">
                     {{ t('terminal.Clean up task list') }}
-                </el-button>
-                <el-button class="terminal-menu-item" icon="el-icon-Switch" v-blur @click="terminal.togglePackageManagerDialog(true)">
-                    {{ t('terminal.Package manager') }} {{ terminal.state.packageManager.toUpperCase() }}
                 </el-button>
                 <el-button class="terminal-menu-item" icon="el-icon-Tools" v-blur @click="terminal.toggleConfigDialog()">
                     {{ t('terminal.Terminal settings') }}
                 </el-button>
-            </template>
-        </el-button-group>
-    </el-dialog>
-
-    <el-dialog
-        @close="terminal.togglePackageManagerDialog(false)"
-        :model-value="terminal.state.showPackageManagerDialog"
-        class="ba-terminal-dialog"
-        :title="t('terminal.Please select package manager')"
-        center
-    >
-        <div class="indent-2">
-            {{ t('terminal.Switch package manager title') }}
-        </div>
-        <template #footer>
-            <div class="package-manager-dialog-footer">
-                <el-button @click="changePackageManager('npm')">npm</el-button>
-                <el-button @click="changePackageManager('cnpm')">cnpm</el-button>
-                <el-button @click="changePackageManager('pnpm')">pnpm</el-button>
-                <el-button @click="changePackageManager('yarn')">yarn</el-button>
-                <el-button @click="changePackageManager('ni')">ni</el-button>
-                <el-button @click="changePackageManager('none')">{{ t('terminal.I want to execute the command manually') }}</el-button>
             </div>
-        </template>
-    </el-dialog>
+        </el-dialog>
 
-    <el-dialog
-        @close="terminal.toggleConfigDialog(false)"
-        :model-value="terminal.state.showConfig"
-        class="ba-terminal-dialog"
-        :title="t('terminal.Terminal settings')"
-    >
-        <el-form label-position="left">
-            <FormItem
-                :label="t('terminal.Clean up successful tasks when starting a new task')"
-                :model-value="terminal.state.automaticCleanupTask"
-                type="radio"
-                :input-attr="{
-                    border: true,
-                    content: { '0': t('Disable'), '1': t('Enable') },
-                    onChange: terminal.changeAutomaticCleanupTask,
-                }"
-            />
-        </el-form>
-        <div class="config-buttons">
-            <el-button @click="terminal.toggleConfigDialog(false)">{{ t('terminal.Back to terminal') }}</el-button>
-        </div>
-    </el-dialog>
+        <el-dialog
+            @close="terminal.toggleConfigDialog(false)"
+            :model-value="terminal.state.showConfig"
+            class="ba-terminal-dialog"
+            :title="t('terminal.Terminal settings')"
+        >
+            <el-form label-position="left" label-width="140">
+                <FormItem
+                    :label="t('terminal.NPM package manager')"
+                    :model-value="terminal.state.packageManager"
+                    v-loading="state.packageManagerLoading"
+                    type="select"
+                    :input-attr="{
+                        border: true,
+                        content: { npm: 'NPM', cnpm: 'CNPM', pnpm: 'PNPM', yarn: 'YARN', ni: 'NI', none: t('terminal.Manual execution') },
+                        teleported: false,
+                        onChange: (val: string) => changePackageManager(val),
+                    }"
+                    :tip="t('terminal.NPM package manager tip')"
+                />
+                <FormItem
+                    :label="t('terminal.Clear successful task')"
+                    :model-value="terminal.state.automaticCleanupTask"
+                    type="radio"
+                    :input-attr="{
+                        border: true,
+                        content: { '0': t('Disable'), '1': t('Enable') },
+                        onChange: terminal.changeAutomaticCleanupTask,
+                    }"
+                    :tip="t('terminal.Clear successful task tip')"
+                />
+            </el-form>
+            <div class="config-buttons">
+                <el-button @click="terminal.toggleConfigDialog(false)">{{ t('terminal.Back to terminal') }}</el-button>
+            </div>
+        </el-dialog>
+    </div>
 </template>
 
 <script setup lang="ts">
-import { ElMessageBox, type TimelineItemProps } from 'element-plus'
-import { reactive } from 'vue'
+import type { TimelineItemProps } from 'element-plus'
+import { ElMessageBox, ElScrollbar } from 'element-plus'
+import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { postChangeTerminalConfig } from '/@/api/common'
 import FormItem from '/@/components/formItem/index.vue'
@@ -164,9 +155,10 @@ import { useTerminal } from '/@/stores/terminal'
 
 const { t } = useI18n()
 const terminal = useTerminal()
+const terminalScrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
 
 const state = reactive({
-    menuExpand: document.documentElement.clientWidth > 1840 ? true : false,
+    packageManagerLoading: false,
 })
 
 const getTaskStatus = (status: number) => {
@@ -215,18 +207,25 @@ const webBuild = () => {
 }
 
 const changePackageManager = (val: string) => {
-    postChangeTerminalConfig({ manager: val }).then((res) => {
-        if (res.code == 1) {
-            terminal.changePackageManager(val)
-        }
-    })
-    terminal.togglePackageManagerDialog(false)
+    state.packageManagerLoading = true
+    postChangeTerminalConfig({ manager: val })
+        .then((res) => {
+            if (res.code == 1) {
+                terminal.changePackageManager(val)
+            }
+        })
+        .finally(() => {
+            state.packageManagerLoading = false
+        })
 }
 </script>
 
 <style scoped lang="scss">
 .terminal-warning-alert {
     margin: 0 0 20px 0;
+}
+.terminal-timeline {
+    padding: 0 15px;
 }
 .command {
     font-size: var(--el-font-size-large);
@@ -243,7 +242,6 @@ const changePackageManager = (val: string) => {
     min-height: 30px;
     max-height: 200px;
     overflow: auto;
-    scrollbar-width: none;
     &::-webkit-scrollbar {
         width: 5px;
         height: 5px;
@@ -261,6 +259,12 @@ const changePackageManager = (val: string) => {
         &::-webkit-scrollbar-thumb:hover {
             background: #909399;
         }
+    }
+}
+@supports not (selector(::-webkit-scrollbar)) {
+    .exec-message {
+        scrollbar-width: thin;
+        scrollbar-color: #c8c9cc #eaeaea;
     }
 }
 .toggle-message-display {
@@ -290,6 +294,11 @@ const changePackageManager = (val: string) => {
 .terminal-menu-item {
     margin-bottom: 10px;
 }
+.terminal-buttons {
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+}
 .config-buttons {
     display: flex;
     align-items: center;
@@ -297,21 +306,17 @@ const changePackageManager = (val: string) => {
     padding-top: 20px;
     padding-right: 20px;
 }
-</style>
-
-<style lang="scss">
-// dialog自定义类目深度选择器失效
-.ba-terminal-dialog {
-    width: 42%;
+:deep(.ba-terminal-dialog) {
+    --el-dialog-width: 46% !important;
 }
 @media screen and (max-width: 768px) {
-    .ba-terminal-dialog {
-        width: 80%;
+    :deep(.ba-terminal-dialog) {
+        --el-dialog-width: 80% !important;
     }
 }
 @media screen and (max-width: 540px) {
-    .ba-terminal-dialog {
-        width: 94%;
+    :deep(.ba-terminal-dialog) {
+        --el-dialog-width: 94% !important;
     }
 }
 </style>
