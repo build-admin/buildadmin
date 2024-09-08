@@ -42,8 +42,8 @@ class Index extends Backend
                 'upload'   => keys_to_camel_case(get_upload_config(), ['max_size', 'save_name', 'allowed_suffixes', 'allowed_mime_types']),
             ],
             'terminal'   => [
-                'installServicePort' => Config::get('terminal.install_service_port'),
-                'npmPackageManager'  => Config::get('terminal.npm_package_manager'),
+                'phpDevelopmentServer' => str_contains($_SERVER['SERVER_SOFTWARE'], 'Development Server'),
+                'npmPackageManager'    => Config::get('terminal.npm_package_manager'),
             ]
         ]);
     }

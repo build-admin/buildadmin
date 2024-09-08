@@ -5,11 +5,9 @@
 
 return [
     // npm包管理器
-    'npm_package_manager'  => 'pnpm',
-    // 安装服务端口
-    'install_service_port' => '8000',
+    'npm_package_manager' => 'pnpm',
     // 允许执行的命令
-    'commands'             => [
+    'commands'            => [
         // 数据库迁移命令
         'migrate'      => [
             'run'        => 'php think migrate:run',

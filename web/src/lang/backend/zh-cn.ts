@@ -65,13 +65,6 @@ export default {
         'I want to execute the command manually': '我想手动执行命令',
         'Do not refresh the browser': '请勿刷新浏览器',
         'Terminal settings': '终端设置',
-        'Install service port': '安装服务端口',
-        'The port number to start the installation service (this port needs to be opened for external network access)':
-            '启动安装服务的端口号(外网访问则需对外开放该端口)',
-        'Installation service startup command': '安装服务启动命令',
-        'Please execute this command to start the service (add Su under Linux)': '请执行本命令以启动服务（Linux下加su）',
-        'Installation service URL': '安装服务URL',
-        'Please access the site through the installation service URL (except in debug mode)': '请通过安装服务Url访问站点（调试模式下例外）',
         'Clean up successful tasks when starting a new task': '开始新任务时清理已成功任务',
         'Back to terminal': '回到终端',
         or: '或',

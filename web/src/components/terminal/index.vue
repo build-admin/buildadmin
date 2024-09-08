@@ -1,6 +1,12 @@
 <template>
     <el-dialog v-bind="$attrs" v-model="terminal.state.show" :title="t('terminal.Terminal')" class="ba-terminal-dialog" :append-to-body="true">
-        <el-alert class="terminal-warning-alert" v-if="state.terminalWarning" :title="state.terminalWarning" type="error" />
+        <el-alert
+            class="terminal-warning-alert"
+            v-if="!terminal.state.phpDevelopmentServer"
+            :title="t('terminal.The current terminal is not running under the installation service, and some commands may not be executed')"
+            type="error"
+        />
+
         <el-timeline v-if="terminal.state.taskList.length">
             <el-timeline-item
                 v-for="(item, idx) in terminal.state.taskList"
@@ -129,41 +135,18 @@
         class="ba-terminal-dialog"
         :title="t('terminal.Terminal settings')"
     >
-        <el-form label-position="top">
+        <el-form label-position="left">
             <FormItem
-                :label="t('terminal.Install service port')"
-                v-model="state.port"
-                type="number"
-                :input-attr="{ onChange: onChangePort }"
-                :placeholder="
-                    t('terminal.The port number to start the installation service (this port needs to be opened for external network access)')
-                "
-            />
-            <FormItem
-                :label="t('terminal.Installation service startup command')"
-                v-model="startCommand"
-                type="string"
-                :input-attr="{ disabled: true }"
-                :block-help="t('terminal.Please execute this command to start the service (add Su under Linux)')"
-            />
-            <FormItem
-                :label="t('terminal.Installation service URL')"
-                v-model="serviceURL"
-                type="string"
-                :input-attr="{ disabled: true }"
-                :block-help="t('terminal.Please access the site through the installation service URL (except in debug mode)')"
+                :label="t('terminal.Clean up successful tasks when starting a new task')"
+                :model-value="terminal.state.automaticCleanupTask"
+                type="radio"
+                :input-attr="{
+                    border: true,
+                    content: { '0': t('Disable'), '1': t('Enable') },
+                    onChange: terminal.changeAutomaticCleanupTask,
+                }"
             />
         </el-form>
-        <FormItem
-            :label="t('terminal.Clean up successful tasks when starting a new task')"
-            :model-value="terminal.state.automaticCleanupTask"
-            type="radio"
-            :input-attr="{
-                border: true,
-                content: { '0': t('Disable'), '1': t('Enable') },
-                onChange: terminal.changeAutomaticCleanupTask,
-            }"
-        />
         <div class="config-buttons">
             <el-button @click="terminal.toggleConfigDialog(false)">{{ t('terminal.Back to terminal') }}</el-button>
         </div>
@@ -171,50 +154,20 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, watch, onMounted } from 'vue'
-import { useTerminal } from '/@/stores/terminal'
-import { useI18n } from 'vue-i18n'
-import { taskStatus } from '/@/stores/constant/terminalTaskStatus'
 import { ElMessageBox, type TimelineItemProps } from 'element-plus'
+import { reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { postChangeTerminalConfig } from '/@/api/common'
 import FormItem from '/@/components/formItem/index.vue'
-import { getUrlPort } from '/@/utils/axios'
+import { taskStatus } from '/@/stores/constant/terminalTaskStatus'
+import { useTerminal } from '/@/stores/terminal'
 
 const { t } = useI18n()
 const terminal = useTerminal()
 
 const state = reactive({
-    terminalWarning: '',
-    port: terminal.state.port,
     menuExpand: document.documentElement.clientWidth > 1840 ? true : false,
 })
-
-const startCommand = computed(() => {
-    let tempPort = terminal.state.port == '' ? '80' : terminal.state.port
-    return tempPort == '8000' ? 'php think run' : 'php think run -p ' + tempPort
-})
-const serviceURL = computed(() => {
-    let tempPort = terminal.state.port == '' ? '' : ':' + terminal.state.port
-    return 'http://localhost' + tempPort + ' ' + t('terminal.or') + ' http://' + t('terminal.Site domain name') + tempPort
-})
-
-/**
- * 发送网络请求修改端口号
- */
-const onChangePort = (val: string) => {
-    postChangeTerminalConfig({ port: val })
-        .then((res) => {
-            if (res.code == 1) {
-                terminal.changePort(val)
-                checkPort()
-            } else {
-                state.port = terminal.state.port
-            }
-        })
-        .catch(() => {
-            state.port = terminal.state.port
-        })
-}
 
 const getTaskStatus = (status: number) => {
     let statusText = t('terminal.unknown')
@@ -269,37 +222,11 @@ const changePackageManager = (val: string) => {
     })
     terminal.togglePackageManagerDialog(false)
 }
-
-const setTerminalWarning = (warning: string) => {
-    state.terminalWarning = warning
-}
-
-const checkPort = () => {
-    if (getUrlPort() != terminal.state.port) {
-        setTerminalWarning(t('terminal.The current terminal is not running under the installation service, and some commands may not be executed'))
-    } else {
-        setTerminalWarning('')
-    }
-}
-
-watch(
-    () => terminal.state.port,
-    (newVal) => {
-        if (newVal != state.port) {
-            state.port = newVal
-            checkPort()
-        }
-    }
-)
-
-onMounted(() => {
-    checkPort()
-})
 </script>
 
 <style scoped lang="scss">
 .terminal-warning-alert {
-    margin: -20px 0 20px 0;
+    margin: 0 0 20px 0;
 }
 .command {
     font-size: var(--el-font-size-large);

@@ -64,15 +64,6 @@ export default {
         'I want to execute the command manually': 'I want to execute the command manually',
         'Do not refresh the browser': 'Do not refresh your browser.',
         'Terminal settings': 'Terminal setup',
-        'Install service port': 'Install service port',
-        'The port number to start the installation service (this port needs to be opened for external network access)':
-            'Start the port number of the installation service (External access requires to opened the port for public.)',
-        'Installation service startup command': 'install service start command',
-        'Please execute this command to start the service (add Su under Linux)':
-            'Please execute this command to start the service (add su under Linux)',
-        'Installation service URL': 'Installation service URL',
-        'Please access the site through the installation service URL (except in debug mode)':
-            'Please access the site through the installation service URL (except in debug mode)',
         'Clean up successful tasks when starting a new task': 'Please clean up successful tasks when starting a new task.',
         'Back to terminal': 'Back to terminal',
         or: 'or',

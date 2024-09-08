@@ -28,8 +28,8 @@ export const useTerminal = defineStore(
             showConfig: false,
             // 开始任务时自动清理已完成任务
             automaticCleanupTask: '1',
-            // 安装服务端口
-            port: '8000',
+            // PHP 开发服务环境
+            phpDevelopmentServer: false,
         })
 
         function init() {
@@ -65,8 +65,8 @@ export const useTerminal = defineStore(
             state.packageManager = val
         }
 
-        function changePort(port: string) {
-            state.port = port
+        function changePHPDevelopmentServer(val: boolean) {
+            state.phpDevelopmentServer = val
         }
 
         function changeAutomaticCleanupTask(val: '0' | '1') {
@@ -286,7 +286,7 @@ export const useTerminal = defineStore(
             togglePackageManagerDialog,
             toggleConfigDialog,
             changePackageManager,
-            changePort,
+            changePHPDevelopmentServer,
             changeAutomaticCleanupTask,
         }
     },

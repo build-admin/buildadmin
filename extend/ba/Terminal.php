@@ -447,18 +447,15 @@ class Terminal
     public static function changeTerminalConfig($config = []): bool
     {
         // 不保存在数据库中，因为切换包管理器时，数据库资料可能还未配置
-        $oldPort           = Config::get('terminal.install_service_port');
         $oldPackageManager = Config::get('terminal.npm_package_manager');
-        $newPort           = request()->post('port', $config['port'] ?? $oldPort);
         $newPackageManager = request()->post('manager', $config['manager'] ?? $oldPackageManager);
 
-        if ($oldPort == $newPort && $oldPackageManager == $newPackageManager) {
+        if ($oldPackageManager == $newPackageManager) {
             return true;
         }
 
         $buildConfigFile    = config_path() . 'terminal.php';
         $buildConfigContent = @file_get_contents($buildConfigFile);
-        $buildConfigContent = preg_replace("/'install_service_port'(\s+)=>(\s+)'$oldPort'/", "'install_service_port'\$1=>\$2'$newPort'", $buildConfigContent);
         $buildConfigContent = preg_replace("/'npm_package_manager'(\s+)=>(\s+)'$oldPackageManager'/", "'npm_package_manager'\$1=>\$2'$newPackageManager'", $buildConfigContent);
         $result             = @file_put_contents($buildConfigFile, $buildConfigContent);
         return (bool)$result;

@@ -104,7 +104,7 @@ export interface Terminal {
     showPackageManagerDialog: boolean
     showConfig: boolean
     automaticCleanupTask: string
-    port: string
+    phpDevelopmentServer: boolean
 }
 
 export interface SiteConfig {
