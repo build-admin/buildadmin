@@ -121,8 +121,8 @@ return [
                 'command' => 'nr build',
             ],
         ],
-        // 设置源
-        'set-registry' => [
+        // 设置 NPM 源
+        'set-npm-registry' => [
             'npm'     => 'npm config set registry https://registry.npmjs.org/ && npm config get registry',
             'taobao'  => 'npm config set registry https://registry.npmmirror.com/ && npm config get registry',
             'tencent' => 'npm config set registry https://mirrors.cloud.tencent.com/npm/ && npm config get registry'
