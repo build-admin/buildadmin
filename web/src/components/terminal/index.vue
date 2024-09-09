@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog v-model="terminal.state.show" :title="t('terminal.Terminal')" class="ba-terminal-dialog">
+        <el-dialog v-model="terminal.state.show" :title="t('terminal.Terminal')" class="ba-terminal-dialog main-dialog">
             <el-scrollbar ref="terminalScrollbarRef" :max-height="500" class="terminal-scrollbar">
                 <el-alert
                     class="terminal-warning-alert"
@@ -327,6 +327,7 @@ const changePackageManager = (val: string) => {
     display: block;
     width: fit-content;
     margin: 0 auto;
+    padding-top: 12px;
 }
 .config-buttons {
     display: flex;
@@ -334,6 +335,9 @@ const changePackageManager = (val: string) => {
     justify-content: flex-end;
     padding-top: 20px;
     padding-right: 20px;
+}
+:deep(.main-dialog) {
+    --el-dialog-padding-primary: 16px 16px 0 16px;
 }
 :deep(.ba-terminal-dialog) {
     --el-dialog-width: 46% !important;
