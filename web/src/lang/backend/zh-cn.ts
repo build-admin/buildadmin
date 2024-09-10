@@ -42,6 +42,7 @@ export default {
         'Full screen is not supported': '您的浏览器不支持全屏，请更换浏览器再试~',
     },
     terminal: {
+        Source: '源',
         Terminal: '终端',
         'Command run log': '命令运行日志',
         'No mission yet': '还没有任务...',
@@ -71,5 +72,6 @@ export default {
         'The current terminal is not running under the installation service, and some commands may not be executed':
             '当前终端未运行于安装服务下，部分命令可能无法执行。',
         'Newly added tasks will never start because they are blocked by failed tasks': '新添加的任务永远不会开始，因为被失败的任务阻塞！（WEB终端）',
+        'Failed to modify the source command, Please try again manually': '修改源的命令执行失败，请手动重试。',
     },
 }

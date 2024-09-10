@@ -122,6 +122,32 @@
         >
             <el-form label-position="left" label-width="140">
                 <FormItem
+                    :label="'NPM ' + t('terminal.Source')"
+                    :model-value="terminal.state.npmRegistry"
+                    :key="terminal.state.npmRegistry"
+                    v-loading="state.registryLoading && state.registryLoadingType == 'npm'"
+                    type="select"
+                    :input-attr="{
+                        border: true,
+                        content: getSourceContent('npm'),
+                        teleported: false,
+                        onChange: (val: string) => changeRegistry(val, 'npm'),
+                    }"
+                />
+                <FormItem
+                    :label="'Composer ' + t('terminal.Source')"
+                    :model-value="terminal.state.composerRegistry"
+                    :key="terminal.state.composerRegistry"
+                    v-loading="state.registryLoading && state.registryLoadingType == 'composer'"
+                    type="select"
+                    :input-attr="{
+                        border: true,
+                        content: getSourceContent('composer'),
+                        teleported: false,
+                        onChange: (val: string) => changeRegistry(val, 'composer'),
+                    }"
+                />
+                <FormItem
                     :label="t('terminal.NPM package manager')"
                     :model-value="terminal.state.packageManager"
                     v-loading="state.packageManagerLoading"
@@ -163,11 +189,15 @@ import FormItem from '/@/components/formItem/index.vue'
 import { taskStatus } from '/@/stores/constant/terminalTaskStatus'
 import { useTerminal } from '/@/stores/terminal'
 
+type SourceType = 'npm' | 'composer'
+
 const { t } = useI18n()
 const terminal = useTerminal()
 const terminalScrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
 
 const state = reactive({
+    registryLoading: false,
+    registryLoadingType: 'npm',
     packageManagerLoading: false,
 })
 
@@ -242,6 +272,40 @@ const changePackageManager = (val: string) => {
         .finally(() => {
             state.packageManagerLoading = false
         })
+}
+
+const changeRegistry = (val: string, type: SourceType) => {
+    const oldVal = type == 'npm' ? terminal.state.npmRegistry : terminal.state.composerRegistry
+    terminal.changeRegistry(val, type)
+    state.registryLoading = true
+    state.registryLoadingType = type
+    terminal.addTask(`set-${type}-registry.${val}`, false, '', (res: taskStatus) => {
+        state.registryLoading = false
+        if (res == taskStatus.Failed || res == taskStatus.Unknown) {
+            ElMessageBox.confirm(t('terminal.Failed to modify the source command, Please try again manually'), t('Reminder'), {
+                confirmButtonText: t('Confirm'),
+                showCancelButton: false,
+                type: 'warning',
+            }).then(() => {
+                terminal.changeRegistry(oldVal, type)
+            })
+        }
+    })
+}
+
+const getSourceContent = (type: SourceType) => {
+    let content: anyObj = {}
+    if (type == 'npm') {
+        content = { npm: 'npm', taobao: 'taobao', tencent: 'tencent' }
+    } else if (type == 'composer') {
+        content = { composer: 'composer', aliyun: 'aliyun', tencent: 'tencent', huawei: 'huawei', kkame: 'kkame' }
+    }
+
+    // 如果值为 unknown，则 unknown 选项
+    if (terminal.state[type == 'npm' ? 'npmRegistry' : 'composerRegistry'] == 'unknown') {
+        content.unknown = t('Unknown')
+    }
+    return content
 }
 </script>
 
@@ -341,6 +405,9 @@ const changePackageManager = (val: string) => {
 }
 :deep(.ba-terminal-dialog) {
     --el-dialog-width: 46% !important;
+    .el-loading-spinner {
+        --el-loading-spinner-size: 20px;
+    }
 }
 @media screen and (max-width: 768px) {
     :deep(.ba-terminal-dialog) {

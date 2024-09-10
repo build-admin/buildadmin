@@ -9,20 +9,20 @@ return [
     // 允许执行的命令
     'commands'            => [
         // 数据库迁移命令
-        'migrate'      => [
+        'migrate'               => [
             'run'        => 'php think migrate:run',
             'rollback'   => 'php think migrate:rollback',
             'breakpoint' => 'php think migrate:breakpoint',
         ],
         // 安装包管理器的命令
-        'install'      => [
+        'install'               => [
             'cnpm' => 'npm install cnpm -g --registry=https://registry.npmmirror.com',
             'yarn' => 'npm install -g yarn',
             'pnpm' => 'npm install -g pnpm',
             'ni'   => 'npm install -g @antfu/ni',
         ],
         // 查看版本的命令
-        'version'      => [
+        'version'               => [
             'npm'  => 'npm -v',
             'cnpm' => 'cnpm -v',
             'yarn' => 'yarn -v',
@@ -30,7 +30,7 @@ return [
             'node' => 'node -v',
         ],
         // 测试命令
-        'test'         => [
+        'test'                  => [
             'npm'  => [
                 'cwd'     => 'public/npm-install-test',
                 'command' => 'npm install',
@@ -53,7 +53,7 @@ return [
             ],
         ],
         // 安装 WEB 依赖包
-        'web-install'  => [
+        'web-install'           => [
             'npm'  => [
                 'cwd'     => 'web',
                 'command' => 'npm install',
@@ -76,7 +76,7 @@ return [
             ],
         ],
         // 安装 Web-Nuxt 依赖包
-        'nuxt-install' => [
+        'nuxt-install'          => [
             'npm'  => [
                 'cwd'     => 'web-nuxt',
                 'command' => 'npm install',
@@ -99,7 +99,7 @@ return [
             ],
         ],
         // 构建 WEB 端
-        'web-build'    => [
+        'web-build'             => [
             'npm'  => [
                 'cwd'     => 'web',
                 'command' => 'npm run build',
@@ -122,18 +122,26 @@ return [
             ],
         ],
         // 设置 NPM 源
-        'set-npm-registry' => [
+        'set-npm-registry'      => [
             'npm'     => 'npm config set registry https://registry.npmjs.org/ && npm config get registry',
             'taobao'  => 'npm config set registry https://registry.npmmirror.com/ && npm config get registry',
             'tencent' => 'npm config set registry https://mirrors.cloud.tencent.com/npm/ && npm config get registry'
         ],
-        'composer'     => [
+        // 设置 composer 源
+        'set-composer-registry' => [
+            'composer' => 'composer config --unset repos.packagist',
+            'aliyun'   => 'composer config -g repos.packagist composer https://mirrors.aliyun.com/composer/',
+            'tencent'  => 'composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/',
+            'huawei'   => 'composer config -g repos.packagist composer https://mirrors.huaweicloud.com/repository/php/',
+            'kkame'    => 'composer config -g repos.packagist composer https://packagist.kr',
+        ],
+        'composer'              => [
             'update' => [
                 'cwd'     => '',
                 'command' => 'composer update --no-interaction',
             ]
         ],
-        'ping'         => [
+        'ping'                  => [
             'baidu'     => 'ping baidu.com',
             'localhost' => 'ping 127.0.0.1 -n 6',
         ]

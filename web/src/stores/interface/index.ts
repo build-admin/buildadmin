@@ -104,6 +104,8 @@ export interface Terminal {
     showConfig: boolean
     automaticCleanupTask: string
     phpDevelopmentServer: boolean
+    npmRegistry: string
+    composerRegistry: string
 }
 
 export interface SiteConfig {

@@ -28,6 +28,10 @@ export const useTerminal = defineStore(
             automaticCleanupTask: '1',
             // PHP 开发服务环境
             phpDevelopmentServer: false,
+            // NPM 源
+            npmRegistry: 'unknown',
+            // composer 源
+            composerRegistry: 'unknown',
         })
 
         function init() {
@@ -52,6 +56,10 @@ export const useTerminal = defineStore(
         function toggleConfigDialog(val = !state.showConfig) {
             toggle(!val)
             state.showConfig = val
+        }
+
+        function changeRegistry(val: string, type: 'npm' | 'composer') {
+            state[type == 'npm' ? 'npmRegistry' : 'composerRegistry'] = val
         }
 
         function changePackageManager(val: string) {
@@ -277,6 +285,7 @@ export const useTerminal = defineStore(
             retryTask,
             clearSuccessTask,
             toggleConfigDialog,
+            changeRegistry,
             changePackageManager,
             changePHPDevelopmentServer,
             changeAutomaticCleanupTask,
@@ -285,7 +294,7 @@ export const useTerminal = defineStore(
     {
         persist: {
             key: STORE_TERMINAL,
-            paths: ['state.showDot', 'state.taskList', 'state.automaticCleanupTask'],
+            paths: ['state.showDot', 'state.taskList', 'state.automaticCleanupTask', 'state.npmRegistry', 'state.composerRegistry'],
         },
     }
 )

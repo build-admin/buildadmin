@@ -41,6 +41,7 @@ export default {
         'Full screen is not supported': 'Your browser does not support full screen, please change another browser and try again~',
     },
     terminal: {
+        Source: 'source',
         Terminal: 'Terminal',
         'Command run log': 'Command Run Log',
         'No mission yet': 'There is no task yet',
@@ -71,5 +72,6 @@ export default {
             'The current terminal is not running under the installation service, and some commands may not be executed.',
         'Newly added tasks will never start because they are blocked by failed tasks':
             'Newly added tasks will never start because they are blocked by failed tasks!(Web terminal)',
+        'Failed to modify the source command, Please try again manually': 'Failed to modify the source command. Please try again manually.',
     },
 }
