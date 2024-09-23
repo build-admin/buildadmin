@@ -298,7 +298,13 @@ const getSourceContent = (type: SourceType) => {
     if (type == 'npm') {
         content = { npm: 'npm', taobao: 'taobao', tencent: 'tencent' }
     } else if (type == 'composer') {
-        content = { composer: 'composer', aliyun: 'aliyun', tencent: 'tencent', huawei: 'huawei', kkame: 'kkame' }
+        content = {
+            composer: 'composer',
+            huawei: 'huawei',
+            aliyun: 'aliyun',
+            tencent: 'tencent',
+            kkame: 'kkame',
+        }
     }
 
     // 如果值为 unknown，则 unknown 选项
