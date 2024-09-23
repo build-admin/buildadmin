@@ -102,7 +102,7 @@ class Local extends Driver
         if (preg_match('/^http(s)?:\/\//', $saveName) || preg_match($regex, $saveName) || $domain === false) {
             return $saveName;
         }
-        return $domain . $saveName;
+        return str_replace('\\', '/', $domain . $saveName);
     }
 
     /**
