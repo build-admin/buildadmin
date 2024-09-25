@@ -169,7 +169,7 @@ export const useNavTabs = defineStore(
     {
         persist: {
             key: STORE_TAB_VIEW_CONFIG,
-            paths: ['state.tabFullScreen'],
+            pick: ['state.tabFullScreen'],
         },
     }
 )

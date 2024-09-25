@@ -294,7 +294,7 @@ export const useTerminal = defineStore(
     {
         persist: {
             key: STORE_TERMINAL,
-            paths: ['state.showDot', 'state.taskList', 'state.automaticCleanupTask', 'state.npmRegistry', 'state.composerRegistry'],
+            pick: ['state.showDot', 'state.taskList', 'state.automaticCleanupTask', 'state.npmRegistry', 'state.composerRegistry'],
         },
     }
 )
