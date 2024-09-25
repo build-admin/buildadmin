@@ -18,16 +18,15 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, provide } from 'vue'
-import baTableClass from '/@/utils/baTable'
+import { onMounted, provide, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import PopupForm from './popupForm.vue'
-import Table from '/@/components/table/index.vue'
-import TableHeader from '/@/components/table/header/index.vue'
-import { defaultOptButtons } from '/@/components/table'
 import { getUserRules } from '/@/api/backend/user/group'
 import { baTableApi } from '/@/api/common'
-import { useI18n } from 'vue-i18n'
-import { cloneDeep } from 'lodash-es'
+import { defaultOptButtons } from '/@/components/table'
+import TableHeader from '/@/components/table/header/index.vue'
+import Table from '/@/components/table/index.vue'
+import baTableClass from '/@/utils/baTable'
 import { uuid } from '/@/utils/random'
 
 defineOptions({
@@ -73,22 +72,13 @@ const baTable = new baTableClass(
     {
         // 提交前
         onSubmit: ({ formEl, operate, items }) => {
-            var items = cloneDeep(items)
-            items.rules = formRef.value.getCheckeds()
-
-            for (const key in items) {
-                if (items[key] === null) {
-                    delete items[key]
-                }
-            }
-
-            operate = operate.replace(operate[0], operate[0].toLowerCase())
-
-            // 表单验证通过后执行的api请求操作
             let submitCallback = () => {
                 baTable.form.submitLoading = true
                 baTable.api
-                    .postData(operate, items)
+                    .postData(operate, {
+                        ...items,
+                        rules: formRef.value.getCheckeds(),
+                    })
                     .then((res) => {
                         baTable.onTableHeaderAction('refresh', {})
                         baTable.form.submitLoading = false

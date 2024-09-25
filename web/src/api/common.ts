@@ -200,7 +200,7 @@ export function postChangeTerminalConfig(data: { manager?: string; port?: string
 /**
  * 远程下拉框数据获取
  */
-export function getSelectData(remoteUrl: string, q: string, params: {}) {
+export function getSelectData(remoteUrl: string, q: string, params: anyObj = {}) {
     return createAxios({
         url: remoteUrl,
         method: 'get',

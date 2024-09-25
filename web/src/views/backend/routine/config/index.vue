@@ -14,7 +14,7 @@
                 >
                     <el-tabs v-model="state.activeTab" type="border-card" :before-leave="onBeforeLeave">
                         <el-tab-pane class="config-tab-pane" v-for="(group, key) in state.config" :key="key" :name="key" :label="group.title">
-                            <div class="config-form-item" v-for="(item, idx) in group.list">
+                            <div class="config-form-item" v-for="(item, idx) in group.list" :key="idx">
                                 <template v-if="item.group == state.activeTab">
                                     <FormItem
                                         v-if="item.type == 'number'"
@@ -96,7 +96,7 @@
             </el-col>
             <el-col :xs="24" :sm="8">
                 <el-card :header="t('routine.config.Quick configuration entry')">
-                    <el-button v-for="item in state.quickEntrance" class="config_quick_entrance">
+                    <el-button v-for="(item, idx) in state.quickEntrance" class="config_quick_entrance" :key="idx">
                         <div @click="routePush({ name: item['value'] })">{{ item['key'] }}</div>
                     </el-button>
                 </el-card>
@@ -263,10 +263,10 @@ const onTestSendMail = () => {
                 instance.confirmButtonLoading = true
                 instance.confirmButtonText = t('routine.config.Sending')
                 postSendTestMail(state.form, instance.inputValue)
-                    .then((res) => {
+                    .then(() => {
                         done()
                     })
-                    .catch((err) => {
+                    .catch(() => {
                         done()
                     })
             } else {

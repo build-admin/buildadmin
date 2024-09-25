@@ -53,7 +53,6 @@ export const svgBuilder = (path: string, perfix = 'local') => {
     return {
         name: 'svg-transform',
         transformIndexHtml(html: string) {
-            /* eslint-disable */
             return html.replace(
                 '<body>',
                 `
@@ -65,7 +64,6 @@ export const svgBuilder = (path: string, perfix = 'local') => {
                 </svg>
                 `
             )
-            /* eslint-enable */
         },
     }
 }
