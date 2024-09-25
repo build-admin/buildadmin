@@ -23,12 +23,12 @@
         "nprogress": "0.2.0",
         "pinia": "2.1.7",
         "pinia-plugin-persistedstate": "3.2.1",
+        "qrcode.vue": "3.4.1",
         "screenfull": "6.0.2",
         "sortablejs": "1.15.2",
         "v-code-diff": "1.12.1",
         "vue": "3.4.38",
         "vue-i18n": "9.13.1",
-        "vue-qr": "4.0.9",
         "vue-router": "4.4.3"
     },
     "devDependencies": {

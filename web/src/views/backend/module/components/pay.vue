@@ -31,7 +31,7 @@
                             </div>
                         </div>
                         <div class="pay_qr">
-                            <vue-qr v-if="state.common.payType == 'wx'" :text="state.payInfo.pay.code_url" :size="220" :margin="0"></vue-qr>
+                            <QrcodeVue v-if="state.common.payType == 'wx'" :value="state.payInfo.pay.code_url" :size="220" :margin="0" level="H" />
                             <iframe
                                 v-if="state.common.payType == 'zfb'"
                                 :srcdoc="state.payInfo.pay.code_url"
@@ -71,11 +71,11 @@
 </template>
 
 <script setup lang="ts">
-import { state } from '../store'
+import QrcodeVue from 'qrcode.vue'
 import { useI18n } from 'vue-i18n'
-import { useBaAccount } from '/@/stores/baAccount'
-import vueQr from 'vue-qr/src/packages/vue-qr.vue'
 import { specificUserName } from '../index'
+import { state } from '../store'
+import { useBaAccount } from '/@/stores/baAccount'
 
 const { t } = useI18n()
 const baAccount = useBaAccount()
