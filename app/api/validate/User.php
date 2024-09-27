@@ -3,6 +3,7 @@
 namespace app\api\validate;
 
 use think\Validate;
+use think\facade\Config;
 
 class User extends Validate
 {
@@ -13,7 +14,9 @@ class User extends Validate
         'email'       => 'email|unique:user',
         'mobile'      => 'mobile|unique:user',
         'password'    => 'require|regex:^(?!.*[&<>"\'\n\r]).{6,32}$',
+        // 注册邮箱或手机验证码
         'captcha'     => 'require',
+        // 登录点选验证码
         'captchaId'   => 'require',
         'captchaInfo' => 'require',
     ];
@@ -22,9 +25,25 @@ class User extends Validate
      * 验证场景
      */
     protected $scene = [
-        'login'    => ['password', 'captchaId', 'captchaInfo'],
-        'register' => ['email', 'username', 'password', 'mobile', 'captcha'],
+        'register' => ['username', 'password', 'email', 'mobile', 'captcha'],
     ];
+
+    /**
+     * 登录验证场景
+     */
+    public function sceneLogin(): User
+    {
+        $fields = ['username', 'password'];
+
+        // 根据系统配置的登录验证码开关调整验证场景的字段
+        $userLoginCaptchaSwitch = Config::get('buildadmin.user_login_captcha');
+        if ($userLoginCaptchaSwitch) {
+            $fields[] = 'captchaId';
+            $fields[] = 'captchaInfo';
+        }
+
+        return $this->only($fields)->remove('username', ['regex', 'unique']);
+    }
 
     public function __construct()
     {

@@ -39,6 +39,8 @@ class User extends Frontend
             ], $this->auth::LOGIN_RESPONSE_CODE);
         }
 
+        $userLoginCaptchaSwitch = Config::get('buildadmin.user_login_captcha');
+
         if ($this->request->isPost()) {
             $params = $this->request->post(['tab', 'email', 'mobile', 'username', 'password', 'keep', 'captcha', 'captchaId', 'captchaInfo', 'registerType']);
             if (!in_array($params['tab'], ['login', 'register'])) {
@@ -53,9 +55,11 @@ class User extends Frontend
             }
 
             if ($params['tab'] == 'login') {
-                $captchaObj = new ClickCaptcha();
-                if (!$captchaObj->check($params['captchaId'], $params['captchaInfo'])) {
-                    $this->error(__('Captcha error'));
+                if ($userLoginCaptchaSwitch) {
+                    $captchaObj = new ClickCaptcha();
+                    if (!$captchaObj->check($params['captchaId'], $params['captchaInfo'])) {
+                        $this->error(__('Captcha error'));
+                    }
                 }
                 $res = $this->auth->login($params['username'], $params['password'], (bool)$params['keep']);
             } elseif ($params['tab'] == 'register') {
@@ -79,6 +83,7 @@ class User extends Frontend
         }
 
         $this->success('', [
+            'userLoginCaptchaSwitch'  => $userLoginCaptchaSwitch,
             'accountVerificationType' => get_account_verification_type()
         ]);
     }

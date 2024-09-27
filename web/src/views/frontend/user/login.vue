@@ -316,6 +316,7 @@ interface State {
         password: string
     }
     dialogWidth: number
+    userLoginCaptchaSwitch: boolean
     accountVerificationType: string[]
     codeSendCountdown: number
     submitRetrieveLoading: boolean
@@ -345,6 +346,7 @@ const state: State = reactive({
         password: '',
     },
     dialogWidth: 36,
+    userLoginCaptchaSwitch: true,
     accountVerificationType: [],
     codeSendCountdown: 0,
     submitRetrieveLoading: false,
@@ -398,7 +400,7 @@ const resize = () => {
 const onSubmitPre = () => {
     formRef.value?.validate((valid) => {
         if (!valid) return
-        if (state.form.tab == 'login') {
+        if (state.form.tab == 'login' && state.userLoginCaptchaSwitch) {
             clickCaptcha(state.form.captchaId, (captchaInfo: string) => onSubmit(captchaInfo))
         } else {
             onSubmit()
@@ -510,6 +512,7 @@ onMounted(async () => {
     useEventListener(window, 'resize', resize)
 
     checkIn('get').then((res) => {
+        state.userLoginCaptchaSwitch = res.data.userLoginCaptchaSwitch
         state.accountVerificationType = res.data.accountVerificationType
         state.retrievePasswordForm.type = res.data.accountVerificationType.length > 0 ? res.data.accountVerificationType[0] : ''
     })
