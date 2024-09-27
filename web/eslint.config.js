@@ -48,6 +48,7 @@ export default [
     {
         files: ['**/*.{ts,tsx,vue}'],
         rules: {
+            'no-empty': 'off',
             'no-undef': 'off',
             'no-unused-vars': 'off',
             'no-useless-escape': 'off',
