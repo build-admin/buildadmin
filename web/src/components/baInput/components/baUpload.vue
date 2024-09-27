@@ -17,9 +17,7 @@
             v-bind="state.attrs"
             :key="state.key"
         >
-            <!-- 插槽支持，不加 if 时 el-upload 样式会错乱 -->
-            <template v-if="$slots.default" #default><slot name="default"></slot></template>
-            <template v-else #default>
+            <template v-if="!$slots.default" #default>
                 <template v-if="type == 'image' || type == 'images'">
                     <div v-if="!hideSelectFile" @click.stop="showSelectFile()" class="ba-upload-select-image">
                         {{ $t('utils.choice') }}
@@ -37,9 +35,10 @@
                     </el-button>
                 </template>
             </template>
-            <template v-if="$slots.trigger" #trigger><slot name="trigger"></slot></template>
-            <template v-if="$slots.tip" #tip><slot name="tip"></slot></template>
-            <template v-if="$slots.file" #file><slot name="file"></slot></template>
+
+            <template v-for="(slot, name) in $slots" #[name]="scopedData">
+                <slot :name="name" v-bind="scopedData"></slot>
+            </template>
         </el-upload>
         <el-dialog v-model="state.preview.show" class="ba-upload-preview">
             <div class="ba-upload-preview-scroll ba-scroll-style">
