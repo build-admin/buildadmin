@@ -43,7 +43,9 @@ class User extends Frontend
 
         if ($this->request->isPost()) {
             $params = $this->request->post(['tab', 'email', 'mobile', 'username', 'password', 'keep', 'captcha', 'captchaId', 'captchaInfo', 'registerType']);
-            if (!in_array($params['tab'], ['login', 'register'])) {
+
+            // 提前检查 tab ，然后将以 tab 值作为数据验证场景
+            if (!in_array($params['tab'] ?? '', ['login', 'register'])) {
                 $this->error(__('Unknown operation'));
             }
 
@@ -61,10 +63,10 @@ class User extends Frontend
                         $this->error(__('Captcha error'));
                     }
                 }
-                $res = $this->auth->login($params['username'], $params['password'], (bool)$params['keep']);
+                $res = $this->auth->login($params['username'], $params['password'], !empty($params['keep']));
             } elseif ($params['tab'] == 'register') {
                 $captchaObj = new Captcha();
-                if (!$captchaObj->check($params['captcha'], ($params['registerType'] == 'email' ? $params['email'] : $params['mobile']) . 'user_register')) {
+                if (!$captchaObj->check($params['captcha'], $params[$params['registerType']] . 'user_register')) {
                     $this->error(__('Please enter the correct verification code'));
                 }
                 $res = $this->auth->register($params['username'], $params['password'], $params['mobile'], $params['email']);

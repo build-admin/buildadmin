@@ -6,6 +6,7 @@ return [
     'password'                                                                => '密码',
     'captcha'                                                                 => '验证码',
     'captchaId'                                                               => '验证码标识',
+    'Register type'                                                           => '注册类型',
     'Please input correct username'                                           => '请输入正确的用户名',
     'Please input correct password'                                           => '请输入正确的密码',
     'Registration parameter error'                                            => '注册参数错误',
