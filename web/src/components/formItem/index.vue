@@ -50,7 +50,7 @@ export default defineComponent({
         ...formItemProps,
     },
     emits: ['update:modelValue'],
-    setup(props, { emit }) {
+    setup(props, { emit, slots }) {
         // 通过 props 和 props.attr 两种方式传递的属性汇总为 attrs
         const excludeProps = ['type', 'modelValue', 'inputAttr', 'attr', 'data', 'placeholder']
         const attrs = computed(() => {
@@ -69,16 +69,20 @@ export default defineComponent({
         }
 
         // el-form-item 的插槽
-        const slots: { [key: string]: () => VNode | VNode[] } = {}
+        const formItemSlots: { [key: string]: () => VNode | VNode[] } = {}
 
         // default 插槽
-        slots.default = () => {
-            let inputNode = createVNode(BaInput, {
-                type: props.type,
-                attr: { placeholder: props.placeholder, ...props.inputAttr, ...props.data },
-                modelValue: props.modelValue,
-                'onUpdate:modelValue': onValueUpdate,
-            })
+        formItemSlots.default = () => {
+            let inputNode = createVNode(
+                BaInput,
+                {
+                    type: props.type,
+                    attr: { placeholder: props.placeholder, ...props.inputAttr, ...props.data },
+                    modelValue: props.modelValue,
+                    'onUpdate:modelValue': onValueUpdate,
+                },
+                slots
+            )
 
             if (attrs.value.blockHelp) {
                 return [
@@ -108,7 +112,7 @@ export default defineComponent({
             }
 
             // label 插槽
-            slots.label = () => {
+            formItemSlots.label = () => {
                 return createVNode(
                     'span',
                     {
@@ -135,9 +139,7 @@ export default defineComponent({
                     class: 'ba-input-item-' + props.type,
                     ...attrs.value,
                 },
-                {
-                    ...slots,
-                }
+                formItemSlots
             )
     },
 })
