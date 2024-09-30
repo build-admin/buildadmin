@@ -115,7 +115,7 @@
 
     <!-- 按钮组 -->
     <!-- 只对默认的编辑、删除、排序按钮进行鉴权，其他按钮请通过 display 属性控制按钮是否显示 -->
-    <div v-if="field.render == 'buttons' && field.buttons">
+    <div v-if="field.render == 'buttons' && field.buttons" v-memo="[field]">
         <template v-for="(btn, idx) in field.buttons" :key="idx">
             <template v-if="btn.display ? btn.display(row, field) : true">
                 <!-- 常规按钮 -->
