@@ -24,8 +24,12 @@
                     <!-- 渲染为 slot -->
                     <slot v-if="item.render == 'slot'" :name="item.slotName"></slot>
 
-                    <!-- Column 组件内部是 el-table-column -->
-                    <Column v-else :attr="item" :key="key + '-column'">
+                    <el-table-column
+                        v-else
+                        :key="key + '-column'"
+                        v-bind="item"
+                        :column-key="(item['columnKey'] ? item['columnKey'] : `table-column-${item.prop}`) || shortUuid()"
+                    >
                         <!-- baTable 预设的列 render 方案 -->
                         <template v-if="item.render" #default="scope">
                             <FieldRender
@@ -44,7 +48,7 @@
                                 "
                             />
                         </template>
-                    </Column>
+                    </el-table-column>
                 </template>
             </template>
             <slot name="columnAppend"></slot>
@@ -66,12 +70,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, inject, computed } from 'vue'
 import type { ElTable, TableInstance } from 'element-plus'
-import Column from '/@/components/table/column/index.vue'
+import { computed, inject, nextTick, ref } from 'vue'
 import FieldRender from '/@/components/table/fieldRender/index.vue'
 import { useConfig } from '/@/stores/config'
 import type baTableClass from '/@/utils/baTable'
+import { shortUuid } from '/@/utils/random'
 
 const config = useConfig()
 const tableRef = ref<TableInstance>()
