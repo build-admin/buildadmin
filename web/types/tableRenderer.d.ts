@@ -1,0 +1,15 @@
+// 可用的表格单元格渲染器，本文件内容以 ./src/components/table/fieldRender/ 目录中的文件名自动生成
+type tableRenderer =
+    | 'buttons'
+    | 'color'
+    | 'customRender'
+    | 'customTemplate'
+    | 'datetime'
+    | 'icon'
+    | 'image'
+    | 'images'
+    | 'switch'
+    | 'tag'
+    | 'tags'
+    | 'url'
+    | 'slot'

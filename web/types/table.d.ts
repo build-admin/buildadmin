@@ -135,21 +135,8 @@ declare global {
         show?: boolean
         // 是否在下拉菜单的复选框显示 默认为true显示
         enableColumnDisplayControl?: boolean
-        // 渲染为:icon|switch|image|images|tag|url|datetime|buttons|customTemplate|customRender|slot
-        render?:
-            | 'icon'
-            | 'switch'
-            | 'image'
-            | 'images'
-            | 'tag'
-            | 'tags'
-            | 'url'
-            | 'datetime'
-            | 'color'
-            | 'buttons'
-            | 'customTemplate'
-            | 'customRender'
-            | 'slot'
+        // 渲染为 tableRenderer 之一
+        render?: tableRenderer
         // 操作按钮组
         buttons?: OptButton[]
         // 渲染为Tag时:el-tag 组件的主题
@@ -198,6 +185,8 @@ declare global {
             multiple?: boolean
             remoteUrl: string
         }
+        // 单元格渲染组件的 key，此 key 值改变时单元格将自动重新渲染，默认将根据列配置等属性自动生成
+        getRenderKey?: (row: TableRow, field: TableColumn, column: TableColumnCtx<TableRow>, index: number) => string
     }
 
     /* 表格右侧操作按钮 */

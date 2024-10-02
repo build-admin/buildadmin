@@ -291,24 +291,7 @@ export default class baTable {
                     this.postDel([data.row[this.table.pk!]])
                 },
             ],
-            [
-                'field-change',
-                () => {
-                    if (data.field.render == 'switch') {
-                        if (!data.field || !data.field.prop) return
-                        data.row.loading = true
-                        this.api
-                            .postData('edit', { [this.table.pk!]: data.row[this.table.pk!], [data.field.prop]: data.value })
-                            .then(() => {
-                                data.row.loading = false
-                                data.row[data.field.prop] = data.value
-                            })
-                            .catch(() => {
-                                data.row.loading = false
-                            })
-                    }
-                },
-            ],
+            ['field-change', () => {}],
             [
                 'com-search',
                 () => {

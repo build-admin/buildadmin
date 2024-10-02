@@ -30,22 +30,15 @@
                         v-bind="item"
                         :column-key="(item['columnKey'] ? item['columnKey'] : `table-column-${item.prop}`) || shortUuid()"
                     >
-                        <!-- baTable 预设的列 render 方案 -->
+                        <!-- ./fieldRender/ 文件夹内的每个组件为一种字段渲染器，组件名称为渲染器名称 -->
                         <template v-if="item.render" #default="scope">
-                            <FieldRender
-                                :field="item"
+                            <component
                                 :row="scope.row"
+                                :field="item"
                                 :column="scope.column"
                                 :index="scope.$index"
-                                :key="
-                                    key +
-                                    '-' +
-                                    scope.$index +
-                                    '-' +
-                                    item.render +
-                                    '-' +
-                                    (item.prop ? '-' + item.prop + '-' + scope.row[item.prop] : '')
-                                "
+                                :is="fieldRenderer[item.render] ?? fieldRenderer['default']"
+                                :key="getRenderKey(key, item, scope)"
                             />
                         </template>
                     </el-table-column>
@@ -71,8 +64,8 @@
 
 <script setup lang="ts">
 import type { ElTable, TableInstance } from 'element-plus'
+import type { Component } from 'vue'
 import { computed, inject, nextTick, ref } from 'vue'
-import FieldRender from '/@/components/table/fieldRender/index.vue'
 import { useConfig } from '/@/stores/config'
 import type baTableClass from '/@/utils/baTable'
 import { shortUuid } from '/@/utils/random'
@@ -88,6 +81,23 @@ interface Props extends /* @vue-ignore */ ElTableProps {
 const props = withDefaults(defineProps<Props>(), {
     pagination: true,
 })
+
+const fieldRenderer: Record<string, Component> = {}
+const fieldRendererComponents: Record<string, any> = import.meta.glob('./fieldRender/**.vue', { eager: true })
+for (const key in fieldRendererComponents) {
+    const fileName = key.replace('./fieldRender/', '').replace('.vue', '')
+    fieldRenderer[fileName] = fieldRendererComponents[key].default
+}
+
+const getRenderKey = (key: number, item: TableColumn, scope: any) => {
+    if (item.getRenderKey && typeof item.getRenderKey == 'function') {
+        return item.getRenderKey(scope.row, item, scope.column, scope.$index)
+    }
+    if (item.render == 'switch') {
+        return item.render + item.prop
+    }
+    return key + scope.$index + '-' + item.render + '-' + (item.prop ? '-' + item.prop + '-' + scope.row[item.prop] : '')
+}
 
 const onTableSizeChange = (val: number) => {
     baTable.onTableAction('page-size-change', { size: val })

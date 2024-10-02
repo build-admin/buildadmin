@@ -1,14 +1,40 @@
+import { TableColumnCtx } from 'element-plus'
 import { i18n } from '/@/lang/index'
 
-/*
- * 默认Url点击事件处理
+/**
+ * 获取单元格值
  */
-export const openUrl = (url: string, field: TableColumn) => {
-    if (field.target == '_blank') {
-        window.open(url)
-    } else {
-        window.location.href = url
+export const getCellValue = (row: TableRow, field: TableColumn, column: TableColumnCtx<TableRow>, index: number) => {
+    if (!field.prop) return ''
+
+    const prop = field.prop
+    let cellValue: any = row[prop]
+
+    // 字段 prop 带 . 比如 user.nickname
+    if (prop.indexOf('.') > -1) {
+        const fieldNameArr = prop.split('.')
+        cellValue = row[fieldNameArr[0]]
+        for (let index = 1; index < fieldNameArr.length; index++) {
+            cellValue = cellValue ? cellValue[fieldNameArr[index]] ?? '' : ''
+        }
+        return cellValue
     }
+
+    // 若无值，尝试取默认值
+    if (cellValue === undefined || cellValue === null) {
+        cellValue = field.default
+    }
+
+    // 渲染前格式化
+    if (field.renderFormatter && typeof field.renderFormatter == 'function') {
+        cellValue = field.renderFormatter(row, field, cellValue, column, index)
+        console.warn('baTable.table.column.renderFormatter 即将废弃，请直接使用兼容 el-table 的 baTable.table.column.formatter 代替')
+    }
+    if (field.formatter && typeof field.formatter == 'function') {
+        cellValue = field.formatter(row, column, cellValue, index)
+    }
+
+    return cellValue
 }
 
 /*

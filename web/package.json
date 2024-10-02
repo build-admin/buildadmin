@@ -4,7 +4,7 @@
     "license": "Apache-2.0",
     "type": "module",
     "scripts": {
-        "dev": "vite --force",
+        "dev": "esno ./src/utils/build.ts && vite --force",
         "build": "vite build && esno ./src/utils/build.ts",
         "lint": "eslint .",
         "lint-fix": "eslint --fix .",
