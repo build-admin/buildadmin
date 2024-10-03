@@ -2,10 +2,11 @@
  * references
  * 全局提供：引用（指向）一些对象（组件）的句柄
  */
-import { ref, computed, CSSProperties } from 'vue'
-import { mainHeight } from '/@/utils/layout'
 import type { ScrollbarInstance } from 'element-plus'
+import type { CSSProperties } from 'vue'
+import { computed, ref } from 'vue'
 import NavTabs from '/@/layouts/backend/components/navBar/tabs.vue'
+import { mainHeight } from '/@/utils/layout'
 
 /**
  * 后台顶栏(tabs)组件ref（仅默认和经典布局）

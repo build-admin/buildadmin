@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { BA_ACCOUNT } from '/@/stores/constant/cacheKey'
-import { postLogout } from '/@/api/backend/module'
-import { Local } from '/@/utils/storage'
 import router from '../router'
+import { postLogout } from '/@/api/backend/module'
+import { BA_ACCOUNT } from '/@/stores/constant/cacheKey'
 import type { UserInfo } from '/@/stores/interface'
+import { Local } from '/@/utils/storage'
 
 export const useBaAccount = defineStore('baAccount', {
     state: (): Partial<UserInfo> => {

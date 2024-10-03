@@ -1,28 +1,22 @@
 import { isEmpty } from 'lodash-es'
-import { reactive } from 'vue'
-import { i18n } from '../lang'
 import { defineStore } from 'pinia'
+import { reactive } from 'vue'
+import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
+import { i18n } from '../lang'
+import { adminBaseRoutePath } from '/@/router/static/adminBase'
 import { STORE_TAB_VIEW_CONFIG } from '/@/stores/constant/cacheKey'
 import type { NavTabs } from '/@/stores/interface/index'
-import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
-import { adminBaseRoutePath } from '/@/router/static/adminBase'
 import { layoutNavTabsRef } from '/@/stores/refs'
 
 export const useNavTabs = defineStore(
     'navTabs',
     () => {
         const state: NavTabs = reactive({
-            // 激活tab的index
             activeIndex: 0,
-            // 激活的tab
             activeRoute: null,
-            // tab列表
             tabsView: [],
-            // 当前tab是否全屏
             tabFullScreen: false,
-            // 从后台加载到的菜单路由列表
             tabsViewRoutes: [],
-            // 按钮权限节点
             authNode: new Map(),
         })
 

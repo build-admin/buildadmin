@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
+import router from '../router'
+import { postLogout } from '/@/api/frontend/user/index'
 import { USER_INFO } from '/@/stores/constant/cacheKey'
 import type { UserInfo } from '/@/stores/interface'
-import { postLogout } from '/@/api/frontend/user/index'
 import { Local } from '/@/utils/storage'
-import router from '../router'
 
 export const useUserInfo = defineStore('userInfo', {
     state: (): UserInfo => {

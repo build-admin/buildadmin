@@ -1,36 +1,27 @@
-import { nextTick, reactive } from 'vue'
-import { defineStore } from 'pinia'
-import { STORE_TERMINAL } from '/@/stores/constant/cacheKey'
-import type { Terminal } from '/@/stores/interface/index'
-import { buildTerminalUrl } from '/@/api/common'
-import { uuid } from '/@/utils/random'
-import { timeFormat } from '/@/utils/common'
-import { taskStatus } from '/@/stores/constant/terminalTaskStatus'
 import { ElNotification } from 'element-plus'
+import { defineStore } from 'pinia'
+import { nextTick, reactive } from 'vue'
+import { buildTerminalUrl } from '/@/api/common'
 import { i18n } from '/@/lang/index'
+import { STORE_TERMINAL } from '/@/stores/constant/cacheKey'
+import { taskStatus } from '/@/stores/constant/terminalTaskStatus'
+import type { Terminal } from '/@/stores/interface/index'
+import { timeFormat } from '/@/utils/common'
+import { uuid } from '/@/utils/random'
 import { closeHotUpdate, openHotUpdate } from '/@/utils/vite'
 
 export const useTerminal = defineStore(
     'terminal',
     () => {
         const state: Terminal = reactive({
-            // 显示终端窗口
             show: false,
-            // 在后台终端按钮上显示一个红点
             showDot: false,
-            // 任务列表
             taskList: [],
-            // 包管理器
             packageManager: 'pnpm',
-            // 显示终端设置窗口
             showConfig: false,
-            // 开始任务时自动清理已完成任务
             automaticCleanupTask: '1',
-            // PHP 开发服务环境
             phpDevelopmentServer: false,
-            // NPM 源
             npmRegistry: 'unknown',
-            // composer 源
             composerRegistry: 'unknown',
         })
 
