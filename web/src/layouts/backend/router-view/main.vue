@@ -34,7 +34,7 @@ const state: {
     componentKey: string
     keepAliveComponentNameList: string[]
 } = reactive({
-    componentKey: route.path,
+    componentKey: route.fullPath,
     keepAliveComponentNameList: [],
 })
 
@@ -48,12 +48,21 @@ const addKeepAliveComponentName = function (keepAliveName: string | undefined) {
     }
 }
 
+const addActiveRouteKeepAlive = () => {
+    if (navTabs.state.activeRoute) {
+        const tabView = navTabs.getTabsViewDataByRoute(navTabs.state.activeRoute.fullPath, navTabs.state.tabsViewRoutes, 'normal')
+        if (tabView && typeof tabView.meta?.keepalive == 'string') {
+            addKeepAliveComponentName(tabView.meta.keepalive)
+        }
+    }
+}
+
 onBeforeMount(() => {
     proxy.eventBus.on('onTabViewRefresh', (menu: RouteLocationNormalized) => {
         state.keepAliveComponentNameList = state.keepAliveComponentNameList.filter((name: string) => menu.meta.keepalive !== name)
         state.componentKey = ''
         nextTick(() => {
-            state.componentKey = menu.path
+            state.componentKey = menu.fullPath
             addKeepAliveComponentName(menu.meta.keepalive as string)
         })
     })
@@ -68,19 +77,15 @@ onUnmounted(() => {
 })
 
 onMounted(() => {
-    // 确保刷新页面时也能正确取得当前路由 keepalive 参数
-    if (typeof navTabs.state.activeRoute?.meta.keepalive == 'string') {
-        addKeepAliveComponentName(navTabs.state.activeRoute?.meta.keepalive)
-    }
+    // 确保刷新页面时也能正确取得当前路由 keepalive 参数（热更新）
+    addActiveRouteKeepAlive()
 })
 
 watch(
-    () => route.path,
+    () => route.fullPath,
     () => {
-        state.componentKey = route.path
-        if (typeof navTabs.state.activeRoute?.meta.keepalive == 'string') {
-            addKeepAliveComponentName(navTabs.state.activeRoute?.meta.keepalive)
-        }
+        state.componentKey = route.fullPath
+        addActiveRouteKeepAlive()
     }
 )
 </script>
