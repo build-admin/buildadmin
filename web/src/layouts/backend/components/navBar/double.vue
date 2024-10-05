@@ -26,10 +26,15 @@ const state = reactive({
     defaultActive: '',
 })
 
-// 激活当前路由的菜单
+/**
+ * 激活当前路由的菜单
+ */
 const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
-    let routeChildren = navTabs.getTabsViewDataByRoute(currentRoute.fullPath, navTabs.state.tabsViewRoutes, 'top-level')
-    if (routeChildren) state.defaultActive = currentRoute.fullPath
+    const tabView = navTabs.getTabsViewDataByRoute(currentRoute)
+    if (tabView) {
+        // 以路由 fullPath 匹配的菜单优先，且 fullPath 无匹配时，回退到 path 的匹配菜单
+        state.defaultActive = tabView.meta!.matched as string
+    }
 }
 
 // 滚动条滚动到激活菜单所在位置

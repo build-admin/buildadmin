@@ -50,7 +50,7 @@ const addKeepAliveComponentName = function (keepAliveName: string | undefined) {
 
 const addActiveRouteKeepAlive = () => {
     if (navTabs.state.activeRoute) {
-        const tabView = navTabs.getTabsViewDataByRoute(navTabs.state.activeRoute.fullPath, navTabs.state.tabsViewRoutes, 'normal')
+        const tabView = navTabs.getTabsViewDataByRoute(navTabs.state.activeRoute)
         if (tabView && typeof tabView.meta?.keepalive == 'string') {
             addKeepAliveComponentName(tabView.meta.keepalive)
         }

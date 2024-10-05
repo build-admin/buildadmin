@@ -54,7 +54,7 @@ export const useNavTabs = defineStore(
             if (!tabView.meta.addtab) return
 
             // 通过路由寻找菜单的原始数据
-            const tabViewRoute = getTabsViewDataByRoute(tabView.fullPath, state.tabsViewRoutes, 'normal')
+            const tabViewRoute = getTabsViewDataByRoute(tabView)
             if (tabViewRoute && tabViewRoute.meta) {
                 tabView.name = tabViewRoute.name
                 tabView.meta.id = tabViewRoute.meta.id
@@ -64,6 +64,7 @@ export const useNavTabs = defineStore(
             for (const key in state.tabsView) {
                 // 菜单已在 tabs 存在，更新 params 和 query
                 if (state.tabsView[key].meta.id === tabView.meta.id || state.tabsView[key].fullPath == tabView.fullPath) {
+                    state.tabsView[key].fullPath = tabView.fullPath
                     state.tabsView[key].params = !isEmpty(tabView.params) ? tabView.params : state.tabsView[key].params
                     state.tabsView[key].query = !isEmpty(tabView.query) ? tabView.query : state.tabsView[key].query
                     return
@@ -156,22 +157,45 @@ export const useNavTabs = defineStore(
         }
 
         /**
-         * 寻找路由路径在菜单中的数据
-         * @param fullPath 路由完整路径
-         * @param menus 菜单数据（只有 path 代表完整 url，没有 fullPath）
-         * @param returnType 返回值要求:normal=返回被搜索的路径对应的菜单数据,top-level=返回被搜索的路径对应的一级菜单组
+         * 寻找路由在菜单中的数据
+         * @param route 路由
+         * @param returnType 返回值要求:normal=返回被搜索的路径对应的菜单数据,above=返回被搜索的路径对应的上一级菜单数组
          */
-        const getTabsViewDataByRoute = (fullPath: string, menus: RouteRecordRaw[], returnType: 'normal' | 'top-level'): RouteRecordRaw | false => {
+        const getTabsViewDataByRoute = (route: RouteLocationNormalized, returnType: 'normal' | 'above' = 'normal'): RouteRecordRaw | false => {
+            // 以完整路径寻找
+            let found = getTabsViewDataByPath(route.fullPath, state.tabsViewRoutes, returnType)
+            if (found) {
+                found.meta!.matched = route.fullPath
+                return found
+            }
+
+            // 以路径寻找
+            found = getTabsViewDataByPath(route.path, state.tabsViewRoutes, returnType)
+            if (found) {
+                found.meta!.matched = route.path
+                return found
+            }
+
+            return false
+        }
+
+        /**
+         * 递归的寻找路由路径在菜单中的数据
+         * @param path 路由路径
+         * @param menus 菜单数据（只有 path 代表完整 url，没有 fullPath）
+         * @param returnType 返回值要求:normal=返回被搜索的路径对应的菜单数据,above=返回被搜索的路径对应的上一级菜单数组
+         */
+        const getTabsViewDataByPath = (path: string, menus: RouteRecordRaw[], returnType: 'normal' | 'above'): RouteRecordRaw | false => {
             for (const key in menus) {
                 // 找到目标
-                if (menus[key].path === fullPath) {
+                if (menus[key].path === path) {
                     return menus[key]
                 }
                 // 从子级继续寻找
                 if (menus[key].children && menus[key].children.length) {
-                    const find = getTabsViewDataByRoute(fullPath, menus[key].children, returnType)
+                    const find = getTabsViewDataByPath(path, menus[key].children, returnType)
                     if (find) {
-                        return returnType == 'top-level' ? menus[key] : find
+                        return returnType == 'above' ? menus[key] : find
                     }
                 }
             }
@@ -187,6 +211,7 @@ export const useNavTabs = defineStore(
             setAuthNode,
             fillAuthNode,
             setFullScreen,
+            getTabsViewDataByPath,
             getTabsViewDataByRoute,
             _addTab,
             _closeTab,

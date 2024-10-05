@@ -49,12 +49,16 @@ const verticalMenusScrollbarHeight = computed(() => {
 
 /**
  * 激活当前路由的菜单
- * @param currentRoute 当前路由
  */
 const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
-    let routeChildren = navTabs.getTabsViewDataByRoute(currentRoute.fullPath, navTabs.state.tabsViewRoutes, 'top-level')
+    const tabView = navTabs.getTabsViewDataByRoute(currentRoute)
+    if (tabView) {
+        // 以路由 fullPath 匹配的菜单优先，且 fullPath 无匹配时，回退到 path 的匹配菜单
+        state.defaultActive = tabView.meta!.matched as string
+    }
+
+    let routeChildren = navTabs.getTabsViewDataByRoute(currentRoute, 'above')
     if (routeChildren) {
-        state.defaultActive = currentRoute.fullPath
         if (routeChildren.children && routeChildren.children.length > 0) {
             state.routeChildren = routeChildren.children
         } else {
