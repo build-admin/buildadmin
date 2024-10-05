@@ -1,13 +1,13 @@
-import { reactive, watch } from 'vue'
-import { auth, getArrayKey } from '/@/utils/common'
-import type { baTableApi } from '/@/api/common'
-import Sortable from 'sortablejs'
-import { findIndexRow } from '/@/components/table'
-import { ElNotification } from 'element-plus'
 import type { FormInstance, TableColumnCtx } from 'element-plus'
+import { ElNotification } from 'element-plus'
+import { cloneDeep, isEmpty } from 'lodash-es'
+import Sortable from 'sortablejs'
+import { reactive } from 'vue'
 import { useRoute } from 'vue-router'
-import { cloneDeep } from 'lodash-es'
+import type { baTableApi } from '/@/api/common'
+import { findIndexRow } from '/@/components/table'
 import { i18n } from '/@/lang/index'
+import { auth, getArrayKey } from '/@/utils/common'
 
 export default class baTable {
     // API实例
@@ -454,80 +454,57 @@ export default class baTable {
     mount = () => {
         if (this.runBefore('mount') === false) return
 
+        // 记录表格的路由路径
         const route = useRoute()
-        this.table.routePath = route.path
+        this.table.routePath = route.fullPath
 
-        // 初始化公共搜索数据
-        this.initComSearch(route?.query ? route.query : {})
+        // 初始化通用搜索表单数据和字段 Map
+        this.initComSearch()
 
-        // 路由未改变，而 query 改变了，重新筛选数据
-        let routeFlag = route.path + Object.entries(route.query).toString()
-        watch(
-            () => route.query,
-            () => {
-                const newRouteFlag = route.path + Object.entries(route.query).toString()
-                if (route.path == this.table.routePath && routeFlag != newRouteFlag) {
-                    this.initComSearch(route.query)
-                    this.onTableHeaderAction('refresh', { event: 'route-query-change', query: route.query })
-                    routeFlag = newRouteFlag
-                }
-            }
-        )
+        if (this.table.acceptQuery && !isEmpty(route.query)) {
+            // 根据当前 URL 的 query 初始化通用搜索默认值
+            this.setComSearchData(route.query)
+
+            // 获取通用搜索数据合并至表格筛选条件
+            this.table.filter!.search = this.getComSearchData().concat(this.table.filter?.search ?? [])
+        }
     }
 
     /**
      * 通用搜索初始化
-     * @param query 要搜索的数据
      */
-    initComSearch = (query: anyObj = {}) => {
+    initComSearch = () => {
         const form: anyObj = {}
         const field = this.table.column
 
-        if (field.length <= 0) {
-            return
-        }
+        if (field.length <= 0) return
 
         for (const key in field) {
-            if (field[key].operator === false) {
-                continue
-            }
-            const prop = field[key].prop
+            // 关闭搜索的字段
+            if (field[key].operator === false) continue
+
+            // 取默认操作符号
             if (typeof field[key].operator == 'undefined') {
                 field[key].operator = 'eq'
             }
+
+            // 通用搜索表单字段初始化
+            const prop = field[key].prop
             if (prop) {
                 if (field[key].operator == 'RANGE' || field[key].operator == 'NOT RANGE') {
+                    // 范围查询
                     form[prop] = ''
                     form[prop + '-start'] = ''
                     form[prop + '-end'] = ''
                 } else if (field[key].operator == 'NULL' || field[key].operator == 'NOT NULL') {
+                    // 复选框
                     form[prop] = false
                 } else {
+                    // 普通文本框
                     form[prop] = ''
                 }
 
-                // 初始化来自query中的默认值
-                if (this.table.acceptQuery && typeof query[prop] != 'undefined') {
-                    const queryProp = (query[prop] as string) ?? ''
-                    if (field[key].operator == 'RANGE' || field[key].operator == 'NOT RANGE') {
-                        const range = queryProp.split(',')
-                        if (field[key].render == 'datetime') {
-                            if (range && range.length >= 2) {
-                                form[prop + '-default'] = [new Date(range[0]), new Date(range[1])]
-                            }
-                        } else {
-                            form[prop + '-start'] = range[0] ?? ''
-                            form[prop + '-end'] = range[1] ?? ''
-                        }
-                    } else if (field[key].operator == 'NULL' || field[key].operator == 'NOT NULL') {
-                        form[prop] = queryProp ? true : false
-                    } else if (field[key].render == 'datetime') {
-                        form[prop + '-default'] = new Date(queryProp)
-                    } else {
-                        form[prop] = queryProp
-                    }
-                }
-
+                // 初始化字段的通用搜索数据
                 this.comSearch.fieldData.set(prop, {
                     operator: field[key].operator,
                     render: field[key].render,
@@ -536,24 +513,36 @@ export default class baTable {
             }
         }
 
-        // 接受query再搜索
-        if (this.table.acceptQuery) {
-            const comSearchData: comSearchData[] = []
-            for (const key in query) {
-                const fieldDataTemp = this.comSearch.fieldData.get(key)
-                if (fieldDataTemp) {
-                    comSearchData.push({
-                        field: key,
-                        val: query[key] as string,
-                        operator: fieldDataTemp.operator,
-                        render: fieldDataTemp.render,
-                    })
+        this.comSearch.form = Object.assign(this.comSearch.form, form)
+    }
+
+    /**
+     * 设置通用搜索数据
+     */
+    setComSearchData = (query: anyObj) => {
+        for (const key in this.table.column) {
+            const prop = this.table.column[key].prop
+            if (prop && typeof query[prop] !== 'undefined') {
+                const queryProp = query[prop] ?? ''
+                if (this.table.column[key].operator == 'RANGE' || this.table.column[key].operator == 'NOT RANGE') {
+                    const range = queryProp.split(',')
+                    if (this.table.column[key].render == 'datetime') {
+                        if (range && range.length >= 2) {
+                            this.comSearch.form[prop + '-default'] = [new Date(range[0]), new Date(range[1])]
+                        }
+                    } else {
+                        this.comSearch.form[prop + '-start'] = range[0] ?? ''
+                        this.comSearch.form[prop + '-end'] = range[1] ?? ''
+                    }
+                } else if (this.table.column[key].operator == 'NULL' || this.table.column[key].operator == 'NOT NULL') {
+                    this.comSearch.form[prop] = queryProp ? true : false
+                } else if (this.table.column[key].render == 'datetime') {
+                    this.comSearch.form[prop + '-default'] = new Date(queryProp)
+                } else {
+                    this.comSearch.form[prop] = queryProp
                 }
             }
-            this.table.filter!.search = comSearchData
         }
-
-        this.comSearch.form = Object.assign(this.comSearch.form, form)
     }
 
     /**
