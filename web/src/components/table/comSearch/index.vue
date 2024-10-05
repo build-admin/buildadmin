@@ -168,10 +168,13 @@ import BaInput from '/@/components/baInput/index.vue'
 const baTable = inject('baTable') as baTableClass
 
 const onResetForm = () => {
-    // 封装好的onResetForm在此处不能使用
-    for (const key in baTable.comSearch.form) {
-        baTable.comSearch.form[key] = ''
-    }
+    /**
+     * 封装好的 /utils/common.js/onResetForm 工具在此处不能使用，因为未使用 el-form-item
+     * 改用通用搜索重新初始化函数
+     */
+    baTable.initComSearch()
+
+    // 通知 baTable 发起通用搜索
     baTable.onTableAction('com-search', {})
 }
 </script>
