@@ -295,8 +295,10 @@ export default class baTable {
             [
                 'com-search',
                 () => {
-                    this.table.filter!.search = data as comSearchData[]
-                    this.onTableHeaderAction('refresh', { event: 'com-search', data: data })
+                    this.table.filter!.search = this.getComSearchData()
+
+                    // 刷新表格
+                    this.onTableHeaderAction('refresh', { event: 'com-search', data: this.table.filter!.search })
                 },
             ],
             [
@@ -552,5 +554,48 @@ export default class baTable {
         }
 
         this.comSearch.form = Object.assign(this.comSearch.form, form)
+    }
+
+    /**
+     * 获取通用搜索数据
+     */
+    getComSearchData = () => {
+        const comSearchData: comSearchData[] = []
+
+        for (const key in this.comSearch.form) {
+            if (!this.comSearch.fieldData.has(key)) continue
+
+            let val = null
+            const fieldDataTemp = this.comSearch.fieldData.get(key)
+            if (fieldDataTemp.render == 'datetime' && (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE')) {
+                // 时间范围
+                if (this.comSearch.form[key] && this.comSearch.form[key].length >= 2) {
+                    if (fieldDataTemp.comSearchRender == 'date') {
+                        val = this.comSearch.form[key][0] + ' 00:00:00' + ',' + this.comSearch.form[key][1] + ' 23:59:59'
+                    } else {
+                        val = this.comSearch.form[key][0] + ',' + this.comSearch.form[key][1]
+                    }
+                }
+            } else if (fieldDataTemp.operator == 'RANGE' || fieldDataTemp.operator == 'NOT RANGE') {
+                // 普通的范围筛选，公共搜索初始化时已准备好 start 和 end 字段
+                if (!this.comSearch.form[key + '-start'] && !this.comSearch.form[key + '-end']) {
+                    continue
+                }
+                val = this.comSearch.form[key + '-start'] + ',' + this.comSearch.form[key + '-end']
+            } else if (this.comSearch.form[key]) {
+                val = this.comSearch.form[key]
+            }
+
+            if (val !== null) {
+                comSearchData.push({
+                    field: key,
+                    val: val,
+                    operator: fieldDataTemp.operator,
+                    render: fieldDataTemp.render,
+                })
+            }
+        }
+
+        return comSearchData
     }
 }
