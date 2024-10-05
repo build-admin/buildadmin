@@ -11,13 +11,12 @@
 
 <script setup lang="ts">
 import { nextTick, onMounted, reactive } from 'vue'
-import { useRoute, onBeforeRouteUpdate, type RouteLocationNormalizedLoaded } from 'vue-router'
-import { currentRouteTopActivity } from '/@/layouts/backend/components/menus/helper'
+import { onBeforeRouteUpdate, useRoute, type RouteLocationNormalizedLoaded } from 'vue-router'
 import MenuTree from '/@/layouts/backend/components/menus/menuTree.vue'
-import { layoutMenuRef, layoutMenuScrollbarRef } from '/@/stores/refs'
 import NavMenus from '/@/layouts/backend/components/navMenus.vue'
-import { useNavTabs } from '/@/stores/navTabs'
 import { useConfig } from '/@/stores/config'
+import { useNavTabs } from '/@/stores/navTabs'
+import { layoutMenuRef, layoutMenuScrollbarRef } from '/@/stores/refs'
 
 const config = useConfig()
 const navTabs = useNavTabs()
@@ -29,8 +28,8 @@ const state = reactive({
 
 // 激活当前路由的菜单
 const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
-    let routeChildren = currentRouteTopActivity(currentRoute.path, navTabs.state.tabsViewRoutes)
-    if (routeChildren) state.defaultActive = currentRoute.path
+    let routeChildren = navTabs.getTabsViewDataByRoute(currentRoute.fullPath, navTabs.state.tabsViewRoutes, 'top-level')
+    if (routeChildren) state.defaultActive = currentRoute.fullPath
 }
 
 // 滚动条滚动到激活菜单所在位置

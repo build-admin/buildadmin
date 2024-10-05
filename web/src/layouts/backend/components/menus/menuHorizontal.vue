@@ -33,7 +33,7 @@ const state = reactive({
 
 // 激活当前路由的菜单
 const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
-    state.defaultActive = currentRoute.path
+    state.defaultActive = currentRoute.fullPath
 }
 
 // 滚动条滚动到激活菜单所在位置

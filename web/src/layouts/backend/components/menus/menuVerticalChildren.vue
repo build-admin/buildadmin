@@ -15,13 +15,12 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, reactive } from 'vue'
-import MenuTree from '/@/layouts/backend/components/menus/menuTree.vue'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { layoutMenuRef, layoutMenuScrollbarRef } from '/@/stores/refs'
-import { useRoute, onBeforeRouteUpdate } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import MenuTree from '/@/layouts/backend/components/menus/menuTree.vue'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
-import { currentRouteTopActivity } from '/@/layouts/backend/components/menus/helper'
+import { layoutMenuRef, layoutMenuScrollbarRef } from '/@/stores/refs'
 import horizontalScroll from '/@/utils/horizontalScroll'
 
 const config = useConfig()
@@ -53,9 +52,9 @@ const verticalMenusScrollbarHeight = computed(() => {
  * @param currentRoute 当前路由
  */
 const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
-    let routeChildren = currentRouteTopActivity(currentRoute.path, navTabs.state.tabsViewRoutes)
+    let routeChildren = navTabs.getTabsViewDataByRoute(currentRoute.fullPath, navTabs.state.tabsViewRoutes, 'top-level')
     if (routeChildren) {
-        state.defaultActive = currentRoute.path
+        state.defaultActive = currentRoute.fullPath
         if (routeChildren.children && routeChildren.children.length > 0) {
             state.routeChildren = routeChildren.children
         } else {

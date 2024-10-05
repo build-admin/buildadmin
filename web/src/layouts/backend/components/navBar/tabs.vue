@@ -61,7 +61,7 @@ const activeBoxStyle = reactive({
 })
 
 const onTab = (menu: RouteLocationNormalized) => {
-    router.push(menu)
+    router.push(menu.fullPath)
 }
 
 // tab 激活状态切换
@@ -83,7 +83,7 @@ const selectNavTab = function (dom: HTMLDivElement) {
 const toLastTab = () => {
     const lastTab = navTabs.state.tabsView.slice(-1)[0]
     if (lastTab) {
-        router.push(lastTab)
+        router.push(lastTab.fullPath)
     } else {
         router.push(adminBaseRoutePath)
     }
@@ -92,7 +92,7 @@ const toLastTab = () => {
 const closeTab = (route: RouteLocationNormalized) => {
     navTabs._closeTab(route)
     proxy.eventBus.emit('onTabViewClose', route)
-    if (navTabs.state.activeRoute?.path === route.path) {
+    if (navTabs.state.activeRoute?.fullPath === route.fullPath) {
         toLastTab()
     } else {
         navTabs._setActiveRoute(navTabs.state.activeRoute!)
@@ -107,8 +107,8 @@ const closeTab = (route: RouteLocationNormalized) => {
 const closeOtherTab = (menu: RouteLocationNormalized) => {
     navTabs._closeTabs(menu)
     navTabs._setActiveRoute(menu)
-    if (navTabs.state.activeRoute?.path !== route.path) {
-        router.push(menu!.path)
+    if (navTabs.state.activeRoute?.fullPath !== route.fullPath) {
+        router.push(menu!.fullPath)
     }
 }
 
@@ -118,10 +118,10 @@ const closeOtherTab = (menu: RouteLocationNormalized) => {
  */
 const closeAllTab = (menu?: RouteLocationNormalized) => {
     let firstRoute = getFirstRoute(navTabs.state.tabsViewRoutes)
-    if (menu && firstRoute && firstRoute.path == menu.path) {
+    if (menu && firstRoute && firstRoute.path == menu.fullPath) {
         return closeOtherTab(menu)
     }
-    if (firstRoute && firstRoute.path == navTabs.state.activeRoute?.path) {
+    if (firstRoute && firstRoute.path == navTabs.state.activeRoute?.fullPath) {
         return closeOtherTab(navTabs.state.activeRoute)
     }
     navTabs._closeTabs(false)
@@ -130,7 +130,7 @@ const closeAllTab = (menu?: RouteLocationNormalized) => {
 
 const onContextmenu = (menu: RouteLocationNormalized, el: MouseEvent) => {
     // 禁用刷新
-    state.contextmenuItems[0].disabled = route.path !== menu.path
+    state.contextmenuItems[0].disabled = route.fullPath !== menu.fullPath
     // 禁用关闭其他和关闭全部
     state.contextmenuItems[4].disabled = state.contextmenuItems[3].disabled = navTabs.state.tabsView.length == 1 ? true : false
 
@@ -158,8 +158,8 @@ const onContextMenuClick = (item: ContextMenuItemClickEmitArg<RouteLocationNorma
             closeAllTab(sourceData)
             break
         case 'fullScreen':
-            if (route.path !== sourceData.path) {
-                router.push(sourceData.path as string)
+            if (route.fullPath !== sourceData.fullPath) {
+                router.push(sourceData.fullPath as string)
             }
             navTabs.setFullScreen(true)
             break
@@ -188,11 +188,11 @@ onMounted(() => {
 
 /**
  * 通过路由路径关闭tab（等同于 navTabs.closeTabByPath）
- * @param path 需要关闭的 tab 的路径
+ * @param fullPath 需要关闭的 tab 的路径
  */
-const closeTabByPath = (path: string) => {
+const closeTabByPath = (fullPath: string) => {
     for (const key in navTabs.state.tabsView) {
-        if (navTabs.state.tabsView[key].path == path) {
+        if (navTabs.state.tabsView[key].fullPath == fullPath) {
             closeTab(navTabs.state.tabsView[key])
             break
         }
@@ -201,11 +201,11 @@ const closeTabByPath = (path: string) => {
 
 /**
  * 修改 tab 标题（等同于 navTabs.updateTabTitle）
- * @param path 需要修改标题的 tab 的路径
+ * @param fullPath 需要修改标题的 tab 的路径
  * @param title 新的标题
  */
-const updateTabTitle = (path: string, title: string) => {
-    navTabs._updateTabTitle(path, title)
+const updateTabTitle = (fullPath: string, title: string) => {
+    navTabs._updateTabTitle(fullPath, title)
     nextTick(() => {
         selectNavTab(tabsRefs.value[navTabs.state.activeIndex])
     })

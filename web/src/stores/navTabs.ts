@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash-es'
+import { cloneDeep, isEmpty } from 'lodash-es'
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
 import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
@@ -22,10 +22,10 @@ export const useNavTabs = defineStore(
 
         /**
          * 通过路由路径关闭tab
-         * @param path 需要关闭的 tab 的路径
+         * @param fullPath 需要关闭的 tab 的路径
          */
-        const closeTabByPath = (path: string) => {
-            layoutNavTabsRef.value?.closeTabByPath(path)
+        const closeTabByPath = (fullPath: string) => {
+            layoutNavTabsRef.value?.closeTabByPath(fullPath)
         }
 
         /**
@@ -38,11 +38,11 @@ export const useNavTabs = defineStore(
 
         /**
          * 修改 tab 标题
-         * @param path 需要修改标题的 tab 的路径
+         * @param fullPath 需要修改标题的 tab 的路径
          * @param title 新的标题
          */
-        const updateTabTitle = (path: string, title: string) => {
-            layoutNavTabsRef.value?.updateTabTitle(path, title)
+        const updateTabTitle = (fullPath: string, title: string) => {
+            layoutNavTabsRef.value?.updateTabTitle(fullPath, title)
         }
 
         /**
@@ -50,18 +50,29 @@ export const useNavTabs = defineStore(
          * ps: router.push 时可自动完成 tab 添加，无需调用此方法
          */
         function _addTab(route: RouteLocationNormalized) {
-            if (!route.meta.addtab) return
+            const tabView = cloneDeep(route)
+            if (!tabView.meta.addtab) return
+
+            // 通过路由寻找菜单的原始数据
+            const tabViewRoute = getTabsViewDataByRoute(tabView.fullPath, state.tabsViewRoutes, 'normal')
+            if (tabViewRoute && tabViewRoute.meta) {
+                tabView.name = tabViewRoute.name
+                tabView.meta.id = tabViewRoute.meta.id
+                tabView.meta.title = tabViewRoute.meta.title
+            }
+
             for (const key in state.tabsView) {
-                if (state.tabsView[key].path === route.path) {
-                    state.tabsView[key].params = !isEmpty(route.params) ? route.params : state.tabsView[key].params
-                    state.tabsView[key].query = !isEmpty(route.query) ? route.query : state.tabsView[key].query
+                // 菜单已在 tabs 存在，更新 params 和 query
+                if (state.tabsView[key].meta.id === tabView.meta.id || state.tabsView[key].fullPath == tabView.fullPath) {
+                    state.tabsView[key].params = !isEmpty(tabView.params) ? tabView.params : state.tabsView[key].params
+                    state.tabsView[key].query = !isEmpty(tabView.query) ? tabView.query : state.tabsView[key].query
                     return
                 }
             }
-            if (typeof route.meta.title == 'string') {
-                route.meta.title = route.meta.title.indexOf('pagesTitle.') === -1 ? route.meta.title : i18n.global.t(route.meta.title)
+            if (typeof tabView.meta.title == 'string') {
+                tabView.meta.title = i18n.global.te(tabView.meta.title) ? i18n.global.t(tabView.meta.title) : tabView.meta.title
             }
-            state.tabsView.push(route)
+            state.tabsView.push(tabView)
         }
 
         /**
@@ -70,7 +81,7 @@ export const useNavTabs = defineStore(
          */
         const _setActiveRoute = (route: RouteLocationNormalized): void => {
             const currentRouteIndex: number = state.tabsView.findIndex((item: RouteLocationNormalized) => {
-                return item.path === route.path
+                return item.fullPath === route.fullPath
             })
             if (currentRouteIndex === -1) return
             state.activeRoute = route
@@ -83,7 +94,7 @@ export const useNavTabs = defineStore(
          */
         function _closeTab(route: RouteLocationNormalized) {
             state.tabsView.map((v, k) => {
-                if (v.path == route.path) {
+                if (v.fullPath == route.fullPath) {
                     state.tabsView.splice(k, 1)
                     return
                 }
@@ -106,9 +117,9 @@ export const useNavTabs = defineStore(
          * 更新标签标题（内部）
          * ps: 使用 updateTabTitle 代替
          */
-        const _updateTabTitle = (path: string, title: string) => {
+        const _updateTabTitle = (fullPath: string, title: string) => {
             for (const key in state.tabsView) {
-                if (state.tabsView[key].path == path) {
+                if (state.tabsView[key].fullPath == fullPath) {
                     state.tabsView[key].meta.title = title
                     break
                 }
@@ -144,6 +155,29 @@ export const useNavTabs = defineStore(
             state.tabFullScreen = status
         }
 
+        /**
+         * 寻找路由路径在菜单中的数据
+         * @param fullPath 路由完整路径
+         * @param menus 菜单数据（只有 path 代表完整 url，没有 fullPath）
+         * @param returnType 返回值要求:normal=返回被搜索的路径对应的菜单数据,top-level=返回被搜索的路径对应的一级菜单组
+         */
+        const getTabsViewDataByRoute = (fullPath: string, menus: RouteRecordRaw[], returnType: 'normal' | 'top-level'): RouteRecordRaw | false => {
+            for (const key in menus) {
+                // 找到目标
+                if (menus[key].path === fullPath) {
+                    return menus[key]
+                }
+                // 从子级继续寻找
+                if (menus[key].children && menus[key].children.length) {
+                    const find = getTabsViewDataByRoute(fullPath, menus[key].children, returnType)
+                    if (find) {
+                        return returnType == 'top-level' ? menus[key] : find
+                    }
+                }
+            }
+            return false
+        }
+
         return {
             state,
             closeAllTab,
@@ -153,6 +187,7 @@ export const useNavTabs = defineStore(
             setAuthNode,
             fillAuthNode,
             setFullScreen,
+            getTabsViewDataByRoute,
             _addTab,
             _closeTab,
             _closeTabs,

@@ -57,16 +57,13 @@ export function loadJs(url: string): void {
  * 根据路由 meta.title 设置浏览器标题
  */
 export function setTitleFromRoute() {
-    if (typeof router.currentRoute.value.meta.title != 'string') {
-        return
-    }
     nextTick(() => {
-        let webTitle = ''
-        if ((router.currentRoute.value.meta.title as string).indexOf('pagesTitle.') === -1) {
-            webTitle = router.currentRoute.value.meta.title as string
-        } else {
-            webTitle = i18n.global.t(router.currentRoute.value.meta.title as string)
+        if (typeof router.currentRoute.value.meta.title != 'string') {
+            return
         }
+        const webTitle = i18n.global.te(router.currentRoute.value.meta.title)
+            ? i18n.global.t(router.currentRoute.value.meta.title)
+            : router.currentRoute.value.meta.title
         const title = useTitle()
         const siteConfig = useSiteConfig()
         title.value = `${webTitle}${siteConfig.siteName ? ' - ' + siteConfig.siteName : ''}`
