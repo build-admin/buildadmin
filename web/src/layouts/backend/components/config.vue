@@ -212,15 +212,16 @@
 </template>
 
 <script setup lang="ts">
-import { useConfig } from '/@/stores/config'
-import { useNavTabs } from '/@/stores/navTabs'
+import { nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import IconSelector from '/@/components/baInput/components/iconSelector.vue'
-import { STORE_CONFIG, BEFORE_RESIZE_LAYOUT } from '/@/stores/constant/cacheKey'
-import { Local, Session } from '/@/utils/storage'
-import { useI18n } from 'vue-i18n'
-import type { Layout } from '/@/stores/interface'
 import DarkSwitch from '/@/layouts/common/components/darkSwitch.vue'
+import { useConfig } from '/@/stores/config'
+import { BEFORE_RESIZE_LAYOUT, STORE_CONFIG } from '/@/stores/constant/cacheKey'
+import type { Layout } from '/@/stores/interface'
+import { useNavTabs } from '/@/stores/navTabs'
+import { Local, Session } from '/@/utils/storage'
 import toggleDark from '/@/utils/useDark'
 
 const { t } = useI18n()
@@ -257,9 +258,9 @@ const onCommitMenuDefaultIcon = (value: any, name: any) => {
 
     const menus = navTabs.state.tabsViewRoutes
     navTabs.setTabsViewRoutes([])
-    setTimeout(() => {
+    nextTick(() => {
         navTabs.setTabsViewRoutes(menus)
-    }, 200)
+    })
 }
 
 const onCloseDrawer = () => {
