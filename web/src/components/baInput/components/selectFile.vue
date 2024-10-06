@@ -113,7 +113,7 @@ const baTable = new baTableClass(new baTableApi('/admin/routine.Attachment/'), {
             label: t('utils.preview'),
             prop: 'suffix',
             align: 'center',
-            renderFormatter: previewRenderFormatter,
+            formatter: previewRenderFormatter,
             render: 'image',
             operator: false,
         },
