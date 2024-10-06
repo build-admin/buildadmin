@@ -1,5 +1,5 @@
 import type { FormInstance, TableColumnCtx } from 'element-plus'
-import { ElNotification } from 'element-plus'
+import { ElNotification, dayjs } from 'element-plus'
 import { cloneDeep, isEmpty } from 'lodash-es'
 import Sortable from 'sortablejs'
 import { reactive } from 'vue'
@@ -526,9 +526,19 @@ export default class baTable {
                 const queryProp = query[prop] ?? ''
                 if (this.table.column[key].operator == 'RANGE' || this.table.column[key].operator == 'NOT RANGE') {
                     const range = queryProp.split(',')
-                    if (this.table.column[key].render == 'datetime') {
+                    if (this.table.column[key].render == 'datetime' || this.table.column[key].comSearchRender == 'date') {
                         if (range && range.length >= 2) {
-                            this.comSearch.form[prop + '-default'] = [new Date(range[0]), new Date(range[1])]
+                            const rangeDayJs = [dayjs(range[0]), dayjs(range[1])]
+                            if (rangeDayJs[0].isValid() && rangeDayJs[1].isValid()) {
+                                if (this.table.column[key].comSearchRender == 'date') {
+                                    this.comSearch.form[prop] = [rangeDayJs[0].format('YYYY-MM-DD'), rangeDayJs[1].format('YYYY-MM-DD')]
+                                } else {
+                                    this.comSearch.form[prop] = [
+                                        rangeDayJs[0].format('YYYY-MM-DD HH:mm:ss'),
+                                        rangeDayJs[1].format('YYYY-MM-DD HH:mm:ss'),
+                                    ]
+                                }
+                            }
                         }
                     } else {
                         this.comSearch.form[prop + '-start'] = range[0] ?? ''
@@ -536,8 +546,13 @@ export default class baTable {
                     }
                 } else if (this.table.column[key].operator == 'NULL' || this.table.column[key].operator == 'NOT NULL') {
                     this.comSearch.form[prop] = queryProp ? true : false
-                } else if (this.table.column[key].render == 'datetime') {
-                    this.comSearch.form[prop + '-default'] = new Date(queryProp)
+                } else if (this.table.column[key].render == 'datetime' || this.table.column[key].comSearchRender == 'date') {
+                    const propDayJs = dayjs(queryProp)
+                    if (propDayJs.isValid()) {
+                        this.comSearch.form[prop] = propDayJs.format(
+                            this.table.column[key].comSearchRender == 'date' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'
+                        )
+                    }
                 } else {
                     this.comSearch.form[prop] = queryProp
                 }

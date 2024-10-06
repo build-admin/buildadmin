@@ -40,11 +40,7 @@
                                     <el-date-picker
                                         class="datetime-picker w100"
                                         v-model="baTable.comSearch.form[item.prop!]"
-                                        :default-value="
-                                            baTable.comSearch.form[item.prop! + '-default']
-                                                ? baTable.comSearch.form[item.prop! + '-default']
-                                                : [new Date(), new Date()]
-                                        "
+                                        :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
                                         :type="item.comSearchRender == 'date' ? 'daterange' : 'datetimerange'"
                                         :range-separator="$t('To')"
                                         :start-placeholder="$t('el.datepicker.startDate')"
@@ -87,11 +83,6 @@
                                         :type="item.comSearchRender == 'date' ? 'date' : 'datetime'"
                                         :value-format="item.comSearchRender == 'date' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'"
                                         :placeholder="item.operatorPlaceholder"
-                                        :default-value="
-                                            baTable.comSearch.form[item.prop! + '-default']
-                                                ? baTable.comSearch.form[item.prop! + '-default']
-                                                : new Date()
-                                        "
                                         :teleported="false"
                                     />
 
