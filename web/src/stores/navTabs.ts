@@ -1,4 +1,4 @@
-import { cloneDeep, isEmpty } from 'lodash-es'
+import { isEmpty } from 'lodash-es'
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
 import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
@@ -50,7 +50,7 @@ export const useNavTabs = defineStore(
          * ps: router.push 时可自动完成 tab 添加，无需调用此方法
          */
         function _addTab(route: RouteLocationNormalized) {
-            const tabView = cloneDeep(route)
+            const tabView = { ...route, matched: [], meta: { ...route.meta } }
             if (!tabView.meta.addtab) return
 
             // 通过路由寻找菜单的原始数据
