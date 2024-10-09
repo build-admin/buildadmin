@@ -135,6 +135,7 @@ class User extends Backend
     {
         list($where, $alias, $limit, $order) = $this->queryBuilder();
         $res = $this->model
+            ->withoutField('password,salt')
             ->withJoin($this->withJoinTable, $this->withJoinType)
             ->alias($alias)
             ->where($where)
