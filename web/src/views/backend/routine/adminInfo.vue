@@ -12,7 +12,7 @@
                         accept="image/gif, image/jpg, image/jpeg, image/bmp, image/png, image/webp"
                         v-if="!isEmpty(state.adminInfo)"
                     >
-                        <el-image :src="fullUrl(state.adminInfo.avatar)" class="avatar">
+                        <el-image fit="cover" :src="fullUrl(state.adminInfo.avatar)" class="avatar">
                             <template #error>
                                 <div class="image-slot">
                                     <Icon size="30" color="#c0c4cc" name="el-icon-Picture" />

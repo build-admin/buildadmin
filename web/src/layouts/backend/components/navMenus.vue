@@ -74,17 +74,13 @@
         >
             <template #reference>
                 <div class="admin-info" :class="state.currentNavMenu == 'adminInfo' ? 'hover' : ''">
-                    <el-avatar :size="25" fit="fill">
-                        <img :src="fullUrl(adminInfo.avatar)" alt="" />
-                    </el-avatar>
+                    <el-avatar :size="25" :src="fullUrl(adminInfo.avatar)"></el-avatar>
                     <div class="admin-name">{{ adminInfo.nickname }}</div>
                 </div>
             </template>
             <div>
                 <div class="admin-info-base">
-                    <el-avatar :size="70" fit="fill">
-                        <img :src="fullUrl(adminInfo.avatar)" alt="" />
-                    </el-avatar>
+                    <el-avatar :size="70" :src="fullUrl(adminInfo.avatar)"></el-avatar>
                     <div class="admin-info-other">
                         <div class="admin-info-name">{{ adminInfo.nickname }}</div>
                         <div class="admin-info-lasttime">{{ adminInfo.last_login_time }}</div>

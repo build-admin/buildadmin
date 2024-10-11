@@ -94,11 +94,15 @@ const routerPush = (routeName = '', route?: RouteRecordRaw) => {
 }
 .user-avatar-box {
     position: relative;
+    width: 100px;
+    height: 100px;
     cursor: pointer;
 }
 .user-avatar {
     display: block;
-    width: 100px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     border-radius: 50%;
 }
 .user-avatar-gender {
