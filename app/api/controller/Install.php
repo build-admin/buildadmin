@@ -53,7 +53,7 @@ class Install extends Api
         'php'  => '8.0.2',
         'npm'  => '9.8.1',
         'cnpm' => '7.1.0',
-        'node' => '18.18.2',
+        'node' => '20.14.0',
         'yarn' => '1.2.0',
         'pnpm' => '6.32.13',
     ];
