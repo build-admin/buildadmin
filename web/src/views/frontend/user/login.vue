@@ -2,174 +2,165 @@
     <div class="login">
         <el-container class="is-vertical">
             <Header />
-            <el-scrollbar :style="layoutMainScrollbarStyle()">
-                <el-main class="frontend-footer-brother">
-                    <el-row justify="center">
-                        <el-col :span="16" :xs="24">
-                            <div v-if="memberCenter.state.open" class="login-box">
-                                <div class="login-title">
-                                    {{ t('user.login.' + state.form.tab) + t('user.login.reach') + siteConfig.siteName }}
-                                </div>
-                                <el-form ref="formRef" @keyup.enter="onSubmitPre" :rules="rules" :model="state.form">
-                                    <!-- 注册验证方式 -->
-                                    <el-form-item v-if="state.form.tab == 'register'">
-                                        <el-radio-group size="large" v-model="state.form.registerType">
-                                            <el-radio
-                                                class="register-verification-radio"
-                                                value="email"
-                                                :disabled="!state.accountVerificationType.includes('email')"
-                                                border
-                                            >
-                                                {{ t('user.login.Via email') + t('user.login.register') }}
-                                            </el-radio>
-                                            <el-radio
-                                                class="register-verification-radio"
-                                                value="mobile"
-                                                :disabled="!state.accountVerificationType.includes('mobile')"
-                                                border
-                                            >
-                                                {{ t('user.login.Via mobile number') + t('user.login.register') }}
-                                            </el-radio>
-                                        </el-radio-group>
-                                    </el-form-item>
-
-                                    <!-- 登录注册用户名 -->
-                                    <el-form-item prop="username">
-                                        <el-input
-                                            v-model="state.form.username"
-                                            :placeholder="
-                                                state.form.tab == 'register'
-                                                    ? t('Please input field', { field: t('user.login.User name') })
-                                                    : t('Please input field', { field: t('user.login.account') })
-                                            "
-                                            :clearable="true"
-                                            size="large"
-                                        >
-                                            <template #prefix>
-                                                <Icon name="fa fa-user" size="16" color="var(--el-input-icon-color)" />
-                                            </template>
-                                        </el-input>
-                                    </el-form-item>
-
-                                    <!-- 登录注册密码 -->
-                                    <el-form-item prop="password">
-                                        <el-input
-                                            v-model="state.form.password"
-                                            :placeholder="t('Please input field', { field: t('user.login.password') })"
-                                            type="password"
-                                            show-password
-                                            size="large"
-                                        >
-                                            <template #prefix>
-                                                <Icon name="fa fa-unlock-alt" size="16" color="var(--el-input-icon-color)" />
-                                            </template>
-                                        </el-input>
-                                    </el-form-item>
-
-                                    <!-- 注册手机号 -->
-                                    <el-form-item v-if="state.form.tab == 'register' && state.form.registerType == 'mobile'" prop="mobile">
-                                        <el-input
-                                            v-model="state.form.mobile"
-                                            :placeholder="t('Please input field', { field: t('user.login.mobile') })"
-                                            :clearable="true"
-                                            size="large"
-                                        >
-                                            <template #prefix>
-                                                <Icon name="fa fa-tablet" size="16" color="var(--el-input-icon-color)" />
-                                            </template>
-                                        </el-input>
-                                    </el-form-item>
-
-                                    <!-- 注册邮箱 -->
-                                    <el-form-item v-if="state.form.tab == 'register' && state.form.registerType == 'email'" prop="email">
-                                        <el-input
-                                            v-model="state.form.email"
-                                            :placeholder="t('Please input field', { field: t('user.login.email') })"
-                                            :clearable="true"
-                                            size="large"
-                                        >
-                                            <template #prefix>
-                                                <Icon name="fa fa-envelope" size="16" color="var(--el-input-icon-color)" />
-                                            </template>
-                                        </el-input>
-                                    </el-form-item>
-
-                                    <!-- 注册验证码 -->
-                                    <el-form-item v-if="state.form.tab == 'register'" prop="captcha">
-                                        <el-row class="w100">
-                                            <el-col :span="16">
-                                                <el-input
-                                                    size="large"
-                                                    v-model="state.form.captcha"
-                                                    :placeholder="t('Please input field', { field: t('user.login.Verification Code') })"
-                                                    autocomplete="off"
-                                                >
-                                                    <template #prefix>
-                                                        <Icon name="fa fa-ellipsis-h" size="16" color="var(--el-input-icon-color)" />
-                                                    </template>
-                                                </el-input>
-                                            </el-col>
-                                            <el-col class="captcha-box" :span="8">
-                                                <el-button
-                                                    size="large"
-                                                    @click="sendRegisterCaptchaPre"
-                                                    :loading="state.sendCaptchaLoading"
-                                                    :disabled="state.codeSendCountdown <= 0 ? false : true"
-                                                    type="primary"
-                                                >
-                                                    {{
-                                                        state.codeSendCountdown <= 0
-                                                            ? t('user.login.send')
-                                                            : state.codeSendCountdown + t('user.login.seconds')
-                                                    }}
-                                                </el-button>
-                                            </el-col>
-                                        </el-row>
-                                    </el-form-item>
-
-                                    <div v-if="state.form.tab != 'register'" class="form-footer">
-                                        <el-checkbox v-model="state.form.keep" :label="t('user.login.Remember me')" size="default"></el-checkbox>
-                                        <div
-                                            v-if="state.accountVerificationType.length > 0"
-                                            @click="state.showRetrievePasswordDialog = true"
-                                            class="forgot-password"
-                                        >
-                                            {{ t('user.login.Forgot your password?') }}
-                                        </div>
-                                    </div>
-                                    <el-form-item class="form-buttons">
-                                        <el-button
-                                            class="login-btn"
-                                            @click="onSubmitPre"
-                                            :loading="state.formLoading"
-                                            round
-                                            type="primary"
-                                            size="large"
-                                        >
-                                            {{ t('user.login.' + state.form.tab) }}
-                                        </el-button>
-                                        <el-button
-                                            v-if="state.form.tab == 'register'"
-                                            @click="switchTab(formRef, 'login')"
-                                            round
-                                            plain
-                                            type="info"
-                                            size="large"
-                                        >
-                                            {{ t('user.login.Back to login') }}
-                                        </el-button>
-                                        <el-button v-else @click="switchTab(formRef, 'register')" round plain type="info" size="large">
-                                            {{ t('user.login.No account yet? Click Register') }}
-                                        </el-button>
-                                    </el-form-item>
-                                    <LoginFooterMixin />
-                                </el-form>
+            <el-main class="frontend-footer-brother">
+                <el-row justify="center">
+                    <el-col :span="16" :xs="24">
+                        <div v-if="memberCenter.state.open" class="login-box">
+                            <div class="login-title">
+                                {{ t('user.login.' + state.form.tab) + t('user.login.reach') + siteConfig.siteName }}
                             </div>
-                            <el-alert v-else :center="true" :title="$t('Member center disabled')" type="error" />
-                        </el-col>
-                    </el-row>
-                </el-main>
-            </el-scrollbar>
+                            <el-form ref="formRef" @keyup.enter="onSubmitPre" :rules="rules" :model="state.form">
+                                <!-- 注册验证方式 -->
+                                <el-form-item v-if="state.form.tab == 'register'">
+                                    <el-radio-group size="large" v-model="state.form.registerType">
+                                        <el-radio
+                                            class="register-verification-radio"
+                                            value="email"
+                                            :disabled="!state.accountVerificationType.includes('email')"
+                                            border
+                                        >
+                                            {{ t('user.login.Via email') + t('user.login.register') }}
+                                        </el-radio>
+                                        <el-radio
+                                            class="register-verification-radio"
+                                            value="mobile"
+                                            :disabled="!state.accountVerificationType.includes('mobile')"
+                                            border
+                                        >
+                                            {{ t('user.login.Via mobile number') + t('user.login.register') }}
+                                        </el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+
+                                <!-- 登录注册用户名 -->
+                                <el-form-item prop="username">
+                                    <el-input
+                                        v-model="state.form.username"
+                                        :placeholder="
+                                            state.form.tab == 'register'
+                                                ? t('Please input field', { field: t('user.login.User name') })
+                                                : t('Please input field', { field: t('user.login.account') })
+                                        "
+                                        :clearable="true"
+                                        size="large"
+                                    >
+                                        <template #prefix>
+                                            <Icon name="fa fa-user" size="16" color="var(--el-input-icon-color)" />
+                                        </template>
+                                    </el-input>
+                                </el-form-item>
+
+                                <!-- 登录注册密码 -->
+                                <el-form-item prop="password">
+                                    <el-input
+                                        v-model="state.form.password"
+                                        :placeholder="t('Please input field', { field: t('user.login.password') })"
+                                        type="password"
+                                        show-password
+                                        size="large"
+                                    >
+                                        <template #prefix>
+                                            <Icon name="fa fa-unlock-alt" size="16" color="var(--el-input-icon-color)" />
+                                        </template>
+                                    </el-input>
+                                </el-form-item>
+
+                                <!-- 注册手机号 -->
+                                <el-form-item v-if="state.form.tab == 'register' && state.form.registerType == 'mobile'" prop="mobile">
+                                    <el-input
+                                        v-model="state.form.mobile"
+                                        :placeholder="t('Please input field', { field: t('user.login.mobile') })"
+                                        :clearable="true"
+                                        size="large"
+                                    >
+                                        <template #prefix>
+                                            <Icon name="fa fa-tablet" size="16" color="var(--el-input-icon-color)" />
+                                        </template>
+                                    </el-input>
+                                </el-form-item>
+
+                                <!-- 注册邮箱 -->
+                                <el-form-item v-if="state.form.tab == 'register' && state.form.registerType == 'email'" prop="email">
+                                    <el-input
+                                        v-model="state.form.email"
+                                        :placeholder="t('Please input field', { field: t('user.login.email') })"
+                                        :clearable="true"
+                                        size="large"
+                                    >
+                                        <template #prefix>
+                                            <Icon name="fa fa-envelope" size="16" color="var(--el-input-icon-color)" />
+                                        </template>
+                                    </el-input>
+                                </el-form-item>
+
+                                <!-- 注册验证码 -->
+                                <el-form-item v-if="state.form.tab == 'register'" prop="captcha">
+                                    <el-row class="w100">
+                                        <el-col :span="16">
+                                            <el-input
+                                                size="large"
+                                                v-model="state.form.captcha"
+                                                :placeholder="t('Please input field', { field: t('user.login.Verification Code') })"
+                                                autocomplete="off"
+                                            >
+                                                <template #prefix>
+                                                    <Icon name="fa fa-ellipsis-h" size="16" color="var(--el-input-icon-color)" />
+                                                </template>
+                                            </el-input>
+                                        </el-col>
+                                        <el-col class="captcha-box" :span="8">
+                                            <el-button
+                                                size="large"
+                                                @click="sendRegisterCaptchaPre"
+                                                :loading="state.sendCaptchaLoading"
+                                                :disabled="state.codeSendCountdown <= 0 ? false : true"
+                                                type="primary"
+                                            >
+                                                {{
+                                                    state.codeSendCountdown <= 0
+                                                        ? t('user.login.send')
+                                                        : state.codeSendCountdown + t('user.login.seconds')
+                                                }}
+                                            </el-button>
+                                        </el-col>
+                                    </el-row>
+                                </el-form-item>
+
+                                <div v-if="state.form.tab != 'register'" class="form-footer">
+                                    <el-checkbox v-model="state.form.keep" :label="t('user.login.Remember me')" size="default"></el-checkbox>
+                                    <div
+                                        v-if="state.accountVerificationType.length > 0"
+                                        @click="state.showRetrievePasswordDialog = true"
+                                        class="forgot-password"
+                                    >
+                                        {{ t('user.login.Forgot your password?') }}
+                                    </div>
+                                </div>
+                                <el-form-item class="form-buttons">
+                                    <el-button class="login-btn" @click="onSubmitPre" :loading="state.formLoading" round type="primary" size="large">
+                                        {{ t('user.login.' + state.form.tab) }}
+                                    </el-button>
+                                    <el-button
+                                        v-if="state.form.tab == 'register'"
+                                        @click="switchTab(formRef, 'login')"
+                                        round
+                                        plain
+                                        type="info"
+                                        size="large"
+                                    >
+                                        {{ t('user.login.Back to login') }}
+                                    </el-button>
+                                    <el-button v-else @click="switchTab(formRef, 'register')" round plain type="info" size="large">
+                                        {{ t('user.login.No account yet? Click Register') }}
+                                    </el-button>
+                                </el-form-item>
+                                <LoginFooterMixin />
+                            </el-form>
+                        </div>
+                        <el-alert v-else :center="true" :title="$t('Member center disabled')" type="error" />
+                    </el-col>
+                </el-row>
+            </el-main>
             <Footer />
         </el-container>
 
@@ -272,7 +263,6 @@ import { sendEms, sendSms } from '/@/api/common'
 import { uuid } from '/@/utils/random'
 import { useI18n } from 'vue-i18n'
 import { buildValidatorData, validatorAccount } from '/@/utils/validate'
-import { mainHeight as layoutMainScrollbarStyle } from '/@/utils/layout'
 import { checkIn, retrievePassword } from '/@/api/frontend/user/index'
 import { useEventListener } from '@vueuse/core'
 import { onResetForm } from '/@/utils/common'
