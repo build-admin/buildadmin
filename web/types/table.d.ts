@@ -188,6 +188,8 @@ declare global {
         customTemplate?: (row: TableRow, field: TableColumn, value: any, column: TableColumnCtx<TableRow>, index: number) => string
         // 单元格渲染组件的 key，此 key 值改变时单元格将自动重新渲染，默认将根据列配置等属性自动生成
         getRenderKey?: (row: TableRow, field: TableColumn, column: TableColumnCtx<TableRow>, index: number) => string
+        // 对 el-table 的 formatter 扩展
+        formatter?: (row: TableRow, column: TableColumnCtx<TableRow>, cellValue: any, index: number) => any
         // 使用了 render 属性时，渲染前对字段值的预处理方法（即将废弃，请使用兼容 el-table 的 formatter 函数代替）
         renderFormatter?: (row: TableRow, field: TableColumn, value: any, column: TableColumnCtx<TableRow>, index: number) => any
         // 渲染为 url 时的点击事件（即将废弃，请使用 el-table 的 @cell-click 或单元格自定义渲染代替）
