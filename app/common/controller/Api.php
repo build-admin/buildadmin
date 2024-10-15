@@ -115,12 +115,7 @@ class Api extends BaseController
         ];
 
         $type = $type ?: $this->responseType;
-
-        $code = 200;
-        if (isset($header['statuscode'])) {
-            $code = $header['statuscode'];
-            unset($header['statuscode']);
-        }
+        $code = $header['statusCode'] ?? 200;
 
         $response = Response::create($result, $type, $code)->header($header)->options($options);
         throw new HttpResponseException($response);
