@@ -1,6 +1,7 @@
 <template>
     <div>
         <el-image
+            v-if="cellValue"
             :hide-on-click-modal="true"
             :preview-teleported="true"
             :preview-src-list="[fullUrl(cellValue)]"
