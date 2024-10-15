@@ -131,7 +131,6 @@
 - [eslint](https://github.com/eslint/eslint)
 - [prettier](https://github.com/prettier/prettier)
 - [vuepress](https://github.com/vuejs/vuepress)
-- [countUp](https://github.com/inorganik/countUp.js)
 - [Sortable](https://github.com/SortableJS/Sortable)
 - [v-code-diff](https://github.com/Shimada666/v-code-diff)
 - [jetbrains](https://www.jetbrains.com/)
