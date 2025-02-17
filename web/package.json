@@ -53,5 +53,13 @@
         "typescript-eslint": "8.18.1",
         "vite": "6.0.4",
         "vue-tsc": "2.1.10"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "@parcel/watcher",
+            "esbuild",
+            "v-code-diff",
+            "vue-demi"
+        ]
     }
 }
