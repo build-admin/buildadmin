@@ -155,21 +155,21 @@
                 <el-collapse class="field-collapse" v-model="state.fieldCollapseName">
                     <el-collapse-item :title="t('crud.crud.Common Fields')" name="common">
                         <div class="field-box" :ref="tabsRefs.set">
-                            <div v-for="(field, index) in fieldItem.common" :key="index" class="field-item">
+                            <div v-for="(field, index) in fieldItem.common" :key="index" class="field-item" @click.stop="clickAddSortable(field)">
                                 <span>{{ field.title }}</span>
                             </div>
                         </div>
                     </el-collapse-item>
                     <el-collapse-item :title="t('crud.crud.Base Fields')" name="base">
                         <div class="field-box" :ref="tabsRefs.set">
-                            <div v-for="(field, index) in fieldItem.base" :key="index" class="field-item">
+                            <div v-for="(field, index) in fieldItem.base" :key="index" class="field-item" @click.stop="clickAddSortable(field)">
                                 <span>{{ field.title }}</span>
                             </div>
                         </div>
                     </el-collapse-item>
                     <el-collapse-item :title="t('crud.crud.Advanced Fields')" name="senior">
                         <div class="field-box" :ref="tabsRefs.set">
-                            <div v-for="(field, index) in fieldItem.senior" :key="index" class="field-item">
+                            <div v-for="(field, index) in fieldItem.senior" :key="index" class="field-item" @click.stop="clickAddSortable(field)">
                                 <span>{{ field.title }}</span>
                             </div>
                         </div>
@@ -1381,6 +1381,55 @@ const autoRenameRepeatField = (fieldName: string) => {
     }
 }
 
+const tableFieldAdd = (field?: FieldItem, position?: number) => {
+    const data = handleFieldAttr(cloneDeep(field!))
+
+    // 主键重复检测
+    if (data.primaryKey) {
+        if (primaryKeyRepeatCheck(data)) {
+            // 设置为默认排序字段、快速搜索字段
+            state.table.defaultSortField = data.name
+            state.table.quickSearchField.push(data.name)
+        } else {
+            return false;
+        }
+    }
+
+    // 出现权重字段则以其排序
+    if (data.designType == 'weigh') {
+        state.table.defaultSortField = data.name
+    }
+
+    // name 重复时，自动重命名
+    data.name = autoRenameRepeatField(data.name)
+
+    // 插入字段
+    state.fields.splice(position!, 0, data)
+
+    logTableDesignChange({
+        type: 'add-field',
+        index: position!,
+        newName: data.name,
+        oldName: '',
+        after: position === 0 ? 'FIRST FIELD' : state.fields[position! - 1].name,
+    })
+
+    // 远程下拉参数预填
+    if (['remoteSelect', 'remoteSelects'].includes(data.designType)) {
+        showRemoteSelectPre(position!, true)
+    }
+
+    // 表单表格字段预定义
+    if (!data.formBuildExclude) {
+        state.table.formFields.push(data.name)
+    }
+    if (!data.tableBuildExclude) {
+        state.table.columnFields.push(data.name)
+    }
+
+    return true
+}
+
 onMounted(() => {
     loadData()
     const sortable = Sortable.create(designWindowRef.value, {
@@ -1393,47 +1442,8 @@ onMounted(() => {
             if (field && field[evt.oldIndex!]) {
                 const data = handleFieldAttr(cloneDeep(field[evt.oldIndex!]))
 
-                // 主键重复检测
-                if (data.primaryKey) {
-                    if (primaryKeyRepeatCheck(data)) {
-                        // 设置为默认排序字段、快速搜索字段
-                        state.table.defaultSortField = data.name
-                        state.table.quickSearchField.push(data.name)
-                    } else {
-                        return evt.item.remove()
-                    }
-                }
-
-                // 出现权重字段则以其排序
-                if (data.designType == 'weigh') {
-                    state.table.defaultSortField = data.name
-                }
-
-                // name 重复时，自动重命名
-                data.name = autoRenameRepeatField(data.name)
-
-                // 插入字段
-                state.fields.splice(evt.newIndex!, 0, data)
-
-                logTableDesignChange({
-                    type: 'add-field',
-                    index: evt.newIndex!,
-                    newName: data.name,
-                    oldName: '',
-                    after: evt.newIndex === 0 ? 'FIRST FIELD' : state.fields[evt.newIndex! - 1].name,
-                })
-
-                // 远程下拉参数预填
-                if (['remoteSelect', 'remoteSelects'].includes(data.designType)) {
-                    showRemoteSelectPre(evt.newIndex!, true)
-                }
-
-                // 表单表格字段预定义
-                if (!data.formBuildExclude) {
-                    state.table.formFields.push(data.name)
-                }
-                if (!data.tableBuildExclude) {
-                    state.table.columnFields.push(data.name)
+                if ( !tableFieldAdd(data, evt.newIndex) ){
+                    evt.item.remove()
                 }
             }
             evt.item.remove()
@@ -1481,6 +1491,13 @@ onMounted(() => {
         })
     })
 })
+
+const clickAddSortable = (field: FieldItem) => {
+    if (field) {
+        const data = handleFieldAttr(cloneDeep(field))
+        tableFieldAdd(data, state.fields.length)
+    }
+}
 
 /**
  * 修改表名
