@@ -154,23 +154,23 @@
             <el-col :xs="24" :span="6">
                 <el-collapse class="field-collapse" v-model="state.fieldCollapseName">
                     <el-collapse-item :title="t('crud.crud.Common Fields')" name="common">
-                        <div class="field-box" :ref="tabsRefs.set">
-                            <div v-for="(field, index) in fieldItem.common" :key="index" class="field-item" @click.stop="clickAddSortable(field)">
-                                <span>{{ field.title }}</span>
+                        <div class="field-box" :ref="tabsRefs.set" @click.stop="clickAddSortable($event, 'common')">
+                            <div v-for="(field, index) in fieldItem.common" :key="index" class="field-item" :data-index="index">
+                                <span :data-index="index">{{ field.title }}</span>
                             </div>
                         </div>
                     </el-collapse-item>
                     <el-collapse-item :title="t('crud.crud.Base Fields')" name="base">
-                        <div class="field-box" :ref="tabsRefs.set">
-                            <div v-for="(field, index) in fieldItem.base" :key="index" class="field-item" @click.stop="clickAddSortable(field)">
-                                <span>{{ field.title }}</span>
+                        <div class="field-box" :ref="tabsRefs.set" @click.stop="clickAddSortable($event, 'base')">
+                            <div v-for="(field, index) in fieldItem.base" :key="index" class="field-item" :data-index="index">
+                                <span :data-index="index">{{ field.title }}</span>
                             </div>
                         </div>
                     </el-collapse-item>
                     <el-collapse-item :title="t('crud.crud.Advanced Fields')" name="senior">
-                        <div class="field-box" :ref="tabsRefs.set">
-                            <div v-for="(field, index) in fieldItem.senior" :key="index" class="field-item" @click.stop="clickAddSortable(field)">
-                                <span>{{ field.title }}</span>
+                        <div class="field-box" :ref="tabsRefs.set" @click.stop="clickAddSortable($event, 'senior')">
+                            <div v-for="(field, index) in fieldItem.senior" :key="index" class="field-item" :data-index="index">
+                                <span :data-index="index">{{ field.title }}</span>
                             </div>
                         </div>
                     </el-collapse-item>
@@ -1427,12 +1427,16 @@ const tableFieldAdd = (field?: FieldItem, position?: number) => {
         state.table.columnFields.push(data.name)
     }
 
+    nextTick(() => {
+        sortable.sort(range(state.fields.length).map((value) => value.toString()))
+    })
+
     return true
 }
-
+let sortable: Sortable
 onMounted(() => {
     loadData()
-    const sortable = Sortable.create(designWindowRef.value, {
+    sortable = Sortable.create(designWindowRef.value, {
         group: 'design-field',
         animation: 200,
         filter: '.design-field-empty',
@@ -1492,9 +1496,11 @@ onMounted(() => {
     })
 })
 
-const clickAddSortable = (field: FieldItem) => {
-    if (field) {
-        const data = handleFieldAttr(cloneDeep(field))
+const clickAddSortable = (eve: Event, name: string) => {
+    const field = fieldItem[name as keyof typeof fieldItem]
+
+    if (field && field[eve.target!.dataset!.index!]) {
+        const data = handleFieldAttr(cloneDeep(field[eve.target!.dataset!.index!]))
         tableFieldAdd(data, state.fields.length)
     }
 }
