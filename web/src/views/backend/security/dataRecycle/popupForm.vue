@@ -50,6 +50,7 @@
                             pk: 'key',
                             field: 'key',
                             remoteUrl: getDatabaseConnectionListUrl,
+                            valueOnClear: '',
                         }"
                     />
                     <FormItem
