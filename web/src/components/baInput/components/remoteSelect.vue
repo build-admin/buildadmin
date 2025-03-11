@@ -54,7 +54,7 @@
                             :layout="props.paginationLayout"
                             :total="state.total"
                             @current-change="onSelectCurrentPageChange"
-                            :small="config.layout.shrink"
+                            :size="config.layout.shrink ? 'small' : 'default'"
                         />
                     </template>
                 </el-select>
