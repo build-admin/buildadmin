@@ -254,7 +254,7 @@ class Upload
 
         // 图片文件利用tp内置规则做一些额外检查
         if ($this->checkIsImage()) {
-            $fileValidateRule->image("{$this->fileInfo['width']},{$this->fileInfo['height']},{$this->fileInfo['suffix']}", __('The uploaded image file is not a valid image'));
+            $fileValidateRule->image("{$this->fileInfo['width']},{$this->fileInfo['height']}", __('The uploaded image file is not a valid image'));
         }
 
         Validate::failException()
