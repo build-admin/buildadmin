@@ -497,10 +497,10 @@ export default class baTable {
         if (this.table.acceptQuery && !isEmpty(route.query)) {
             // 根据当前 URL 的 query 初始化公共搜索默认值
             this.setComSearchData(route.query)
-
-            // 获取公共搜索数据合并至表格筛选条件
-            this.table.filter!.search = this.getComSearchData().concat(this.table.filter?.search ?? [])
         }
+
+        // 获取公共搜索数据合并至表格筛选条件
+        this.table.filter!.search = this.getComSearchData().concat(this.table.filter?.search ?? [])
     }
 
     /**
@@ -546,7 +546,7 @@ export default class baTable {
             }
         }
 
-        this.comSearch.form = Object.assign(this.comSearch.form, form)
+        this.comSearch.form = Object.assign(form, this.comSearch.form)
     }
 
     /**
