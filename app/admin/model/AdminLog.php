@@ -114,7 +114,7 @@ class AdminLog extends Model
      * @param string|array|null $data
      * @throws Throwable
      */
-    public function record(string $title = '', string|array $data = null): void
+    public function record(string $title = '', string|array|null $data = null): void
     {
         $auth     = Auth::instance();
         $adminId  = $auth->isLogin() ? $auth->id : 0;

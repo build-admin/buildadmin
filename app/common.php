@@ -294,7 +294,7 @@ if (!function_exists('build_suffix_svg')) {
      * @param ?string $background 背景颜色，如：rgb(255,255,255)
      * @return string
      */
-    function build_suffix_svg(string $suffix = 'file', string $background = null): string
+    function build_suffix_svg(string $suffix = 'file', ?string $background = null): string
     {
         $suffix = mb_substr(strtoupper($suffix), 0, 4);
         $total  = unpack('L', hash('adler32', $suffix, true))[1];

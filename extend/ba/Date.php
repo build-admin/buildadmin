@@ -32,7 +32,7 @@ class Date
      * @throws Throwable
      * @example $seconds = self::offset('America/Chicago', 'GMT');
      */
-    public static function offset(string $remote, string $local = null, string|int $now = null): int
+    public static function offset(string $remote, ?string $local = null, string|int|null $now = null): int
     {
         if ($local === null) {
             // Use the default timezone
@@ -64,7 +64,7 @@ class Date
      * @return  bool|array|string    associative list of all outputs requested|when only a single output is requested
      * @from https://github.com/kohana/ohanzee-helpers/blob/master/src/Date.php
      */
-    public static function span(int $remote, int $local = null, string $output = 'years,months,weeks,days,hours,minutes,seconds'): bool|array|string
+    public static function span(int $remote, ?int $local = null, string $output = 'years,months,weeks,days,hours,minutes,seconds'): bool|array|string
     {
         // Normalize output
         $output = trim(strtolower($output));
@@ -161,7 +161,7 @@ class Date
      * @param int|null $minute   基准分钟，默认为null，即以当前分钟为基准
      * @return int 处理后的Unix时间戳
      */
-    public static function unixTime(string $type = 'day', int $offset = 0, string $position = 'begin', int $year = null, int $month = null, int $day = null, int $hour = null, int $minute = null): int
+    public static function unixTime(string $type = 'day', int $offset = 0, string $position = 'begin', ?int $year = null, ?int $month = null, ?int $day = null, ?int $hour = null, ?int $minute = null): int
     {
         $year     = is_null($year) ? date('Y') : $year;
         $month    = is_null($month) ? date('m') : $month;

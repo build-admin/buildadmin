@@ -28,7 +28,7 @@ abstract class Driver
      * @param ?int   $expire 过期时间
      * @return bool
      */
-    abstract public function set(string $token, string $type, int $userId, int $expire = null): bool;
+    abstract public function set(string $token, string $type, int $userId, ?int $expire = null): bool;
 
     /**
      * 获取 token 的数据

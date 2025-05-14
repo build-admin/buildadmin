@@ -37,7 +37,7 @@ class Token
      * @param string|null $name
      * @return object
      */
-    public function getDriver(string $name = null): object
+    public function getDriver(?string $name = null): object
     {
         if (!is_null($this->handler)) {
             return $this->handler;
@@ -94,10 +94,10 @@ class Token
     /**
      * 获取驱动配置
      * @param string|null $name 要获取的配置项，不传递获取完整token配置
-     * @param null        $default
+     * @param mixed        $default
      * @return array|string
      */
-    protected function getConfig(string $name = null, $default = null): array|string
+    protected function getConfig(?string $name = null, $default = null): array|string
     {
         if (!is_null($name)) {
             return Config::get('buildadmin.token.' . $name, $default);
@@ -139,10 +139,10 @@ class Token
      * 获取驱动配置
      * @param string      $store
      * @param string|null $name
-     * @param null        $default
+     * @param mixed        $default
      * @return array|string
      */
-    protected function getStoreConfig(string $store, string $name = null, $default = null): array|string
+    protected function getStoreConfig(string $store, ?string $name = null, $default = null): array|string
     {
         if ($config = $this->getConfig("stores.$store")) {
             return Arr::get($config, $name, $default);
@@ -169,7 +169,7 @@ class Token
      * @param int|null $expire
      * @return bool
      */
-    public function set(string $token, string $type, int $user_id, int $expire = null): bool
+    public function set(string $token, string $type, int $user_id, ?int $expire = null): bool
     {
         return $this->getDriver()->set($token, $type, $user_id, $expire);
     }

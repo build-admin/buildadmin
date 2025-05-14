@@ -39,7 +39,7 @@ class Mysql extends Driver
     /**
      * @throws Throwable
      */
-    public function set(string $token, string $type, int $userId, int $expire = null): bool
+    public function set(string $token, string $type, int $userId, ?int $expire = null): bool
     {
         if (is_null($expire)) {
             $expire = $this->options['expire'];
