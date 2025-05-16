@@ -77,8 +77,8 @@
 </template>
 
 <script setup lang="ts">
-import type { FormInstance, FormItemRule } from 'element-plus'
-import { reactive, ref, watch } from 'vue'
+import type { FormItemRule } from 'element-plus'
+import { reactive, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { baAccountCheckIn, baAccountGetUserInfo } from '/@/api/backend/index'
 import clickCaptcha from '/@/components/clickCaptcha'
@@ -92,7 +92,7 @@ const { t } = useI18n()
 const baAccount = useBaAccount()
 const siteConfig = useSiteConfig()
 const model = defineModel<boolean>()
-const baAccountFormRef = ref<FormInstance>()
+const baAccountFormRef = useTemplateRef('baAccountFormRef')
 
 interface Props {
     loginCallback?: (res: ApiResponse) => void
@@ -116,8 +116,7 @@ const state = reactive({
 })
 
 const onBaAccountSubmitPre = () => {
-    if (!baAccountFormRef.value) return
-    baAccountFormRef.value.validate((valid) => {
+    baAccountFormRef.value?.validate((valid) => {
         if (valid) {
             clickCaptcha(state.user.captchaId, (captchaInfo: string) => onBaAccountSubmit(captchaInfo), { apiBaseURL: siteConfig.apiUrl })
         }

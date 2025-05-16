@@ -678,12 +678,12 @@
 
 <script setup lang="ts">
 import { useTemplateRefsList } from '@vueuse/core'
-import type { FormInstance, FormItemRule, MessageHandler, TimelineItemProps } from 'element-plus'
+import type { FormItemRule, MessageHandler, TimelineItemProps } from 'element-plus'
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 import { cloneDeep, isEmpty, range } from 'lodash-es'
 import type { SortableEvent } from 'sortablejs'
 import Sortable from 'sortablejs'
-import { nextTick, onMounted, reactive, ref } from 'vue'
+import { nextTick, onMounted, reactive, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { generate, generateCheck, getFileData, parseFieldData, postLogStart, uploadCompleted, uploadLog } from '/@/api/backend/crud'
 import { getDatabaseConnectionListUrl, getTableFieldList, getTableListUrl } from '/@/api/common'
@@ -697,13 +697,14 @@ import { reloadServer } from '/@/utils/vite'
 import type { FieldItem, TableDesignChange, TableDesignChangeType } from '/@/views/backend/crud/index'
 import { changeStep, state as crudState, designTypes, fieldItem, getTableAttr, tableFieldsKey } from '/@/views/backend/crud/index'
 
+let nameRepeatCount = 1
 const { t } = useI18n()
-const designWindowRef = ref()
 const config = useConfig()
 const terminal = useTerminal()
-const formRef = ref<FormInstance>()
+const formRef = useTemplateRef('formRef')
 const tabsRefs = useTemplateRefsList<HTMLElement>()
-let nameRepeatCount = 1
+const designWindowRef = useTemplateRef('designWindowRef')
+
 const state: {
     loading: {
         init: boolean
@@ -1421,7 +1422,7 @@ const autoRenameRepeatField = (fieldName: string) => {
 
 onMounted(() => {
     loadData()
-    const sortable = Sortable.create(designWindowRef.value, {
+    const sortable = Sortable.create(designWindowRef.value!, {
         group: 'design-field',
         animation: 200,
         filter: '.design-field-empty',

@@ -53,7 +53,7 @@ declare global {
         extend?: anyObj
 
         // 表格 ref，通常在 页面 onMounted 时赋值，可选的
-        ref?: typeof Table
+        ref?: InstanceType<typeof Table> | null
         // 表格对应数据表的主键字段
         pk?: string
         // 路由 remark，后台菜单规则备注信息
@@ -152,7 +152,7 @@ declare global {
          * @param object.operate 当前操作标识:Add=添加,Edit=编辑
          * @param object.items 表单数据
          */
-        onSubmit?: ({ formEl, operate, items }: { formEl: FormInstance | undefined; operate: string; items: anyObj }) => boolean | void
+        onSubmit?: ({ formEl, operate, items }: { formEl?: FormInstance | null; operate: string; items: anyObj }) => boolean | void
 
         /**
          * 表格内事件响应前钩子（返回 false 可取消原操作）

@@ -27,15 +27,13 @@
                         </span>
                     </div>
                 </div>
-                <div class="selector-body">
-                    <el-scrollbar ref="selectorScrollbarRef">
-                        <div v-if="renderFontIconNames.length > 0">
-                            <div class="icon-selector-item" :title="item" @click="onIcon(item)" v-for="(item, key) in renderFontIconNames" :key="key">
-                                <Icon :name="item" />
-                            </div>
+                <el-scrollbar class="selector-body">
+                    <div v-if="renderFontIconNames.length > 0">
+                        <div class="icon-selector-item" :title="item" @click="onIcon(item)" v-for="(item, key) in renderFontIconNames" :key="key">
+                            <Icon :name="item" />
                         </div>
-                    </el-scrollbar>
-                </div>
+                    </div>
+                </el-scrollbar>
             </div>
         </div>
         <template #reference>
@@ -64,10 +62,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted, nextTick, watch, computed } from 'vue'
-import { getAwesomeIconfontNames, getIconfontNames, getElementPlusIconfontNames, getLocalIconfontNames } from '/@/utils/iconfont'
 import { useEventListener } from '@vueuse/core'
 import type { Placement } from 'element-plus'
+import { computed, nextTick, onMounted, reactive, useTemplateRef, watch } from 'vue'
+import { getAwesomeIconfontNames, getElementPlusIconfontNames, getIconfontNames, getLocalIconfontNames } from '/@/utils/iconfont'
 
 type IconType = 'ele' | 'awe' | 'ali' | 'local'
 
@@ -95,8 +93,7 @@ const emits = defineEmits<{
     (e: 'change', value: string): void
 }>()
 
-const selectorInput = ref()
-const selectorScrollbarRef = ref()
+const selectorInput = useTemplateRef('selectorInput')
 const state: {
     iconType: IconType
     selectorWidth: number
@@ -164,7 +161,7 @@ const onIcon = (icon: string) => {
     emits('update:modelValue', icon)
     emits('change', icon)
     nextTick(() => {
-        selectorInput.value.blur()
+        selectorInput.value?.blur()
     })
 }
 
@@ -182,7 +179,7 @@ const renderFontIconNames = computed(() => {
 // 获取 input 的宽度
 const getInputWidth = () => {
     nextTick(() => {
-        state.selectorWidth = selectorInput.value.$el.offsetWidth < 260 ? 260 : selectorInput.value.$el.offsetWidth
+        state.selectorWidth = selectorInput.value?.$el.offsetWidth < 260 ? 260 : selectorInput.value?.$el.offsetWidth
     })
 }
 
@@ -199,9 +196,26 @@ watch(
         state.prependIcon = props.modelValue
     }
 )
+
+/**
+ * 1. 图标选择面板一旦显示就监听 document 的点击事件
+ * 2. 点击后输入框和面板会失去焦点，面板将自动隐藏
+ * 3. 面板隐藏后删除点击事件监听
+ */
+let removeClickHidePopoverListenerFn = () => {}
+watch(
+    () => state.popoverVisible,
+    () => {
+        if (state.popoverVisible) {
+            removeClickHidePopoverListenerFn = useEventListener(document, 'click', popoverVisible)
+        } else {
+            removeClickHidePopoverListenerFn()
+        }
+    }
+)
+
 onMounted(() => {
     getInputWidth()
-    useEventListener(document, 'click', popoverVisible)
     getElementPlusIconfontNames().then((res) => {
         state.fontIconNames = res
     })

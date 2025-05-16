@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, provide } from 'vue'
+import { onMounted, provide, useTemplateRef } from 'vue'
 import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
 import TableHeader from '/@/components/table/header/index.vue'
@@ -62,7 +62,7 @@ defineOptions({
 })
 
 const { t } = useI18n()
-const tableRef = ref()
+const tableRef = useTemplateRef('tableRef')
 
 const optBtn = defaultOptButtons(['edit', 'delete'])
 optBtn[1].popconfirm!.title = t('routine.attachment.Files and records will be deleted at the same time Are you sure?')

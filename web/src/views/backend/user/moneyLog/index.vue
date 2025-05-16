@@ -18,7 +18,7 @@
 
         <!-- 表格 -->
         <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
-        <Table ref="tableRef" />
+        <Table />
 
         <!-- 表单 -->
         <PopupForm />
@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { isEmpty, parseInt } from 'lodash-es'
-import { ref, provide, reactive, watch } from 'vue'
+import { provide, reactive, watch } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import { url } from '/@/api/backend/user/moneyLog'
 import PopupForm from './popupForm.vue'
@@ -43,7 +43,6 @@ defineOptions({
 })
 
 const { t } = useI18n()
-const tableRef = ref()
 const route = useRoute()
 const defalutUser = (route.query.user_id ?? '') as string
 const state: {

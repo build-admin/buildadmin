@@ -157,20 +157,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { reactive, useTemplateRef } from 'vue'
 import { checkCrudLog } from '/@/api/backend/crud'
 import FormItem from '/@/components/formItem/index.vue'
 import { changeStep, state as crudState } from '/@/views/backend/crud/index'
 import { ElNotification } from 'element-plus'
-import type { FormInstance, FormItemRule } from 'element-plus'
+import type { FormItemRule } from 'element-plus'
 import { buildValidatorData } from '/@/utils/validate'
 import CrudLog from '/@/views/backend/crud/log.vue'
 import { useI18n } from 'vue-i18n'
 import { getDatabaseConnectionListUrl, getTableListUrl } from '/@/api/common'
 
 const { t } = useI18n()
-const sqlInputRef = ref()
-const formRef = ref<FormInstance>()
+const formRef = useTemplateRef('formRef')
+const sqlInputRef = useTemplateRef('sqlInputRef')
+
 const state = reactive({
     dialog: {
         type: '',
@@ -186,7 +187,7 @@ const onShowDialog = (type: string) => {
     state.dialog.visible = true
     if (type == 'sql') {
         setTimeout(() => {
-            sqlInputRef.value.focus()
+            sqlInputRef.value?.focus()
         }, 200)
     } else if (type == 'db') {
         state.successRecord = 0
@@ -199,7 +200,6 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
 })
 
 const onSubmit = () => {
-    if (!formRef.value) return
     if (state.dialog.type == 'sql' && !crudState.startData.sql) {
         ElNotification({
             type: 'error',
@@ -207,7 +207,7 @@ const onSubmit = () => {
         })
         return
     }
-    formRef.value.validate((valid) => {
+    formRef.value?.validate((valid) => {
         if (valid) {
             changeStep(state.dialog.type)
         }

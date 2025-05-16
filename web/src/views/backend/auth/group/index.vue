@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, provide, ref } from 'vue'
+import { onMounted, provide, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PopupForm from './popupForm.vue'
 import { getAdminRules } from '/@/api/backend/auth/group'
@@ -42,10 +42,10 @@ defineOptions({
     name: 'auth/group',
 })
 
-const formRef = ref()
-const tableRef = ref()
 const { t } = useI18n()
 const adminInfo = useAdminInfo()
+const formRef = useTemplateRef('formRef')
+const tableRef = useTemplateRef('tableRef')
 
 const baTable: baTableClass = new baTableClass(
     new baTableApi('/admin/auth.Group/'),
@@ -83,7 +83,7 @@ baTable.before.onSubmit = ({ formEl, operate, items }) => {
         baTable.api
             .postData(operate, {
                 ...items,
-                rules: formRef.value.getCheckeds(),
+                rules: formRef.value?.getCheckeds(),
             })
             .then((res) => {
                 baTable.onTableHeaderAction('refresh', {})

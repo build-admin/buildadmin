@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, nextTick, onActivated, onMounted, onBeforeMount } from 'vue'
+import { reactive, nextTick, onActivated, onMounted, onBeforeMount, useTemplateRef } from 'vue'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useRouter } from 'vue-router'
 import * as echarts from 'echarts'
@@ -87,7 +87,7 @@ import { useEventListener } from '@vueuse/core'
 const { t } = useI18n()
 const router = useRouter()
 const userInfo = useUserInfo()
-const accountGrowthChartRef = ref<HTMLElement>()
+const accountGrowthChartRef = useTemplateRef('accountGrowthChartRef')
 
 const state: {
     days: string[]

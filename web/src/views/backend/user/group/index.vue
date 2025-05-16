@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, provide, ref } from 'vue'
+import { onMounted, provide, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PopupForm from './popupForm.vue'
 import { getUserRules } from '/@/api/backend/user/group'
@@ -34,8 +34,9 @@ defineOptions({
 })
 
 const { t } = useI18n()
-const tableRef = ref()
-const formRef = ref()
+const formRef = useTemplateRef('formRef')
+const tableRef = useTemplateRef('tableRef')
+
 const baTable = new baTableClass(
     new baTableApi('/admin/user.Group/'),
     {
@@ -78,7 +79,7 @@ baTable.before.onSubmit = ({ formEl, operate, items }) => {
         baTable.api
             .postData(operate, {
                 ...items,
-                rules: formRef.value.getCheckeds(),
+                rules: formRef.value?.getCheckeds(),
             })
             .then((res) => {
                 baTable.onTableHeaderAction('refresh', {})

@@ -2,7 +2,7 @@
     <div class="layout-config-drawer">
         <el-drawer :model-value="configStore.layout.showDrawer" :title="t('layouts.Layout configuration')" size="310px" @close="onCloseDrawer">
             <el-scrollbar class="layout-mode-style-scrollbar">
-                <el-form ref="formRef" :model="configStore.layout">
+                <el-form :model="configStore.layout">
                     <div class="layout-mode-styles-box">
                         <el-divider border-style="dashed">{{ t('layouts.Layout mode') }}</el-divider>
                         <div class="layout-mode-box-style">

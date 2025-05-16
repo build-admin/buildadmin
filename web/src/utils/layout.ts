@@ -1,7 +1,26 @@
 import type { CSSProperties } from 'vue'
-import { useNavTabs } from '/@/stores/navTabs'
 import { useConfig } from '/@/stores/config'
+import { useMemberCenter } from '/@/stores/memberCenter'
+import { useNavTabs } from '/@/stores/navTabs'
 import { isAdminApp } from '/@/utils/common'
+
+/**
+ * 管理员后台各个布局顶栏高度
+ */
+export const adminLayoutHeaderBarHeight = {
+    Default: 70,
+    Classic: 50,
+    Streamline: 60,
+    Double: 60,
+}
+
+/**
+ * 前台会员中心各个布局顶栏高度
+ */
+export const userLayoutHeaderBarHeight = {
+    Default: 60,
+    Disable: 60,
+}
 
 /**
  * main高度
@@ -10,19 +29,15 @@ import { isAdminApp } from '/@/utils/common'
  */
 export function mainHeight(extra = 0): CSSProperties {
     let height = extra
-    const adminLayoutMainExtraHeight: anyObj = {
-        Default: 70,
-        Classic: 50,
-        Streamline: 60,
-    }
     if (isAdminApp()) {
         const config = useConfig()
         const navTabs = useNavTabs()
         if (!navTabs.state.tabFullScreen) {
-            height += adminLayoutMainExtraHeight[config.layout.layoutMode]
+            height += adminLayoutHeaderBarHeight[config.layout.layoutMode as keyof typeof adminLayoutHeaderBarHeight]
         }
     } else {
-        height += 60
+        const memberCenter = useMemberCenter()
+        height += userLayoutHeaderBarHeight[memberCenter.state.layoutMode as keyof typeof userLayoutHeaderBarHeight]
     }
     return {
         height: 'calc(100vh - ' + height.toString() + 'px)',

@@ -38,9 +38,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { reactive, useTemplateRef } from 'vue'
 import FormItem from '/@/components/formItem/index.vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormRules } from 'element-plus'
 import { buildValidatorData } from '/@/utils/validate'
 import { postData } from '/@/api/backend/routine/config'
 import CreateFormItemData from '/@/components/formItem/createData.vue'
@@ -70,7 +70,8 @@ const closeForm = () => {
 }
 
 const { t } = useI18n()
-const formRef = ref<FormInstance>()
+const formRef = useTemplateRef('formRef')
+
 const state: {
     inputTypes: anyObj
     labelWidth: number
@@ -120,8 +121,7 @@ const rules = reactive<FormRules>({
 })
 
 const onAddSubmit = () => {
-    if (!formRef.value) return
-    formRef.value.validate((valid) => {
+    formRef.value?.validate((valid) => {
         if (valid) {
             state.addConfig.content = state.formItemData.dict
             delete state.formItemData.dict

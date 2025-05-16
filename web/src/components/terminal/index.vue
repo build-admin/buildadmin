@@ -182,7 +182,7 @@
 <script setup lang="ts">
 import type { TimelineItemProps } from 'element-plus'
 import { ElMessageBox, ElScrollbar } from 'element-plus'
-import { nextTick, onMounted, reactive, ref } from 'vue'
+import { nextTick, onMounted, reactive, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { postChangeTerminalConfig } from '/@/api/common'
 import FormItem from '/@/components/formItem/index.vue'
@@ -194,7 +194,7 @@ type SourceType = 'npm' | 'composer'
 
 const { t } = useI18n()
 const terminal = useTerminal()
-const terminalScrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
+const terminalScrollbarRef = useTemplateRef('terminalScrollbarRef')
 
 const state = reactive({
     registryLoading: false,

@@ -10,7 +10,7 @@
 
         <!-- 表格 -->
         <!-- 要使用`el-table`组件原有的属性，直接加在Table标签上即可 -->
-        <Table ref="tableRef" />
+        <Table />
 
         <!-- 表单 -->
         <PopupForm />
@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, provide } from 'vue'
+import { provide } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
@@ -32,7 +32,6 @@ defineOptions({
 })
 
 const { t } = useI18n()
-const tableRef = ref()
 const baTable = new baTableClass(
     new baTableApi('/admin/user.User/'),
     {

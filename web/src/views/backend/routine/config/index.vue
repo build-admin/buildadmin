@@ -108,10 +108,10 @@
 </template>
 
 <script setup lang="ts">
-import type { FormInstance, FormItemRule } from 'element-plus'
+import type { FormItemRule } from 'element-plus'
 import { ElMessageBox, ElNotification } from 'element-plus'
 import { isEmpty } from 'lodash-es'
-import { onActivated, onDeactivated, onMounted, onUnmounted, reactive, ref } from 'vue'
+import { onActivated, onDeactivated, onMounted, onUnmounted, reactive, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AddFrom from './add.vue'
 import { del, index, postData, postSendTestMail } from '/@/api/backend/routine/config'
@@ -131,7 +131,7 @@ defineOptions({
 const { t } = useI18n()
 const siteConfig = useSiteConfig()
 
-const formRef = ref<FormInstance>()
+const formRef = useTemplateRef('formRef')
 
 const state: {
     loading: boolean
@@ -209,8 +209,7 @@ const onBeforeLeave = (newTabName: string | number) => {
 }
 
 const onSubmit = () => {
-    if (!formRef.value) return
-    formRef.value.validate((valid) => {
+    formRef.value?.validate((valid) => {
         if (valid) {
             // 只提交当前tab的表单数据
             const formData: anyObj = {}

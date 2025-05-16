@@ -83,10 +83,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, inject, watch } from 'vue'
+import { reactive, inject, watch, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
-import type { FormInstance } from 'element-plus'
 import { add } from '/@/api/backend/user/moneyLog'
 import FormItem from '/@/components/formItem/index.vue'
 import type { FormItemRule } from 'element-plus'
@@ -113,7 +112,7 @@ const rules: Partial<Record<string, FormItemRule[]>> = reactive({
     memo: [buildValidatorData({ name: 'required', title: t('user.moneyLog.remarks') })],
 })
 
-const formRef = ref<FormInstance>()
+const formRef = useTemplateRef('formRef')
 
 const state: {
     userInfo: anyObj

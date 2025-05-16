@@ -145,9 +145,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ElMessage, type PopoverInstance } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import screenfull from 'screenfull'
-import { reactive, ref } from 'vue'
+import { reactive, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Config from './config.vue'
 import { logout } from '/@/api/backend/index'
@@ -171,7 +171,7 @@ const adminInfo = useAdminInfo()
 const configStore = useConfig()
 const terminal = useTerminal()
 const siteConfig = useSiteConfig()
-const reloadHotServerPopover = ref<PopoverInstance>()
+const reloadHotServerPopover = useTemplateRef('reloadHotServerPopover')
 
 const state = reactive({
     isFullScreen: false,

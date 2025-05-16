@@ -102,17 +102,17 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, inject } from 'vue'
+import { reactive, inject, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import FormItem from '/@/components/formItem/index.vue'
-import type { FormInstance, FormItemRule } from 'element-plus'
+import type { FormItemRule } from 'element-plus'
 import { buildValidatorData } from '/@/utils/validate'
 import { getTablePk, getTableListUrl, getDatabaseConnectionListUrl } from '/@/api/common'
 import { useConfig } from '/@/stores/config'
 
 const config = useConfig()
-const formRef = ref<FormInstance>()
+const formRef = useTemplateRef('formRef')
 const baTable = inject('baTable') as baTableClass
 
 const { t } = useI18n()

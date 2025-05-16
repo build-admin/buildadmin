@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive } from 'vue'
 import { onBeforeRouteUpdate, useRoute, type RouteLocationNormalizedLoaded } from 'vue-router'
 import MenuTree from '/@/layouts/backend/components/menus/menuTree.vue'
 import { useConfig } from '/@/stores/config'
@@ -53,13 +53,16 @@ const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
     }
 }
 
-// 滚动条滚动到激活菜单所在位置
+/**
+ * 滚动条滚动到激活菜单所在位置
+ */
 const verticalMenusScroll = () => {
-    nextTick(() => {
+    setTimeout(() => {
         let activeMenu: HTMLElement | null = document.querySelector('.el-menu.layouts-menu-vertical li.is-active')
-        if (!activeMenu) return false
-        layoutMenuScrollbarRef.value?.setScrollTop(activeMenu.offsetTop)
-    })
+        if (activeMenu) {
+            layoutMenuScrollbarRef.value?.setScrollTop(activeMenu.offsetTop)
+        }
+    }, 500)
 }
 
 onMounted(() => {

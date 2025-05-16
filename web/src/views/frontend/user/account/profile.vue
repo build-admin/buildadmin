@@ -242,9 +242,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { reactive, onMounted, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
-import type { FormInstance, FormItemRule } from 'element-plus'
+import type { FormItemRule } from 'element-plus'
 import FormItem from '/@/components/formItem/index.vue'
 import { useUserInfo } from '/@/stores/userInfo'
 import { onResetForm } from '/@/utils/common'
@@ -263,9 +263,10 @@ const router = useRouter()
 const userInfo = useUserInfo()
 const memberCenter = useMemberCenter()
 
-const formRef = ref<FormInstance>()
-const bindFormRef = ref<FormInstance>()
-const verificationFormRef = ref<FormInstance>()
+const formRef = useTemplateRef('formRef')
+const bindFormRef = useTemplateRef('bindFormRef')
+const verificationFormRef = useTemplateRef('verificationFormRef')
+
 const state: {
     formSubmitLoading: boolean
     form: anyObj
@@ -422,8 +423,7 @@ const sendBindCaptcha = (captchaInfo: string) => {
 }
 
 const onSubmitVerification = () => {
-    if (!verificationFormRef.value) return
-    verificationFormRef.value.validate((res) => {
+    verificationFormRef.value?.validate((res) => {
         if (res) {
             state.dialog.submitLoading = true
             postVerification({
@@ -445,8 +445,7 @@ const onSubmitVerification = () => {
 }
 
 const onSubmitBind = () => {
-    if (!bindFormRef.value) return
-    bindFormRef.value.validate((res) => {
+    bindFormRef.value?.validate((res) => {
         if (res) {
             state.dialog.submitLoading = true
             postChangeBind({
@@ -467,8 +466,7 @@ const onSubmitBind = () => {
 }
 
 const onSubmit = () => {
-    if (!formRef.value) return
-    formRef.value.validate((valid) => {
+    formRef.value?.validate((valid) => {
         if (valid) {
             state.formSubmitLoading = true
             postProfile(state.form)

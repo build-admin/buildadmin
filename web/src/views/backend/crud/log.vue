@@ -250,7 +250,7 @@
 <script setup lang="ts">
 import { ElNotification } from 'element-plus'
 import { debounce } from 'lodash-es'
-import { nextTick, onMounted, provide, reactive, ref, watch } from 'vue'
+import { nextTick, onMounted, provide, reactive, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { delLog, logs, postDel, uploadCompleted, uploadLog } from '/@/api/backend/crud'
 import { baTableApi } from '/@/api/common'
@@ -301,7 +301,8 @@ const state = reactive({
 })
 
 const { t } = useI18n()
-const tableRef = ref()
+const tableRef = useTemplateRef('tableRef')
+
 const optButtons: OptButton[] = [
     {
         render: 'confirmButton',

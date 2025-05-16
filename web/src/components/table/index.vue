@@ -63,15 +63,15 @@
 </template>
 
 <script setup lang="ts">
-import type { ElTable, TableInstance } from 'element-plus'
+import type { ElTable } from 'element-plus'
 import type { Component } from 'vue'
-import { computed, inject, nextTick, ref } from 'vue'
+import { computed, inject, nextTick, useTemplateRef } from 'vue'
 import { useConfig } from '/@/stores/config'
 import type baTableClass from '/@/utils/baTable'
 import { shortUuid } from '/@/utils/random'
 
 const config = useConfig()
-const tableRef = ref<TableInstance>()
+const tableRef = useTemplateRef('tableRef')
 const baTable = inject('baTable') as baTableClass
 type ElTableProps = Partial<InstanceType<typeof ElTable>['$props']>
 

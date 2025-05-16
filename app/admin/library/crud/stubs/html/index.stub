@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, provide, ref } from 'vue'
+import { onMounted, provide, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PopupForm from './popupForm.vue'
 import { baTableApi } from '/@/api/common'
@@ -34,7 +34,7 @@ defineOptions({
 })
 
 const { t } = useI18n()
-const tableRef = ref()
+const tableRef = useTemplateRef('tableRef')
 const optButtons: OptButton[] = defaultOptButtons({%optButtons%})
 
 /**

@@ -50,9 +50,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch, useAttrs, nextTick } from 'vue'
+import { reactive, onMounted, watch, useAttrs, nextTick, useTemplateRef } from 'vue'
 import { genFileId } from 'element-plus'
-import type { UploadInstance, UploadUserFile, UploadProps, UploadRawFile, UploadFiles } from 'element-plus'
+import type { UploadUserFile, UploadProps, UploadRawFile, UploadFiles } from 'element-plus'
 import { stringToArray } from '/@/components/baInput/helper'
 import { fullUrl, arrayFullUrl, getFileNameFromPath, getArrayKey } from '/@/utils/common'
 import { fileUpload } from '/@/api/common'
@@ -110,7 +110,7 @@ const emits = defineEmits<{
 }>()
 
 const attrs = useAttrs()
-const upload = ref<UploadInstance>()
+const upload = useTemplateRef('upload')
 const state: {
     key: string
     // 返回值类型，通过v-model类型动态计算

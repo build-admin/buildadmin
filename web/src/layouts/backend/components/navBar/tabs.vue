@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, reactive, ref } from 'vue'
+import { nextTick, onMounted, reactive, useTemplateRef } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate, type RouteLocationNormalized } from 'vue-router'
 import { useConfig } from '/@/stores/config'
 import { useNavTabs } from '/@/stores/navTabs'
@@ -38,10 +38,9 @@ const config = useConfig()
 const navTabs = useNavTabs()
 
 const { proxy } = useCurrentInstance()
-const tabScrollbarRef = ref()
 const tabsRefs = useTemplateRefsList<HTMLDivElement>()
-
-const contextmenuRef = ref()
+const contextmenuRef = useTemplateRef('contextmenuRef')
+const tabScrollbarRef = useTemplateRef('tabScrollbarRef')
 
 const state: {
     contextmenuItems: ContextMenuItem[]
@@ -72,11 +71,13 @@ const selectNavTab = function (dom: HTMLDivElement) {
     activeBoxStyle.width = dom.clientWidth + 'px'
     activeBoxStyle.transform = `translateX(${dom.offsetLeft}px)`
 
-    let scrollLeft = dom.offsetLeft + dom.clientWidth - tabScrollbarRef.value.clientWidth
-    if (dom.offsetLeft < tabScrollbarRef.value.scrollLeft) {
-        tabScrollbarRef.value.scrollTo(dom.offsetLeft, 0)
-    } else if (scrollLeft > tabScrollbarRef.value.scrollLeft) {
-        tabScrollbarRef.value.scrollTo(scrollLeft, 0)
+    if (tabScrollbarRef.value) {
+        let scrollLeft = dom.offsetLeft + dom.clientWidth - tabScrollbarRef.value.clientWidth
+        if (dom.offsetLeft < tabScrollbarRef.value.scrollLeft) {
+            tabScrollbarRef.value.scrollTo(dom.offsetLeft, 0)
+        } else if (scrollLeft > tabScrollbarRef.value.scrollLeft) {
+            tabScrollbarRef.value.scrollTo(scrollLeft, 0)
+        }
     }
 }
 
@@ -101,7 +102,7 @@ const closeTab = (route: RouteLocationNormalized) => {
         })
     }
 
-    contextmenuRef.value.onHideContextmenu()
+    contextmenuRef.value?.onHideContextmenu()
 }
 
 const closeOtherTab = (menu: RouteLocationNormalized) => {
@@ -135,7 +136,7 @@ const onContextmenu = (menu: RouteLocationNormalized, el: MouseEvent) => {
     state.contextmenuItems[4].disabled = state.contextmenuItems[3].disabled = navTabs.state.tabsView.length == 1 ? true : false
 
     const { clientX, clientY } = el
-    contextmenuRef.value.onShowContextmenu(menu, {
+    contextmenuRef.value?.onShowContextmenu(menu, {
         x: clientX,
         y: clientY,
     })
@@ -183,7 +184,9 @@ onBeforeRouteUpdate(async (to) => {
 
 onMounted(() => {
     updateTab(router.currentRoute.value)
-    new horizontalScroll(tabScrollbarRef.value)
+    if (tabScrollbarRef.value) {
+        new horizontalScroll(tabScrollbarRef.value)
+    }
 })
 
 /**

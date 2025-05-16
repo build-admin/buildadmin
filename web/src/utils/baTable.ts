@@ -203,7 +203,7 @@ export default class baTable {
      * 提交表单
      * @param formEl 表单组件ref
      */
-    onSubmit = (formEl: FormInstance | undefined = undefined) => {
+    onSubmit = (formEl?: FormInstance | null) => {
         // 当前操作的首字母小写
         const operate = this.form.operate!.replace(this.form.operate![0], this.form.operate![0].toLowerCase())
 
@@ -439,7 +439,7 @@ export default class baTable {
             return
         }
 
-        const el = this.table.ref.getRef().$el.querySelector('.el-table__body-wrapper .el-table__body tbody')
+        const el = this.table.ref.getRef()?.$el.querySelector('.el-table__body-wrapper .el-table__body tbody')
         const disabledTip = this.table.column[buttonsKey].buttons![moveButton].disabledTip
         Sortable.create(el, {
             animation: 200,

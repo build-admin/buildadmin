@@ -145,18 +145,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, inject, watch } from 'vue'
+import { reactive, inject, watch, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type baTableClass from '/@/utils/baTable'
 import { regularPassword } from '/@/utils/validate'
-import type { FormInstance, FormItemRule } from 'element-plus'
+import type { FormItemRule } from 'element-plus'
 import FormItem from '/@/components/formItem/index.vue'
 import router from '/@/router/index'
 import { buildValidatorData } from '/@/utils/validate'
 import { useConfig } from '/@/stores/config'
 
 const config = useConfig()
-const formRef = ref<FormInstance>()
+const formRef = useTemplateRef('formRef')
 const baTable = inject('baTable') as baTableClass
 
 const { t } = useI18n()

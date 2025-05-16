@@ -40,8 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import type { FormInstance } from 'element-plus'
+import { reactive, useTemplateRef } from 'vue'
 import { onResetForm } from '/@/utils/common'
 import { buildValidatorData } from '/@/utils/validate'
 import { changePassword } from '/@/api/frontend/user/index'
@@ -52,7 +51,8 @@ import { useUserInfo } from '/@/stores/userInfo'
 const { t } = useI18n()
 
 const userInfo = useUserInfo()
-const formRef = ref<FormInstance>()
+const formRef = useTemplateRef('formRef')
+
 const state = reactive({
     formSubmitLoading: false,
     form: {
@@ -87,8 +87,7 @@ const state = reactive({
 })
 
 const onSubmit = () => {
-    if (!formRef.value) return
-    formRef.value.validate((valid) => {
+    formRef.value?.validate((valid) => {
         if (valid) {
             state.formSubmitLoading = true
             changePassword(state.form)

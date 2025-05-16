@@ -129,9 +129,8 @@ export const getArrayKey = (arr: any, pk: string, value: any): any => {
  * 表单重置
  * @param formEl
  */
-export const onResetForm = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.resetFields && formEl.resetFields()
+export const onResetForm = (formEl?: FormInstance | null) => {
+    typeof formEl?.resetFields == 'function' && formEl.resetFields()
 }
 
 /**

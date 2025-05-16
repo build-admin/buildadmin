@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, provide } from 'vue'
+import { onMounted, provide, useTemplateRef } from 'vue'
 import { sensitiveDataClass } from './index'
 import { url } from '/@/api/backend/security/sensitiveData'
 import PopupForm from './popupForm.vue'
@@ -33,8 +33,9 @@ defineOptions({
 })
 
 const { t } = useI18n()
-const tableRef = ref()
-const formRef = ref()
+const formRef = useTemplateRef('formRef')
+const tableRef = useTemplateRef('tableRef')
+
 const baTable = new sensitiveDataClass(
     new baTableApi(url),
     {
@@ -108,7 +109,7 @@ const baTable = new sensitiveDataClass(
 )
 
 baTable.before.onSubmit = () => {
-    baTable.form.items!.fields = formRef.value.getDataFields()
+    baTable.form.items!.fields = formRef.value?.getDataFields()
 }
 
 provide('baTable', baTable)

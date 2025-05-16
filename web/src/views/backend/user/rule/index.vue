@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, provide } from 'vue'
+import { onMounted, provide, useTemplateRef } from 'vue'
 import baTableClass from '/@/utils/baTable'
 import PopupForm from './popupForm.vue'
 import Table from '/@/components/table/index.vue'
@@ -32,7 +32,8 @@ defineOptions({
 })
 
 const { t } = useI18n()
-const tableRef = ref()
+const tableRef = useTemplateRef('tableRef')
+
 const baTable = new baTableClass(
     new baTableApi('/admin/user.Rule/'),
     {
