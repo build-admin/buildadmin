@@ -10,6 +10,7 @@
                     :class="btn.class"
                     class="ba-table-render-buttons-item"
                     :type="btn.type"
+                    :loading="btn.loading && btn.loading(row, field)"
                     :disabled="btn.disabled && btn.disabled(row, field)"
                     v-bind="btn.attr"
                 >
@@ -31,6 +32,7 @@
                         :class="btn.class"
                         class="ba-table-render-buttons-item"
                         :type="btn.type"
+                        :loading="btn.loading && btn.loading(row, field)"
                         :disabled="btn.disabled && btn.disabled(row, field)"
                         v-bind="btn.attr"
                     >
@@ -42,6 +44,7 @@
                 <!-- 带确认框的按钮 -->
                 <el-popconfirm
                     v-if="btn.render == 'confirmButton' && ((btn.name == 'delete' && baTable.auth('del')) || btn.name != 'delete')"
+                    :loading="btn.loading && btn.loading(row, field)"
                     :disabled="btn.disabled && btn.disabled(row, field)"
                     v-bind="btn.popconfirm"
                     @confirm="onButtonClick(btn)"
@@ -59,6 +62,7 @@
                                     :class="btn.class"
                                     class="ba-table-render-buttons-item"
                                     :type="btn.type"
+                                    :loading="btn.loading && btn.loading(row, field)"
                                     :disabled="btn.disabled && btn.disabled(row, field)"
                                     v-bind="btn.attr"
                                 >
@@ -82,6 +86,7 @@
                         :class="btn.class"
                         class="ba-table-render-buttons-item move-button"
                         :type="btn.type"
+                        :loading="btn.loading && btn.loading(row, field)"
                         :disabled="btn.disabled && btn.disabled(row, field)"
                         v-bind="btn.attr"
                     >

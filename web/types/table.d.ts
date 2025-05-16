@@ -393,6 +393,13 @@ declare global {
         disabled?: (row: TableRow, field: TableColumn) => boolean
 
         /**
+         * 按钮点击是否在加载中（请返回布尔值）
+         * @param row 当前行数据
+         * @param field 当前列数据
+         */
+        loading?: (row: TableRow, field: TableColumn) => boolean
+
+        /**
          * 自定义 el-button 的其他属性
          */
         attr?: Partial<Mutable<ButtonProps>>
