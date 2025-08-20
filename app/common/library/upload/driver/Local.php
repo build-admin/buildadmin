@@ -91,6 +91,10 @@ class Local extends Driver
 
         if ($domain === true) {
             $domain = '//' . request()->host();
+            $port = request()->port();
+            if($port != 80){
+                $domain .= ':' . $port;
+            }
         } elseif ($domain === false) {
             $domain = '';
         }

@@ -160,6 +160,10 @@ if (!function_exists('full_url')) {
         $cdnUrl = Config::get('buildadmin.cdn_url');
         if (!$cdnUrl) {
             $cdnUrl = request()->upload['cdn'] ?? '//' . request()->host();
+            $port = request()->port();
+            if($port != 80){
+                $cdnUrl = request()->upload['cdn'] ?? $cdnUrl . ':' . $port;
+            }
         }
 
         if ($domain === true) {
