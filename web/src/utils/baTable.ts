@@ -1,6 +1,6 @@
 import type { FormInstance, TableColumnCtx } from 'element-plus'
 import { ElNotification, dayjs } from 'element-plus'
-import { cloneDeep, isArray, isEmpty } from 'lodash-es'
+import { cloneDeep, isArray, isEmpty, isUndefined} from 'lodash-es'
 import Sortable from 'sortablejs'
 import { reactive } from 'vue'
 import { useRoute } from 'vue-router'
@@ -523,18 +523,49 @@ export default class baTable {
 
             // 公共搜索表单字段初始化
             const prop = field[key].prop
+            
             if (prop) {
+                const comSearchDefuel = field[key]?.comSearchDefuel
+
                 if (field[key].operator == 'RANGE' || field[key].operator == 'NOT RANGE') {
                     // 范围查询
-                    form[prop] = ''
-                    form[prop + '-start'] = ''
-                    form[prop + '-end'] = ''
+                    form[prop] = comSearchDefuel ?? ''
+                    if (isUndefined(comSearchDefuel)) {
+                        form[prop + '-start'] = ''
+                        form[prop + '-end'] = ''
+                        continue
+                    }
+                    let range = []
+                    if (isArray(comSearchDefuel) && comSearchDefuel.length >= 2) {
+                        range = [comSearchDefuel[0], comSearchDefuel[1]]
+                    } else {
+                        range = comSearchDefuel.split(',')
+                    }
+                    if (
+                        (this.table.column[key].render == 'datetime' || this.table.column[key].comSearchRender == 'date') &&
+                        range &&
+                        range.length >= 2
+                    ) {
+                        const rangeDayJs = [dayjs(range[0]), dayjs(range[1])]
+                        if (rangeDayJs[0].isValid() && rangeDayJs[1].isValid()) {
+                            if (this.table.column[key].comSearchRender == 'date') {
+                                form[prop + '-start'] = rangeDayJs[0].format('YYYY-MM-DD')
+                                form[prop + '-end'] = rangeDayJs[1].format('YYYY-MM-DD')
+                            } else {
+                                form[prop + '-start'] = rangeDayJs[0].format('YYYY-MM-DD HH:mm:ss')
+                                form[prop + '-end'] = rangeDayJs[1].format('YYYY-MM-DD HH:mm:ss')
+                            }
+                        }
+                    } else {
+                        form[prop + '-start'] = range[0] ?? ''
+                        form[prop + '-end'] = range[1] ?? ''
+                    }
                 } else if (field[key].operator == 'NULL' || field[key].operator == 'NOT NULL') {
                     // 复选框
-                    form[prop] = false
+                    form[prop] = isUndefined(comSearchDefuel) ? false : !!comSearchDefuel
                 } else {
                     // 普通文本框
-                    form[prop] = ''
+                    form[prop] = comSearchDefuel ?? ''
                 }
 
                 // 初始化字段的公共搜索数据
