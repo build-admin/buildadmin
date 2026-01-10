@@ -349,6 +349,8 @@ declare global {
         comSearchColAttr?: Partial<ColProps>
         // 公共搜索是否显示字段的 label
         comSearchShowLabel?: boolean
+        // 公共搜索的默认搜索值
+        comSearchDefuel?: any
         // 公共搜索渲染为远程下拉时，远程下拉组件的必要属性
         remote?: {
             pk?: string
