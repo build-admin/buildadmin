@@ -1976,9 +1976,6 @@ const getTableDesignTimelineType = (type: TableDesignChangeType): TimelineItemPr
         margin-bottom: 0 !important;
     }
 }
-.default-main {
-    margin-bottom: 0;
-}
 .mt-10 {
     margin-top: 10px;
 }

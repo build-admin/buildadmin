@@ -28,7 +28,7 @@ const siteConfig = useSiteConfig()
     align-items: center;
     box-sizing: border-box;
     padding: 10px 20px;
-    height: v-bind('config.layout.layoutMode == "Double" ?  "60px":"50px"');
+    height: v-bind('config.layout.layoutMode == "Double" ?  "60px":"46px"');
     background: v-bind('config.layout.layoutMode == "Streamline" ?  "transparent":config.getColorVal("menuTopBarBackground")');
 }
 .layout-title-bar-center {

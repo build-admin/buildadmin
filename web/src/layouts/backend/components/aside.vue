@@ -40,7 +40,7 @@ const menuWidth = computed(() => config.menuWidth())
 .layout-aside-Default:not(.shrink),
 .layout-aside-LeftSplit:not(.shrink) {
     background: var(--ba-bg-color-overlay);
-    margin: 16px 0 16px 16px;
+    margin: var(--ba-main-space) 0 var(--ba-main-space) var(--ba-main-space);
     height: calc(100% - 32px);
     box-shadow: var(--el-box-shadow-light);
     border-radius: var(--el-border-radius-base);

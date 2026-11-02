@@ -1,7 +1,7 @@
 <template>
     <div class="default-main">
         <div class="banner">
-            <el-row :gutter="10">
+            <el-row :gutter="16">
                 <el-col :md="24" :lg="18">
                     <div class="welcome suspension">
                         <img class="welcome-img" :src="headerSvg" alt="" />
@@ -25,7 +25,7 @@
             </el-row>
         </div>
         <div class="small-panel-box">
-            <el-row :gutter="20">
+            <el-row :gutter="16">
                 <el-col :sm="12" :lg="6">
                     <div class="small-panel user-reg suspension">
                         <div class="small-panel-title">{{ t('dashboard.Member registration') }}</div>
@@ -77,7 +77,7 @@
             </el-row>
         </div>
         <div class="growth-chart">
-            <el-row :gutter="20">
+            <el-row :gutter="16">
                 <el-col class="lg-mb-20" :xs="24" :sm="24" :md="12" :lg="9">
                     <el-card shadow="hover" :header="t('dashboard.Membership growth')">
                         <div class="user-growth-chart" :ref="chartRefs.set"></div>
@@ -132,7 +132,7 @@
         </div>
 
         <div class="growth-chart">
-            <el-row :gutter="20">
+            <el-row :gutter="16">
                 <el-col class="lg-mb-20" :xs="24" :sm="24" :md="24" :lg="12">
                     <el-card shadow="hover" :header="t('dashboard.Member source')">
                         <div class="user-source-chart" :ref="chartRefs.set"></div>
@@ -706,13 +706,13 @@ watch(
     }
 }
 .small-panel-box {
-    margin-top: 20px;
+    margin-top: 16px;
 }
 .small-panel {
     background-color: #e9edf2;
     border-radius: var(--el-border-radius-base);
     padding: 25px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     .small-panel-title {
         color: #92969a;
         font-size: 15px;
@@ -749,7 +749,7 @@ watch(
     }
 }
 .growth-chart {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 .user-growth-chart,
 .file-growth-chart {

@@ -233,6 +233,7 @@ defineExpose({
     }
 }
 .nav-tabs {
+    position: relative;
     overflow-x: auto;
     overflow-y: hidden;
     margin-right: var(--ba-main-space);
@@ -258,6 +259,6 @@ defineExpose({
 }
 .ba-nav-tab {
     white-space: nowrap;
-    height: 40px;
+    height: 46px;
 }
 </style>

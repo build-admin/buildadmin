@@ -105,7 +105,6 @@ onBeforeRouteUpdate((to) => {
     width: 100vw;
     height: var(--el-header-height);
     background-color: v-bind('config.getColorVal("headerBarBackground")');
-    border-bottom: 1px solid var(--el-color-info-light-8);
 }
 .menu-horizontal-logo {
     width: 180px;

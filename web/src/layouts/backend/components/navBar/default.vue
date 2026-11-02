@@ -29,12 +29,13 @@ const onMenuCollapse = () => {
 <style lang="scss" scoped>
 .nav-bar {
     display: flex;
-    height: 50px;
-    margin: 20px var(--ba-main-space) 0 var(--ba-main-space);
+    height: 46px;
+    position: relative;
+    margin: var(--ba-main-space);
+    margin-bottom: 0;
     :deep(.nav-tabs) {
         display: flex;
         height: 100%;
-        position: relative;
         .ba-nav-tab {
             display: flex;
             align-items: center;
@@ -63,7 +64,7 @@ const onMenuCollapse = () => {
         }
         .nav-tabs-active-box {
             position: absolute;
-            height: 40px;
+            height: 46px;
             border-radius: var(--el-border-radius-base);
             background-color: v-bind('config.getColorVal("headerBarTabActiveBackgroundFloating")');
             box-shadow: var(--el-box-shadow-light);

@@ -189,8 +189,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped lang="scss">
-.default-main {
-    margin-bottom: 0;
-}
-</style>
+<style scoped lang="scss"></style>
