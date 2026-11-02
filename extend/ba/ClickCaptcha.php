@@ -210,14 +210,26 @@ class ClickCaptcha
                 return false;
             }
             $textArr = json_decode($captcha['captcha'], true);
-            list($xy, $w, $h) = explode(';', $info);
+            list($xy, $w, $h) = array_pad(explode(';', $info), 3, '0');
             $xyArr = explode('-', $xy);
-            $xPro  = $w / $textArr['width'];// 宽度比例
-            $yPro  = $h / $textArr['height'];// 高度比例
+            $xPro  = (float)$w / $textArr['width'];// 宽度比例
+            $yPro  = (float)$h / $textArr['height'];// 高度比例
+
+            // 校验缩放比例
+            $minScale = 0.6;
+            if (!is_finite($xPro) || !is_finite($yPro) || $xPro < $minScale || $yPro < $minScale) {
+                Db::name('captcha')->where('key', $key)->delete();
+                return false;
+            }
+            // 点击数量与验证点数量不一致提前失败
+            if (count($xyArr) != count($textArr['text'])) {
+                Db::name('captcha')->where('key', $key)->delete();
+                return false;
+            }
             foreach ($xyArr as $k => $v) {
                 $xy = explode(',', $v);
-                $x  = $xy[0];
-                $y  = $xy[1];
+                $x  = (float)($xy[0] ?? 0);
+                $y  = (float)($xy[1] ?? 0);
                 if ($x / $xPro < $textArr['text'][$k]['x'] || $x / $xPro > $textArr['text'][$k]['x'] + $textArr['text'][$k]['width']) {
                     // 校验失败立即删除
                     Db::name('captcha')->where('key', $key)->delete();
@@ -230,7 +242,13 @@ class ClickCaptcha
                     return false;
                 }
             }
-            if ($unset) Db::name('captcha')->where('key', $key)->delete();
+            if ($unset) {
+                // 原子消费，并发校验时仅第一路删除命中，其余视为已消费直接返回 false
+                $affectedRows = Db::name('captcha')->where('key', $key)->where('expire_time', '>', time())->delete();
+                if (!$affectedRows) {
+                    return false;
+                }
+            }
             return true;
         } else {
             return false;
