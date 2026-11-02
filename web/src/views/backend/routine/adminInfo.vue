@@ -245,7 +245,7 @@ const onSubmit = () => {
         align-items: center;
         justify-content: center;
         position: relative;
-        margin: 60px auto 10px auto;
+        margin: 50px auto 10px auto;
         border-radius: 50%;
         box-shadow: var(--el-box-shadow-light);
         border: 1px dashed var(--el-border-color);
@@ -283,11 +283,17 @@ const onSubmit = () => {
         }
     }
     .admin-info-form {
-        padding: 30px;
+        padding: 20px 30px 1px 30px;
     }
+}
+.el-card :deep(.el-card__body) {
+    padding: 16px;
 }
 .el-card :deep(.el-timeline-item__icon) {
     font-size: 10px;
+}
+.el-card :deep(.el-timeline-item) {
+    padding-bottom: 17px;
 }
 @media screen and (max-width: 1200px) {
     .lg-mb-20 {
