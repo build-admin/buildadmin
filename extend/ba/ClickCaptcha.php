@@ -141,9 +141,8 @@ class ClickCaptcha
             if ($v['icon']) {
                 $this->iconCover($image, $v);
             } else {
-                //字体颜色
-                $color = imagecolorallocatealpha($image, 239, 239, 234, 127 - intval($this->config['alpha'] * (127 / 100)));
-                // 绘画文字
+                // 绘文字，随机生成可辨识的浅彩色
+                $color = $this->randomTextColor($image);
                 imagettftext($image, $v['size'], 0, $v['x'], $v['y'], $color, $fontPath, $v['text']);
             }
         }
@@ -253,6 +252,46 @@ class ClickCaptcha
         } else {
             return false;
         }
+    }
+
+    /**
+     * 生成随机浅彩色
+     */
+    private function randomTextColor($image): int
+    {
+        $hue        = mt_rand(0, 359);
+        $saturation = mt_rand(55, 80) / 100;
+        $value      = mt_rand(78, 95) / 100;
+
+        $chroma    = $value * $saturation;
+        $hPrime    = $hue / 60;
+        $secondary = $chroma * (1 - abs(fmod($hPrime, 2) - 1));
+        $lightness = $value - $chroma;
+
+        if ($hPrime < 1) {
+            [$r, $g, $b] = [$chroma, $secondary, 0];
+        } elseif ($hPrime < 2) {
+            [$r, $g, $b] = [$secondary, $chroma, 0];
+        } elseif ($hPrime < 3) {
+            [$r, $g, $b] = [0, $chroma, $secondary];
+        } elseif ($hPrime < 4) {
+            [$r, $g, $b] = [0, $secondary, $chroma];
+        } elseif ($hPrime < 5) {
+            [$r, $g, $b] = [$secondary, 0, $chroma];
+        } else {
+            [$r, $g, $b] = [$chroma, 0, $secondary];
+        }
+
+        // 透明度随机，最低为配置的透明度百分比，最高为 80%
+        $alphaPercent = mt_rand(intval($this->config['alpha']), 80);
+        $maxAlpha     = intval($alphaPercent * (127 / 100));
+        return imagecolorallocatealpha(
+            $image,
+            max(0, min(255, intval(round(($r + $lightness) * 255)))),
+            max(0, min(255, intval(round(($g + $lightness) * 255)))),
+            max(0, min(255, intval(round(($b + $lightness) * 255)))),
+            $maxAlpha
+        );
     }
 
     /**
