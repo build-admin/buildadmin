@@ -29,7 +29,7 @@ import { baTableApi } from '/@/api/common'
 import { useI18n } from 'vue-i18n'
 
 defineOptions({
-    name: 'security/dataRecycle',
+    name: 'security/sensitiveData',
 })
 
 const { t } = useI18n()
