@@ -45,6 +45,7 @@ pnpm-debug.log*
 *.local
 !.gitkeep
 .svn
+memory/
 
 # 为 i18n Ally（VSCode 插件）生成的语言包索引（执行 dev 命令时自动生成）
 /web/src/lang/*.json
