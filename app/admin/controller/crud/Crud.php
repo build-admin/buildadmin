@@ -75,6 +75,11 @@ class Crud extends Backend
      */
     public function generate(): void
     {
+        // 仅允许超管生成 CRUD 代码
+        if (!$this->auth->isSuperAdmin()) {
+            $this->error(__('You have no permission'));
+        }
+
         $type   = $this->request->post('type', '');
         $table  = $this->request->post('table', []);
         $fields = $this->request->post('fields', [], 'clean_xss,htmlspecialchars_decode_improve');
