@@ -88,7 +88,6 @@ const baTable = new baTableClass(new baTableApi('/admin/auth.AdminLog/'), {
             operator: 'LIKE',
             operatorPlaceholder: t('Fuzzy query'),
             showOverflowTooltip: true,
-            render: 'url',
         },
         { label: t('auth.adminLog.ip'), prop: 'ip', align: 'center', operator: 'LIKE', operatorPlaceholder: t('Fuzzy query'), render: 'tag' },
         {
