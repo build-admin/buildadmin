@@ -14,6 +14,32 @@ import { isAdminApp } from '/@/utils/common'
 import { closeShade } from '/@/utils/pageShade'
 
 /**
+ * 将传入的地址转换为安全可跳转的 URL
+ * 仅允许 http/https 协议，可选的同源限制用于避免开放跳转
+ * @param url 待校验的地址
+ * @param allowExternal 是否允许站外地址，默认 false 即仅允许同源
+ * @returns 安全的绝对地址，校验不通过时返回 null
+ */
+export const safeURL = (url?: string | null, allowExternal = false): string | null => {
+    if (!url) return null
+
+    let target: URL
+    try {
+        target = new URL(url, location.origin)
+    } catch {
+        return null
+    }
+
+    // 协议白名单，仅允许 http/https
+    if (target.protocol !== 'http:' && target.protocol !== 'https:') return null
+
+    // 是否仅允许同源
+    if (!allowExternal && target.origin !== location.origin) return null
+
+    return target.href
+}
+
+/**
  * 导航失败有错误消息的路由push
  * @param to — 导航位置，同 router.push
  */
@@ -71,9 +97,18 @@ export const onClickMenu = (menu: RouteRecordRaw) => {
         case 'tab':
             routePush(menu.path)
             break
-        case 'link':
-            window.open(menu.path, '_blank')
+        case 'link': {
+            const url = safeURL(menu.path, true)
+            if (url) {
+                window.open(url, '_blank', 'noopener,noreferrer')
+            } else {
+                ElNotification({
+                    message: i18n.global.t('utils.Navigation failed, the menu URL is invalid!'),
+                    type: 'error',
+                })
+            }
             break
+        }
 
         default:
             ElNotification({

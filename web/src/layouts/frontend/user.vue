@@ -8,7 +8,7 @@ import { useUserInfo } from '/@/stores/userInfo'
 import { useSiteConfig } from '/@/stores/siteConfig'
 import { useMemberCenter } from '/@/stores/memberCenter'
 import { initialize } from '/@/api/frontend/index'
-import { getFirstRoute, routePush } from '/@/utils/router'
+import { getFirstRoute, routePush, safeURL } from '/@/utils/router'
 import { memberCenterBaseRoutePath } from '/@/router/static/memberCenterBase'
 import { useRoute, useRouter } from 'vue-router'
 import Default from '/@/layouts/frontend/container/default.vue'
@@ -32,7 +32,11 @@ const memberCenter = useMemberCenter()
 onMounted(async () => {
     const ret = await userMounted()
     if (ret.type == 'break') return
-    if (ret.type == 'reload') return (window.location.href = ret.url)
+    if (ret.type == 'reload') {
+        const url = safeURL(ret.url)
+        if (url) window.location.href = url
+        return
+    }
 
     if (!userInfo.token) return router.push({ name: 'userLogin' })
 

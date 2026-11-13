@@ -269,6 +269,7 @@ import { onResetForm } from '/@/utils/common'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
+import { safeURL } from '/@/utils/router'
 import loginMounted from '/@/components/mixins/loginMounted'
 import LoginFooterMixin from '/@/components/mixins/loginFooter.vue'
 import type { FormItemRule, FormInstance } from 'element-plus'
@@ -403,7 +404,8 @@ const onSubmit = (captchaInfo = '') => {
     checkIn('post', state.form)
         .then((res) => {
             userInfo.dataFill(res.data.userInfo, false)
-            if (state.to) return (location.href = state.to)
+            const to = safeURL(state.to)
+            if (to) return (location.href = to)
             router.push({ path: res.data.routePath })
         })
         .finally(() => {
