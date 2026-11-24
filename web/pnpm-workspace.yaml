@@ -1,0 +1,5 @@
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  v-code-diff: true
+  vue-demi: true
