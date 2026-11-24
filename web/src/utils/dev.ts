@@ -1,8 +1,8 @@
 import { chmodSync, existsSync, readdirSync, rmSync, writeFile, writeFileSync } from 'fs'
 import { trimEnd } from 'lodash-es'
-import { spawn } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
 import { join } from 'path'
+import { createServer } from 'vite'
 import { handleMsglist, mergeMsg } from '../lang/merge'
 
 function formatTime(): string {
@@ -202,15 +202,19 @@ async function start() {
     // 2. 生成 i18n Ally 开发环境语言包索引
     await buildI18nAllyLocaleIndex()
 
-    // 3. 启动 Vite 开发服务器
-    const vite = spawn('vite', ['--force'], {
-        stdio: 'inherit',
-        shell: true,
+    // 3. 使用 Vite 的 JS API 启动开发服务器
+    const server = await createServer({
+        // 等价于原命令中的 --force，强制重新预构建依赖
+        optimizeDeps: { force: true },
     })
+    await server.listen()
+    server.printUrls()
 
-    vite.on('exit', (code) => {
-        process.exit(code ?? 0)
-    })
+    const shutdown = async () => {
+        await server.close()
+        process.exit(0)
+    }
+    process.on('SIGINT', shutdown)
 }
 
 start()
