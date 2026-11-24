@@ -1,7 +1,8 @@
 import { chmodSync, existsSync, readdirSync, rmSync, writeFile, writeFileSync } from 'fs'
-import { trimEnd } from 'lodash-es'
+import { debounce, trimEnd } from 'lodash-es'
 import { pathToFileURL } from 'node:url'
-import { join } from 'path'
+import { isAbsolute, join, relative, resolve } from 'path'
+import type { Plugin } from 'vite'
 import { createServer } from 'vite'
 import { handleMsglist, mergeMsg } from '../lang/merge'
 
@@ -115,8 +116,10 @@ function getNestedPathName(filePath: string, baseDir: string): string {
     return rel.slice(0, rel.lastIndexOf('.'))
 }
 
+let loadTsSeq = 0
 async function loadTs(filePath: string): Promise<{ default: anyObj }> {
-    return import(pathToFileURL(join(process.cwd(), filePath)).href)
+    const href = pathToFileURL(join(process.cwd(), filePath)).href
+    return import(`${href}?t=${++loadTsSeq}`)
 }
 
 async function loadLocale(locale: string): Promise<anyObj> {
@@ -193,6 +196,82 @@ async function buildI18nAllyLocaleIndex() {
     console.log(`${gray(formatTime())} ${cyan('[i18n-ally]')} updated: ${locales.map((locale) => `src/lang/${locale}.json`).join(', ')}`)
 }
 
+// ========================== 监听语言包目录变化自动重建 i18n Ally 索引 ===============================
+
+const LANG_WATCH_DEBOUNCE_MS = 200
+
+let langRebuildRunning = false
+let langRebuildPending = false
+
+/**
+ * 重建 i18n Ally 索引（串行化：构建期间再次触发会排队，构建完成后再次构建）
+ */
+async function rebuildI18nAllyLocaleIndex() {
+    if (langRebuildRunning) {
+        langRebuildPending = true
+        return
+    }
+    langRebuildRunning = true
+    try {
+        await buildI18nAllyLocaleIndex()
+    } finally {
+        langRebuildRunning = false
+        if (langRebuildPending) {
+            langRebuildPending = false
+            scheduleI18nAllyRebuild()
+        }
+    }
+}
+
+/**
+ * 防抖调度一次重建
+ * 连续保存/批量改动合并为一次，变化停止 200ms 后执行；maxWait 保证持续变化时也至少每 1s 执行一次
+ */
+const scheduleI18nAllyRebuild = debounce(
+    () => {
+        rebuildI18nAllyLocaleIndex()
+    },
+    LANG_WATCH_DEBOUNCE_MS,
+    {
+        maxWait: LANG_WATCH_DEBOUNCE_MS * 5,
+    }
+)
+
+/**
+ * 监听 src/lang 目录语言包文件变化，自动重新生成 i18n Ally 索引的 Vite 插件
+ */
+function i18nAllyLocaleIndexPlugin(): Plugin {
+    return {
+        name: 'build-admin:i18n-ally-locale-index',
+        apply: 'serve',
+        configureServer(server) {
+            if (!server.watcher) return
+            const langDir = resolve(process.cwd(), LANG_DIR)
+
+            // 是否为 src/lang 目录下的语言包源文件（.ts）
+            const isLangTsFile = (filePath: string) => {
+                if (!filePath.endsWith('.ts')) return false
+                const rel = relative(langDir, filePath)
+                return !rel.startsWith('..') && !isAbsolute(rel)
+            }
+
+            // 忽略 watcher 初始化扫描阶段的事件，避免启动时误触发一次重建
+            let watcherReady = false
+            server.watcher.on('ready', () => {
+                watcherReady = true
+            })
+
+            const onLangChange = (filePath: string) => {
+                if (!watcherReady || !isLangTsFile(filePath)) return
+                scheduleI18nAllyRebuild()
+            }
+            server.watcher.on('add', onLangChange)
+            server.watcher.on('change', onLangChange)
+            server.watcher.on('unlink', onLangChange)
+        },
+    }
+}
+
 // ========================== 启动 Vite 开发服务器 ===============================
 
 async function start() {
@@ -206,6 +285,8 @@ async function start() {
     const server = await createServer({
         // 等价于原命令中的 --force，强制重新预构建依赖
         optimizeDeps: { force: true },
+        // 监听 src/lang 语言包变化，自动重新生成 i18n Ally 索引
+        plugins: [i18nAllyLocaleIndexPlugin()],
     })
     await server.listen()
     server.printUrls()
